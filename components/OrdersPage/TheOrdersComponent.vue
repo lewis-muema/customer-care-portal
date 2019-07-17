@@ -35,8 +35,8 @@
             data-picked_time="undefined"
             class="order_row_home new_row_here  nairobi  "
             id="main_row_AC2728669-I1C"
-            onmouseover="show_rotator('order_rotator_AC2728669-I1C');"
-            onmouseout="hide_rotator('order_rotator_AC2728669-I1C');"
+            onmouseover=""
+            onmouseout=""
             style="font-size: 13px;"
           >
             <td>

@@ -111,9 +111,9 @@ export default {
   css: [
     '@assets/style/custom.css',
     '@assets/style/AdminLTE.css',
-    '@assets/style/Ionicons/css/ionicons.min.css',
+    // '@assets/style/Ionicons/css/ionicons.min.css',
     '@assets/style/typeahead.css',
-    '@assets/style/skins/_all-skins.css',
+    '@assets/style/skins/_all-skins.min.css',
   ],
   /*
    ** Plugins to load before mounting the App

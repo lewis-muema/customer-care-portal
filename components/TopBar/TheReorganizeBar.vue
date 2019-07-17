@@ -2,7 +2,7 @@
   <td>
     <a class=" btn btn-primary request_new_rider_place" href="#">
       <span class="glyphicon glyphicon-sort-by-attributes"></span>
-      <dodod id="re_organize_me"> Re-Organize </dodod>
+      <div id="re_organize_me">Re-Organize</div>
     </a>
   </td>
 </template>
