@@ -1,8 +1,8 @@
 <template>
   <td>
     <a class=" btn btn-primary request_new_rider_place" href="#">
-      <span class="glyphicon glyphicon-sort-by-attributes"></span>
-      <div id="re_organize_me">Re-Organize</div>
+      <i class="fa fa-sort-amount-asc"></i>
+      <span id="re_organize_me">Re-Organize</span>
     </a>
   </td>
 </template>
