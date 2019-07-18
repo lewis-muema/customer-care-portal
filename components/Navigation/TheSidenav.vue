@@ -1,7 +1,6 @@
 <template>
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar" style=" position:fixed;">
-    <!-- sidebar: style can be found in sidebar.less -->
+  <aside class="main-sidebar">
     <section class="sidebar">
       <!-- Sidebar user panel -->
       <div class="user-panel">
@@ -33,9 +32,6 @@
             ><i class="fa fa-shopping-cart"></i>
             <span> Ongoing </span></nuxt-link
           >
-          <!-- <a href="#">
-            <i class="fa fa-shopping-cart"></i> <span> Ongoing </span>
-          </a> -->
         </li>
 
         <li class="treeview">
@@ -77,18 +73,11 @@
       </ul>
     </section>
     <!-- /.sidebar -->
+    <input type="hidden" value="online" id="online_stat" />
   </aside>
-
-  <!-- <input type="hidden" value="online" id="online_stat" /> -->
 </template>
 <script>
 export default {
   name: 'TheSidenav',
-
-  computed: {
-    toggleSidebar() {
-      return this.$store.getters.toggleSidebar;
-    },
-  },
 };
 </script>

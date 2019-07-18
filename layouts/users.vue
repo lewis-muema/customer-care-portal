@@ -1,8 +1,10 @@
 <template>
   <div class="wrapper">
     <div class="content-wrapper full-width">
-      <TheBreadCrumbView />
+      <TheBreadCrumbView :breadcrumbs="breadcrumbs" />
       <TheMainSection />
+
+      {{ breadcrumbs }}
     </div>
     <TheFooter />
   </div>
@@ -14,10 +16,16 @@ import TheMainSection from '@/components/UI/TheMainSection';
 import TheFooter from '@/components/Navigation/TheFooter';
 
 export default {
+  middleware: 'app',
   components: {
     TheBreadCrumbView,
     TheMainSection,
     TheFooter,
+  },
+  computed: {
+    breadcrumbs() {
+      return this.$store.getters.breadcrumbs;
+    },
   },
 };
 </script>

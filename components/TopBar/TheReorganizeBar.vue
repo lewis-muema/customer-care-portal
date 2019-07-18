@@ -11,9 +11,3 @@ export default {
   name: 'TheReorganizeBar',
 };
 </script>
-<style>
-.btn {
-  font-size: inherit;
-  line-height: inherit;
-}
-</style>

@@ -423,7 +423,89 @@
     vertical-align: text-top;
     padding: 10px;
     color: #3c8dbc;
+    margin-top: -16px;
   }
   .wrapper {
     font-size: 13px !important;
+  }
+  .navbar-nav {
+    flex-direction: row;
+    margin-right: 3em;
+    padding: 12px 0px;
+  }
+  .navbar {
+    position: relative;
+    display: block;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+  }
+  .main-sidebar{
+    position:fixed !important;
+  }
+  .btn {
+    font-size: inherit;
+    line-height: inherit;
+  }
+  .search_bar {
+    font-size:18px;
+  }
+  .label {
+    display: inline;
+    padding: 0.2em 0.6em 0.3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25em;
+  }
+  .content {
+    min-height:0px !important; 
+    padding-bottom:0px !important;
+  }
+  .content-body {
+    margin-left: 0 !important;
+  }
+  .content-holder {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    width: 100%;
+  }
+  .full-width {
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+  }
+  .user-search {
+    font-size: x-large;
+    vertical-align: text-top;
+    padding: 0 10px;
+  }
+  .search-rider {
+    display:inline-block
+  }
+  .main-section-holder {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  width: 100%;
+  }
+  .error-page {
+    text-align: center;
+  }
+  
+  .error-page a {
+    text-decoration: none;
+    color: red;
+  }
+  
+  .error-page a:hover,
+  .error-page a:active {
+    color: salmon;
   }
