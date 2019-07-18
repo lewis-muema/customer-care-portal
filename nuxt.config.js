@@ -87,13 +87,13 @@ export default {
    */
   css: [
     '@assets/style/custom.css',
-    '@assets/style/main.css',
+    '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
   ],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['plugins/core-components.js', 'plugins/date-filter.js'],
+  plugins: ['plugins/date-filter.js'],
   /*
    ** Nuxt.js modules
    */

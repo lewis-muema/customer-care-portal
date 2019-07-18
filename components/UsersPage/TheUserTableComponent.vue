@@ -1,14 +1,14 @@
 <template>
   <section class="content">
     <div class="row">
-      <div class="col-xs-12 content-holder main-section-holder">
-        <nuxt />
+      <div class="box">
+        <div class="box-body">dfedf</div>
       </div>
     </div>
   </section>
 </template>
 <script>
 export default {
-  name: 'TheMainSection',
+  name: 'TheUserTableComponent',
 };
 </script>
