@@ -101,10 +101,6 @@
     flex-direction: column;
   }
   
-  .force_blue:visited {
-     /* background-color: #367fa9 !important; */
-  }
-  
   
   .force_blue:hover {
     background-color: #367fa9 !important;
@@ -141,7 +137,7 @@
       .space_tab{ padding: 16px;}
   
   
-      .new_row_here{ background-color: rgba(0, 156, 247, 0.21); }
+  .new_row_here{ background-color: rgba(0, 156, 247, 0.21); }
   .new_row_here td{  border: 1px solid rgba(60, 141, 188, 0) !important;  }
   
   .icon_bit_upper{ padding-right: 9px;  }
@@ -421,4 +417,13 @@
   }
   .charge_commission--label{
     font-weight: 400;
+  }
+  .fa-search {
+    font-size: x-large;
+    vertical-align: text-top;
+    padding: 10px;
+    color: #3c8dbc;
+  }
+  .wrapper {
+    font-size: 13px !important;
   }

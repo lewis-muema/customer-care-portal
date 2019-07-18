@@ -36,22 +36,9 @@ export default {
           'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
         type: 'text/javascript',
       },
-      {
-        src:
-          'https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js',
-        type: 'text/javascript',
-      },
-      {
-        src:
-          'https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js',
-        type: 'text/javascript',
-      },
+
       {
         src: 'js/adminlte.min.js',
-        type: 'text/javascript',
-      },
-      {
-        src: 'js/demo.js',
         type: 'text/javascript',
       },
       {
@@ -89,16 +76,6 @@ export default {
         href:
           ' https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
       },
-      {
-        rel: 'stylesheet',
-        href:
-          'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic',
-      },
-      {
-        href:
-          '//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css',
-        rel: 'stylesheet',
-      },
     ],
   },
   /*
@@ -110,10 +87,8 @@ export default {
    */
   css: [
     '@assets/style/custom.css',
-    '@assets/style/AdminLTE.css',
-    // '@assets/style/Ionicons/css/ionicons.min.css',
+    '@assets/style/main.css',
     '@assets/style/typeahead.css',
-    '@assets/style/skins/_all-skins.min.css',
   ],
   /*
    ** Plugins to load before mounting the App
@@ -132,7 +107,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.BASE_URL || 'https://nuxt-blog-590c5.firebaseio.com',
+    baseUrl: process.env.BASE_URL || 'https://caretest.sendyit.com/customer',
     credentials: false,
   },
   /*
@@ -146,9 +121,8 @@ export default {
     extend(config, ctx) {},
   },
   env: {
-    baseUrl: process.env.BASE_URL || 'https://nuxt-blog-590c5.firebaseio.com',
+    baseUrl: process.env.BASE_URL || 'https://caretest.sendyit.com/customer',
     backendKey: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
-    fbApiKey: 'AIzaSyDVvREAXSltEbLF1XSaPR4psMN0oSyQN4g',
   },
   serverMiddleware: [bodyParser.json(), '~/api'],
 };

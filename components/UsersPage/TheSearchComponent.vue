@@ -14,11 +14,9 @@
         title="Click to search using the rider phone number"
         class="button button-primary"
         onclick="byPassSolrSearchRider();"
-        ><span
-          class="glyphicon glyphicon-search"
-          style="    font-size: x-large;vertical-align: text-top;padding: 10px;"
-        ></span
-      ></a>
+      >
+        <i class="fa fa-search user-search" aria-hidden="true" style=" "></i>
+      </a>
     </div>
   </div>
 </template>
@@ -27,3 +25,12 @@ export default {
   name: 'TheSearchComponent',
 };
 </script>
+<style>
+.user-search {
+  font-size: x-large;
+  vertical-align: text-top;
+  padding: 0 10px;
+}
+</style>
+
+f

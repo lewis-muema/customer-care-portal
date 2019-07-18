@@ -34,11 +34,9 @@
       title="Click to search if Search didnt return any results"
       class="button button-primary"
       onclick="byPassSolrSearch();"
-      ><span
-        class="glyphicon glyphicon-search"
-        style=" #3c8dbc; font-size: x-large;vertical-align: text-top;padding: 10px;"
-      ></span
-    ></a>
+    >
+      <i class="fa fa-search" aria-hidden="true" style=" "></i>
+    </a>
   </td>
 </template>
 <script>
