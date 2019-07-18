@@ -4,15 +4,31 @@ import axios from 'axios';
 const createStore = () => {
   return new Vuex.Store({
     state: {
+      loadedPosts: [],
       token: null,
+      breadcrumbs: [],
     },
     mutations: {
-      clearToken(state) {
-        state.token = null;
+      setPosts(state, posts) {
+        state.loadedPosts = posts;
+      },
+      setbreadcrumbs(state, breadcrumbs, routeName) {
+        state.breadcrumbs = breadcrumbs;
       },
     },
-    actions: {},
-    getters: {},
+    actions: {
+      setPosts(vuexContext, posts) {
+        vuexContext.commit('setPosts', posts);
+      },
+    },
+    getters: {
+      loadedPosts(state) {
+        return state.loadedPosts;
+      },
+      breadcrumbs(state) {
+        return state.breadcrumbs;
+      },
+    },
   });
 };
 

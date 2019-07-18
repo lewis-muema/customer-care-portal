@@ -1,6 +1,6 @@
 <template>
-  <section class="content" style=" min-height:0px; padding-bottom:0px;">
-    <div class="row" style="margin-left: 0;">
+  <section class="content">
+    <div class="row content-body">
       <div class="col-xs-12">
         <div id="searchOrder">
           <table width="100%;">

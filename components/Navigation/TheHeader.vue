@@ -19,5 +19,8 @@ export default {
     TheLogo,
     TheMainNav,
   },
+  asyncData(context) {
+    console.log('context.route.name');
+  },
 };
 </script>

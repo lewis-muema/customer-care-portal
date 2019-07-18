@@ -8,9 +8,6 @@
     <!-- Navbar Right Menu -->
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
-        <!-- Messages: style can be found in dropdown.less-->
-
-        <!-- Notifications: style can be found in dropdown.less -->
         <li
           class="dropdown notifications-menu "
           id="notifivarion_major_contaianber"
@@ -79,27 +76,3 @@ export default {
   name: 'TheMainNav',
 };
 </script>
-
-<style>
-.navbar-nav {
-  flex-direction: row;
-  /* width: 190.91px; */
-  /* height: 50px; */
-  margin-right: 3em;
-  /* float: left; */
-  /* margin: 0; */
-  padding: 12px 0px;
-}
-.navbar {
-  position: relative;
-  /* display: -ms-flexbox; */
-  display: block;
-  /* -ms-flex-wrap: wrap; */
-  flex-wrap: wrap;
-  /* -ms-flex-align: center; */
-  align-items: center;
-  /* -ms-flex-pack: justify; */
-  justify-content: space-between;
-  padding: 0px;
-}
-</style>

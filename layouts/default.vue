@@ -3,7 +3,7 @@
     <TheHeader />
     <TheSidenav />
     <div class="content-wrapper">
-      <TheBreadCrumbView />
+      <TheBreadCrumbView :breadcrumbs="breadcrumbs" />
       <TheTopBar />
       <TheMainSection />
     </div>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import TheHeader from '@/components/Navigation/TheHeader';
 import TheSidenav from '@/components/Navigation/TheSidenav';
 import TheBreadCrumbView from '@/components/Navigation/TheBreadCrumbView';
@@ -31,6 +32,12 @@ export default {
   head: {
     bodyAttrs: {
       class: 'hold-transition skin-blue sidebar-mini  sidebar-collapse',
+    },
+  },
+  middleware: 'app',
+  computed: {
+    breadcrumbs() {
+      return this.$store.getters.breadcrumbs;
     },
   },
 };

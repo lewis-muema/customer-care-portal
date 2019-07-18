@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-3"></div>
     <div class="col-sm-6 text-center ">
-      <div id="searchRider" style="display:inline-block">
+      <div id="searchRider" class="search-rider">
         <input
           class="typeahead"
           id="solr_search_rider_input"
@@ -25,12 +25,3 @@ export default {
   name: 'TheSearchComponent',
 };
 </script>
-<style>
-.user-search {
-  font-size: x-large;
-  vertical-align: text-top;
-  padding: 0 10px;
-}
-</style>
-
-f
