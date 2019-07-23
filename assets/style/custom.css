@@ -509,3 +509,11 @@
   .error-page a:active {
     color: salmon;
   }
+  .reload_map_kali {
+    color: #3c8dbc;
+    position: absolute;
+    left: 301px;
+    margin-top: -81px;
+    background-color: white;
+    padding: 4px;
+  }

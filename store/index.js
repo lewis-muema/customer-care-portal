@@ -7,6 +7,7 @@ const createStore = () => {
       loadedPosts: [],
       token: null,
       breadcrumbs: [],
+      orderDetails: { orderNo: 'AC2728669-I1C' },
     },
     mutations: {
       setPosts(state, posts) {
@@ -14,6 +15,9 @@ const createStore = () => {
       },
       setbreadcrumbs(state, breadcrumbs, routeName) {
         state.breadcrumbs = breadcrumbs;
+      },
+      setOrderDetails(state, orderDetails) {
+        state.orderDetails = orderDetails;
       },
     },
     actions: {
@@ -27,6 +31,9 @@ const createStore = () => {
       },
       breadcrumbs(state) {
         return state.breadcrumbs;
+      },
+      orderDetails(state) {
+        return state.orderDetails;
       },
     },
   });
