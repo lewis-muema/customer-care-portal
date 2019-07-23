@@ -1,6 +1,9 @@
 <template>
   <div class="box box-info">
     <div class="box-body">
+      <input type="text" v-model="value" />
+      <p>{{ value }}</p>
+      <hr />
       <table id="" class="table  table-bordered table-hover">
         <thead>
           <tr>
@@ -19,6 +22,11 @@
             <td colspan="9">
               <div id="initial_load_box">Requesting for orders ...</div>
             </td>
+          </tr>
+          <tr>
+            {{
+              orderDetails
+            }}
           </tr>
           <TheMainRowComponent />
           <TheLowerSlideComponent :order-details="orderDetails" />
@@ -41,6 +49,8 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 import TheMainRowComponent from '@/components/OrdersPage/TheMainRowComponent';
 import TheLowerSlideComponent from '@/components/OrdersPage/TheLowerSlideComponent';
 
@@ -51,8 +61,19 @@ export default {
     TheLowerSlideComponent,
   },
   computed: {
-    orderDetails() {
-      return this.$store.getters.orderDetails;
+    ...mapGetters(['orderDetails']),
+    value: {
+      get() {
+        return this.$store.getters.value;
+      },
+      set(value) {
+        return this.$store.dispatch('updateValue', value);
+      },
+    },
+  },
+  methods: {
+    updatevalue(event) {
+      this.store.dispatch('updateValue', event.target.value);
     },
   },
 };
