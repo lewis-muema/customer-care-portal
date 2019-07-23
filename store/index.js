@@ -1,33 +1,24 @@
 import Vuex from 'vuex';
 import axios from 'axios';
+import orders from './modules/orders';
+
+import * as actions from './actions';
+import * as getters from './getters';
+import * as mutations from './mutations';
 
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      loadedPosts: [],
       token: null,
       breadcrumbs: [],
+      value: 0,
     },
-    mutations: {
-      setPosts(state, posts) {
-        state.loadedPosts = posts;
-      },
-      setbreadcrumbs(state, breadcrumbs, routeName) {
-        state.breadcrumbs = breadcrumbs;
-      },
-    },
-    actions: {
-      setPosts(vuexContext, posts) {
-        vuexContext.commit('setPosts', posts);
-      },
-    },
-    getters: {
-      loadedPosts(state) {
-        return state.loadedPosts;
-      },
-      breadcrumbs(state) {
-        return state.breadcrumbs;
-      },
+
+    getters,
+    mutations,
+    actions,
+    modules: {
+      orders,
     },
   });
 };

@@ -56,6 +56,6 @@ module.exports = {
     'no-plusplus': 'off',
     'vue/no-template-shadow': 'off',
     'vue/no-v-html': 'off',  
-    "prettier/prettier": "error"
+    "prettier/prettier": ["error", { "singleQuote": true }]
   }
 };
