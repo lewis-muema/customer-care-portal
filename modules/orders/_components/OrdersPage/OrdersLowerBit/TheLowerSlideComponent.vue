@@ -18,8 +18,8 @@
   </tr>
 </template>
 <script>
-import TheSideComponent from '@/components/OrdersPage/OrdersLowerBit/LowerSideBar/TheSideComponent';
-import TheMainComponent from '@/components/OrdersPage/OrdersLowerBit/LowerMainBar/TheMainComponent';
+import TheSideComponent from './LowerSideBar/TheSideComponent';
+import TheMainComponent from './LowerMainBar/TheMainComponent';
 
 export default {
   name: 'TheLowerSlideComponent',

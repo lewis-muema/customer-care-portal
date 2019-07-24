@@ -19,6 +19,7 @@
     style="font-size: 13px;"
     @click="load_lower_bit"
   >
+    <td>bbb {{ orders }}</td>
     <td>
       <div class="min_checky"></div>
       <span id="tip_order_AC2728669-I1C" data-toggle="tooltip" title=""
@@ -57,8 +58,13 @@
   </tr>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'TheMainRowComponent',
+  computed: {
+    ...mapGetters({ orders: '$_orders/orders' }),
+  },
 
   methods: {
     load_lower_bit() {

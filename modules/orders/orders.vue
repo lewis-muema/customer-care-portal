@@ -51,8 +51,10 @@
 <script>
 import { mapGetters } from 'vuex';
 
-import TheMainRowComponent from '@/components/OrdersPage/TheMainRowComponent';
-import TheLowerSlideComponent from '@/components/OrdersPage/TheLowerSlideComponent';
+import order_store from './_store';
+import RegisterStoreModule from '@/mixins/register_store_module';
+import TheMainRowComponent from './_components/OrdersPage/OrdersMainBit/TheMainRowComponent';
+import TheLowerSlideComponent from './_components/OrdersPage/OrdersLowerBit/TheLowerSlideComponent';
 
 export default {
   name: 'TheOrdersComponent',
@@ -61,7 +63,7 @@ export default {
     TheLowerSlideComponent,
   },
   computed: {
-    ...mapGetters(['orderDetails']),
+    ...mapGetters({ orderDetails: '$_orders/orderDetails' }),
     value: {
       get() {
         return this.$store.getters.value;
@@ -71,7 +73,19 @@ export default {
       },
     },
   },
+  created() {
+    this.registerOrdersStore();
+  },
   methods: {
+    registerOrdersStore() {
+      // eslint-disable-next-line no-underscore-dangle
+      const moduleIsRegistered =
+        // eslint-disable-next-line no-underscore-dangle
+        this.$store._modules.root._children.$_orders !== undefined;
+      if (!moduleIsRegistered) {
+        this.$store.registerModule('$_orders', order_store);
+      }
+    },
     updatevalue(event) {
       this.store.dispatch('updateValue', event.target.value);
     },
