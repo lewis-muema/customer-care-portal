@@ -8,7 +8,7 @@
   </div>
 </template>
 <script>
-import TheButtonsComponent from '@/components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderActions/TheButtonsComponent';
+import TheButtonsComponent from './OrderActions/TheButtonsComponent';
 
 export default {
   name: 'TheOrderActionsComponent',

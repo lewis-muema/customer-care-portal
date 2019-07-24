@@ -11,9 +11,9 @@
 </template>
 
 <script>
-import TheSideMapComponent from '@/components/OrdersPage/OrdersLowerBit/LowerSideBar/TheSideMapComponent';
-import TheLogsComponent from '@/components/OrdersPage/OrdersLowerBit/LowerSideBar/TheLogsComponent';
-import TheRiderViewComponent from '@/components/OrdersPage/OrdersLowerBit/LowerSideBar/TheRiderViewComponent';
+import TheSideMapComponent from './TheSideMapComponent';
+import TheLogsComponent from './TheLogsComponent';
+import TheRiderViewComponent from './TheRiderViewComponent';
 
 export default {
   name: 'TheSideComponent',

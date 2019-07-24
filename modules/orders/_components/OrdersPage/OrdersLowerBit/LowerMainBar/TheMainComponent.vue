@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import TheOrderActionsComponent from '@/components/OrdersPage/OrdersLowerBit/LowerMainBar/TheOrderActionsComponent';
-import TheOrderDetailsComponent from '@/components/OrdersPage/OrdersLowerBit/LowerMainBar/TheOrderDetailsComponent';
+import TheOrderActionsComponent from './TheOrderActionsComponent';
+import TheOrderDetailsComponent from './TheOrderDetailsComponent';
 
 export default {
   name: 'TheMainComponent',

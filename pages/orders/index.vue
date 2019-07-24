@@ -3,7 +3,7 @@
   <TheOrdersComponent />
 </template>
 <script>
-import TheOrdersComponent from '@/components/OrdersPage/TheOrdersComponent';
+import TheOrdersComponent from '@/modules/orders/orders.vue';
 // import TheSearchComponent from '@/components/OrdersPage/TheSearchComponent';
 export default {
   components: {

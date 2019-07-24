@@ -18,7 +18,7 @@ const createStore = () => {
     mutations,
     actions,
     modules: {
-      orders,
+      // orders,
     },
   });
 };
