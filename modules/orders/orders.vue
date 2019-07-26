@@ -1,8 +1,6 @@
 <template>
   <div class="box box-info">
     <div class="box-body">
-      <input type="text" v-model="value" />
-      <p>{{ value }}</p>
       <hr />
       <table id="" class="table  table-bordered table-hover">
         <thead>
@@ -49,7 +47,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';

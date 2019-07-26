@@ -1,6 +1,8 @@
-export const breadcrumbs = state => {
-  return state.breadcrumbs;
-};
-export const value = state => {
-  return state.value;
+export default {
+  breadcrumbs(state) {
+    return state.breadcrumbs;
+  },
+  value(state) {
+    return state.value;
+  },
 };
