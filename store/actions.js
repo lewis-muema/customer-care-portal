@@ -26,18 +26,13 @@ export default {
 
     // check if payload is a string here and change the content type
     if ('params' in payload) {
-      console.log('toka');
-
       payload.values = payload.params;
       if (typeof payload.params === 'object') {
         payload.values = JSON.stringify(payload.params);
       }
     } else if (typeof payload.values === 'object') {
       // assume we used values
-      console.log('ingia');
       payload.values = JSON.stringify(payload.values);
-    } else {
-      payload.values = JSON.stringify(payload);
     }
     localStorage.setItem(
       'jwtToken',
@@ -53,7 +48,6 @@ export default {
           'Content-Type': 'application/json',
         },
       };
-      console.log('here');
     } else if (typeof jwtToken !== 'undefined' && jwtToken !== null) {
       config = {
         headers: {
@@ -62,20 +56,18 @@ export default {
         },
       };
     } else {
-      console.log('there');
       const notification = {
         title: 'Your session has expired!',
         level: 2,
         message: 'You will be redirected to the login page after 5 seconds.',
       };
-      // set notifications here
+      // !!!!FIX ME :: set notifications here
     }
     return new Promise((resolve, reject) => {
-      console.log(config);
       axios.post(`${url}${payload.endpoint}`, payload.values, config).then(
         response => {
-          // console.log(response);
           if (response.data === 401 || response.data === 403) {
+            // !!!!FIX ME :: set notifications here
             const notification = {
               title: 'Something went wrong!',
               level: 2,
@@ -92,8 +84,6 @@ export default {
         },
       );
     });
-
-    // console.log(payload);
   },
 
   setBreadCrumbs({ commit }) {
