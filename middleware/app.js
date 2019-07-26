@@ -27,7 +27,7 @@ export default function(context) {
   const selectedBreadcrumb = breadcrumbsObject.peer;
 
   store.commit('setbreadcrumbs', selectedBreadcrumb);
-  console.log('testing midd', context.store.getters.breadcrumbs);
-  console.log('route', routeName);
+  // console.log('testing midd', context.store.getters.breadcrumbs);
+  // console.log('route', routeName);
   // console.log('efrtyutrfedsadfg');
 }

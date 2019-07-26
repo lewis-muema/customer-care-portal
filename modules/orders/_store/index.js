@@ -6,6 +6,7 @@ import mutations from './mutations';
 const state = {
   orderDetails: { orderNo: 'joy' },
   orders: null,
+  order_request_object: null,
 };
 
 export default {

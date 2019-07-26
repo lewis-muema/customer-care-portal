@@ -1,8 +1,24 @@
 const bodyParser = require('body-parser');
 const webpack = require('webpack');
+const customConfig = require('./config/custom');
+
+// const customConfig = require('config/config');
+// const config = require('./config/custom');
+
+// environment
+// if (process.env.DOCKER_ENV === undefined) {
+//   app.set('DOCKER_ENV', 'development');
+// } else {
+//   app.set('DOCKER_ENV', process.env.DOCKER_ENV);
+// }
+// set environment to a global
+// global.environment = app.get('DOCKER_ENV');
+
+// console.log(process.env.DOCKER_ENV);
 
 export default {
   mode: 'universal',
+
   /*
    ** Headers of the page
    */
@@ -122,7 +138,10 @@ export default {
   },
   env: {
     baseUrl: process.env.BASE_URL || 'https://caretest.sendyit.com/customer',
-    backendKey: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    DOCKER_ENV: process.env.DOCKER_ENV || 'development',
+    environment: process.env.DOCKER_ENV,
+    customConfigs: customConfig,
+    BACKEND_API_KEY: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
   },
   serverMiddleware: [bodyParser.json(), '~/api'],
 };

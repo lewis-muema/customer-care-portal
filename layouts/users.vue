@@ -16,7 +16,6 @@ import TheMainSection from '@/components/UI/TheMainSection';
 import TheFooter from '@/components/Navigation/TheFooter';
 
 export default {
-  middleware: 'app',
   components: {
     TheBreadCrumbView,
     TheMainSection,
