@@ -2,7 +2,7 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      {{ breadcrumbs.name }}
+      <!-- {{ baseUrl }} -->
       <small> {{ breadcrumbs.description }} </small>
     </h1>
     <ol class="breadcrumb">
@@ -17,14 +17,23 @@
   </section>
 </template>
 <script>
+import { mapGetters, mapMutations, mapActions } from 'vuex';
+
 export default {
   name: 'TheBreadCrumbView',
-  middleware: 'app',
 
-  props: {
-    breadcrumbs: {
-      type: Object,
-      required: true,
+  computed: {
+    ...mapGetters({
+      breadcrumbs: 'breadcrumbs',
+    }),
+  },
+  mounted() {
+    this.setBreadcrumbs();
+  },
+  methods: {
+    setBreadcrumbs() {
+      console.log('breadcrumbs');
+      this.$store.dispatch('setBreadCrumbs');
     },
   },
 };

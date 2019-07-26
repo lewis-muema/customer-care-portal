@@ -19,7 +19,7 @@
     style="font-size: 13px;"
     @click="load_lower_bit"
   >
-    <td>bbb {{ orders }}</td>
+    <td>bbb</td>
     <td>
       <div class="min_checky"></div>
       <span id="tip_order_AC2728669-I1C" data-toggle="tooltip" title=""
@@ -58,18 +58,57 @@
   </tr>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'TheMainRowComponent',
+  data() {
+    return { orderObject: null };
+  },
   computed: {
-    ...mapGetters({ orders: '$_orders/orders' }),
+    ...mapGetters({ orderDetails: '$_orders/orderDetails' }),
   },
 
   methods: {
+    ...mapMutations({
+      setOrdersObject: '$_orders/setOrdersObject',
+    }),
+    ...mapActions({
+      requestInitialData: '$_orders/requestInitialData',
+    }),
+    doInitialOrderRequest() {
+      const payload = {
+        channel: 'customer_support',
+        data_set: 'delivery',
+        delivery_default: true,
+        delivery_status: 1,
+        delivery_Orderstatus: 1,
+        between_dates: '',
+        delivery_rider: '',
+        delivery_copid: '',
+        delivery_userid: '',
+        request_id: 11,
+        country_code: ['KE'],
+        app: 'BACKEND_CUSTOMERS_APP',
+        endpoint: 'sendy/orders',
+      };
+      this.$store.dispatch('$_orders/requestInitialData', payload);
+    },
+
+    // this.requestInitialData(payload)
+    //   .then(response => {
+    //     this.setOrdersObject(response.values);
+    //     console.log(this.setOrdersObject(response));
+    //   })
+    //   .catch(e => context.error());
+
     load_lower_bit() {
       console.log('joyce');
     },
+  },
+  // eslint-disable-next-line vue/order-in-components
+  mounted() {
+    this.doInitialOrderRequest();
   },
 };
 </script>

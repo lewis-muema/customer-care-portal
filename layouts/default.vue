@@ -34,7 +34,6 @@ export default {
       class: 'hold-transition skin-blue sidebar-mini  sidebar-collapse',
     },
   },
-  middleware: 'app',
   computed: {
     breadcrumbs() {
       return this.$store.getters.breadcrumbs;
