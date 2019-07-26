@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import axios from 'axios';
-import orders from './modules/orders';
+// import orders from './modules/orders';
 
 import * as actions from './actions';
 import * as getters from './getters';
