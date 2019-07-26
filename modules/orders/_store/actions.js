@@ -1,15 +1,22 @@
 export default {
+  // requestInitialData({ commit, dispatch }, payload) {
+  //   return new Promise((resolve, reject) => {
+  //     dispatch('requestAxiosPost', payload, { root: true })
+  //       .then
+  //       // response => {
+  //       //   resolve(response.data);
+  //       // },
+  //       // error => {
+  //       //   reject(error);
+  //       // },
+  //       ();
+  //   });
+  // },
   requestInitialData({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
-      dispatch('requestAxiosPost', payload, { root: true });
-      // .then(
-      //   (response) => {
-      //     resolve(response.data);
-      //   },
-      //   (error) => {
-      //     reject(error);
-      //   },
-      // );
+      dispatch('requestAxiosPost', payload, { root: true }).then(
+        console.log(response),
+      );
     });
   },
 };

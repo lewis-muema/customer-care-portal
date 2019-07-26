@@ -4,19 +4,19 @@ export const customConfig = {
     base_url: 'http://localhost:3030/',
     private_api: 'https://auth.sendyit.com/parcel/',
     positions: 'https://auth.sendyit.com/positions/',
-    backend_customer_app: 'https://authtest.sendyit.com/customers/',
+    BACKEND_CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
   },
   testing: {
     base_url: 'https://caretest.sendyit.com/customer/',
-    backend_customer_app: 'https://authtest.sendyit.com/customers/',
+    BACKEND_CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
   },
   beta: {
     base_url: 'https://beta-care.sendyit.com/customer/',
-    backend_customer_app: 'https://auth.sendyit.com/customers/',
+    BACKEND_CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
   },
   production: {
     base_url: 'https://care.sendyit.com/customer/',
-    backend_customer_app: 'https://auth.sendyit.com/customers/',
+    BACKEND_CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
   },
   // general: {
   backend_key: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
