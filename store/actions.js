@@ -22,7 +22,7 @@ export default {
     if (payload.app === 'BACKEND_CUSTOMERS_APP') {
       payload.endpoint = `${payload.endpoint}?apikey=${apikey}`;
     }
-    const config = {};
+    let config = {};
 
     // check if payload is a string here and change the content type
     if ('params' in payload) {
@@ -41,24 +41,49 @@ export default {
     const jwtToken = localStorage.getItem('jwtToken');
     const requestedPayload = payload.endpoint;
     const externalEndpoints = ['sign_up_check', 'sign_in'];
-
-    // if (
-    //   /^[\],:{}\s]*$/.test(
-    //     payload.values
-    //       .replace(/\\["\\bfnrtu]/g, '@')
-    //       .replace(
-    //         /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+]?\d+)?/g,
-    //         ']',
-    //       )
-    //       .replace(/(?:^|:|,)(?:\s*\[)+/g, ''),
-    //   )
-    // ) {
-    //   console.log('hree');
-    // } else {
-    //   console.log('there');
-    // }
-
-    console.log(payload);
+    // set content type to json
+    if (externalEndpoints.includes(requestedPayload)) {
+      config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+    } else if (typeof jwtToken !== 'undefined' && jwtToken !== null) {
+      config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: jwtToken,
+        },
+      };
+    } else {
+      const notification = {
+        title: 'Your session has expired!',
+        level: 2,
+        message: 'You will be redirected to the login page after 5 seconds.',
+      };
+      // !!!!FIX ME :: set notifications here
+    }
+    return new Promise((resolve, reject) => {
+      axios.post(`${url}${payload.endpoint}`, payload.values, config).then(
+        response => {
+          if (response.data === 401 || response.data === 403) {
+            // !!!!FIX ME :: set notifications here
+            const notification = {
+              title: 'Something went wrong!',
+              level: 2,
+              message: 'Please log out and log in again.',
+            };
+            commit('setNotification', notification);
+            commit('setNotificationStatus', true);
+          } else {
+            resolve(response);
+          }
+        },
+        error => {
+          reject(error);
+        },
+      );
+    });
   },
 
   setBreadCrumbs({ commit }) {

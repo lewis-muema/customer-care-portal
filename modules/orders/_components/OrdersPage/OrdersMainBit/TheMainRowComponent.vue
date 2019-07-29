@@ -19,7 +19,7 @@
     style="font-size: 13px;"
     @click="load_lower_bit"
   >
-    <td>bbb</td>
+    <td>bbb {{ ordersData }}</td>
     <td>
       <div class="min_checky"></div>
       <span id="tip_order_AC2728669-I1C" data-toggle="tooltip" title=""
@@ -66,7 +66,11 @@ export default {
     return { orderObject: null };
   },
   computed: {
-    ...mapGetters({ orderDetails: '$_orders/orderDetails' }),
+    ...mapGetters({
+      orderDetails: '$_orders/orderDetails',
+      ordersData: '$_orders/getOrders',
+    }),
+    // console.log('gfdsdfg');
   },
 
   methods: {
@@ -92,9 +96,15 @@ export default {
         app: 'BACKEND_CUSTOMERS_APP',
         endpoint: 'sendy/orders',
       };
-      this.$store.dispatch('$_orders/requestInitialData', payload);
+      const fullPayload = {
+        values: payload,
+        vm: this,
+        app: 'BACKEND_CUSTOMERS_APP',
+        endpoint: 'sendy/orders',
+      };
+      this.$store.dispatch('$_orders/requestInitialData', fullPayload);
     },
-
+    // getOrders
     // this.requestInitialData(payload)
     //   .then(response => {
     //     this.setOrdersObject(response.values);

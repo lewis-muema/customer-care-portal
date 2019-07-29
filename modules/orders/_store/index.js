@@ -5,7 +5,7 @@ import mutations from './mutations';
 
 const state = {
   orderDetails: { orderNo: 'joy' },
-  orders: null,
+  orders: [],
   order_request_object: null,
 };
 
