@@ -1,3 +1,5 @@
+import { url } from 'inspector';
+
 // eslint-disable-next-line import/prefer-default-export
 export const customConfig = {
   development: {
@@ -17,6 +19,11 @@ export const customConfig = {
   production: {
     base_url: 'https://care.sendyit.com/customer/',
     backend_customer_app: 'https://auth.sendyit.com/customers/',
+  },
+  rabbitMQ: {
+    base_url: 'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=',
+    username: 'staging',
+    password: '0FAHmQQmjfsIXdro',
   },
   // general: {
   backend_key: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
