@@ -1,7 +1,22 @@
+import 'isomorphic-fetch';
+import PouchHttp from 'pouchdb-adapter-http';
+
 const bodyParser = require('body-parser');
 const webpack = require('webpack');
+const PouchDB = require('pouchdb-browser');
+// const PouchFind = require('pouchdb-find');
+
 const customConfig = require('./config/custom');
 
+// PouchDB.plugin(PouchFind);
+
+// PouchDB.plugin(PouchHttp);
+
+// const db = new PouchDB('my_database');
+// console.log('pouchdb', db.adapter);
+// PouchDB.plugin(require('pouchdb-adapter-idb'));
+
+// PouchDB.plugin(PouchHttp);
 // const customConfig = require('config/config');
 // const config = require('./config/custom');
 
@@ -105,11 +120,17 @@ export default {
     '@assets/style/custom.css',
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
+    'aos/dist/aos.css',
   ],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['plugins/date-filter.js'],
+  plugins: [
+    'plugins/date-filter.js',
+    // '@/plugins/aos.js',
+    { src: '~plugins/vue-infinite-scroll.js', ssr: false },
+    { src: '~plugins/aos.js', ssr: false },
+  ],
   /*
    ** Nuxt.js modules
    */
@@ -117,6 +138,7 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
+    'nuxt-pouch',
   ],
   /*
    ** Axios module configuration
