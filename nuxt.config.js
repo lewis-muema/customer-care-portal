@@ -1,3 +1,5 @@
+import 'isomorphic-fetch';
+
 const bodyParser = require('body-parser');
 const customConfig = require('./config/custom');
 

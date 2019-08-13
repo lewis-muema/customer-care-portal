@@ -16,110 +16,121 @@
         <div id="initial_load_box">Requesting for orders ...</div>
       </td>
     </tr>
-    <tr
-      v-for="order in orders"
-      :key="order.order_no"
-      :class="determineOrderColor(order.time_placed)"
-    >
-      <td>
-        <span
-          :id="`tip_order_${order.order_no}`"
-          data-toggle="tooltip"
-          title=""
-        >
+    <template v-for="order in orders">
+      <tr
+        :key="order.order_no"
+        :class="determineOrderColor(order.time_placed)"
+        @click="viewOrder(order.order_no)"
+      >
+        <td>
           <span
-            :id="`order_indicator_${order.order_no}`"
-            :class="`label ${order.order_status}_ind`"
+            :id="`tip_order_${order.order_no}`"
+            data-toggle="tooltip"
+            title=""
           >
-            {{ order.order_status }}
+            <span
+              :id="`order_indicator_${order.order_no}`"
+              :class="`label ${order.order_status}_ind`"
+            >
+              {{ order.order_status }}
+            </span>
           </span>
-        </span>
-      </td>
-      <td v-html="smartify_display(order.client_name, 20)">
-        <span
-          v-if="order.pay_cash_on_delivery"
-          title="Cash"
-          class="badge"
-          style="float:right; background-color: transparent;"
-        >
-          <i class="fa fa-fw fa-money" style=" color:green;"></i
-        ></span>
-        <span
-          v-if="order.price_type === 'Standard'"
-          title="Standard"
-          class="badge bg-aqua"
-          style="float:right;"
-        >
-          s
-        </span>
-      </td>
-      <td>
-        {{ order.rider_name }}
-        <span style="float:right;">
-          <span> {{ vendorLabels[order.vendor_type_id] }}</span>
-          &nbsp;
-          <img
-            :src="
-              'https://images.sendyit.com/web_platform/vendor_type/side/v2/' +
-                order.vendor_type_id +
-                '.svg'
-            "
-            height="14"
-            style="float: right; image-rendering: auto;height:18px"
-          />
-        </span>
-      </td>
-      <td>
-        {{ getFormattedDate(order.time_placed, 'hh.mm a DD/MM/YYYY') }}
-        <span
-          v-if="compareDates(order.time_placed)"
-          title="Scheduled for tomorrow"
-          class="fa fa-clock-o pull-right"
-          style="color:deeppink; font-weight:100;"
-        >
-        </span>
-      </td>
-      <td v-html="smartify_display(order.from_name, 30)"></td>
-      <td v-html="smartify_display(order.to_name, 30)"></td>
-      <td>
-        {{
-          displayAmount(
-            order.order_currency,
-            order.order_amount,
-            order.vendor_type_id,
-            order.fixed_cost,
-            order.customer_min_amount,
-            order.confirm_status,
-          )
-        }}
-      </td>
-      <td>
-        {{
-          displayAmount(
-            order.order_currency,
-            order.rider_amount,
-            order.vendor_type_id,
-            order.fixed_cost,
-            order.customer_min_amount,
-            order.confirm_status,
-          )
-        }}
-        <span
-          title="showCity(order.city)"
-          class="badge bg-aqua "
-          style="float: right;"
-          >{{ cityAbbrev[showCity(order.city)] }}
-        </span>
-        <span style="float: right;"> &nbsp; </span>
-        <span title="Corporate Name" class="badge bg-aqua pull-right">
-          {{ order.distance_read }} km</span
-        >
-      </td>
-    </tr>
+        </td>
+        <td v-html="smartify_display(order.client_name, 20)">
+          <span
+            v-if="order.pay_cash_on_delivery"
+            title="Cash"
+            class="badge"
+            style="float:right; background-color: transparent;"
+          >
+            <i class="fa fa-fw fa-money" style=" color:green;"></i
+          ></span>
+          <span
+            v-if="order.price_type === 'Standard'"
+            title="Standard"
+            class="badge bg-aqua"
+            style="float:right;"
+          >
+            s
+          </span>
+        </td>
+        <td>
+          {{ order.rider_name }}
+          <span style="float:right;">
+            <span> {{ vendorLabels[order.vendor_type_id] }}</span>
+            &nbsp;
+            <img
+              :src="
+                'https://images.sendyit.com/web_platform/vendor_type/side/v2/' +
+                  order.vendor_type_id +
+                  '.svg'
+              "
+              height="14"
+              style="float: right; image-rendering: auto;height:18px"
+            />
+          </span>
+        </td>
+        <td>
+          {{ getFormattedDate(order.time_placed, 'hh.mm a DD/MM/YYYY') }}
+          <span
+            v-if="compareDates(order.time_placed)"
+            title="Scheduled for tomorrow"
+            class="fa fa-clock-o pull-right"
+            style="color:deeppink; font-weight:100;"
+          >
+          </span>
+        </td>
+        <td v-html="smartify_display(order.from_name, 30)"></td>
+        <td v-html="smartify_display(order.to_name, 30)"></td>
+        <td>
+          {{
+            displayAmount(
+              order.order_currency,
+              order.order_amount,
+              order.vendor_type_id,
+              order.fixed_cost,
+              order.customer_min_amount,
+              order.confirm_status,
+            )
+          }}
+        </td>
+        <td>
+          {{
+            displayAmount(
+              order.order_currency,
+              order.rider_amount,
+              order.vendor_type_id,
+              order.fixed_cost,
+              order.customer_min_amount,
+              order.confirm_status,
+            )
+          }}
+          <span
+            title="showCity(order.city)"
+            class="badge bg-aqua "
+            style="float: right;"
+            >{{ cityAbbrev[showCity(order.city)] }}
+          </span>
+          <span style="float: right;"> &nbsp; </span>
+          <span title="Corporate Name" class="badge bg-aqua pull-right">
+            {{ order.distance_read }} km</span
+          >
+        </td>
+      </tr>
+      <tr
+        class="order_row_home_lower"
+        :key="`details_${order.order_no}`"
+        :id="`child_row_${order.order_no}`"
+        v-if="show === order.order_no"
+      >
+        <TheLowerSlideComponent :orderno="order.order_no" />
+      </tr>
+    </template>
   </tbody>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+
 import moment from 'moment';
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
@@ -130,6 +141,8 @@ export default {
   name: 'TheRowComponent',
   components: {
     // TheLowerSlideComponent,
+    TheLowerSlideComponent: () =>
+      import('../OrdersLowerBit/TheLowerSlideComponent'),
   },
   data() {
     return {
@@ -140,6 +153,7 @@ export default {
       ordersDB: process.browser ? new PouchDB('orders') : '',
       newData: null,
       busy: false,
+      show: false,
     };
   },
   computed: {
@@ -334,6 +348,11 @@ export default {
         return myString;
       }
     },
+    viewOrder(orderNo) {
+      this.show = orderNo;
+
+      // console.log(this.componentName);
+    },
   },
 };
 </script>
@@ -387,5 +406,8 @@ export default {
 .pull_attention {
   background-color: rgba(197, 2, 2, 0.18);
   border: 1px solid #f4f4f4;
+}
+table {
+  cursor: pointer;
 }
 </style>

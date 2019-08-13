@@ -1,22 +1,18 @@
 <template>
-  <tr
-    class="order_row_home_lower hidden"
-    :id="`child_row_${orderDetails.orderNo}`"
+  <td
+    colspan="9"
+    class="order_view_lower_cell"
+    :id="`order_view_lower${orderNo}`"
   >
-    <td
-      colspan="9"
-      class="order_view_lower_cell"
-      :id="`order_view_lower${orderDetails.orderNo}`"
-    >
-      <div class="lower_slide_bit" :id="`bumba_${orderDetails.orderNo}`">
-        <div class="row">
-          <TheSideComponent :order-details="orderDetails" />
-          <TheMainComponent :order-details="orderDetails" />
-        </div>
+    <div class="lower_slide_bit" :id="`bumba_${orderNo}`">
+      <div class="row">
+        <TheSideComponent :order-no="orderNo" />
+        <TheMainComponent :order-no="orderNo" />
       </div>
-    </td>
-  </tr>
+    </div>
+  </td>
 </template>
+
 <script>
 import TheSideComponent from './LowerSideBar/TheSideComponent';
 import TheMainComponent from './LowerMainBar/TheMainComponent';
@@ -28,10 +24,15 @@ export default {
     TheMainComponent,
   },
   props: {
-    orderDetails: {
-      type: Object,
+    orderno: {
+      type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      orderNo: this.order,
+    };
   },
 };
 </script>

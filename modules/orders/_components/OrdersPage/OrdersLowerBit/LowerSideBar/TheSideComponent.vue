@@ -1,11 +1,11 @@
 <template>
   <div class="col-md-4">
     <div class="box box-primary lower_sider_bar">
-      <TheSideMapComponent :order-details="orderDetails" />
+      <!-- <TheSideMapComponent :order-details="orderDetails" />
       <TheRiderViewComponent />
-      <TheLogsComponent :order-details="orderDetails" />
+      <TheLogsComponent :order-details="orderDetails" /> -->
 
-      {{ orderDetails }}
+      <!-- {{ orderDetails }} -->
     </div>
   </div>
 </template>
@@ -18,16 +18,11 @@ import TheRiderViewComponent from './TheRiderViewComponent';
 export default {
   name: 'TheSideComponent',
   components: {
-    TheSideMapComponent,
-    TheRiderViewComponent,
-    TheLogsComponent,
+    // TheSideMapComponent,
+    // TheRiderViewComponent,
+    // TheLogsComponent,
   },
-  props: {
-    orderDetails: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: {},
 };
 </script>
 
