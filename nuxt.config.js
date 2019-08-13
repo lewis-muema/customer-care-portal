@@ -1,35 +1,5 @@
-import 'isomorphic-fetch';
-import PouchHttp from 'pouchdb-adapter-http';
-
 const bodyParser = require('body-parser');
-const webpack = require('webpack');
-const PouchDB = require('pouchdb-browser');
-// const PouchFind = require('pouchdb-find');
-
 const customConfig = require('./config/custom');
-
-// PouchDB.plugin(PouchFind);
-
-// PouchDB.plugin(PouchHttp);
-
-// const db = new PouchDB('my_database');
-// console.log('pouchdb', db.adapter);
-// PouchDB.plugin(require('pouchdb-adapter-idb'));
-
-// PouchDB.plugin(PouchHttp);
-// const customConfig = require('config/config');
-// const config = require('./config/custom');
-
-// environment
-// if (process.env.DOCKER_ENV === undefined) {
-//   app.set('DOCKER_ENV', 'development');
-// } else {
-//   app.set('DOCKER_ENV', process.env.DOCKER_ENV);
-// }
-// set environment to a global
-// global.environment = app.get('DOCKER_ENV');
-
-// console.log(process.env.DOCKER_ENV);
 
 export default {
   mode: 'universal',
