@@ -49,14 +49,6 @@ export default {
       orderColumns: '$_orders/getOrderColumns',
       columns: 'getOrderColumns',
     }),
-    value: {
-      get() {
-        return this.$store.getters.value;
-      },
-      set(value) {
-        return this.$store.dispatch('updateValue', value);
-      },
-    },
   },
   created() {
     this.registerOrdersStore();
@@ -70,9 +62,6 @@ export default {
       if (!moduleIsRegistered) {
         this.$store.registerModule('$_orders', order_store);
       }
-    },
-    updatevalue(event) {
-      this.store.dispatch('updateValue', event.target.value);
     },
   },
 };

@@ -1,40 +1,7 @@
-import Vuex from 'vuex';
-import axios from 'axios';
 import Apix from '@agog/apix';
-// import fetch from 'node-fetch';
-// import PouchDB from 'pouchdb-browser';
-// import * as pouchVue from 'pouch-vue';
-// import { fetch as fetchPolyfill } from 'whatwg-fetch';
-import PouchHttp from 'pouchdb-adapter-http';
-
-import PouchDB from 'pouchdb-browser';
-import PouchFind from 'pouchdb-find';
-import * as pouchVue from 'pouch-vue';
-
-// import orders from './modules/orders';
 import custom_actions from './actions';
 import custom_getters from './getters';
 import custom_mutations from './mutations';
-
-const environment = process.env.DOCKER_ENV;
-const customConfigsVar = process.env.customConfigs.customConfig;
-const customConfig = customConfigsVar[environment];
-
-// PouchDB.plugin(require('pouchdb-find'));
-// PouchDB.plugin(require('pouchdb-live-find'));
-
-// PouchDB.plugin(PouchDBFind);
-
-// Vue.use(pouchVue, {
-//   pouch: PouchDB, // optional if `PouchDB` is available on the global object
-//   defaultDB: 'remoteDbName', // this is used as a default connect/disconnect database
-//   optionsDB: {},
-// });
-// if (process.browser) {
-//   const ordersDB = new PouchDB('orders');
-// }
-
-console.log('customConfig', customConfig.PRIVATE_API);
 
 const apix = new Apix({
   prefix: 'https://adonistest.sendyit.com',
@@ -57,8 +24,29 @@ export default {
       ...apix.getState(),
       token: null,
       breadcrumbs: [],
-      value: 0,
-      orderColumns: [],
+      orderColumns: ['dfcsdfs'],
+      delayLabels: {
+        pending: 'corfirmation',
+        confirmed: ' pickup',
+        picked: 'delivery',
+      },
+      cityAbbrev: {
+        Nairobi: 'nbi',
+        Kisumu: 'ksm',
+        Mombasa: 'msa',
+        Other: 'other',
+      },
+      vendorLabels: {
+        6: '3T',
+        10: '5T',
+        13: '7T',
+        14: '10T',
+        17: '14T',
+        18: '20T',
+        19: '24T',
+        20: '28T',
+        25: 'F',
+      },
     };
   },
 
@@ -75,4 +63,3 @@ export default {
     ...custom_actions,
   },
 };
-// console.log('actions', actions);

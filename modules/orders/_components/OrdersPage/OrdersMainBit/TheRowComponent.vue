@@ -35,7 +35,7 @@
           </span>
         </span>
       </td>
-      <td v-html="smartify_display(order.client_name, 25)">
+      <td v-html="smartify_display(order.client_name, 20)">
         <span
           v-if="order.pay_cash_on_delivery"
           title="Cash"
@@ -53,11 +53,10 @@
           s
         </span>
       </td>
-      <td v-html="smartify_display(order.rider_name, 25)">
+      <td>
+        {{ order.rider_name }}
         <span style="float:right;">
-          <span v-if="vendorLabels[order.vendor_type_id]">{{
-            vendorLabels[order.vendor_type_id]
-          }}</span>
+          <span> {{ vendorLabels[order.vendor_type_id] }}</span>
           &nbsp;
           <img
             :src="
@@ -120,13 +119,10 @@
   </tbody>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import moment from 'moment';
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
-import objectMerge from 'object-merge';
-import mergeByKey from 'array-merge-by-key';
-import _ from 'lodash';
 
 PouchDB.plugin(PouchFind);
 
@@ -144,32 +140,11 @@ export default {
       ordersDB: process.browser ? new PouchDB('orders') : '',
       newData: null,
       busy: false,
-      delayLabels: {
-        pending: 'corfirmation',
-        confirmed: ' pickup',
-        picked: 'delivery',
-      },
-      cityAbbrev: {
-        Nairobi: 'nbi',
-        Kisumu: 'ksm',
-        Mombasa: 'msa',
-        Other: 'other',
-      },
-      vendorLabels: {
-        6: '3T',
-        10: '5T',
-        13: '7T',
-        14: '10T',
-        17: '14T',
-        18: '20T',
-        19: '24T',
-        20: '28T',
-        25: 'F',
-      },
     };
   },
   computed: {
     ...mapGetters(['getOrders']),
+    ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
     },
