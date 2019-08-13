@@ -2,7 +2,10 @@ export default {
   getOrders(state) {
     return state.orders;
   },
-  orderDetails(state) {
-    return state.orderDetails;
+  getOrderColumns(state) {
+    return state.orderColumns;
+  },
+  getSampleData(state) {
+    return state.sampleData;
   },
 };

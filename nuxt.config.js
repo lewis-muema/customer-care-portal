@@ -1,20 +1,5 @@
 const bodyParser = require('body-parser');
-const webpack = require('webpack');
 const customConfig = require('./config/custom');
-
-// const customConfig = require('config/config');
-// const config = require('./config/custom');
-
-// environment
-// if (process.env.DOCKER_ENV === undefined) {
-//   app.set('DOCKER_ENV', 'development');
-// } else {
-//   app.set('DOCKER_ENV', process.env.DOCKER_ENV);
-// }
-// set environment to a global
-// global.environment = app.get('DOCKER_ENV');
-
-// console.log(process.env.DOCKER_ENV);
 
 export default {
   mode: 'universal',
@@ -105,11 +90,17 @@ export default {
     '@assets/style/custom.css',
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
+    'aos/dist/aos.css',
   ],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['plugins/date-filter.js'],
+  plugins: [
+    'plugins/date-filter.js',
+    // '@/plugins/aos.js',
+    { src: '~plugins/vue-infinite-scroll.js', ssr: false },
+    { src: '~plugins/aos.js', ssr: false },
+  ],
   /*
    ** Nuxt.js modules
    */
@@ -117,6 +108,7 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
+    'nuxt-pouch',
   ],
   /*
    ** Axios module configuration

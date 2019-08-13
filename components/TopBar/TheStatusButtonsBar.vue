@@ -3,7 +3,7 @@
     <span
       id="pending_count"
       class="label label-danger active-pending"
-      onclick="toggle_show('pending')"
+      @click="toggle_show('pending')"
     >
       <label id="pending_orders"> 0 </label> Pending
     </span>
@@ -12,7 +12,7 @@
     <span
       id="confirmed_count"
       class="label label-warning active-confirmed"
-      onclick="toggle_show('confirmed')"
+      @click="toggle_show('confirmed')"
     >
       <label id="confirmed_orders"> 0 </label> Confirmed
     </span>
@@ -21,7 +21,7 @@
     <span
       id="transit_count"
       class="label label-success active-transit"
-      onclick="toggle_show('transit')"
+      @click="toggle_show('transit')"
     >
       <label id="transit_orders"> 0 </label> In Transit
     </span>
@@ -30,5 +30,41 @@
 <script>
 export default {
   name: 'TheStatusButtonsBar',
+  data() {
+    return {
+      pending_show: 1,
+      confirmed_show: 1,
+      transit_show: 1,
+      request_id_init: null,
+    };
+  },
+  mounted() {
+    // this.toggle_show();
+  },
+  methods: {
+    toggle_show(status) {
+      const showStatus = `${status}_show`;
+      const set = this.pending_show;
+      const element = `${status}_count`;
+      const css = `active-${status}`;
+      console.log('testing status', this.showStatus);
+      $(`#${element}`).toggleClass(css);
+    },
+    // toggle_show(status) {
+    //   const set = `${status}_show`;
+    //   const element = `${status}_count`;
+    //   const css = `active-${status}`;
+    //   console.log('testing status');
+    //   // const func = `display_data_${status}`;
+    //   // if (window[set] !== 1) {
+    //   //   hide_data(status);
+    //   //   window[set] = 1;
+    //   // } else {
+    //   //   this[func](db, 'no glow', results_init, status, request_id_init);
+    //   //   window[set] = 0;
+    //   // }
+    //   // $(`#${element}`).toggleClass(css);
+    // },
+  },
 };
 </script>
