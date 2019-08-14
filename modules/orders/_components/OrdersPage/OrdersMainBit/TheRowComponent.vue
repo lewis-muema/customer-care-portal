@@ -61,9 +61,7 @@
             &nbsp;
             <img
               :src="
-                'https://images.sendyit.com/web_platform/vendor_type/side/v2/' +
-                  order.vendor_type_id +
-                  '.svg'
+                `https://images.sendyit.com/web_platform/vendor_type/side/v2/${order.vendor_type_id}.svg`
               "
               height="14"
               style="float: right; image-rendering: auto;height:18px"

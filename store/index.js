@@ -3,6 +3,12 @@ import custom_actions from './actions';
 import custom_getters from './getters';
 import custom_mutations from './mutations';
 
+const environment = process.env.DOCKER_ENV;
+const customConfigsVar = process.env.customConfigs.customConfig;
+const customConfig = customConfigsVar[environment];
+
+// console.log('configs', vuexContext);
+
 const apix = new Apix({
   prefix: 'https://adonistest.sendyit.com',
   params: {
@@ -24,6 +30,7 @@ export default {
       ...apix.getState(),
       token: null,
       breadcrumbs: [],
+      customConfig,
       orderColumns: ['dfcsdfs'],
       delayLabels: {
         pending: 'corfirmation',

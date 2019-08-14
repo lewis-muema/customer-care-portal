@@ -1,10 +1,6 @@
 // global functions (es6)
 import axios from 'axios';
 
-const environment = process.env.DOCKER_ENV;
-const customConfigsVar = process.env.customConfigs.customConfig;
-const customConfig = customConfigsVar[environment];
-
 export default {
   setBreadCrumbs({ commit }) {
     const breadcrumbsObject = {

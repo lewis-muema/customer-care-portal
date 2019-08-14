@@ -6,14 +6,16 @@
   >
     <div class="lower_slide_bit" :id="`bumba_${orderNo}`">
       <div class="row">
-        <TheSideComponent :order-no="orderNo" />
-        <TheMainComponent :order-no="orderNo" />
+        <TheSideComponent :order="orderNo" />
+        <TheMainComponent :order="orderNo" />
       </div>
     </div>
   </td>
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions } from 'vuex';
+
 import TheSideComponent from './LowerSideBar/TheSideComponent';
 import TheMainComponent from './LowerMainBar/TheMainComponent';
 
@@ -33,6 +35,18 @@ export default {
     return {
       orderNo: this.order,
     };
+  },
+  mounted() {
+    console.log('customConfig', this.initialOrderRequest);
+  },
+  methods: {
+    ...mapActions({
+      request_single_order: '$_orders/request_single_order',
+    }),
+    initialOrderRequest() {
+      this.request_single_order();
+      this.request_single_order('ggffg');
+    },
   },
 };
 </script>

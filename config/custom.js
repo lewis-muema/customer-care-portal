@@ -5,18 +5,22 @@ export const customConfig = {
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
     POSITIONS: 'https://auth.sendyit.com/positions/',
     BACKEND_CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
+    GOOGL_API_KEY: 'AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI',
   },
   testing: {
     BASE_URL: 'https://caretest.sendyit.com/customer/',
     BACKEND_CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
+    GOOGL_API_KEY: 'AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI',
   },
   beta: {
     BASE_URL: 'https://beta-care.sendyit.com/customer/',
     BACKEND_CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
+    GOOGL_API_KEY: 'AIzaSyChEOAbj_2URQWRkL8N0p07vk6foBfHXGI',
   },
   production: {
     BASE_URL: 'https://care.sendyit.com/customer/',
     BACKEND_CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
+    GOOGL_API_KEY: 'AIzaSyChEOAbj_2URQWRkL8N0p07vk6foBfHXGI',
   },
   // general: {
   backend_key: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
