@@ -4,7 +4,16 @@ import getters from './getters';
 import mutations from './mutations';
 
 const state = {
-  orderDetails: { orderNo: 'joy' },
+  orderColumns: [
+    'Status',
+    'Client',
+    'Rider',
+    'Time',
+    'Pick up',
+    'Delivery',
+    'Amount',
+    'Rider Amount',
+  ],
   orders: [],
   order_request_object: null,
 };

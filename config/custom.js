@@ -3,21 +3,21 @@ import { url } from 'inspector';
 // eslint-disable-next-line import/prefer-default-export
 export const customConfig = {
   development: {
-    base_url: 'http://localhost:3030/',
-    private_api: 'https://auth.sendyit.com/parcel/',
-    positions: 'https://auth.sendyit.com/positions/',
+    BASE_URL: 'http://localhost:3030/',
+    PRIVATE_API: 'https://auth.sendyit.com/parcel',
+    POSITIONS: 'https://auth.sendyit.com/positions/',
     BACKEND_CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
   },
   testing: {
-    base_url: 'https://caretest.sendyit.com/customer/',
+    BASE_URL: 'https://caretest.sendyit.com/customer/',
     BACKEND_CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
   },
   beta: {
-    base_url: 'https://beta-care.sendyit.com/customer/',
+    BASE_URL: 'https://beta-care.sendyit.com/customer/',
     BACKEND_CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
   },
   production: {
-    base_url: 'https://care.sendyit.com/customer/',
+    BASE_URL: 'https://care.sendyit.com/customer/',
     BACKEND_CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
   },
   rabbitMQ: {

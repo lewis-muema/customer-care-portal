@@ -1,11 +1,26 @@
 <template>
-  <tbody id="table_body_geg">
-    <tr v-if="orders.length === 0" id="initial_data_request_show">
+  <tbody
+    id="table_body_geg"
+    v-infinite-scroll=""
+    infinite-scroll-disabled="busy"
+    infinite-scroll-distance="limit"
+  >
+    <tr
+      v-if="orders.length === 0"
+      id="initial_data_request_show"
+      data-aos="slide-up"
+      data-aos-offset="100"
+      data-aos-easing="ease-out-back"
+    >
       <td colspan="9">
         <div id="initial_load_box">Requesting for orders ...</div>
       </td>
     </tr>
-    <tr v-for="order in orders.data" :key="order.order_no">
+    <tr
+      v-for="order in orders"
+      :key="order.order_no"
+      :class="determineOrderColor(order.time_placed)"
+    >
       <td>
         <span
           :id="`tip_order_${order.order_no}`"
@@ -20,8 +35,7 @@
           </span>
         </span>
       </td>
-      <td>
-        {{ order.client_name }}
+      <td v-html="smartify_display(order.client_name, 20)">
         <span
           v-if="order.pay_cash_on_delivery"
           title="Cash"
@@ -42,9 +56,7 @@
       <td>
         {{ order.rider_name }}
         <span style="float:right;">
-          <span v-if="vendorLabels[order.vendor_type_id]">{{
-            vendorLabels[order.vendor_type_id]
-          }}</span>
+          <span> {{ vendorLabels[order.vendor_type_id] }}</span>
           &nbsp;
           <img
             :src="
@@ -58,7 +70,7 @@
         </span>
       </td>
       <td>
-        {{ getFormattedDate(order.time_placed) }}
+        {{ getFormattedDate(order.time_placed, 'hh.mm a DD/MM/YYYY') }}
         <span
           v-if="compareDates(order.time_placed)"
           title="Scheduled for tomorrow"
@@ -67,8 +79,8 @@
         >
         </span>
       </td>
-      <td>{{ order.from_name }}</td>
-      <td>{{ order.to_name }}</td>
+      <td v-html="smartify_display(order.from_name, 30)"></td>
+      <td v-html="smartify_display(order.to_name, 30)"></td>
       <td>
         {{
           displayAmount(
@@ -107,13 +119,10 @@
   </tbody>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import moment from 'moment';
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
-import objectMerge from 'object-merge';
-import mergeByKey from 'array-merge-by-key';
-import _ from 'lodash';
 
 PouchDB.plugin(PouchFind);
 
@@ -124,64 +133,47 @@ export default {
   },
   data() {
     return {
-      orders: {},
+      orders: [],
       bottom: false,
       nextPage: null,
+      orderColorClass: '#fff',
       ordersDB: process.browser ? new PouchDB('orders') : '',
       newData: null,
-      cityAbbrev: {
-        Nairobi: 'nbi',
-        Kisumu: 'ksm',
-        Mombasa: 'msa',
-        Other: 'other',
-      },
-      vendorLabels: {
-        6: '3T',
-        10: '5T',
-        13: '7T',
-        14: '10T',
-        17: '14T',
-        18: '20T',
-        19: '24T',
-        20: '28T',
-        25: 'F',
-      },
+      busy: false,
     };
   },
-  // pouch: {
-  //   // The simplest usage. queries all documents from the "todos" pouch database and assigns them to the "todos" vue property.
-  //   todos: {
-  //     /* empty selector */
-  //   },
-  // },
   computed: {
     ...mapGetters(['getOrders']),
+    ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
     },
   },
   watch: {
     async getOrders(ordersData) {
+      this.busy = true;
+
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
-      const storedOrders = await this.fetchOrders(); // fetch all stored data from pouchDB
-      const storedDataID = await this.updateOrders(storedOrders, ordersData); // store data pouchDB
-      console.log('updateDB', storedDataID);
-      const currentOrderData = await this.fetchSingleDBInstance(storedDataID);
-      console.log('stored', storedOrders);
-      console.log('returned', ordersData);
-      console.log('currentOrderData', currentOrderData);
+      const currentOrders = this.orders;
+      let currentOrdersData;
+      if (currentOrders.length === 0) {
+        currentOrdersData = this.orders;
+      } else {
+        currentOrdersData = this.orders;
+      }
+      const pagination = ordersData.pagination;
+      const newOrders = currentOrdersData.concat(ordersData.data);
+      this.busy = false;
 
-      // console.log('docID', docID);
-
-      return (this.orders = currentOrderData);
+      const storeData = await this.updateOrders(newOrders, pagination);
+      return (this.orders = newOrders);
     },
     bottom(bottom) {
       if (bottom) {
         this.setOrders({
           page: this.nextPage,
         });
-        console.log('bottom is here');
       }
     },
   },
@@ -192,10 +184,6 @@ export default {
       });
 
       this.destroyPouchDB();
-      //   window.addEventListener('beforeunload', () => {
-      //     // event.returnValue = 'Write something';
-      //     console.log('i am refreshing');
-      //   });
     }
   },
   mounted() {
@@ -206,8 +194,6 @@ export default {
       //     request_id: 11,
       //   },
     });
-
-    console.log('data', this.todos);
   },
   methods: {
     ...mapMutations({
@@ -230,9 +216,7 @@ export default {
           return this.ordersDB.bulkDocs(deleteDocs);
         });
     },
-    getFormattedDate(date) {
-      return moment(date).format('hh.mm a DD/MM/YYYY');
-    },
+
     saveOrders(orders) {
       return this.ordersDB.post(orders, (err, res) => {
         if (err) {
@@ -244,33 +228,24 @@ export default {
       });
     },
     // eslint-disable-next-line require-await
-    async updateOrders(storedOrders, requestedOrders) {
-      console.log('requestedOrders', requestedOrders);
-      const currentPage = requestedOrders.pagination.page;
+    async updateOrders(orders, pagination) {
+      const storedOrders = await this.fetchOrders(); // fetch all stored data from pouchDB
       let totalOrders;
       let rev = '';
-      let id = currentPage;
+      let id = 1;
       if (storedOrders.length > 0) {
-        totalOrders = storedOrders[0].doc.data;
-        totalOrders = this.addNewOrdersToStore(
-          storedOrders[0].doc.data,
-          requestedOrders.data,
-        );
         // eslint-disable-next-line no-underscore-dangle
         rev = `${storedOrders[0].doc._rev}`;
         // eslint-disable-next-line no-underscore-dangle
         id = `${storedOrders[0].id}`;
-      } else {
-        totalOrders = requestedOrders.data;
       }
       const storeData = {
-        data: totalOrders,
-        pagination: requestedOrders.pagination,
+        data: orders,
+        pagination,
         // eslint-disable-next-line no-underscore-dangle
         _id: `${id}`,
         _rev: `${rev}`,
       };
-      console.log('stored data to store', storeData);
       try {
         const res = await this.ordersDB.put(storeData);
         return res.id;
@@ -286,37 +261,35 @@ export default {
       const res = await this.ordersDB.get(ID);
       return res;
     },
-    addNewOrdersToStore(storedOrders, newOrders) {
-      for (let i = 0; i < newOrders.length; i++) {
-        storedOrders.push(newOrders[i]);
-      }
-      return storedOrders;
-    },
     bottomVisible() {
       const scrollY = window.scrollY;
-      //   console.log('scrollY', scrollY);
       const visible = document.documentElement.clientHeight;
-      //   console.log('visible', visible);
-      //   console.log('visible+scrollY', visible + scrollY);
-
       const pageHeight = document.documentElement.scrollHeight;
-      //   console.log('pageHeight', pageHeight);
-      //   console.log('pageHeight -2 ', pageHeight - 20);
-
       const bottomOfPage = visible + scrollY >= pageHeight;
-      //   console.log('bottomOfPage', bottomOfPage);
-
-      return bottomOfPage || pageHeight < visible;
+      return bottomOfPage || pageHeight - 100 < visible;
+    },
+    getFormattedDate(date, format) {
+      return moment(date).format(format);
     },
     compareDates(date) {
       let currentDate = new Date();
-      currentDate = moment(currentDate).format('YYYY-MM-DD');
-      const orderDate = moment(date).format('YYYY-MM-DD');
+      currentDate = this.getFormattedDate(currentDate, 'YYYY-MM-DD');
+      const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
 
       if (orderDate > currentDate) {
         return true;
       }
       return false;
+    },
+    determineOrderColor(date) {
+      const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
+      const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
+      // .pull_attention
+      let colorClass = 'tetst';
+      if (orderDate < currentDate) {
+        colorClass = 'pull_attention';
+      }
+      return colorClass;
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -344,15 +317,22 @@ export default {
     },
     showCity(city) {
       let cityName;
-      console.log('ttttttt', typeof cityName);
       if (city.id === 1 || city.id === 2 || city.id === 3) {
         cityName = city.name;
       } else {
         cityName = 'Other';
       }
-
-      // const cityDisplay = ``;
       return cityName;
+    },
+
+    smartify_display(myString, myLength) {
+      if (parseInt(myString.length) > myLength) {
+        const myTruncatedString = myString.substring(0, myLength);
+
+        return `<span data-toggle="tooltip" title="${myString}">${myTruncatedString}  ...  <span>`;
+      } else {
+        return myString;
+      }
     },
   },
 };
@@ -403,5 +383,9 @@ export default {
   line-height: 1.42857143;
   vertical-align: top;
   border-top: 1px solid #ddd;
+}
+.pull_attention {
+  background-color: rgba(197, 2, 2, 0.18);
+  border: 1px solid #f4f4f4;
 }
 </style>
