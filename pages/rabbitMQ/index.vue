@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="testConnection">Rabbit</button>
+    <!-- <button @click="testConnection">Rabbit</button> -->
     <div>
       <button @click="subscribe_to_queue">Subscribe Test</button>
     </div>
@@ -23,34 +23,19 @@ export default {
   data() {
     return {
       client: null,
+      stuff: '',
+    };
+    this.client.debug = function(str) {
+      console.log(str);
     };
   },
   methods: {
-    testConnection() {
-      var headers = {
-        login: 'staging',
-        passcode: '0FAHmQQmjfsIXdro',
-      };
-      var connectCallback = function() {
-        console.log('maybe');
-      };
-      var errorCallback = function() {
-        console.log('sure');
-      };
-      this.client.connect(headers, connectCallback, errorCallback);
-      console.log(Stomp);
-      console.log('we are here');
-    },
     subscribe_to_queue() {
       const exchangeStr = this.client.subscribe(
         '/exchange/order_actions/sendy.ordersactions.ke',
       );
       // const id2 = this.client.subscribe(exchangeStr);
-      this.client.debug = function(str) {
-        $('#debug').append(str + '\n');
-        console.log(this.client.debug);
-      };
-      console.log(exchangeStr);
+      // console.log(exchangeStr);
     },
   },
 
@@ -59,6 +44,18 @@ export default {
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT';
 
     this.client = Stomp.client(url);
+    const headers = {
+      login: 'staging',
+      passcode: '0FAHmQQmjfsIXdro',
+    };
+    const connectCallback = function() {
+      console.log('maybe');
+    };
+    const errorCallback = function() {
+      console.log('sure');
+    };
+    this.client.connect(headers, connectCallback, errorCallback);
+    // console.log(Stomp);
   },
 };
 </script>
