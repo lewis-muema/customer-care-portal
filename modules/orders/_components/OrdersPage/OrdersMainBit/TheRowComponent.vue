@@ -19,7 +19,7 @@
     <template v-for="order in orders">
       <tr
         :key="order.order_no"
-        :class="determineOrderColor(order.time_placed)"
+        :class="determineOrderColor(order.time_of_delivery)"
         @click="viewOrder(order.order_no)"
       >
         <td>
@@ -69,9 +69,9 @@
           </span>
         </td>
         <td>
-          {{ getFormattedDate(order.time_placed, 'hh.mm a DD/MM/YYYY') }}
+          {{ getFormattedDate(order.time_of_delivery, 'hh.mm a DD/MM/YYYY') }}
           <span
-            v-if="compareDates(order.time_placed)"
+            v-if="compareDates(order.time_of_delivery)"
             title="Scheduled for tomorrow"
             class="fa fa-clock-o pull-right"
             style="color:deeppink; font-weight:100;"
@@ -280,9 +280,9 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight;
       return bottomOfPage || pageHeight - 100 < visible;
     },
-    getFormattedDate(date, format) {
-      return moment(date).format(format);
-    },
+    // getFormattedDate(date, format) {
+    //   return moment(date).format(format);
+    // },
     compareDates(date) {
       let currentDate = new Date();
       currentDate = this.getFormattedDate(currentDate, 'YYYY-MM-DD');
@@ -337,15 +337,6 @@ export default {
       return cityName;
     },
 
-    smartify_display(myString, myLength) {
-      if (parseInt(myString.length) > myLength) {
-        const myTruncatedString = myString.substring(0, myLength);
-
-        return `<span data-toggle="tooltip" title="${myString}">${myTruncatedString}  ...  <span>`;
-      } else {
-        return myString;
-      }
-    },
     viewOrder(orderNo) {
       this.show = orderNo;
 
@@ -354,58 +345,3 @@ export default {
   },
 };
 </script>
-<style>
-.pending_ind {
-  background-color: #dd4b39 !important;
-}
-.Cancelled_ind {
-  background-color: purple !important;
-}
-.transit_ind {
-  background-color: #00a65a !important;
-}
-.confirmed_ind {
-  background-color: #f39c12 !important;
-}
-.delivered_ind {
-  background-color: #3c8dbc !important;
-}
-.picked_ind {
-  background-color: #3c8dbc !important;
-}
-.request_ind {
-  background-color: blueviolet !important;
-}
-.badge {
-  display: inline-block;
-  min-width: 10px;
-  padding: 3px 7px;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  background-color: #777;
-  border-radius: 10px;
-}
-.table > tbody > tr > td,
-.table > tbody > tr > th,
-.table > tfoot > tr > td,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > thead > tr > th {
-  padding: 8px;
-  line-height: 1.42857143;
-  vertical-align: top;
-  border-top: 1px solid #ddd;
-}
-.pull_attention {
-  background-color: rgba(197, 2, 2, 0.18);
-  border: 1px solid #f4f4f4;
-}
-table {
-  cursor: pointer;
-}
-</style>
