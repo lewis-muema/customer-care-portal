@@ -29,6 +29,16 @@ export default {
       },
       {
         src:
+          'https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js',
+        type: 'text/javascript',
+      },
+      {
+        src:
+          'https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js',
+        type: 'text/javascript',
+      },
+      {
+        src:
           'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js',
         type: 'text/javascript',
       },
