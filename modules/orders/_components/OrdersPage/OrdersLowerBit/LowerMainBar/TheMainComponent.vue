@@ -1,7 +1,7 @@
 <template>
   <div class="col-md-8">
     <TheOrderActionsComponent />
-    <TheOrderDetailsComponent />
+    <TheOrderDetailsComponent :order="orderDetails" />
   </div>
 </template>
 
@@ -14,6 +14,17 @@ export default {
   components: {
     TheOrderActionsComponent,
     TheOrderDetailsComponent,
+  },
+  props: {
+    order: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      orderDetails: this.order,
+    };
   },
 };
 </script>

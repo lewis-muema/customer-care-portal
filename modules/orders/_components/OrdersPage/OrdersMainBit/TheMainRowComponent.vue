@@ -358,7 +358,7 @@ export default {
 };
 </script>
 <style>
-.pending_ind {
+/* .pending_ind {
   background-color: #dd4b39 !important;
 }
 .Cancelled_ind {
@@ -403,5 +403,5 @@ export default {
   line-height: 1.42857143;
   vertical-align: top;
   border-top: 1px solid #ddd;
-}
+} */
 </style>

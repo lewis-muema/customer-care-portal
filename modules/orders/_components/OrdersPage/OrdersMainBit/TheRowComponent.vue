@@ -16,111 +16,119 @@
         <div id="initial_load_box">Requesting for orders ...</div>
       </td>
     </tr>
-    <tr
-      v-for="order in orders"
-      :key="order.order_no"
-      :class="determineOrderColor(order.time_placed)"
-    >
-      <td>
-        <span
-          :id="`tip_order_${order.order_no}`"
-          data-toggle="tooltip"
-          title=""
-        >
+    <template v-for="order in orders">
+      <tr
+        :key="order.order_no"
+        :class="determineOrderColor(order.time_of_delivery)"
+        @click="viewOrder(order.order_no)"
+      >
+        <td>
           <span
-            :id="`order_indicator_${order.order_no}`"
-            :class="`label ${order.order_status}_ind`"
+            :id="`tip_order_${order.order_no}`"
+            data-toggle="tooltip"
+            title=""
           >
-            {{ order.order_status }}
+            <span
+              :id="`order_indicator_${order.order_no}`"
+              :class="`label ${order.order_status}_ind`"
+            >
+              {{ order.order_status }}
+            </span>
           </span>
-        </span>
-      </td>
-      <td v-html="smartify_display(order.client_name, 20)">
-        <span
-          v-if="order.pay_cash_on_delivery"
-          title="Cash"
-          class="badge"
-          style="float:right; background-color: transparent;"
-        >
-          <i class="fa fa-fw fa-money" style=" color:green;"></i
-        ></span>
-        <span
-          v-if="order.price_type === 'Standard'"
-          title="Standard"
-          class="badge bg-aqua"
-          style="float:right;"
-        >
-          s
-        </span>
-      </td>
-      <td>
-        {{ order.rider_name }}
-        <span style="float:right;">
-          <span> {{ vendorLabels[order.vendor_type_id] }}</span>
-          &nbsp;
-          <img
-            :src="
-              'https://images.sendyit.com/web_platform/vendor_type/side/v2/' +
-                order.vendor_type_id +
-                '.svg'
-            "
-            height="14"
-            style="float: right; image-rendering: auto;height:18px"
-          />
-        </span>
-      </td>
-      <td>
-        {{ getFormattedDate(order.time_placed, 'hh.mm a DD/MM/YYYY') }}
-        <span
-          v-if="compareDates(order.time_placed)"
-          title="Scheduled for tomorrow"
-          class="fa fa-clock-o pull-right"
-          style="color:deeppink; font-weight:100;"
-        >
-        </span>
-      </td>
-      <td v-html="smartify_display(order.from_name, 30)"></td>
-      <td v-html="smartify_display(order.to_name, 30)"></td>
-      <td>
-        {{
-          displayAmount(
-            order.order_currency,
-            order.order_amount,
-            order.vendor_type_id,
-            order.fixed_cost,
-            order.customer_min_amount,
-            order.confirm_status,
-          )
-        }}
-      </td>
-      <td>
-        {{
-          displayAmount(
-            order.order_currency,
-            order.rider_amount,
-            order.vendor_type_id,
-            order.fixed_cost,
-            order.customer_min_amount,
-            order.confirm_status,
-          )
-        }}
-        <span
-          title="showCity(order.city)"
-          class="badge bg-aqua "
-          style="float: right;"
-          >{{ cityAbbrev[showCity(order.city)] }}
-        </span>
-        <span style="float: right;"> &nbsp; </span>
-        <span title="Corporate Name" class="badge bg-aqua pull-right">
-          {{ order.distance_read }} km</span
-        >
-      </td>
-    </tr>
+        </td>
+        <td v-html="smartify_display(order.client_name, 20)">
+          <span
+            v-if="order.pay_cash_on_delivery"
+            title="Cash"
+            class="badge"
+            style="float:right; background-color: transparent;"
+          >
+            <i class="fa fa-fw fa-money" style=" color:green;"></i
+          ></span>
+          <span
+            v-if="order.price_type === 'Standard'"
+            title="Standard"
+            class="badge bg-aqua"
+            style="float:right;"
+          >
+            s
+          </span>
+        </td>
+        <td>
+          {{ order.rider_name }}
+          <span style="float:right;">
+            <span> {{ vendorLabels[order.vendor_type_id] }}</span>
+            &nbsp;
+            <img
+              :src="
+                `https://images.sendyit.com/web_platform/vendor_type/side/v2/${order.vendor_type_id}.svg`
+              "
+              height="14"
+              style="float: right; image-rendering: auto;height:18px"
+            />
+          </span>
+        </td>
+        <td>
+          {{ getFormattedDate(order.time_of_delivery, 'hh.mm a DD/MM/YYYY') }}
+          <span
+            v-if="compareDates(order.time_of_delivery)"
+            title="Scheduled for tomorrow"
+            class="fa fa-clock-o pull-right"
+            style="color:deeppink; font-weight:100;"
+          >
+          </span>
+        </td>
+        <td v-html="smartify_display(order.from_name, 30)"></td>
+        <td v-html="smartify_display(order.to_name, 30)"></td>
+        <td>
+          {{
+            displayAmount(
+              order.order_currency,
+              order.order_amount,
+              order.vendor_type_id,
+              order.fixed_cost,
+              order.customer_min_amount,
+              order.confirm_status,
+            )
+          }}
+        </td>
+        <td>
+          {{
+            displayAmount(
+              order.order_currency,
+              order.rider_amount,
+              order.vendor_type_id,
+              order.fixed_cost,
+              order.customer_min_amount,
+              order.confirm_status,
+            )
+          }}
+          <span
+            title="showCity(order.city)"
+            class="badge bg-aqua "
+            style="float: right;"
+            >{{ cityAbbrev[showCity(order.city)] }}
+          </span>
+          <span style="float: right;"> &nbsp; </span>
+          <span title="Corporate Name" class="badge bg-aqua pull-right">
+            {{ order.distance_read }} km</span
+          >
+        </td>
+      </tr>
+      <tr
+        class="order_row_home_lower"
+        :key="`details_${order.order_no}`"
+        :id="`child_row_${order.order_no}`"
+        v-if="show === order.order_no"
+      >
+        <TheLowerSlideComponent :orderno="order.order_no" />
+      </tr>
+    </template>
   </tbody>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
-import moment from 'moment';
+
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
 
@@ -129,7 +137,8 @@ PouchDB.plugin(PouchFind);
 export default {
   name: 'TheRowComponent',
   components: {
-    // TheLowerSlideComponent,
+    TheLowerSlideComponent: () =>
+      import('../OrdersLowerBit/TheLowerSlideComponent'),
   },
   data() {
     return {
@@ -140,6 +149,7 @@ export default {
       ordersDB: process.browser ? new PouchDB('orders') : '',
       newData: null,
       busy: false,
+      show: false,
     };
   },
   computed: {
@@ -156,18 +166,13 @@ export default {
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
       const currentOrders = this.orders;
-      let currentOrdersData;
-      if (currentOrders.length === 0) {
-        currentOrdersData = this.orders;
-      } else {
-        currentOrdersData = this.orders;
-      }
+      const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      this.busy = false;
-
       const storeData = await this.updateOrders(newOrders, pagination);
-      return (this.orders = newOrders);
+      const storedOrders = await this.fetchOrders();
+
+      return (this.orders = storedOrders[0].doc.data);
     },
     bottom(bottom) {
       if (bottom) {
@@ -189,10 +194,6 @@ export default {
   mounted() {
     this.setOrders({
       page: 1,
-      //   params: {
-      //     status: 'all',
-      //     request_id: 11,
-      //   },
     });
   },
   methods: {
@@ -268,19 +269,7 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight;
       return bottomOfPage || pageHeight - 100 < visible;
     },
-    getFormattedDate(date, format) {
-      return moment(date).format(format);
-    },
-    compareDates(date) {
-      let currentDate = new Date();
-      currentDate = this.getFormattedDate(currentDate, 'YYYY-MM-DD');
-      const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
 
-      if (orderDate > currentDate) {
-        return true;
-      }
-      return false;
-    },
     determineOrderColor(date) {
       const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
       const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
@@ -291,9 +280,7 @@ export default {
       }
       return colorClass;
     },
-    numberWithCommas(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    },
+
     // eslint-disable-next-line prettier/prettier
     determineAmounts(amount, vendor_type_id, fixed_cost,  customer_min_amount,confirm_status,  ) {
       if (vendor_type_id === 20 && fixed_cost !== true) {
@@ -325,67 +312,9 @@ export default {
       return cityName;
     },
 
-    smartify_display(myString, myLength) {
-      if (parseInt(myString.length) > myLength) {
-        const myTruncatedString = myString.substring(0, myLength);
-
-        return `<span data-toggle="tooltip" title="${myString}">${myTruncatedString}  ...  <span>`;
-      } else {
-        return myString;
-      }
+    viewOrder(orderNo) {
+      this.show = orderNo;
     },
   },
 };
 </script>
-<style>
-.pending_ind {
-  background-color: #dd4b39 !important;
-}
-.Cancelled_ind {
-  background-color: purple !important;
-}
-.transit_ind {
-  background-color: #00a65a !important;
-}
-.confirmed_ind {
-  background-color: #f39c12 !important;
-}
-.delivered_ind {
-  background-color: #3c8dbc !important;
-}
-.picked_ind {
-  background-color: #3c8dbc !important;
-}
-.request_ind {
-  background-color: blueviolet !important;
-}
-.badge {
-  display: inline-block;
-  min-width: 10px;
-  padding: 3px 7px;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  background-color: #777;
-  border-radius: 10px;
-}
-.table > tbody > tr > td,
-.table > tbody > tr > th,
-.table > tfoot > tr > td,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > thead > tr > th {
-  padding: 8px;
-  line-height: 1.42857143;
-  vertical-align: top;
-  border-top: 1px solid #ddd;
-}
-.pull_attention {
-  background-color: rgba(197, 2, 2, 0.18);
-  border: 1px solid #f4f4f4;
-}
-</style>

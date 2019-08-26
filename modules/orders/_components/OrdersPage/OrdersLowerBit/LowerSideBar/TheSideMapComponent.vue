@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div class="map_custom" :id="`map_custom_${orderDetails.orderNo}`">
+    <div class="map_custom" :id="`map_custom_`">
       <h2 class="center">put map here</h2>
     </div>
     <span
@@ -14,11 +14,6 @@
 <script>
 export default {
   name: 'TheSideMapComponent',
-  props: {
-    orderDetails: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: {},
 };
 </script>
