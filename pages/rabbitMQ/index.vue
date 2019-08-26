@@ -2,7 +2,7 @@
   <div>
     <!-- <button @click="testConnection">Rabbit</button> -->
     <div>
-      <button @click="subscribe_to_queue">Subscribe Test</button>
+      <!-- <button @click="subscribe_to_queue">Subscribe Test</button> -->
     </div>
     <div id="debug"></div>
   </div>
@@ -16,46 +16,63 @@
   src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js"
 ></script>
 <script>
-const url =
-  'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT';
-
 export default {
   data() {
     return {
       client: null,
-      stuff: '',
+      new_ws: null,
+      headers: {
+        login: 'production',
+        passcode: 'Z_EQ-T5rO-oQVx-OqL2',
+      },
+      url: 'wss://prod-stomp.sendyit.com:15675/ws',
     };
     this.client.debug = function(str) {
       console.log(str);
     };
   },
   methods: {
-    subscribe_to_queue() {
+    connectCallback(message) {
       const exchangeStr = this.client.subscribe(
-        '/exchange/order_actions/sendy.ordersactions.ke',
+        '/exchange/order_pushes/sendy.orders.ke',
+        ({ body }) => {
+          console.log(JSON.parse(body).result);
+        },
       );
-      // const id2 = this.client.subscribe(exchangeStr);
-      // console.log(exchangeStr);
+    },
+    errorCallback() {
+      console.log('Connection Dropped Trying to Reconnect');
+      this.client = Stomp.client(this.url);
+      this.client.connect(
+        this.headers,
+        () => {
+          this.connectCallback();
+        },
+        () => {
+          this.errorCallback();
+        },
+      );
+    },
+    onmessage(message) {
+      // console.log(JSON.parse(body).result);
+      console.log(evt);
     },
   },
 
   mounted() {
-    const url =
-      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT';
+    this.client = Stomp.client(this.url);
 
-    this.client = Stomp.client(url);
-    const headers = {
-      login: 'staging',
-      passcode: '0FAHmQQmjfsIXdro',
-    };
-    const connectCallback = function() {
-      console.log('maybe');
-    };
-    const errorCallback = function() {
-      console.log('sure');
-    };
-    this.client.connect(headers, connectCallback, errorCallback);
-    // console.log(Stomp);
+    this.client.connect(
+      this.headers,
+      () => {
+        this.connectCallback();
+      },
+      () => {
+        this.errorCallback();
+      },
+    );
+
+    console.log(this.client);
   },
 };
 </script>
