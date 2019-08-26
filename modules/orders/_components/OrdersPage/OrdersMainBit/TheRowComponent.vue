@@ -177,9 +177,10 @@ export default {
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
       this.busy = false;
-
       const storeData = await this.updateOrders(newOrders, pagination);
-      return (this.orders = newOrders);
+      const storedOrders = await this.fetchOrders();
+
+      return (this.orders = storedOrders[0].doc.data);
     },
     bottom(bottom) {
       if (bottom) {
