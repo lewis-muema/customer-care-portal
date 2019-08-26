@@ -7,4 +7,4 @@ const wrapper = shallowMount(TheLogo);
 
 const vm = wrapper.vm;
 
-console.log(wrapper);
+// console.log(wrapper);
