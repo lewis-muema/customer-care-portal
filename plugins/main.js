@@ -33,6 +33,19 @@ Vue.mixin({
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    compareDates(date) {
+      let currentDate = new Date();
+      currentDate = this.getFormattedDate(currentDate, 'YYYY-MM-DD');
+      const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
+
+      if (orderDate > currentDate) {
+        return true;
+      }
+      return false;
+    },
     // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(amount, vendorTypeID, fixedCost,  customerMinAmount, confirmStatus) {
       const freightArray = [20, 25];

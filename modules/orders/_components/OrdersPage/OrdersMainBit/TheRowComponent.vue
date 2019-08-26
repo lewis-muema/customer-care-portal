@@ -129,7 +129,6 @@
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
-import moment from 'moment';
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
 
@@ -138,7 +137,6 @@ PouchDB.plugin(PouchFind);
 export default {
   name: 'TheRowComponent',
   components: {
-    // TheLowerSlideComponent,
     TheLowerSlideComponent: () =>
       import('../OrdersLowerBit/TheLowerSlideComponent'),
   },
@@ -168,15 +166,9 @@ export default {
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
       const currentOrders = this.orders;
-      let currentOrdersData;
-      if (currentOrders.length === 0) {
-        currentOrdersData = this.orders;
-      } else {
-        currentOrdersData = this.orders;
-      }
+      const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      this.busy = false;
       const storeData = await this.updateOrders(newOrders, pagination);
       const storedOrders = await this.fetchOrders();
 
@@ -202,10 +194,6 @@ export default {
   mounted() {
     this.setOrders({
       page: 1,
-      //   params: {
-      //     status: 'all',
-      //     request_id: 11,
-      //   },
     });
   },
   methods: {
@@ -281,19 +269,7 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight;
       return bottomOfPage || pageHeight - 100 < visible;
     },
-    // getFormattedDate(date, format) {
-    //   return moment(date).format(format);
-    // },
-    compareDates(date) {
-      let currentDate = new Date();
-      currentDate = this.getFormattedDate(currentDate, 'YYYY-MM-DD');
-      const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
 
-      if (orderDate > currentDate) {
-        return true;
-      }
-      return false;
-    },
     determineOrderColor(date) {
       const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
       const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
@@ -304,9 +280,7 @@ export default {
       }
       return colorClass;
     },
-    numberWithCommas(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    },
+
     // eslint-disable-next-line prettier/prettier
     determineAmounts(amount, vendor_type_id, fixed_cost,  customer_min_amount,confirm_status,  ) {
       if (vendor_type_id === 20 && fixed_cost !== true) {
@@ -340,8 +314,6 @@ export default {
 
     viewOrder(orderNo) {
       this.show = orderNo;
-
-      // console.log(this.componentName);
     },
   },
 };
