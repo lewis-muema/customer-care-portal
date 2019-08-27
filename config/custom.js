@@ -1,3 +1,5 @@
+import { url } from 'inspector';
+
 // eslint-disable-next-line import/prefer-default-export
 export const customConfig = {
   development: {
@@ -29,6 +31,11 @@ export const customConfig = {
     BACKEND_CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
     GOOGL_API_KEY: 'AIzaSyChEOAbj_2URQWRkL8N0p07vk6foBfHXGI',
     ADONIS_API: 'https://adonistest.sendyit.com/',
+  },
+  rabbitMQ: {
+    base_url: 'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=',
+    username: 'staging',
+    password: '0FAHmQQmjfsIXdro',
   },
   // general: {
   BACKEND_KEY: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
