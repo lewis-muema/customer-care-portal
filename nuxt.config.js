@@ -119,7 +119,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.BASE_URL || 'https://caretest.sendyit.com/customer',
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     credentials: false,
   },
   /*
@@ -133,7 +133,7 @@ export default {
     extend(config, ctx) {},
   },
   env: {
-    baseUrl: process.env.BASE_URL || 'https://caretest.sendyit.com/customer',
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     DOCKER_ENV: process.env.DOCKER_ENV || 'development',
     environment: process.env.DOCKER_ENV,
     customConfigs: customConfig,

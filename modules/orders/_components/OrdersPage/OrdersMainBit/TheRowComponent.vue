@@ -131,14 +131,16 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
+import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
 
 PouchDB.plugin(PouchFind);
 
 export default {
   name: 'TheRowComponent',
   components: {
-    TheLowerSlideComponent: () =>
-      import('../OrdersLowerBit/TheLowerSlideComponent'),
+    // TheLowerSlideComponent: () =>
+    //   import('../OrdersLowerBit/TheLowerSlideComponent'),
+    TheLowerSlideComponent,
   },
   data() {
     return {

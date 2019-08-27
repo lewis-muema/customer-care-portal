@@ -7,8 +7,6 @@ const environment = process.env.DOCKER_ENV;
 const customConfigsVar = process.env.customConfigs.customConfig;
 const customConfig = customConfigsVar[environment];
 
-// console.log('configs', this.my_global_config);
-
 const apix = new Apix({
   prefix: 'https://adonistest.sendyit.com',
   params: {
@@ -25,6 +23,7 @@ const apix = new Apix({
   ],
 });
 const jwtToken = process.env.jwtToken;
+const baseUrl = process.env.baseUrl;
 export const custom_state = () => ({});
 export default {
   namespaced: true,
@@ -33,6 +32,7 @@ export default {
       ...apix.getState(),
       token: null,
       jwtToken,
+      baseUrl,
       breadcrumbs: [],
       customConfig,
       notification: {},
