@@ -173,7 +173,6 @@ export default {
       const newOrders = currentOrdersData.concat(ordersData.data);
       const storeData = await this.updateOrders(newOrders, pagination);
       const storedOrders = await this.fetchOrders();
-
       return (this.orders = storedOrders[0].doc.data);
     },
     bottom(bottom) {
@@ -197,6 +196,7 @@ export default {
     this.setOrders({
       page: 1,
     });
+    this.dbInfo();
   },
   methods: {
     ...mapMutations({
@@ -228,6 +228,11 @@ export default {
         if (res) {
           console.info('new doc created', res);
         }
+      });
+    },
+    dbInfo() {
+      return this.ordersDB.info().then(info => {
+        console.log('db info', info);
       });
     },
     // eslint-disable-next-line require-await

@@ -18,4 +18,8 @@ export default {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
+  async request_partner_last_position({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
 };

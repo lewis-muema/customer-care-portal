@@ -162,21 +162,7 @@
       margin:10px;
       display:inline-block
   }
-    #over_map {
-        position: absolute;
-        position: absolute;
-        /* top: 368px; */
-        left: 2%;
-        z-index: 99;
-        width: 96%;
-        background-color: rgba(255, 255, 255, 0.8);
-        /* height: 35px; */
-        border: 0px solid #008DB4;
-        color: #008DB4;
-        font-family: sans-serif;
-        font-weight: 100;
-        bottom: 10px;
-        }
+  
   
         .tracking_map_table{ border-collapse:collapse;}
   

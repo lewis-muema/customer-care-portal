@@ -1,50 +1,41 @@
 <template>
   <span>
-    <div class="order_map_here">
-      <div
-        id="map-canvas4"
-        style="width: 100%; height: 446px;"
-        class="tracking_map"
-      ></div>
-      <div
-        id="over_map"
-        :class="
-          determine_class(
-            orderDetails.delivery_status,
-            orderDetails.confirm_status,
-          )
-        "
-      >
-        <table width="100%" class="tracking_map_table">
-          <tr>
-            <td id="f10">
-              <span :id="`f2${orderDetails.order_no}`"></span><br />
-              <span :id="`f3${orderDetails.order_no}`"></span>
-            </td>
-            <td id="f20">
-              <span :id="`f1${orderDetails.order_no}`"></span>
-              <span :id="`f4${orderDetails.order_no}`"></span><br />
-              <span :id="`f5${orderDetails.order_no}`"></span>
-            </td>
-            <td id="f30">
-              <span :id="`f11${orderDetails.order_no}`"></span><br />
-              <span :id="`f12${orderDetails.order_no}`"></span><br />
-            </td>
-            <td id="f40">
-              <span :id="`f6${orderDetails.order_no}`"></span><br />
-              <span :id="`f7${orderDetails.order_no}`"></span>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div align="right">
-      <span
-        onClick="load_map('<?php echo $unique_order_id;?>',1);"
-        class="btn btn-primary"
-      >
-        Recheck
-      </span>
+    {{ partnerData }}
+    <div
+      id="map-canvas4"
+      style="width: 100%; height: 446px;"
+      class="tracking_map"
+    ></div>
+    <div
+      id="over_map"
+      :class="
+        determine_class(
+          orderDetails.delivery_status,
+          orderDetails.confirm_status,
+        )
+      "
+    >
+      <table width="100%" class="tracking_map_table">
+        <tr>
+          <td id="f10">
+            <span :id="`f2${orderDetails.order_no}`"></span><br />
+            <span :id="`f3${orderDetails.order_no}`"></span>
+          </td>
+          <td id="f20">
+            <span :id="`f1${orderDetails.order_no}`"></span>
+            <span :id="`f4${orderDetails.order_no}`"></span><br />
+            <span :id="`f5${orderDetails.order_no}`"></span>
+          </td>
+          <td id="f30">
+            <span :id="`f11${orderDetails.order_no}`"></span><br />
+            <span :id="`f12${orderDetails.order_no}`"></span><br />
+          </td>
+          <td id="f40">
+            <span :id="`f6${orderDetails.order_no}`"></span><br />
+            <span :id="`f7${orderDetails.order_no}`"></span>
+          </td>
+        </tr>
+      </table>
     </div>
   </span>
 </template>
@@ -87,14 +78,14 @@ export default {
   },
   methods: {
     ...mapActions({
-      request_partner_last_position: '$_orders/request_partner_last_position',
+      request_partner_last_position: '$_tracking/request_partner_last_position',
     }),
     determine_class(deliveryStatus, confirmStatus) {
       let displayClass = '';
       if (deliveryStatus === 0 && confirmStatus === 0) {
         displayClass = 'hidden';
       }
-      return `${displayClass} map_bar`;
+      return displayClass;
     },
     async requestPartnerLastPosition(riderArray) {
       const payload = {
@@ -135,10 +126,6 @@ export default {
       const pickUpLocation = '-1.3001097,36.772822099999985';
       const deliveryLocation = '-1.294629,36.812681999999995';
       const pickUpDelay = 0;
-      let map = {};
-      let marker = {};
-      let myLatlngr;
-
       if (riderData !== null) {
         const partnerLocation = `${riderData.latitude},${riderData.longitude}`;
 
@@ -199,123 +186,21 @@ export default {
         ]);
       }
 
-      let myLatlng = new google.maps.LatLng(
+      const myLatlng = new google.maps.LatLng(
         riderData.latitude,
         riderData.longitude,
       );
-      const center = new google.maps.LatLng(-1.299923, 36.780921);
-      const mapOptions = {
-        zoom: 14,
-        center: myLatlng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-      };
-      map = new google.maps.Map(
-        document.getElementById('map-canvas4'),
-        mapOptions,
-      );
-      const locations = myPathArray;
-      let riderMarker = {};
+      // const center = new google.maps.LatLng(-1.299923, 36.780921);
+      // const mapOptions = {
+      //   zoom: 14,
+      //   center: myLatlng,
+      //   mapTypeId: google.maps.MapTypeId.ROADMAP,
+      // };
 
-      if (riderData !== null) {
-        myLatlngr = new google.maps.LatLng(
-          riderData.latitude,
-          riderData.longitude,
-        );
-        if (riderData.status) {
-          let vendorIcon = this.show_vendor_image(order, riderData);
-          vendorIcon = {
-            url: vendorIcon, // url
-            scaledSize: new google.maps.Size(50, 50), // scaled size
-          };
-          riderMarker = new google.maps.Marker({
-            position: myLatlngr,
-            icon: vendorIcon,
-            map,
-            title: riderData.name,
-          });
-        }
-      }
-      for (let i = 0; i < locations.length; i += 1) {
-        let imgIcon;
-        if (i === 0) {
-          imgIcon =
-            'https://images.sendyit.com/web_platform/orders/pickup_placeholder.png';
-        } else {
-          imgIcon =
-            'https://images.sendyit.com/web_platform/orders/destination_placeholder.png';
-        }
-
-        imgIcon = {
-          url: imgIcon, // url
-          scaledSize: new google.maps.Size(23, 40), // scaled size
-        };
-
-        myLatlng = new google.maps.LatLng(locations[i][1], locations[i][2]);
-        marker = new google.maps.Marker({
-          position: myLatlng,
-          icon: imgIcon,
-          map,
-          title: locations[i][0],
-        });
-      }
-
-      const allpaths = [];
-      const allpaths1 = [];
-
-      for (let i = 0; i < locations.length; i += 1) {
-        allpaths.push(new google.maps.LatLng(locations[i][1], locations[i][2]));
-      }
-      const decodedPath = google.maps.geometry.encoding.decodePath(polyline);
-      const setRegion = new google.maps.Polyline({
-        path: decodedPath,
-        strokeColor: '#1691BF',
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-        map,
-      });
-      const bounds = new google.maps.LatLngBounds();
-      for (let i = 0; i < locations.length; i += 1) {
-        const lat = parseFloat(locations[i][1]);
-        const long = parseFloat(locations[i][2]);
-        const point = new google.maps.LatLng(lat, long);
-        bounds.extend(point);
-      }
-
-      if (riderData !== null) {
-        bounds.extend(myLatlngr);
-      }
-
-      // center the map to a specific spot (city)
-      map.setCenter(center);
-
-      // center the map to the geometric center of all markers
-      map.setCenter(bounds.getCenter());
-
-      map.fitBounds(bounds);
-
-      // remove one zoom level to ensure no marker is on the edge.
-      map.setZoom(map.getZoom() - 1);
-
-      // set a minimum zoom
-      // if you got only 1 marker or all markers are on the same address map will be zoomed too much.
-      if (map.getZoom() > 15) {
-        map.setZoom(15);
-      }
-      console.log('riderMarker', setRegion);
+      console.log('myPath', myLatlng);
 
       this.initMQTT();
     },
-    // decodeLevels(encodedLevelsString) {
-    //   const decodedLevels = [];
-
-    //   for (let i = 0; i < encodedLevelsString.length; ++i) {
-    //     const level = encodedLevelsString.charCodeAt(i) - 63;
-    //     decodedLevels.push(level);
-    //   }
-
-    //   return decodedLevels;
-    // },
-
     // eslint-disable-next-line prettier/prettier
     data_to_display_on_bar(order, distToPickUp, timeToPickUp, distToDelivery, timeToDelivery, pickUpDelay) {
       // ********** FIX ME!!! Handle time metrics ****************//
@@ -354,20 +239,6 @@ export default {
       document.getElementById(`f7${orderNo}`).innerHTML = f7_data;
     },
 
-    show_vendor_image(order, riderData) {
-      const deliveryStatus = order.order_details.delivery_status;
-      const confirmStatus = order.order_details.confirm_status;
-      let vendor_icon = '';
-      const vendorType = riderData.vendorTypeId;
-
-      if (
-        deliveryStatus === 2 ||
-        (deliveryStatus === 0 && confirmStatus === 1)
-      ) {
-        vendor_icon = `https://images.sendyit.com/web_platform/vendor_type/top/${vendorType}.png`;
-      }
-      return vendor_icon;
-    },
     display_rider_info(riderData, orderNo) {
       let rider_online_status;
       let rider_name;
@@ -532,36 +403,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-/* .map_bar {
-  position: absolute;
-  left: 2%;
-  z-index: 99;
-  width: 96%;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: rgb(0, 141, 180);
-  font-family: sans-serif;
-  font-weight: 100;
-  bottom: 10px;
-  border-width: 0px;
-  border-style: solid;
-  border-color: rgb(0, 141, 180);
-  border-image: initial;
-} */
-
-.map_bar {
-  position: absolute;
-  position: absolute;
-  /* top: 412px; */
-  left: 4%;
-  z-index: 99;
-  width: 90%;
-  background-color: rgba(255, 255, 255, 0.8);
-  /* height: 35px; */
-  border: 1px solid #008db4;
-  color: #008db4;
-  font-family: sans-serif;
-  font-weight: 100;
-  bottom: 79px;
-}
-</style>

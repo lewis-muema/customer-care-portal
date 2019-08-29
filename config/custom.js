@@ -5,12 +5,15 @@ export const customConfig = {
   development: {
     BASE_URL: 'http://localhost:3030/',
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
-    POSITIONS: 'https://auth.sendyit.com/positions/',
+    // POSITIONS: 'https://auth.sendyit.com/positions/',
     BACKEND_CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
     GOOGL_API_KEY: 'AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI',
     ADONIS_API: 'https://adonistest.sendyit.com/',
     RIDER_DELIVERY_IMG: 'https://sendy-delivery-signatures.s3.amazonaws.com/',
     DISPATCH_LIST: 'https://authtest.sendyit.com/dispatch/',
+    POSITIONS: 'https://authtest.sendyit.com/positions/',
+    NODE_PRIVATE_API: 'https://authtest.sendyit.com/v1/',
+
     BACKEND_KEY: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
   },
   testing: {

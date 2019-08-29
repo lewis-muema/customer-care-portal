@@ -42,11 +42,7 @@ export default {
       sampleOrder: null,
     };
   },
-  computed: {
-    ...mapGetters({
-      getOrder: '$_orders/getOrder',
-    }),
-  },
+  computed: {},
 
   mounted() {
     this.sampleOrder = this.singleOrder();
@@ -56,8 +52,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      request_single_order: '$_orders/request_single_order',
-      setsingleOrder: 'setsingleOrder',
+      request_single_order: 'request_single_order',
     }),
     async singleOrderRequest() {
       const data = await this.request_single_order(this.orderNo);

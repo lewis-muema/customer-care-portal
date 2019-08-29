@@ -1,18 +1,23 @@
 <template>
   <div>
-    map holder single
-
-    {{ orderNo }}
+    <TheTrackingComponent :orderno="orderNo" />
   </div>
 </template>
 <script>
+import TheTrackingComponent from '@/modules/tracking/tracking.vue';
+
 export default {
   layout: 'map',
-  //   const { id } = this.$route.params
+  components: {
+    TheTrackingComponent,
+  },
   data() {
     return {
       orderNo: this.$route.params.id,
     };
+  },
+  mounted() {
+    console.log('order', this.$route.params);
   },
 };
 </script>

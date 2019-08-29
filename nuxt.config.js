@@ -3,8 +3,9 @@ import 'isomorphic-fetch';
 const bodyParser = require('body-parser');
 const customConfig = require('./config/custom');
 
+console.log('custom mmm', process.env.DOCKER_ENV);
 const jwtToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJwYXlsb2FkIjp7ImRhdGEiOnsiYWRtaW5fdHlwZSI6IjAiLCJhZG1pbl9pZCI6IjExMCIsImVjb21tZXJjZV9vbmx5IjoiMCIsInN0YXR1cyI6IjEiLCJlbWFpbCI6ImpveWNlQHNlbmR5aXQuY29tIiwiYWdlbnRfZXh0ZW5zaW9uIjoiMCIsImV4dGVybmFsX3N0YXR1cyI6IjAiLCJjb3BfaWQiOm51bGwsIm5hbWUiOiJKb3ljZSBLZW1ib2kiLCJwb3N0IjoiRnJvbnRlbmQgRW5naW5lZXIiLCJjb3VudHJ5X2NvZGVzIjoiW1wiS0VcIl0iLCJkZXYiOiIxIiwicGljIjoiZWdneS5wbmciLCJwcml2aWxlZ2UiOiJ7XCJ2aWV3X25ld19mZWF0dXJlXCI6IHRydWUsIFwicmVjb3JkX21wZXNhXCI6IHRydWUsIFwiY2hhdFwiOiB0cnVlLCBcImFwcHJvdmVfcGFydG5lcnNcIjogdHJ1ZSwgXCJhcHByb3ZlX3Bvc3RwYXlcIjogdHJ1ZSwgXCJyZWNvcmRfbm90aWZpY2F0aW9uXCI6IHRydWUsIFwicmVjb3JkX2NoZXF1ZXNcIjogdHJ1ZSwgXCJyZWNvcmRfcGFydG5lcl93aXRoZHJhd2FsXCI6IHRydWUsIFwicmVjb3JkX3Byb21vX2NvZGVcIjogdHJ1ZSwgXCJyZWNvcmRfdXNlclwiOiB0cnVlLCBcInJlY29yZF9wYXNzX2NoYW5nZVwiOiB0cnVlLCBcImFwcHJvdmVfcHJlcGF5X2JpbGxpbmdcIjogdHJ1ZSwgXCJhcHByb3ZlX3Bvc3RwYXlfYmlsbGluZ1wiOiB0cnVlLCBcImNoYW5nZV9hY2NvdW50X21hbmFnZXJcIjogdHJ1ZSwgXCJsb2NhdGlvbl9wcm94aW1pdHlcIjogdHJ1ZSwgXCJyZWFzc2lnbl9vcmRlcnNcIjogdHJ1ZSwgXCJ1cGRhdGVfZGVsaXZlcnlfc3RhdHVzXCI6dHJ1ZX0iLCJzZW5kX2RlcHRfaWQiOiIyIiwicm9sZSI6IjIiLCJwaG9uZSI6IjI1NDcxOTE2OTEyNCIsInNob3dfZWNvbW1lcmNlIjoiMCIsImFsbG93ZWRfb3JkZXJzIjpudWxsfSwibWFuYWdlZF9saXN0Ijp7fX0sInN0YXR1cyI6dHJ1ZSwiZXhwaXJ5IjoiODY0MDAifQ.Ja6bsNdKI1irh-6IaBgccLog-wDbX4rX0m0UeeGAPfE';
+  'eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJwYXlsb2FkIjp7ImRhdGEiOnsiYWRtaW5fdHlwZSI6IjAiLCJhZG1pbl9pZCI6IjExMCIsImVjb21tZXJjZV9vbmx5IjoiMCIsInN0YXR1cyI6IjEiLCJlbWFpbCI6ImpveWNlQHNlbmR5aXQuY29tIiwiYWdlbnRfZXh0ZW5zaW9uIjoiMCIsImV4dGVybmFsX3N0YXR1cyI6IjAiLCJjb3BfaWQiOm51bGwsIm5hbWUiOiJKb3ljZSBLZW1ib2kiLCJwb3N0IjoiRnJvbnRlbmQgRW5naW5lZXIiLCJjb3VudHJ5X2NvZGVzIjoiW1wiS0VcIl0iLCJkZXYiOiIxIiwicGljIjoiZWdneS5wbmciLCJwcml2aWxlZ2UiOiJ7XCJ2aWV3X25ld19mZWF0dXJlXCI6IHRydWUsIFwicmVjb3JkX21wZXNhXCI6IHRydWUsIFwiY2hhdFwiOiB0cnVlLCBcImFwcHJvdmVfcGFydG5lcnNcIjogdHJ1ZSwgXCJhcHByb3ZlX3Bvc3RwYXlcIjogdHJ1ZSwgXCJyZWNvcmRfbm90aWZpY2F0aW9uXCI6IHRydWUsIFwicmVjb3JkX2NoZXF1ZXNcIjogdHJ1ZSwgXCJyZWNvcmRfcGFydG5lcl93aXRoZHJhd2FsXCI6IHRydWUsIFwicmVjb3JkX3Byb21vX2NvZGVcIjogdHJ1ZSwgXCJyZWNvcmRfdXNlclwiOiB0cnVlLCBcInJlY29yZF9wYXNzX2NoYW5nZVwiOiB0cnVlLCBcImFwcHJvdmVfcHJlcGF5X2JpbGxpbmdcIjogdHJ1ZSwgXCJhcHByb3ZlX3Bvc3RwYXlfYmlsbGluZ1wiOiB0cnVlLCBcImNoYW5nZV9hY2NvdW50X21hbmFnZXJcIjogdHJ1ZSwgXCJsb2NhdGlvbl9wcm94aW1pdHlcIjogdHJ1ZSwgXCJyZWFzc2lnbl9vcmRlcnNcIjogdHJ1ZSwgXCJ1cGRhdGVfZGVsaXZlcnlfc3RhdHVzXCI6dHJ1ZX0iLCJzZW5kX2RlcHRfaWQiOiIyIiwicm9sZSI6IjIiLCJwaG9uZSI6IjI1NDcxOTE2OTEyNCIsInNob3dfZWNvbW1lcmNlIjoiMCIsImFsbG93ZWRfb3JkZXJzIjpudWxsfSwibWFuYWdlZF9saXN0Ijp7fX0sInN0YXR1cyI6dHJ1ZSwiZXhwaXJ5IjoiODY0MDAifQ.1lQYY-f7wDofgIYs6lGy7WehjSKFjXFOUVCGiCT1DH8';
 
 export default {
   mode: 'universal',
@@ -52,7 +53,10 @@ export default {
           'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
         type: 'text/javascript',
       },
-
+      {
+        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
+        type: 'text/javascript',
+      },
       {
         src: 'js/adminlte.min.js',
         type: 'text/javascript',
@@ -114,6 +118,7 @@ export default {
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
     'plugins/main.js',
+    'plugins/google-maps',
   ],
   /*
    ** Nuxt.js modules
