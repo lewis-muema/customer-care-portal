@@ -1,6 +1,6 @@
 <template>
   <div class="col-md-8">
-    <TheOrderActionsComponent />
+    <TheOrderActionsComponent :order="orderDetails" />
     <TheOrderDetailsComponent :order="orderDetails" />
   </div>
 </template>

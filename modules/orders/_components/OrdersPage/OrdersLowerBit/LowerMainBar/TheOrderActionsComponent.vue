@@ -1,9 +1,9 @@
 <template>
   <div class="box box-primary order-main-lowerslide ">
     <div class="body-box lower_slide_body">
-      <div class="tabs custom_more">
-        <TheButtonsComponent />
-      </div>
+      <!-- <div class="tabs custom_more"> -->
+      <TheButtonsComponent :order="order" />
+      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -14,6 +14,12 @@ export default {
   name: 'TheOrderActionsComponent',
   components: {
     TheButtonsComponent,
+  },
+  props: {
+    order: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
