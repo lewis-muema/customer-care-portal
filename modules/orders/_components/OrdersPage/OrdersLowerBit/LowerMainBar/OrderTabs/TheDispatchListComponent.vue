@@ -6,17 +6,24 @@
     <div v-if="dispatchList !== null && !dispatchStatus">
       Order is not dispatching.
     </div>
-    <div v-if="dispatchStatus && partnerList === null">
-      No driver has been found. Please check whether there is a driver nearby or
-      if the nearby drivers have the correct carrier type. Other factors to
-      check are the vendor type, order exclusivity to the account, driver
-      exclusivity, driver approval status among others. Check
-      <a href="https://gitlab.com/sendy/docs/wikis/order-dispatch-checklist"
-        >https://gitlab.com/sendy/docs/wikis/order-dispatch-checklist</a
-      >
-      for more.
+    <div v-if="dispatchStatus && !this.check_partner_list(partnerList)">
+      <p>
+        No driver has been found. Please check whether there is a driver nearby
+        or if the nearby drivers have the correct carrier type. Other factors to
+        check are the vendor type, order exclusivity to the account, driver
+        exclusivity, driver approval status among others. Check
+        <a
+          href="https://gitlab.com/sendy/docs/wikis/order-dispatch-checklist"
+          target="_blank"
+          >https://gitlab.com/sendy/docs/wikis/order-dispatch-checklist</a
+        >
+        for more.
+      </p>
     </div>
-    <table v-if="dispatchStatus" class="table table-bordered">
+    <table
+      v-if="dispatchStatus && this.check_partner_list(partnerList)"
+      class="table table-bordered"
+    >
       <tbody>
         <tr>
           <th>Name</th>
@@ -32,6 +39,15 @@
         </tr>
       </tbody>
     </table>
+    <div
+      align="right"
+      class="padded-button-wrapper"
+      id="recheck_details9_<?php echo $unique_order_id;?>"
+    >
+      <span @click="dispatchListRequest()" class="btn btn-primary">
+        Recheck
+      </span>
+    </div>
   </div>
   <!-- /.box-body -->
 </template>
@@ -52,7 +68,7 @@ export default {
       orderDetails: this.order,
       moreData: this.order.order_details,
       dispatchList: null,
-      partnerList: null,
+      partnerList: {},
       dispatchStatus: null,
     };
   },
@@ -71,9 +87,25 @@ export default {
         params: { order_no: this.moreData.order_no },
       };
       const data = await this.request_dispatch_list(payload);
-      this.dispatchList = data;
+      // this.dispatchList = data;
       this.dispatchStatus = data.status;
-      this.partnerList = data.partner_list;
+
+      const partnerArray = data.partner_list;
+
+      for (let i = 0; i < partnerArray.length; i++)
+        if (partnerArray[i].rider_id === 1) {
+          partnerArray.splice(i, 1);
+          break;
+        }
+      this.partnerList = partnerArray;
+      return (this.dispatchList = data);
+    },
+    check_partner_list(partnerList) {
+      let partners = true;
+      if (partnerList.length < 1) {
+        partners = false;
+      }
+      return partners;
     },
     show_notification(data) {
       let msg;

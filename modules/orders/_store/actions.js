@@ -22,4 +22,10 @@ export default {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
+  // eslint-disable-next-line require-await
+  async request_order_eta({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+
+    console.log('request_order_eta', res);
+  },
 };

@@ -39,14 +39,11 @@ export default {
     return {
       orderNo: this.orderno,
       order: null,
-      sampleOrder: null,
     };
   },
   computed: {},
 
-  mounted() {
-    this.sampleOrder = this.singleOrder();
-  },
+  mounted() {},
   created() {
     this.singleOrderRequest();
   },

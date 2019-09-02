@@ -39,19 +39,3 @@ export default {
   mounted() {},
 };
 </script>
-<style scoped>
-.post {
-  color: #666;
-}
-.post:last-of-type {
-  border-bottom: 0;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-.post .user-block {
-  margin-bottom: 15px;
-}
-.img-circle {
-  border-radius: 50%;
-}
-</style>

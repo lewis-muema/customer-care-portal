@@ -16,7 +16,7 @@
       >
         Reload
       </span>
-      <TheRiderViewComponent :order="orderDetails.rider_details" />
+      <TheRiderViewComponent :order="orderDetails" />
       <TheLogsComponent :order="orderDetails" />
     </div>
   </div>

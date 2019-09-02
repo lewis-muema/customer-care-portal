@@ -1,5 +1,6 @@
 <template>
   <span>
+    {{ riderDeliverImg }}
     <div
       v-if="typeof riderDeliverImg === 'undefined' || riderDeliverImg === null"
     >

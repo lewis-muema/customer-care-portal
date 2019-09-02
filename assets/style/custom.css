@@ -640,3 +640,33 @@ profile-user-img {
   margin-bottom: 10px;
   margin-left: 125px;
 }
+.post {
+  color: #666;
+}
+.post:last-of-type {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.post .user-block {
+  margin-bottom: 15px;
+}
+.img-circle {
+  border-radius: 50%;
+}
+.map_bar {
+  position: absolute;
+  position: absolute;
+  left: 4%;
+  z-index: 99;
+  width: 90%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #008db4;
+  color: #008db4;
+  font-family: sans-serif;
+  font-weight: 100;
+  bottom: 79px;
+}
+.recheck{
+  margin-top: 5px;
+}

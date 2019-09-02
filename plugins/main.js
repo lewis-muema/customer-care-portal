@@ -27,8 +27,9 @@ Vue.mixin({
   created() {},
   methods: {
     getFormattedDate(date, requiredFormat) {
-      const dt = moment(date, 'YYYY-MM-DD HH:mm:ss');
-      return dt.format(requiredFormat);
+      // const dt = moment(date, 'YYYY-MM-DD HH:mm:ss');
+      const dt = moment(date, moment.ISO_8601).format(requiredFormat);
+      return dt;
     },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -45,6 +46,28 @@ Vue.mixin({
         return true;
       }
       return false;
+    },
+    displayDateTime(date) {
+      let displayString = '--';
+      if (typeof date !== 'undefined') {
+        displayString = this.getFormattedDate(date, 'h.mm a');
+      }
+      return displayString;
+    },
+    displayDateRange(dateRange) {
+      let displayString = '--';
+      if (typeof dateRange !== 'undefined') {
+        const range = dateRange.split('to');
+
+        const eta_split = dateRange.split('to');
+        const start = eta_split[0].replace(/\s+/g, '');
+        const end = eta_split[1].replace(/\s+/g, '');
+
+        const timeFrom = this.getFormattedDate(start, 'h.mm a');
+        const timeTo = this.getFormattedDate(end, 'h.mm a');
+        displayString = `${timeFrom} - ${timeTo}`;
+      }
+      return displayString;
     },
     // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(amount, vendorTypeID, fixedCost,  customerMinAmount, confirmStatus) {
@@ -141,6 +164,27 @@ Vue.mixin({
       } else {
         return myString;
       }
+    },
+    orderETAss() {
+      const eta = {
+        confirmed: '2019-08-30T12:13:42.000+03:00',
+        delivered: '2019-08-30T12:18:47.000+03:00',
+        eta: {
+          confirmation_time: 300,
+          day: 0,
+          delivery_time: 3000,
+          pick_up_time: 1200,
+          week: 0,
+        },
+        etc: '2019-08-30T12:18:42.000+03:00 to 2019-08-30T12:28:42.000+03:00',
+        etd: '2019-08-30T13:04:04.000+03:00 to 2019-08-30T13:24:04.000+03:00',
+        etp: '2019-08-30T12:33:42.000+03:00 to 2019-08-30T12:43:42.000+03:00',
+        picked: '2019-08-30T12:14:04.000+03:00',
+        placed: '2019-08-30T12:13:42.000+03:00',
+        reason: 'Successfully computed ETA.',
+        status: true,
+      };
+      return eta;
     },
     singleOrder() {
       const order = {

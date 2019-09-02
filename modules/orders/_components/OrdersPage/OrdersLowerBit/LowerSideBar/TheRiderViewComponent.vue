@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      riderDetails: this.order,
+      riderDetails: this.order.rider_details,
       photo: null,
     };
   },

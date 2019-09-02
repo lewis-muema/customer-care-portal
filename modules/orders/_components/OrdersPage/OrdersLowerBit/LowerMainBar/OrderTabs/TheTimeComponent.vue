@@ -3,9 +3,9 @@
     <table class="table table-bordered">
       <tbody>
         <tr>
-          <td width="50%">Order Time</td>
+          <td width="50%">Order Placed at:</td>
           <td>
-            {{ this.getFormattedDate(pickupTime, 'dddd. h.mm a d-MMM-Y') }}
+            {{ this.getFormattedDate(eta.placed, 'dddd. h.mm a d-MMM-Y') }}
           </td>
         </tr>
       </tbody>
@@ -16,25 +16,30 @@
           <td>&nbsp;</td>
           <td>Estimated</td>
           <td>Actual</td>
-          <td>Delay</td>
+          <!-- <td>Delay</td> -->
         </tr>
         <tr>
-          <td>Life time</td>
-          <td>{{ timeMetrics.estimated_lifetime }}</td>
-          <td>{{ timeMetrics.actual_lifetime }}</td>
-          <td>{{ timeMetrics.lifetime_delay }}</td>
+          <td>Confirmation time</td>
+          <td>
+            {{ this.displayDateRange(eta.etc) }}
+          </td>
+          <td>
+            {{ this.displayDateTime(eta.confirmed) }}
+          </td>
         </tr>
-        <tr>
-          <td>Delivery time</td>
-          <td>{{ timeMetrics.estimated_delivery_duration }}</td>
-          <td>{{ timeMetrics.actual_delivery_duration }}</td>
-          <td>{{ timeMetrics.delivery_delay }}</td>
-        </tr>
-        <tr>
+        <tr v-if="order.confirm_status === 1">
           <td>Pick up time</td>
-          <td>{{ timeMetrics.estimated_pickup_duration }}</td>
-          <td>{{ timeMetrics.actual_pickup_duration }}</td>
-          <td>{{ timeMetrics.pickup_delay }}</td>
+          <td>
+            {{ this.displayDateRange(eta.etp) }}
+          </td>
+          <td>
+            {{ this.displayDateTime(eta.picked) }}
+          </td>
+        </tr>
+        <tr v-if="order.delivery_status > 1">
+          <td>Delivery time</td>
+          <td>{{ this.displayDateRange(eta.etd) }}</td>
+          <td>{{ this.displayDateTime(eta.delivered) }}</td>
         </tr>
       </tbody>
     </table>
@@ -50,16 +55,55 @@ export default {
       type: Object,
       required: true,
     },
-    pickup: {
-      type: String,
+    eta: {
+      type: Object,
       required: true,
     },
   },
   data() {
     return {
-      timeMetrics: this.order,
-      pickupTime: this.pickup,
+      orderNo: this.order.order_no,
     };
+  },
+  mounted() {
+    // this.requestETAs();
+  },
+  methods: {
+    ...mapActions({
+      request_order_eta: '$_orders/request_order_eta',
+    }),
+    async requestETAs() {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'eta',
+        apiKey: true,
+        params: { order_no: this.orderNo },
+      };
+      const data = await this.request_order_eta(payload);
+      // return (this.order = data);
+    },
+    displayDateTime(date) {
+      let displayString = '--';
+      if (typeof date !== 'undefined') {
+        displayString = this.getFormattedDate(date, 'h.mm a');
+      }
+      return displayString;
+    },
+    displayDateRange(dateRange) {
+      let displayString = '--';
+      if (typeof dateRange !== 'undefined') {
+        const range = dateRange.split('to');
+
+        const eta_split = dateRange.split('to');
+        const start = eta_split[0].replace(/\s+/g, '');
+        const end = eta_split[1].replace(/\s+/g, '');
+
+        const timeFrom = this.getFormattedDate(start, 'h.mm a');
+        const timeTo = this.getFormattedDate(end, 'h.mm a');
+        displayString = `${timeFrom} - ${timeTo}`;
+      }
+      return displayString;
+    },
   },
 };
 </script>

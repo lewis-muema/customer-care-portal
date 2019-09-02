@@ -39,10 +39,7 @@
       </div>
     </div>
     <div align="right">
-      <span
-        onClick="load_map('<?php echo $unique_order_id;?>',1);"
-        class="btn btn-primary"
-      >
+      <span @click="recheckMap(order)" class="btn btn-primary recheck">
         Recheck
       </span>
     </div>
@@ -59,6 +56,10 @@ export default {
       type: Object,
       required: true,
     },
+    eta: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -72,6 +73,7 @@ export default {
       timeToPickUp: 'N/A',
       distToDelivery: 'N/A',
       timeToDelivery: 'N/A',
+      riderMarker: {},
     };
   },
   computed: {
@@ -95,6 +97,9 @@ export default {
         displayClass = 'hidden';
       }
       return `${displayClass} map_bar`;
+    },
+    recheckMap(order) {
+      this.initialize(this.partnerData, order);
     },
     async requestPartnerLastPosition(riderArray) {
       const payload = {
@@ -159,14 +164,7 @@ export default {
       }
 
       // ********** FIX ME!!! Handle time delay ****************//
-      this.data_to_display_on_bar(
-        order,
-        this.distToPickUp,
-        this.timeToPickUp,
-        this.distToDelivery,
-        this.timeToDelivery,
-        pickUpDelay,
-      );
+      this.data_to_display_on_bar(order, this.eta);
       const orderNo = order.order_details.order_no;
 
       this.display_rider_info(riderData, orderNo);
@@ -214,7 +212,6 @@ export default {
         mapOptions,
       );
       const locations = myPathArray;
-      let riderMarker = {};
 
       if (riderData !== null) {
         myLatlngr = new google.maps.LatLng(
@@ -227,7 +224,7 @@ export default {
             url: vendorIcon, // url
             scaledSize: new google.maps.Size(50, 50), // scaled size
           };
-          riderMarker = new google.maps.Marker({
+          this.riderMarker = new google.maps.Marker({
             position: myLatlngr,
             icon: vendorIcon,
             map,
@@ -266,6 +263,10 @@ export default {
         allpaths.push(new google.maps.LatLng(locations[i][1], locations[i][2]));
       }
       const decodedPath = google.maps.geometry.encoding.decodePath(polyline);
+      const decodedLevels = this.decodeLevels(
+        'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+      );
+
       const setRegion = new google.maps.Polyline({
         path: decodedPath,
         strokeColor: '#1691BF',
@@ -301,57 +302,44 @@ export default {
       if (map.getZoom() > 15) {
         map.setZoom(15);
       }
-      console.log('riderMarker', setRegion);
 
       this.initMQTT();
     },
-    // decodeLevels(encodedLevelsString) {
-    //   const decodedLevels = [];
+    decodeLevels(encodedLevelsString) {
+      const decodedLevels = [];
 
-    //   for (let i = 0; i < encodedLevelsString.length; ++i) {
-    //     const level = encodedLevelsString.charCodeAt(i) - 63;
-    //     decodedLevels.push(level);
-    //   }
+      for (let i = 0; i < encodedLevelsString.length; ++i) {
+        const level = encodedLevelsString.charCodeAt(i) - 63;
+        decodedLevels.push(level);
+      }
 
-    //   return decodedLevels;
-    // },
+      return decodedLevels;
+    },
 
     // eslint-disable-next-line prettier/prettier
-    data_to_display_on_bar(order, distToPickUp, timeToPickUp, distToDelivery, timeToDelivery, pickUpDelay) {
-      // ********** FIX ME!!! Handle time metrics ****************//
-      let f11_data = `Pickup time  0 mins`;
-      let f12_data = `Pickup delay 0  mins`;
-      let f6_data = `Delivery time 0  mins`;
-      let f7_data = `Delivery delay  0  mins`;
-
-      let pickupDist = 0;
-      let pickupTime = 0;
-      let timeMetric = 0;
-      let delay = 0;
-      const calculated_sum_id = order.order_details.calculated_sum_id; // ****FIX ME !!! DISPALY CORRECT calculated sum id
+    data_to_display_on_bar(order, ETA) {
+      const pickupTime =
+        typeof ETA.picked !== 'undefined'
+          ? `Pickup Time: ${this.displayDateTime(ETA.picked)}`
+          : '';
+      const pickupETA =
+        typeof ETA.etp !== 'undefined'
+          ? `Pickup ETA: ${this.displayDateRange(ETA.etp)} `
+          : '';
+      const deliveryTime =
+        typeof ETA.delivered !== 'undefined'
+          ? `Delivery Time: ${this.displayDateTime(ETA.delivered)} `
+          : '';
+      const deliveryETA =
+        typeof ETA.etd !== 'undefined'
+          ? `Delivery ETA: ${this.displayDateRange(ETA.etd)} `
+          : '';
       const orderNo = order.order_details.order_no;
 
-      if (typeof calculated_sum_id !== 'undefined') {
-        if (calculated_sum_id <= 2) {
-          pickupDist = distToPickUp;
-          pickupTime = timeToPickUp;
-          timeMetric = 0; // ****FIX ME !!! DISPALY CORRECT TIME
-          delay = pickUpDelay;
-        } else if (Number(calculated_sum_id) === 3) {
-          pickupDist = distToDelivery;
-          pickupTime = timeToDelivery;
-          timeMetric = 0; // ****FIX ME !!! DISPALY CORRECT TIME
-          delay = pickUpDelay;
-        }
-        f11_data = `${pickupDist} kms to pickup`;
-        f12_data = `${pickupTime}  mins to pickup`;
-        f6_data = `ETD:  ${timeMetric} mins`;
-        f7_data = `Pick up delay  ${delay}  mins`;
-      }
-      document.getElementById(`f11${orderNo}`).innerHTML = f11_data;
-      document.getElementById(`f12${orderNo}`).innerHTML = f12_data;
-      document.getElementById(`f6${orderNo}`).innerHTML = f6_data;
-      document.getElementById(`f7${orderNo}`).innerHTML = f7_data;
+      document.getElementById(`f11${orderNo}`).innerHTML = pickupETA;
+      document.getElementById(`f12${orderNo}`).innerHTML = pickupTime;
+      document.getElementById(`f6${orderNo}`).innerHTML = deliveryETA;
+      document.getElementById(`f7${orderNo}`).innerHTML = deliveryTime;
     },
 
     show_vendor_image(order, riderData) {
@@ -389,7 +377,6 @@ export default {
         rider_name = riderData.riderName;
         rider_phone = riderData.phoneNo;
         rider_speed = `${Math.round(riderData.speed)}  km/h`;
-        console.log('huku', rider_online_status);
 
         if (riderData.time) {
           simple_split_date = riderData.time.split('.');
@@ -434,7 +421,7 @@ export default {
       return today;
     },
     refreshRiderPosition(data) {
-      rider_marker.setPosition({
+      this.riderMarker.setPosition({
         lat: data.lat,
         lng: data.lng,
       });
@@ -513,7 +500,7 @@ export default {
       );
 
       client.on('message', (topic, message, packet) => {
-        datae = JSON.parse(message.toString());
+        const datae = JSON.parse(message.toString());
         this.refreshRiderPosition(datae);
       });
 
@@ -532,36 +519,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-/* .map_bar {
-  position: absolute;
-  left: 2%;
-  z-index: 99;
-  width: 96%;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: rgb(0, 141, 180);
-  font-family: sans-serif;
-  font-weight: 100;
-  bottom: 10px;
-  border-width: 0px;
-  border-style: solid;
-  border-color: rgb(0, 141, 180);
-  border-image: initial;
-} */
-
-.map_bar {
-  position: absolute;
-  position: absolute;
-  /* top: 412px; */
-  left: 4%;
-  z-index: 99;
-  width: 90%;
-  background-color: rgba(255, 255, 255, 0.8);
-  /* height: 35px; */
-  border: 1px solid #008db4;
-  color: #008db4;
-  font-family: sans-serif;
-  font-weight: 100;
-  bottom: 79px;
-}
-</style>

@@ -165,8 +165,8 @@
       <li
         class="nav-item"
         v-if="
-          moreData.confirm_status === 3 &&
-            orderDetails.delivery_verification.physical_delivery_note_status
+          moreData.delivery_status === 3 &&
+            moreData.delivery_verification.physical_delivery_note_status
         "
       >
         <a
@@ -196,10 +196,7 @@
           role="tabpanel"
           v-if="showTab === `time_${orderNo}`"
         >
-          <TheTimeComponent
-            :order="orderDetails.time_metrics"
-            :pickup="orderDetails.order_details.pickup_time"
-          />
+          <TheTimeComponent :order="moreData" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -226,7 +223,7 @@
           role="tabpanel"
           v-if="showTab === `route_${orderNo}`"
         >
-          <TheRouteComponent :order="orderDetails.path" />
+          <TheRouteComponent :order="orderDetails.paths" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -234,7 +231,7 @@
           role="tabpanel"
           v-if="showTab === `map_${orderNo}`"
         >
-          <TheMapComponent :order="orderDetails" />
+          <TheMapComponent :order="orderDetails" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -271,6 +268,14 @@
         >
           <TheDeliveryDetailsComponent :order="orderDetails" />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`dnotes_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `dnotes_${orderNo}`"
+        >
+          <TheDNotesComponent :order="orderDetails" />
+        </div>
       </div>
     </div>
   </div>
@@ -290,6 +295,8 @@ export default {
     ThePriceTiersComponent: () => import('./OrderTabs/ThePriceTiersComponent'),
     TheDisputeComponent: () => import('./OrderTabs/TheDisputeComponent'),
     TheDispatchComponent: () => import('./OrderTabs/TheDispatchListComponent'),
+    TheDNotesComponent: () => import('./OrderTabs/TheDNotesComponent'),
+
     TheDeliveryDetailsComponent: () =>
       import('./OrderTabs/TheDeliveryDetailsComponent'),
   },
@@ -311,6 +318,7 @@ export default {
       firstShow: false,
       firstActive: false,
       conversionRates: null,
+      eta: null,
       trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
     };
   },
@@ -331,6 +339,7 @@ export default {
     const vendorTypeID = this.orderDetails.rider_details.vendor_type_id;
     this.isTruck(this.trucksArray, vendorTypeID);
     this.setExchangeRates();
+    this.eta = this.orderETAss();
   },
   methods: {
     ...mapActions({

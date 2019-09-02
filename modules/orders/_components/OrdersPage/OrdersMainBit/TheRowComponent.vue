@@ -238,7 +238,6 @@ export default {
     // eslint-disable-next-line require-await
     async updateOrders(orders, pagination) {
       const storedOrders = await this.fetchOrders(); // fetch all stored data from pouchDB
-      let totalOrders;
       let rev = '';
       let id = 1;
       if (storedOrders.length > 0) {
