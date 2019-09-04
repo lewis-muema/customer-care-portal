@@ -339,12 +339,24 @@ export default {
     const vendorTypeID = this.orderDetails.rider_details.vendor_type_id;
     this.isTruck(this.trucksArray, vendorTypeID);
     this.setExchangeRates();
-    this.eta = this.orderETAss();
+    // this.eta = this.orderETAss();
+    this.requestETAs();
   },
   methods: {
     ...mapActions({
       setExchangeRates: 'setExchangeRates',
+      request_order_eta: '$_orders/request_order_eta',
     }),
+    async requestETAs() {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'eta',
+        apiKey: true,
+        params: { order_no: this.orderNo },
+      };
+      const data = await this.request_order_eta(payload);
+      return (this.eta = data);
+    },
     toggleTabs(tab, orderNo) {
       return (this.activetab = `${tab}_${orderNo}`);
     },

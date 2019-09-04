@@ -47,7 +47,7 @@ export default {
       const response = await axios.post(`${url}${endpoint}`, values, config);
       return response;
     } catch (error) {
-      console.log('error', error);
+      console.log('erroreee', error.code);
     }
   },
   async request_single_order({ state }, orderNo) {
@@ -67,4 +67,7 @@ export default {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
+  //  request_currency_conversions() {
+
+  //  }
 };

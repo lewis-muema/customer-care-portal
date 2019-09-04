@@ -26,9 +26,21 @@ Vue.mixin({
   },
   created() {},
   methods: {
+    display_notification(message, status) {
+      let displayClass = 'alert alert-info';
+      if (!status) {
+        displayClass = 'alert alert-danger';
+      }
+      const notification = `<div class="${displayClass}"> <b>${message} </b><div>`;
+      return notification;
+    },
+    getOrderFormattedDate(date, requiredFormat) {
+      const dt = moment(date).format(requiredFormat);
+      return dt;
+    },
     getFormattedDate(date, requiredFormat) {
-      // const dt = moment(date, 'YYYY-MM-DD HH:mm:ss');
-      const dt = moment(date, moment.ISO_8601).format(requiredFormat);
+      const dt1 = moment(date, 'YYYY-MM-DD HH:mm:ss');
+      const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
     jsUcfirst(string) {

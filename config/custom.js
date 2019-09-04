@@ -13,7 +13,7 @@ export const customConfig = {
     DISPATCH_LIST: 'https://authtest.sendyit.com/dispatch/',
     POSITIONS: 'https://authtest.sendyit.com/positions/',
     NODE_PRIVATE_API: 'https://authtest.sendyit.com/v1/',
-    ORDERS_APP: 'https://orderstest.sendyit.com/orders/',
+    ORDERS_APP: 'https://authtest.sendyit.com/orders/',
     BACKEND_KEY: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
   },
   testing: {

@@ -5,7 +5,12 @@
         <tr>
           <td width="50%">Order Placed at:</td>
           <td>
-            {{ this.getFormattedDate(eta.placed, 'dddd. h.mm a d-MMM-Y') }}
+            {{
+              this.getOrderFormattedDate(
+                eta.placed,
+                'dddd. hh:mm a DD-MMM-YYYY',
+              )
+            }}
           </td>
         </tr>
       </tbody>
@@ -65,27 +70,12 @@ export default {
       orderNo: this.order.order_no,
     };
   },
-  mounted() {
-    // this.requestETAs();
-  },
+  mounted() {},
   methods: {
-    ...mapActions({
-      request_order_eta: '$_orders/request_order_eta',
-    }),
-    async requestETAs() {
-      const payload = {
-        app: 'ORDERS_APP',
-        endpoint: 'eta',
-        apiKey: true,
-        params: { order_no: this.orderNo },
-      };
-      const data = await this.request_order_eta(payload);
-      // return (this.order = data);
-    },
     displayDateTime(date) {
       let displayString = '--';
       if (typeof date !== 'undefined') {
-        displayString = this.getFormattedDate(date, 'h.mm a');
+        displayString = this.getOrderFormattedDate(date, 'h.mm a');
       }
       return displayString;
     },

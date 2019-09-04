@@ -138,8 +138,6 @@ PouchDB.plugin(PouchFind);
 export default {
   name: 'TheRowComponent',
   components: {
-    // TheLowerSlideComponent: () =>
-    //   import('../OrdersLowerBit/TheLowerSlideComponent'),
     TheLowerSlideComponent,
   },
   data() {

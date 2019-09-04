@@ -1,6 +1,6 @@
 <template>
   <div id="tabs" class="container">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
       <li class="nav-item">
         <a
           class="force_blue"
@@ -13,7 +13,13 @@
           Dispatch
         </a>
       </li>
-      <li class="nav-item">
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.delivery_status < 1 &&
+            userData.privilege.reassign_orders
+        "
+      >
         <a
           class="force_blue"
           data-toggle="tab"
@@ -25,7 +31,13 @@
           Re-Allocate
         </a>
       </li>
-      <li class="nav-item">
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.delivery_status < 3 &&
+            userData['admin_type'] !== 1
+        "
+      >
         <a
           class="force_blue"
           data-toggle="tab"
@@ -49,7 +61,13 @@
           Schedule
         </a>
       </li>
-      <li class="nav-item">
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.delivery_status < 3 &&
+            userData['admin_type'] !== 1
+        "
+      >
         <a
           class="force_blue"
           data-toggle="tab"
@@ -102,7 +120,7 @@
           role="tabpanel"
           v-if="showTab === `dispatch_${orderNo}`"
         >
-          <TheDispatchComponent />
+          <TheDispatchComponent :order="order" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -110,7 +128,7 @@
           role="tabpanel"
           v-if="showTab === `reallocate_${orderNo}`"
         >
-          <TheReallocateComponent />
+          <TheReallocateComponent :order="order" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -118,7 +136,7 @@
           role="tabpanel"
           v-if="showTab === `cancel_${orderNo}`"
         >
-          <TheCancelComponent />
+          <TheCancelComponent :order="order" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -126,13 +144,15 @@
           role="tabpanel"
           v-if="showTab === `return_${orderNo}`"
         >
-          <TheReturnComponent />
+          <TheReturnComponent :order="order" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
   name: 'TheButtonsComponent',
   components: {
@@ -153,10 +173,15 @@ export default {
       showTab: null,
       show: false,
       active: false,
+      moreData: null,
     };
+  },
+  computed: {
+    ...mapState(['userData']),
   },
   mounted() {
     this.orderNo = this.order.order_details.order_no;
+    this.moreData = this.order.order_details;
   },
   methods: {
     viewTab(tab, orderNo) {
@@ -167,7 +192,10 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
+.buttons-tab {
+  padding-bottom: 10px;
+}
 .nav-tabs > li {
   float: left;
   margin-bottom: -1px;
@@ -179,9 +207,26 @@ export default {
 .fa-class {
   padding-right: 2px;
 }
-a:not([href]):not([tabindex]) {
-  color: #3c8dbc;
+.force_blue {
+  color: #3c8dbc !important;
   cursor: pointer;
   /* text-decoration: none; */
+}
+/* .space_tab {
+  padding: 16px;
+} */
+.vs__dropdown-toggle {
+  padding: 6px 4px !important;
+  color: #ccc;
+}
+.vs__dropdown-toggle ::placeholder {
+  /* padding: 6px 4px !important; */
+  color: #666;
+}
+.form-control {
+  font-size: 13px;
+}
+.vs__dropdown-menu {
+  border-top: 1px solid #d3d7de;
 }
 </style>
