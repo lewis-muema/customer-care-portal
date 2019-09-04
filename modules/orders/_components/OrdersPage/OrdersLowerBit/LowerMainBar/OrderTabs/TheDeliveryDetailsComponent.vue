@@ -110,9 +110,6 @@ export default {
   computed: {
     ...mapState(['customConfig']),
   },
-  mounted() {
-    console.log('rider delibv', this.customConfig);
-  },
+  mounted() {},
 };
-// rider_deliver_img
 </script>

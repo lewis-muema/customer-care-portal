@@ -194,7 +194,6 @@ export default {
     this.setOrders({
       page: 1,
     });
-    this.dbInfo();
   },
   methods: {
     ...mapMutations({
@@ -226,11 +225,6 @@ export default {
         if (res) {
           console.info('new doc created', res);
         }
-      });
-    },
-    dbInfo() {
-      return this.ordersDB.info().then(info => {
-        console.log('db info', info);
       });
     },
     // eslint-disable-next-line require-await
