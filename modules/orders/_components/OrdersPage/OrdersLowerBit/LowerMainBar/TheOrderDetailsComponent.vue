@@ -339,7 +339,6 @@ export default {
     const vendorTypeID = this.orderDetails.rider_details.vendor_type_id;
     this.isTruck(this.trucksArray, vendorTypeID);
     this.setExchangeRates();
-    // this.eta = this.orderETAss();
     this.requestETAs();
   },
   methods: {
