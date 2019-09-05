@@ -4,7 +4,7 @@
       class="notifications alert alert-danger"
       v-if="notification.length > 0"
     >
-      {{ notification }}
+      <strong> {{ notification }} </strong>
     </div>
     <div v-if="errors.length" class="alert alert-danger">
       <ul>
@@ -20,14 +20,8 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'TheNotificationsComponent',
-  props: {
-    errors: {
-      type: Array,
-      required: true,
-    },
-  },
   computed: {
-    ...mapState(['notification']),
+    ...mapState(['notification', 'errors']),
   },
 };
 </script>

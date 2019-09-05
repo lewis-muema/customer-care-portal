@@ -30,4 +30,7 @@ export default {
 .lower_slide_body {
   padding: 10px 10px 0px 10px;
 }
+.action-button {
+  width: 200px;
+}
 </style>

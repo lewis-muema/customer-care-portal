@@ -33,6 +33,31 @@ export default {
       return error;
     }
   },
+  async perform_order_action({ rootState, dispatch, commit }, payload) {
+    const userData = rootState.userData;
+    const errorCodes = rootState.errorCodes;
+    // eslint-disable-next-line no-underscore-dangle
+    payload.params._user_email = userData.user_email;
+    // eslint-disable-next-line no-underscore-dangle
+    payload.params._user_id = userData.admin_id;
+    payload.params.action_user = userData.user_name;
+    payload.params.channel = 'customer_support';
+    payload.params.data_set = 'cc_actions';
+
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      if (typeof res.data === 'undefined') {
+        const n = res.split(' ');
+        const errorCode = Number(n[n.length - 1]);
+        const notification = errorCodes[errorCode];
+        commit('setNotification', notification, { root: true });
+      } else {
+        return res.data;
+      }
+    } catch (error) {
+      return error;
+    }
+  },
   async cancel_order({ rootState, dispatch }, values) {
     const userData = rootState.userData;
     const params = {
@@ -52,7 +77,38 @@ export default {
       apiKey: true,
       params,
     };
-    const res = await dispatch('requestAxiosPost', payload, { root: true });
-    return res.data;
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async dispatch_order({ rootState, dispatch }, values) {
+    const userData = rootState.userData;
+    const params = {
+      _user_email: userData.user_email,
+      _user_id: userData.admin_id,
+      action_id: 6,
+      action_user: userData.user_name,
+      channel: 'customer_support',
+      data_set: 'cc_actions',
+      order_no: values.order_no,
+      batch_no: values.order_no,
+    };
+
+    const payload = {
+      app: 'ORDERS_APP',
+      endpoint: 'dispatch_order_cc',
+      apiKey: true,
+      params,
+    };
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
   },
 };

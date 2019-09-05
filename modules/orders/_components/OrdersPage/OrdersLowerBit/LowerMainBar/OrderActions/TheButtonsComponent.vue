@@ -91,7 +91,14 @@
           Sms Link
         </a>
       </li>
-      <li class="">
+      <li
+        class=""
+        v-if="
+          order.order_details.confirm_status === 1 &&
+            order.order_details.delivery_status < 3 &&
+            userData.privilege.location_proximity
+        "
+      >
         <a class="force_blue" data-toggle="tab" aria-expanded="false">
           <span class="fa fa-fw fa-rss"></span>
           Proximity
@@ -109,8 +116,6 @@
           Ticket
         </a>
       </li>
-
-      <!------------- closed endpoints ----->
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
@@ -140,6 +145,14 @@
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
+          :id="`schedule_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `schedule_${orderNo}`"
+        >
+          <TheScheduleComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
           :id="`return_${orderNo}`"
           role="tabpanel"
           v-if="showTab === `return_${orderNo}`"
@@ -160,6 +173,7 @@ export default {
     TheReallocateComponent: () => import('./TheReallocateComponent'),
     TheCancelComponent: () => import('./TheCancelComponent'),
     TheReturnComponent: () => import('./TheReturnComponent'),
+    TheScheduleComponent: () => import('./TheScheduleComponent'),
   },
   props: {
     order: {

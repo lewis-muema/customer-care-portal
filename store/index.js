@@ -72,6 +72,12 @@ export default {
       baseUrl,
       breadcrumbs: [],
       notification: {},
+      errors: [],
+      errorCodes: {
+        403: 'Your access token has expired. Please logout and login again',
+        500: 'Page not found',
+        400: 'Cannot unmarshal JSON as Request',
+      },
       orderColumns: ['dfcsdfs'],
       delayLabels: {
         pending: 'corfirmation',

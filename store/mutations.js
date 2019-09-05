@@ -7,4 +7,7 @@ export default {
   setNotification(state, notification) {
     state.notification = notification;
   },
+  setErrors(state, errors) {
+    state.errors = errors;
+  },
 };

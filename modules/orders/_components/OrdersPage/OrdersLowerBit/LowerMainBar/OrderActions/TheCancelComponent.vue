@@ -28,7 +28,7 @@
           v-model="description"
         ></textarea>
       </div>
-      <button class="btn btn-primary" style="width:200px;">
+      <button class="btn btn-primary action-button">
         Cancel Order
       </button>
     </form>

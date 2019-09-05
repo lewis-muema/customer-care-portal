@@ -32,13 +32,16 @@ Vue.mixin({
   },
   created() {},
   methods: {
-    display_notification(message, status) {
+    display_order_action_notification(status) {
+      console.log('status', status);
+
       let displayClass = 'alert alert-info';
       if (!status) {
         displayClass = 'alert alert-danger';
       }
-      const notification = `<div class="${displayClass}"> <b>${message} </b><div>`;
-      return notification;
+      console.log('status', displayClass);
+
+      return displayClass;
     },
     splitWords(words) {
       const n = words.split(' ');
@@ -46,7 +49,7 @@ Vue.mixin({
     },
     display_code_notification(message) {
       const code = Number(this.splitWords(message));
-      const notification = this.errorCodes[403];
+      const notification = this.errorCodes[code];
       return notification;
     },
     getOrderFormattedDate(date, requiredFormat) {
