@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import moment from 'moment';
+import config from '~/config/configs';
 
 Vue.mixin({
   data() {
@@ -22,6 +23,11 @@ Vue.mixin({
         22: 'standard',
         25: 'Freight',
       },
+      errorCodes: {
+        403: 'Your access token has expired. Please logout and login again',
+        500: 'Page not found',
+      },
+      trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
     };
   },
   created() {},
@@ -32,6 +38,15 @@ Vue.mixin({
         displayClass = 'alert alert-danger';
       }
       const notification = `<div class="${displayClass}"> <b>${message} </b><div>`;
+      return notification;
+    },
+    splitWords(words) {
+      const n = words.split(' ');
+      return n[n.length - 1];
+    },
+    display_code_notification(message) {
+      const code = Number(this.splitWords(message));
+      const notification = this.errorCodes[403];
       return notification;
     },
     getOrderFormattedDate(date, requiredFormat) {

@@ -21,7 +21,6 @@
           <td>&nbsp;</td>
           <td>Estimated</td>
           <td>Actual</td>
-          <!-- <td>Delay</td> -->
         </tr>
         <tr>
           <td>Confirmation time</td>
@@ -70,7 +69,6 @@ export default {
       orderNo: this.order.order_no,
     };
   },
-  mounted() {},
   methods: {
     displayDateTime(date) {
       let displayString = '--';

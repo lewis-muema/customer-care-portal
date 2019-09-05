@@ -1,5 +1,6 @@
 <template>
   <div id="tabs" class="container">
+    <!-- <TheNotificationsComponent :errors="errors" /> -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
         <a
@@ -34,17 +35,6 @@
           >Notes</a
         >
       </li>
-      <!-- <li class="nav-item">
-        <a
-          class="nav-link"
-          :id="`rating_${orderNo}`"
-          data-toggle="tab"
-          role="tab"
-          aria-selected="false"
-          @click="viewTab('rating', orderNo)"
-          >Rating</a
-        >
-      </li> -->
       <li class="nav-item">
         <a
           class="nav-link"
@@ -281,7 +271,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'TheOrderDetailsComponent',
@@ -313,13 +303,14 @@ export default {
       showTab: `users_${this.order.order_details.order_no}`,
       orderNo: null,
       show: false,
+      errors: [],
       active: false,
       activetab: null,
       firstShow: false,
       firstActive: false,
       conversionRates: null,
+      notification: null,
       eta: null,
-      trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
     };
   },
   computed: {
@@ -342,6 +333,9 @@ export default {
     this.requestETAs();
   },
   methods: {
+    ...mapMutations({
+      updateNotification: 'setNotification',
+    }),
     ...mapActions({
       setExchangeRates: 'setExchangeRates',
       request_order_eta: '$_orders/request_order_eta',
@@ -354,10 +348,12 @@ export default {
         params: { order_no: this.orderNo },
       };
       const data = await this.request_order_eta(payload);
-      return (this.eta = data);
-    },
-    toggleTabs(tab, orderNo) {
-      return (this.activetab = `${tab}_${orderNo}`);
+      if (typeof data.data === 'undefined') {
+        this.notification = this.display_code_notification(data);
+        this.updateNotification(this.notification);
+      } else {
+        return (this.eta = data.data);
+      }
     },
     viewTab(tab, orderNo) {
       this.showTab = `${tab}_${orderNo}`;

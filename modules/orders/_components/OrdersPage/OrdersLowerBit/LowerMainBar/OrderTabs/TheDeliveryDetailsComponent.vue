@@ -15,22 +15,19 @@
         <div class="delivery-images__header">
           {{ ` Delivery Point 1 at ${img.waypoint_no} at ` }}
         </div>
-        {{ `${customConfig.RIDER_DELIVERY_IMG}${img.img}` }}
+        {{ `${config.RIDER_DELIVERY_IMG}${img.img}` }}
         <div class="delivery-images__signature">
           <h3>Signatures</h3>
           <div class="images">
             <img
               @click="
-                lightbox.openImage(
-                  `${customConfig.RIDER_DELIVERY_IMG}${img.img}`,
-                )
+                lightbox.openImage(`${config.RIDER_DELIVERY_IMG}${img.img}`)
               "
-              :src="`${customConfig.RIDER_DELIVERY_IMG}${img.img}`"
+              :src="`${config.RIDER_DELIVERY_IMG}${img.img}`"
             />
           </div>
           <small style="display: block;">By: {{ img.name }}</small>
         </div>
-        *******FIX THIS*****
       </div>
       <div :id="`response_${orderDetails.order_details.order_no}a_11b`"></div>
       <div class="row">
@@ -108,7 +105,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['customConfig']),
+    ...mapState(['config']),
   },
   mounted() {},
 };

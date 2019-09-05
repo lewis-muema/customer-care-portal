@@ -2,11 +2,9 @@ import Apix from '@agog/apix';
 import custom_actions from './actions';
 import custom_getters from './getters';
 import custom_mutations from './mutations';
+import config from '~/config/configs';
 
-const environment = process.env.DOCKER_ENV;
-const customConfigsVar = process.env.customConfigs.customConfig;
-const customConfig = customConfigsVar[environment];
-const jwtToken = process.env.jwtToken;
+const jwtToken = config.JWT_Token;
 
 const apix = new Apix({
   prefix: 'https://adonistest.sendyit.com',
@@ -30,6 +28,7 @@ export default {
     return {
       ...apix.getState(),
       token: null,
+      config,
       jwtToken,
       userData: {
         user_name: 'Joyce Kemboi',
@@ -72,7 +71,6 @@ export default {
       },
       baseUrl,
       breadcrumbs: [],
-      customConfig,
       notification: {},
       orderColumns: ['dfcsdfs'],
       delayLabels: {

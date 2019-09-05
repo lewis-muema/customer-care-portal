@@ -108,7 +108,14 @@ export default {
         apiKey: true,
         params: { rider_id: riderArray },
       };
-      const data = await this.request_partner_last_position(payload);
+      const lastPosition = await this.request_partner_last_position(payload);
+      let data = null;
+      if (typeof lastPosition.data === 'undefined') {
+        const notification = this.display_code_notification(data);
+        this.updateNotification(notification);
+      } else {
+        data = lastPosition.data;
+      }
       const partnerArray = data.partnerArray[0];
       let riderTime = '';
       let riderLat = -1.299923;
