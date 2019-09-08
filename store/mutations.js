@@ -10,4 +10,10 @@ export default {
   setErrors(state, errors) {
     state.errors = errors;
   },
+  setActionErrors(state, val) {
+    state.actionErrors = val;
+  },
+  setActionClass(state, val) {
+    state.actionClass = val;
+  },
 };

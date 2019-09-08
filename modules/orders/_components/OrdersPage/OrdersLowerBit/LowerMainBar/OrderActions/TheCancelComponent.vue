@@ -1,20 +1,12 @@
 <template>
   <div>
-    <div :id="`response_${orderNo}_cancel`" v-html="notifications"></div>
-    <div v-if="errors.length" class="alert alert-danger">
-      <ul>
-        <li v-for="error in errors" :key="error.index">
-          <b>{{ error }}</b>
-        </li>
-      </ul>
-    </div>
     <form id="cancel-form" @submit.prevent="cancelOrder">
       <div class="form-group">
         <v-select
           :options="options"
           :reduce="reason => reason.code"
           label="reason"
-          :placeholder="getSelectorPlaceholder"
+          placeholder="Select Reason for cancelling..."
           :id="`cancel_reason_${orderNo}`"
           v-model="reason"
         >
@@ -35,7 +27,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'TheCancelComponent',
@@ -68,36 +60,55 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      cancel_order: '$_orders/cancel_order',
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
     }),
+    ...mapActions({
+      perform_order_action: '$_orders/perform_order_action',
+    }),
+    myFunction(item, index, arr) {
+      arr[index] = item;
+      console.log('arr', arr);
+    },
     async cancelOrder() {
+      let err = [];
+      let actionClass = '';
+
       if (!this.reason) {
-        this.errors.push('Cancellation reason required.');
+        err.push('Cancellation reason is required.');
+        actionClass = 'danger';
       }
       if (!this.description) {
-        this.errors.push('Cancellation description required.');
+        err.push('Cancellation description is required.');
+        actionClass = 'danger';
       }
 
-      if (this.reason && this.description) {
-        this.errors = [];
+      if (err.length === 0) {
+        err = [];
         const payload = {
-          cancel_reason_id: this.reason,
-          order_no: this.orderNo,
-          reason_description: this.description,
+          app: 'ORDERS_APP',
+          endpoint: 'cancel_order',
+          apiKey: true,
+          params: {
+            order_no: this.orderNo,
+            action_id: 1,
+            cancel_reason_id: this.reason,
+            reason_description: this.description,
+          },
         };
         try {
-          const data = await this.cancel_order(payload);
-          this.notifications = this.display_notification(
-            data.reason,
-            data.status,
-          );
+          const data = await this.perform_order_action(payload);
+
+          err.push(data.reason);
+          actionClass = this.display_order_action_notification(data.status);
         } catch (error) {
-          this.errors.push(
-            'Something went wrong. Try again or contact Tech Support',
-          );
+          err.push('Something went wrong. Try again or contact Tech Support');
+          actionClass = 'danger';
         }
       }
+      this.updateClass(actionClass);
+      this.updateErrors(err);
     },
   },
 };

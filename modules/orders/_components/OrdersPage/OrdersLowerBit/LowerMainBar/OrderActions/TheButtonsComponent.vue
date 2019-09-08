@@ -91,7 +91,7 @@
           Sms Link
         </a>
       </li>
-      <li
+      <!-- <li
         class=""
         v-if="
           order.order_details.confirm_status === 1 &&
@@ -101,6 +101,26 @@
       >
         <a class="force_blue" data-toggle="tab" aria-expanded="false">
           <span class="fa fa-fw fa-rss"></span>
+          Proximity
+        </a>
+      </li> -->
+      <!-- <li
+        class="nav-item"
+        v-if="
+          order.order_details.confirm_status === 1 &&
+            order.order_details.delivery_status < 3 &&
+            userData.privilege.location_proximity
+        "
+      > -->
+      <li class="nav-item">
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('proximity', orderNo)"
+          :id="`proximity_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-envelope"></span>
           Proximity
         </a>
       </li>
@@ -119,6 +139,13 @@
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
+        <div v-if="actionErrors.length" :class="`alert alert-${actionClass}`">
+          <ul>
+            <li v-for="error in actionErrors" :key="error.index">
+              <b>{{ error }}</b>
+            </li>
+          </ul>
+        </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
           :id="`dispatch_${orderNo}`"
@@ -153,6 +180,14 @@
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
+          :id="`proximity_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `proximity_${orderNo}`"
+        >
+          <TheProximityComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
           :id="`return_${orderNo}`"
           role="tabpanel"
           v-if="showTab === `return_${orderNo}`"
@@ -174,6 +209,7 @@ export default {
     TheCancelComponent: () => import('./TheCancelComponent'),
     TheReturnComponent: () => import('./TheReturnComponent'),
     TheScheduleComponent: () => import('./TheScheduleComponent'),
+    TheProximityComponent: () => import('./TheProximityComponent'),
   },
   props: {
     order: {
@@ -191,7 +227,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['userData']),
+    ...mapState(['userData', 'actionErrors', 'actionClass']),
   },
   mounted() {
     this.orderNo = this.order.order_details.order_no;

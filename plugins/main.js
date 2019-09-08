@@ -35,9 +35,9 @@ Vue.mixin({
     display_order_action_notification(status) {
       console.log('status', status);
 
-      let displayClass = 'alert alert-info';
+      let displayClass = 'info';
       if (!status) {
-        displayClass = 'alert alert-danger';
+        displayClass = 'danger';
       }
       console.log('status', displayClass);
 

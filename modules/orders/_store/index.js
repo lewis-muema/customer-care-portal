@@ -19,6 +19,7 @@ const state = {
   jwtToken,
   order: null,
   order_request_object: null,
+  actionErrors: [],
 };
 
 export default {

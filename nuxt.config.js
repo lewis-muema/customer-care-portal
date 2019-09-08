@@ -118,6 +118,7 @@ export default {
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',
+    'plugins/vuelidate',
   ],
   /*
    ** Nuxt.js modules

@@ -47,7 +47,7 @@ export default {
       paymentDetails: this.order.payment_details,
       moreData: this.order.order_details,
       notification: null,
-      displayClass: null,
+      displayClass: '',
       scheduleTime: '',
       scheduleDesription: '',
     };
@@ -69,23 +69,27 @@ export default {
         err.push('Re-Scheduling time is required.');
       }
       this.updateErrors(err);
-      const payload = {
-        app: 'ORDERS_APP',
-        endpoint: 'reschedule_order_cc',
-        apiKey: true,
-        params: {
-          order_no: this.orderNo,
-          action_id: 6,
-          date_time: this.scheduleTime,
-          reallocation_description: this.scheduleDesription,
-          reallocation_reason_id: 1,
-        },
-      };
-      const data = await this.perform_order_action(payload);
-      console.log('datad', data);
-      //   const msgClass = this.display_order_action_notification(data.status);
-      //   this.displayClass = msgClass;
-      //   return (this.notification = data.reason);
+      if (err.length === 0) {
+        const currentDate = moment().toDate();
+        console.log('currentDate', currentDate);
+        const payload = {
+          app: 'ORDERS_APP',
+          endpoint: 'reschedule_order_cc',
+          apiKey: true,
+          params: {
+            order_no: this.orderNo,
+            action_id: 6,
+            date_time: this.scheduleTime,
+            reallocation_description: this.scheduleDesription,
+            reallocation_reason_id: 1,
+          },
+        };
+        const data = await this.perform_order_action(payload);
+        const msgClass = this.display_order_action_notification(data.status);
+
+        this.displayClass = msgClass;
+        return (this.notification = data.reason);
+      }
     },
   },
 };
