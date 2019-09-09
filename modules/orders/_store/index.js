@@ -3,10 +3,7 @@ import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
 
-const environment = process.env.DOCKER_ENV;
-const customConfigsVar = process.env.customConfigs.customConfig;
-const customConfig = customConfigsVar[environment];
-const jwtToken = process.env.jwtToken;
+const jwtToken = process.env.JWT_TOKEN;
 const state = {
   orderColumns: [
     'Status',
@@ -19,10 +16,10 @@ const state = {
     'Rider Amount',
   ],
   orders: [],
-  customConfig,
   jwtToken,
   order: null,
   order_request_object: null,
+  actionErrors: [],
 };
 
 export default {

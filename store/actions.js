@@ -22,11 +22,10 @@ export default {
       },
     };
     const routeName = $nuxt.$route.name;
-    // Fix this
     commit('setbreadcrumbs', breadcrumbsObject.peer);
   },
   async requestAxiosPost({ state, commit }, payload) {
-    const customConfig = state.customConfig;
+    const customConfig = state.config;
     const url = customConfig[payload.app];
     let endpoint = payload.endpoint;
     let backendKey = null;
@@ -47,12 +46,23 @@ export default {
       const response = await axios.post(`${url}${endpoint}`, values, config);
       return response;
     } catch (error) {
-      console.log('error', error);
+      return error.message;
     }
   },
-  show_notification({ commit }, payload) {
-    commit('setNotification', payload);
-    commit('setNotificationStatus', true);
-    return true;
+  async request_single_order({ state }, orderNo) {
+    const config = state.config;
+    const url = `${config.ADONIS_API}orders/${orderNo}`;
+    try {
+      const response = await axios.get(url);
+      const data = await response;
+      const orderDetails = data.data;
+      return orderDetails;
+    } catch (error) {
+      return error.message;
+    }
+  },
+  async request_dispatch_list({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
   },
 };

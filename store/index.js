@@ -2,12 +2,9 @@ import Apix from '@agog/apix';
 import custom_actions from './actions';
 import custom_getters from './getters';
 import custom_mutations from './mutations';
+import config from '~/config/configs';
 
-const environment = process.env.DOCKER_ENV;
-const customConfigsVar = process.env.customConfigs.customConfig;
-const customConfig = customConfigsVar[environment];
-
-// console.log('configs', this.my_global_config);
+const jwtToken = config.JWT_Token;
 
 const apix = new Apix({
   prefix: 'https://adonistest.sendyit.com',
@@ -15,8 +12,7 @@ const apix = new Apix({
     headers: {
       'Content-Type': 'text/plain',
       Accept: 'application/json',
-      Authorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJwYXlsb2FkIjp7ImRhdGEiOnsiYWRtaW5fdHlwZSI6IjAiLCJhZG1pbl9pZCI6IjExMCIsImVjb21tZXJjZV9vbmx5IjoiMCIsInN0YXR1cyI6IjEiLCJlbWFpbCI6ImpveWNlQHNlbmR5aXQuY29tIiwiYWdlbnRfZXh0ZW5zaW9uIjoiMCIsImV4dGVybmFsX3N0YXR1cyI6IjAiLCJjb3BfaWQiOm51bGwsIm5hbWUiOiJKb3ljZSBLZW1ib2kiLCJwb3N0IjoiRnJvbnRlbmQgRW5naW5lZXIiLCJjb3VudHJ5X2NvZGVzIjoiW1wiS0VcIl0iLCJkZXYiOiIxIiwicGljIjoiZWdneS5wbmciLCJwcml2aWxlZ2UiOiJ7XCJ2aWV3X25ld19mZWF0dXJlXCI6IHRydWUsIFwicmVjb3JkX21wZXNhXCI6IHRydWUsIFwiY2hhdFwiOiB0cnVlLCBcImFwcHJvdmVfcGFydG5lcnNcIjogdHJ1ZSwgXCJhcHByb3ZlX3Bvc3RwYXlcIjogdHJ1ZSwgXCJyZWNvcmRfbm90aWZpY2F0aW9uXCI6IHRydWUsIFwicmVjb3JkX2NoZXF1ZXNcIjogdHJ1ZSwgXCJyZWNvcmRfcGFydG5lcl93aXRoZHJhd2FsXCI6IHRydWUsIFwicmVjb3JkX3Byb21vX2NvZGVcIjogdHJ1ZSwgXCJyZWNvcmRfdXNlclwiOiB0cnVlLCBcInJlY29yZF9wYXNzX2NoYW5nZVwiOiB0cnVlLCBcImFwcHJvdmVfcHJlcGF5X2JpbGxpbmdcIjogdHJ1ZSwgXCJhcHByb3ZlX3Bvc3RwYXlfYmlsbGluZ1wiOiB0cnVlLCBcImNoYW5nZV9hY2NvdW50X21hbmFnZXJcIjogdHJ1ZSwgXCJsb2NhdGlvbl9wcm94aW1pdHlcIjogdHJ1ZSwgXCJyZWFzc2lnbl9vcmRlcnNcIjogdHJ1ZSwgXCJ1cGRhdGVfZGVsaXZlcnlfc3RhdHVzXCI6dHJ1ZX0iLCJzZW5kX2RlcHRfaWQiOiIyIiwicm9sZSI6IjIiLCJwaG9uZSI6IjI1NDcxOTE2OTEyNCIsInNob3dfZWNvbW1lcmNlIjoiMCIsImFsbG93ZWRfb3JkZXJzIjpudWxsfSwibWFuYWdlZF9saXN0Ijp7fX0sInN0YXR1cyI6dHJ1ZSwiZXhwaXJ5IjoiODY0MDAifQ.Os2LfUt2f-n47NyhXpxfsCQmzpeArnHkt7QsBgJ7N1U',
+      Authorization: jwtToken,
     },
   },
   resources: [
@@ -24,7 +20,7 @@ const apix = new Apix({
     { name: 'exchangeRates', url: `exchange-rates` },
   ],
 });
-const jwtToken = process.env.jwtToken;
+const baseUrl = process.env.baseUrl;
 export const custom_state = () => ({});
 export default {
   namespaced: true,
@@ -32,10 +28,58 @@ export default {
     return {
       ...apix.getState(),
       token: null,
+      config,
       jwtToken,
+      userData: {
+        user_name: 'Joyce Kemboi',
+        user_email: 'joyce@sendyit.com',
+        phone: '254719169124',
+        admin_id: 110,
+        post: 'Frontend Engineer',
+        pic: 'eggy.png',
+        send_dept_id: 2,
+        dev: 1,
+        role: 2,
+        privilege: {
+          view_new_feature: true,
+          record_mpesa: true,
+          chat: true,
+          approve_partners: true,
+          approve_postpay: true,
+          record_notification: true,
+          record_cheques: true,
+          record_partner_withdrawal: true,
+          record_promo_code: true,
+          record_user: true,
+          record_pass_change: true,
+          approve_prepay_billing: true,
+          approve_postpay_billing: true,
+          change_account_manager: true,
+          location_proximity: true,
+          reassign_orders: true,
+          update_delivery_status: true,
+        },
+        cop_id: '',
+        external_status: 0,
+        allowed_orders: '',
+        ecommerce_only: 0,
+        admin_type: 0,
+        agent_extension: 0,
+        country_codes: ['KE'],
+        managed_list: [],
+        logged_in: 23,
+      },
+      baseUrl,
       breadcrumbs: [],
-      customConfig,
       notification: {},
+      errors: [],
+      actionErrors: [],
+      actionClass: null,
+      errorCodes: {
+        403: 'Your access token has expired. Please logout and login again',
+        500: 'Page not found',
+        400: 'Cannot unmarshal JSON as Request',
+      },
       orderColumns: ['dfcsdfs'],
       delayLabels: {
         pending: 'corfirmation',

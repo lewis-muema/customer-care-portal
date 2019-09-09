@@ -1,9 +1,6 @@
 <template>
   <table class="table table-bordered">
     <tbody>
-      {{
-        typeof path
-      }}
       <tr>
         <th></th>
         <th>Name</th>

@@ -4,7 +4,7 @@
       <div class="map_custom" :id="`map_custom_${orderDetails.order_no}`">
         <img
           :src="
-            `https://maps.googleapis.com/maps/api/staticmap?center=-1.300041,36.780792&zoom=13&size=351x200&maptype=roadmap&markers=color:blue%7Clabel:R%7C-1.300041,36.780792&key=${this.customConfig.GOOGL_API_KEY}`
+            `https://maps.googleapis.com/maps/api/staticmap?center=-1.300041,36.780792&zoom=13&size=351x200&maptype=roadmap&markers=color:blue%7Clabel:R%7C-1.300041,36.780792&key=${this.config.GOOGL_API_KEY}`
           "
           width="351px"
           height="200px;"
@@ -16,7 +16,7 @@
       >
         Reload
       </span>
-      <TheRiderViewComponent :order="orderDetails.rider_details" />
+      <TheRiderViewComponent :order="orderDetails" />
       <TheLogsComponent :order="orderDetails" />
     </div>
   </div>
@@ -25,14 +25,12 @@
 <script>
 import { mapState } from 'vuex';
 
-// import TheSideMapComponent from './TheSideMapComponent';
 import TheLogsComponent from './TheLogsComponent';
 import TheRiderViewComponent from './TheRiderViewComponent';
 
 export default {
   name: 'TheSideComponent',
   components: {
-    // TheSideMapComponent,
     TheRiderViewComponent,
     TheLogsComponent,
   },
@@ -48,10 +46,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['customConfig']),
-  },
-  mounted() {
-    console.log('customConfig', this.orderDetails);
+    ...mapState(['config']),
   },
 };
 </script>

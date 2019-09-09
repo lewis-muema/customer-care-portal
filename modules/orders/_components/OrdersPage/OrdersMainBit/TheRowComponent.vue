@@ -131,14 +131,14 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
+import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
 
 PouchDB.plugin(PouchFind);
 
 export default {
   name: 'TheRowComponent',
   components: {
-    TheLowerSlideComponent: () =>
-      import('../OrdersLowerBit/TheLowerSlideComponent'),
+    TheLowerSlideComponent,
   },
   data() {
     return {
@@ -171,7 +171,6 @@ export default {
       const newOrders = currentOrdersData.concat(ordersData.data);
       const storeData = await this.updateOrders(newOrders, pagination);
       const storedOrders = await this.fetchOrders();
-
       return (this.orders = storedOrders[0].doc.data);
     },
     bottom(bottom) {
@@ -231,7 +230,6 @@ export default {
     // eslint-disable-next-line require-await
     async updateOrders(orders, pagination) {
       const storedOrders = await this.fetchOrders(); // fetch all stored data from pouchDB
-      let totalOrders;
       let rev = '';
       let id = 1;
       if (storedOrders.length > 0) {

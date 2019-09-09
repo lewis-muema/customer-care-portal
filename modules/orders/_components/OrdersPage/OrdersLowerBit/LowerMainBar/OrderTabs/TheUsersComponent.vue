@@ -44,7 +44,7 @@
         <td width="50%">Corporate name</td>
         <td>
           {{
-            orderDetails.client_details.corporate_name === 'Sendy'
+            orderDetails.client_details.corporate_name === ''
               ? 'Peer'
               : orderDetails.client_details.corporate_name
           }}
@@ -87,7 +87,6 @@ export default {
       orderDetails: this.order,
       moreData: this.order.order_details,
       deliveryVerification: null,
-      sampleOrder: null,
       nextOrder: null,
       previousOrder: null,
       displayArray: {
@@ -97,11 +96,9 @@ export default {
     };
   },
   mounted() {
-    this.sampleOrder = this.singleOrder();
-    this.deliveryVerification = this.sampleOrder.delivery_verification;
-    this.nextOrder = this.sampleOrder.delivery_verification.next_order;
-    this.previousOrder = this.sampleOrder.delivery_verification.previous_order;
+    this.deliveryVerification = this.moreData.delivery_verification;
+    this.nextOrder = this.moreData.next_order;
+    this.previousOrder = this.moreData.previous_order;
   },
-  methods: {},
 };
 </script>

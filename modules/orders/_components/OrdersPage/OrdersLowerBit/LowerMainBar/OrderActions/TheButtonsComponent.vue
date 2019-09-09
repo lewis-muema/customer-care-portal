@@ -1,98 +1,251 @@
 <template>
-  <ul class="nav nav-tabs" style="border:0px !important;">
-    <li class="2019-05-15 11:43:16.0">
-      <a
-        class="force_blue"
-        href="#tab_3abAC43F8829-12W"
-        data-toggle="tab"
-        aria-expanded="false"
-        onclick=""
-        id="distab_3abAC43F8829-12W"
+  <div id="tabs" class="container">
+    <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('dispatch', orderNo)"
+          :id="`dispatch_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-wifi"></span>
+          Dispatch
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.delivery_status < 1 &&
+            userData.privilege.reassign_orders
+        "
       >
-        <span class="fa fa-fw fa-wifi"></span>
-        Dispatch
-      </a>
-    </li>
-    <li class="">
-      <a
-        class="force_blue"
-        style="width:100px!important;"
-        href="#tab_15abAC43F8829-12W"
-        data-toggle="tab"
-        aria-expanded="false"
-        onclick=""
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('reallocate', orderNo)"
+          :id="`reallocate_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-link"></span>
+          Re-Allocate
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.delivery_status < 3 &&
+            userData['admin_type'] !== 1
+        "
       >
-        <span class="fa fa-fw fa-link"></span>
-        Re-Allocate
-      </a>
-    </li>
-    <li class="">
-      <a
-        class="force_blue"
-        href="#tab_1aAC43F8829-12W"
-        data-toggle="tab"
-        aria-expanded="false"
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('cancel', orderNo)"
+          :id="`cancel_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-thumbs-down"></span>
+          Cancel
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('schedule', orderNo)"
+          :id="`schedule_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-thumbs-calendar"></span>
+          Schedule
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.delivery_status < 3 &&
+            userData['admin_type'] !== 1
+        "
       >
-        <span class="fa-class fa fa-thumbs-down"></span>
-        Cancel
-      </a>
-    </li>
-    <li class="">
-      <a
-        class="force_blue"
-        href="#tab_2aAC43F8829-12W"
-        data-toggle="tab"
-        aria-expanded="false"
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('return', orderNo)"
+          :id="`return_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-retweet"></span>
+          Return
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('sms', orderNo)"
+          :id="`sms_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-paste"></span>
+          Sms Link
+        </a>
+      </li>
+      <!-- <li
+        class=""
+        v-if="
+          order.order_details.confirm_status === 1 &&
+            order.order_details.delivery_status < 3 &&
+            userData.privilege.location_proximity
+        "
       >
-        <span class="fa-class fa fa-calendar"></span>
-        Schedule
-      </a>
-    </li>
-    <li class="">
-      <a
-        class="force_blue"
-        href="#tab_6aAC43F8829-12W"
-        data-toggle="tab"
-        aria-expanded="false"
-      >
-        <span class="fa-class fa fa-retweet"></span>
-        Return
-      </a>
-    </li>
-
-    <li class="">
-      <a
-        class="force_blue"
-        href="#tab_7aAC43F8829-12W"
-        data-toggle="tab"
-        aria-expanded="false"
-      >
-        <span class="fa-class fa fa-paste"></span>
-        Sms Link
-      </a>
-    </li>
-
-    <li class="">
-      <a
-        class="force_blue"
-        href="#tab_5aAC43F8829-12W"
-        data-toggle="tab"
-        aria-expanded="false"
-      >
-        <span class="fa-class fa fa-envelope"></span>
-        Ticket
-      </a>
-    </li>
-
-    <!------------- closed endpoints ----->
-  </ul>
+        <a class="force_blue" data-toggle="tab" aria-expanded="false">
+          <span class="fa fa-fw fa-rss"></span>
+          Proximity
+        </a>
+      </li> -->
+      <!-- <li
+        class="nav-item"
+        v-if="
+          order.order_details.confirm_status === 1 &&
+            order.order_details.delivery_status < 3 &&
+            userData.privilege.location_proximity
+        "
+      > -->
+      <li class="nav-item">
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('proximity', orderNo)"
+          :id="`proximity_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-envelope"></span>
+          Proximity
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('ticket', orderNo)"
+          :id="`ticket_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-envelope"></span>
+          Ticket
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="body-box">
+        <div v-if="actionErrors.length" :class="`alert alert-${actionClass}`">
+          <ul>
+            <li v-for="error in actionErrors" :key="error.index">
+              <b>{{ error }}</b>
+            </li>
+          </ul>
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`dispatch_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `dispatch_${orderNo}`"
+        >
+          <TheDispatchComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`reallocate_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `reallocate_${orderNo}`"
+        >
+          <TheReallocateComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`cancel_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `cancel_${orderNo}`"
+        >
+          <TheCancelComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`schedule_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `schedule_${orderNo}`"
+        >
+          <TheScheduleComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`proximity_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `proximity_${orderNo}`"
+        >
+          <TheProximityComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`return_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `return_${orderNo}`"
+        >
+          <TheReturnComponent :order="order" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
   name: 'TheButtonsComponent',
+  components: {
+    TheDispatchComponent: () => import('./TheDispatchComponent'),
+    TheReallocateComponent: () => import('./TheReallocateComponent'),
+    TheCancelComponent: () => import('./TheCancelComponent'),
+    TheReturnComponent: () => import('./TheReturnComponent'),
+    TheScheduleComponent: () => import('./TheScheduleComponent'),
+    TheProximityComponent: () => import('./TheProximityComponent'),
+  },
+  props: {
+    order: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      orderNo: null,
+      showTab: null,
+      show: false,
+      active: false,
+      moreData: null,
+    };
+  },
+  computed: {
+    ...mapState(['userData', 'actionErrors', 'actionClass']),
+  },
+  mounted() {
+    this.orderNo = this.order.order_details.order_no;
+    this.moreData = this.order.order_details;
+  },
+  methods: {
+    viewTab(tab, orderNo) {
+      this.showTab = `${tab}_${orderNo}`;
+      this.active = 'active';
+      this.show = 'show';
+    },
+  },
 };
 </script>
 <style>
+.buttons-tab {
+  padding-bottom: 10px;
+}
 .nav-tabs > li {
   float: left;
   margin-bottom: -1px;
@@ -103,5 +256,27 @@ export default {
 }
 .fa-class {
   padding-right: 2px;
+}
+.force_blue {
+  color: #3c8dbc !important;
+  cursor: pointer;
+  /* text-decoration: none; */
+}
+/* .space_tab {
+  padding: 16px;
+} */
+.vs__dropdown-toggle {
+  padding: 6px 4px !important;
+  color: #ccc;
+}
+.vs__dropdown-toggle ::placeholder {
+  /* padding: 6px 4px !important; */
+  color: #666;
+}
+.form-control {
+  font-size: 13px;
+}
+.vs__dropdown-menu {
+  border-top: 1px solid #d3d7de;
 }
 </style>

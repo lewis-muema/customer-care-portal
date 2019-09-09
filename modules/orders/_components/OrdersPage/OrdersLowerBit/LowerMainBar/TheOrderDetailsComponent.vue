@@ -1,5 +1,6 @@
 <template>
   <div id="tabs" class="container">
+    <!-- <TheNotificationsComponent :errors="errors" /> -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
         <a
@@ -34,17 +35,6 @@
           >Notes</a
         >
       </li>
-      <!-- <li class="nav-item">
-        <a
-          class="nav-link"
-          :id="`rating_${orderNo}`"
-          data-toggle="tab"
-          role="tab"
-          aria-selected="false"
-          @click="viewTab('rating', orderNo)"
-          >Rating</a
-        >
-      </li> -->
       <li class="nav-item">
         <a
           class="nav-link"
@@ -165,8 +155,8 @@
       <li
         class="nav-item"
         v-if="
-          moreData.confirm_status === 3 &&
-            orderDetails.delivery_verification.physical_delivery_note_status
+          moreData.delivery_status === 3 &&
+            moreData.delivery_verification.physical_delivery_note_status
         "
       >
         <a
@@ -196,10 +186,7 @@
           role="tabpanel"
           v-if="showTab === `time_${orderNo}`"
         >
-          <TheTimeComponent
-            :order="orderDetails.time_metrics"
-            :pickup="orderDetails.order_details.pickup_time"
-          />
+          <TheTimeComponent :order="moreData" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -226,7 +213,7 @@
           role="tabpanel"
           v-if="showTab === `route_${orderNo}`"
         >
-          <TheRouteComponent :order="orderDetails.path" />
+          <TheRouteComponent :order="orderDetails.paths" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -234,7 +221,7 @@
           role="tabpanel"
           v-if="showTab === `map_${orderNo}`"
         >
-          <TheMapComponent :order="orderDetails" />
+          <TheMapComponent :order="orderDetails" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -271,12 +258,20 @@
         >
           <TheDeliveryDetailsComponent :order="orderDetails" />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`dnotes_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `dnotes_${orderNo}`"
+        >
+          <TheDNotesComponent :order="orderDetails" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'TheOrderDetailsComponent',
@@ -290,6 +285,8 @@ export default {
     ThePriceTiersComponent: () => import('./OrderTabs/ThePriceTiersComponent'),
     TheDisputeComponent: () => import('./OrderTabs/TheDisputeComponent'),
     TheDispatchComponent: () => import('./OrderTabs/TheDispatchListComponent'),
+    TheDNotesComponent: () => import('./OrderTabs/TheDNotesComponent'),
+
     TheDeliveryDetailsComponent: () =>
       import('./OrderTabs/TheDeliveryDetailsComponent'),
   },
@@ -306,12 +303,14 @@ export default {
       showTab: `users_${this.order.order_details.order_no}`,
       orderNo: null,
       show: false,
+      errors: [],
       active: false,
       activetab: null,
       firstShow: false,
       firstActive: false,
       conversionRates: null,
-      trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
+      notification: null,
+      eta: null,
     };
   },
   computed: {
@@ -331,13 +330,30 @@ export default {
     const vendorTypeID = this.orderDetails.rider_details.vendor_type_id;
     this.isTruck(this.trucksArray, vendorTypeID);
     this.setExchangeRates();
+    this.requestETAs();
   },
   methods: {
+    ...mapMutations({
+      updateNotification: 'setNotification',
+    }),
     ...mapActions({
       setExchangeRates: 'setExchangeRates',
+      request_order_eta: '$_orders/request_order_eta',
     }),
-    toggleTabs(tab, orderNo) {
-      return (this.activetab = `${tab}_${orderNo}`);
+    async requestETAs() {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'eta',
+        apiKey: true,
+        params: { order_no: this.orderNo },
+      };
+      const data = await this.request_order_eta(payload);
+      if (typeof data.data === 'undefined') {
+        this.notification = this.display_code_notification(data);
+        this.updateNotification(this.notification);
+      } else {
+        return (this.eta = data.data);
+      }
     },
     viewTab(tab, orderNo) {
       this.showTab = `${tab}_${orderNo}`;

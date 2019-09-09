@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import moment from 'moment';
+import config from '~/config/configs';
 
 Vue.mixin({
   data() {
@@ -22,13 +23,43 @@ Vue.mixin({
         22: 'standard',
         25: 'Freight',
       },
+      errorCodes: {
+        403: 'Your access token has expired. Please logout and login again',
+        500: 'Page not found',
+      },
+      trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
     };
   },
   created() {},
   methods: {
+    display_order_action_notification(status) {
+      console.log('status', status);
+
+      let displayClass = 'info';
+      if (!status) {
+        displayClass = 'danger';
+      }
+      console.log('status', displayClass);
+
+      return displayClass;
+    },
+    splitWords(words) {
+      const n = words.split(' ');
+      return n[n.length - 1];
+    },
+    display_code_notification(message) {
+      const code = Number(this.splitWords(message));
+      const notification = this.errorCodes[code];
+      return notification;
+    },
+    getOrderFormattedDate(date, requiredFormat) {
+      const dt = moment(date).format(requiredFormat);
+      return dt;
+    },
     getFormattedDate(date, requiredFormat) {
-      const dt = moment(date, 'YYYY-MM-DD HH:mm:ss');
-      return dt.format(requiredFormat);
+      const dt1 = moment(date, 'YYYY-MM-DD HH:mm:ss');
+      const dt = moment(dt1).format(requiredFormat);
+      return dt;
     },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -45,6 +76,28 @@ Vue.mixin({
         return true;
       }
       return false;
+    },
+    displayDateTime(date) {
+      let displayString = '--';
+      if (typeof date !== 'undefined') {
+        displayString = this.getFormattedDate(date, 'h.mm a');
+      }
+      return displayString;
+    },
+    displayDateRange(dateRange) {
+      let displayString = '--';
+      if (typeof dateRange !== 'undefined') {
+        const range = dateRange.split('to');
+
+        const eta_split = dateRange.split('to');
+        const start = eta_split[0].replace(/\s+/g, '');
+        const end = eta_split[1].replace(/\s+/g, '');
+
+        const timeFrom = this.getFormattedDate(start, 'h.mm a');
+        const timeTo = this.getFormattedDate(end, 'h.mm a');
+        displayString = `${timeFrom} - ${timeTo}`;
+      }
+      return displayString;
     },
     // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(amount, vendorTypeID, fixedCost,  customerMinAmount, confirmStatus) {
@@ -141,170 +194,6 @@ Vue.mixin({
       } else {
         return myString;
       }
-    },
-    singleOrder() {
-      const order = {
-        order_details: {
-          order_no: 'AC57XS781-ED7',
-          pickup_time: '2019-08-19T16:34:42.000Z',
-          order_status: 1,
-          confirm_status: 0,
-          delivery_status: 0,
-          dispute_status: 0,
-          batch_no: null,
-          price_type: 1,
-          errand_mode: 'one_way',
-          client_mode: 0,
-          dispute_delivery_doc_status: 0,
-          delivery_verification: '',
-          next_order: '',
-          previous_order: '',
-          distance_read: '7',
-          load_weight: '28',
-          no_of_loaders: '3',
-          way_points: '1',
-          carrier_type: '',
-        },
-        rider_details: {
-          name: 'Sendy Rider',
-          phone_no: '+254714454473',
-          serial_no: 89254021074127500000,
-          vendor_type_id: 20,
-          load_capacity: '28',
-          default_currency: 'KES',
-          photo: 'zfkkxkvhgf-tim.jpeg',
-          rider_cost: 0,
-          amount: 3000,
-        },
-        client_details: {
-          corporate_name: 'Sendy',
-          name: 'Faithshopy',
-          email: 'faithshop@gmail.com',
-          phone_no: '+254778987789',
-          default_currency: 'UGX',
-        },
-        payment_details: {
-          cash_status: false,
-          order_currency: 'KES',
-          economy_order_cost: 8270,
-          cost: 8270,
-          return_cost: 8760,
-          fixed_cost: false,
-          customer_min_amount: 483,
-          order_amount: 3000,
-          extra_distance_amount: 0,
-          waiting_time_amount: 0,
-          insurance_amount: 200,
-          sendy_fee: 0,
-          cash_to_collect: 0,
-        },
-        price_tiers: [
-          {
-            best_option: true,
-            tier_name: 'testing',
-            discount_amount: 0,
-            cost: 4555,
-            return_cost: 3455,
-            eta: 2700,
-          },
-        ],
-        delivery_log: [
-          {
-            log_type: 1,
-            description: 'Order AC31ZN137-CBD created',
-            log_time: '2019-04-12 16:29:18.0',
-          },
-          {
-            log_type: 5,
-            description:
-              'Order AC31ZN137-CBD for Faith shop reallocated to Kebati Dereva',
-            log_time: '2019-04-12 17:21:15.0',
-          },
-          {
-            log_type: 2,
-            description:
-              'Order AC31ZN137-CBD for Faith shop was confirmed by Kebati Dereva',
-            log_time: '2019-04-12 17:21:15.0',
-          },
-          {
-            log_type: 11,
-            description:
-              'Kebati, You are OFFLINE thus we are unable to calculate the distance traveled. This will reduce the amount paid for this trip. Please put the phone ONLINE to receive full payment for the trip.',
-            log_time: '2019-04-12 17:45:00.0',
-          },
-          {
-            log_type: 11,
-            description:
-              'Kebati, You are OFFLINE thus we are unable to calculate the distance traveled. This will reduce the amount paid for this trip. Please put the phone ONLINE to receive full payment for the trip.',
-            log_time: '2019-04-12 18:00:00.0',
-          },
-          {
-            log_type: 11,
-            description:
-              'Kebati, You are OFFLINE thus we are unable to calculate the distance traveled. This will reduce the amount paid for this trip. Please put the phone ONLINE to receive full payment for the trip.',
-            log_time: '2019-04-12 18:15:00.0',
-          },
-          {
-            log_type: 3,
-            description:
-              'Order AC31ZN137-CBD for Faith shop collected by Kebati Dereva',
-            log_time: '2019-04-30 13:50:04.0',
-          },
-        ],
-        time_metrics: {
-          actual_delivery_duration: 0,
-          lifetime_delay: 0,
-          estimated_delivery_duration: 0,
-          estimated_lifetime: 0,
-          pickup_delay: 0,
-          delivery_delay: 0,
-          actual_lifetime: 0,
-          estimated_pickup_duration: 0,
-          actual_pickup_duration: 0,
-        },
-        delivery_details: {
-          rider_delivery_image: '',
-          rider_delivery_docs: '',
-        },
-        dispute: {
-          billing_data: ' { resolve_id, resolve_description }',
-        },
-        path: [
-          {
-            name: 'Marsabit Plaza',
-            Label: 'Marsabit Plaza',
-            FlatName: '',
-            Road: 'Marsabit Plaza,  Nairobi',
-            Otherdescription: '',
-          },
-        ],
-        notes_log: [
-          {
-            msg: 'NOTES: These are the notes',
-          },
-        ],
-        delivery_verification: {
-          physical_delivery_note_status: true,
-          next_order: '',
-          previous_order: 'AC68M8915-QXI',
-        },
-        rider_deliver_img: [
-          {
-            img: 'rider_dropoff//AC29WA232-R9A1.jpg',
-            physical_delivery_note_status: 1,
-            name: 'gg',
-            waypoint_no: 1,
-            delivery_image: [
-              {
-                images: ['AC29WA232-R9A1-delivery_note-0.jpg'],
-                document_tag: 'delivery_note',
-                name: 'Delivery Note',
-              },
-            ],
-          },
-        ],
-      };
-      return order;
     },
   },
 });
