@@ -77,15 +77,15 @@
 export default {
   name: 'TheUsersComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
   },
   data() {
     return {
-      orderDetails: this.orderdetails,
-      moreData: this.orderdetails.order_details,
+      orderDetails: this.order,
+      moreData: this.order.order_details,
       deliveryVerification: null,
       nextOrder: null,
       previousOrder: null,

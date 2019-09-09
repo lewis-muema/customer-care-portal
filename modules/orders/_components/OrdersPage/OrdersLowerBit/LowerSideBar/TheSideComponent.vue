@@ -1,7 +1,7 @@
 <template>
   <div class="col-md-4">
     <div class="box box-primary lower_sider_bar">
-      <div class="map_custom" :id="`map_custom_${orderdetails.order_no}`">
+      <div class="map_custom" :id="`map_custom_${order.order_no}`">
         <img
           :src="
             `https://maps.googleapis.com/maps/api/staticmap?center=-1.300041,36.780792&zoom=13&size=351x200&maptype=roadmap&markers=color:blue%7Clabel:R%7C-1.300041,36.780792&key=${this.config.GOOGL_API_KEY}`
@@ -16,8 +16,8 @@
       >
         Reload
       </span>
-      <TheRiderViewComponent :orderdetails="orderdetails" />
-      <TheLogsComponent :orderdetails="orderdetails" />
+      <TheRiderViewComponent :order="order" />
+      <TheLogsComponent :order="order" />
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@ export default {
     TheLogsComponent,
   },
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },

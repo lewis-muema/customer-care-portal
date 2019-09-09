@@ -168,7 +168,7 @@
 export default {
   name: 'TheOrderComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
@@ -179,7 +179,7 @@ export default {
   },
   data() {
     return {
-      orderDetails: this.orderdetails,
+      orderDetails: this.order,
       riderDetails: false,
       paymentDetails: false,
       moreData: false,

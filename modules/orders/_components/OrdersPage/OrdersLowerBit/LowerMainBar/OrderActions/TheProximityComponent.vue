@@ -46,10 +46,15 @@
         <v-select
           :options="options"
           :reduce="point => point.code"
+          name="point"
           label="reason"
           placeholder="Select proximity point .."
+          class="form-control proximity-point"
           :id="`proximity_point_${orderNo}`"
           v-model="params.point"
+          :class="{
+            'is-invalid': submitted && $v.params.point.$error,
+          }"
         >
         </v-select>
         <div
@@ -116,10 +121,25 @@ export default {
   data() {
     return {
       orderNo: this.order.order_details.order_no,
+      vendorTypeID: this.order.rider_details.vendor_type_id,
+      errandMode: this.order.order_details.errand_mode,
+
       options: [
         { code: '1', reason: 'Pickup' },
         { code: '2', reason: 'Destination' },
       ],
+      pickupPoximity: {
+        1: { pick_up: 5000, destination: 2 },
+        21: { pick_up: 5000, destination: 2 },
+        2: { pick_up: 10000, destination: 2 },
+        3: { pick_up: 10000, destination: 2 },
+      },
+      destinationPoximity: {
+        1: { destination: 5000, pick_up: 2 },
+        21: { destination: 5000, pick_up: 2 },
+        2: { destination: 10000, pick_up: 2 },
+        3: { destination: 10000, pick_up: 2 },
+      },
       params: {
         reason_description: '',
         current_driver_location: '',
@@ -149,9 +169,37 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'cancel_order',
+        apiKey: true,
+        params: {
+          order_no: this.orderNo,
+          action_id: 1,
+          cancel_reason_id: this.reason,
+          reason_description: this.description,
+        },
+      };
+      let points = null;
+      if (Number(this.params.point) === 1) {
+        points = this.pickupPoximity;
+      } else {
+        points = this.destinationPoximity;
+      }
+      console.log(this.vendorTypeID, points[this.vendorTypeID]);
+
       console.log('his.$v.$invalid', this.$v.$invalid);
       console.log(`SUCCESS!! :-)\n\n${JSON.stringify(this.params)}`);
     },
   },
 };
 </script>
+<style scoped>
+.form-control {
+  height: 40px;
+}
+.proximity-point {
+  padding: 0px !important;
+}
+</style>
