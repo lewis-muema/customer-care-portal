@@ -58,15 +58,15 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 export default {
   name: 'TheDispatchListComponent',
   props: {
-    order: {
+    orderdetails: {
       type: Object,
       required: true,
     },
   },
   data() {
     return {
-      orderDetails: this.order,
-      moreData: this.order.order_details,
+      orderDetails: this.orderdetails,
+      moreData: this.orderdetails.order_details,
       dispatchList: null,
       partnerList: {},
       dispatchStatus: null,
