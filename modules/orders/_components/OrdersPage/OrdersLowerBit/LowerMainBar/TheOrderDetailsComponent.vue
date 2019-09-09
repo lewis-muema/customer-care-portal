@@ -195,7 +195,7 @@
           v-if="showTab === `notes_${orderNo}`"
         >
           <TheNotesComponent
-            :details="orderDetails.notes_log"
+            :orderdetails="orderDetails.notes_log"
             :client="orderDetails.client_details.name"
           />
         </div>
@@ -233,7 +233,7 @@
           v-if="showTab === `pricetiers_${orderNo}`"
         >
           <ThePriceTiersComponent
-            :order="orderDetails"
+            :orderdetails="orderDetails"
             :rates="conversionRates"
           />
         </div>
