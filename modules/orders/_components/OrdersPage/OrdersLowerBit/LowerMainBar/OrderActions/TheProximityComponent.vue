@@ -1,110 +1,107 @@
 <template>
   <div class="col-sm-12">
-    <div>
-      <form @submit.prevent="increaseProximity">
-        <div class="form-group">
-          <textarea
-            type="text"
-            v-model="params.reason_description"
-            :id="`proximity_reason_${orderNo}`"
-            name="reason"
-            placeholder="Reason for increasing proximity"
-            class="form-control"
-            :class="{
-              'is-invalid': submitted && $v.params.reason_description.$error,
-            }"
-          >
-          </textarea>
-          <div
-            v-if="submitted && !$v.params.reason_description.required"
-            class="invalid-feedback"
-          >
-            Reason is required
-          </div>
+    <form @submit.prevent="increaseProximity">
+      <div class="form-group">
+        <textarea
+          type="text"
+          v-model="params.reason_description"
+          :id="`proximity_reason_${orderNo}`"
+          name="reason"
+          placeholder="Reason for increasing proximity"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.params.reason_description.$error,
+          }"
+        >
+        </textarea>
+        <div
+          v-if="submitted && !$v.params.reason_description.required"
+          class="invalid-feedback"
+        >
+          Reason is required
         </div>
-        <div class="form-group">
-          <textarea
-            type="text"
-            v-model="params.current_driver_location"
-            :id="`proximity_rider_location_${orderNo}`"
-            name="current_driver_location"
-            class="form-control"
-            placeholder="Current rider location"
-            :class="{
-              'is-invalid':
-                submitted && $v.params.current_driver_location.$error,
-            }"
-          >
-          </textarea>
-          <div
-            v-if="submitted && !$v.params.current_driver_location.required"
-            class="invalid-feedback"
-          >
-            Rider Location is required
-          </div>
+      </div>
+      <div class="form-group">
+        <textarea
+          type="text"
+          v-model="params.current_driver_location"
+          :id="`proximity_rider_location_${orderNo}`"
+          name="current_driver_location"
+          class="form-control"
+          placeholder="Current rider location"
+          :class="{
+            'is-invalid': submitted && $v.params.current_driver_location.$error,
+          }"
+        >
+        </textarea>
+        <div
+          v-if="submitted && !$v.params.current_driver_location.required"
+          class="invalid-feedback"
+        >
+          Rider Location is required
         </div>
+      </div>
 
-        <div class="form-group">
-          <v-select
-            :options="options"
-            :reduce="point => point.code"
-            label="reason"
-            placeholder="Select proximity point .."
-            :id="`proximity_point_${orderNo}`"
-            v-model="params.point"
-          >
-          </v-select>
-          <div
-            v-if="submitted && !$v.params.point.required"
-            class="invalid-feedback"
-          >
-            Proximity point is required
-          </div>
+      <div class="form-group">
+        <v-select
+          :options="options"
+          :reduce="point => point.code"
+          label="reason"
+          placeholder="Select proximity point .."
+          :id="`proximity_point_${orderNo}`"
+          v-model="params.point"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.params.point.required"
+          class="invalid-feedback"
+        >
+          Proximity point is required
         </div>
-        <div class="form-group">
-          <input
-            type="text"
-            v-model="params.vendorTypeID"
-            :id="`proximity_vendorTypeID_${orderNo}`"
-            name="vendorTypeID"
-            class="form-control"
-            :class="{
-              'is-invalid': submitted && $v.params.vendorTypeID.$error,
-            }"
-          />
-          <div
-            v-if="submitted && !$v.params.vendorTypeID.required"
-            class="invalid-feedback"
-          >
-            Vendor Type ID required
-          </div>
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          v-model="params.vendorTypeID"
+          :id="`proximity_vendorTypeID_${orderNo}`"
+          name="vendorTypeID"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.params.vendorTypeID.$error,
+          }"
+        />
+        <div
+          v-if="submitted && !$v.params.vendorTypeID.required"
+          class="invalid-feedback"
+        >
+          Vendor Type ID required
         </div>
-        <div class="form-group">
-          <input
-            type="text"
-            v-model="params.errandMode"
-            :id="`proximity_errandMode_${orderNo}`"
-            name="errandMode"
-            class="form-control"
-            :class="{ 'is-invalid': submitted && $v.params.errandMode.$error }"
-          />
-          <div
-            v-if="submitted && !$v.params.errandMode.required"
-            class="invalid-feedback"
-          >
-            Errand Mode required
-          </div>
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          v-model="params.errandMode"
+          :id="`proximity_errandMode_${orderNo}`"
+          name="errandMode"
+          class="form-control"
+          :class="{ 'is-invalid': submitted && $v.params.errandMode.$error }"
+        />
+        <div
+          v-if="submitted && !$v.params.errandMode.required"
+          class="invalid-feedback"
+        >
+          Errand Mode required
         </div>
-        <div class="form-group">
-          <button class="btn btn-primary action-button">
-            Submit
-          </button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary action-button">
+          Submit
+        </button>
+      </div>
+    </form>
+    <div></div>
   </div>
 </template>
-
 <script>
 import { required, email, minLength, sameAs } from 'vuelidate/lib/validators';
 
@@ -133,6 +130,9 @@ export default {
       submitted: false,
     };
   },
+  mounted() {
+    // console.log('jkhgfdgh');
+  },
   validations: {
     params: {
       reason_description: { required },
@@ -149,7 +149,7 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-
+      console.log('his.$v.$invalid', this.$v.$invalid);
       console.log(`SUCCESS!! :-)\n\n${JSON.stringify(this.params)}`);
     },
   },

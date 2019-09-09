@@ -55,7 +55,7 @@ import { mapActions } from 'vuex';
 export default {
   name: 'TheTimeComponent',
   props: {
-    order: {
+    orderdetails: {
       type: Object,
       required: true,
     },
@@ -66,7 +66,7 @@ export default {
   },
   data() {
     return {
-      orderNo: this.order.order_no,
+      orderNo: this.orderdetails.order_no,
     };
   },
   methods: {

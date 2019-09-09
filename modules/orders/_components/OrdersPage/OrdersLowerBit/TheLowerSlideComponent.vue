@@ -11,8 +11,8 @@
         loading ....
       </div>
       <div class="row" v-else>
-        <TheSideComponent :order="order" />
-        <TheMainComponent :order="order" />
+        <TheSideComponent :orderdetails="order" />
+        <TheMainComponent :orderdetails="order" />
       </div>
     </div>
   </td>

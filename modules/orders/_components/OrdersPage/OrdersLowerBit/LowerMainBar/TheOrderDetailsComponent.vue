@@ -178,7 +178,7 @@
           role="tabpanel"
           v-if="showTab === `users_${orderNo}`"
         >
-          <TheUsersComponent :order="orderDetails" />
+          <TheUsersComponent :orderdetails="orderDetails" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -186,7 +186,7 @@
           role="tabpanel"
           v-if="showTab === `time_${orderNo}`"
         >
-          <TheTimeComponent :order="moreData" :eta="eta" />
+          <TheTimeComponent :orderdetails="moreData" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -195,7 +195,7 @@
           v-if="showTab === `notes_${orderNo}`"
         >
           <TheNotesComponent
-            :order="orderDetails.notes_log"
+            :details="orderDetails.notes_log"
             :client="orderDetails.client_details.name"
           />
         </div>
@@ -205,7 +205,10 @@
           role="tabpanel"
           v-if="showTab === `order_${orderNo}`"
         >
-          <TheOrderComponent :order="orderDetails" :rates="conversionRates" />
+          <TheOrderComponent
+            :orderdetails="orderDetails"
+            :rates="conversionRates"
+          />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -213,7 +216,7 @@
           role="tabpanel"
           v-if="showTab === `route_${orderNo}`"
         >
-          <TheRouteComponent :order="orderDetails.paths" />
+          <TheRouteComponent :orderdetails="orderDetails.paths" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -221,7 +224,7 @@
           role="tabpanel"
           v-if="showTab === `map_${orderNo}`"
         >
-          <TheMapComponent :order="orderDetails" :eta="eta" />
+          <TheMapComponent :orderdetails="orderDetails" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -240,7 +243,10 @@
           role="tabpanel"
           v-if="showTab === `dispute_${orderNo}`"
         >
-          <TheDisputeComponent :order="orderDetails" :rates="conversionRates" />
+          <TheDisputeComponent
+            :orderdetails="orderDetails"
+            :rates="conversionRates"
+          />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -248,7 +254,7 @@
           role="tabpanel"
           v-if="showTab === `dispatchlist_${orderNo}`"
         >
-          <TheDispatchComponent :order="orderDetails" />
+          <TheDispatchComponent :orderdetails="orderDetails" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -256,7 +262,7 @@
           role="tabpanel"
           v-if="showTab === `deliverydetails_${orderNo}`"
         >
-          <TheDeliveryDetailsComponent :order="orderDetails" />
+          <TheDeliveryDetailsComponent :orderdetails="orderDetails" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -264,7 +270,7 @@
           role="tabpanel"
           v-if="showTab === `dnotes_${orderNo}`"
         >
-          <TheDNotesComponent :order="orderDetails" />
+          <TheDNotesComponent :orderdetails="orderDetails" />
         </div>
       </div>
     </div>
@@ -291,16 +297,16 @@ export default {
       import('./OrderTabs/TheDeliveryDetailsComponent'),
   },
   props: {
-    order: {
+    orderdetails: {
       type: Object,
       required: true,
     },
   },
   data() {
     return {
-      orderDetails: this.order,
-      moreData: this.order.order_details,
-      showTab: `users_${this.order.order_details.order_no}`,
+      orderDetails: this.orderdetails,
+      moreData: this.orderdetails.order_details,
+      showTab: `users_${this.orderdetails.order_details.order_no}`,
       orderNo: null,
       show: false,
       errors: [],

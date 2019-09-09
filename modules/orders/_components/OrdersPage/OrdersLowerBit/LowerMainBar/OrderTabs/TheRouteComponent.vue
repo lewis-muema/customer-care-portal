@@ -25,14 +25,14 @@
 export default {
   name: 'TheRouteComponent',
   props: {
-    order: {
+    orderdetails: {
       type: Array,
       required: true,
     },
   },
   data() {
     return {
-      path: this.order,
+      path: this.orderdetails,
     };
   },
 };

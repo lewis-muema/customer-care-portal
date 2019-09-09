@@ -28,6 +28,158 @@ Vue.mixin({
         500: 'Page not found',
       },
       trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
+      order: {
+        order_details: {
+          order_no: 'AC92UM132-6BV',
+          pickup_time: '2019-08-30T11:11:14.000Z',
+          order_status: 1,
+          confirm_status: 1,
+          delivery_status: 0,
+          dispute_status: 0,
+          batch_no: null,
+          price_type: 1,
+          errand_mode: 'one_way',
+          client_mode: 0,
+          dispute_delivery_doc_status: 0,
+          delivery_verification: {
+            delivery_image: [
+              {
+                document_tag: 'delivery_note',
+                name: 'Delivery Note or Invoice',
+              },
+            ],
+            delivery_image_status: false,
+            location_proximity: [
+              {
+                pick_up: 2,
+              },
+              {
+                destination: 2,
+              },
+            ],
+            location_proximity_status: true,
+            physical_delivery_note_status: false,
+            security_code: [
+              {
+                value: '1234',
+              },
+            ],
+            security_code_status: false,
+          },
+          next_order: '',
+          previous_order: '',
+          distance_read: 2,
+          load_weight: '',
+          way_points: 1,
+          carrier_type: 2,
+          from_name: 'Sendy Office, Marsabit Plaza 3rd Floor',
+          to_name: 'Adams Arcade Total',
+          to: '-1.3005695,36.780826700000034',
+          from: '-1.3001097,36.772822099999985',
+          polyline: [
+            'b}|Feem_FDn@FHH@T?C}AEmBOcIKyFC}AQ_ICMC]CqACOOYCCGKCK?MFQBCNo@SsL?KJ?b@C?\\HpC@Z@`@|@?F?',
+          ],
+        },
+        rider_details: {
+          name: 'PETER KAMAU',
+          phone_no: '0722810566',
+          serial_no: '89254021064102398573',
+          vendor_type_id: 2,
+          load_capacity: '',
+          default_currency: 'KES',
+          photo: '1521027207889id.jpg',
+          rider_cost: 1250,
+          rider_id: 1743,
+          city_id: 1,
+        },
+        client_details: {
+          corporate_name: '',
+          name: 'Joyce Uganda',
+          email: 'joyce@sendyit.com',
+          phone_no: '+256710123123',
+          default_currency: '',
+        },
+        payment_details: {
+          cash_status: '',
+          order_currency: '',
+          economy_order_cost: '',
+          cost: '',
+          return_cost: '',
+          fixed_cost: '',
+          customer_min_amount: '',
+          order_amount: '',
+          extra_distance_amount: '',
+          waiting_time_amount: '',
+          insurance_amount: '',
+          sendy_fee: '',
+          cash_to_collect: '',
+        },
+        delivery_details: {
+          rider_delivery_docs: '',
+        },
+        price_tiers: [
+          {
+            best_option: true,
+            tier_name: 'Direct',
+            cost: 1500,
+            return_cost: 1600,
+            discount_amount: 0,
+          },
+        ],
+        delivery_logs: [
+          {
+            log_type: 1,
+            log_time: '2019-08-30T10:26:17.000Z',
+            description: 'Order AC92UM132-6BV created',
+          },
+          {
+            log_type: 5,
+            log_time: '2019-08-30T10:46:16.000Z',
+            description:
+              'Order AC92UM132-6BV for Joyce Uganda reallocated to PETER KAMAU',
+          },
+          {
+            log_type: 2,
+            log_time: '2019-08-30T10:46:16.000Z',
+            description:
+              'Order AC92UM132-6BV for Joyce Uganda was confirmed by PETER KAMAU',
+          },
+        ],
+        dispute: {
+          billing_data: {
+            resolve_id: '',
+            resolve_description: '',
+          },
+        },
+        paths: [
+          {
+            name: 'Sendy Office, Marsabit Plaza 3rd Floor',
+            label: 'Sendy Office, Marsabit Plaza 3rd Floor',
+            flat_name: '',
+            house_door: '',
+            road: 'Marsabit Plaza,  Nairobi',
+            other_description: '',
+          },
+          {
+            name: 'Adams Arcade Total',
+            label: '',
+            flat_name: '',
+            house_door: '',
+            road: 'Next To Tuskys,  Ngong Rd',
+            other_description: '',
+          },
+        ],
+        notes_log: [
+          {
+            rider_notification_id: 39848,
+            order_no: 'AC92UM132-6BV',
+            rider_phone: '0709779779',
+            msg: 'none',
+            date_time: '2019-08-30T10:26:17.000Z',
+            status: 1,
+          },
+        ],
+      },
     };
   },
   created() {},
@@ -186,8 +338,8 @@ Vue.mixin({
       }
       return displayAmount;
     },
-    smartify_display(myString, myLength) {
-      if (parseInt(myString.length) > myLength) {
+    smartify_display(myString, myLength, orderNo) {
+      if (myString !== null && parseInt(myString.length) > myLength) {
         const myTruncatedString = myString.substring(0, myLength);
 
         return `<span data-toggle="tooltip" title="${myString}">${myTruncatedString}  ...  <span>`;

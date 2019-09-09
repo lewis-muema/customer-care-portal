@@ -212,7 +212,7 @@ export default {
     TheProximityComponent: () => import('./TheProximityComponent'),
   },
   props: {
-    order: {
+    orderdetails: {
       type: Object,
       required: true,
     },
@@ -230,8 +230,8 @@ export default {
     ...mapState(['userData', 'actionErrors', 'actionClass']),
   },
   mounted() {
-    this.orderNo = this.order.order_details.order_no;
-    this.moreData = this.order.order_details;
+    this.orderNo = this.orderdetails.order_details.order_no;
+    this.moreData = this.orderdetails.order_details;
   },
   methods: {
     viewTab(tab, orderNo) {

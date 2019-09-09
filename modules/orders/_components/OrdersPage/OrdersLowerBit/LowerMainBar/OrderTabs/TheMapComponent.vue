@@ -52,7 +52,7 @@ import mqtt from 'mqtt';
 export default {
   name: 'TheMapHolderComponent',
   props: {
-    order: {
+    orderdetails: {
       type: Object,
       required: true,
     },
@@ -63,8 +63,8 @@ export default {
   },
   data() {
     return {
-      orderDetails: this.order.order_details,
-      riderDetails: this.order.rider_details,
+      orderDetails: this.orderdetails.order_details,
+      riderDetails: this.orderdetails.rider_details,
       positions: null,
       partnerData: null,
       cityId: 1,
@@ -85,7 +85,7 @@ export default {
 
     const riderData = await this.requestPartnerLastPosition(riderArray);
     this.partnerData = riderData;
-    this.initialize(riderData, this.order);
+    this.initialize(riderData, this.orderdetails);
   },
   methods: {
     ...mapActions({
