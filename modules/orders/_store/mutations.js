@@ -5,10 +5,10 @@ export default {
   setOrderDetails(state, val) {
     state.orderDetails = val;
   },
-  setActionErrors(state, val) {
-    state.actionErrors = val;
-  },
-  setActionClass(state, val) {
-    state.actionClass = val;
-  },
+  // setActionErrors(state, val) {
+  //   state.actionErrors = val;
+  // },
+  // setActionClass(state, val) {
+  //   state.actionClass = val;
+  // },
 };

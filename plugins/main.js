@@ -30,12 +30,11 @@ Vue.mixin({
       trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
     };
   },
-  created() {},
   methods: {
     display_order_action_notification(status) {
       console.log('status', status);
 
-      let displayClass = 'info';
+      let displayClass = 'success';
       if (!status) {
         displayClass = 'danger';
       }

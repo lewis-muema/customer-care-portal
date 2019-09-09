@@ -139,7 +139,10 @@
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
-        <div v-if="actionErrors.length" :class="`alert alert-${actionClass}`">
+        <div
+          v-if="actionErrors.length > 0"
+          :class="`alert alert-${actionClass}`"
+        >
           <ul>
             <li v-for="error in actionErrors" :key="error.index">
               <b>{{ error }}</b>
