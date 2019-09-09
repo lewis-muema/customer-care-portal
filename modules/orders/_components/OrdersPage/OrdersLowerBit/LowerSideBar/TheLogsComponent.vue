@@ -1,6 +1,9 @@
 <template>
   <ul class="timeline timeline-inverse" style="margin-top:35px;">
-    <li v-for="deliveryLog in order.delivery_logs" :key="deliveryLog.index">
+    <li
+      v-for="deliveryLog in orderdetails.delivery_logs"
+      :key="deliveryLog.index"
+    >
       <i
         :class="
           `fa ${determineLogColor(
@@ -26,7 +29,7 @@
 export default {
   name: 'TheLogsComponent',
   props: {
-    order: {
+    orderdetails: {
       type: Object,
       required: true,
     },
@@ -36,7 +39,7 @@ export default {
       orderNo: this.orderno,
       // order: null,
       sampleOrder: null,
-      deliveryLogs: this.order.deliveryLogs,
+      deliveryLogs: this.orderdetails.deliveryLogs,
       logTypesColors: {
         1: 'fa-get-pocket bg-green',
         2: ' fa-thumbs-up bg-aqua',
