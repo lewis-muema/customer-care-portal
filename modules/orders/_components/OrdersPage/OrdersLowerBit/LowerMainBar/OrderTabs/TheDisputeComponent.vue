@@ -47,8 +47,6 @@
         ></td>
       </tr>
     </table>
-
-    !!!!!! FIX ME !!!! Finish Dispute ++ add rights
   </div>
 </template>
 

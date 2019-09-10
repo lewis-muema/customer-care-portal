@@ -34,7 +34,6 @@ export default {
     }
   },
   async perform_order_action({ rootState, dispatch, commit }, payload) {
-    console.log('payload', payload);
     const userData = rootState.userData;
     const errorCodes = rootState.errorCodes;
     // eslint-disable-next-line no-underscore-dangle
@@ -85,7 +84,6 @@ export default {
       return error;
     }
   },
-  // eslint-disable-next-line require-await
   async dispatch_order({ rootState, dispatch }, values) {
     const userData = rootState.userData;
     const params = {

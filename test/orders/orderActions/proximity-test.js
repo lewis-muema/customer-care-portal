@@ -23,7 +23,6 @@ describe('TheProximityComponent', () => {
     expect(wrapper.find('button').text()).to.equal('Submit');
   });
   it('has a root element with class form-group', () => {
-    // const wrapper = mount(Foo)
     expect(wrapper.is('.form-group')).to.equal(true);
   });
 });

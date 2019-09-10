@@ -226,13 +226,6 @@ export default {
       }
       return displayAmount;
     },
-    display_loaders_needed(loaders) {
-      let loaderDisplay = loaders;
-      if (Number(loaders) === 0) {
-        loaderDisplay = '-';
-      }
-      return loaderDisplay;
-    },
     display_carrier_type(carrier_type) {
       let type = 'Any';
       if (carrier_type === 0) {

@@ -28,6 +28,18 @@ Vue.mixin({
         500: 'Page not found',
       },
       trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
+      logTypesColors: {
+        1: 'fa-get-pocket bg-green',
+        2: ' fa-thumbs-up bg-aqua',
+        3: 'fa-road bg-blue',
+        4: 'fa-check bg-green',
+        5: 'fa-reply bg-yellow',
+        6: 'fa-close bg-red',
+        7: 'fa-calendar bg-purple',
+        10: 'fa-envelope bg-orange',
+        11: 'fa-envelope bg-blue',
+        14: 'fa-envelope bg-red',
+      },
     };
   },
   methods: {

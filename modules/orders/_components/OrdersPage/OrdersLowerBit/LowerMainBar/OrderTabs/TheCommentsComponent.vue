@@ -1,6 +1,5 @@
 <template>
   <div class="body-box">
-    ***** Talk To Chris*****
     <div align="" :id="`view_details13_${order_no}`">
       <iframe
         :id="`comment_frame_${order_no}`"
@@ -12,7 +11,6 @@
       >
     </div>
   </div>
-  <!-- /.box-body -->
 </template>
 
 <script>

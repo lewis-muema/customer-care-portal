@@ -24,10 +24,7 @@ export default {
     const routeName = $nuxt.$route.name;
     commit('setbreadcrumbs', breadcrumbsObject.peer);
   },
-  // eslint-disable-next-line require-await
   async requestAxiosPost({ state, commit }, payload) {
-    console.log('payload3', payload.params);
-
     const customConfig = state.config;
     const url = customConfig[payload.app];
     let endpoint = payload.endpoint;
@@ -44,7 +41,6 @@ export default {
       endpoint = `${endpoint}?apikey=${backendKey}`;
     }
     const values = JSON.stringify(payload.params);
-    console.log('payload4', values);
 
     try {
       const response = await axios.post(`${url}${endpoint}`, values, config);
