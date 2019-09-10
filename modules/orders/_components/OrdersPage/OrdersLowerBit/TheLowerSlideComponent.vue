@@ -48,7 +48,22 @@ export default {
   created() {
     this.singleOrderRequest();
   },
+  mounted() {
+    const notification = [];
+    const actionClass = '';
+    this.updateClass(actionClass);
+    this.updateOrderErrors(notification);
+
+    this.updateErrors(notification);
+    this.updateNotification(actionClass);
+  },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setErrors',
+      updateNotification: 'setNotification',
+      updateClass: 'setActionClass',
+      updateOrderErrors: 'setActionErrors',
+    }),
     ...mapActions({
       request_single_order: 'request_single_order',
     }),

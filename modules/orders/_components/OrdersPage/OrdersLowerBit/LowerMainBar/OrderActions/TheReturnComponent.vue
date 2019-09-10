@@ -10,15 +10,17 @@
       <tbody>
         <tr>
           <td>One way:</td>
-          <td>
-            sdfsdfsd
-          </td>
+          <td
+            v-html="showCurrencyBasedAmounts(order, rates, paymentDetails.cost)"
+          ></td>
         </tr>
         <tr>
           <td>Return:</td>
-          <td>
-            2343543
-          </td>
+          <td
+            v-html="
+              showCurrencyBasedAmounts(order, rates, paymentDetails.return_cost)
+            "
+          ></td>
         </tr>
       </tbody>
     </table>
@@ -59,21 +61,36 @@ export default {
       type: Object,
       required: true,
     },
+    rates: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
       orderNo: this.order.order_details.order_no,
+      orderCurrency: this.order.order_details.default_currency,
       paymentDetails: this.order.payment_details,
       moreData: this.order.order_details,
       notification: null,
       displayClass: null,
     };
   },
+  mounted() {
+    console.log('order', this.order);
+  },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
     async setAsReturn() {
+      const notification = [];
+      let actionClass = '';
+
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'return_order_cc',
@@ -83,10 +100,18 @@ export default {
           action_id: 2,
         },
       };
-      const data = await this.perform_order_action(payload);
-      const msgClass = this.display_order_action_notification(data.status);
-      this.displayClass = msgClass;
-      return (this.notification = data.reason);
+      try {
+        const data = await this.perform_order_action(payload);
+        notification.push(data.reason);
+        actionClass = this.display_order_action_notification(data.status);
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };

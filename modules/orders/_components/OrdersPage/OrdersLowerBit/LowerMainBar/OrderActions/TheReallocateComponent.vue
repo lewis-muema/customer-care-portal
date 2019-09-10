@@ -4,31 +4,55 @@
     <form id="reallocate-form" @submit.prevent="reallocateOrder">
       <div class="form-group">
         <v-select
-          :options="options"
+          :options="customerInfo"
           :reduce="reason => reason.code"
+          name="reason"
           label="reason"
-          :placeholder="getSelectorPlaceholder"
+          placeholder="Select reallocation reason .."
+          class="form-control proximity-point"
           :id="`reallocate_reason_${orderNo}`"
           v-model="reason"
+          :class="{
+            'is-invalid': submitted && $v.reason.$error,
+          }"
         >
         </v-select>
+        <div
+          v-if="submitted && !$v.params.point.required"
+          class="invalid-feedback"
+        >
+          Reallocation reason is required
+        </div>
       </div>
       <div class="form-group">
         <textarea
-          class="form-control rounded-0"
-          :id="`reallocate_description_${orderNo}`"
-          placeholder="Description"
+          type="text"
           v-model="description"
-        ></textarea>
+          :id="`reallocation_description_${orderNo}`"
+          name="description"
+          class="form-control"
+          placeholder="Description"
+          :class="{
+            'is-invalid': submitted && $v.description.$error,
+          }"
+        >
+        </textarea>
+        <div
+          v-if="submitted && !$v.description.required"
+          class="invalid-feedback"
+        >
+          Description is required
+        </div>
       </div>
-      <button class="btn btn-primary" style="width:200px;">
+      <button class="btn btn-primary action-button">
         Re-Allocate Orders
       </button>
     </form>
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TheReallocateComponent',
@@ -41,22 +65,29 @@ export default {
   data() {
     return {
       orderNo: this.order.order_details.order_no,
-      options: [
-        { code: '1', reason: 'More information' },
-        { code: '2', reason: 'Delivery delay' },
-        { code: '3', reason: 'Customer not reachable' },
-        { code: '4', reason: 'Customer feedback' },
-      ],
-      placeholderItem: 'select reason for reallocating ..', // find value in selector items
       reason: '',
       description: '',
+      submitted: false,
     };
   },
-  computed: {
-    ...mapState(['userData']),
-
-    getSelectorPlaceholder() {
-      return this.placeholderItem;
+  validations: {
+    reason: { required },
+    description: { required },
+  },
+  methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
+    ...mapActions({
+      perform_order_action: '$_orders/perform_order_action',
+    }),
+    reallocateOrder() {
+      this.submitted = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
+      }
     },
   },
 };

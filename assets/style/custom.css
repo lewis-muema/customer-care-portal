@@ -670,3 +670,7 @@ profile-user-img {
 .recheck{
   margin-top: 5px;
 }
+.proximity-point {
+  padding: 0px !important;
+  height: 40px;
+}

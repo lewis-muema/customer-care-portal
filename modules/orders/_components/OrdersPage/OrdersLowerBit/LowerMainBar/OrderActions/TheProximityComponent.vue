@@ -104,11 +104,9 @@
       </button>
     </div>
   </form>
-  <!-- <div></div> -->
-  <!-- </div> -->
 </template>
 <script>
-import { required, email, minLength, sameAs } from 'vuelidate/lib/validators';
+import { required } from 'vuelidate/lib/validators';
 import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
@@ -152,9 +150,6 @@ export default {
       },
       submitted: false,
     };
-  },
-  mounted() {
-    // console.log('jkhgfdgh');
   },
   validations: {
     params: {

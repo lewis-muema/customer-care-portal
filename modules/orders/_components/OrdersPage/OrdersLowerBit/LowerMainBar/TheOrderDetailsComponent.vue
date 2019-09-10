@@ -295,6 +295,10 @@ export default {
       type: Object,
       required: true,
     },
+    rates: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -308,20 +312,10 @@ export default {
       activetab: null,
       firstShow: false,
       firstActive: false,
-      conversionRates: null,
+      conversionRates: this.rates,
       notification: null,
       eta: null,
     };
-  },
-  computed: {
-    ...mapGetters({
-      getExchangeRates: 'getExchangeRates',
-    }),
-  },
-  watch: {
-    getExchangeRates(value) {
-      return (this.conversionRates = value);
-    },
   },
   mounted() {
     this.firstShow = 'show';
@@ -329,7 +323,6 @@ export default {
     this.orderNo = this.orderDetails.order_details.order_no;
     const vendorTypeID = this.orderDetails.rider_details.vendor_type_id;
     this.isTruck(this.trucksArray, vendorTypeID);
-    this.setExchangeRates();
     this.requestETAs();
   },
   methods: {
@@ -337,7 +330,6 @@ export default {
       updateNotification: 'setNotification',
     }),
     ...mapActions({
-      setExchangeRates: 'setExchangeRates',
       request_order_eta: '$_orders/request_order_eta',
     }),
     async requestETAs() {
