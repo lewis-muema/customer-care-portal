@@ -13,6 +13,14 @@ export default {
       return error;
     }
   },
+  async request_quotes_list({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  },
   async request_dispatch_list({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
