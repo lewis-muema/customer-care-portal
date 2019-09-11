@@ -84,9 +84,9 @@
           <td>Weight of Load</td>
           <td>{{ moreData.load_weight }} Tonnes</td>
         </tr>
-        <tr v-if="riderDetails.vendor_type_id === 20">
+        <tr v-if="riderDetails.vendor_type_id === 1">
           <td>Loaders needed</td>
-          <td>{{ display_loaders_needed(moreData.no_of_loaders) }}</td>
+          <td>{{ loaderDisplay }}</td>
         </tr>
         <tr></tr>
 
@@ -168,7 +168,7 @@
 export default {
   name: 'TheOrderComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
@@ -179,7 +179,7 @@ export default {
   },
   data() {
     return {
-      orderDetails: this.orderdetails,
+      orderDetails: this.order,
       riderDetails: false,
       paymentDetails: false,
       moreData: false,
@@ -188,7 +188,12 @@ export default {
       currencyConversions: this.rates,
     };
   },
-  computed: {},
+  computed: {
+    loaderDisplay() {
+      const loaders = this.moreData.no_of_loaders;
+      return Number(loaders) === 0 ? '-' : loaders;
+    },
+  },
   mounted() {
     this.riderDetails = this.orderDetails.rider_details;
     this.paymentDetails = this.orderDetails.payment_details;
@@ -220,13 +225,6 @@ export default {
         displayAmount = convertedAmount;
       }
       return displayAmount;
-    },
-    display_loaders_needed(loaders) {
-      let loaderDisplay = loaders;
-      if (Number(loaders) === 0) {
-        loaderDisplay = '-';
-      }
-      return loaderDisplay;
     },
     display_carrier_type(carrier_type) {
       let type = 'Any';

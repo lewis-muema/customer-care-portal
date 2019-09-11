@@ -52,7 +52,7 @@ import mqtt from 'mqtt';
 export default {
   name: 'TheMapHolderComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
@@ -63,8 +63,8 @@ export default {
   },
   data() {
     return {
-      orderDetails: this.orderdetails.order_details,
-      riderDetails: this.orderdetails.rider_details,
+      orderDetails: this.order.order_details,
+      riderDetails: this.order.rider_details,
       positions: null,
       partnerData: null,
       cityId: 1,

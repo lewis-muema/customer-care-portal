@@ -42,7 +42,7 @@
 export default {
   name: 'ThePriceTiersComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
@@ -53,8 +53,8 @@ export default {
   },
   data() {
     return {
-      orderDetails: this.orderdetails,
-      priceTiers: this.orderdetails.price_tiers,
+      orderDetails: this.order,
+      priceTiers: this.order.price_tiers,
     };
   },
   methods: {

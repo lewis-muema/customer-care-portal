@@ -139,7 +139,10 @@
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
-        <div v-if="actionErrors.length" :class="`alert alert-${actionClass}`">
+        <div
+          v-if="actionErrors.length > 0"
+          :class="`alert alert-${actionClass}`"
+        >
           <ul>
             <li v-for="error in actionErrors" :key="error.index">
               <b>{{ error }}</b>
@@ -212,7 +215,7 @@ export default {
     TheProximityComponent: () => import('./TheProximityComponent'),
   },
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
@@ -230,8 +233,8 @@ export default {
     ...mapState(['userData', 'actionErrors', 'actionClass']),
   },
   mounted() {
-    this.orderNo = this.orderdetails.order_details.order_no;
-    this.moreData = this.orderdetails.order_details;
+    this.orderNo = this.order.order_details.order_no;
+    this.moreData = this.order.order_details;
   },
   methods: {
     viewTab(tab, orderNo) {

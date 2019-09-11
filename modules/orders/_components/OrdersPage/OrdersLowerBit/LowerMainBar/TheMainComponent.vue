@@ -1,7 +1,7 @@
 <template>
   <div class="col-md-8">
-    <TheOrderActionsComponent :orderdetails="orderdetails" />
-    <TheOrderDetailsComponent :orderdetails="orderdetails" />
+    <TheOrderActionsComponent :order="order" />
+    <TheOrderDetailsComponent :order="order" />
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
     TheOrderDetailsComponent,
   },
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },

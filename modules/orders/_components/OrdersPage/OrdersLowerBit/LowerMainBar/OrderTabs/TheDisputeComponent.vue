@@ -47,8 +47,6 @@
         ></td>
       </tr>
     </table>
-
-    !!!!!! FIX ME !!!! Finish Dispute ++ add rights
   </div>
 </template>
 
@@ -56,7 +54,7 @@
 export default {
   name: 'TheDisputeComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
@@ -67,10 +65,10 @@ export default {
   },
   data() {
     return {
-      orderDetails: this.orderdetails,
-      moreData: this.orderdetails.order_details,
-      paymentDetails: this.orderdetails.payment_details,
-      dispute_status: this.orderdetails.order_details.dispute_status,
+      orderDetails: this.order,
+      moreData: this.order.order_details,
+      paymentDetails: this.order.payment_details,
+      dispute_status: this.order.order_details.dispute_status,
       disputeParams: {
         0: { class: 'badge bg-green pull-left', msg: 'Not disputed' },
         1: { class: 'badge bg-red pull-left', msg: 'Not Resolved' },

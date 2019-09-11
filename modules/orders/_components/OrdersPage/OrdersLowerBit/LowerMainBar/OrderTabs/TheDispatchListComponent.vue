@@ -49,7 +49,6 @@
       </span>
     </div>
   </div>
-  <!-- /.box-body -->
 </template>
 
 <script>
@@ -58,15 +57,15 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 export default {
   name: 'TheDispatchListComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
   },
   data() {
     return {
-      orderDetails: this.orderdetails,
-      moreData: this.orderdetails.order_details,
+      orderDetails: this.order,
+      moreData: this.order.order_details,
       dispatchList: null,
       partnerList: {},
       dispatchStatus: null,
@@ -87,7 +86,6 @@ export default {
         params: { order_no: this.moreData.order_no },
       };
       const data = await this.request_dispatch_list(payload);
-      // this.dispatchList = data;
       this.dispatchStatus = data.status;
 
       const partnerArray = data.partner_list;
@@ -109,11 +107,6 @@ export default {
     },
     show_notification(data) {
       let msg;
-      //  if(data === null) {
-      //    msg = '';
-      //  } elseif() {
-
-      //  }
       switch (data) {
         case data === null:
           msg =
@@ -122,11 +115,7 @@ export default {
         case !data.status:
           msg = 'Order is not dispatching';
           break;
-        // case data.:
-        //   msg = 'Order is not dispatching';
-        //   break;
         default:
-        // code block
       }
     },
   },

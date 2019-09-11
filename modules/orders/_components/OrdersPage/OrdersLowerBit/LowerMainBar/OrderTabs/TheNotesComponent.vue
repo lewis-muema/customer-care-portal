@@ -22,7 +22,7 @@
 export default {
   name: 'TheNotesComponent',
   props: {
-    orderdetails: {
+    order: {
       type: Array,
       required: true,
     },
@@ -33,9 +33,8 @@ export default {
   },
   data() {
     return {
-      notesLog: this.orderdetails,
+      notesLog: this.order,
     };
   },
-  mounted() {},
 };
 </script>

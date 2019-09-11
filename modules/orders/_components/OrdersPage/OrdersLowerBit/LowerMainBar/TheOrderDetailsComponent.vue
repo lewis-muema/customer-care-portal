@@ -178,7 +178,7 @@
           role="tabpanel"
           v-if="showTab === `users_${orderNo}`"
         >
-          <TheUsersComponent :orderdetails="orderDetails" />
+          <TheUsersComponent :order="orderDetails" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -186,7 +186,7 @@
           role="tabpanel"
           v-if="showTab === `time_${orderNo}`"
         >
-          <TheTimeComponent :orderdetails="moreData" :eta="eta" />
+          <TheTimeComponent :order="moreData" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -195,7 +195,7 @@
           v-if="showTab === `notes_${orderNo}`"
         >
           <TheNotesComponent
-            :orderdetails="orderDetails.notes_log"
+            :order="orderDetails.notes_log"
             :client="orderDetails.client_details.name"
           />
         </div>
@@ -205,10 +205,7 @@
           role="tabpanel"
           v-if="showTab === `order_${orderNo}`"
         >
-          <TheOrderComponent
-            :orderdetails="orderDetails"
-            :rates="conversionRates"
-          />
+          <TheOrderComponent :order="orderDetails" :rates="conversionRates" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -216,7 +213,7 @@
           role="tabpanel"
           v-if="showTab === `route_${orderNo}`"
         >
-          <TheRouteComponent :orderdetails="orderDetails.paths" />
+          <TheRouteComponent :order="orderDetails.paths" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -224,7 +221,7 @@
           role="tabpanel"
           v-if="showTab === `map_${orderNo}`"
         >
-          <TheMapComponent :orderdetails="orderDetails" :eta="eta" />
+          <TheMapComponent :order="orderDetails" :eta="eta" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -233,7 +230,7 @@
           v-if="showTab === `pricetiers_${orderNo}`"
         >
           <ThePriceTiersComponent
-            :orderdetails="orderDetails"
+            :order="orderDetails"
             :rates="conversionRates"
           />
         </div>
@@ -243,10 +240,7 @@
           role="tabpanel"
           v-if="showTab === `dispute_${orderNo}`"
         >
-          <TheDisputeComponent
-            :orderdetails="orderDetails"
-            :rates="conversionRates"
-          />
+          <TheDisputeComponent :order="orderDetails" :rates="conversionRates" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -254,7 +248,7 @@
           role="tabpanel"
           v-if="showTab === `dispatchlist_${orderNo}`"
         >
-          <TheDispatchComponent :orderdetails="orderDetails" />
+          <TheDispatchComponent :order="orderDetails" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -262,7 +256,7 @@
           role="tabpanel"
           v-if="showTab === `deliverydetails_${orderNo}`"
         >
-          <TheDeliveryDetailsComponent :orderdetails="orderDetails" />
+          <TheDeliveryDetailsComponent :order="orderDetails" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -270,7 +264,7 @@
           role="tabpanel"
           v-if="showTab === `dnotes_${orderNo}`"
         >
-          <TheDNotesComponent :orderdetails="orderDetails" />
+          <TheDNotesComponent :order="orderDetails" />
         </div>
       </div>
     </div>
@@ -297,16 +291,16 @@ export default {
       import('./OrderTabs/TheDeliveryDetailsComponent'),
   },
   props: {
-    orderdetails: {
+    order: {
       type: Object,
       required: true,
     },
   },
   data() {
     return {
-      orderDetails: this.orderdetails,
-      moreData: this.orderdetails.order_details,
-      showTab: `users_${this.orderdetails.order_details.order_no}`,
+      orderDetails: this.order,
+      moreData: this.order.order_details,
+      showTab: `users_${this.order.order_details.order_no}`,
       orderNo: null,
       show: false,
       errors: [],
