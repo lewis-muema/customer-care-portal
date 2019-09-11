@@ -4,4 +4,7 @@ export default {
   breadcrumbs(state) {
     return state.breadcrumbs;
   },
+  getNotification(state) {
+    return state.notification;
+  },
 };

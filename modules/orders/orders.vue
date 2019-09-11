@@ -11,7 +11,6 @@
           </tr>
         </thead>
         <TheRowComponent />
-        <!-- <TheMainRowComponent /> -->
         <tfoot>
           <tr>
             <th v-for="column in orderColumns" :key="column">
@@ -30,16 +29,13 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
 import TheRowComponent from './_components/OrdersPage/OrdersMainBit/TheRowComponent';
-import TheMainRowComponent from './_components/OrdersPage/OrdersMainBit/TheMainRowComponent';
 
 import TheLowerSlideComponent from './_components/OrdersPage/OrdersLowerBit/TheLowerSlideComponent';
 
 export default {
   name: 'TheOrdersComponent',
   components: {
-    // TheMainRowComponent,
     TheRowComponent,
-    // TheLowerSlideComponent,
   },
   data() {
     return {};

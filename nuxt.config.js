@@ -1,5 +1,7 @@
+import 'isomorphic-fetch';
+
 const bodyParser = require('body-parser');
-const customConfig = require('./config/custom');
+require('dotenv').config();
 
 export default {
   mode: 'universal',
@@ -29,6 +31,16 @@ export default {
       },
       {
         src:
+          'https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js',
+        type: 'text/javascript',
+      },
+      {
+        src:
+          'https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js',
+        type: 'text/javascript',
+      },
+      {
+        src:
           'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js',
         type: 'text/javascript',
       },
@@ -37,7 +49,10 @@ export default {
           'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
         type: 'text/javascript',
       },
-
+      {
+        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
+        type: 'text/javascript',
+      },
       {
         src: 'js/adminlte.min.js',
         type: 'text/javascript',
@@ -91,15 +106,18 @@ export default {
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
     'aos/dist/aos.css',
+    'vue-select/dist/vue-select.css',
   ],
   /*
    ** Plugins to load before mounting the App
    */
   plugins: [
-    'plugins/date-filter.js',
-    // '@/plugins/aos.js',
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
+    'plugins/main.js',
+    'plugins/google-maps',
+    'plugins/vue-select',
+    'plugins/vuelidate',
   ],
   /*
    ** Nuxt.js modules
@@ -109,13 +127,18 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
     'nuxt-pouch',
+    '@nuxtjs/dotenv',
   ],
+  stripe: {
+    version: 'v3',
+    publishableKey: process.env.STRIPE_SECRET,
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.BASE_URL || 'https://caretest.sendyit.com/customer',
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     credentials: false,
   },
   /*
@@ -128,12 +151,6 @@ export default {
      */
     extend(config, ctx) {},
   },
-  env: {
-    baseUrl: process.env.BASE_URL || 'https://caretest.sendyit.com/customer',
-    DOCKER_ENV: process.env.DOCKER_ENV || 'development',
-    environment: process.env.DOCKER_ENV,
-    customConfigs: customConfig,
-    BACKEND_API_KEY: '4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
-  },
+
   serverMiddleware: [bodyParser.json(), '~/api'],
 };

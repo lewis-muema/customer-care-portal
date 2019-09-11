@@ -6,6 +6,11 @@ const config = {
       timeout: 1,
       scheme: 'tcp',
     },
+    rabbitMQ: {
+      url: 'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=',
+      username: 'staging',
+      password: '0FAHmQQmjfsIXdro',
+    },
   },
   testing: {
     redis: {
@@ -15,6 +20,11 @@ const config = {
       timeout: 1,
       scheme: 'tcp',
       database: 4,
+    },
+    rabbitMQ: {
+      url: 'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=',
+      username: 'staging',
+      password: '0FAHmQQmjfsIXdro',
     },
   },
   beta: {
@@ -26,6 +36,11 @@ const config = {
       scheme: 'tcp',
       database: 4,
     },
+    rabbitMQ: {
+      url: 'wss://prod-stomp.sendyit.com:15675/ws',
+      username: 'production',
+      password: 'Z_EQ-T5rO-oQVx-OqL2',
+    },
   },
   production: {
     redis: {
@@ -35,6 +50,11 @@ const config = {
       timeout: 1,
       scheme: 'tcp',
       database: 4,
+    },
+    rabbitMQ: {
+      url: 'wss://prod-stomp.sendyit.com:15675/ws',
+      username: 'production',
+      password: 'Z_EQ-T5rO-oQVx-OqL2',
     },
   },
 };

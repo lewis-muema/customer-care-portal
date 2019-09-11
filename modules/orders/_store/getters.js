@@ -1,11 +1,9 @@
+const getOrders = state => state.orders;
+const getOrderColumns = state => state.orderColumns;
+const getSampleData = state => state.sampleData;
+
 export default {
-  getOrders(state) {
-    return state.orders;
-  },
-  getOrderColumns(state) {
-    return state.orderColumns;
-  },
-  getSampleData(state) {
-    return state.sampleData;
-  },
+  getOrders,
+  getOrderColumns,
+  getSampleData,
 };
