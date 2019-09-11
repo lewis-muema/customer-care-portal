@@ -51,7 +51,8 @@ export default {
         type: 'text/javascript',
       },
       {
-        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
+        src:
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
         type: 'text/javascript',
       },
       {
