@@ -13,4 +13,5 @@ export default {
   BACKEND_KEY: process.env.BACKEND_KEY,
   SOLR_BASE: process.env.SOLR_BASE,
   RIDER_SEARCH: process.env.RIDER_SEARCH,
+  SOLR_JWT: process.env.SOLR_JWT,
 };

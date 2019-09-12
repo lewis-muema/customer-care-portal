@@ -61,7 +61,7 @@ export default {
       return this.query;
     },
     src() {
-      return `${config.SOLR_BASE}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJyV01HZVR2WWZMVnlBSWwxOHFPVGFWMnRxMnFDVmpJZiIsIm5hbWUiOiJzb2xyIn0.p7uW30OQBaSEduNerbIaSbaQTdUAa-VkVMQUF4LAPFQ&wt=json&indent=true&row=10&sort=order_id%20desc`;
+      return `${config.SOLR_BASE}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=${config.SOLR_JWT}`;
     },
   },
   methods: {
