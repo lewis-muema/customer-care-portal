@@ -5,20 +5,40 @@
         <v-select
           :options="options"
           :reduce="reason => reason.code"
+          name="reason"
           label="reason"
-          placeholder="Select Reason for cancelling..."
+          placeholder="Select cancellation reason .."
+          class="form-control proximity-point"
           :id="`cancel_reason_${orderNo}`"
           v-model="reason"
+          :class="{
+            'is-invalid': submitted && $v.reason.$error,
+          }"
         >
         </v-select>
+        <div v-if="submitted && !$v.reason.required" class="invalid-feedback">
+          Cancellation reason is required
+        </div>
       </div>
       <div class="form-group">
         <textarea
-          class="form-control rounded-0"
-          :id="`cancel_description_${orderNo}`"
-          placeholder="Description"
+          type="text"
           v-model="description"
-        ></textarea>
+          :id="`cancel_description_${orderNo}`"
+          name="description"
+          placeholder="Description"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.description.$error,
+          }"
+        >
+        </textarea>
+        <div
+          v-if="submitted && !$v.description.required"
+          class="invalid-feedback"
+        >
+          Description is required
+        </div>
       </div>
       <button class="btn btn-primary action-button">
         Cancel Order
@@ -28,6 +48,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TheCancelComponent',
@@ -47,10 +68,14 @@ export default {
         { code: '2', reason: 'Delay' },
         { code: '3', reason: 'Customer error' },
       ],
-      placeholderItem: 'select reason for cancelling ..', // find value in selector items
       reason: '',
       description: '',
+      submitted: false,
     };
+  },
+  validations: {
+    reason: { required },
+    description: { required },
   },
   computed: {
     ...mapState(['userData']),
@@ -67,48 +92,39 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    myFunction(item, index, arr) {
-      arr[index] = item;
-      console.log('arr', arr);
-    },
     async cancelOrder() {
-      let err = [];
+      const notification = [];
       let actionClass = '';
 
-      if (!this.reason) {
-        err.push('Cancellation reason is required.');
-        actionClass = 'danger';
-      }
-      if (!this.description) {
-        err.push('Cancellation description is required.');
-        actionClass = 'danger';
+      this.submitted = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
       }
 
-      if (err.length === 0) {
-        err = [];
-        const payload = {
-          app: 'ORDERS_APP',
-          endpoint: 'cancel_order',
-          apiKey: true,
-          params: {
-            order_no: this.orderNo,
-            action_id: 1,
-            cancel_reason_id: this.reason,
-            reason_description: this.description,
-          },
-        };
-        try {
-          const data = await this.perform_order_action(payload);
-
-          err.push(data.reason);
-          actionClass = this.display_order_action_notification(data.status);
-        } catch (error) {
-          err.push('Something went wrong. Try again or contact Tech Support');
-          actionClass = 'danger';
-        }
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'cancel_order',
+        apiKey: true,
+        params: {
+          order_no: this.orderNo,
+          action_id: 1,
+          cancel_reason_id: this.reason,
+          reason_description: this.description,
+        },
+      };
+      try {
+        const data = await this.perform_order_action(payload);
+        notification.push(data.reason);
+        actionClass = this.display_order_action_notification(data.status);
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
       }
       this.updateClass(actionClass);
-      this.updateErrors(err);
+      this.updateErrors(notification);
     },
   },
 };

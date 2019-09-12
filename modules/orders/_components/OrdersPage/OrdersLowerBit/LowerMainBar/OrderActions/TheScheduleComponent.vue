@@ -1,26 +1,44 @@
 <template>
   <div>
-    <div :id="`response_${orderNo}_schedule`">
-      <div :class="displayClass">
-        <b>{{ notification }} </b>
-      </div>
-    </div>
     <form id="dispatch-form" @submit.prevent="setAsReturn">
       <div class="form-group">
         <datetime
           format="YYYY-MM-DD H:i:s"
           width="300px"
+          v-model="time"
+          :id="`schedule_time_${orderNo}`"
+          name="time"
           placeholder="2015-12-20 15:15:15"
-          v-model="scheduleTime"
-        ></datetime>
+          class="form-control  proximity-point"
+          :class="{
+            'is-invalid': submitted && $v.time.$error,
+          }"
+        >
+        </datetime>
+        <div v-if="submitted && !$v.time.required" class="invalid-feedback">
+          Scheduled time is required
+        </div>
       </div>
+
       <div class="form-group">
         <textarea
-          class="form-control rounded-0"
-          :id="`schedule_reason_${orderNo}`"
-          placeholder="Description"
-          v-model="scheduleDesription"
-        ></textarea>
+          type="text"
+          v-model="description"
+          :id="`schedule_description_${orderNo}`"
+          name="reason"
+          placeholder="Reason for Scheduling"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.description.$error,
+          }"
+        >
+        </textarea>
+        <div
+          v-if="submitted && !$v.description.required"
+          class="invalid-feedback"
+        >
+          Description is required
+        </div>
       </div>
       <button class="btn btn-primary action-button">
         Schedule Order
@@ -31,6 +49,7 @@
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
 import datetime from 'vuejs-datetimepicker';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TheScheduleComponent',
@@ -48,48 +67,46 @@ export default {
       moreData: this.order.order_details,
       notification: null,
       displayClass: '',
-      scheduleTime: '',
-      scheduleDesription: '',
+      time: '',
+      description: '',
+      submitted: false,
     };
+  },
+  validations: {
+    time: { required },
+    description: { required },
   },
   methods: {
     ...mapMutations({
-      updateErrors: 'setErrors',
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
     }),
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    async setAsReturn() {
-      // eslint-disable-next-line prefer-const
-      let err = [];
-      if (!this.scheduleDesription) {
-        err.push('Re-Scheduling reason is required.');
+    setAsReturn() {
+      this.submitted = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
       }
-      if (!this.scheduleTime) {
-        err.push('Re-Scheduling time is required.');
-      }
-      this.updateErrors(err);
-      if (err.length === 0) {
-        const currentDate = moment().toDate();
-        console.log('currentDate', currentDate);
-        const payload = {
-          app: 'ORDERS_APP',
-          endpoint: 'reschedule_order_cc',
-          apiKey: true,
-          params: {
-            order_no: this.orderNo,
-            action_id: 6,
-            date_time: this.scheduleTime,
-            reallocation_description: this.scheduleDesription,
-            reallocation_reason_id: 1,
-          },
-        };
-        const data = await this.perform_order_action(payload);
-        const msgClass = this.display_order_action_notification(data.status);
 
-        this.displayClass = msgClass;
-        return (this.notification = data.reason);
-      }
+      const currentDate = moment().toDate();
+      const notification = [];
+      const actionClass = '';
+
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'reschedule_order_cc',
+        apiKey: true,
+        params: {
+          order_no: this.orderNo,
+          action_id: 6,
+          date_time: this.scheduleTime,
+          reallocation_description: this.scheduleDesription,
+          reallocation_reason_id: 1,
+        },
+      };
     },
   },
 };
@@ -97,5 +114,8 @@ export default {
 <style scoped>
 .datetime-picker {
   width: 100% !important;
+}
+input[data-v-4bd11526] {
+  height: 40px !important;
 }
 </style>

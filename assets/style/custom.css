@@ -670,3 +670,62 @@ profile-user-img {
 .recheck{
   margin-top: 5px;
 }
+.proximity-point {
+  padding: 0px !important;
+  height: 40px;
+}
+table {
+  cursor: default;
+}
+.table > tbody > tr > td,
+.table > tbody > tr > th,
+.table > tfoot > tr > td,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > thead > tr > th {
+  border-top: 1px solid #f4f4f4;
+}
+.table > tbody > tr:hover {
+  background: none;
+}
+/* NAV TABS */
+
+.nav-tabs {
+  border-bottom: 1px solid #f4f4f4;
+}
+.nav-tabs .nav-link {
+  border-top: 3px solid transparent;
+  margin-bottom: -2px;
+  margin-right: 5px;
+}
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  border-top-color: #3c8dbc;
+  border-left-color: #ffff;
+  border-left-color: #f4f4f4;
+  border-right-color: #f4f4f4;
+}
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link {
+  color: #444;
+}
+.nav-tabs .nav-item.show .nav-link:hover,
+.nav-tabs .nav-link:hover {
+  background: #ffff;
+  color: #999;
+  border: none;
+}
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active:hover {
+  background: #ffff;
+  border-top: 3px solid #3c8dbc;
+  border-bottom: none;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  color: #444;
+}
+.tab-content {
+  background: #fff;
+  padding: 10px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+}

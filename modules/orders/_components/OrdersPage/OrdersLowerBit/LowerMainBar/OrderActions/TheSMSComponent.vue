@@ -1,41 +1,40 @@
 <template>
-  <div>
-    <div :id="`response_${orderNo}_dispatch`"></div>
-    <form id="dispatch-form" @submit.prevent="dispatchOrder">
+  <span>
+    <div>
+      If the order has been delivered the client will be asked to rate the
+      order.
+    </div>
+    <br />
+    <form @submit.prevent="sendSMS" class="form-group">
       <div class="form-group">
-        <v-select
-          :options="options"
-          :reduce="reason => reason.code"
-          name="reason"
-          label="reason"
-          placeholder="Select dispatch reason .."
-          class="form-control proximity-point"
-          :id="`dispatch_reason${orderNo}`"
-          v-model="reason"
+        <input
+          type="text"
+          v-model="phone"
+          :id="`phone_${orderNo}`"
+          name="phone"
+          class="form-control"
           :class="{
-            'is-invalid': submitted && $v.reason.$error,
+            'is-invalid': submitted && $v.phone.$error,
           }"
-        >
-        </v-select>
-        <div v-if="submitted && !$v.reason.required" class="invalid-feedback">
-          Dispatch reason is required
+        />
+        <div v-if="submitted && !$v.phone.required" class="invalid-feedback">
+          User Phone is required
         </div>
       </div>
       <div class="form-group">
-        <p>The order will be broadcasted to all the riders near the pickup</p>
+        <button class="btn btn-primary action-button">
+          Send Link
+        </button>
       </div>
-      <button class="btn btn-primary action-button">
-        Dispatch Order
-      </button>
     </form>
-  </div>
+  </span>
 </template>
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
-  name: 'TheDispatchComponent',
+  name: 'TheSMSComponent',
   props: {
     order: {
       type: Object,
@@ -45,17 +44,17 @@ export default {
   data() {
     return {
       orderNo: this.order.order_details.order_no,
-      options: [
-        { code: '2', reason: 'Rider without a box' },
-        { code: '11', reason: 'Rider Unreachable' },
-        { code: '12', reason: 'Rider rejected' },
-      ],
-      reason: '',
+      phone: this.order.client_details.phone_no,
       submitted: false,
     };
   },
   validations: {
-    reason: { required },
+    phone: { required },
+  },
+  computed: {
+    link() {
+      return `sendyit.com/track/${this.orderNo}`;
+    },
   },
   methods: {
     ...mapMutations({
@@ -65,7 +64,7 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    async dispatchOrder() {
+    async sendSMS() {
       const notification = [];
       let actionClass = '';
 
@@ -74,18 +73,17 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-
-      const batchNo = this.order.order_details.batch_no;
       const payload = {
         app: 'ORDERS_APP',
-        endpoint: 'dispatch_order_cc',
+        endpoint: 'tracking_link_cc',
         apiKey: true,
         params: {
-          order_no: this.orderNo,
-          batch_no: batchNo !== null ? batchNo : '',
-          action_id: 6,
+          link: this.link,
+          action_id: 8,
+          user_phone: this.phone,
         },
       };
+
       try {
         const data = await this.perform_order_action(payload);
         notification.push(data.reason);

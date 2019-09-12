@@ -40,17 +40,24 @@ Vue.mixin({
         11: 'fa-envelope bg-blue',
         14: 'fa-envelope bg-red',
       },
+      customerInfo: [
+        { code: '1', reason: 'More information' },
+        { code: '2', reason: 'Delivery delay' },
+        { code: '3', reason: 'Customer not reachable' },
+        { code: '4', reason: 'Customer feedback' },
+      ],
+      departments: [
+        { code: '1', department: 'Operations' },
+        { code: '2', department: 'Customer Support' },
+      ],
     };
   },
   methods: {
     display_order_action_notification(status) {
-      console.log('status', status);
-
       let displayClass = 'success';
       if (!status) {
         displayClass = 'danger';
       }
-      console.log('status', displayClass);
 
       return displayClass;
     },
