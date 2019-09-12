@@ -100,7 +100,6 @@ export default {
         const response = await this.request_quotes_list(payload);
         this.status = response.data.status;
         this.quotes = response.data.data;
-        console.log('quotes', response.data.data);
       } catch (error) {
         this.notification = 'Failed to retrieve bidding records';
         this.quotes = this.notification;

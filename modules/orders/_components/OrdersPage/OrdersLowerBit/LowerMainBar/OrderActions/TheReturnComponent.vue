@@ -76,9 +76,6 @@ export default {
       displayClass: null,
     };
   },
-  mounted() {
-    console.log('order', this.order);
-  },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
