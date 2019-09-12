@@ -16,4 +16,10 @@ export default {
   setActionClass(state, val) {
     state.actionClass = val;
   },
+  updateSearchState(state, searchState) {
+    state.search_state = searchState;
+  },
+  setSearchedOrder(state, val) {
+    state.searchedOrder = val;
+  },
 };

@@ -30,6 +30,19 @@ export default {
       token: null,
       config,
       jwtToken,
+      search_state: false,
+      searchedOrder: null,
+      orderColumns: [
+        'Status',
+        'Client',
+        'Rider',
+        'Time',
+        'Pick up',
+        'Delivery',
+        'Amount',
+        'Rider Amount',
+      ],
+
       userData: {
         user_name: 'Joyce Kemboi',
         user_email: 'joyce@sendyit.com',

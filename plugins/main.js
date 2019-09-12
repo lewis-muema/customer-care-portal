@@ -118,6 +118,18 @@ Vue.mixin({
       return displayString;
     },
     // eslint-disable-next-line prettier/prettier
+    displayAmount(currency, amount, vendor_type_id,fixed_cost, customer_min_amount,confirm_status) {
+      // eslint-disable-next-line prettier/prettier
+      const computedAmount = this.determineOrderAmounts(amount, vendor_type_id, fixed_cost, customer_min_amount, confirm_status);
+      currency = currency || '';
+      amount = this.numberWithCommas(computedAmount);
+      let amountString = `${currency} ${amount}`;
+      if (vendor_type_id === 25 && confirm_status < 1) {
+        amountString = '-';
+      }
+      return amountString;
+    },
+    // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(amount, vendorTypeID, fixedCost,  customerMinAmount, confirmStatus) {
       const freightArray = [20, 25];
       if (freightArray.includes(vendorTypeID) && !fixedCost) {
@@ -204,7 +216,7 @@ Vue.mixin({
       }
       return displayAmount;
     },
-    smartify_display(myString, myLength, orderNo) {
+    smartify_display(myString, myLength) {
       if (myString !== null && parseInt(myString.length) > myLength) {
         const myTruncatedString = myString.substring(0, myLength);
 
@@ -212,6 +224,15 @@ Vue.mixin({
       } else {
         return myString;
       }
+    },
+    showCity(city) {
+      let cityName;
+      if (city.id === 1 || city.id === 2 || city.id === 3) {
+        cityName = city.name;
+      } else {
+        cityName = 'Other';
+      }
+      return cityName;
     },
   },
 });
