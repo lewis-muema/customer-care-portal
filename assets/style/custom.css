@@ -729,3 +729,20 @@ table {
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
 }
+.bg-aqua {
+  float: right !important;
+}
+.delay {
+  color:deeppink; 
+  font-weight:100;
+}
+.cash-display{
+  float:right;
+  background-color: transparent;
+}
+.fa-money {
+  color:green;
+}
+.vendor-label {
+  float:right;
+}

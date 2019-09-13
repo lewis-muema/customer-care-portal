@@ -38,23 +38,21 @@
               <span
                 v-if="paymentDetails.cash_status"
                 title="Cash"
-                class="badge"
-                style="float:right; background-color: transparent;"
+                class="badge cash-dispaly"
               >
-                <i class="fa fa-fw fa-money" style=" color:green;"></i
+                <i class="fa fa-fw fa-money"></i
               ></span>
               <span
                 v-if="priceType === 'Standard'"
                 title="Standard"
                 class="badge bg-aqua"
-                style="float:right;"
               >
                 s
               </span>
             </td>
             <td>
               {{ riderDetails.name }}
-              <span style="float:right;">
+              <span class="vendor-label">
                 <span> {{ vendorLabels[vendorTypeId] }}</span>
                 &nbsp;
                 <img
@@ -62,7 +60,6 @@
                     `https://images.sendyit.com/web_platform/vendor_type/side/v2/${vendorTypeId}.svg`
                   "
                   height="14"
-                  style="float: right; image-rendering: auto;height:18px"
                 />
               </span>
             </td>
@@ -71,8 +68,7 @@
               <span
                 v-if="compareDates(moreData.pickup_time)"
                 title="Scheduled for tomorrow"
-                class="fa fa-clock-o pull-right"
-                style="color:deeppink; font-weight:100;"
+                class="fa fa-clock-o pull-right delay"
               >
               </span>
             </td>
@@ -105,10 +101,9 @@
               <span
                 title="showCity(riderDetails.city_id)"
                 class="badge bg-aqua "
-                style="float: right;"
                 >{{ showCity(riderDetails.city_id) }}
               </span>
-              <span style="float: right;"> &nbsp; </span>
+              <span> &nbsp; </span>
               <span title="Corporate Name" class="badge bg-aqua pull-right">
                 {{ moreData.distance_read }} km</span
               >
