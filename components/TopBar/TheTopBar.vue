@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="box-body">
-          <TheRowHolder :order="order" />
+          <TheRowHolder :order="order" :key="componentKey" />
         </div>
       </div>
     </div>
@@ -60,6 +60,7 @@ export default {
     return {
       order: {},
       columns: null,
+      componentKey: 0,
     };
   },
 
@@ -69,10 +70,16 @@ export default {
   },
   watch: {
     getSearchedOrder(order) {
+      this.forceRerender();
       return (this.order = order);
     },
     getOrderColumns(columns) {
       return (this.columns = columns);
+    },
+  },
+  methods: {
+    forceRerender() {
+      this.componentKey += 1;
     },
   },
 };
