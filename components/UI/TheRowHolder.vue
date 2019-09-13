@@ -109,8 +109,13 @@
               >
             </td>
           </tr>
-          <tr v-if="opened.includes(orderNo)">
-            <td colspan="2">ON!</td>
+          <tr v-if="opened.includes(orderNo)" class="order_view_lower_cell">
+            <td colspan="3">
+              <TheSideComponent :order="order" />
+            </td>
+            <td colspan="5">
+              <TheMainComponent :order="order" />
+            </td>
           </tr>
         </template>
       </tbody>
@@ -122,6 +127,16 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   name: 'TheRowHolder',
+  components: {
+    TheSideComponent: () =>
+      import(
+        '~/modules/orders/_components/OrdersPage/OrdersLowerBit/LowerSideBar/TheSideComponent'
+      ),
+    TheMainComponent: () =>
+      import(
+        '~/modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/TheMainComponent'
+      ),
+  },
   props: {
     order: {
       type: Object,

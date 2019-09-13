@@ -746,3 +746,23 @@ table {
 .vendor-label {
   float:right;
 }
+.order_view_lower_cell{
+  padding: 0px;
+  background-color: rgba(245, 245, 245, 0.56) !important;
+  font-size: 13px;
+}
+.search-td {
+  width:33%;
+}
+.status-td {
+  width: 17%;
+}
+.city-class {
+  width: 33%;
+}
+.reorganize {
+  width: 10%;
+}
+.search-window {
+  margin-top: 16px;
+}

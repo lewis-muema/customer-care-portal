@@ -1,5 +1,5 @@
 <template>
-  <td>
+  <td class="search-td">
     <div class="Typeahead">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
       <template v-else>
@@ -10,7 +10,7 @@
       <input
         type="text"
         class="Typeahead__input"
-        placeholder="Search twitter user"
+        placeholder="Search for Order No/ Customer name/ User Phone"
         autocomplete="off"
         v-model="query"
         @keydown.down="down"
@@ -94,7 +94,7 @@ export default {
   position: relative;
 }
 .Typeahead__input {
-  width: 100%;
+  width: 90%;
   font-size: 14px;
   color: #2c3e50;
   line-height: 1.42857143;
@@ -110,19 +110,20 @@ export default {
   box-sizing: border-box;
 }
 .Typeahead__input:focus {
-  border-color: #4fc08d;
+  border-color: 2px solid #0097cf;
   outline: 0;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #4fc08d;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #0097cf;
 }
 .fa-times {
   cursor: pointer;
 }
+
 i {
   float: right;
   position: relative;
-  top: 30px;
-  right: 29px;
-  opacity: 0.4;
+  top: 16px;
+  right: 6px;
+  opacity: 1;
 }
 ul {
   position: absolute;
@@ -154,7 +155,8 @@ span {
   color: #2c3e50;
 }
 .active {
-  background-color: #3aa373;
+  background-color: #0097cf;
+  color: #fff;
 }
 .active span {
   color: white;

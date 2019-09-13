@@ -11,8 +11,12 @@
         loading ....
       </div>
       <div class="row" v-else>
-        <TheSideComponent :order="order" />
-        <TheMainComponent :order="order" />
+        <div class="col-md-4">
+          <TheSideComponent :order="order" />
+        </div>
+        <div class="col-md-8">
+          <TheMainComponent :order="order" />
+        </div>
       </div>
     </div>
   </td>

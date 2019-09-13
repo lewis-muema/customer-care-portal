@@ -1,25 +1,21 @@
 <template>
   <section class="content">
     <div class="row content-body">
-      <div class="col-xs-12">
-        <div id="searchOrder">
-          <table width="100%;">
-            <tbody>
-              <tr>
-                <TheSearchBar />
-                <TheStatusButtonsBar />
-                <TheCitiesBar />
-                <TheReorganizeBar />
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <table width="99%;">
+        <tbody>
+          <tr>
+            <TheSearchBar />
+            <TheStatusButtonsBar />
+            <TheCitiesBar />
+            <TheReorganizeBar />
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div v-if="Object.keys(order).length !== 0">
+    <div v-if="Object.keys(order).length !== 0" class="search-window">
       <div
         v-if="order.length !== 0"
-        class="col-md-12 box box-info"
+        class="box box-info"
         id="new_serach_window"
       >
         <div class="box-header" style="">
@@ -35,9 +31,9 @@
               <i class="fa fa-times"></i>
             </button>
           </div>
-          <div class="box-body">
-            <TheRowHolder :order="order" />
-          </div>
+        </div>
+        <div class="box-body">
+          <TheRowHolder :order="order" />
         </div>
       </div>
     </div>
@@ -81,3 +77,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.fa-search {
+  padding: 0 !important;
+  color: #212529 !important;
+}
+</style>
