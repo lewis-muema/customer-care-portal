@@ -3,8 +3,7 @@
     <div class="Typeahead">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
       <template v-else>
-        <i class="fa fa-search" v-show="isEmpty"></i>
-        <i class="fa fa-times" v-show="isDirty" @click="reset"></i>
+        <i class="fa fa-search" @click="byPassSolrSearch()"></i>
       </template>
 
       <input
@@ -17,10 +16,10 @@
         @keydown.up="up"
         @keydown.enter="hit"
         @keydown.esc="reset"
-        @blur="reset"
         @input="update"
+        @blur="reset"
       />
-      <ul v-show="hasItems">
+      <ul v-show="hasItems" @blur="reset">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -28,13 +27,13 @@
           @mousemove="setActive($item)"
           :key="item.index"
         >
-          <p>
+          <span>
             <strong>{{ item.order_no }}</strong>
-          </p>
-          <p>Client: {{ item.user_name }}</p>
-          <p>Client phone: {{ item.user_phone }}</p>
-          <p>Rider: {{ item.rider_name }}</p>
-          <p>Date: {{ item.rider_name }}</p>
+          </span>
+          <span>Client: {{ item.user_name }}</span>
+          <span>Client phone: {{ item.user_phone }}</span>
+          <span>Rider: {{ item.rider_name }}</span>
+          <span>Date: {{ getFormattedDate(item.date_time, 'LLLL') }}</span>
         </li>
       </ul>
     </div>
@@ -50,7 +49,7 @@ export default {
   extends: VueTypeahead,
   data() {
     return {
-      limit: 5,
+      limit: 10,
       minChars: 2,
       query: '',
       order: null,
@@ -58,6 +57,7 @@ export default {
   },
   computed: {
     query_string() {
+      localStorage.setItem('query', this.query);
       return this.query;
     },
     src() {
@@ -71,9 +71,18 @@ export default {
     ...mapActions({
       request_single_order: 'request_single_order',
     }),
+    async byPassSolrSearch() {
+      const orderNo = localStorage.query;
+      await this.singleOrderRequest(orderNo);
+    },
     async onHit(item) {
+      console.log('item', item);
+      const orderNo = 'AD35T3848-78B';
+      await this.singleOrderRequest(orderNo);
+    },
+    async singleOrderRequest(orderNo) {
       try {
-        const data = await this.request_single_order('AD35T3848-78B');
+        const data = await this.request_single_order(orderNo);
         this.updateSearchedOrder(data);
         return (this.order = data);
       } catch {
@@ -129,7 +138,7 @@ ul {
   position: absolute;
   padding: 0;
   margin-top: 8px;
-  min-width: 100%;
+  min-width: 90%;
   background-color: #fff;
   list-style: none;
   border-radius: 4px;
@@ -137,7 +146,7 @@ ul {
   z-index: 1000;
 }
 li {
-  padding: 10px 16px;
+  padding: 6px 13px;
   border-bottom: 1px solid #ccc;
   cursor: pointer;
 }

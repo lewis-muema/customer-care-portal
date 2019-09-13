@@ -161,8 +161,10 @@ export default {
     status() {
       const deliveryStatus = this.moreData.delivery_status;
       const confirmStatus = this.moreData.confirm_status;
+      const orderStatus = this.moreData.order_status;
+
       let status = '';
-      if (deliveryStatus === 0 && confirmStatus === 0) {
+      if (deliveryStatus === 0 && confirmStatus === 0 && orderStatus === 1) {
         status = 'pending';
       } else if (deliveryStatus === 0 && confirmStatus === 1) {
         status = 'confirmed';
@@ -170,9 +172,8 @@ export default {
         status = 'in transit';
       } else if (deliveryStatus === 3 && confirmStatus === 1) {
         status = 'delivered';
-      }
-      if (this.moreData.order_status === 0) {
-        status = 'cancelled';
+      } else if (deliveryStatus === 0 && confirmStatus === 0) {
+        status = 'Cancelled';
       }
       if (
         this.moreData.dispute_status === 2 ||
