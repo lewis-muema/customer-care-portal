@@ -1,8 +1,8 @@
 <template>
-  <div class="col-md-8">
+  <span>
     <TheOrderActionsComponent :order="order" :rates="conversionRates" />
     <TheOrderDetailsComponent :order="order" :rates="conversionRates" />
-  </div>
+  </span>
 </template>
 
 <script>
