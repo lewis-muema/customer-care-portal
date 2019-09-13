@@ -118,6 +118,7 @@ export default {
     'plugins/google-maps',
     'plugins/vue-select',
     'plugins/vuelidate',
+    'plugins/typeahead',
   ],
   /*
    ** Nuxt.js modules

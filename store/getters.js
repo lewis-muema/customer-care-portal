@@ -7,4 +7,10 @@ export default {
   getNotification(state) {
     return state.notification;
   },
+  getSearchedOrder(state) {
+    return state.searchedOrder;
+  },
+  getOrderColumns(state) {
+    return state.orderColumns;
+  },
 };

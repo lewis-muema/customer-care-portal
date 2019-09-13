@@ -30,6 +30,8 @@ export default {
       token: null,
       config,
       jwtToken,
+      search_state: false,
+      searchedOrder: null,
       userData: {
         user_name: 'Joyce Kemboi',
         user_email: 'joyce@sendyit.com',

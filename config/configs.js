@@ -1,7 +1,4 @@
 export default {
-  stripe: {
-    secret: process.env.STRIPE_SECRET,
-  },
   JWT_Token: process.env.JWT_TOKEN,
   GOOGL_API_KEY: process.env.GOOGL_API_KEY,
   BASE_URL: process.env.BASE_URL,
@@ -14,4 +11,7 @@ export default {
   NODE_PRIVATE_API: process.env.NODE_PRIVATE_API,
   ORDERS_APP: process.env.ORDERS_APP,
   BACKEND_KEY: process.env.BACKEND_KEY,
+  SOLR_BASE: process.env.SOLR_BASE,
+  RIDER_SEARCH: process.env.RIDER_SEARCH,
+  SOLR_JWT: process.env.SOLR_JWT,
 };
