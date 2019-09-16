@@ -29,6 +29,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
 import TheRowComponent from './_components/OrdersPage/OrdersMainBit/TheRowComponent';
+import rabbitMQComponent from '../rabbitMQ/rabbitMQComponent';
 
 import TheLowerSlideComponent from './_components/OrdersPage/OrdersLowerBit/TheLowerSlideComponent';
 

@@ -5,6 +5,8 @@
     infinite-scroll-disabled="busy"
     infinite-scroll-distance="limit"
   >
+    <rabbitMQcomponent @pushedSomething="handlePushInParent" />
+
     <tr
       v-if="orders.length === 0"
       id="initial_data_request_show"
@@ -132,6 +134,7 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
 import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
+import rabbitMQcomponent from '../../../../rabbitMQ/rabbitMQComponent';
 
 PouchDB.plugin(PouchFind);
 
@@ -139,6 +142,7 @@ export default {
   name: 'TheRowComponent',
   components: {
     TheLowerSlideComponent,
+    rabbitMQcomponent,
   },
   data() {
     return {
@@ -312,6 +316,10 @@ export default {
 
     viewOrder(orderNo) {
       this.show = orderNo;
+    },
+    handlePushInParent(pushobj) {
+      console.log('This is the push from rabbitMQ', pushobj);
+      this.orders.unshift(pushobj);
     },
   },
 };
