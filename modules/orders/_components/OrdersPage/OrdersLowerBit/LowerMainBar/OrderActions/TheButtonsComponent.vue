@@ -91,28 +91,14 @@
           Sms Link
         </a>
       </li>
-      <!-- <li
-        class=""
-        v-if="
-          order.order_details.confirm_status === 1 &&
-            order.order_details.delivery_status < 3 &&
-            userData.privilege.location_proximity
-        "
-      >
-        <a class="force_blue" data-toggle="tab" aria-expanded="false">
-          <span class="fa fa-fw fa-rss"></span>
-          Proximity
-        </a>
-      </li> -->
-      <!-- <li
+      <li
         class="nav-item"
         v-if="
           order.order_details.confirm_status === 1 &&
             order.order_details.delivery_status < 3 &&
             userData.privilege.location_proximity
         "
-      > -->
-      <li class="nav-item">
+      >
         <a
           class="force_blue"
           data-toggle="tab"
@@ -142,6 +128,7 @@
         <div
           v-if="actionErrors.length > 0"
           :class="`alert alert-${actionClass}`"
+          :id="`error_holder_${orderNo}`"
         >
           <ul>
             <li v-for="error in actionErrors" :key="error.index">
@@ -195,14 +182,30 @@
           role="tabpanel"
           v-if="showTab === `return_${orderNo}`"
         >
-          <TheReturnComponent :order="order" />
+          <TheReturnComponent :order="order" :rates="rates" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`sms_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `sms_${orderNo}`"
+        >
+          <TheSMSComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`ticket_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `ticket_${orderNo}`"
+        >
+          <TheTicketComponent :order="order" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'TheButtonsComponent',
@@ -213,10 +216,16 @@ export default {
     TheReturnComponent: () => import('./TheReturnComponent'),
     TheScheduleComponent: () => import('./TheScheduleComponent'),
     TheProximityComponent: () => import('./TheProximityComponent'),
+    TheSMSComponent: () => import('./TheSMSComponent'),
+    TheTicketComponent: () => import('./TheTicketComponent'),
   },
   props: {
     order: {
       type: Object,
+      required: true,
+    },
+    rates: {
+      type: Array,
       required: true,
     },
   },
@@ -237,7 +246,19 @@ export default {
     this.moreData = this.order.order_details;
   },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
+    clearErrorMessages() {
+      const notification = [];
+      const actionClass = '';
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     viewTab(tab, orderNo) {
+      this.clearErrorMessages();
+
       this.showTab = `${tab}_${orderNo}`;
       this.active = 'active';
       this.show = 'show';

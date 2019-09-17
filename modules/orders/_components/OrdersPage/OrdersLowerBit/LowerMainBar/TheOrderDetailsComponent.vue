@@ -1,6 +1,5 @@
 <template>
   <div id="tabs" class="container">
-    <!-- <TheNotificationsComponent :errors="errors" /> -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
         <a
@@ -266,6 +265,14 @@
         >
           <TheDNotesComponent :order="orderDetails" />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`quotes_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `quotes_${orderNo}`"
+        >
+          <TheQuotesComponent :order="orderDetails" />
+        </div>
       </div>
     </div>
   </div>
@@ -286,6 +293,7 @@ export default {
     TheDisputeComponent: () => import('./OrderTabs/TheDisputeComponent'),
     TheDispatchComponent: () => import('./OrderTabs/TheDispatchListComponent'),
     TheDNotesComponent: () => import('./OrderTabs/TheDNotesComponent'),
+    TheQuotesComponent: () => import('./OrderTabs/TheQuotesComponent'),
 
     TheDeliveryDetailsComponent: () =>
       import('./OrderTabs/TheDeliveryDetailsComponent'),
@@ -293,6 +301,10 @@ export default {
   props: {
     order: {
       type: Object,
+      required: true,
+    },
+    rates: {
+      type: Array,
       required: true,
     },
   },
@@ -308,20 +320,10 @@ export default {
       activetab: null,
       firstShow: false,
       firstActive: false,
-      conversionRates: null,
+      conversionRates: this.rates,
       notification: null,
       eta: null,
     };
-  },
-  computed: {
-    ...mapGetters({
-      getExchangeRates: 'getExchangeRates',
-    }),
-  },
-  watch: {
-    getExchangeRates(value) {
-      return (this.conversionRates = value);
-    },
   },
   mounted() {
     this.firstShow = 'show';
@@ -329,7 +331,6 @@ export default {
     this.orderNo = this.orderDetails.order_details.order_no;
     const vendorTypeID = this.orderDetails.rider_details.vendor_type_id;
     this.isTruck(this.trucksArray, vendorTypeID);
-    this.setExchangeRates();
     this.requestETAs();
   },
   methods: {
@@ -337,7 +338,6 @@ export default {
       updateNotification: 'setNotification',
     }),
     ...mapActions({
-      setExchangeRates: 'setExchangeRates',
       request_order_eta: '$_orders/request_order_eta',
     }),
     async requestETAs() {
@@ -367,21 +367,6 @@ export default {
 };
 </script>
 <style>
-table {
-  cursor: default;
-}
-.table > tbody > tr > td,
-.table > tbody > tr > th,
-.table > tfoot > tr > td,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > thead > tr > th {
-  border-top: 1px solid #f4f4f4;
-}
-.table > tbody > tr:hover {
-  background: none;
-}
-/* NAV TABS */
 .container {
   max-width: 100%;
   margin: 0 auto;
@@ -391,44 +376,5 @@ table {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   padding-left: 0;
-}
-.nav-tabs {
-  border-bottom: 1px solid #f4f4f4;
-}
-.nav-tabs .nav-link {
-  border-top: 3px solid transparent;
-  margin-bottom: -2px;
-  margin-right: 5px;
-}
-.nav-tabs .nav-item.show .nav-link,
-.nav-tabs .nav-link.active {
-  border-top-color: #3c8dbc;
-  border-left-color: #ffff;
-  border-left-color: #f4f4f4;
-  border-right-color: #f4f4f4;
-}
-.nav-tabs .nav-item.show .nav-link,
-.nav-tabs .nav-link {
-  color: #444;
-}
-.nav-tabs .nav-item.show .nav-link:hover,
-.nav-tabs .nav-link:hover {
-  background: #ffff;
-  color: #999;
-  border: none;
-}
-.nav-tabs .nav-item.show .nav-link,
-.nav-tabs .nav-link.active:hover {
-  background: #ffff;
-  border-top: 3px solid #3c8dbc;
-  border-bottom: none;
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
-  color: #444;
-}
-.tab-content {
-  background: #fff;
-  padding: 10px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
 }
 </style>

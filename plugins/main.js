@@ -40,17 +40,24 @@ Vue.mixin({
         11: 'fa-envelope bg-blue',
         14: 'fa-envelope bg-red',
       },
+      customerInfo: [
+        { code: '1', reason: 'More information' },
+        { code: '2', reason: 'Delivery delay' },
+        { code: '3', reason: 'Customer not reachable' },
+        { code: '4', reason: 'Customer feedback' },
+      ],
+      departments: [
+        { code: '1', department: 'Operations' },
+        { code: '2', department: 'Customer Support' },
+      ],
     };
   },
   methods: {
     display_order_action_notification(status) {
-      console.log('status', status);
-
       let displayClass = 'success';
       if (!status) {
         displayClass = 'danger';
       }
-      console.log('status', displayClass);
 
       return displayClass;
     },
@@ -109,6 +116,18 @@ Vue.mixin({
         displayString = `${timeFrom} - ${timeTo}`;
       }
       return displayString;
+    },
+    // eslint-disable-next-line prettier/prettier
+    displayAmount(currency, amount, vendor_type_id,fixed_cost, customer_min_amount,confirm_status) {
+      // eslint-disable-next-line prettier/prettier
+      const computedAmount = this.determineOrderAmounts(amount, vendor_type_id, fixed_cost, customer_min_amount, confirm_status);
+      currency = currency || '';
+      amount = this.numberWithCommas(computedAmount);
+      let amountString = `${currency} ${amount}`;
+      if (vendor_type_id === 25 && confirm_status < 1) {
+        amountString = '-';
+      }
+      return amountString;
     },
     // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(amount, vendorTypeID, fixedCost,  customerMinAmount, confirmStatus) {
@@ -197,7 +216,7 @@ Vue.mixin({
       }
       return displayAmount;
     },
-    smartify_display(myString, myLength, orderNo) {
+    smartify_display(myString, myLength) {
       if (myString !== null && parseInt(myString.length) > myLength) {
         const myTruncatedString = myString.substring(0, myLength);
 
@@ -205,6 +224,15 @@ Vue.mixin({
       } else {
         return myString;
       }
+    },
+    showCity(city) {
+      let cityName;
+      if (city.id === 1 || city.id === 2 || city.id === 3) {
+        cityName = city.name;
+      } else {
+        cityName = 'Other';
+      }
+      return cityName;
     },
   },
 });

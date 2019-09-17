@@ -1,5 +1,5 @@
 <template>
-  <td>
+  <td class="status-td">
     <span
       id="pending_count"
       class="label label-danger active-pending"
@@ -38,9 +38,7 @@ export default {
       request_id_init: null,
     };
   },
-  mounted() {
-    // this.toggle_show();
-  },
+
   methods: {
     toggle_show(status) {
       const showStatus = `${status}_show`;
@@ -50,21 +48,6 @@ export default {
       console.log('testing status', this.showStatus);
       $(`#${element}`).toggleClass(css);
     },
-    // toggle_show(status) {
-    //   const set = `${status}_show`;
-    //   const element = `${status}_count`;
-    //   const css = `active-${status}`;
-    //   console.log('testing status');
-    //   // const func = `display_data_${status}`;
-    //   // if (window[set] !== 1) {
-    //   //   hide_data(status);
-    //   //   window[set] = 1;
-    //   // } else {
-    //   //   this[func](db, 'no glow', results_init, status, request_id_init);
-    //   //   window[set] = 0;
-    //   // }
-    //   // $(`#${element}`).toggleClass(css);
-    // },
   },
 };
 </script>
