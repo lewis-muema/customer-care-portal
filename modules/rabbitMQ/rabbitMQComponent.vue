@@ -12,16 +12,12 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 import PouchDB from 'pouchdb-browser';
 import PouchFind from 'pouchdb-find';
-import TheLowerSlideComponent from '../orders/_components/OrdersPage/OrdersLowerBit/TheLowerSlideComponent';
 
 var _ = require('lodash');
 PouchDB.plugin(require('pouchdb-upsert'));
 
 export default {
   name: 'rabbitMQComponent',
-  components: {
-    TheLowerSlideComponent,
-  },
   data() {
     return {
       client: null,
@@ -88,64 +84,41 @@ export default {
      * updating it on the database
      */
     onmessage() {
-      // console.log
-      this.ordersDB.get('1').then(doc => {
-        let storedData = doc;
-        let orders = doc.data;
-        this.order_push = this.order_body.result[0];
-        console.log(JSON.stringify(this.order_push));
-        const orderNumber = this.order_push.order_no;
-        this.orderNo = orderNumber;
-        const orderStatus = this.order_push.order_status;
-        const city = this.order_push.order_details.values.city_id;
-        const currency = this.order_push.price_details.currency;
-        const riderName = this.order_push.rider_name;
-        const distanceMetric = this.order_push.distance_read;
-        const distance = this.order_push.order_details.values.distance_read;
-        const clientName = this.order_push.user_name;
-        const date = this.order_push.date_time;
-        const vendorType = this.order_push.vendor_type;
-        const pickup = this.order_push.path[0].name;
-        const orderAmount = this.order_push.amount;
-        const riderCost = this.order_push.rider_cost;
-        const insurance = this.order_push.insurance_amount;
-        const servicefee = this.order_push.sendy_fee;
-        const destination = this.order_push.path[1].name;
-        const priceType = this.order_push.order_details.values.price_type;
-        const cashStatus = this.order_push.cash_status;
-        this.determineOrderStatus(this.order_push);
-        this.determinePaymentMethod(this.cashStatus);
-        this.deteremineOrderType(this.priceType);
-        const pushobj = new Object();
-        pushobj.city = city;
-        pushobj.client_name = clientName;
-        pushobj.distance_read = distance;
-        pushobj.from_name = pickup;
-        pushobj.order_amount = orderAmount;
-        pushobj.order_currency = currency;
-        pushobj.order_no = orderNumber;
-        pushobj.order_status = this.determineOrderStatus(this.order_push);
-        pushobj.pay_cash_on_delivery = cashStatus;
-        pushobj.price_type = priceType;
-        pushobj.rider_amount = this.determineRiderAmount(
-          orderAmount,
-          riderCost,
-          insurance,
-          servicefee,
-        );
-        pushobj.rider_name = riderName;
-        pushobj.time_of_delivery = date;
-        pushobj.time_placed = date;
-        pushobj.to_name = destination;
-        pushobj.vendor_type_id = vendorType;
+      this.order_push = this.order_body.result[0];
+      this.orderNo = this.order_push.order_no;
+      const ordernumber = this.order_push.order_no;
+      const riderCost = this.order_push.rider_cost;
+      const insurance = this.order_push.insurance_amount;
+      const servicefee = this.order_push.sendy_fee;
+      const orderAmount = this.order_push.amount;
+      this.determineOrderStatus(this.order_push);
+      this.determinePaymentMethod(this.cashStatus);
+      this.deteremineOrderType(this.priceType);
+      const pushobj = new Object();
+      pushobj.city = this.order_push.order_details.values.city_id;
+      pushobj.client_name = this.order_push.user_name;
+      pushobj.distance_read = this.order_push.order_details.values.distance_read;
+      pushobj.from_name = this.order_push.path[0].name;
+      pushobj.order_amount = this.order_push.amount;
+      pushobj.order_currency = this.order_push.price_details.currency;
+      pushobj.order_no = this.order_push.order_no;
+      pushobj.order_status = this.determineOrderStatus(this.order_push);
+      pushobj.pay_cash_on_delivery = this.order_push.cash_status;
+      pushobj.price_type = this.order_push.order_details.values.price_type;
+      pushobj.rider_amount = this.determineRiderAmount(
+        orderAmount,
+        riderCost,
+        insurance,
+        servicefee,
+      );
+      pushobj.rider_name = this.order_push.rider_name;
+      pushobj.time_of_delivery = this.order_push.date_time;
+      pushobj.time_placed = this.order_push.date_time;
+      pushobj.to_name = this.order_push.path[1].name;
+      pushobj.vendor_type_id = this.order_push.vendor_type;
 
-        this.pushes.push(pushobj);
-        this.handlePush(pushobj);
-
-        // console.log('This is the created object', pushobj);
-        console.log('This is the array of the object', this.pushes);
-        console.log('orderamount', orderAmount);
-      });
+      this.pushes.push(pushobj);
+      this.handlePush(pushobj);
     },
 
     handlePush(pushobj) {
@@ -210,8 +183,6 @@ export default {
         this.errorCallback();
       },
     );
-
-    console.log(this.client);
   },
 };
 </script>
