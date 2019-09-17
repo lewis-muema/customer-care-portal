@@ -31,10 +31,11 @@ export default {
       show: false,
       ordersDB: process.browser ? PouchDB('orders') : '',
       headers: {
-        login: 'production',
-        passcode: 'Z_EQ-T5rO-oQVx-OqL2',
+        login: 'staging',
+        passcode: '0FAHmQQmjfsIXdro',
       },
-      url: 'wss://prod-stomp.sendyit.com:15675/ws',
+      url:
+        'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     };
     this.client.debug = function(str) {
       console.log(str);
