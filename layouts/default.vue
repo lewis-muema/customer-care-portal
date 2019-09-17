@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper" v-if="userData !== null">
-    <TheHeader :user="userData" />
-    <TheSidenav :user="userData" />
+  <div class="wrapper" v-if="loggedUser !== null">
+    <TheHeader :user="loggedUser" />
+    <TheSidenav :user="loggedUser" />
     <div class="content-wrapper">
       <TheBreadCrumbView :breadcrumbs="breadcrumbs" />
       <TheTopBar />
@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       logged_user: '',
-      userData: null,
+      loggedUser: null,
       token: null,
     };
   },
@@ -53,13 +53,13 @@ export default {
     },
   },
   mounted() {
-    this.loggedUser();
+    this.getloggedUser();
   },
   methods: {
     ...mapMutations({
       updateSession: 'setSession',
     }),
-    loggedUser() {
+    getloggedUser() {
       const token = this.getAuthenticationToken;
       const partsOfToken = token.split('.');
       const middleString = atob(partsOfToken[1]);
@@ -67,7 +67,7 @@ export default {
       this.setSession(payload);
       this.updateSession(payload);
 
-      return (this.userData = payload);
+      return (this.loggedUser = payload);
     },
   },
 };

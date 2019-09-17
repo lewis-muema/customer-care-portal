@@ -2,8 +2,6 @@ import Vue from 'vue';
 
 import SendyAuth from '@sendyit/auth';
 
-console.log('SendyAuth', process.env.GOOGLE_CLIENT_ID);
-
 Vue.use(SendyAuth, {
   // social authentication driver: 'google'
   // default: google

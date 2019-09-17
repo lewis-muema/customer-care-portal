@@ -32,6 +32,13 @@ export default {
     }
     commit('setToken', token);
   },
+  logout({ commit }) {
+    commit('clearToken');
+    Cookie.remove('jwt');
+    Cookie.remove('tokenExpiration');
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('tokenExpiration');
+  },
   setBreadCrumbs({ commit }) {
     const breadcrumbsObject = {
       peer: {
@@ -65,14 +72,18 @@ export default {
         Authorization: jwtToken,
       },
     };
+
     if (process.env.DOCKER_ENV !== 'production' && payload.apiKey) {
       backendKey = customConfig.BACKEND_KEY;
       endpoint = `${endpoint}?apikey=${backendKey}`;
     }
+
     const values = JSON.stringify(payload.params);
 
     try {
       const response = await axios.post(`${url}${endpoint}`, values, config);
+      console.log('token', response);
+
       return response;
     } catch (error) {
       return error.message;

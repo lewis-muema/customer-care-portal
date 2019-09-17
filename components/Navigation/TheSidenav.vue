@@ -115,8 +115,8 @@ export default {
     },
   },
   mounted() {
-    this.navigator_online();
-    console.log('hgfdsdfghjkjhg');
+    // this.navigator_online();
+    // console.log('hgfdsdfghjkjhg');
   },
   methods: {
     show_stat_as_online() {
@@ -137,34 +137,34 @@ export default {
       document.getElementById('online_1').className = 'hidden';
     },
 
-    navigator_online() {
-      const old_status = document.getElementById('online_stat').value;
-      console.log('websocket', websocket);
-      // if (navigator.onLine) {
-      if (websocket.connected === true) {
-        // console_log('online');
+    // navigator_online() {
+    //   const old_status = document.getElementById('online_stat').value;
+    //   console.log('websocket', websocket);
+    //   // if (navigator.onLine) {
+    //   if (websocket.connected === true) {
+    //     // console_log('online');
 
-        new_status = 'online';
+    //     new_status = 'online';
 
-        show_stat_as_online();
-      } else {
-        console_log('offline');
+    //     show_stat_as_online();
+    //   } else {
+    //     console_log('offline');
 
-        // new_status = 'offline';
+    //     // new_status = 'offline';
 
-        show_stat_as_offline();
-      }
+    //     show_stat_as_offline();
+    //   }
 
-      if (old_status === new_status) {
-        console_log(' stayed the same');
-      } else {
-        console_log(' changed ');
+    //   if (old_status === new_status) {
+    //     console_log(' stayed the same');
+    //   } else {
+    //     console_log(' changed ');
 
-        // ----------ion.sound.play("button_tiny");
-      }
+    //     // ----------ion.sound.play("button_tiny");
+    //   }
 
-      document.getElementById('online_stat').value = new_status;
-    },
+    //   document.getElementById('online_stat').value = new_status;
+    // },
     showModal(modal) {
       $(`#usersModal`).modal('show');
     },

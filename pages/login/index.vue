@@ -41,16 +41,6 @@ export default {
       Cookie.set('jwt', token);
       Cookie.set('tokenExpiration', expirationDate);
 
-      // const partsOfToken = token.split('.');
-      // const middleString = atob(partsOfToken[1]);
-      // const { payload } = JSON.parse(middleString);
-
-      // const session_data = payload;
-      // const json_session = session_data;
-      // Cookie.set('sessionData', json_session);
-      // this.setSession(json_session);
-
-      // this.updateSession(session_data);
       this.$router.push('/orders');
     },
     signInError(error) {
@@ -65,4 +55,19 @@ export default {
   },
 };
 </script>
-// setAuthenticationToken
+<style scoped>
+.sendy--social-auth {
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.sendy--app-name {
+  text-align: center !important;
+}
+.sendy--social-auth .sendy--app-name {
+  margin: 100px 0 30px 0;
+  padding: 0;
+  text-align: center !important;
+}
+</style>

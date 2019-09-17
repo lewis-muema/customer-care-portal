@@ -5,16 +5,6 @@ import mutations from './mutations';
 
 // const jwtToken = process.env.JWT_TOKEN;
 const state = {
-  orderColumns: [
-    'Status',
-    'Client',
-    'Rider',
-    'Time',
-    'Pick up',
-    'Delivery',
-    'Amount',
-    'Rider Amount',
-  ],
   orders: [],
   order: null,
   order_request_object: null,

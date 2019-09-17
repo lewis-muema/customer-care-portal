@@ -53,7 +53,9 @@
 
             <li class="user-footer">
               <div class="pull-right">
-                <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                <a class="btn btn-default btn-flat" @click="onLogout"
+                  >Sign out</a
+                >
               </div>
             </li>
           </ul>
@@ -64,6 +66,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'TheMainNav',
   props: {
@@ -81,6 +85,13 @@ export default {
     },
     post() {
       return this.user.payload.data.post;
+    },
+  },
+  methods: {
+    ...mapActions(['logout']),
+    onLogout() {
+      this.logout();
+      this.$router.push('/login');
     },
   },
 };

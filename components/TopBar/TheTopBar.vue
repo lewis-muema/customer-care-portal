@@ -59,22 +59,17 @@ export default {
   data() {
     return {
       order: {},
-      columns: null,
       componentKey: 0,
     };
   },
 
   computed: {
     ...mapGetters(['getSearchedOrder']),
-    ...mapState(['orderColumns']),
   },
   watch: {
     getSearchedOrder(order) {
       this.forceRerender();
       return (this.order = order);
-    },
-    getOrderColumns(columns) {
-      return (this.columns = columns);
     },
   },
   methods: {
