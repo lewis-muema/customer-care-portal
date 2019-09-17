@@ -4,7 +4,7 @@ import custom_getters from './getters';
 import custom_mutations from './mutations';
 import config from '~/config/configs';
 
-const jwtToken = config.JWT_Token;
+const jwtToken1 = config.JWT_Token;
 
 const apix = new Apix({
   prefix: 'https://adonistest.sendyit.com',
@@ -12,7 +12,7 @@ const apix = new Apix({
     headers: {
       'Content-Type': 'text/plain',
       Accept: 'application/json',
-      Authorization: jwtToken,
+      Authorization: jwtToken1,
     },
   },
   resources: [
@@ -29,48 +29,13 @@ export default {
       ...apix.getState(),
       token: null,
       config,
-      jwtToken,
+      jwtToken: null,
+      token: null,
+      session: {},
+
       search_state: false,
       searchedOrder: null,
-      userData: {
-        user_name: 'Joyce Kemboi',
-        user_email: 'joyce@sendyit.com',
-        phone: '254719169124',
-        admin_id: 110,
-        post: 'Frontend Engineer',
-        pic: 'eggy.png',
-        send_dept_id: 2,
-        dev: 1,
-        role: 2,
-        privilege: {
-          view_new_feature: true,
-          record_mpesa: true,
-          chat: true,
-          approve_partners: true,
-          approve_postpay: true,
-          record_notification: true,
-          record_cheques: true,
-          record_partner_withdrawal: true,
-          record_promo_code: true,
-          record_user: true,
-          record_pass_change: true,
-          approve_prepay_billing: true,
-          approve_postpay_billing: true,
-          change_account_manager: true,
-          location_proximity: true,
-          reassign_orders: true,
-          update_delivery_status: true,
-        },
-        cop_id: '',
-        external_status: 0,
-        allowed_orders: '',
-        ecommerce_only: 0,
-        admin_type: 0,
-        agent_extension: 0,
-        country_codes: ['KE'],
-        managed_list: [],
-        logged_in: 23,
-      },
+      userData: {},
       baseUrl,
       breadcrumbs: [],
       notification: {},

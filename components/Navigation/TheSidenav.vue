@@ -1,19 +1,17 @@
 <template>
   <span>
-    <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
       <section class="sidebar">
-        <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
             <img
-              src="https://care.sendyit.com/customer/include/team/eggy.png"
+              :src="`https://care.sendyit.com/customer/include/team/${photo}`"
               class="img-circle"
               alt="User Image"
             />
           </div>
           <div class="pull-left info">
-            <p>Joyce Kemboi</p>
+            <p>{{ name }}</p>
 
             <a id="online_1" href="#"
               ><i class="fa fa-circle text-success"></i> Online</a
@@ -25,7 +23,6 @@
           </div>
         </div>
 
-        <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
           <li class="header">MAIN NAVIGATION</li>
           <li class="treeview >">
@@ -100,12 +97,74 @@
 <script>
 export default {
   name: 'TheSidenav',
-  data() {
-    return {
-      user: null,
-    };
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    photo() {
+      return this.user.payload.data.pic;
+    },
+    name() {
+      return this.user.payload.data.name;
+    },
+    post() {
+      return this.user.payload.data.post;
+    },
+  },
+  mounted() {
+    this.navigator_online();
+    console.log('hgfdsdfghjkjhg');
   },
   methods: {
+    show_stat_as_online() {
+      document.getElementById('offline_2').className = 'hidden';
+      document.getElementById('offline_1').className = 'hidden';
+
+      document.getElementById('online_2').className = '';
+      document.getElementById('online_1').className = '';
+    },
+
+    show_stat_as_offline() {
+      console_log('user is offline');
+
+      document.getElementById('offline_2').className = '';
+      document.getElementById('offline_1').className = '';
+
+      document.getElementById('online_2').className = 'hidden';
+      document.getElementById('online_1').className = 'hidden';
+    },
+
+    navigator_online() {
+      const old_status = document.getElementById('online_stat').value;
+      console.log('websocket', websocket);
+      // if (navigator.onLine) {
+      if (websocket.connected === true) {
+        // console_log('online');
+
+        new_status = 'online';
+
+        show_stat_as_online();
+      } else {
+        console_log('offline');
+
+        // new_status = 'offline';
+
+        show_stat_as_offline();
+      }
+
+      if (old_status === new_status) {
+        console_log(' stayed the same');
+      } else {
+        console_log(' changed ');
+
+        // ----------ion.sound.play("button_tiny");
+      }
+
+      document.getElementById('online_stat').value = new_status;
+    },
     showModal(modal) {
       $(`#usersModal`).modal('show');
     },

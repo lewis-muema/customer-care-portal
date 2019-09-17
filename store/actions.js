@@ -1,8 +1,37 @@
 // global functions (es6)
 import axios from 'axios';
 import moment from 'moment';
+import Cookie from 'js-cookie';
 
 export default {
+  initAuth({ state, commit }, req) {
+    let token = null;
+    let expirationDate = null;
+    if (req) {
+      if (!req.headers.cookie) {
+        return;
+      }
+      const jwtCookie = req.headers.cookie
+        .split(';')
+        .find(c => c.trim().startsWith('jwt='));
+      if (!jwtCookie) {
+        return;
+      }
+      token = jwtCookie.split('=')[1];
+      expirationDate = req.headers.cookie
+        .split(';')
+        .find(c => c.trim().startsWith('tokenExpiration='))
+        .split('=')[1];
+    } else {
+      token = localStorage.getItem('jwtToken');
+      expirationDate = localStorage.getItem('tokenExpiration');
+
+      if (new Date() > expirationDate || !token) {
+        return;
+      }
+    }
+    commit('setToken', token);
+  },
   setBreadCrumbs({ commit }) {
     const breadcrumbsObject = {
       peer: {

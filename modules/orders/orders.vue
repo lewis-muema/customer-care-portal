@@ -43,7 +43,7 @@ export default {
   computed: {
     ...mapGetters({
       orderColumns: '$_orders/getOrderColumns',
-      columns: 'getOrderColumns',
+      columns: '$_orders/getOrderColumns',
     }),
   },
   created() {

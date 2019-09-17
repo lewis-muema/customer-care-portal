@@ -1,11 +1,8 @@
 <template>
-  <!-- Header Navbar: style can be found in header.less -->
   <nav class="navbar navbar-static-top">
-    <!-- Sidebar toggle button-->
     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
       <span class="sr-only">Toggle navigation</span>
     </a>
-    <!-- Navbar Right Menu -->
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
         <li
@@ -21,7 +18,6 @@
             <li class="header" id="notification_number_2"></li>
 
             <li style="">
-              <!-- inner menu: contains the actual data -->
               <ul class="menu" style="" id="notification_container">
                 <li>fgrfvgdf</li>
               </ul>
@@ -31,34 +27,30 @@
             </li>
           </ul>
         </li>
-        <!-- Tasks: style can be found in dropdown.less -->
 
-        <!-- User Account: style can be found in dropdown.less -->
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <img
-              src="https://care.sendyit.com/customer/include/team/eggy.png"
+              :src="`https://care.sendyit.com/customer/include/team/${photo}`"
               class="user-image"
               alt="User Image"
             />
-            <span class="hidden-xs">Alexander Pierce</span>
+            <span class="hidden-xs">{{ name }}</span>
           </a>
           <ul class="dropdown-menu">
-            <!-- User image -->
             <li class="user-header">
               <img
-                src="https://care.sendyit.com/customer/include/team/eggy.png"
+                :src="`https://care.sendyit.com/customer/include/team/${photo}`"
                 class="img-circle"
                 alt="User Image"
               />
 
               <p>
-                Alexander Pierce - Web Developer
+                {{ name }} - {{ post }}
                 <small>Lets Deliver</small>
               </p>
             </li>
 
-            <!-- Menu Footer-->
             <li class="user-footer">
               <div class="pull-right">
                 <a href="#" class="btn btn-default btn-flat">Sign out</a>
@@ -74,5 +66,22 @@
 <script>
 export default {
   name: 'TheMainNav',
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    photo() {
+      return this.user.payload.data.pic;
+    },
+    name() {
+      return this.user.payload.data.name;
+    },
+    post() {
+      return this.user.payload.data.post;
+    },
+  },
 };
 </script>

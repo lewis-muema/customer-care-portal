@@ -14,4 +14,5 @@ export default {
   SOLR_BASE: process.env.SOLR_BASE,
   RIDER_SEARCH: process.env.RIDER_SEARCH,
   SOLR_JWT: process.env.SOLR_JWT,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
 };

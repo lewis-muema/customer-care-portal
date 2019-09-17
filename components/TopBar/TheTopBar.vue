@@ -65,7 +65,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getSearchedOrder', 'getOrderColumns']),
+    ...mapGetters(['getSearchedOrder']),
     ...mapState(['orderColumns']),
   },
   watch: {

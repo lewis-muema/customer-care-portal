@@ -3,7 +3,7 @@ import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
 
-const jwtToken = process.env.JWT_TOKEN;
+// const jwtToken = process.env.JWT_TOKEN;
 const state = {
   orderColumns: [
     'Status',
@@ -16,7 +16,6 @@ const state = {
     'Rider Amount',
   ],
   orders: [],
-  jwtToken,
   order: null,
   order_request_object: null,
   actionErrors: [],
