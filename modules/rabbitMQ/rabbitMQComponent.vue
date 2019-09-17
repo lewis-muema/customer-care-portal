@@ -113,10 +113,7 @@ export default {
         const destination = this.order_push.path[1].name;
         const priceType = this.order_push.order_details.values.price_type;
         const cashStatus = this.order_push.cash_status;
-        this.determineCity(this.city);
         this.determineOrderStatus(this.order_push);
-        this.determineOrderColor(this.order_push.date_time);
-        this.formartDate(this.date);
         this.determinePaymentMethod(this.cashStatus);
         this.deteremineOrderType(this.priceType);
         const pushobj = new Object();
@@ -155,25 +152,6 @@ export default {
       this.$emit('pushedSomething', pushobj);
     },
 
-    viewOrder(orderNo) {
-      this.show = orderNo;
-    },
-
-    formartDate(date) {
-      const order_date = this.getFormattedDate(date, 'YYYY-MM-DD');
-      return order_date;
-    },
-
-    determineCity(city) {
-      if (city === 1) {
-        return 'nbi';
-      }
-      if (city === 2) {
-        return 'msa';
-      }
-      if (city === 3) return 'other';
-    },
-
     deteremineOrderType(priceType) {
       if (priceType === 1) {
         return 'Standard';
@@ -191,17 +169,6 @@ export default {
     determineRiderAmount(orderAmount, riderCost, insurance, servicefee) {
       let rideramount = orderAmount + riderCost - (insurance + servicefee);
       return rideramount;
-    },
-
-    determineOrderColor(date) {
-      const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
-      const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
-      // .pull_attention
-      let colorClass = 'tetst';
-      if (orderDate < currentDate) {
-        colorClass = 'pull_attention';
-      }
-      return colorClass;
     },
 
     determineOrderStatus(order_push) {
@@ -228,55 +195,6 @@ export default {
         }
       }
       return 'Cancelled';
-    },
-
-    determineAmounts(
-      amount,
-      vendor_type_id,
-      fixed_cost,
-      customer_min_amount,
-      confirm_status,
-    ) {
-      if (this.vendorType === 20 && fixed_cost !== true) {
-        if (confirm_status < 1) {
-          amount = customer_min_amount;
-        }
-      }
-      return amount;
-    },
-
-    // showCity(city) {
-    //   let cityName;
-    //   if (city === 1 || city === 2 || city === 3) {
-    //     cityName = city.name;
-    //   } else {
-    //     cityName = 'Other';
-    //   }
-    //   return cityName;
-    // },
-
-    displayAmount(
-      currency,
-      amount,
-      vendorType,
-      fixed_cost,
-      customer_min_amount,
-      confirm_status,
-    ) {
-      // eslint-disable-next-line prettier/prettier
-      const computedAmount = this.determineAmounts(
-        amount,
-        fixed_cost,
-        customer_min_amount,
-        confirm_status,
-      );
-      currency = currency || '';
-      amount = this.numberWithCommas(computedAmount);
-      let amountString = `${currency} ${amount}`;
-      if (vendorType === 25 && confirm_status < 1) {
-        amountString = '-';
-      }
-      return amountString;
     },
   },
 
