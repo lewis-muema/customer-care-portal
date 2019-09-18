@@ -15,4 +15,5 @@ export default {
   SOLR_JWT: process.env.SOLR_JWT,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   USER_IMAGE: process.env.USER_IMAGE,
+  LOGIN_URL: process.env.LOGIN_URL,
 };
