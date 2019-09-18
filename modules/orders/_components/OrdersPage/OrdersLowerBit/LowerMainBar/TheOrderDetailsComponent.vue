@@ -204,7 +204,7 @@
           role="tabpanel"
           v-if="showTab === `order_${orderNo}`"
         >
-          <TheOrderComponent :order="orderDetails" :rates="conversionRates" />
+          <TheOrderComponent :order="orderDetails" :rates="rates" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -228,10 +228,7 @@
           role="tabpanel"
           v-if="showTab === `pricetiers_${orderNo}`"
         >
-          <ThePriceTiersComponent
-            :order="orderDetails"
-            :rates="conversionRates"
-          />
+          <ThePriceTiersComponent :order="orderDetails" :rates="rates" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -239,7 +236,7 @@
           role="tabpanel"
           v-if="showTab === `dispute_${orderNo}`"
         >
-          <TheDisputeComponent :order="orderDetails" :rates="conversionRates" />
+          <TheDisputeComponent :order="orderDetails" :rates="rates" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"

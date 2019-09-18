@@ -85,7 +85,7 @@ export default {
 
     const riderData = await this.requestPartnerLastPosition(riderArray);
     this.partnerData = riderData;
-    this.initialize(riderData, this.orderdetails);
+    this.initialize(riderData, this.order);
   },
   methods: {
     ...mapActions({
