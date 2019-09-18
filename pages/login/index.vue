@@ -4,7 +4,12 @@
       <div class="alert alert danger" v-if="errors.length > 0">
         {{ errors }}
       </div>
-      <sendy-auth-social @authenticated="signIn" @error="signInError" />
+      <sendy-auth-social
+        @authenticated="signIn"
+        @error="signInError"
+        app-name="SENDY"
+        button-text="Sign in with Google"
+      />
     </span>
   </no-ssr>
 </template>
@@ -17,7 +22,6 @@ export default {
   name: 'login',
   layout: 'login',
   mixins: [SessionMxn],
-
   data() {
     return {
       errors: [],
@@ -54,19 +58,18 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
 .sendy--social-auth {
   height: auto;
   position: absolute;
   top: 0;
   bottom: 0;
 }
-.sendy--app-name {
-  text-align: center !important;
+.sendy--social-auth h1.sendy--app-name {
+  text-align: center;
 }
-.sendy--social-auth .sendy--app-name {
-  margin: 100px 0 30px 0;
-  padding: 0;
-  text-align: center !important;
+.sendy--social-auth div.sendy--form {
+  text-align: center;
+  color: #666;
 }
 </style>
