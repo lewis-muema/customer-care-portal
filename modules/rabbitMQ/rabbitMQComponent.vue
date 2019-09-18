@@ -37,6 +37,9 @@ export default {
       url:
         'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     };
+    /**
+     * Function for debugging rabbitMQ
+     */
     this.client.debug = function(str) {
       console.log(str);
     };
@@ -56,7 +59,6 @@ export default {
         ({ body }) => {
           this.order_body = JSON.parse(body);
           this.onmessage(this.order_body);
-          // this.order_index(this.order_body.result[0].order_no);
         },
       );
     },
@@ -146,7 +148,6 @@ export default {
     },
 
     determineOrderStatus(order_push) {
-      console.log('This is the order', this.order_push);
       const status = this.order_push.status;
       const orderStatus = this.order_push.order_status;
       const confirmStatus = this.order_push.confirm_status;

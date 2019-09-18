@@ -308,7 +308,6 @@ export default {
       this.show = orderNo;
     },
     handlePushInParent(pushobj) {
-      // console.log('This is the push from rabbitMQ', pushobj);
       const index = _.findIndex(this.orders, [
         'order_no',
         `${pushobj.order_no}`,
