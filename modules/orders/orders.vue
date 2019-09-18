@@ -26,6 +26,7 @@
 import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
 import TheRowComponent from './_components/OrdersPage/OrdersMainBit/TheRowComponent';
+import rabbitMQComponent from '../rabbitMQ/rabbitMQComponent';
 
 export default {
   name: 'TheOrdersComponent',
