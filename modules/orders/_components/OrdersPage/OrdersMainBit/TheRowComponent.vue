@@ -316,10 +316,8 @@ export default {
       if (index >= 0) {
         this.orders.splice(index, 1);
         this.orders.unshift(pushobj);
-        console.log('iko ndani');
       } else {
         this.orders.unshift(pushobj);
-        console.log('haiko ndani');
       }
     },
   },
