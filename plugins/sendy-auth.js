@@ -3,18 +3,11 @@ import Vue from 'vue';
 import SendyAuth from '@sendyit/auth';
 
 Vue.use(SendyAuth, {
-  // social authentication driver: 'google'
-  // default: google
+  authUrl: process.env.LOGIN_URL,
 
-  // internal authentication url
-  authUrl: 'https://auth.sendyit.com/parcel/admin_glogin',
-
-  // custom configurations for social drivers
   configs: {
     google: {
-      // google's client key & identification for gapi
-      clientId:
-        '693530769708-t8ibd43rpavia989f7n95dqtcps5rt33.apps.googleusercontent.com',
+      clientId: process.env.GOOGLE_CLIENT_ID,
     },
   },
 });

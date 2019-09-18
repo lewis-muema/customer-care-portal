@@ -65,7 +65,7 @@ export default {
     const url = customConfig[payload.app];
     let endpoint = payload.endpoint;
     let backendKey = null;
-    const jwtToken = state.jwtToken;
+    const jwtToken = localStorage.getItem('jwtToken');
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -82,8 +82,6 @@ export default {
 
     try {
       const response = await axios.post(`${url}${endpoint}`, values, config);
-      console.log('token', response);
-
       return response;
     } catch (error) {
       return error.message;
