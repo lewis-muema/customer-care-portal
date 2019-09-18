@@ -20,7 +20,7 @@
     </tr>
     <template v-for="order in orders">
       <tr
-        :key="order.order_no"
+        :key="order.index"
         :class="determineOrderColor(order.time_of_delivery)"
         @click="viewOrder(order.order_no)"
       >

@@ -1,19 +1,13 @@
 <template>
   <span>
-    <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
       <section class="sidebar">
-        <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
-            <img
-              src="https://care.sendyit.com/customer/include/team/eggy.png"
-              class="img-circle"
-              alt="User Image"
-            />
+            <img :src="`${photo}`" class="img-circle" alt="User Image" />
           </div>
           <div class="pull-left info">
-            <p>Joyce Kemboi</p>
+            <p>{{ name }}</p>
 
             <a id="online_1" href="#"
               ><i class="fa fa-circle text-success"></i> Online</a
@@ -25,7 +19,6 @@
           </div>
         </div>
 
-        <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
           <li class="header">MAIN NAVIGATION</li>
           <li class="treeview >">
@@ -76,13 +69,10 @@
           </li>
         </ul>
       </section>
-      <!-- /.sidebar -->
       <input type="hidden" value="online" id="online_stat" />
     </aside>
-    <!-- Modal -->
     <div id="usersModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
-        <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">
@@ -98,14 +88,47 @@
   </span>
 </template>
 <script>
+import config from '~/config/configs';
+
 export default {
   name: 'TheSidenav',
-  data() {
-    return {
-      user: null,
-    };
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    photo() {
+      const image = this.user.payload.data.pic;
+      return `${config.USER_IMAGE}${image}`;
+    },
+    name() {
+      return this.user.payload.data.name;
+    },
+    post() {
+      return this.user.payload.data.post;
+    },
   },
   methods: {
+    show_stat_as_online() {
+      document.getElementById('offline_2').className = 'hidden';
+      document.getElementById('offline_1').className = 'hidden';
+
+      document.getElementById('online_2').className = '';
+      document.getElementById('online_1').className = '';
+    },
+
+    show_stat_as_offline() {
+      console_log('user is offline');
+
+      document.getElementById('offline_2').className = '';
+      document.getElementById('offline_1').className = '';
+
+      document.getElementById('online_2').className = 'hidden';
+      document.getElementById('online_1').className = 'hidden';
+    },
+
     showModal(modal) {
       $(`#usersModal`).modal('show');
     },

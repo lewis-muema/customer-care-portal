@@ -205,7 +205,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheButtonsComponent',
@@ -239,7 +239,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['userData', 'actionErrors', 'actionClass']),
+    ...mapState(['actionErrors', 'actionClass']),
   },
   mounted() {
     this.orderNo = this.order.order_details.order_no;

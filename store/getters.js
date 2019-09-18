@@ -13,4 +13,13 @@ export default {
   getOrderColumns(state) {
     return state.orderColumns;
   },
+  getAuthenticationToken(state) {
+    return state.jwtToken;
+  },
+  isAuthenticated(state) {
+    return state.jwtToken !== null;
+  },
+  getSession(state) {
+    return state.userData;
+  },
 };

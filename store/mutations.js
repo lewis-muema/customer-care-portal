@@ -22,4 +22,13 @@ export default {
   setSearchedOrder(state, val) {
     state.searchedOrder = val;
   },
+  setToken(state, val) {
+    state.jwtToken = val;
+  },
+  clearToken(state) {
+    state.jwtToken = null;
+  },
+  setSession(state, session) {
+    state.userData = session;
+  },
 };

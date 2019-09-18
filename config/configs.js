@@ -1,5 +1,4 @@
 export default {
-  JWT_Token: process.env.JWT_TOKEN,
   GOOGL_API_KEY: process.env.GOOGL_API_KEY,
   BASE_URL: process.env.BASE_URL,
   PRIVATE_API: process.env.PRIVATE_API,
@@ -18,4 +17,6 @@ export default {
   BROKER_USER: process.env.BROKER_USER,
   BROKER_PASS: process.env.BROKER_PASS,
   BROKER_HOST: process.env.BROKER_HOST,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  USER_IMAGE: process.env.USER_IMAGE,
 };
