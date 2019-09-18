@@ -67,6 +67,9 @@ export default {
 }
 .sendy--social-auth h1.sendy--app-name {
   text-align: center;
+  font-size: 35px;
+  margin-bottom: 25px;
+  font-weight: 300;
 }
 .sendy--social-auth div.sendy--form {
   text-align: center;
