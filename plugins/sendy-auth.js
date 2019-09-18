@@ -7,7 +7,7 @@ Vue.use(SendyAuth, {
   // default: google
 
   // internal authentication url
-  authUrl: 'https://auth.sendyit.com/parcel/admin_glogin',
+  authUrl: 'https://authtest.sendyit.com/parcel/admin_glogin',
 
   // custom configurations for social drivers
   configs: {
