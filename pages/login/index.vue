@@ -45,7 +45,6 @@ export default {
     },
     signInError(error) {
       this.errors.push(error.message);
-      console.log('error', error);
     },
     setLogoutTimer(duration) {
       setTimeout(() => {

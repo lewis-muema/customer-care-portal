@@ -1,5 +1,4 @@
 export default {
-  // JWT_Token: process.env.JWT_TOKEN,
   GOOGL_API_KEY: process.env.GOOGL_API_KEY,
   BASE_URL: process.env.BASE_URL,
   PRIVATE_API: process.env.PRIVATE_API,

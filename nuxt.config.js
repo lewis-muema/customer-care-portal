@@ -7,7 +7,6 @@ export default {
   mode: 'universal',
   server: {
     port: 8080, // default: 3000
-    // host: '0.0.0.0', // default: localhost
   },
 
   /*
@@ -160,7 +159,6 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    // transpile: ['@sendyit/auth'],
 
     extend(config, ctx) {},
   },

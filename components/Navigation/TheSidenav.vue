@@ -73,13 +73,10 @@
           </li>
         </ul>
       </section>
-      <!-- /.sidebar -->
       <input type="hidden" value="online" id="online_stat" />
     </aside>
-    <!-- Modal -->
     <div id="usersModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
-        <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">
@@ -114,10 +111,6 @@ export default {
       return this.user.payload.data.post;
     },
   },
-  mounted() {
-    // this.navigator_online();
-    // console.log('hgfdsdfghjkjhg');
-  },
   methods: {
     show_stat_as_online() {
       document.getElementById('offline_2').className = 'hidden';
@@ -137,34 +130,6 @@ export default {
       document.getElementById('online_1').className = 'hidden';
     },
 
-    // navigator_online() {
-    //   const old_status = document.getElementById('online_stat').value;
-    //   console.log('websocket', websocket);
-    //   // if (navigator.onLine) {
-    //   if (websocket.connected === true) {
-    //     // console_log('online');
-
-    //     new_status = 'online';
-
-    //     show_stat_as_online();
-    //   } else {
-    //     console_log('offline');
-
-    //     // new_status = 'offline';
-
-    //     show_stat_as_offline();
-    //   }
-
-    //   if (old_status === new_status) {
-    //     console_log(' stayed the same');
-    //   } else {
-    //     console_log(' changed ');
-
-    //     // ----------ion.sound.play("button_tiny");
-    //   }
-
-    //   document.getElementById('online_stat').value = new_status;
-    // },
     showModal(modal) {
       $(`#usersModal`).modal('show');
     },
