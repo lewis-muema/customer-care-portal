@@ -14,4 +14,5 @@ export default {
   RIDER_SEARCH: process.env.RIDER_SEARCH,
   SOLR_JWT: process.env.SOLR_JWT,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  USER_IMAGE: process.env.USER_IMAGE,
 };

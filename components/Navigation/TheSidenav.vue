@@ -4,11 +4,7 @@
       <section class="sidebar">
         <div class="user-panel">
           <div class="pull-left image">
-            <img
-              :src="`https://care.sendyit.com/customer/include/team/${photo}`"
-              class="img-circle"
-              alt="User Image"
-            />
+            <img :src="`${photo}`" class="img-circle" alt="User Image" />
           </div>
           <div class="pull-left info">
             <p>{{ name }}</p>
@@ -92,6 +88,8 @@
   </span>
 </template>
 <script>
+import config from '~/config/configs';
+
 export default {
   name: 'TheSidenav',
   props: {
@@ -102,7 +100,8 @@ export default {
   },
   computed: {
     photo() {
-      return this.user.payload.data.pic;
+      const image = this.user.payload.data.pic;
+      return `${config.USER_IMAGE}${image}`;
     },
     name() {
       return this.user.payload.data.name;

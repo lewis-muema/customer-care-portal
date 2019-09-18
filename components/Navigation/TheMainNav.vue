@@ -30,20 +30,12 @@
 
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img
-              :src="`https://care.sendyit.com/customer/include/team/${photo}`"
-              class="user-image"
-              alt="User Image"
-            />
+            <img :src="`${photo}`" class="user-image" alt="User Image" />
             <span class="hidden-xs">{{ name }}</span>
           </a>
           <ul class="dropdown-menu">
             <li class="user-header">
-              <img
-                :src="`https://care.sendyit.com/customer/include/team/${photo}`"
-                class="img-circle"
-                alt="User Image"
-              />
+              <img :src="`${photo}`" class="img-circle" alt="User Image" />
 
               <p>
                 {{ name }} - {{ post }}
@@ -67,6 +59,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import config from '~/config/configs';
 
 export default {
   name: 'TheMainNav',
@@ -78,7 +71,8 @@ export default {
   },
   computed: {
     photo() {
-      return this.user.payload.data.pic;
+      const image = this.user.payload.data.pic;
+      return `${config.USER_IMAGE}${image}`;
     },
     name() {
       return this.user.payload.data.name;
