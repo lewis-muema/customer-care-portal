@@ -7,8 +7,7 @@ Vue.use(SendyAuth, {
 
   configs: {
     google: {
-      clientId:
-        '693530769708-t8ibd43rpavia989f7n95dqtcps5rt33.apps.googleusercontent.com',
+      clientId: process.env.GOOGLE_CLIENT_ID,
     },
   },
 });
