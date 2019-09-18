@@ -1,10 +1,21 @@
 import Vue from 'vue';
 import moment from 'moment';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import config from '~/config/configs';
 
 Vue.mixin({
   data() {
     return {
+      orderColumns: [
+        'Status',
+        'Client',
+        'Rider',
+        'Time',
+        'Pick up',
+        'Delivery',
+        'Amount',
+        'Rider Amount',
+      ],
       vendorTypes: {
         1: 'Bike',
         2: 'Pickup',
@@ -51,6 +62,12 @@ Vue.mixin({
         { code: '2', department: 'Customer Support' },
       ],
     };
+  },
+  computed: {
+    ...mapGetters({ session: 'getSession' }),
+    userData() {
+      return this.session.payload.data;
+    },
   },
   methods: {
     display_order_action_notification(status) {

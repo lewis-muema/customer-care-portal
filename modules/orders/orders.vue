@@ -20,31 +20,17 @@
         </tfoot>
       </table>
     </div>
-    <!-- /.box-body -->
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
-
 import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
 import TheRowComponent from './_components/OrdersPage/OrdersMainBit/TheRowComponent';
-
-import TheLowerSlideComponent from './_components/OrdersPage/OrdersLowerBit/TheLowerSlideComponent';
 
 export default {
   name: 'TheOrdersComponent',
   components: {
     TheRowComponent,
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapGetters({
-      orderColumns: '$_orders/getOrderColumns',
-      columns: 'getOrderColumns',
-    }),
   },
   created() {
     this.registerOrdersStore();

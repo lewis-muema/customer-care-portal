@@ -1,5 +1,4 @@
 export default {
-  JWT_Token: process.env.JWT_TOKEN,
   GOOGL_API_KEY: process.env.GOOGL_API_KEY,
   BASE_URL: process.env.BASE_URL,
   PRIVATE_API: process.env.PRIVATE_API,
@@ -14,4 +13,6 @@ export default {
   SOLR_BASE: process.env.SOLR_BASE,
   RIDER_SEARCH: process.env.RIDER_SEARCH,
   SOLR_JWT: process.env.SOLR_JWT,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  USER_IMAGE: process.env.USER_IMAGE,
 };

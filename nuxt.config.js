@@ -5,6 +5,9 @@ require('dotenv').config();
 
 export default {
   mode: 'universal',
+  server: {
+    port: 8080, // default: 3000
+  },
 
   /*
    ** Headers of the page
@@ -50,7 +53,12 @@ export default {
         type: 'text/javascript',
       },
       {
-        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
+        src:
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
+        type: 'text/javascript',
+      },
+      {
+        src: 'https://apis.google.com/js/api.js',
         type: 'text/javascript',
       },
       {
@@ -114,6 +122,7 @@ export default {
   plugins: [
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
+    { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',
@@ -139,7 +148,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+    baseUrl: process.env.BASE_URL || 'http://localhost:8080',
     credentials: false,
   },
   /*
@@ -150,6 +159,7 @@ export default {
     /*
      ** You can extend webpack config here
      */
+
     extend(config, ctx) {},
   },
 
