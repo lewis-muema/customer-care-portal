@@ -7,7 +7,7 @@ import config from '~/config/configs';
 const jwtToken1 = config.JWT_Token;
 
 const apix = new Apix({
-  prefix: 'https://adonistest.sendyit.com',
+  prefix: config.ADONIS_API,
   params: {
     headers: {
       'Content-Type': 'text/plain',
