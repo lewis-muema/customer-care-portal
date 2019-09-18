@@ -71,18 +71,27 @@
       </section>
       <input type="hidden" value="online" id="online_stat" />
     </aside>
-    <TheUserModalsComponent />
+    <div id="usersModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Some text in the modal.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </span>
 </template>
 <script>
 import config from '~/config/configs';
-import TheUserModalsComponent from '@/components/UsersPage/TheUserModalsComponent';
 
 export default {
   name: 'TheSidenav',
-  components: {
-    TheUserModalsComponent,
-  },
   props: {
     user: {
       type: Object,
@@ -102,10 +111,6 @@ export default {
     },
   },
   methods: {
-    goTitle(link) {
-      const url = `http://localhost:8080/${link}`;
-      window.location.href = url;
-    },
     show_stat_as_online() {
       document.getElementById('offline_2').className = 'hidden';
       document.getElementById('offline_1').className = 'hidden';
@@ -125,7 +130,7 @@ export default {
     },
 
     showModal(modal) {
-      $(`#biz`).modal('show');
+      $(`#usersModal`).modal('show');
     },
   },
 };
