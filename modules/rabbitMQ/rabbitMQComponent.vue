@@ -40,9 +40,9 @@ export default {
     /**
      * Function for debugging rabbitMQ
      */
-    this.client.debug = function(str) {
-      console.log(str);
-    };
+    // this.client.debug = function(str) {
+    //   console.log(str);
+    // };
   },
 
   computed: {
@@ -163,7 +163,7 @@ export default {
           return 'confirmed';
         }
         if (orderStatus === 1 && confirmStatus === 1 && deliveryStatus === 2) {
-          return 'In Transit';
+          return 'transit';
         }
         if (orderStatus === 1 && confirmStatus === 1 && deliveryStatus === 3) {
           return 'delivered';
