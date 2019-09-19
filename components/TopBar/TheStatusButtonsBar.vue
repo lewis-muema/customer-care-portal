@@ -76,7 +76,7 @@ export default {
     },
     transitOrders() {
       return this.allOrders.filter(el => {
-        return el.order_status.toLowerCase() === 'picked';
+        return el.order_status.toLowerCase() === 'in transit';
       });
     },
   },
