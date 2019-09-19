@@ -42,6 +42,7 @@ export default {
       errors: [],
       actionErrors: [],
       actionClass: [],
+      selectedStatus: [],
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',
         500: 'Page not found',

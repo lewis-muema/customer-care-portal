@@ -506,7 +506,7 @@
   .pending_ind {
   background-color: #dd4b39 !important;
 }
-.Cancelled_ind {
+.cancelled_ind {
   background-color: purple !important;
 }
 .transit_ind {

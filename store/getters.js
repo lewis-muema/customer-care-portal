@@ -22,4 +22,7 @@ export default {
   getSession(state) {
     return state.userData;
   },
+  getOrderStatuses(state) {
+    return state.selectedStatus;
+  },
 };
