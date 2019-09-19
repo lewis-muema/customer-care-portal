@@ -163,7 +163,7 @@ export default {
           return 'confirmed';
         }
         if (orderStatus === 1 && confirmStatus === 1 && deliveryStatus === 2) {
-          return 'transit';
+          return 'In Transit';
         }
         if (orderStatus === 1 && confirmStatus === 1 && deliveryStatus === 3) {
           return 'delivered';
