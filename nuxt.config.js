@@ -1,8 +1,11 @@
 import 'isomorphic-fetch';
 
 const bodyParser = require('body-parser');
-require('dotenv').config();
 
+if (process.env.APP_ENV !== 'production') {
+  // eslint-disable-next-line global-require
+  require('dotenv').config();
+}
 process.env.DEBUG = 'nuxt:*';
 
 export default {

@@ -2,7 +2,7 @@
   <TheUserPageComponent />
 </template>
 <script>
-import TheUserPageComponent from '@/components/UsersPage/TheUserPageComponent';
+// import TheUserPageComponent from '@/components/UsersPage/TheUserPageComponent';
 
 export default {
   layout: 'users',

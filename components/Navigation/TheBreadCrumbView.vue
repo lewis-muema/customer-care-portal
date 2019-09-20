@@ -1,5 +1,4 @@
 <template>
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
       {{ pageBreadCrumbs.name }}
@@ -44,6 +43,11 @@ export default {
         orders: {
           name: 'Ongoing',
           description: 'Orders',
+          mainName: 'Home',
+        },
+        riders: {
+          name: 'Riders',
+          description: 'Rider',
           mainName: 'Home',
         },
       },
