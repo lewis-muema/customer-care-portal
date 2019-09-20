@@ -2,14 +2,14 @@
   <div>
     <TheBreadCrumbView :route="user" />
 
-    <TheSearchComponent />
+    <TheSearchComponent :user="user" />
     <TheUserTableComponent />
   </div>
 </template>
 
 <script>
-import TheSearchComponent from '@/components/UsersPage/TheSearchComponent';
-import TheUserTableComponent from '@/components/UsersPage/TheUserTableComponent';
+import TheSearchComponent from '~/modules/users/_components/TheSearchComponent';
+import TheUserTableComponent from '~/modules/users/_components/TheUserTableComponent';
 import TheBreadCrumbView from '@/components/Navigation/TheBreadCrumbView';
 
 export default {

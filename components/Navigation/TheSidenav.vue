@@ -36,9 +36,11 @@
           </li>
 
           <li class="treeview">
-            <nuxt-link class="fancybox fancybox.iframe fancyboxy" to="/riders"
-              ><i class="fa fa-motorcycle"></i> <span> Riders </span></nuxt-link
-            >
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              @click="showModal('riders')"
+              ><i class="fa fa-motorcycle"></i> <span> Riders </span>
+            </a>
           </li>
           <li class="treeview">
             <a
@@ -79,7 +81,7 @@
 export default {
   name: 'TheSidenav',
   components: {
-    modals: () => import('@/components/UsersPage/TheUserModalsComponent'),
+    modals: () => import('~/modules/users/_components/TheUserModalsComponent'),
   },
   props: {
     user: {

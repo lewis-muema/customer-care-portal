@@ -12,7 +12,7 @@
           </button>
 
           <div class="modal-body">
-            <span v-if="user === 'biz'">
+            <span v-if="user !== ''">
               <TheUserPageComponent :user="user" />
             </span>
           </div>
@@ -26,7 +26,7 @@ export default {
   name: 'TheUserModalsComponent',
   components: {
     TheUserPageComponent: () =>
-      import('@/components/UsersPage/TheUserPageComponent'),
+      import('~/modules/users/_components/TheUserPageComponent'),
   },
   props: {
     user: {

@@ -10,6 +10,7 @@ const config = {
     ORDERS_APP: 'https://authtest.sendyit.com/orders/',
     LOGIN_URL: 'https://authtest.sendyit.com/parcel/admin_glogin',
     SOLR_BASE: 'https://gate.sendyit.com/solr/orders/',
+    RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
