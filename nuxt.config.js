@@ -3,12 +3,14 @@ import 'isomorphic-fetch';
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
+process.env.DEBUG = 'nuxt:*';
+
 export default {
   mode: 'universal',
   server: {
     port: 8080, // default: 3000
   },
-
+  debug: true,
   /*
    ** Headers of the page
    */
