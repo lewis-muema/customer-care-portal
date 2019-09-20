@@ -40,11 +40,12 @@
               ><i class="fa fa-motorcycle"></i> <span> Riders </span></nuxt-link
             >
           </li>
-
           <li class="treeview">
-            <nuxt-link class="fancybox fancybox.iframe fancyboxy" to="/peer"
-              ><i class="fa fa-user"></i> <span> Peer </span></nuxt-link
-            >
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              @click="showModal('peer')"
+              ><i class="fa fa-user"></i> <span> Peer </span>
+            </a>
           </li>
 
           <li class="treeview">
@@ -71,37 +72,30 @@
       </section>
       <input type="hidden" value="online" id="online_stat" />
     </aside>
-    <div id="usersModal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">
-              &times;
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Some text in the modal.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <modals :user="modalUser" />
   </span>
 </template>
 <script>
-import config from '~/config/configs';
-
 export default {
   name: 'TheSidenav',
+  components: {
+    modals: () => import('@/components/UsersPage/TheUserModalsComponent'),
+  },
   props: {
     user: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return {
+      modalUser: '',
+    };
+  },
   computed: {
     photo() {
       const image = this.user.payload.data.pic;
-      return `${config.USER_IMAGE}${image}`;
+      return `${this.userImage}${image}`;
     },
     name() {
       return this.user.payload.data.name;
@@ -129,7 +123,8 @@ export default {
       document.getElementById('online_1').className = 'hidden';
     },
 
-    showModal(modal) {
+    showModal(user) {
+      this.modalUser = user;
       $(`#usersModal`).modal('show');
     },
   },

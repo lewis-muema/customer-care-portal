@@ -2,17 +2,17 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      <!-- {{ baseUrl }} -->
-      <small> {{ breadcrumbs.description }} </small>
+      {{ pageBreadCrumbs.name }}
+      <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
     <ol class="breadcrumb">
       <li>
         <a href="#"
-          ><i class="fa fa-dashboard"></i> {{ breadcrumbs.mainName }}</a
+          ><i class="fa fa-dashboard"></i> {{ pageBreadCrumbs.mainName }}</a
         >
       </li>
-      <li>{{ breadcrumbs.category }}</li>
-      <li class="active">{{ breadcrumbs.subCategory }}</li>
+      <li>{{ pageBreadCrumbs.description }}</li>
+      <li class="active">{{ pageBreadCrumbs.name }}</li>
     </ol>
   </section>
 </template>
@@ -21,11 +21,41 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'TheBreadCrumbView',
+  props: {
+    route: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      breadCrumbs: {
+        peer: {
+          name: 'Peer',
+          description: 'clients',
+          mainName: 'Home',
+        },
+
+        biz: {
+          name: 'Business',
+          description: 'clients',
+          mainName: 'Home',
+        },
+        orders: {
+          name: 'Ongoing',
+          description: 'Orders',
+          mainName: 'Home',
+        },
+      },
+    };
+  },
 
   computed: {
-    ...mapGetters({
-      breadcrumbs: 'breadcrumbs',
-    }),
+    pageBreadCrumbs() {
+      const routeName = this.route;
+      const links = this.breadCrumbs;
+      return links[routeName];
+    },
   },
   mounted() {
     this.setBreadcrumbs();
@@ -38,3 +68,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+.breadcrumb > li {
+  padding: 0 7px;
+}
+.breadcrumb > .active {
+  color: #777;
+}
+</style>
