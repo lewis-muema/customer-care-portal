@@ -119,8 +119,10 @@ export default {
       pushobj.time_placed = this.order_push.date_time;
       pushobj.to_name = this.order_push.path[1].name;
       pushobj.vendor_type_id = this.order_push.vendor_type;
+      pushobj.push_order = true;
 
       this.pushes.push(pushobj);
+      console.log('this is the push object', pushobj);
       this.handlePush(pushobj);
     },
 
