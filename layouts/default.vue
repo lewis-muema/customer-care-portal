@@ -3,7 +3,7 @@
     <TheHeader :user="loggedUser" />
     <TheSidenav :user="loggedUser" />
     <div class="content-wrapper">
-      <TheBreadCrumbView :breadcrumbs="breadcrumbs" />
+      <TheBreadCrumbView :route="name" />
       <TheTopBar />
       <TheMainSection />
     </div>
@@ -38,6 +38,7 @@ export default {
       logged_user: '',
       loggedUser: null,
       token: null,
+      name: 'orders',
     };
   },
   head: {
