@@ -6,6 +6,8 @@ import config from '~/config/configs';
 Vue.mixin({
   data() {
     return {
+      userImage: config.USER_IMAGE,
+      riderDeliveryImg: config.RIDER_DELIVERY_IMG,
       orderColumns: [
         'Status',
         'Client',

@@ -23,6 +23,7 @@
         :key="order.index"
         :class="determineOrderColor(order.time_of_delivery)"
         @click="viewOrder(order.order_no)"
+        v-show="showBasedOnStatus(order.order_status)"
       >
         <td>
           <span
@@ -32,7 +33,7 @@
           >
             <span
               :id="`order_indicator_${order.order_no}`"
-              :class="`label ${order.order_status}_ind`"
+              :class="`label ${order.order_status.toLowerCase()}_ind`"
             >
               {{ order.order_status }}
             </span>
@@ -154,10 +155,17 @@ export default {
       newData: null,
       busy: false,
       show: false,
+      statusArray: [
+        'pending',
+        'confirmed',
+        'transit',
+        'cancelled',
+        'delivered',
+      ],
     };
   },
   computed: {
-    ...mapGetters(['getOrders']),
+    ...mapGetters(['getOrders', 'getOrderStatuses']),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
@@ -176,6 +184,9 @@ export default {
       const storeData = await this.updateOrders(newOrders, pagination);
       const storedOrders = await this.fetchOrders();
       return (this.orders = storedOrders[0].doc.data);
+    },
+    getOrderStatuses(statusArray) {
+      return (this.statusArray = statusArray);
     },
     bottom(bottom) {
       if (bottom) {
@@ -206,6 +217,10 @@ export default {
     ...mapActions(['setOrders']),
     initialOrderRequest() {
       this.setOrders();
+    },
+    showBasedOnStatus(status) {
+      const orderStatus = status.toLowerCase().trim();
+      return this.statusArray.includes(orderStatus);
     },
     destroyPouchDB() {
       this.ordersDB

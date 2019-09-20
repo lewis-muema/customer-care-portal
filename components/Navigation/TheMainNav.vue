@@ -59,7 +59,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import config from '~/config/configs';
 
 export default {
   name: 'TheMainNav',
@@ -72,7 +71,7 @@ export default {
   computed: {
     photo() {
       const image = this.user.payload.data.pic;
-      return `${config.USER_IMAGE}${image}`;
+      return `${this.userImage}${image}`;
     },
     name() {
       return this.user.payload.data.name;

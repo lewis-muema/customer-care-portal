@@ -5,9 +5,10 @@
         <tbody>
           <tr>
             <TheSearchBar />
-            <TheStatusButtonsBar />
-            <TheCitiesBar />
+            <TheStatusButtonsBar :orders="storedData" />
+            <TheCitiesBar :orders="storedData" />
             <TheReorganizeBar />
+            <rabbitMQcomponent @pushedSomething="handlePushInParent" />
           </tr>
         </tbody>
       </table>
@@ -41,11 +42,16 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+// import PouchDB from 'pouchdb-browser';
+// import PouchFind from 'pouchdb-find';
 
 import TheSearchBar from '@/components/TopBar/TheSearchBar';
 import TheStatusButtonsBar from '@/components/TopBar/TheStatusButtonsBar';
 import TheCitiesBar from '@/components/TopBar/TheCitiesBar';
 import TheReorganizeBar from '@/components/TopBar/TheReorganizeBar';
+import rabbitMQcomponent from '@/modules/rabbitMQ/rabbitMQComponent';
+
+// PouchDB.plugin(PouchFind);
 
 export default {
   name: 'TheTopBar',
@@ -54,12 +60,15 @@ export default {
     TheStatusButtonsBar,
     TheCitiesBar,
     TheReorganizeBar,
+    rabbitMQcomponent,
     TheRowHolder: () => import('@/components/UI/TheRowHolder'),
   },
   data() {
     return {
       order: {},
+      storedData: [],
       componentKey: 0,
+      // ordersDB: process.browser ? new PouchDB('orders') : '',
     };
   },
 
@@ -72,9 +81,30 @@ export default {
       return (this.order = order);
     },
   },
+  async created() {
+    // await this.fetchOrders();
+  },
   methods: {
     forceRerender() {
       this.componentKey += 1;
+    },
+    async fetchOrders() {
+      const res = await this.ordersDB.allDocs({ include_docs: true });
+      const data = res.rows;
+      return (this.storedData = data[0].doc.data);
+    },
+    handlePushInParent(pushobj) {
+      const index = _.findIndex(this.storedData, [
+        'order_no',
+        `${pushobj.order_no}`,
+      ]);
+
+      if (index >= 0) {
+        this.storedData.splice(index, 1);
+        this.storedData.unshift(pushobj);
+      } else {
+        this.storedData.unshift(pushobj);
+      }
     },
   },
 };

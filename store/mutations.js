@@ -31,4 +31,7 @@ export default {
   setSession(state, session) {
     state.userData = session;
   },
+  setOrderStatuses(state, val) {
+    state.selectedStatus = val;
+  },
 };

@@ -40,9 +40,9 @@ export default {
     /**
      * Function for debugging rabbitMQ
      */
-    this.client.debug = function(str) {
-      console.log(str);
-    };
+    // this.client.debug = function(str) {
+    //   console.log(str);
+    // };
   },
 
   computed: {
