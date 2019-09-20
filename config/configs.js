@@ -1,23 +1,8 @@
+import configurations from './config';
+
 export default {
+  CONFIG: configurations[process.env.APP_ENV],
   GOOGL_API_KEY: process.env.GOOGL_API_KEY,
-  BASE_URL: process.env.BASE_URL,
-  PRIVATE_API: process.env.PRIVATE_API,
-  POSITIONS: process.env.POSITIONS,
-  BACKEND_CUSTOMERS_APP: process.env.BACKEND_CUSTOMERS_APP,
-  ADONIS_API: process.env.ADONIS_API,
-  RIDER_DELIVERY_IMG: process.env.RIDER_DELIVERY_IMG,
-  DISPATCH_LIST: process.env.DISPATCH_LIST,
-  NODE_PRIVATE_API: process.env.NODE_PRIVATE_API,
-  ORDERS_APP: process.env.ORDERS_APP,
-  BACKEND_KEY: process.env.BACKEND_KEY,
-  SOLR_BASE: process.env.SOLR_BASE,
-  RIDER_SEARCH: process.env.RIDER_SEARCH,
-  SOLR_JWT: process.env.SOLR_JWT,
-  BROKER_URL: process.env.BROKER_URL,
-  BROKER_USER: process.env.BROKER_USER,
-  BROKER_PASS: process.env.BROKER_PASS,
-  BROKER_HOST: process.env.BROKER_HOST,
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  USER_IMAGE: process.env.USER_IMAGE,
-  LOGIN_URL: process.env.LOGIN_URL,
+  RIDER_DELIVERY_IMG: 'https://sendy-delivery-signatures.s3.amazonaws.com/',
+  USER_IMAGE: 'https://care.sendyit.com/customer/include/team/',
 };

@@ -42,8 +42,7 @@
 
 <script>
 import VueTypeahead from 'vue-typeahead';
-import { mapGetters, mapMutations, mapActions } from 'vuex';
-import config from '~/config/configs';
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   extends: VueTypeahead,
@@ -56,12 +55,20 @@ export default {
     };
   },
   computed: {
+    ...mapState(['config']),
+
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
     },
+    solarBase() {
+      return this.config.SOLR_BASE;
+    },
+    solarToken() {
+      return process.env.SOLR_JWT;
+    },
     src() {
-      return `${config.SOLR_BASE}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=${config.SOLR_JWT}`;
+      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=${this.solarToken}`;
     },
   },
   methods: {

@@ -74,7 +74,7 @@ export default {
     };
 
     if (process.env.DOCKER_ENV !== 'production' && payload.apiKey) {
-      backendKey = customConfig.BACKEND_KEY;
+      backendKey = process.env.BACKEND_KEY;
       endpoint = `${endpoint}?apikey=${backendKey}`;
     }
 
