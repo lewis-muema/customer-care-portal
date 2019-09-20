@@ -42,8 +42,8 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
-import PouchDB from 'pouchdb-browser';
-import PouchFind from 'pouchdb-find';
+// import PouchDB from 'pouchdb-browser';
+// import PouchFind from 'pouchdb-find';
 
 import TheSearchBar from '@/components/TopBar/TheSearchBar';
 import TheStatusButtonsBar from '@/components/TopBar/TheStatusButtonsBar';
@@ -51,7 +51,7 @@ import TheCitiesBar from '@/components/TopBar/TheCitiesBar';
 import TheReorganizeBar from '@/components/TopBar/TheReorganizeBar';
 import rabbitMQcomponent from '@/modules/rabbitMQ/rabbitMQComponent';
 
-PouchDB.plugin(PouchFind);
+// PouchDB.plugin(PouchFind);
 
 export default {
   name: 'TheTopBar',
@@ -68,7 +68,7 @@ export default {
       order: {},
       storedData: [],
       componentKey: 0,
-      ordersDB: process.browser ? new PouchDB('orders') : '',
+      // ordersDB: process.browser ? new PouchDB('orders') : '',
     };
   },
 
@@ -82,7 +82,7 @@ export default {
     },
   },
   async created() {
-    await this.fetchOrders();
+    // await this.fetchOrders();
   },
   methods: {
     forceRerender() {
