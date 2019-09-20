@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 if (process.env.APP_ENV !== 'production') {
   // eslint-disable-next-line global-require
-  require('dotenv').config();
+  // require('dotenv').config();
 }
 process.env.DEBUG = 'nuxt:*';
 
@@ -142,7 +142,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
     'nuxt-pouch',
-    '@nuxtjs/dotenv',
+    // '@nuxtjs/dotenv',
   ],
   stripe: {
     version: 'v3',
@@ -159,6 +159,16 @@ export default {
   /*
    ** Build configuration
    */
+  env: {
+    APP_ENV: process.env.APP_ENV,
+    GOOGL_API_KEY: process.env.GOOGL_API_KEY,
+    BACKEND_KEY: process.env.BACKEND_KEY,
+    BROKER_USER: process.env.BROKER_USER,
+    BROKER_PASS: process.env.BROKER_PASS,
+    SEARCH_APPEND: process.env.SEARCH_APPEND,
+    SOLR_JWT: process.env.SOLR_JWT,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  },
   build: {
     /**
     /*
