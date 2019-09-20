@@ -15,15 +15,13 @@
         <div class="delivery-images__header">
           {{ ` Delivery Point 1 at ${img.waypoint_no} at ` }}
         </div>
-        {{ `${config.RIDER_DELIVERY_IMG}${img.img}` }}
+        {{ `${this.riderDeliveryImg}${img.img}` }}
         <div class="delivery-images__signature">
           <h3>Signatures</h3>
           <div class="images">
             <img
-              @click="
-                lightbox.openImage(`${config.RIDER_DELIVERY_IMG}${img.img}`)
-              "
-              :src="`${config.RIDER_DELIVERY_IMG}${img.img}`"
+              @click="lightbox.openImage(`${this.riderDeliveryImg}${img.img}`)"
+              :src="`${this.riderDeliveryImg}${img.img}`"
             />
           </div>
           <small style="display: block;">By: {{ img.name }}</small>

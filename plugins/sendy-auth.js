@@ -1,9 +1,10 @@
 import Vue from 'vue';
 
 import SendyAuth from '@sendyit/auth';
+import config from '~/config/configs';
 
 Vue.use(SendyAuth, {
-  authUrl: process.env.LOGIN_URL,
+  authUrl: config.CONFIG.LOGIN_URL,
 
   configs: {
     google: {

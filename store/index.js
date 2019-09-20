@@ -2,17 +2,15 @@ import Apix from '@agog/apix';
 import custom_actions from './actions';
 import custom_getters from './getters';
 import custom_mutations from './mutations';
-import config from '~/config/configs';
-
-const jwtToken1 = config.JWT_Token;
+import configurations from '~/config/configs';
 
 const apix = new Apix({
-  prefix: config.ADONIS_API,
+  prefix: configurations.CONFIG.ADONIS_API,
   params: {
     headers: {
       'Content-Type': 'text/plain',
       Accept: 'application/json',
-      Authorization: jwtToken1,
+      // Authorization: jwtToken1,
     },
   },
   resources: [
@@ -28,7 +26,7 @@ export default {
     return {
       ...apix.getState(),
       token: null,
-      config,
+      config: configurations.CONFIG,
       jwtToken: null,
       token: null,
       session: {},
