@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 if (process.env.APP_ENV !== 'production') {
   // eslint-disable-next-line global-require
-  // require('dotenv').config();
+  require('dotenv').config();
 }
 process.env.DEBUG = 'nuxt:*';
 
