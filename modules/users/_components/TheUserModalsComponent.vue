@@ -78,4 +78,8 @@ export default {
   cursor: pointer;
   z-index: 8040;
 }
+.modal-content {
+  max-height: 30px;
+  overflow-y: auto;
+}
 </style>

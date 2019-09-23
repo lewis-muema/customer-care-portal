@@ -1,5 +1,5 @@
 <template>
-  <td class="search-td">
+  <div class="col-md-7 user-search">
     <div class="Typeahead">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
       <template v-else>
@@ -9,8 +9,9 @@
       <input
         type="text"
         class="Typeahead__input"
-        placeholder="Search for Order No/ Customer name/ User Phone"
+        :placeholder="`${placeholder}`"
         autocomplete="off"
+        :id="`${user}_input`"
         v-model="query"
         @keydown.down="down"
         @keydown.up="up"
@@ -27,17 +28,19 @@
           @mousemove="setActive($item)"
           :key="item.index"
         >
-          <span>
-            <strong>{{ item.order_no }}</strong>
-          </span>
-          <span>Client: {{ item.user_name }}</span>
-          <span>Client phone: {{ item.user_phone }}</span>
-          <span>Rider: {{ item.rider_name }}</span>
-          <span>Date: {{ getFormattedDate(item.date_time, 'LLLL') }}</span>
+          <div v-if="user === 'biz'">
+            <TheBizSearchDisplay :item="item" />
+          </div>
+          <div v-if="user === 'peer'">
+            <ThePeerSearchDisplay :item="item" />
+          </div>
+          <div v-if="user === 'riders'">
+            <TheRiderSearchDisplay :item="item" />
+          </div>
         </li>
       </ul>
     </div>
-  </td>
+  </div>
 </template>
 <script>
 import VueTypeahead from 'vue-typeahead';
@@ -45,6 +48,14 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   name: 'TheSearchComponent',
+  components: {
+    TheBizSearchDisplay: () =>
+      import('~/modules/biz/_components/TheBizSearchDisplay'),
+    ThePeerSearchDisplay: () =>
+      import('~/modules/peer/_components/ThePeerSearchDisplay'),
+    TheRiderSearchDisplay: () =>
+      import('~/modules/riders/_components/TheRiderSearchDisplay'),
+  },
   extends: VueTypeahead,
 
   props: {
@@ -56,9 +67,19 @@ export default {
   data() {
     return {
       limit: 5,
-      minChars: 2,
+      minChars: 1,
       query: '',
       order: null,
+      solr: {
+        riders: 'RIDER_SEARCH',
+        biz: 'BIZ_SEARCH',
+        peer: 'PEER_SEARCH',
+      },
+      placeholderObj: {
+        riders: 'Search for Rider Name /Phone ',
+        biz: 'Search for Name/Contact person/Phone/Acc No',
+        peer: 'Search for Name/Phone/Email',
+      },
     };
   },
   computed: {
@@ -69,30 +90,62 @@ export default {
       return this.query;
     },
     solarBase() {
-      return this.config.SOLR_BASE;
+      const solrArray = this.solr;
+      const currentUser = this.user;
+      const userSearch = solrArray[currentUser];
+      return this.config[userSearch];
+    },
+    placeholder() {
+      const placeholderArray = this.placeholderObj;
+      const currentUser = this.user;
+      return placeholderArray[currentUser];
     },
     solarToken() {
       return process.env.SOLR_JWT;
     },
     src() {
-      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=${this.solarToken}`;
+      let searchString = '';
+      if (this.user === 'riders') {
+        searchString = `${this.solarBase}select?q=(rider_name:*${this.query_string}*+OR+email:*${this.query_string}*+OR+phone_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=rider_id%20desc&jwt=${this.solarToken}`;
+      } else if (this.user === 'biz') {
+        searchString = `${this.solarBase}select?q=(cop_name:*${this.query_string}*+OR+contact_person:*${this.query_string}*+OR+cop_phone:*${this.query_string}*+OR+account_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=cop_id%20desc&jwt=${this.solarToken}`;
+      } else if (this.user === 'peer') {
+        searchString = `${this.solarBase}select?q=(user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+user_status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=user_id%20desc&jwt=${this.solarToken}`;
+      }
+      return searchString;
     },
-    // RIDER_SEARCH
   },
   methods: {
+    ...mapMutations({
+      updateBizUser: 'setSearchedBizUser',
+      updatePeerUser: 'setSearchedPeerUser',
+      updateRider: 'setSearchedRider',
+    }),
+    ...mapActions({
+      request_single_biz_user: 'request_single_biz_user',
+    }),
     prepareResponseData(data) {
       return data.response.docs;
     },
     // eslint-disable-next-line require-await
     async onHit(item) {
-      console.log('item', item);
-      // const orderNo = 'AD35T3848-78B';
-      // await this.singleOrderRequest(orderNo);
+      if (this.user === 'biz') {
+        this.updateBizUser(item.cop_id);
+      }
+      if (this.user === 'peer') {
+        this.updatePeerUser(item.user_id);
+      }
+      if (this.user === 'riders') {
+        this.updateRider(item.rider_id);
+      }
     },
   },
 };
 </script>
 <style scoped>
+.user-search {
+  margin: 0 auto;
+}
 .Typeahead {
   position: relative;
 }
@@ -170,5 +223,8 @@ span {
 }
 .screen-name {
   font-style: italic;
+}
+.tt-suggestion {
+  border-bottom: 0;
 }
 </style>
