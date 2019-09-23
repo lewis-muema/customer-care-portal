@@ -182,6 +182,10 @@
   
   
   .compare_memem{ width:100%; border:0px solid #fff; height:700px; }
+
+  .push_order{
+    background-color: rgba(0, 156, 247, 0.21);
+  }
   
   
   .pull_attention{background-color: rgba(197, 2, 2, 0.18);}
