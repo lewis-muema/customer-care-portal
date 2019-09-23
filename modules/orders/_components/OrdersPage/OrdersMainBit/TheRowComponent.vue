@@ -21,7 +21,7 @@
     <template v-for="order in orders">
       <tr
         :key="order.index"
-        :class="determineOrderColor(order.time_of_delivery)"
+        :class="determineOrderColor(order.time_of_delivery, order.push_order)"
         @click="viewOrder(order.order_no)"
         v-show="showBasedOnStatus(order.order_status)"
       >
@@ -287,13 +287,16 @@ export default {
       return bottomOfPage || pageHeight - 100 < visible;
     },
 
-    determineOrderColor(date) {
+    determineOrderColor(date, push_order) {
       const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
       const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
       // .pull_attention
       let colorClass = 'tetst';
       if (orderDate < currentDate) {
         colorClass = 'pull_attention';
+      }
+      if (push_order) {
+        colorClass = 'push_order';
       }
       return colorClass;
     },
