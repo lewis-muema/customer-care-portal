@@ -3,7 +3,7 @@
     <div class="Typeahead">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
       <template v-else>
-        <i class="fa fa-search" @click="byPassSolrSearch()"></i>
+        <i class="fa fa-search" @click="byPassSolrSearch(user)"></i>
       </template>
 
       <input
@@ -126,6 +126,35 @@ export default {
     }),
     prepareResponseData(data) {
       return data.response.docs;
+    },
+    searchBiz(param) {
+      const account_no = param.trim().toLowerCase();
+      if (account_no.length > 5) {
+        if (account_no.slice(0, 5) === 'sendy') {
+          const cop_id = account_no.slice(5);
+          this.updateBizUser(cop_id);
+        }
+      }
+    },
+    searchPeer(param) {
+      const phone_no = param.trim();
+      this.updatePeerUser(phone_no);
+    },
+    searchRider(param) {
+      const phone_no = param.trim();
+      this.updateRider(phone_no);
+    },
+    byPassSolrSearch(user) {
+      const param = localStorage.query;
+      if (user === 'biz') {
+        this.searchBiz(param);
+      }
+      if (this.user === 'peer') {
+        this.searchPeer(param);
+      }
+      if (this.user === 'riders') {
+        this.searchRider(param);
+      }
     },
     // eslint-disable-next-line require-await
     async onHit(item) {

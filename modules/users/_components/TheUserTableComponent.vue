@@ -3,8 +3,6 @@
     <div class="row">
       <div class="box">
         <div class="box-body" :key="searchKey">
-          {{ getUser }}
-
           <div v-if="getUser === 'biz'">
             <TheBizTable />
           </div>

@@ -85,50 +85,69 @@ Vue.mixin({
           credit_period: 15,
           default_currency: 'KES',
         },
+        invoice_receivers: [
+          {
+            name: 'test person 1',
+            email: 'test@person1.com',
+          },
+          {
+            name: 'test person 2',
+            email: 'test@person2.com',
+          },
+        ],
+
         cop_type_list: [
           {
             cop_type_id: 1,
             name: 'Ecommerce',
           },
         ],
-        rider_list: {
-          riders: [
-            {
-              rider_id: 1,
-              rider_name: 'Sendy Driver',
-              phone_no: '07333',
-              rider_stat: 1,
-              carrier_type: 0,
-              phone_no_1: '89254021004056320520',
+        rider_list: [
+          {
+            rider_id: 1,
+            rider_name: 'Sendy Driver',
+            phone_no: '07333',
+            rider_stat: 1,
+            carrier_type: 0,
+            phone_no_1: '89254021004056320520',
+          },
+        ],
+        delivey_list: [
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
             },
-          ],
-        },
-        delivey_list: {
-          result: [
-            {
-              order_no: 'AS458X454-62F',
-              time_stamp: '2019-09-23 11:23:29.0',
-              rider_details: {
-                name: 'Denis',
-              },
-              path: 'json',
+            path: {
+              from: 'machakos',
+              to: 'machakos',
             },
-          ],
-        },
-        payments: {
-          paylist: [
-            {
-              rb: -1400,
-              amount: -200,
-              date_time: '2016-04-01 16:34:28.0',
-              description: 'Transfer from Current',
-              pay_type: 'Payin',
-              pay_method: 'System',
-              txn: 'VYUFZNUPBLH',
-              status: 'Completed',
+          },
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
             },
-          ],
-        },
+            path: {
+              from: 'bbbb',
+              to: 'machakos',
+            },
+          },
+        ],
+        payments: [
+          {
+            rb: -1400,
+            amount: -200,
+            date_time: '2016-04-01 16:34:28.0',
+            description: 'Transfer from Current',
+            pay_type: 'Payin',
+            pay_method: 'System',
+            txn: 'VYUFZNUPBLH',
+            status: 'Completed',
+          },
+        ],
       },
     };
   },

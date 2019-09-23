@@ -65,7 +65,7 @@
           role="tabpanel"
           v-if="showTab === `deliveries_${copID}`"
         >
-          deliveries
+          <TheDeliveriesComponent :deliveries="deliveryList" :user="copID" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -73,7 +73,11 @@
           role="tabpanel"
           v-if="showTab === `statement_${copID}`"
         >
-          statement
+          <TheStatementComponent
+            :payments="payments"
+            :user="copID"
+            :currency="userDetails.default_currency"
+          />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -81,7 +85,7 @@
           role="tabpanel"
           v-if="showTab === `riders_${copID}`"
         >
-          riders
+          <TheRidersComponent :riders="riderDetails" :user="copID" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -97,7 +101,7 @@
           role="tabpanel"
           v-if="showTab === `invoice_${copID}`"
         >
-          invoice_
+          <TheInvoiceComponent :receivers="invoiceReceivers" :user="copID" />
         </div>
       </div>
     </div>
@@ -106,6 +110,12 @@
 <script>
 export default {
   name: 'TheUserDetailsComponent',
+  components: {
+    TheDeliveriesComponent: () => import('./UserTabs/TheDeliveriesComponent'),
+    TheStatementComponent: () => import('./UserTabs/TheStatementComponent'),
+    TheRidersComponent: () => import('./UserTabs/TheRidersComponent'),
+    TheInvoiceComponent: () => import('./UserTabs/TheInvoiceComponent'),
+  },
   props: {
     user: {
       type: Object,
@@ -120,12 +130,22 @@ export default {
       firstActive: false,
       copID: null,
       showTab: `deliveries_${this.user.user_details.cop_id}`,
+      deliveryList: null,
+      payments: null,
+      userDetails: null,
+      riderDetails: null,
+      invoiceReceivers: null,
     };
   },
   mounted() {
     this.firstShow = 'show';
     this.firstActive = 'active';
     this.copID = this.user.user_details.cop_id;
+    this.deliveryList = this.user.delivey_list;
+    this.payments = this.user.payments;
+    this.userDetails = this.user.user_details;
+    this.riderDetails = this.user.rider_list;
+    this.invoiceReceivers = this.user.invoice_receivers;
   },
   methods: {
     viewTab(tab, copID) {
