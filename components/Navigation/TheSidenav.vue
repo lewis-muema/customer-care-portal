@@ -78,6 +78,8 @@
   </span>
 </template>
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'TheSidenav',
   components: {
@@ -107,6 +109,9 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      updateUser: 'setSearchedUser',
+    }),
     show_stat_as_online() {
       document.getElementById('offline_2').className = 'hidden';
       document.getElementById('offline_1').className = 'hidden';
@@ -127,6 +132,7 @@ export default {
 
     showModal(user) {
       this.modalUser = user;
+      this.updateUser(user);
       $(`#usersModal`).modal('show');
     },
   },
