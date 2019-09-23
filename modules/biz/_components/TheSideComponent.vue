@@ -124,5 +124,6 @@ export default {
 }
 .user-side {
   padding-bottom: 1px;
+  border-top: 3px solid #3c8dbc;
 }
 </style>
