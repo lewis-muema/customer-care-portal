@@ -122,7 +122,6 @@ export default {
       pushobj.push_order = true;
 
       this.pushes.push(pushobj);
-      console.log('this is the push object', pushobj);
       this.handlePush(pushobj);
     },
 
@@ -187,6 +186,11 @@ export default {
         this.errorCallback();
       },
     );
+
+    /**
+     * This removes the default logging by rabbitMQ
+     */
+    this.client.debug = function(str) {};
   },
 };
 </script>
