@@ -13,6 +13,7 @@
         <th>Date</th>
       </tr>
     </thead>
+
     <tbody>
       <tr v-if="copID === null">
         <td colspan="8">Search to view Biz details.</td>
@@ -53,7 +54,7 @@
             <div class="lower_slide_bit" style="" :id="`bumba_${copID}`">
               <div class="row">
                 <TheSideComponent :details="userDetails" />
-                <TheMainComponent />
+                <TheMainComponent :user="userInfo" />
               </div>
             </div>
           </td>
@@ -90,6 +91,7 @@ export default {
       copID: null,
       user: null,
       userDetails: null,
+      userInfo: null,
       opened: [],
       offset: 1,
       status: '',
@@ -114,7 +116,9 @@ export default {
   },
   methods: {
     singleCopUserRequest(user) {
-      this.userDetails = this.bizUser.bussines_list[0];
+      this.userDetails = this.bizUser.user_details;
+      this.userInfo = this.bizUser;
+
       return (this.user = this.bizUser);
     },
     toggle(id) {
