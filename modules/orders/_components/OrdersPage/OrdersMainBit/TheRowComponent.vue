@@ -169,12 +169,6 @@ export default {
         'delivered',
       ],
       opened: [],
-      rows: [
-        { id: 1, name: 'Bill', handle: 'bill' },
-        { id: 2, name: 'Bob', handle: 'bob' },
-        { id: 3, name: 'Jim', handle: 'jim' },
-        { id: 4, name: 'Leroy', handle: 'leroy' },
-      ],
     };
   },
   computed: {
