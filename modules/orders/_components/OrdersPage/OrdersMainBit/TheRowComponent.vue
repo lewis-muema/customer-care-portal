@@ -6,7 +6,6 @@
     infinite-scroll-distance="limit"
   >
     <rabbitMQcomponent @pushedSomething="handlePushInParent" />
-
     <tr
       v-if="orders.length === 0"
       id="initial_data_request_show"
@@ -18,11 +17,18 @@
         <div id="initial_load_box">Requesting for orders ...</div>
       </td>
     </tr>
-    <template v-for="order in orders">
+
+    <template
+      v-for="order in orders"
+      :class="determineOrderColor(order.time_of_delivery, order.push_order)"
+    >
       <tr
-        :key="order.index"
-        :class="determineOrderColor(order.time_of_delivery, order.push_order)"
-        @click="viewOrder(order.order_no)"
+        @click="toggle(order.order_no)"
+        :class="
+          ({ opened: opened.includes(order.order_no) },
+          determineOrderColor(order.time_of_delivery, order.push_order))
+        "
+        :key="order.order_no"
         v-show="showBasedOnStatus(order.order_status)"
       >
         <td>
@@ -120,9 +126,9 @@
       </tr>
       <tr
         class="order_row_home_lower"
+        v-if="opened.includes(order.order_no)"
         :key="`details_${order.order_no}`"
         :id="`child_row_${order.order_no}`"
-        v-if="show === order.order_no"
       >
         <TheLowerSlideComponent :orderno="order.order_no" />
       </tr>
@@ -161,6 +167,13 @@ export default {
         'transit',
         'cancelled',
         'delivered',
+      ],
+      opened: [],
+      rows: [
+        { id: 1, name: 'Bill', handle: 'bill' },
+        { id: 2, name: 'Bob', handle: 'bob' },
+        { id: 3, name: 'Jim', handle: 'jim' },
+        { id: 4, name: 'Leroy', handle: 'leroy' },
       ],
     };
   },
@@ -217,6 +230,14 @@ export default {
     ...mapActions(['setOrders']),
     initialOrderRequest() {
       this.setOrders();
+    },
+    toggle(id) {
+      const index = this.opened.indexOf(id);
+      if (index > -1) {
+        this.opened.splice(index, 1);
+      } else {
+        this.opened.push(id);
+      }
     },
     showBasedOnStatus(status) {
       const orderStatus = status.toLowerCase().trim();
