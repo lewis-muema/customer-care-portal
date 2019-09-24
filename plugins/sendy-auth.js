@@ -3,12 +3,15 @@ import Vue from 'vue';
 import SendyAuth from '@sendyit/auth';
 import config from '~/config/configs';
 
-Vue.use(SendyAuth, {
-  authUrl: config.CONFIG.LOGIN_URL,
+// eslint-disable-next-line require-await
+export default ({ app }) => {
+  Vue.use(SendyAuth, {
+    authUrl: config.CONFIG.LOGIN_URL,
 
-  configs: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID,
+    configs: {
+      google: {
+        clientId: app.$env.GOOGLE_CLIENT_ID,
+      },
     },
-  },
-});
+  });
+};
