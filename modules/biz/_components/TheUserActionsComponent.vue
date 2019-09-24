@@ -1,10 +1,10 @@
 <template>
   <div class="body-box user_button_view">
-    <div id="tabs" class="container">
+    <div id="tabs" class="container custom_more">
       <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
         <li class="nav-item">
           <a
-            class="force_blue"
+            class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('agile', copID)"
@@ -16,7 +16,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="force_blue"
+            class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('edit', copID)"
@@ -28,7 +28,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="force_blue"
+            class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('payment', copID)"
@@ -40,7 +40,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="force_blue"
+            class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('rider', copID)"
@@ -52,7 +52,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="force_blue"
+            class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('invoice', copID)"
@@ -82,7 +82,7 @@
             role="tabpanel"
             v-if="showTab === `agile_${copID}`"
           >
-            agile
+            <TheAgileComponent :user="copID" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -90,7 +90,7 @@
             role="tabpanel"
             v-if="showTab === `edit_${copID}`"
           >
-            edit
+            <TheEditComponent :user="copID" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -126,6 +126,10 @@ import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheUserActionsComponent',
+  components: {
+    TheAgileComponent: () => import('./UserActions/TheAgileComponent'),
+    TheEditComponent: () => import('./UserActions/TheEditComponent'),
+  },
   props: {
     user: {
       type: Object,
@@ -172,5 +176,36 @@ export default {
 .user_button_view {
   min-height: 231px;
   padding: 16px 10px 0px 10px;
+}
+.nav-item > .action-list {
+  border: 1px solid;
+  border: 1px solid #3c8dbc;
+  color: #3c8dbc;
+  margin-bottom: 3px;
+  border-radius: 3px;
+  margin-right: 3px !important;
+  font-size: 13px;
+  width: 84px;
+  height: 33px;
+  color: #3c8dbc !important;
+}
+.action-list {
+  padding: 7px 5px;
+}
+.action-list:hover {
+  background: #3c8dbc !important;
+  color: #ffff !important;
+  border: none;
+  cursor: pointer;
+}
+.action-list.active:hover {
+  background: #3c8dbc !important;
+  border: none;
+  color: #ffff !important;
+}
+.action-list.active {
+  background: #3c8dbc !important;
+  border: none;
+  color: #ffff !important;
 }
 </style>
