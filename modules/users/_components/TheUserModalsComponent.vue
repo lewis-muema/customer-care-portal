@@ -71,8 +71,8 @@ export default {
 }
 .fancybox-close {
   position: absolute;
-  top: -18px;
-  right: -18px;
+  top: -6px;
+  right: -6px;
   width: 36px;
   height: 36px;
   cursor: pointer;

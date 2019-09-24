@@ -63,6 +63,52 @@ Vue.mixin({
         { code: '1', department: 'Operations' },
         { code: '2', department: 'Customer Support' },
       ],
+      peerUser: {
+        user_details: {
+          user_email: 'missvicky254@gmail.com',
+          user_id: 80239,
+          user_phone: '+254790723348',
+          date_signed_up: '2019-09-22 07:30:48.0',
+          default_currency: 'KES',
+          user_name: 'Vicky Mulema',
+        },
+        delivey_list: [
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
+            },
+            path: {
+              from: 'machakos',
+              to: 'machakos',
+            },
+          },
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
+            },
+            path: {
+              from: 'bbbb',
+              to: 'machakos',
+            },
+          },
+        ],
+        payments: [
+          {
+            rb: -1400,
+            amount: -200,
+            date_time: '2016-04-01 16:34:28.0',
+            description: 'Transfer from Current',
+            pay_type: 'Payin',
+            pay_method: 'System',
+            txn: 'VYUFZNUPBLH',
+            status: 'Completed',
+          },
+        ],
+      },
       bizUser: {
         user_details: {
           cop_name: 'Sugarcane Caribbean Food',
