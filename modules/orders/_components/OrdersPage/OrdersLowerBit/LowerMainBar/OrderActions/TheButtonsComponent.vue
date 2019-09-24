@@ -123,7 +123,6 @@
         </a>
       </li>
     </ul>
-    <!-- gps tracker, dnotes -->
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
         <div
