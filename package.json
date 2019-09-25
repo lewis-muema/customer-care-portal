@@ -8,7 +8,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "dev": "nuxt",
-    "build": "nuxt build && node deploy.js",
+    "build": "nuxt build",
     "start": "nuxt start",
     "test": "mocha-webpack --webpack-config webpack.config.js --require test/setup.js  test/**/*.js",
     "coverage": "nyc npm run test",
