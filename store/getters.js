@@ -10,6 +10,18 @@ export default {
   getSearchedOrder(state) {
     return state.searchedOrder;
   },
+  getBizUser(state) {
+    return state.searchedBizUser;
+  },
+  getPeerUser(state) {
+    return state.searchedPeerUser;
+  },
+  getRider(state) {
+    return state.searchedRider;
+  },
+  getUser(state) {
+    return state.searchedUser;
+  },
   getOrderColumns(state) {
     return state.orderColumns;
   },

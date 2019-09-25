@@ -63,6 +63,138 @@ Vue.mixin({
         { code: '1', department: 'Operations' },
         { code: '2', department: 'Customer Support' },
       ],
+      peerUser: {
+        user_details: {
+          user_email: 'missvicky254@gmail.com',
+          user_id: 80239,
+          user_phone: '+254790723348',
+          date_signed_up: '2019-09-22 07:30:48.0',
+          default_currency: 'KES',
+          user_name: 'Vicky Mulema',
+        },
+        delivey_list: [
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
+            },
+            path: {
+              from: 'machakos',
+              to: 'machakos',
+            },
+          },
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
+            },
+            path: {
+              from: 'bbbb',
+              to: 'machakos',
+            },
+          },
+        ],
+        payments: [
+          {
+            rb: -1400,
+            amount: -200,
+            date_time: '2016-04-01 16:34:28.0',
+            description: 'Transfer from Current',
+            pay_type: 'Payin',
+            pay_method: 'System',
+            txn: 'VYUFZNUPBLH',
+            status: 'Completed',
+          },
+        ],
+      },
+      bizUser: {
+        user_details: {
+          cop_name: 'Sugarcane Caribbean Food',
+          cop_id: 929,
+          cop_email: 'kcreavalle@sugarcane.co.ke',
+          cop_phone: '0722598850',
+          account_manager: 'Njeri',
+          approved: 1,
+          date_signed_up: '2016-03-21 20:19:17.0',
+          channel_name: 'Other (specify below)',
+          cop_type_name: 'Food',
+          payment_option: 1,
+          cop_contact_person: 'Kathleen Creavalle',
+          city_name: 'Nairobi',
+          cop_address: 'none',
+          country_name: 'Kenya',
+          cop_category: 0,
+          sales_agent: 0,
+          strict_allocation: 0,
+          credit_period: 15,
+          default_currency: 'KES',
+        },
+        invoice_receivers: [
+          {
+            name: 'test person 1',
+            email: 'test@person1.com',
+          },
+          {
+            name: 'test person 2',
+            email: 'test@person2.com',
+          },
+        ],
+
+        cop_type_list: [
+          {
+            cop_type_id: 1,
+            name: 'Ecommerce',
+          },
+        ],
+        rider_list: [
+          {
+            rider_id: 1,
+            rider_name: 'Sendy Driver',
+            phone_no: '07333',
+            rider_stat: 1,
+            carrier_type: 0,
+            phone_no_1: '89254021004056320520',
+          },
+        ],
+        delivey_list: [
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
+            },
+            path: {
+              from: 'machakos',
+              to: 'machakos',
+            },
+          },
+          {
+            order_no: 'AS458X454-62F',
+            time_stamp: '2019-09-23 11:23:29.0',
+            rider_details: {
+              name: 'Denis',
+            },
+            path: {
+              from: 'bbbb',
+              to: 'machakos',
+            },
+          },
+        ],
+        payments: [
+          {
+            rb: -1400,
+            amount: -200,
+            date_time: '2016-04-01 16:34:28.0',
+            description: 'Transfer from Current',
+            pay_type: 'Payin',
+            pay_method: 'System',
+            txn: 'VYUFZNUPBLH',
+            status: 'Completed',
+          },
+        ],
+      },
     };
   },
   computed: {

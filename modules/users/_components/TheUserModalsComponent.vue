@@ -12,7 +12,7 @@
           </button>
 
           <div class="modal-body">
-            <span v-if="user === 'biz'">
+            <span v-if="user !== ''">
               <TheUserPageComponent :user="user" />
             </span>
           </div>
@@ -26,7 +26,7 @@ export default {
   name: 'TheUserModalsComponent',
   components: {
     TheUserPageComponent: () =>
-      import('@/components/UsersPage/TheUserPageComponent'),
+      import('~/modules/users/_components/TheUserPageComponent'),
   },
   props: {
     user: {
@@ -71,11 +71,15 @@ export default {
 }
 .fancybox-close {
   position: absolute;
-  top: -18px;
-  right: -18px;
+  top: -6px;
+  right: -6px;
   width: 36px;
   height: 36px;
   cursor: pointer;
   z-index: 8040;
+}
+.modal-content {
+  max-height: 30px;
+  overflow-y: auto;
 }
 </style>

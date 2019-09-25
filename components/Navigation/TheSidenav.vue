@@ -36,9 +36,11 @@
           </li>
 
           <li class="treeview">
-            <nuxt-link class="fancybox fancybox.iframe fancyboxy" to="/riders"
-              ><i class="fa fa-motorcycle"></i> <span> Riders </span></nuxt-link
-            >
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              @click="showModal('riders')"
+              ><i class="fa fa-motorcycle"></i> <span> Riders </span>
+            </a>
           </li>
           <li class="treeview">
             <a
@@ -76,10 +78,12 @@
   </span>
 </template>
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'TheSidenav',
   components: {
-    modals: () => import('@/components/UsersPage/TheUserModalsComponent'),
+    modals: () => import('~/modules/users/_components/TheUserModalsComponent'),
   },
   props: {
     user: {
@@ -105,6 +109,9 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      updateUser: 'setSearchedUser',
+    }),
     show_stat_as_online() {
       document.getElementById('offline_2').className = 'hidden';
       document.getElementById('offline_1').className = 'hidden';
@@ -125,6 +132,7 @@ export default {
 
     showModal(user) {
       this.modalUser = user;
+      this.updateUser(user);
       $(`#usersModal`).modal('show');
     },
   },

@@ -6,7 +6,6 @@
     infinite-scroll-distance="limit"
   >
     <rabbitMQcomponent @pushedSomething="handlePushInParent" />
-
     <tr
       v-if="orders.length === 0"
       id="initial_data_request_show"
@@ -18,11 +17,18 @@
         <div id="initial_load_box">Requesting for orders ...</div>
       </td>
     </tr>
-    <template v-for="order in orders">
+
+    <template
+      v-for="order in orders"
+      :class="determineOrderColor(order.time_of_delivery, order.push_order)"
+    >
       <tr
-        :key="order.index"
-        :class="determineOrderColor(order.time_of_delivery)"
-        @click="viewOrder(order.order_no)"
+        @click="toggle(order.order_no)"
+        :class="
+          ({ opened: opened.includes(order.order_no) },
+          determineOrderColor(order.time_of_delivery, order.push_order))
+        "
+        :key="order.order_no"
         v-show="showBasedOnStatus(order.order_status)"
       >
         <td>
@@ -120,9 +126,9 @@
       </tr>
       <tr
         class="order_row_home_lower"
+        v-if="opened.includes(order.order_no)"
         :key="`details_${order.order_no}`"
         :id="`child_row_${order.order_no}`"
-        v-if="show === order.order_no"
       >
         <TheLowerSlideComponent :orderno="order.order_no" />
       </tr>
@@ -162,6 +168,7 @@ export default {
         'cancelled',
         'delivered',
       ],
+      opened: [],
     };
   },
   computed: {
@@ -217,6 +224,14 @@ export default {
     ...mapActions(['setOrders']),
     initialOrderRequest() {
       this.setOrders();
+    },
+    toggle(id) {
+      const index = this.opened.indexOf(id);
+      if (index > -1) {
+        this.opened.splice(index, 1);
+      } else {
+        this.opened.push(id);
+      }
     },
     showBasedOnStatus(status) {
       const orderStatus = status.toLowerCase().trim();
@@ -287,13 +302,16 @@ export default {
       return bottomOfPage || pageHeight - 100 < visible;
     },
 
-    determineOrderColor(date) {
+    determineOrderColor(date, push_order) {
       const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
       const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
       // .pull_attention
       let colorClass = 'tetst';
       if (orderDate < currentDate) {
         colorClass = 'pull_attention';
+      }
+      if (push_order) {
+        colorClass = 'push_order';
       }
       return colorClass;
     },

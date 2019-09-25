@@ -22,6 +22,18 @@ export default {
   setSearchedOrder(state, val) {
     state.searchedOrder = val;
   },
+  setSearchedBizUser(state, val) {
+    state.searchedBizUser = val;
+  },
+  setSearchedPeerUser(state, val) {
+    state.searchedPeerUser = val;
+  },
+  setSearchedRider(state, val) {
+    state.searchedRider = val;
+  },
+  setSearchedUser(state, val) {
+    state.searchedUser = val;
+  },
   setToken(state, val) {
     state.jwtToken = val;
   },
