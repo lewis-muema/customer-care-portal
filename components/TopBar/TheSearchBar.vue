@@ -65,7 +65,7 @@ export default {
       return this.config.SOLR_BASE;
     },
     solarToken() {
-      return process.env.SOLR_JWT;
+      return this.$env.SOLR_JWT;
     },
     src() {
       return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=${this.solarToken}`;
