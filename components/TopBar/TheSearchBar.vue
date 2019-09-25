@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       limit: 10,
-      minChars: 2,
+      minChars: 1,
       query: '',
       order: null,
     };

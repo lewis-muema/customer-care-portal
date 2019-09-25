@@ -28,7 +28,7 @@
               <span :id="`tip_order_${orderNo}`" data-toggle="tooltip" title="">
                 <span
                   :id="`order_indicator_${orderNo}`"
-                  :class="`label ${status}_ind`"
+                  :class="`label ${status.toLowerCase()}_ind`"
                 >
                   {{ status }}
                 </span>
@@ -110,12 +110,27 @@
             </td>
           </tr>
           <tr v-if="opened.includes(orderNo)" class="order_view_lower_cell">
-            <td colspan="3">
-              <TheSideComponent :order="order" />
+            <td
+              colspan="9"
+              class="order_view_lower_cell"
+              :id="`searched_order_view_lower${orderNo}`"
+              style="padding:0px; background-color: rgba(245, 245, 245, 0.56) !important; font-size: 13px;"
+            >
+              <div class="lower_slide_bit" :id="`bumba_${orderNo}`">
+                <div class="row">
+                  <div class="col-md-4">
+                    <!-- <td colspan="2"> -->
+                    <TheSideComponent :order="order" />
+                  </div>
+                  <!-- </td> -->
+                  <!-- <td colspan="5"> -->
+                  <div class="col-md-8">
+                    <TheMainComponent :order="order" />
+                  </div>
+                </div>
+              </div>
             </td>
-            <td colspan="5">
-              <TheMainComponent :order="order" />
-            </td>
+            <!-- </td> -->
           </tr>
         </template>
       </tbody>
