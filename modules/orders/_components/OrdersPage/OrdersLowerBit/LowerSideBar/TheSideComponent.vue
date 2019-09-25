@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     googleApiKey() {
-      return this.$env.GOOGL_API_KEY;
+      return process.env.GOOGL_API_KEY;
     },
     ...mapState(['config']),
   },
