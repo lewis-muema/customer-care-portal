@@ -13,12 +13,8 @@
         </tbody>
       </table>
     </div>
-    <div v-if="Object.keys(order).length !== 0" class="search-window">
-      <div
-        v-if="order.length !== 0"
-        class="box box-info"
-        id="new_serach_window"
-      >
+    <div v-if="searchState" class="search-window">
+      <div class="box box-info" id="new_serach_window">
         <div class="box-header" style="">
           <i class="fa fa-search"></i>
           <h3 class="box-title" id="new_serach_window_head">Search Results</h3>
@@ -28,6 +24,7 @@
               data-widget="remove"
               data-toggle="tooltip"
               title="Remove"
+              @click="remove"
             >
               <i class="fa fa-times"></i>
             </button>
@@ -73,7 +70,10 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getSearchedOrder']),
+    ...mapGetters(['getSearchedOrder', 'getSearchState']),
+    searchState() {
+      return this.getSearchState;
+    },
   },
   watch: {
     getSearchedOrder(order) {
@@ -85,6 +85,9 @@ export default {
     // await this.fetchOrders();
   },
   methods: {
+    remove() {
+      console.log('remove');
+    },
     forceRerender() {
       this.componentKey += 1;
     },

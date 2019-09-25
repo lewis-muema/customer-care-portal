@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <table
-      v-if="Object.keys(order).length !== 0"
-      class="table  table-bordered table-hover"
-    >
+    <table class="table  table-bordered table-hover">
       <thead>
         <tr>
           <th>Status</th>
@@ -18,7 +15,7 @@
       </thead>
 
       <tbody>
-        <template>
+        <template v-if="Object.keys(order).length !== 0">
           <tr
             @click="toggle(orderNo)"
             :class="{ opened: opened.includes(orderNo) }"
@@ -133,6 +130,11 @@
             <!-- </td> -->
           </tr>
         </template>
+        <tr v-else>
+          <td colspan="9" class="no-order">
+            No order Matching these criteria found
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -152,12 +154,7 @@ export default {
         '~/modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/TheMainComponent'
       ),
   },
-  props: {
-    order: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: ['order'],
   data() {
     return {
       opened: [],
@@ -166,13 +163,16 @@ export default {
       riderDetails: this.order.rider_details,
       riderDetails: this.order.rider_details,
       paymentDetails: this.order.payment_details,
-      vendorTypeId: this.order.rider_details.vendor_type_id,
-
-      orderNo: this.order.order_details.order_no,
     };
   },
   computed: {
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
+    vendorTypeId() {
+      return this.order.rider_details.vendor_type_id;
+    },
+    orderNo() {
+      return this.order.order_details.order_no;
+    },
     status() {
       const deliveryStatus = this.moreData.delivery_status;
       const confirmStatus = this.moreData.confirm_status;
@@ -214,3 +214,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.no-order {
+  background: #dddddd;
+}
+</style>

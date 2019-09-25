@@ -1,8 +1,8 @@
 <template>
   <td class="search-td">
     <div class="Typeahead">
-      <i class="fa fa-spinner fa-spin" v-if="loading"></i>
-      <template v-else>
+      <!-- <i class="fa fa-spinner fa-spin" v-if="loading"></i> -->
+      <template>
         <i class="fa fa-search" @click="byPassSolrSearch()"></i>
       </template>
 
@@ -19,7 +19,7 @@
         @input="update"
         @blur="reset"
       />
-      <ul v-show="hasItems" @blur="reset">
+      <ul v-show="hasItems" @blur="reset" v-if="isProduction">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -64,6 +64,9 @@ export default {
     solarBase() {
       return this.config.SOLR_BASE;
     },
+    isProduction() {
+      return this.$env.APP_ENV === 'production';
+    },
     solarToken() {
       return this.$env.SOLR_JWT;
     },
@@ -74,16 +77,17 @@ export default {
   methods: {
     ...mapMutations({
       updateSearchedOrder: 'setSearchedOrder',
+      updateSearchState: 'setSearchState',
     }),
     ...mapActions({
       request_single_order: 'request_single_order',
     }),
     async byPassSolrSearch() {
+      this.updateSearchState(true);
       const orderNo = localStorage.query;
       await this.singleOrderRequest(orderNo);
     },
     async onHit(item) {
-      console.log('item', item);
       const orderNo = 'AD35T3848-78B';
       await this.singleOrderRequest(orderNo);
     },

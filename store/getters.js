@@ -37,4 +37,7 @@ export default {
   getOrderStatuses(state) {
     return state.selectedStatus;
   },
+  getSearchState(state) {
+    return state.searchState;
+  },
 };
