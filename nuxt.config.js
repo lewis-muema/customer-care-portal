@@ -2,10 +2,10 @@ import 'isomorphic-fetch';
 
 const bodyParser = require('body-parser');
 
-// if (process.env.APP_ENV !== 'production') {
-//   // eslint-disable-next-line global-require
-//   require('dotenv').config();
-// }
+if (process.env.APP_ENV === 'development') {
+  // eslint-disable-next-line global-require
+  require('dotenv').config();
+}
 process.env.DEBUG = 'nuxt:*';
 
 export default {
@@ -147,11 +147,11 @@ export default {
       'nuxt-env',
       {
         keys: [
-          'GOOGL_API_KEY', 
-          'GOOGLE_CLIENT_ID', 
-          'BACKEND_KEY', 
+          'GOOGL_API_KEY',
+          'GOOGLE_CLIENT_ID',
+          'BACKEND_KEY',
           'SOLR_JWT',
-          'APP_ENV'
+          'APP_ENV',
         ],
       },
     ],

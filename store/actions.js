@@ -73,8 +73,8 @@ export default {
       },
     };
 
-    if (process.env.DOCKER_ENV !== 'production' && payload.apiKey) {
-      backendKey = process.env.BACKEND_KEY;
+    if (this.$env.APP_ENV !== 'production' && payload.apiKey) {
+      backendKey = this.$env.BACKEND_KEY;
       endpoint = `${endpoint}?apikey=${backendKey}`;
     }
 
