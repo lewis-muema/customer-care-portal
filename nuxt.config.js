@@ -147,10 +147,10 @@ export default {
       'nuxt-env',
       {
         keys: [
-          { key: 'GOOGL_API_KEY', secret: true }, 
-          { key: 'GOOGLE_CLIENT_ID', secret: true },  
-          { key: 'BACKEND_KEY', secret: true }, 
-          { key: 'SOLR_JWT', secret: true },
+          'GOOGL_API_KEY', 
+          'GOOGLE_CLIENT_ID', 
+          'BACKEND_KEY', 
+          'SOLR_JWT',
           'APP_ENV'
         ],
       },
