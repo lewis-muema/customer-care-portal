@@ -507,6 +507,9 @@
     background-color: white;
     padding: 4px;
   }
+  .dnotes_ind {
+    background-color: #0E4271  !important;
+  }
   .pending_ind {
   background-color: #dd4b39 !important;
 }

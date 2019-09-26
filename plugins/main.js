@@ -204,6 +204,23 @@ Vue.mixin({
     },
   },
   methods: {
+    deliveryStatus(order) {
+      const verification = this.order.order_details.delivery_verification;
+      const notesStatus = verification.physical_delivery_note_status;
+      let status = 'delivered';
+      if (notesStatus) {
+        // eslint-disable-next-line prettier/prettier
+          const imgStatus = Object.prototype.hasOwnProperty.call(order, 'rider_deliver_img');
+        // eslint-disable-next-line prettier/prettier
+        if(imgStatus && order.rider_deliver_img[0].physical_delivery_note_status === 2) {
+          status = 'delivered';
+        } else {
+          status = 'Dnotes';
+        }
+      }
+
+      return status;
+    },
     display_order_action_notification(status) {
       let displayClass = 'success';
       if (!status) {

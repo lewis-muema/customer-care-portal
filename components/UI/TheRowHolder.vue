@@ -181,7 +181,7 @@ export default {
       } else if (deliveryStatus === 2 && confirmStatus === 1) {
         status = 'in transit';
       } else if (deliveryStatus === 3 && confirmStatus === 1) {
-        status = 'delivered';
+        status = this.deliveryStatus(this.order);
       } else if (deliveryStatus === 0 && confirmStatus === 0) {
         status = 'Cancelled';
       }
