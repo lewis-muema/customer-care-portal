@@ -109,30 +109,25 @@
           <tr v-if="opened.includes(orderNo)" class="order_view_lower_cell">
             <td
               colspan="9"
-              class="order_view_lower_cell"
+              class="order_view_lower_cell search-view"
               :id="`searched_order_view_lower${orderNo}`"
-              style="padding:0px; background-color: rgba(245, 245, 245, 0.56) !important; font-size: 13px;"
             >
               <div class="lower_slide_bit" :id="`bumba_${orderNo}`">
                 <div class="row">
                   <div class="col-md-4">
-                    <!-- <td colspan="2"> -->
                     <TheSideComponent :order="order" />
                   </div>
-                  <!-- </td> -->
-                  <!-- <td colspan="5"> -->
                   <div class="col-md-8">
                     <TheMainComponent :order="order" />
                   </div>
                 </div>
               </div>
             </td>
-            <!-- </td> -->
           </tr>
         </template>
         <tr v-else>
           <td colspan="9" class="no-order">
-            No order Matching these criteria found
+            No order Found
           </td>
         </tr>
       </tbody>
@@ -217,5 +212,10 @@ export default {
 <style scoped>
 .no-order {
   background: #dddddd;
+}
+.search-view {
+  padding: 0px;
+  background-color: rgba(245, 245, 245, 0.56) !important;
+  font-size: 13px;
 }
 </style>
