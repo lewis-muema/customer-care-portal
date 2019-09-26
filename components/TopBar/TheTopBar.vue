@@ -77,6 +77,12 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      updateSearchState: 'setSearchState',
+    }),
+    remove() {
+      this.updateSearchState(false);
+    },
     forceRerender() {
       this.componentKey += 1;
     },
