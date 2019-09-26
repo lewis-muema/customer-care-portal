@@ -13,12 +13,8 @@
         </tbody>
       </table>
     </div>
-    <div v-if="Object.keys(order).length !== 0" class="search-window">
-      <div
-        v-if="order.length !== 0"
-        class="box box-info"
-        id="new_serach_window"
-      >
+    <div v-if="searchState" class="search-window">
+      <div class="box box-info" id="new_serach_window">
         <div class="box-header" style="">
           <i class="fa fa-search"></i>
           <h3 class="box-title" id="new_serach_window_head">Search Results</h3>
@@ -28,6 +24,7 @@
               data-widget="remove"
               data-toggle="tooltip"
               title="Remove"
+              @click="remove"
             >
               <i class="fa fa-times"></i>
             </button>
@@ -42,16 +39,12 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
-// import PouchDB from 'pouchdb-browser';
-// import PouchFind from 'pouchdb-find';
 
 import TheSearchBar from '@/components/TopBar/TheSearchBar';
 import TheStatusButtonsBar from '@/components/TopBar/TheStatusButtonsBar';
 import TheCitiesBar from '@/components/TopBar/TheCitiesBar';
 import TheReorganizeBar from '@/components/TopBar/TheReorganizeBar';
 import rabbitMQcomponent from '@/modules/rabbitMQ/rabbitMQComponent';
-
-// PouchDB.plugin(PouchFind);
 
 export default {
   name: 'TheTopBar',
@@ -68,21 +61,20 @@ export default {
       order: {},
       storedData: [],
       componentKey: 0,
-      // ordersDB: process.browser ? new PouchDB('orders') : '',
     };
   },
 
   computed: {
-    ...mapGetters(['getSearchedOrder']),
+    ...mapGetters(['getSearchedOrder', 'getSearchState']),
+    searchState() {
+      return this.getSearchState;
+    },
   },
   watch: {
     getSearchedOrder(order) {
       this.forceRerender();
       return (this.order = order);
     },
-  },
-  async created() {
-    // await this.fetchOrders();
   },
   methods: {
     forceRerender() {

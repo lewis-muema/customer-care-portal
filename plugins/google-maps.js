@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import * as VueGoogleMaps from '@/node_modules/vue2-google-maps';
 
-Vue.use(VueGoogleMaps, {
-  load: { key: process.env.GOOGL_API_KEY },
-});
+export default ({ app }) => {
+  Vue.use(VueGoogleMaps, {
+    load: { key: app.$env.GOOGL_API_KEY },
+  });
+};

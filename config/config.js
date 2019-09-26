@@ -26,8 +26,11 @@ const config = {
     ORDERS_APP: 'https://authtest.sendyit.com/orders/',
     LOGIN_URL: 'https://authtest.sendyit.com/parcel/admin_glogin',
     SOLR_BASE: 'https://gate.sendyit.com/solr/orders/',
+    RIDER_SEARCH: 'https://gate.sendyit.com/solr/riders/',
+    PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
+    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
   },
   beta: {},
   production: {},
 };
-module.exports = config;
+export default config;

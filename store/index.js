@@ -29,7 +29,7 @@ export default {
       config: configurations.CONFIG,
       jwtToken: null,
       session: {},
-      search_state: false,
+      searchState: false,
       searchedOrder: null,
       searchedBizUser: null,
       searchedPeerUser: null,

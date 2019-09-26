@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <table
-      v-if="Object.keys(order).length !== 0"
-      class="table  table-bordered table-hover"
-    >
+    <table class="table  table-bordered table-hover">
       <thead>
         <tr>
           <th>Status</th>
@@ -18,7 +15,7 @@
       </thead>
 
       <tbody>
-        <template>
+        <template v-if="Object.keys(order).length !== 0">
           <tr
             @click="toggle(orderNo)"
             :class="{ opened: opened.includes(orderNo) }"
@@ -28,7 +25,7 @@
               <span :id="`tip_order_${orderNo}`" data-toggle="tooltip" title="">
                 <span
                   :id="`order_indicator_${orderNo}`"
-                  :class="`label ${status}_ind`"
+                  :class="`label ${status.toLowerCase()}_ind`"
                 >
                   {{ status }}
                 </span>
@@ -110,14 +107,29 @@
             </td>
           </tr>
           <tr v-if="opened.includes(orderNo)" class="order_view_lower_cell">
-            <td colspan="3">
-              <TheSideComponent :order="order" />
-            </td>
-            <td colspan="5">
-              <TheMainComponent :order="order" />
+            <td
+              colspan="9"
+              class="order_view_lower_cell search-view"
+              :id="`searched_order_view_lower${orderNo}`"
+            >
+              <div class="lower_slide_bit" :id="`bumba_${orderNo}`">
+                <div class="row">
+                  <div class="col-md-4">
+                    <TheSideComponent :order="order" />
+                  </div>
+                  <div class="col-md-8">
+                    <TheMainComponent :order="order" />
+                  </div>
+                </div>
+              </div>
             </td>
           </tr>
         </template>
+        <tr v-else>
+          <td colspan="9" class="no-order">
+            No order Found
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -137,12 +149,7 @@ export default {
         '~/modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/TheMainComponent'
       ),
   },
-  props: {
-    order: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: ['order'],
   data() {
     return {
       opened: [],
@@ -151,13 +158,16 @@ export default {
       riderDetails: this.order.rider_details,
       riderDetails: this.order.rider_details,
       paymentDetails: this.order.payment_details,
-      vendorTypeId: this.order.rider_details.vendor_type_id,
-
-      orderNo: this.order.order_details.order_no,
     };
   },
   computed: {
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
+    vendorTypeId() {
+      return this.order.rider_details.vendor_type_id;
+    },
+    orderNo() {
+      return this.order.order_details.order_no;
+    },
     status() {
       const deliveryStatus = this.moreData.delivery_status;
       const confirmStatus = this.moreData.confirm_status;
@@ -199,3 +209,13 @@ export default {
   },
 };
 </script>
+<style scoped>
+.no-order {
+  background: #dddddd;
+}
+.search-view {
+  padding: 0px;
+  background-color: rgba(245, 245, 245, 0.56) !important;
+  font-size: 13px;
+}
+</style>
