@@ -2,10 +2,7 @@ import 'isomorphic-fetch';
 
 const bodyParser = require('body-parser');
 
-if (
-  process.env.APP_ENV !== 'development' ||
-  process.env.APP_ENV !== 'staging'
-) {
+if (process.env.APP_ENV !== 'production' || process.env.APP_ENV !== 'staging') {
   // eslint-disable-next-line global-require
   require('dotenv').config();
 }
