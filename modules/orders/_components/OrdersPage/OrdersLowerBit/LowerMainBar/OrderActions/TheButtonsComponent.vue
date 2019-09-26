@@ -122,6 +122,24 @@
           Ticket
         </a>
       </li>
+      <li
+        class="nav-item"
+        v-if="
+          order.rider_details.vendor_type_id === 20 ||
+            order.rider_details.vendor_type_id === 25
+        "
+      >
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('tracker', orderNo)"
+          :id="`tracker__${orderNo}`"
+        >
+          <span class="fa fa-fw fa-map-marker"></span>
+          GPS-Tracker
+        </a>
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
@@ -200,6 +218,14 @@
         >
           <TheTicketComponent :order="order" />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`tracker_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `tracker_${orderNo}`"
+        >
+          <TrackerComponent :order="order" />
+        </div>
       </div>
     </div>
   </div>
@@ -218,6 +244,7 @@ export default {
     TheProximityComponent: () => import('./TheProximityComponent'),
     TheSMSComponent: () => import('./TheSMSComponent'),
     TheTicketComponent: () => import('./TheTicketComponent'),
+    TrackerComponent: () => import('./TrackerComponent'),
   },
   props: {
     order: {
@@ -244,6 +271,7 @@ export default {
   mounted() {
     this.orderNo = this.order.order_details.order_no;
     this.moreData = this.order.order_details;
+    console.log(this.order);
   },
   methods: {
     ...mapMutations({
