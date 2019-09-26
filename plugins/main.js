@@ -109,6 +109,90 @@ Vue.mixin({
           },
         ],
       },
+      riders_data: {
+        phone_no: '0723049879',
+        running_bal: 136,
+        delivery_detail: [
+          {
+            from_name: 'Simba & Simba Advocates',
+            Address: 'Loita St, Nairobi, Kenya',
+            to_name: 'Loresho Ridge Estate',
+            user_name: 'Loise Mbarire',
+            confirm_status: 1,
+            confirm_status_name: 'Confirmed',
+            order_status: 1,
+            delivery_status_name: 'Transit',
+            delivery_status: 2,
+          },
+        ],
+        payments: {
+          savings_list: {
+            running_balance: -40000,
+            paylist: [
+              {
+                rb: -34700,
+                amount: -200,
+                date_time: '2019-05-03 08:14:54.0',
+                description: 'Transfer from Current',
+                pay_type: 'Payin',
+                pay_method: 'System',
+                txn: 'FZ1ZQKIGM5G',
+                status: 'Completed',
+              },
+            ],
+          },
+          loan_list: {
+            running_balance: 26126,
+            paylist: [
+              {
+                rb: 17826,
+                amount: -1000,
+                date_time: '2019-04-12 23:00:00.0',
+                description: 'Transfer from Current',
+                pay_type: 'Payin',
+                pay_method: 'System',
+                txn: 'MHMIG2TZ4LL',
+                status: 'Completed',
+              },
+            ],
+          },
+          current_list: {
+            running_balance: 136.20000000000073,
+            paylist: [
+              {
+                rb: -3750.7999999999993,
+                amount: -270,
+                date_time: '2019-09-20 14:36:39.0',
+                description: 'delivery',
+                pay_type: 'Payin',
+                pay_method: 'System',
+                txn: 'AR96WQ796-UW1',
+                status: 'Completed',
+              },
+            ],
+          },
+          rider_status: 'Active',
+          carrier_type: 1,
+          city_name: 'Nairobi',
+          tracker: 1,
+          rider_id: 79,
+          email: 'geoffoloo@gmail.com',
+          vendor_type: 1,
+          photo: 'geoffrey.jpg',
+          savings_bal: -40000,
+          rider_stat: 1,
+          rider_name: 'Geoffrey Oloo',
+          alloc_cop_id:
+            '122,27,77,131,241,346,375,541,3,890,665,1517,1517,1364,1364,415,1603,1603,1687,415,415,1779,1603,1891,1891,1891,1979,1891,3137',
+          incentiveBalance: 6678,
+          position: {
+            status: false,
+          },
+          default_currency: 'KES',
+          city_id: 1,
+          exclusivity_status: 0,
+        },
+      },
       bizUser: {
         user_details: {
           cop_name: 'Sugarcane Caribbean Food',
