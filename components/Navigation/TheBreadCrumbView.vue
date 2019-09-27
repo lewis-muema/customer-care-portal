@@ -4,11 +4,7 @@
       {{ pageBreadCrumbs.name }}
       <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
-    <div
-      class="breadcrumb business-units"
-      style="background:#ecf0f5; border: 1px solid #3333"
-      v-if="route === 'orders'"
-    >
+    <div class="breadcrumb business-units" v-if="route === 'orders'">
       <span>
         <input type="checkbox" @click="checkAll()" v-model="isCheckAll" />
         All
@@ -135,6 +131,8 @@ export default {
   right: 220px;
   color: #333;
   font-size: 13px;
+  background: #ecf0f5;
+  border: 1px solid #3333;
 }
 .business-units > span {
   padding-left: 26px;
