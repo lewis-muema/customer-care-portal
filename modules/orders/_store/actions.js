@@ -41,27 +41,30 @@ export default {
       return error;
     }
   },
+  // eslint-disable-next-line require-await
   async perform_order_action({ rootState, dispatch, commit }, payload) {
-    const userData = rootState.userData;
+    const userData = rootState.userData.payload.data;
     const errorCodes = rootState.errorCodes;
     // eslint-disable-next-line no-underscore-dangle
-    payload.params._user_email = userData.user_email;
+    payload.params._user_email = userData.email;
     // eslint-disable-next-line no-underscore-dangle
     payload.params._user_id = userData.admin_id;
-    payload.params.action_user = userData.user_name;
+    payload.params.action_user = userData.name;
     payload.params.channel = 'customer_support';
     payload.params.data_set = 'cc_actions';
+    const typeStatus = Object.prototype.hasOwnProperty.call(
+      payload.params,
+      'tab',
+    );
+    if (typeStatus) {
+      payload.params.admin_id = userData.admin_id;
+      payload.params.admin_name = userData.name;
+      payload.params.phone_no = userData.phone;
+    }
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
-      if (typeof res.data === 'undefined') {
-        const n = res.split(' ');
-        const errorCode = Number(n[n.length - 1]);
-        const notification = errorCodes[errorCode];
-        commit('setNotification', notification, { root: true });
-      } else {
-        return res.data;
-      }
+      return res.data;
     } catch (error) {
       return error;
     }
