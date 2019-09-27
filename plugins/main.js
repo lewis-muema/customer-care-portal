@@ -207,9 +207,6 @@ Vue.mixin({
     deliveryStatus(order) {
       const verification = order.order_details.delivery_verification;
       const notesStatus = verification.physical_delivery_note_status;
-      console.log('verification', verification);
-      console.log('notesStatus', notesStatus);
-
       let status = 'delivered';
       if (notesStatus) {
         // eslint-disable-next-line prettier/prettier
