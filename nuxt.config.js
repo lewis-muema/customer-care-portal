@@ -128,6 +128,7 @@ export default {
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
+    { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',

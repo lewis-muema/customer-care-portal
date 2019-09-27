@@ -84,7 +84,7 @@ export default {
       const response = await axios.post(`${url}${endpoint}`, values, config);
       return response;
     } catch (error) {
-      return error.message;
+      return error.response;
     }
   },
   async request_single_order({ state }, orderNo) {
