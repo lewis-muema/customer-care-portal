@@ -134,7 +134,7 @@
         <TheLowerSlideComponent :orderno="order.order_no" />
       </tr>
     </template>
-    <tr v-if="!orderNotification">
+    <tr v-if="!ordersExist">
       <td colspan="9">
         <div class="alert alert-info text-center">
           <strong>There are no more orders in this category</strong>
@@ -200,7 +200,7 @@ export default {
   },
   watch: {
     async getOrders(ordersData) {
-      this.orderNotification = this.ordersAvailable(ordersData);
+      this.ordersExist = this.ordersAvailable(ordersData);
       this.busy = true;
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
@@ -218,7 +218,7 @@ export default {
     bottom(bottom) {
       const params = this.orderParams;
       const payload = { page: this.nextPage, params };
-      if (bottom) {
+      if (bottom && this.ordersExist) {
         this.setOrders({
           page: this.nextPage,
           params,
@@ -255,6 +255,7 @@ export default {
     ...mapMutations({
       setOrdersObject: '$_orders/setOrdersObject',
       setDBUpdatedStatus: 'setDBUpdatedStatus',
+      setOrderCount: 'setOrderCount',
     }),
     ...mapActions(['setOrders']),
     initialOrderRequest() {
