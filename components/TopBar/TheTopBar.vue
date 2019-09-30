@@ -76,9 +76,6 @@ export default {
       this.forceRerender();
       return (this.order = order);
     },
-    // getStoredData() {
-    //   console.
-    // },
   },
   methods: {
     ...mapMutations({
