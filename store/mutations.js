@@ -49,4 +49,7 @@ export default {
   setOrderStatuses(state, val) {
     state.selectedStatus = val;
   },
+  setDBUpdatedStatus(state, val) {
+    state.dbUpdated = val;
+  },
 };

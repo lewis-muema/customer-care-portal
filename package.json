@@ -15,7 +15,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@agog/apix": "0.0.4",
+    "@agog/apix": "0.0.5-beta.0",
     "@nuxtjs/axios": "^5.6.0",
     "@sendyit/auth": "^0.1.1",
     "@stomp/stompjs": "^5.4.2",

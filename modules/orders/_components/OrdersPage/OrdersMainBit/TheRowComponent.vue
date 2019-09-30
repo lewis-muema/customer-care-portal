@@ -134,17 +134,20 @@
         <TheLowerSlideComponent :orderno="order.order_no" />
       </tr>
     </template>
+    <tr v-if="!ordersExist">
+      <td colspan="9">
+        <div class="alert alert-info text-center">
+          <strong>There are no more orders in this category</strong>
+        </div>
+      </td>
+    </tr>
   </tbody>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
-import PouchDB from 'pouchdb-browser';
-import PouchFind from 'pouchdb-find';
 import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
 import rabbitMQcomponent from '../../../../rabbitMQ/rabbitMQComponent';
-
-PouchDB.plugin(PouchFind);
 
 export default {
   name: 'TheRowComponent',
@@ -158,7 +161,8 @@ export default {
       bottom: false,
       nextPage: null,
       orderColorClass: '#fff',
-      ordersDB: process.browser ? new PouchDB('orders') : '',
+      orderNotification: true,
+      ordersExist: true,
       newData: null,
       busy: false,
       show: false,
@@ -187,15 +191,16 @@ export default {
     orderParams() {
       let params = '';
       if (this.businessUnits !== null) {
-        params = `params: {
-          business_unit: ${this.businessUnits};
-        }`;
+        params = {
+          business_unit: this.businessUnits,
+        };
       }
       return params;
     },
   },
   watch: {
     async getOrders(ordersData) {
+      this.ordersExist = this.ordersAvailable(ordersData);
       this.busy = true;
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
@@ -212,7 +217,8 @@ export default {
     },
     bottom(bottom) {
       const params = this.orderParams;
-      if (bottom) {
+      const payload = { page: this.nextPage, params };
+      if (bottom && this.ordersExist) {
         this.setOrders({
           page: this.nextPage,
           params,
@@ -248,6 +254,8 @@ export default {
   methods: {
     ...mapMutations({
       setOrdersObject: '$_orders/setOrdersObject',
+      setDBUpdatedStatus: 'setDBUpdatedStatus',
+      setOrderCount: 'setOrderCount',
     }),
     ...mapActions(['setOrders']),
     initialOrderRequest() {
@@ -255,6 +263,14 @@ export default {
     },
     forceRerender() {
       this.rowComponentKey += 1;
+    },
+    ordersAvailable(orders) {
+      const data = orders.data;
+      let status = true;
+      if (data.length === 0) {
+        status = false;
+      }
+      return status;
     },
 
     toggle(id) {
@@ -268,14 +284,6 @@ export default {
     showBasedOnStatus(status) {
       const orderStatus = status.toLowerCase().trim();
       return this.statusArray.includes(orderStatus);
-    },
-
-    async destroyPouchDB() {
-      const db = this.ordersDB;
-      const res = await db.destroy();
-      if (res.ok) {
-        return (this.ordersDB = process.browser ? new PouchDB('orders') : '');
-      }
     },
     // eslint-disable-next-line require-await
     async updateOrders(orders, pagination) {
@@ -297,18 +305,11 @@ export default {
       };
       try {
         const res = await this.ordersDB.put(storeData);
+        this.setDBUpdatedStatus(true);
         return res.id;
       } catch (error) {
         return error;
       }
-    },
-    async fetchOrders() {
-      const res = await this.ordersDB.allDocs({ include_docs: true });
-      return res.rows;
-    },
-    async fetchSingleDBInstance(ID) {
-      const res = await this.ordersDB.get(ID);
-      return res;
     },
     bottomVisible() {
       const scrollY = window.scrollY;
