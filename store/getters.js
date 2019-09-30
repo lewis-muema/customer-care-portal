@@ -43,4 +43,7 @@ export default {
   getSelectedBusinessUnits(state) {
     return state.selectedBusinessUnits;
   },
+  getDBUpdatedStatus(state) {
+    return state.dbUpdated;
+  },
 };

@@ -1,5 +1,6 @@
 <template>
   <section class="content">
+    {{ storedData }}
     <div class="row content-body">
       <table width="99%;">
         <tbody>
@@ -75,6 +76,9 @@ export default {
       this.forceRerender();
       return (this.order = order);
     },
+    // getStoredData() {
+    //   console.
+    // },
   },
   methods: {
     ...mapMutations({
@@ -86,11 +90,7 @@ export default {
     forceRerender() {
       this.componentKey += 1;
     },
-    async fetchOrders() {
-      const res = await this.ordersDB.allDocs({ include_docs: true });
-      const data = res.rows;
-      return (this.storedData = data[0].doc.data);
-    },
+
     handlePushInParent(pushobj) {
       const index = _.findIndex(this.storedData, [
         'order_no',
