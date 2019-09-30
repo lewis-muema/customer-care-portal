@@ -196,7 +196,6 @@ export default {
   },
   watch: {
     async getOrders(ordersData) {
-      console.log('hapa', typeof ordersData);
       this.busy = true;
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
