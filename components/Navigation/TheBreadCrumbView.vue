@@ -86,7 +86,7 @@ export default {
   },
   watch: {
     getBusinessUnits(data) {
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i += 1) {
         this.unitsdata.push(data[i].abbr);
       }
       return (this.units = data);
