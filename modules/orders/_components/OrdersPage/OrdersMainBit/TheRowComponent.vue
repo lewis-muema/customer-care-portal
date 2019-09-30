@@ -4,6 +4,7 @@
     v-infinite-scroll=""
     infinite-scroll-disabled="busy"
     infinite-scroll-distance="limit"
+    :key="rowComponentKey"
   >
     <rabbitMQcomponent @pushedSomething="handlePushInParent" />
     <tr
@@ -28,7 +29,7 @@
           ({ opened: opened.includes(order.order_no) },
           determineOrderColor(order.time_of_delivery, order.push_order))
         "
-        :key="order.order_no"
+        :key="`main_${order.order_no}`"
         v-show="showBasedOnStatus(order.order_status)"
       >
         <td>
@@ -161,6 +162,8 @@ export default {
       newData: null,
       busy: false,
       show: false,
+      businessUnits: null,
+      rowComponentKey: 0,
       statusArray: [
         'pending',
         'confirmed',
@@ -172,16 +175,29 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getOrders', 'getOrderStatuses']),
+    ...mapGetters([
+      'getOrders',
+      'getOrderStatuses',
+      'getSelectedBusinessUnits',
+    ]),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
     },
+    orderParams() {
+      let params = '';
+      if (this.businessUnits !== null) {
+        params = `params: {
+          business_unit: ${this.businessUnits};
+        }`;
+      }
+      return params;
+    },
   },
   watch: {
     async getOrders(ordersData) {
+      console.log('hapa', typeof ordersData);
       this.busy = true;
-
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
       const currentOrders = this.orders;
@@ -196,20 +212,33 @@ export default {
       return (this.statusArray = statusArray);
     },
     bottom(bottom) {
+      const params = this.orderParams;
       if (bottom) {
         this.setOrders({
           page: this.nextPage,
+          params,
         });
       }
     },
+    async getSelectedBusinessUnits(units) {
+      await this.destroyPouchDB();
+      this.orders = [];
+      this.setOrders({
+        page: 1,
+        params: { business_unit: units },
+      });
+      this.forceRerender();
+
+      return (this.businessUnits = units);
+    },
   },
-  created() {
+  async created() {
     if (process.client) {
       window.addEventListener('scroll', () => {
         this.bottom = this.bottomVisible();
       });
 
-      this.destroyPouchDB();
+      await this.destroyPouchDB();
     }
   },
   mounted() {
@@ -225,6 +254,10 @@ export default {
     initialOrderRequest() {
       this.setOrders();
     },
+    forceRerender() {
+      this.rowComponentKey += 1;
+    },
+
     toggle(id) {
       const index = this.opened.indexOf(id);
       if (index > -1) {
@@ -237,29 +270,13 @@ export default {
       const orderStatus = status.toLowerCase().trim();
       return this.statusArray.includes(orderStatus);
     },
-    destroyPouchDB() {
-      this.ordersDB
-        .allDocs({ include_docs: true })
-        .then(allDocs => {
-          return allDocs.rows.map(row => {
-            // eslint-disable-next-line no-underscore-dangle
-            return { _id: row.id, _rev: row.doc._rev, _deleted: true };
-          });
-        })
-        .then(deleteDocs => {
-          return this.ordersDB.bulkDocs(deleteDocs);
-        });
-    },
 
-    saveOrders(orders) {
-      return this.ordersDB.post(orders, (err, res) => {
-        if (err) {
-          console.info('error creating new doc', err);
-        }
-        if (res) {
-          console.info('new doc created', res);
-        }
-      });
+    async destroyPouchDB() {
+      const db = this.ordersDB;
+      const res = await db.destroy();
+      if (res.ok) {
+        return (this.ordersDB = process.browser ? new PouchDB('orders') : '');
+      }
     },
     // eslint-disable-next-line require-await
     async updateOrders(orders, pagination) {

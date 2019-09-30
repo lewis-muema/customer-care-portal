@@ -4,7 +4,6 @@ import getters from './getters';
 import mutations from './mutations';
 
 const state = {
-  orders: [],
   order: null,
   order_request_object: null,
   actionErrors: [],
