@@ -10,13 +10,13 @@
         All
       </span>
 
-      <span v-for="unit in unitsdata" :key="unit.index">
+      <span v-for="unit in units" :key="unit.index">
         <input
           type="checkbox"
-          :value="unit"
+          :value="unit.abbr"
           v-model="businessUnits"
           @change="updateCheckall()"
-        />{{ unit }}
+        />{{ unit.abbr }}
       </span>
     </div>
     <ol class="breadcrumb">
@@ -44,8 +44,9 @@ export default {
   data() {
     return {
       isCheckAll: true,
-      unitsdata: ['FBU', 'MBU', 'EBU'],
-      selectedUnits: '',
+      unitsdata: [],
+      units: null,
+      selectedUnits: [],
       businessUnits: [],
 
       breadCrumbs: {
@@ -75,16 +76,32 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['getBusinessUnits', 'getOrderStatuses']),
+
     pageBreadCrumbs() {
       const routeName = this.route;
       const links = this.breadCrumbs;
       return links[routeName];
     },
   },
+  watch: {
+    getBusinessUnits(data) {
+      for (let i = 0; i < data.length; i += 1) {
+        this.unitsdata.push(data[i].abbr);
+      }
+      return (this.units = data);
+    },
+  },
   mounted() {
     this.setBreadcrumbs();
+    this.setBusinessUnits();
   },
   methods: {
+    ...mapMutations({
+      updateSelectedUnits: 'setSelectedBusinessUnits',
+    }),
+    ...mapActions(['setBusinessUnits']),
+
     setBreadcrumbs() {
       console.log('breadcrumbs');
       this.$store.dispatch('setBreadCrumbs');
@@ -94,8 +111,8 @@ export default {
       this.businessUnits = [];
       if (this.isCheckAll) {
         // eslint-disable-next-line guard-for-in
-        for (const key in this.unitsdata) {
-          this.businessUnits.push(this.unitsdata[key]);
+        for (const key in this.units) {
+          this.businessUnits.push(this.units[key].abbr);
         }
         this.printValues();
       }
@@ -109,12 +126,12 @@ export default {
       this.printValues();
     },
     printValues() {
-      this.selectedUnits = '';
+      this.selectedUnits = [];
       // eslint-disable-next-line guard-for-in
       for (const key in this.businessUnits) {
-        this.selectedUnits += `${this.businessUnits[key]}, `;
+        this.selectedUnits.push(this.businessUnits[key].toLowerCase().trim());
       }
-      console.log('selectedUnits', this.selectedUnits);
+      this.updateSelectedUnits(this.selectedUnits);
     },
     toggle_show(status) {},
   },
