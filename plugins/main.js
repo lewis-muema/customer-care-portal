@@ -46,6 +46,7 @@ Vue.mixin({
         500: 'Page not found',
       },
       trucksArray: [6, 10, 13, 14, 17, 18, 19, 20, 25],
+      nonTrucks: [1, 12, 21],
       logTypesColors: {
         1: 'fa-get-pocket bg-green',
         2: ' fa-thumbs-up bg-aqua',
