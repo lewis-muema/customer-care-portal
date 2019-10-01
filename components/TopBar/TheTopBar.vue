@@ -1,6 +1,5 @@
 <template>
   <section class="content">
-    {{ storedData }}
     <div class="row content-body">
       <table width="99%;">
         <tbody>
