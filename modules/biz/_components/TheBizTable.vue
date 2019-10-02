@@ -97,7 +97,6 @@ export default {
       userInfo: null,
       opened: [],
       offset: 1,
-      rows: [{ id: 1, name: 'Bill', handle: 'bill' }],
     };
   },
   computed: {
