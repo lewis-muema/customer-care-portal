@@ -199,7 +199,7 @@ export default {
     },
   },
   watch: {
-    async getOrders(ordersData) {
+    getOrders(ordersData) {
       this.ordersExist = this.ordersAvailable(ordersData);
       this.busy = true;
       const currentPage = ordersData.pagination.page;
@@ -208,9 +208,7 @@ export default {
       const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      const storeData = await this.updateOrders(newOrders, pagination);
-      const storedOrders = await this.fetchOrders();
-      return (this.orders = storedOrders[0].doc.data);
+      return (this.orders = newOrders);
     },
     getOrderStatuses(statusArray) {
       return (this.statusArray = statusArray);

@@ -19,16 +19,19 @@
         <td colspan="8">Search to view Biz details.</td>
       </tr>
       <template v-else>
-        <tr @click="toggle('biz')" :class="{ opened: opened.includes('biz') }">
+        <tr v-if="userDetails === null">
+          <i class="fa fa-spinner fa-spin loader"></i>
+        </tr>
+        <tr
+          v-else
+          @click="toggle('biz')"
+          :class="{ opened: opened.includes('biz') }"
+        >
           <td>{{ offset }}</td>
           <td>SENDY {{ userDetails.cop_id }}</td>
           <td>
-            <span data-toggle="tooltip" :title="`${myString}`">
-              {{
-                myTruncatedString !== null
-                  ? `${myTruncatedString}...`
-                  : myTruncatedString
-              }}
+            <span data-toggle="tooltip" :title="`${userDetails.cop_name}`">
+              {{ smartify_display(userDetails.cop_name, 20) }}
             </span>
           </td>
           <td align="right">{{ userDetails.cop_phone }}</td>
@@ -76,7 +79,7 @@
   </table>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'TheBizTable',
@@ -94,32 +97,47 @@ export default {
       userInfo: null,
       opened: [],
       offset: 1,
-      status: '',
-      showClass: '',
-      myTruncatedString: null,
-      myString: '',
       rows: [{ id: 1, name: 'Bill', handle: 'bill' }],
     };
   },
   computed: {
     ...mapGetters(['getBizUser']),
+    status() {
+      let status = 'Pending';
+      if (this.userDetails !== null && this.userDetails.approved === 1) {
+        status = 'Approved';
+      }
+      return status;
+    },
+    showClass() {
+      let showClass = 'warning';
+      if (this.userDetails !== null && this.userDetails.approved === 1) {
+        showClass = 'success';
+      }
+      return showClass;
+    },
   },
   watch: {
     getBizUser(user) {
+      this.singleCopUserRequest(user, 'cop');
       return (this.copID = user);
     },
   },
-  mounted() {
-    this.singleCopUserRequest(this.copID);
-    this.smartify_display(this.userDetails.cop_name, 20);
-    this.determineStatus();
-  },
   methods: {
-    singleCopUserRequest(user) {
-      this.userDetails = this.bizUser.user_details;
-      this.userInfo = this.bizUser;
-
-      return (this.user = this.bizUser);
+    ...mapActions({
+      request_single_user: 'request_single_user',
+    }),
+    async singleCopUserRequest(user, userType) {
+      const payload = { userID: user, userType };
+      try {
+        const data = await this.request_single_user(payload);
+        this.userDetails = data.user_details;
+        return (this.userInfo = data);
+      } catch {
+        this.errors.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+      }
     },
     toggle(id) {
       const index = this.opened.indexOf(id);
@@ -141,9 +159,10 @@ export default {
     },
     smartify_display(myString, myLength) {
       if (myString !== null && parseInt(myString.length) > myLength) {
-        this.myTruncatedString = myString.substring(0, myLength);
+        myString = myString.substring(0, myLength);
+        myString = `${myString}...`;
       }
-      return (this.myString = myString);
+      return myString;
     },
   },
 };
@@ -152,5 +171,10 @@ export default {
 .user-details {
   padding: 0px;
   background-color: rgba(245, 245, 245, 0.56) !important;
+}
+.loader {
+  color: #3c8dbc;
+  font-weight: 700;
+  font-size: 19px;
 }
 </style>
