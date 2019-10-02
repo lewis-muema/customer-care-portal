@@ -65,7 +65,7 @@
           role="tabpanel"
           v-if="showTab === `deliveries_${copID}`"
         >
-          <TheDeliveriesComponent :deliveries="deliveryList" :user="copID" />
+          <TheDeliveriesComponent :deliveries="deliveries" :user="copID" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -76,7 +76,7 @@
           <TheStatementComponent
             :payments="payments"
             :user="copID"
-            :currency="userDetails.default_currency"
+            :currency="currency"
           />
         </div>
         <div
@@ -132,10 +132,26 @@ export default {
       showTab: `deliveries_${this.user.user_details.cop_id}`,
       deliveryList: null,
       payments: null,
-      userDetails: null,
       riderDetails: null,
-      invoiceReceivers: null,
     };
+  },
+
+  computed: {
+    deliveries() {
+      return this.user.delivery_list;
+    },
+    userDetails() {
+      return this.user.user_details;
+    },
+    currency() {
+      return this.userDetails.default_currency
+        ? this.userDetails.default_currency
+        : '';
+    },
+    invoiceReceivers() {
+      const arr = [];
+      return this.user.invoice_receivers ? this.user.invoice_receivers : arr;
+    },
   },
   mounted() {
     this.firstShow = 'show';
@@ -143,9 +159,7 @@ export default {
     this.copID = this.user.user_details.cop_id;
     this.deliveryList = this.user.delivey_list;
     this.payments = this.user.payments;
-    this.userDetails = this.user.user_details;
     this.riderDetails = this.user.rider_list;
-    this.invoiceReceivers = this.user.invoice_receivers;
   },
   methods: {
     viewTab(tab, copID) {

@@ -199,7 +199,7 @@ export default {
     },
   },
   watch: {
-    async getOrders(ordersData) {
+    getOrders(ordersData) {
       this.ordersExist = this.ordersAvailable(ordersData);
       this.busy = true;
       const currentPage = ordersData.pagination.page;
@@ -208,9 +208,7 @@ export default {
       const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      const storeData = await this.updateOrders(newOrders, pagination);
-      const storedOrders = await this.fetchOrders();
-      return (this.orders = storedOrders[0].doc.data);
+      return (this.orders = newOrders);
     },
     getOrderStatuses(statusArray) {
       return (this.statusArray = statusArray);
@@ -225,8 +223,7 @@ export default {
         });
       }
     },
-    async getSelectedBusinessUnits(units) {
-      await this.destroyPouchDB();
+    getSelectedBusinessUnits(units) {
       this.orders = [];
       this.setOrders({
         page: 1,
@@ -237,13 +234,11 @@ export default {
       return (this.businessUnits = units);
     },
   },
-  async created() {
+  created() {
     if (process.client) {
       window.addEventListener('scroll', () => {
         this.bottom = this.bottomVisible();
       });
-
-      await this.destroyPouchDB();
     }
   },
   mounted() {
@@ -284,32 +279,6 @@ export default {
     showBasedOnStatus(status) {
       const orderStatus = status.toLowerCase().trim();
       return this.statusArray.includes(orderStatus);
-    },
-    // eslint-disable-next-line require-await
-    async updateOrders(orders, pagination) {
-      const storedOrders = await this.fetchOrders(); // fetch all stored data from pouchDB
-      let rev = '';
-      let id = 1;
-      if (storedOrders.length > 0) {
-        // eslint-disable-next-line no-underscore-dangle
-        rev = `${storedOrders[0].doc._rev}`;
-        // eslint-disable-next-line no-underscore-dangle
-        id = `${storedOrders[0].id}`;
-      }
-      const storeData = {
-        data: orders,
-        pagination,
-        // eslint-disable-next-line no-underscore-dangle
-        _id: `${id}`,
-        _rev: `${rev}`,
-      };
-      try {
-        const res = await this.ordersDB.put(storeData);
-        this.setDBUpdatedStatus(true);
-        return res.id;
-      } catch (error) {
-        return error;
-      }
     },
     bottomVisible() {
       const scrollY = window.scrollY;

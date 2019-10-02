@@ -1,16 +1,11 @@
 import Vue from 'vue';
 import moment from 'moment';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
-import PouchDB from 'pouchdb-browser';
-import PouchFind from 'pouchdb-find';
 import config from '~/config/configs';
-
-PouchDB.plugin(PouchFind);
 
 Vue.mixin({
   data() {
     return {
-      ordersDB: process.browser ? new PouchDB('orders') : '',
       userImage: config.USER_IMAGE,
       riderDeliveryImg: config.RIDER_DELIVERY_IMG,
       orderColumns: [
@@ -115,92 +110,6 @@ Vue.mixin({
           },
         ],
       },
-      bizUser: {
-        user_details: {
-          cop_name: 'Sugarcane Caribbean Food',
-          cop_id: 929,
-          cop_email: 'kcreavalle@sugarcane.co.ke',
-          cop_phone: '0722598850',
-          account_manager: 'Njeri',
-          approved: 1,
-          date_signed_up: '2016-03-21 20:19:17.0',
-          channel_name: 'Other (specify below)',
-          cop_type_name: 'Food',
-          payment_option: 1,
-          cop_contact_person: 'Kathleen Creavalle',
-          city_name: 'Nairobi',
-          cop_address: 'none',
-          country_name: 'Kenya',
-          cop_category: 0,
-          sales_agent: 0,
-          strict_allocation: 0,
-          credit_period: 15,
-          default_currency: 'KES',
-        },
-        invoice_receivers: [
-          {
-            name: 'test person 1',
-            email: 'test@person1.com',
-          },
-          {
-            name: 'test person 2',
-            email: 'test@person2.com',
-          },
-        ],
-
-        cop_type_list: [
-          {
-            cop_type_id: 1,
-            name: 'Ecommerce',
-          },
-        ],
-        rider_list: [
-          {
-            rider_id: 1,
-            rider_name: 'Sendy Driver',
-            phone_no: '07333',
-            rider_stat: 1,
-            carrier_type: 0,
-            phone_no_1: '89254021004056320520',
-          },
-        ],
-        delivey_list: [
-          {
-            order_no: 'AS458X454-62F',
-            time_stamp: '2019-09-23 11:23:29.0',
-            rider_details: {
-              name: 'Denis',
-            },
-            path: {
-              from: 'machakos',
-              to: 'machakos',
-            },
-          },
-          {
-            order_no: 'AS458X454-62F',
-            time_stamp: '2019-09-23 11:23:29.0',
-            rider_details: {
-              name: 'Denis',
-            },
-            path: {
-              from: 'bbbb',
-              to: 'machakos',
-            },
-          },
-        ],
-        payments: [
-          {
-            rb: -1400,
-            amount: -200,
-            date_time: '2016-04-01 16:34:28.0',
-            description: 'Transfer from Current',
-            pay_type: 'Payin',
-            pay_method: 'System',
-            txn: 'VYUFZNUPBLH',
-            status: 'Completed',
-          },
-        ],
-      },
     };
   },
   computed: {
@@ -210,21 +119,6 @@ Vue.mixin({
     },
   },
   methods: {
-    async destroyPouchDB() {
-      const db = this.ordersDB;
-      const res = await db.destroy();
-      if (res.ok) {
-        return (this.ordersDB = process.browser ? new PouchDB('orders') : '');
-      }
-    },
-    async fetchOrders() {
-      const res = await this.ordersDB.allDocs({ include_docs: true });
-      return res.rows;
-    },
-    async fetchSingleDBInstance(ID) {
-      const res = await this.ordersDB.get(ID);
-      return res;
-    },
     deliveryStatus(order) {
       const verification = order.order_details.delivery_verification;
       const notesStatus = verification.physical_delivery_note_status;
