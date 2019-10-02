@@ -1,16 +1,11 @@
 import Vue from 'vue';
 import moment from 'moment';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
-import PouchDB from 'pouchdb-browser';
-import PouchFind from 'pouchdb-find';
 import config from '~/config/configs';
-
-PouchDB.plugin(PouchFind);
 
 Vue.mixin({
   data() {
     return {
-      ordersDB: process.browser ? new PouchDB('orders') : '',
       userImage: config.USER_IMAGE,
       riderDeliveryImg: config.RIDER_DELIVERY_IMG,
       orderColumns: [
@@ -124,21 +119,6 @@ Vue.mixin({
     },
   },
   methods: {
-    async destroyPouchDB() {
-      const db = this.ordersDB;
-      const res = await db.destroy();
-      if (res.ok) {
-        return (this.ordersDB = process.browser ? new PouchDB('orders') : '');
-      }
-    },
-    async fetchOrders() {
-      const res = await this.ordersDB.allDocs({ include_docs: true });
-      return res.rows;
-    },
-    async fetchSingleDBInstance(ID) {
-      const res = await this.ordersDB.get(ID);
-      return res;
-    },
     deliveryStatus(order) {
       const verification = order.order_details.delivery_verification;
       const notesStatus = verification.physical_delivery_note_status;
