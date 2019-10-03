@@ -357,17 +357,15 @@ export default {
 .force_blue {
   color: #3c8dbc !important;
   cursor: pointer;
-  /* text-decoration: none; */
 }
-/* .space_tab {
-  padding: 16px;
-} */
+
 .vs__dropdown-toggle {
-  padding: 6px 4px !important;
+  padding: 6px 4px;
   color: #ccc;
+  border: 1px solid #ccc;
+  width: 100%;
 }
 .vs__dropdown-toggle ::placeholder {
-  /* padding: 6px 4px !important; */
   color: #666;
 }
 .form-control {

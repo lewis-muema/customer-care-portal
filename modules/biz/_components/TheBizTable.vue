@@ -1,5 +1,5 @@
 <template>
-  <table id="" class="table  table-bordered table-hover">
+  <table class="table  table-bordered table-hover" :key="bizTable">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -79,7 +79,7 @@
   </table>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'TheBizTable',
@@ -97,10 +97,11 @@ export default {
       userInfo: null,
       opened: [],
       offset: 1,
+      bizTable: 0,
     };
   },
   computed: {
-    ...mapGetters(['getBizUser']),
+    ...mapGetters(['getBizUser', 'getUserActionSuccess']),
     status() {
       let status = 'Pending';
       if (this.userDetails !== null && this.userDetails.approved === 1) {
@@ -121,8 +122,25 @@ export default {
       this.singleCopUserRequest(user, 'cop');
       return (this.copID = user);
     },
+    getUserActionSuccess(status) {
+      const arr = [];
+      this.userInfo = null;
+      this.userDetails = null;
+      const index = this.opened.indexOf('biz');
+      this.opened.splice(index, 1);
+      this.forceRerender();
+      this.updateSuccess(false);
+      this.updateClass('');
+      this.updateErrors(arr);
+      this.singleCopUserRequest(this.copID, 'cop');
+    },
   },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
+    }),
     ...mapActions({
       request_single_user: 'request_single_user',
     }),
@@ -163,6 +181,9 @@ export default {
       }
       return myString;
     },
+    forceRerender() {
+      this.bizTable += 1;
+    },
   },
 };
 </script>
@@ -170,10 +191,5 @@ export default {
 .user-details {
   padding: 0px;
   background-color: rgba(245, 245, 245, 0.56) !important;
-}
-.loader {
-  color: #3c8dbc;
-  font-weight: 700;
-  font-size: 19px;
 }
 </style>

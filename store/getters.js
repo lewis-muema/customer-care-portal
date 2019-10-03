@@ -46,4 +46,7 @@ export default {
   getDBUpdatedStatus(state) {
     return state.dbUpdated;
   },
+  getUserActionSuccess(state) {
+    return state.actionSuccess;
+  },
 };
