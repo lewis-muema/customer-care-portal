@@ -52,4 +52,7 @@ export default {
   setDBUpdatedStatus(state, val) {
     state.dbUpdated = val;
   },
+  setUserActionSuccess(state, val) {
+    state.actionSuccess = val;
+  },
 };

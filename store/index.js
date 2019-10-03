@@ -37,6 +37,7 @@ export default {
       searchedRider: null,
       selectedBusinessUnits: null,
       dbUpdated: false,
+      actionSuccess: false,
       searchedUser: '',
       userData: {},
       baseUrl,
