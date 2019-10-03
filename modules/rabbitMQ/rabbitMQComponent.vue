@@ -72,15 +72,18 @@ export default {
       console.log('Connection Dropped Trying to Reconnect');
       this.client = Stomp.client(this.url);
       this.client.debug = function(str) {};
-      this.client.connect(
-        this.headers,
-        () => {
-          this.connectCallback();
-        },
-        () => {
-          this.errorCallback();
-        },
-      );
+      this.client.reconnect_delay = 5000;
+      setTimeout(() => {
+        this.client.connect(
+          this.headers,
+          () => {
+            this.connectCallback();
+          },
+          () => {
+            this.errorCallback();
+          },
+        );
+      }, 5000);
     },
 
     /**
