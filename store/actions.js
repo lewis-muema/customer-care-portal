@@ -125,7 +125,6 @@ export default {
       return error.response;
     }
   },
-
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
     try {

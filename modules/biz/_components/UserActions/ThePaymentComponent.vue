@@ -215,6 +215,7 @@ export default {
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
     }),
     ...mapActions({
       request_payment_methods: 'request_payment_methods',
@@ -258,9 +259,9 @@ export default {
         this.updateErrors(notification);
       }
     },
-    submitPayment() {
+    async submitPayment() {
       const notification = [];
-      const actionClass = '';
+      let actionClass = '';
 
       this.submitted = true;
       this.$v.$touch();
@@ -272,22 +273,43 @@ export default {
       const userID = 0;
 
       const payload = {
-        channel: 'customer_support_peer_biz',
-        data_set: 'cc_actions',
-        action_id: 7,
-        action_data: {
-          reverse,
-          amount: this.amount,
-          ref_no: this.refNo,
-          pay_method: this.paymentMethod,
-          cop_id: copID,
-          user_id: userID,
-          reason: this.narrative,
-          currency: this.currency,
+        app: 'CUSTOMERS_APP',
+        endpoint: 'sendy/cc_actions',
+        apiKey: true,
+        params: {
+          channel: 'customer_support_peer_biz',
+          data_set: 'cc_actions',
+          action_id: 7,
+          action_data: {
+            reverse,
+            amount: this.amount,
+            ref_no: this.refNo,
+            pay_method: this.paymentMethod,
+            cop_id: copID,
+            user_id: userID,
+            reason: this.narrative,
+            currency: this.currency,
+          },
+          request_id: `11211`,
+          action_user: this.actionUser,
         },
-        request_id: `11211`,
-        action_user: this.actionUser,
       };
+
+      try {
+        const data = await this.perform_user_action(payload);
+        notification.push(data.reason);
+        actionClass = this.display_order_action_notification(data.status);
+        if (data.status) {
+          this.updateSuccess(true);
+        }
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
