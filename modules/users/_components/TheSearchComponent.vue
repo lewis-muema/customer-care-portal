@@ -20,7 +20,7 @@
         @input="update"
         @blur="reset"
       />
-      <ul v-show="hasItems" @blur="reset">
+      <ul v-show="hasItems" @blur="reset" v-if="isProduction">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -88,6 +88,9 @@ export default {
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
+    },
+    isProduction() {
+      return this.$env.APP_ENV === 'production';
     },
     solarBase() {
       const solrArray = this.solr;

@@ -86,11 +86,7 @@ export default {
     forceRerender() {
       this.componentKey += 1;
     },
-    async fetchOrders() {
-      const res = await this.ordersDB.allDocs({ include_docs: true });
-      const data = res.rows;
-      return (this.storedData = data[0].doc.data);
-    },
+
     handlePushInParent(pushobj) {
       const index = _.findIndex(this.storedData, [
         'order_no',
@@ -111,5 +107,12 @@ export default {
 .fa-search {
   padding: 0 !important;
   color: #212529 !important;
+}
+.content {
+  padding: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 </style>

@@ -40,4 +40,10 @@ export default {
   getSearchState(state) {
     return state.searchState;
   },
+  getSelectedBusinessUnits(state) {
+    return state.selectedBusinessUnits;
+  },
+  getDBUpdatedStatus(state) {
+    return state.dbUpdated;
+  },
 };

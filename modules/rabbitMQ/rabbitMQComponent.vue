@@ -172,7 +172,7 @@ export default {
           return 'In Transit';
         }
         if (orderStatus === 1 && confirmStatus === 1 && deliveryStatus === 3) {
-          return 'delivered';
+          return this.deliveryStatus(order_push);
         }
       }
       return 'Cancelled';

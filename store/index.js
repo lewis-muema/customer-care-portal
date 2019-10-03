@@ -16,6 +16,7 @@ const apix = new Apix({
   resources: [
     { name: 'orders', url: 'orders' },
     { name: 'exchangeRates', url: `exchange-rates` },
+    { name: 'businessUnits', url: `business-units` },
   ],
 });
 const baseUrl = process.env.baseUrl;
@@ -34,6 +35,8 @@ export default {
       searchedBizUser: null,
       searchedPeerUser: null,
       searchedRider: null,
+      selectedBusinessUnits: null,
+      dbUpdated: false,
       searchedUser: '',
       userData: {},
       baseUrl,

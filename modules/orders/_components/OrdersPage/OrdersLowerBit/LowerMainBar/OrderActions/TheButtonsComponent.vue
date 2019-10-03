@@ -16,8 +16,7 @@
       <li
         class="nav-item"
         v-if="
-          order.order_details.delivery_status < 1 &&
-            userData.privilege.reassign_orders
+          order.order_details.delivery_status < 1 && permissions.reassign_orders
         "
       >
         <a
@@ -96,7 +95,7 @@
         v-if="
           order.order_details.confirm_status === 1 &&
             order.order_details.delivery_status < 3 &&
-            userData.privilege.location_proximity
+            permissions.location_proximity
         "
       >
         <a
@@ -140,6 +139,26 @@
         >
           <span class="fa fa-fw fa-map-marker"></span>
           GPS-Tracker
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        v-if="
+          isTruck &&
+            confirmedStatus === 1 &&
+            mm === 0 &&
+            permissions.update_delivery_status
+        "
+      >
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('mark_in_transit', orderNo)"
+          :id="`mark_in_transit_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-truck"></span>
+          Mark in Transit
         </a>
       </li>
     </ul>
@@ -229,6 +248,14 @@
           <TrackerComponent :order="order" />
         </div>
       </div>
+      <div
+        :class="`tab-pane fade ${show} ${active}`"
+        :id="`mark_in_transit_${orderNo}`"
+        role="tabpanel"
+        v-if="showTab === `mark_in_transit_${orderNo}`"
+      >
+        <TheMarkInTransitComponent :order="order" />
+      </div>
     </div>
   </div>
 </template>
@@ -247,6 +274,7 @@ export default {
     TheSMSComponent: () => import('./TheSMSComponent'),
     TheTicketComponent: () => import('./TheTicketComponent'),
     TrackerComponent: () => import('./TrackerComponent'),
+    TheMarkInTransitComponent: () => import('./TheMarkInTransitComponent'),
   },
   props: {
     order: {
@@ -268,7 +296,23 @@ export default {
     };
   },
   computed: {
-    ...mapState(['actionErrors', 'actionClass']),
+    ...mapState(['actionErrors', 'actionClass', 'userData']),
+    vendorTypeID() {
+      return this.order.rider_details.vendor_type_id;
+    },
+    confirmedStatus() {
+      return this.order.order_details.confirm_status;
+    },
+    mm() {
+      return this.order.order_details.delivery_status;
+    },
+    isTruck() {
+      const nonTrucks = this.nonTrucks;
+      return !nonTrucks.includes(this.vendorTypeID);
+    },
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
   },
   mounted() {
     this.orderNo = this.order.order_details.order_no;

@@ -4,6 +4,7 @@
     v-infinite-scroll=""
     infinite-scroll-disabled="busy"
     infinite-scroll-distance="limit"
+    :key="rowComponentKey"
   >
     <rabbitMQcomponent @pushedSomething="handlePushInParent" />
     <tr
@@ -28,7 +29,7 @@
           ({ opened: opened.includes(order.order_no) },
           determineOrderColor(order.time_of_delivery, order.push_order))
         "
-        :key="order.order_no"
+        :key="`main_${order.order_no}`"
         v-show="showBasedOnStatus(order.order_status)"
       >
         <td>
@@ -133,17 +134,20 @@
         <TheLowerSlideComponent :orderno="order.order_no" />
       </tr>
     </template>
+    <tr v-if="!ordersExist">
+      <td colspan="9">
+        <div class="alert alert-info text-center">
+          <strong>There are no more orders in this category</strong>
+        </div>
+      </td>
+    </tr>
   </tbody>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
-import PouchDB from 'pouchdb-browser';
-import PouchFind from 'pouchdb-find';
 import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
 import rabbitMQcomponent from '../../../../rabbitMQ/rabbitMQComponent';
-
-PouchDB.plugin(PouchFind);
 
 export default {
   name: 'TheRowComponent',
@@ -157,10 +161,13 @@ export default {
       bottom: false,
       nextPage: null,
       orderColorClass: '#fff',
-      ordersDB: process.browser ? new PouchDB('orders') : '',
+      orderNotification: true,
+      ordersExist: true,
       newData: null,
       busy: false,
       show: false,
+      businessUnits: null,
+      rowComponentKey: 0,
       statusArray: [
         'pending',
         'confirmed',
@@ -172,35 +179,59 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getOrders', 'getOrderStatuses']),
+    ...mapGetters([
+      'getOrders',
+      'getOrderStatuses',
+      'getSelectedBusinessUnits',
+    ]),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
     },
+    orderParams() {
+      let params = '';
+      if (this.businessUnits !== null) {
+        params = {
+          business_unit: this.businessUnits,
+        };
+      }
+      return params;
+    },
   },
   watch: {
-    async getOrders(ordersData) {
+    getOrders(ordersData) {
+      this.ordersExist = this.ordersAvailable(ordersData);
       this.busy = true;
-
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
       const currentOrders = this.orders;
       const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      const storeData = await this.updateOrders(newOrders, pagination);
-      const storedOrders = await this.fetchOrders();
-      return (this.orders = storedOrders[0].doc.data);
+      return (this.orders = newOrders);
     },
     getOrderStatuses(statusArray) {
       return (this.statusArray = statusArray);
     },
     bottom(bottom) {
-      if (bottom) {
+      const params = this.orderParams;
+      const payload = { page: this.nextPage, params };
+      if (bottom && this.ordersExist) {
         this.setOrders({
           page: this.nextPage,
+          params,
         });
       }
+    },
+    getSelectedBusinessUnits(units) {
+      this.orders = [];
+      this.setOrders({
+        page: 1,
+        params: { business_unit: units },
+      });
+      this.forceRerender();
+
+      return (this.businessUnits = units);
     },
   },
   created() {
@@ -208,8 +239,6 @@ export default {
       window.addEventListener('scroll', () => {
         this.bottom = this.bottomVisible();
       });
-
-      this.destroyPouchDB();
     }
   },
   mounted() {
@@ -220,11 +249,25 @@ export default {
   methods: {
     ...mapMutations({
       setOrdersObject: '$_orders/setOrdersObject',
+      setDBUpdatedStatus: 'setDBUpdatedStatus',
+      setOrderCount: 'setOrderCount',
     }),
     ...mapActions(['setOrders']),
     initialOrderRequest() {
       this.setOrders();
     },
+    forceRerender() {
+      this.rowComponentKey += 1;
+    },
+    ordersAvailable(orders) {
+      const data = orders.data;
+      let status = true;
+      if (data.length === 0) {
+        status = false;
+      }
+      return status;
+    },
+
     toggle(id) {
       const index = this.opened.indexOf(id);
       if (index > -1) {
@@ -236,63 +279,6 @@ export default {
     showBasedOnStatus(status) {
       const orderStatus = status.toLowerCase().trim();
       return this.statusArray.includes(orderStatus);
-    },
-    destroyPouchDB() {
-      this.ordersDB
-        .allDocs({ include_docs: true })
-        .then(allDocs => {
-          return allDocs.rows.map(row => {
-            // eslint-disable-next-line no-underscore-dangle
-            return { _id: row.id, _rev: row.doc._rev, _deleted: true };
-          });
-        })
-        .then(deleteDocs => {
-          return this.ordersDB.bulkDocs(deleteDocs);
-        });
-    },
-
-    saveOrders(orders) {
-      return this.ordersDB.post(orders, (err, res) => {
-        if (err) {
-          console.info('error creating new doc', err);
-        }
-        if (res) {
-          console.info('new doc created', res);
-        }
-      });
-    },
-    // eslint-disable-next-line require-await
-    async updateOrders(orders, pagination) {
-      const storedOrders = await this.fetchOrders(); // fetch all stored data from pouchDB
-      let rev = '';
-      let id = 1;
-      if (storedOrders.length > 0) {
-        // eslint-disable-next-line no-underscore-dangle
-        rev = `${storedOrders[0].doc._rev}`;
-        // eslint-disable-next-line no-underscore-dangle
-        id = `${storedOrders[0].id}`;
-      }
-      const storeData = {
-        data: orders,
-        pagination,
-        // eslint-disable-next-line no-underscore-dangle
-        _id: `${id}`,
-        _rev: `${rev}`,
-      };
-      try {
-        const res = await this.ordersDB.put(storeData);
-        return res.id;
-      } catch (error) {
-        return error;
-      }
-    },
-    async fetchOrders() {
-      const res = await this.ordersDB.allDocs({ include_docs: true });
-      return res.rows;
-    },
-    async fetchSingleDBInstance(ID) {
-      const res = await this.ordersDB.get(ID);
-      return res;
     },
     bottomVisible() {
       const scrollY = window.scrollY;

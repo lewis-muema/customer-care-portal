@@ -16,6 +16,9 @@ export default {
   setActionClass(state, val) {
     state.actionClass = val;
   },
+  setSelectedBusinessUnits(state, selectedBusinessUnits) {
+    state.selectedBusinessUnits = selectedBusinessUnits;
+  },
   setSearchState(state, searchState) {
     state.searchState = searchState;
   },
@@ -45,5 +48,8 @@ export default {
   },
   setOrderStatuses(state, val) {
     state.selectedStatus = val;
+  },
+  setDBUpdatedStatus(state, val) {
+    state.dbUpdated = val;
   },
 };

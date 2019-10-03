@@ -84,7 +84,21 @@ export default {
       const response = await axios.post(`${url}${endpoint}`, values, config);
       return response;
     } catch (error) {
-      return error.message;
+      return error.response;
+    }
+  },
+  async request_single_user({ state }, payload) {
+    const config = state.config;
+    const userType = payload.userType;
+    const userID = payload.userID;
+
+    const url = `${config.ADONIS_API}users/${userType}/${userID}`;
+    try {
+      const response = await axios.get(url);
+      const userDetails = response.data;
+      return userDetails;
+    } catch (error) {
+      return error.response;
     }
   },
   async request_single_order({ state }, orderNo) {
