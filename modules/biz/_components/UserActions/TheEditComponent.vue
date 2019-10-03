@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form id="edit-form" @submit.prevent="cancelOrder">
+    <form id="edit-form" @submit.prevent="editUser">
       edit
     </form>
   </div>

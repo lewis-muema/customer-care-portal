@@ -96,7 +96,15 @@
         </tr>
         <tr>
           <td>Rider amount</td>
-          <td>****ToFix****</td>
+          <td
+            v-html="
+              display_conditional_amounts(
+                orderDetails,
+                currencyConversions,
+                riderDetails.rider_cost,
+              )
+            "
+          ></td>
         </tr>
         <tr>
           <td>Insurance Amount</td>

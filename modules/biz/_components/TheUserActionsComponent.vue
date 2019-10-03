@@ -71,7 +71,7 @@
             :id="`error_holder_${copID}`"
           >
             <ul>
-              <li v-for="error in actionErrors" :key="error.index">
+              <li v-for="error in actionErrors" :key="error">
                 <b>{{ error }}</b>
               </li>
             </ul>
@@ -98,7 +98,7 @@
             role="tabpanel"
             v-if="showTab === `payment_${copID}`"
           >
-            payment
+            <ThePaymentComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -129,6 +129,7 @@ export default {
   components: {
     TheAgileComponent: () => import('./UserActions/TheAgileComponent'),
     TheEditComponent: () => import('./UserActions/TheEditComponent'),
+    ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
   },
   props: {
     user: {
@@ -145,7 +146,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['actionErrors', 'actionClass']),
+    ...mapState(['actionErrors', 'actionClass', 'userData']),
   },
   mounted() {
     this.copID = this.user.user_details.cop_id;

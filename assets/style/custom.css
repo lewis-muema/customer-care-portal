@@ -808,3 +808,11 @@ table {
   border: none;
   color: #ffff !important;
 }
+.loader {
+  color: #3c8dbc;
+  font-weight: 700;
+  font-size: 19px;
+}
+.select {
+  border: none;
+}

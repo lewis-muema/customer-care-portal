@@ -13,6 +13,7 @@ const config = {
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/riders/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
+    PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
@@ -29,6 +30,7 @@ const config = {
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/riders/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
+    PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
   },
   beta: {},
   production: {},
