@@ -125,8 +125,10 @@
       <li
         class="nav-item"
         v-if="
-          order.rider_details.vendor_type_id === 20 ||
-            order.rider_details.vendor_type_id === 25
+          (order.order_details.confirm_status > 0 &&
+            order.rider_details.vendor_type_id === 20) ||
+            (order.order_details.confirm_status > 0 &&
+              order.rider_details.vendor_type_id === 25)
         "
       >
         <a
@@ -271,7 +273,6 @@ export default {
   mounted() {
     this.orderNo = this.order.order_details.order_no;
     this.moreData = this.order.order_details;
-    console.log(this.order);
   },
   methods: {
     ...mapMutations({
