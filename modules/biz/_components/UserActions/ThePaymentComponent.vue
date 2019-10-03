@@ -258,7 +258,7 @@ export default {
         this.updateErrors(notification);
       }
     },
-    async submitPayment() {
+    submitPayment() {
       const notification = [];
       const actionClass = '';
 
