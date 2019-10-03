@@ -11,6 +11,7 @@
         <th>Loan</th>
         <th>Savings</th>
         <th>Status</th>
+        <th>Suspension Status</th>
       </tr>
     </thead>
     <tbody>
@@ -20,14 +21,19 @@
       <td>{{ this.riders_data.payments.city_name }}</td>
       <td>{{ this.get_carrier_type() }}</td>
       <td>
-        {{
-          (this.riders_data.payments.default_currency,
-          this.riders_data.payments.current_list.running_balance)
-        }}
+        {{ this.riders_data.payments.default_currency }}
+        {{ this.riders_data.running_bal }}
       </td>
-      <td>{{ this.riders_data.payments.rider_name }}</td>
-      <td>{{ this.riders_data.payments.rider_name }}</td>
-      <td>{{ this.riders_data.payments.rider_name }}</td>
+      <td>
+        {{ this.riders_data.payments.default_currency }}
+        {{ this.riders_data.payments.loan_list.running_balance }}
+      </td>
+      <td>
+        {{ this.riders_data.payments.default_currency }}
+        {{ this.riders_data.payments.savings_list.running_balance }}
+      </td>
+      <td>{{ this.riders_data.payments.rider_status }}</td>
+      <td>{{ this.get_suspension_status() }}</td>
     </tbody>
   </table>
 </template>
@@ -62,8 +68,21 @@ export default {
       }
     },
     get_carrier_type() {
+      console.log(this.riders_data);
       if (this.riders_data.payments.carrier_type === 1) {
         return 'Box';
+      }
+    },
+
+    get_suspension_status() {
+      if (this.riders_data.payments.rider_stat === 0) {
+        return 'Inactive';
+      }
+      if (this.riders_data.payments.rider_stat === 1) {
+        return 'Active';
+      }
+      if (this.riders_data.payments.rider_stat === 2) {
+        return 'Suspended';
       }
     },
   },

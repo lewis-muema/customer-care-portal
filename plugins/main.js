@@ -180,7 +180,7 @@ Vue.mixin({
           vendor_type: 1,
           photo: 'geoffrey.jpg',
           savings_bal: -40000,
-          rider_stat: 1,
+          rider_stat: 2,
           rider_name: 'Geoffrey Oloo',
           alloc_cop_id:
             '122,27,77,131,241,346,375,541,3,890,665,1517,1517,1364,1364,415,1603,1603,1687,415,415,1779,1603,1891,1891,1891,1979,1891,3137',
