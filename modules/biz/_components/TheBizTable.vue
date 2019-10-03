@@ -171,9 +171,4 @@ export default {
   padding: 0px;
   background-color: rgba(245, 245, 245, 0.56) !important;
 }
-.loader {
-  color: #3c8dbc;
-  font-weight: 700;
-  font-size: 19px;
-}
 </style>
