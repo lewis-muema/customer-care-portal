@@ -43,6 +43,18 @@
             class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
+            @click="viewTab('billing', copID)"
+            :id="`billing_${copID}`"
+          >
+            <span class="fa fa-fw fa-btc"></span>
+            Bill
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
             @click="viewTab('rider', copID)"
             :id="`rider_${copID}`"
           >
@@ -90,7 +102,7 @@
             role="tabpanel"
             v-if="showTab === `edit_${copID}`"
           >
-            <TheEditComponent :user="copID" />
+            <TheEditComponent :user="user" :permissions="permissions" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -99,6 +111,18 @@
             v-if="showTab === `payment_${copID}`"
           >
             <ThePaymentComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`billing_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `billing_${copID}`"
+          >
+            <TheBillingComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -130,6 +154,7 @@ export default {
     TheAgileComponent: () => import('./UserActions/TheAgileComponent'),
     TheEditComponent: () => import('./UserActions/TheEditComponent'),
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
+    TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
   },
   props: {
     user: {
@@ -147,6 +172,15 @@ export default {
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
+    currency() {
+      const currency = this.user.user_details.default_currency
+        ? this.user.user_details.default_currency
+        : 'KES';
+      return currency;
+    },
   },
   mounted() {
     this.copID = this.user.user_details.cop_id;
@@ -173,3 +207,36 @@ export default {
   },
 };
 </script>
+<style>
+.actions .v-select .vs__dropdown-menu {
+  margin-right: 16px;
+  width: 100%;
+  top: calc(100% - -3px);
+}
+.actions .v-select {
+  margin-left: 0;
+  border: none;
+  padding: 0;
+}
+
+.user-table tr:hover {
+  background: none !important;
+}
+.user-table td {
+  border: none;
+}
+.input-group-area {
+  width: 86%;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+.input-group-icon {
+  padding: 9px 12px;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+.table td {
+  padding: 0 5px;
+}
+.input-group .invalid-feedback {
+  border: none;
+}
+</style>
