@@ -64,9 +64,6 @@ export default {
     solarBase() {
       return this.config.SOLR_BASE;
     },
-    // isProduction() {
-    //   return this.$env.APP_ENV === 'production';
-    // },
     solarToken() {
       return this.$env.SOLR_JWT;
     },

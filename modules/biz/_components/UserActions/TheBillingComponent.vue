@@ -64,7 +64,7 @@
       <label for="" class="charge_commission--label">Charge Commission</label>
     </div>
     <button class="btn btn-primary action-button">
-      Bill
+      Process
     </button>
   </form>
 </template>
