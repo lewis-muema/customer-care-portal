@@ -12,7 +12,7 @@
       v-if="paymentMethods !== null"
       class="form"
     >
-      <table class="table payment-table">
+      <table class="table user-table">
         <tr>
           <td width="50%">
             <div class="form-group actions">
@@ -314,43 +314,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.vs__dropdown-toggle {
-  padding: 0;
-  color: #ccc;
-  margin-top: -7px;
-  padding-bottom: 8px;
-  margin-left: -14px;
-  margin-right: -15px;
-  border: none;
-}
-.actions .v-select .vs__dropdown-menu {
-  margin-right: 16px;
-  width: 91%;
-  background: red;
-}
-.actions .v-select {
-  margin-left: 0;
-  border: none;
-  padding: 0;
-}
-
-.payment-table tr:hover {
-  background: none !important;
-}
-.payment-table td {
-  border: none;
-}
-.input-group-area {
-  width: 83%;
-}
-.input-group-icon {
-  padding: 9px 12px;
-}
-.table td {
-  padding: 0 5px;
-}
-.input-group .invalid-feedback {
-  border: none;
-}
-</style>

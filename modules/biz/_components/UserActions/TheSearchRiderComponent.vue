@@ -1,16 +1,15 @@
 <template>
-  <td class="search-td">
-    <div class="Typeahead">
-      <i class="fa fa-spinner fa-spin" v-if="loading"></i>
-      <template v-else>
-        <i class="fa fa-search" @click="byPassSolrSearch()"></i>
-      </template>
-
+  <div :class="`col-md-6 user-search`">
+    <!-- <input name="nn" v-model="rider" /> -->
+    <div @click="trigger" :class="`trigger ${hideInput}`">
+      {{ riderDisplay }}
+    </div>
+    <div :class="`Typeahead form-group ${hide}`">
       <input
         type="text"
         class="Typeahead__input"
-        placeholder="Search for Order No/ Customer name/ User Phone"
         autocomplete="off"
+        :id="`${currentUser}_input`"
         v-model="query"
         @keydown.down="down"
         @keydown.up="up"
@@ -19,7 +18,7 @@
         @input="update"
         @blur="reset"
       />
-      <ul v-show="hasItems" @blur="reset">
+      <ul v-show="hasItems" @blur="reset" v-if="isProduction">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -27,31 +26,42 @@
           @mousemove="setActive($item)"
           :key="item.index"
         >
-          <span>
-            <strong>{{ item.order_no }}</strong>
+          <span class="tt-suggestion">
+            <p>
+              <strong>{{ item.rider_name }} | {{ item.phone_no }} </strong>
+            </p>
           </span>
-          <span>Client: {{ item.user_name }}</span>
-          <span>Client phone: {{ item.user_phone }}</span>
-          <span>Rider: {{ item.rider_name }}</span>
-          <span>Date: {{ getFormattedDate(item.date_time, 'LLLL') }}</span>
         </li>
       </ul>
+      <i class="fa fa-spinner fa-spin" v-if="loading"></i>
+      <template v-else>
+        <i class="fa fa-search" @click="byPassSolrSearch(currentUser)"></i>
+      </template>
     </div>
-  </td>
+  </div>
 </template>
-
 <script>
-import VueTypeahead from 'vue-typeahead';
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
+import VueTypeahead from 'vue-typeahead';
+
 export default {
+  name: 'TheSearchRiderComponent',
   extends: VueTypeahead,
+
   data() {
     return {
+      currentUser: 'rider',
       limit: 10,
       minChars: 1,
-      query: '',
-      order: null,
+      query: 'Sendy Bill',
+      rider: 0,
+      riderDisplay: '',
+      hide: '',
+      hideInput: 'hide',
+      solr: {
+        riders: 'RIDER_SEARCH',
+      },
     };
   },
   computed: {
@@ -61,57 +71,61 @@ export default {
       localStorage.setItem('query', this.query);
       return this.query;
     },
-    solarBase() {
-      return this.config.SOLR_BASE;
+    isProduction() {
+      return this.$env.APP_ENV !== 'production';
     },
-    // isProduction() {
-    //   return this.$env.APP_ENV === 'production';
-    // },
+    solarBase() {
+      const solrArray = this.solr;
+      const currentUser = 'riders';
+      const userSearch = solrArray[currentUser];
+      return this.config[userSearch];
+    },
     solarToken() {
       return this.$env.SOLR_JWT;
     },
     src() {
-      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=${this.solarToken}`;
+      const searchString = `${this.solarBase}select?q=(rider_name:*${this.query_string}*+OR+email:*${this.query_string}*+OR+phone_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=rider_id%20desc&jwt=${this.solarToken}`;
+      return searchString;
     },
   },
   methods: {
-    ...mapMutations({
-      updateSearchedOrder: 'setSearchedOrder',
-      updateSearchState: 'setSearchState',
-    }),
-    ...mapActions({
-      request_single_order: 'request_single_order',
-    }),
-    async byPassSolrSearch() {
-      this.updateSearchState(true);
-      const orderNo = localStorage.query;
-      await this.singleOrderRequest(orderNo);
-    },
-    async onHit(item) {
-      this.updateSearchState(true);
-      const orderNo = item.order_no;
-      await this.singleOrderRequest(orderNo);
-    },
-    async singleOrderRequest(orderNo) {
-      orderNo = orderNo.trim();
-      try {
-        const data = await this.request_single_order(orderNo);
-        this.updateSearchedOrder(data);
-        return (this.order = data);
-      } catch {
-        this.errors.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-      }
+    trigger() {
+      this.hideInput = 'hide';
+      this.hide = '';
     },
     prepareResponseData(data) {
       return data.response.docs;
     },
+    onHit(item) {
+      this.query = 'hapa';
+      this.hide = 'hide';
+      this.hideInput = '';
+      this.riderDisplay = `${item.rider_name} | ${item.phone_no}`;
+      this.$emit('riderID', item.rider_id);
+      return (this.rider = item.rider_id);
+    },
   },
 };
 </script>
-
 <style scoped>
+.trigger {
+  padding: 7px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #747d84;
+  width: 90%;
+  border-radius: 0.25rem;
+}
+.fa-search {
+  font-size: x-large;
+  vertical-align: text-top;
+  padding: 0;
+  color: #3c8dbc;
+  margin-top: 0;
+}
+.user-search {
+  padding: 0;
+}
 .Typeahead {
   position: relative;
 }
@@ -120,16 +134,11 @@ export default {
   font-size: 14px;
   color: #2c3e50;
   line-height: 1.42857143;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
-  -webkit-transition: border-color ease-in-out 0.15s,
-    -webkit-box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   font-weight: 300;
-  padding: 12px 26px;
-  border: none;
-  border-radius: 22px;
-  letter-spacing: 1px;
-  box-sizing: border-box;
+  padding: 8px 26px;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
 }
 .Typeahead__input:focus {
   border-color: 2px solid #0097cf;
@@ -143,8 +152,8 @@ export default {
 i {
   float: right;
   position: relative;
-  top: 16px;
-  right: 6px;
+  top: 0px;
+  left: 7px;
   opacity: 1;
 }
 ul {
@@ -162,6 +171,7 @@ li {
   padding: 6px 13px;
   border-bottom: 1px solid #ccc;
   cursor: pointer;
+  color: red;
 }
 li:first-child {
   border-top-left-radius: 4px;
@@ -174,14 +184,11 @@ li:last-child {
 }
 span {
   display: block;
-  color: #2c3e50;
+  color: #3b8bb9;
 }
 .active {
   background-color: #0097cf;
   color: #fff;
-}
-.active span {
-  color: white;
 }
 .name {
   font-weight: 700;
@@ -189,5 +196,8 @@ span {
 }
 .screen-name {
   font-style: italic;
+}
+.tt-suggestion {
+  border-bottom: 0;
 }
 </style>
