@@ -411,19 +411,6 @@ export default {
     },
   },
   methods: {
-    filter(array) {
-      const heroes = [
-        { name: 'Batman', franchise: 'DC' },
-        { name: 'Ironman', franchise: 'Marvel' },
-        { name: 'Thor', franchise: 'Marvel' },
-        { name: 'Superman', franchise: 'DC' },
-      ];
-
-      const marvelHeroes = heroes.filter(hero => {
-        console.log(hero.franchise, hero.franchise === 'Marvel');
-        return hero.franchise === 'Marvel';
-      });
-    },
     editUser() {
       const notification = [];
       const actionClass = '';
