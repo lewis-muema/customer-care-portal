@@ -17,10 +17,7 @@
           }"
         >
         </v-select>
-        <div
-          v-if="submitted && !$v.params.point.required"
-          class="invalid-feedback"
-        >
+        <div v-if="submitted && !$v.reason.required" class="invalid-feedback">
           Reallocation reason is required
         </div>
       </div>
