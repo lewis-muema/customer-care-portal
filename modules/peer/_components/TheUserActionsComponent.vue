@@ -54,7 +54,7 @@
             role="tabpanel"
             v-if="showTab === `bill_${userID}`"
           >
-            <TheBillingComponent />
+            <!-- <TheBillingComponent /> -->
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default {
   name: 'TheUserActionsComponent',
   components: {
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
-    TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
+    // TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
   },
   props: {
     user: {
