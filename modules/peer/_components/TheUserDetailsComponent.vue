@@ -43,7 +43,7 @@
           <TheStatementComponent
             :payments="payments"
             :user="userID"
-            :currency="userDetails.default_currency"
+            :currency="currency"
           />
         </div>
       </div>
@@ -70,18 +70,25 @@ export default {
       firstShow: false,
       firstActive: false,
       userID: null,
-      deliveryList: null,
-      userDetails: null,
       payments: null,
       showTab: `deliveries_${this.user.user_details.user_id}`,
     };
+  },
+  computed: {
+    deliveryList() {
+      return this.user.delivery_list;
+    },
+    details() {
+      return this.user.user_details;
+    },
+    currency() {
+      return this.details.default_currency ? this.details.default_currency : '';
+    },
   },
   mounted() {
     this.firstShow = 'show';
     this.firstActive = 'active';
     this.userID = this.user.user_details.user_id;
-    this.deliveryList = this.user.delivey_list;
-    this.userDetails = this.user.user_details;
     this.payments = this.user.payments;
   },
   methods: {

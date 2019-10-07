@@ -46,7 +46,7 @@
             role="tabpanel"
             v-if="showTab === `payment_${userID}`"
           >
-            pay
+            <ThePaymentComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -54,7 +54,7 @@
             role="tabpanel"
             v-if="showTab === `bill_${userID}`"
           >
-            bill
+            <TheBillingComponent />
           </div>
         </div>
       </div>
@@ -66,6 +66,10 @@ import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheUserActionsComponent',
+  components: {
+    ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
+    TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
+  },
   props: {
     user: {
       type: Object,
@@ -81,7 +85,16 @@ export default {
     };
   },
   computed: {
-    ...mapState(['actionErrors', 'actionClass']),
+    ...mapState(['actionErrors', 'actionClass', 'userData']),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
+    currency() {
+      const currency = this.user.user_details.default_currency
+        ? this.user.user_details.default_currency
+        : 'KES';
+      return currency;
+    },
   },
   mounted() {
     this.userID = this.user.user_details.user_id;
@@ -116,5 +129,36 @@ export default {
 }
 .buttons-tab {
   padding: 10px;
+}
+.actions .v-select .vs__dropdown-menu {
+  margin-right: 16px;
+  width: 100%;
+  top: calc(100% - -3px);
+}
+.actions .v-select {
+  margin-left: 0;
+  border: none;
+  padding: 0;
+}
+
+.user-table tr:hover {
+  background: none !important;
+}
+.user-table td {
+  border: none;
+}
+.input-group-area {
+  width: 86%;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+.input-group-icon {
+  padding: 9px 12px;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+.table td {
+  padding: 0 5px;
+}
+.input-group .invalid-feedback {
+  border: none;
 }
 </style>
