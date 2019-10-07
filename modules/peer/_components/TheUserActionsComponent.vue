@@ -54,7 +54,7 @@
             role="tabpanel"
             v-if="showTab === `bill_${userID}`"
           >
-            <TheBillingComponent />
+            <TheBillingComponent /> 
           </div>
         </div>
       </div>
