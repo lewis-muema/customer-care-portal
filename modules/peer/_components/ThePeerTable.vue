@@ -1,5 +1,9 @@
 <template>
-  <table id="peer_list" class="table  table-bordered table-hover">
+  <table
+    id="peer_list"
+    class="table  table-bordered table-hover"
+    :key="peerTable"
+  >
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -14,18 +18,20 @@
         <td colspan="5">Search to view User details.</td>
       </tr>
       <template v-else>
+        <tr v-if="details === null">
+          <i class="fa fa-spinner fa-spin loader"></i>
+        </tr>
         <tr
+          v-else
           @click="toggle('peer')"
           :class="{ opened: opened.includes('peer') }"
         >
           <td>{{ offset }}</td>
-          <td>{{ userDetails.user_name }}</td>
-          <td>{{ userDetails.user_email }}</td>
-          <td>{{ userDetails.user_phone }}</td>
+          <td>{{ details.user_name }}</td>
+          <td>{{ details.user_email }}</td>
+          <td>{{ details.user_phone }}</td>
           <td>
-            {{
-              getFormattedDate(userDetails.date_signed_up, 'hh.mm a DD/MM/YYYY')
-            }}
+            {{ getFormattedDate(details.date_signed_up, 'hh.mm a DD/MM/YYYY') }}
           </td>
         </tr>
         <tr v-if="opened.includes('peer')">
@@ -54,7 +60,8 @@
   </table>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+
 import TheUserActionsComponent from '~/modules/peer/_components/TheUserActionsComponent';
 import TheUserDetailsComponent from '~/modules/peer/_components/TheUserDetailsComponent';
 
@@ -69,30 +76,58 @@ export default {
       userID: null,
       user: null,
       userInfo: null,
-      userDetails: null,
+      details: {},
       opened: [],
       offset: 1,
       status: '',
       showClass: '',
+      peerTable: 0,
     };
   },
   computed: {
-    ...mapGetters(['getPeerUser']),
+    ...mapGetters(['getPeerUser', 'getUserActionSuccess']),
   },
   watch: {
     getPeerUser(user) {
+      this.singlePeerUserRequest(user, 'peer');
       return (this.userID = user);
+    },
+    getUserActionSuccess(status) {
+      const arr = [];
+      this.userInfo = null;
+      this.details = null;
+      const index = this.opened.indexOf('peer');
+      this.opened.splice(index, 1);
+      this.forceRerender();
+      this.updateSuccess(false);
+      this.updateClass('');
+      this.updateErrors(arr);
+      this.singlePeerUserRequest(this.userID, 'peer');
     },
   },
   mounted() {
-    this.singlePeerUserRequest(this.userID);
+    this.singlePeerUserRequest(this.userID, 'peer');
   },
   methods: {
-    singlePeerUserRequest(user) {
-      this.userDetails = this.peerUser.user_details;
-      this.userInfo = this.peerUser;
-
-      return (this.user = this.peerUser);
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
+    }),
+    ...mapActions({
+      request_single_user: 'request_single_user',
+    }),
+    async singlePeerUserRequest(user, userType) {
+      const payload = { userID: user, userType };
+      try {
+        const data = await this.request_single_user(payload);
+        this.details = data.user_details;
+        return (this.userInfo = data);
+      } catch {
+        this.errors.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+      }
     },
     toggle(id) {
       const index = this.opened.indexOf(id);
@@ -101,6 +136,9 @@ export default {
       } else {
         this.opened.push(id);
       }
+    },
+    forceRerender() {
+      this.peerTable += 1;
     },
   },
 };
