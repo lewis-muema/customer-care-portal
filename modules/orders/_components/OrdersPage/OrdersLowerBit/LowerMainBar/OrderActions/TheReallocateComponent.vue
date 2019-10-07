@@ -79,12 +79,38 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    reallocateOrder() {
+    async reallocateOrder() {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
         return;
       }
+      const notification = [];
+      let actionClass = '';
+
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'reallocate_order_cc',
+        apiKey: true,
+        params: {
+          order_no: this.orderNo,
+          action_id: 6,
+          reallocation_description: this.description,
+          reallocation_reason_id: this.reason,
+        },
+      };
+      try {
+        const data = await this.perform_order_action(payload);
+        notification.push(data.reason);
+        actionClass = this.display_order_action_notification(data.status);
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
