@@ -10,7 +10,7 @@
       id="reallocate-form"
       @submit.prevent="submitPayment"
       v-if="paymentMethods !== null"
-      class="form"
+      class="form col-md-8"
     >
       <table class="table user-table">
         <tr>
@@ -111,50 +111,6 @@
             </div>
           </td>
         </tr>
-        <tr>
-          <td>
-            <div class="form-group">
-              <input
-                type="text"
-                v-model="refName"
-                :id="refName"
-                name="refName"
-                placeholder="Name"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.refName.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.refName.required"
-                class="invalid-feedback"
-              >
-                Name is required
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
-              <input
-                type="text"
-                v-model="phone"
-                :id="phone"
-                name="phone"
-                placeholder="Phone"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.phone.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.phone.required"
-                class="invalid-feedback"
-              >
-                Phone number is required
-              </div>
-            </div>
-          </td>
-        </tr>
       </table>
 
       <button class="btn btn-primary action-button">
@@ -191,9 +147,7 @@ export default {
     paymentMethod: { required },
     amount: { required },
     refNo: { required },
-    phone: { required },
     narrative: { required },
-    refName: { required },
   },
   computed: {
     currency() {
@@ -269,8 +223,7 @@ export default {
         return;
       }
       const reverse = false;
-      const copID = this.user.user_details.cop_id;
-      const userID = 0;
+      const userID = this.user.user_details.user_id;
 
       const payload = {
         app: 'CUSTOMERS_APP',
@@ -285,16 +238,15 @@ export default {
             amount: this.amount,
             ref_no: this.refNo,
             pay_method: this.paymentMethod,
-            cop_id: copID,
-            user_id: userID,
+            cop_id: 0,
+            user_id: 18867,
             reason: this.narrative,
             currency: this.currency,
           },
-          request_id: `11211`,
+          request_id: `11222`,
           action_user: this.actionUser,
         },
       };
-
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
