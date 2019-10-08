@@ -90,7 +90,7 @@ export default {
       return this.query;
     },
     isProduction() {
-      return this.$env.APP_ENV !== 'production';
+      return this.$env.APP_ENV === 'production';
     },
     solarBase() {
       const solrArray = this.solr;
