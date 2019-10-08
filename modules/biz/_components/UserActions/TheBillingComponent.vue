@@ -1,8 +1,6 @@
 <template>
   <form id="reallocate-form" @submit.prevent="bill" class="form-inline">
-    <div :class="`col-md-6 user-search`">
-      <TheSearchRiderComponent @riderID="searchedRider" :category="category" />
-    </div>
+    <TheSearchRiderComponent @riderID="searchedRider" />
     <div class="form-group col-md-6 bill-div">
       <div class="input-group">
         <div class="input-group-icon">
@@ -104,7 +102,6 @@ export default {
       minChars: 1,
       submitted: false,
       query: '',
-      category: 'billing',
       solr: {
         riders: 'RIDER_SEARCH',
       },

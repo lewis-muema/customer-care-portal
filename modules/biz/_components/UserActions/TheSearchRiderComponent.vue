@@ -1,5 +1,6 @@
 <template>
-  <span>
+  <div :class="`col-md-6 user-search`">
+    <!-- <input name="nn" v-model="rider" /> -->
     <div @click="trigger" :class="`trigger ${hideInput}`">
       {{ riderDisplay }}
     </div>
@@ -10,7 +11,6 @@
         autocomplete="off"
         :id="`${currentUser}_input`"
         v-model="query"
-        :placeholder="placeholder"
         @keydown.down="down"
         @keydown.up="up"
         @keydown.enter="hit"
@@ -38,7 +38,7 @@
         <i class="fa fa-search" @click="byPassSolrSearch(currentUser)"></i>
       </template>
     </div>
-  </span>
+  </div>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
@@ -48,18 +48,13 @@ import VueTypeahead from 'vue-typeahead';
 export default {
   name: 'TheSearchRiderComponent',
   extends: VueTypeahead,
-  props: {
-    category: {
-      type: String,
-      required: true,
-    },
-  },
+
   data() {
     return {
       currentUser: 'rider',
       limit: 10,
       minChars: 1,
-      query: this.category === 'billing' ? 'Sendy Bill' : '',
+      query: 'Sendy Bill',
       rider: 0,
       riderDisplay: '',
       hide: '',
@@ -71,9 +66,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    placeholder() {
-      return this.category === 'billing' ? '' : 'Select Rider';
-    },
+
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
@@ -95,7 +88,6 @@ export default {
       return searchString;
     },
   },
-
   methods: {
     trigger() {
       this.hideInput = 'hide';
