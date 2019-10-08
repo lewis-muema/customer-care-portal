@@ -94,7 +94,7 @@
             role="tabpanel"
             v-if="showTab === `agile_${copID}`"
           >
-            <TheAgileComponent :user="copID" />
+            <TheAgileComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -130,7 +130,7 @@
             role="tabpanel"
             v-if="showTab === `rider_${copID}`"
           >
-            rider
+            <TheRiderComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -138,7 +138,7 @@
             role="tabpanel"
             v-if="showTab === `invoice_${copID}`"
           >
-            invoice
+            <TheInvoiceComponent :user="user" :session="userData" />
           </div>
         </div>
       </div>
@@ -155,6 +155,8 @@ export default {
     TheEditComponent: () => import('./UserActions/TheEditComponent'),
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
+    TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
+    TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
   },
   props: {
     user: {
@@ -226,7 +228,7 @@ export default {
   border: none;
 }
 .input-group-area {
-  width: 86%;
+  width: 85%;
   border-radius: 0 0.25rem 0.25rem 0;
 }
 .input-group-icon {
@@ -238,5 +240,8 @@ export default {
 }
 .input-group .invalid-feedback {
   border: none;
+}
+.user-search {
+  padding: 0;
 }
 </style>
