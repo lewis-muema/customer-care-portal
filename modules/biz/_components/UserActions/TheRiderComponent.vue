@@ -69,7 +69,6 @@ export default {
       return (this.rider = riderID);
     },
     async allocateRider() {
-      console.log('rider', this.rider);
       if (this.rider === null) {
         this.hide = '';
         return;
