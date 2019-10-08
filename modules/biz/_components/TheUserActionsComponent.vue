@@ -7,18 +7,6 @@
             class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
-            @click="viewTab('agile', copID)"
-            :id="`agile_${copID}`"
-          >
-            <span class="fa fa-fw fa-thumb-tack"></span>
-            Agile
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link action-list"
-            data-toggle="tab"
-            aria-expanded="false"
             @click="viewTab('edit', copID)"
             :id="`edit_${copID}`"
           >
@@ -90,14 +78,6 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`agile_${copID}`"
-            role="tabpanel"
-            v-if="showTab === `agile_${copID}`"
-          >
-            <TheAgileComponent :user="user" :session="userData" />
-          </div>
-          <div
-            :class="`tab-pane fade ${show} ${active}`"
             :id="`edit_${copID}`"
             role="tabpanel"
             v-if="showTab === `edit_${copID}`"
@@ -151,7 +131,6 @@ import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 export default {
   name: 'TheUserActionsComponent',
   components: {
-    TheAgileComponent: () => import('./UserActions/TheAgileComponent'),
     TheEditComponent: () => import('./UserActions/TheEditComponent'),
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
