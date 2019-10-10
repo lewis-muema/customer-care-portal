@@ -117,7 +117,7 @@ export default {
       const css = `active-${status}`;
       $(`#${element}`).toggleClass(css);
       const active = this.checkActive();
-      const selectedStatus = ['cancelled', 'delivered'];
+      const selectedStatus = [];
       const activeStatuses = selectedStatus.concat(active);
 
       this.updateOrderStatuses(activeStatuses);

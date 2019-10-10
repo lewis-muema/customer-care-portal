@@ -19,6 +19,9 @@ export default {
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;
   },
+  setSelectedCities(state, selectedCities) {
+    state.selectedCities = selectedCities;
+  },
   setSearchState(state, searchState) {
     state.searchState = searchState;
   },
