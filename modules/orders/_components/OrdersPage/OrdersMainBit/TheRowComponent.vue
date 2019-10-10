@@ -18,9 +18,8 @@
         <div id="initial_load_box">Requesting for orders ...</div>
       </td>
     </tr>
-
     <template
-      v-for="order in orders"
+      v-for="(order, index) in orders"
       :class="determineOrderColor(order.time_of_delivery, order.push_order)"
     >
       <tr
@@ -29,7 +28,7 @@
           ({ opened: opened.includes(order.order_no) },
           determineOrderColor(order.time_of_delivery, order.push_order))
         "
-        :key="`main_${order.order_no}`"
+        :key="`main_${index}`"
       >
         <td>
           <span
@@ -127,16 +126,23 @@
       <tr
         class="order_row_home_lower"
         v-if="opened.includes(order.order_no)"
-        :key="`details_${order.order_no}`"
+        :key="`details_${index}`"
         :id="`child_row_${order.order_no}`"
       >
         <TheLowerSlideComponent :orderno="order.order_no" />
       </tr>
     </template>
+    <tr v-if="!returned">
+      <td colspan="9">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-spin loader"></i>
+        </div>
+      </td>
+    </tr>
     <tr v-if="!ordersExist">
       <td colspan="9">
         <div class="alert alert-info text-center">
-          <strong>There are no more orders in this category</strong>
+          <strong>{{ msg }}</strong>
         </div>
       </td>
     </tr>
@@ -170,6 +176,8 @@ export default {
       statusArray: null,
       opened: [],
       cities: null,
+      msg: '',
+      returned: false,
     };
   },
   computed: {
@@ -205,7 +213,7 @@ export default {
   watch: {
     getOrders(ordersData) {
       this.ordersExist = this.ordersAvailable(ordersData);
-      this.busy = true;
+      this.returned = true;
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
       const currentOrders = this.orders;
@@ -229,6 +237,7 @@ export default {
     bottom(bottom) {
       const params = this.isEmpty(this.params) ? '' : this.params;
       if (bottom && this.ordersExist) {
+        this.returned = false;
         this.setOrders({
           page: this.nextPage,
           params,
@@ -236,9 +245,16 @@ export default {
       }
     },
     getSelectedBusinessUnits(units) {
+      console.log('units', typeof units);
       this.orders = [];
       this.businessUnits = units;
-      this.sendRequest(this.params);
+      this.ordersExist = false;
+      this.msg = 'There are no orders fitting these criteria';
+      if (!this.isEmpty(units)) {
+        this.sendRequest(this.params);
+        this.ordersExist = true;
+        this.msg = '';
+      }
       return (this.businessUnits = units);
     },
   },
@@ -272,6 +288,7 @@ export default {
       let status = true;
       if (data.length === 0) {
         status = false;
+        this.msg = 'There are no more orders in this category';
       }
       return status;
     },
