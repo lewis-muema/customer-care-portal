@@ -30,7 +30,6 @@
           determineOrderColor(order.time_of_delivery, order.push_order))
         "
         :key="`main_${order.order_no}`"
-        v-show="showBasedOnStatus(order.order_status)"
       >
         <td>
           <span
@@ -168,14 +167,9 @@ export default {
       show: false,
       businessUnits: null,
       rowComponentKey: 0,
-      statusArray: [
-        'pending',
-        'confirmed',
-        'transit',
-        'cancelled',
-        'delivered',
-      ],
+      statusArray: null,
       opened: [],
+      cities: null,
     };
   },
   computed: {
@@ -183,17 +177,27 @@ export default {
       'getOrders',
       'getOrderStatuses',
       'getSelectedBusinessUnits',
+      'getSelectedCities',
     ]),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
     },
-    orderParams() {
-      let params = '';
-      if (this.businessUnits !== null) {
-        params = {
-          business_unit: this.businessUnits,
-        };
+
+    params() {
+      const city = this.cities;
+      const business_unit = this.businessUnits;
+      const status = this.statusArray;
+
+      const params = {
+        business_unit,
+        status,
+        city,
+      };
+      for (const param in params) {
+        if (params[param] === null || params[param] === undefined) {
+          delete params[param];
+        }
       }
       return params;
     },
@@ -211,11 +215,19 @@ export default {
       return (this.orders = newOrders);
     },
     getOrderStatuses(statusArray) {
+      this.orders = [];
+      this.statusArray = statusArray;
+      this.sendRequest(this.params);
       return (this.statusArray = statusArray);
     },
+    getSelectedCities(cities) {
+      this.orders = [];
+      this.cities = cities;
+      this.sendRequest(this.params);
+      return (this.cities = cities);
+    },
     bottom(bottom) {
-      const params = this.orderParams;
-      const payload = { page: this.nextPage, params };
+      const params = this.isEmpty(this.params) ? '' : this.params;
       if (bottom && this.ordersExist) {
         this.setOrders({
           page: this.nextPage,
@@ -225,12 +237,8 @@ export default {
     },
     getSelectedBusinessUnits(units) {
       this.orders = [];
-      this.setOrders({
-        page: 1,
-        params: { business_unit: units },
-      });
-      this.forceRerender();
-
+      this.businessUnits = units;
+      this.sendRequest(this.params);
       return (this.businessUnits = units);
     },
   },
@@ -339,6 +347,27 @@ export default {
         this.orders.unshift(pushobj);
       }
     },
+    sendRequest(payload) {
+      const params = this.isEmpty(payload) ? '' : payload;
+      this.setOrders({
+        page: 1,
+        params,
+      });
+      this.forceRerender();
+    },
+    isEmpty(obj) {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return false;
+        }
+      }
+      return true;
+    },
   },
 };
 </script>
+<style scoped>
+.label {
+  text-transform: capitalize;
+}
+</style>

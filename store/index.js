@@ -36,6 +36,7 @@ export default {
       searchedPeerUser: null,
       searchedRider: null,
       selectedBusinessUnits: null,
+      selectedCities: null,
       dbUpdated: false,
       actionSuccess: false,
       searchedUser: '',

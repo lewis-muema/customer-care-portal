@@ -43,6 +43,9 @@ export default {
   getSelectedBusinessUnits(state) {
     return state.selectedBusinessUnits;
   },
+  getSelectedCities(state) {
+    return state.selectedCities;
+  },
   getDBUpdatedStatus(state) {
     return state.dbUpdated;
   },
