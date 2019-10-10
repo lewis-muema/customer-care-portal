@@ -114,8 +114,8 @@ export default {
         for (const key in this.units) {
           this.businessUnits.push(this.units[key].abbr);
         }
-        this.printValues();
       }
+      this.printValues();
     },
     updateCheckall() {
       if (this.businessUnits.length === this.unitsdata.length) {
