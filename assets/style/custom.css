@@ -769,6 +769,8 @@ table {
 }
 .reorganize {
   width: 11%;
+  color: #fff;
+  cursor: pointer;
 }
 .search-window {
   margin-top: 16px;

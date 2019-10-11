@@ -186,6 +186,7 @@ export default {
       'getOrderStatuses',
       'getSelectedBusinessUnits',
       'getSelectedCities',
+      'getReorganizeStatus',
     ]),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
@@ -234,6 +235,11 @@ export default {
       this.sendRequest(this.params);
       return (this.cities = cities);
     },
+    getReorganizeStatus(status) {
+      this.orders = [];
+      this.sendRequest(this.params);
+      this.updateReorganizeStatus(false);
+    },
     bottom(bottom) {
       const params = this.isEmpty(this.params) ? '' : this.params;
       if (bottom && this.ordersExist) {
@@ -245,7 +251,6 @@ export default {
       }
     },
     getSelectedBusinessUnits(units) {
-      console.log('units', typeof units);
       this.orders = [];
       this.businessUnits = units;
       this.ordersExist = false;
@@ -275,6 +280,7 @@ export default {
       setOrdersObject: '$_orders/setOrdersObject',
       setDBUpdatedStatus: 'setDBUpdatedStatus',
       setOrderCount: 'setOrderCount',
+      updateReorganizeStatus: 'setReorganizeStatus',
     }),
     ...mapActions(['setOrders']),
     initialOrderRequest() {
