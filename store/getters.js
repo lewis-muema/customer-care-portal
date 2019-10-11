@@ -55,4 +55,7 @@ export default {
   getReorganizeStatus(state) {
     return state.reorganizeStatus;
   },
+  getOrderCount(state) {
+    return state.orderCount;
+  },
 };

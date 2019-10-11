@@ -40,6 +40,7 @@ export default {
       dbUpdated: false,
       actionSuccess: false,
       reorganizeStatus: false,
+      orderCount: 0,
       searchedUser: '',
       userData: {},
       baseUrl,

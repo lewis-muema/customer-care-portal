@@ -61,4 +61,7 @@ export default {
   setReorganizeStatus(state, val) {
     state.reorganizeStatus = val;
   },
+  setOrderCount(state, val) {
+    state.orderCount = val;
+  },
 };

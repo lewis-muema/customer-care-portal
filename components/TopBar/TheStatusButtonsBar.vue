@@ -6,7 +6,11 @@
       @click="toggle_show('pending')"
     >
       <label id="pending_orders">
-        {{ activeArray.includes('pending') ? objectLength(pendingOrders) : 0 }}
+        {{
+          activeArray.includes('pending')
+            ? pendingCount + objectLength(pendingOrders)
+            : 0
+        }}
       </label>
       Pending
     </span>
@@ -19,7 +23,9 @@
     >
       <label id="confirmed_orders">
         {{
-          activeArray.includes('confirmed') ? objectLength(confirmedOrders) : 0
+          activeArray.includes('confirmed')
+            ? confirmedCount + objectLength(confirmedOrders)
+            : 0
         }}
       </label>
       Confirmed
@@ -32,14 +38,18 @@
       @click="toggle_show('transit')"
     >
       <label id="transit_orders">
-        {{ activeArray.includes('transit') ? objectLength(transitOrders) : 0 }}
+        {{
+          activeArray.includes('transit')
+            ? transitCount + objectLength(transitOrders)
+            : 0
+        }}
       </label>
       In Transit
     </span>
   </td>
 </template>
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheStatusButtonsBar',
@@ -56,10 +66,15 @@ export default {
       transit_show: 1,
       request_id_init: null,
       nnn: this.orders,
+      count: null,
+      pendingCount: 0,
+      confirmedCount: 0,
+      transitCount: 0,
       activeArray: ['pending', 'confirmed', 'transit'],
     };
   },
   computed: {
+    ...mapGetters(['getOrderCount']),
     allOrders() {
       const data = this.orders;
       return data;
@@ -78,6 +93,15 @@ export default {
       return this.allOrders.filter(el => {
         return el.order_status.toLowerCase() === 'in transit';
       });
+    },
+  },
+  watch: {
+    getOrderCount(count) {
+      this.pendingCount = count !== null ? count.pending : this.pendingCount;
+      this.confirmedCount =
+        count !== null ? count.confirmed : this.confirmedCount;
+      this.transitCount = count !== null ? count.transit : this.transitCount;
+      return (this.count = count);
     },
   },
   methods: {
@@ -113,6 +137,7 @@ export default {
       return activeStatus;
     },
     toggle_show(status) {
+      this.orders = [];
       const element = `${status}_count`;
       const css = `active-${status}`;
       $(`#${element}`).toggleClass(css);
