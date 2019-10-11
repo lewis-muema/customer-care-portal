@@ -39,6 +39,7 @@ export default {
       selectedCities: null,
       dbUpdated: false,
       actionSuccess: false,
+      reorganizeStatus: false,
       searchedUser: '',
       userData: {},
       baseUrl,

@@ -52,4 +52,7 @@ export default {
   getUserActionSuccess(state) {
     return state.actionSuccess;
   },
+  getReorganizeStatus(state) {
+    return state.reorganizeStatus;
+  },
 };

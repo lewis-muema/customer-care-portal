@@ -58,4 +58,7 @@ export default {
   setUserActionSuccess(state, val) {
     state.actionSuccess = val;
   },
+  setReorganizeStatus(state, val) {
+    state.reorganizeStatus = val;
+  },
 };
