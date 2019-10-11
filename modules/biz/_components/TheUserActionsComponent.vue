@@ -7,18 +7,6 @@
             class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
-            @click="viewTab('agile', copID)"
-            :id="`agile_${copID}`"
-          >
-            <span class="fa fa-fw fa-thumb-tack"></span>
-            Agile
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link action-list"
-            data-toggle="tab"
-            aria-expanded="false"
             @click="viewTab('edit', copID)"
             :id="`edit_${copID}`"
           >
@@ -90,14 +78,6 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`agile_${copID}`"
-            role="tabpanel"
-            v-if="showTab === `agile_${copID}`"
-          >
-            <TheAgileComponent :user="copID" />
-          </div>
-          <div
-            :class="`tab-pane fade ${show} ${active}`"
             :id="`edit_${copID}`"
             role="tabpanel"
             v-if="showTab === `edit_${copID}`"
@@ -130,7 +110,7 @@
             role="tabpanel"
             v-if="showTab === `rider_${copID}`"
           >
-            rider
+            <TheRiderComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -138,7 +118,7 @@
             role="tabpanel"
             v-if="showTab === `invoice_${copID}`"
           >
-            invoice
+            <TheInvoiceComponent :user="user" :session="userData" />
           </div>
         </div>
       </div>
@@ -151,10 +131,11 @@ import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 export default {
   name: 'TheUserActionsComponent',
   components: {
-    TheAgileComponent: () => import('./UserActions/TheAgileComponent'),
     TheEditComponent: () => import('./UserActions/TheEditComponent'),
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
+    TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
+    TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
   },
   props: {
     user: {
@@ -226,7 +207,7 @@ export default {
   border: none;
 }
 .input-group-area {
-  width: 86%;
+  width: 85%;
   border-radius: 0 0.25rem 0.25rem 0;
 }
 .input-group-icon {
@@ -238,5 +219,8 @@ export default {
 }
 .input-group .invalid-feedback {
   border: none;
+}
+.user-search {
+  padding: 0;
 }
 </style>

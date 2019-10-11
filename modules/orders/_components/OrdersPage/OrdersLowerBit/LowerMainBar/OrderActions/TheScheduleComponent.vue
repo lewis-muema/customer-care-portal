@@ -1,20 +1,21 @@
 <template>
   <div>
-    <form id="dispatch-form" @submit.prevent="setAsReturn">
+    <form id="dispatch-form" @submit.prevent="rescheduleOrder">
       <div class="form-group">
-        <datetime
-          format="YYYY-MM-DD H:i:s"
-          width="300px"
+        <VueCtkDateTimePicker
+          class="pick-delivery-docs-date form-control"
           v-model="time"
-          :id="`schedule_time_${orderNo}`"
-          name="time"
-          placeholder="2015-12-20 15:15:15"
-          class="form-control  proximity-point"
+          formatted="YYYY-MM-DD HH:mm:00"
+          format="YYYY-MM-DD HH:mm:00 "
+          output-format="YYYY-MM-DD HH:mm:00"
+          label="Schedule Date"
+          hint=""
+          :no-header="true"
+          input-size="sm"
           :class="{
             'is-invalid': submitted && $v.time.$error,
           }"
-        >
-        </datetime>
+        />
         <div v-if="submitted && !$v.time.required" class="invalid-feedback">
           Scheduled time is required
         </div>
@@ -53,7 +54,6 @@ import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TheScheduleComponent',
-  components: { datetime },
   props: {
     order: {
       type: Object,
@@ -84,16 +84,15 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    setAsReturn() {
+    async rescheduleOrder() {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
         return;
       }
 
-      const currentDate = moment().toDate();
       const notification = [];
-      const actionClass = '';
+      let actionClass = '';
 
       const payload = {
         app: 'ORDERS_APP',
@@ -102,20 +101,53 @@ export default {
         params: {
           order_no: this.orderNo,
           action_id: 6,
-          date_time: this.scheduleTime,
-          reallocation_description: this.scheduleDesription,
-          reallocation_reason_id: 1,
+          date_time: this.time,
         },
       };
+      try {
+        const data = await this.perform_order_action(payload);
+        notification.push(data.reason);
+        actionClass = this.display_order_action_notification(data.status);
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
+//
 </script>
+
 <style scoped>
-.datetime-picker {
-  width: 100% !important;
+.pick-delivery-docs-date {
+  margin-right: 1%;
+  height: 45px;
+  border-style: solid;
+  border-width: 0.2px;
+  border-color: #cccccc;
+  padding-left: 0;
 }
-input[data-v-4bd11526] {
-  height: 40px !important;
+.header-picker[data-v-6d49f11d] {
+  display: none !important;
+}
+datepicker-controls {
+  background: #3c8dbc !important;
+}
+.header-picker {
+  padding: 0 !important;
+  background-color: #fff !important;
+  display: none !important;
+}
+.datetimepicker .datepicker {
+  min-width: 372px !important;
+  width: 376px !important;
+}
+textarea.form-control {
+  height: auto;
+  width: 98%;
 }
 </style>

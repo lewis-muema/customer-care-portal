@@ -18,9 +18,8 @@
         <div id="initial_load_box">Requesting for orders ...</div>
       </td>
     </tr>
-
     <template
-      v-for="order in orders"
+      v-for="(order, index) in orders"
       :class="determineOrderColor(order.time_of_delivery, order.push_order)"
     >
       <tr
@@ -29,8 +28,7 @@
           ({ opened: opened.includes(order.order_no) },
           determineOrderColor(order.time_of_delivery, order.push_order))
         "
-        :key="`main_${order.order_no}`"
-        v-show="showBasedOnStatus(order.order_status)"
+        :key="`main_${index}`"
       >
         <td>
           <span
@@ -128,16 +126,23 @@
       <tr
         class="order_row_home_lower"
         v-if="opened.includes(order.order_no)"
-        :key="`details_${order.order_no}`"
+        :key="`details_${index}`"
         :id="`child_row_${order.order_no}`"
       >
         <TheLowerSlideComponent :orderno="order.order_no" />
       </tr>
     </template>
+    <tr v-if="!returned">
+      <td colspan="9">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-spin loader"></i>
+        </div>
+      </td>
+    </tr>
     <tr v-if="!ordersExist">
       <td colspan="9">
         <div class="alert alert-info text-center">
-          <strong>There are no more orders in this category</strong>
+          <strong>{{ msg }}</strong>
         </div>
       </td>
     </tr>
@@ -168,14 +173,11 @@ export default {
       show: false,
       businessUnits: null,
       rowComponentKey: 0,
-      statusArray: [
-        'pending',
-        'confirmed',
-        'transit',
-        'cancelled',
-        'delivered',
-      ],
+      statusArray: null,
       opened: [],
+      cities: null,
+      msg: '',
+      returned: false,
     };
   },
   computed: {
@@ -183,17 +185,27 @@ export default {
       'getOrders',
       'getOrderStatuses',
       'getSelectedBusinessUnits',
+      'getSelectedCities',
     ]),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
     },
-    orderParams() {
-      let params = '';
-      if (this.businessUnits !== null) {
-        params = {
-          business_unit: this.businessUnits,
-        };
+
+    params() {
+      const city = this.cities;
+      const business_unit = this.businessUnits;
+      const status = this.statusArray;
+
+      const params = {
+        business_unit,
+        status,
+        city,
+      };
+      for (const param in params) {
+        if (params[param] === null || params[param] === undefined) {
+          delete params[param];
+        }
       }
       return params;
     },
@@ -201,7 +213,7 @@ export default {
   watch: {
     getOrders(ordersData) {
       this.ordersExist = this.ordersAvailable(ordersData);
-      this.busy = true;
+      this.returned = true;
       const currentPage = ordersData.pagination.page;
       this.nextPage = currentPage + 1;
       const currentOrders = this.orders;
@@ -211,12 +223,21 @@ export default {
       return (this.orders = newOrders);
     },
     getOrderStatuses(statusArray) {
+      this.orders = [];
+      this.statusArray = statusArray;
+      this.sendRequest(this.params);
       return (this.statusArray = statusArray);
     },
+    getSelectedCities(cities) {
+      this.orders = [];
+      this.cities = cities;
+      this.sendRequest(this.params);
+      return (this.cities = cities);
+    },
     bottom(bottom) {
-      const params = this.orderParams;
-      const payload = { page: this.nextPage, params };
+      const params = this.isEmpty(this.params) ? '' : this.params;
       if (bottom && this.ordersExist) {
+        this.returned = false;
         this.setOrders({
           page: this.nextPage,
           params,
@@ -224,13 +245,16 @@ export default {
       }
     },
     getSelectedBusinessUnits(units) {
+      console.log('units', typeof units);
       this.orders = [];
-      this.setOrders({
-        page: 1,
-        params: { business_unit: units },
-      });
-      this.forceRerender();
-
+      this.businessUnits = units;
+      this.ordersExist = false;
+      this.msg = 'There are no orders fitting these criteria';
+      if (!this.isEmpty(units)) {
+        this.sendRequest(this.params);
+        this.ordersExist = true;
+        this.msg = '';
+      }
       return (this.businessUnits = units);
     },
   },
@@ -264,6 +288,7 @@ export default {
       let status = true;
       if (data.length === 0) {
         status = false;
+        this.msg = 'There are no more orders in this category';
       }
       return status;
     },
@@ -339,6 +364,27 @@ export default {
         this.orders.unshift(pushobj);
       }
     },
+    sendRequest(payload) {
+      const params = this.isEmpty(payload) ? '' : payload;
+      this.setOrders({
+        page: 1,
+        params,
+      });
+      this.forceRerender();
+    },
+    isEmpty(obj) {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return false;
+        }
+      }
+      return true;
+    },
   },
 };
 </script>
+<style scoped>
+.label {
+  text-transform: capitalize;
+}
+</style>
