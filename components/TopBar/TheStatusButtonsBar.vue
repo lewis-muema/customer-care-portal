@@ -65,7 +65,7 @@ export default {
       confirmed_show: 1,
       transit_show: 1,
       request_id_init: null,
-      nnn: this.orders,
+      orderDetails: this.orders,
       count: null,
       pendingCount: 0,
       confirmedCount: 0,
@@ -76,7 +76,7 @@ export default {
   computed: {
     ...mapGetters(['getOrderCount']),
     allOrders() {
-      const data = this.orders;
+      const data = this.orderDetails;
       return data;
     },
     pendingOrders() {
@@ -137,7 +137,7 @@ export default {
       return activeStatus;
     },
     toggle_show(status) {
-      this.orders = [];
+      this.orderDetails = [];
       const element = `${status}_count`;
       const css = `active-${status}`;
       $(`#${element}`).toggleClass(css);

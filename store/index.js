@@ -17,6 +17,7 @@ const apix = new Apix({
     { name: 'orders', url: 'orders' },
     { name: 'exchangeRates', url: `exchange-rates` },
     { name: 'businessUnits', url: `business-units` },
+    { name: 'cities', url: `cities` },
   ],
 });
 const baseUrl = process.env.baseUrl;
