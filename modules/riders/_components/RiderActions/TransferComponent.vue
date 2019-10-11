@@ -1,29 +1,68 @@
 <template>
   <div>
-    <form id="reallocate-form" @submit.prevent="edit" class="form">
+    <form id="reallocate-form" @submit.prevent="savingsTransfer" class="form">
       <table class="table user-table">
+        <tr>
+          <td>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-icon">
+                  <span>{{ currency }}</span>
+                </div>
+                <div class="input-group-area">
+                  <input
+                    type="text"
+                    v-model="amount"
+                    :id="`amount`"
+                    name="amount"
+                    placeholder="Amount"
+                    class="form-control"
+                    :class="{
+                      'is-invalid': submitted && $v.amount.$error,
+                    }"
+                  />
+                </div>
+                <div
+                  v-if="submitted && !$v.amount.required"
+                  class="invalid-feedback"
+                >
+                  Amount is Required
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <input
+                type="text"
+                v-model="narrative"
+                :id="narrative"
+                name="narrative"
+                placeholder="Narrative"
+                class="form-control"
+                :class="{
+                  'is-invalid': submitted && $v.narrative.$error,
+                }"
+              />
+              <div
+                v-if="submitted && !$v.narrative.required"
+                class="invalid-feedback"
+              >
+                Narrrative is Required
+              </div>
+            </div>
+          </td>
+        </tr>
         <tr>
           <td>
             <div class="form-group actions">
               <select
-                name="suspension"
-                id="suspension"
+                name="transfer"
+                id="transfermoney"
                 class="form-control proximity point"
               >
-                <option :value="1"> Suspend </option>
-                <option :value="2"> Deactivate </option>
-              </select>
-            </div>
-          </td>
-          <td>
-            <div class="form-group actions">
-              <select
-                name="exclusitivity"
-                id="exclusitivity"
-                class="form-control proximity point"
-              >
-                <option :value="1"> Dedicated</option>
-                <option :value="2"> Open </option>
+                <option :value="1"> Savings to Current</option>
+                <option :value="2"> Current to Savings</option>
               </select>
             </div>
           </td>
@@ -42,7 +81,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 
 export default {
-  name: 'EditComponent',
+  name: 'TransferComponent',
   props: {
     user: {
       type: Object,
@@ -51,8 +90,15 @@ export default {
   },
   data() {
     return {
+      amount: '',
+      narrative: '',
+      submitted: false,
       //   options: ['Savings to Current', 'Current to Savings'],
     };
+  },
+  validations: {
+    amount: { required },
+    narrative: { required },
   },
   computed: {
     currency() {
@@ -63,9 +109,6 @@ export default {
     },
     actionUser() {
       return this.session.payload.data.name;
-    },
-    permissions() {
-      return JSON.parse(this.userData.payload.data.privilege);
     },
   },
   methods: {
@@ -88,11 +131,7 @@ export default {
         this.updateErrors(notification);
       }
     },
-
-    // determinePayMethod() {
-    //     if(this.permissions)
-    // }
-    async edit() {
+    async savingsTransfer() {
       const notification = [];
       let actionClass = '';
 
@@ -101,7 +140,7 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-      const riderID = this.user.payments.rider_id;
+      const riderID = this.user.payments.cop_id;
       const userID = 0;
 
       const payload = {
@@ -111,13 +150,19 @@ export default {
         params: {
           channel: 'rider_team',
           data_set: 'rt_actions',
-          action_id: 2,
+          action_id: 1,
           action_data: {
+            pay_out: true,
+            pay_frommpesa: false,
             rider_id: riderID,
-            rider_stat: stat,
-            exclusivity_status: strict_allocation,
+            loan_type: 1,
+            amount: this.amount,
+            narrative: this.narrative,
+            payment_type: 5,
+            mpesa_ref: 'None',
+            currency: this.currency,
           },
-          request_id: 208,
+          request_id: 205,
           action_user: user,
         },
       };

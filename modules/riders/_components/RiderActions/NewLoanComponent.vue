@@ -1,0 +1,230 @@
+<template>
+  <div>
+    <form id="reallocate-form" @submit.prevent="submitRepayment" class="form">
+      <table class="table user-table">
+        <tr>
+          <td>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-icon">
+                  <span>{{ currency }}</span>
+                </div>
+                <div class="input-group-area">
+                  <input
+                    type="text"
+                    v-model="amount"
+                    :id="`amount`"
+                    name="amount"
+                    placeholder="Amount"
+                    class="form-control"
+                    :class="{
+                      'is-invalid': submitted && $v.amount.$error,
+                    }"
+                  />
+                </div>
+                <div
+                  v-if="submitted && !$v.amount.required"
+                  class="invalid-feedback"
+                >
+                  Amount is Required
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="form-group actions">
+              <select
+                name="typeofloan"
+                id="typeofloan"
+                class="form-control proximity point"
+              >
+                <option :value="1"> Sacco </option>
+                <option :value="2"> Tracker </option>
+                <option :value="3"> Insurance </option>
+              </select>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="form-group actions">
+              <select
+                name="repaymentmode"
+                id="repaymentmode"
+                class="form-control proximity point"
+              >
+                <option :value="1"> Sacco </option>
+                <option :value="2"> Tracker </option>
+                <option :value="3"> Insurance </option>
+              </select>
+            </div>
+          </td>
+        </tr>
+        <td>
+          <div class="form-group">
+            <input
+              type="text"
+              v-model="repaymentamount"
+              :id="repaymentamount"
+              name="repaymentamount"
+              placeholder="Repayment Amount"
+              class="form-control"
+              :class="{
+                'is-invalid': submitted && $v.repaymentamount.$error,
+              }"
+            />
+            <div
+              v-if="submitted && !$v.repaymentamount.required"
+              class="invalid-feedback"
+            >
+              Repayment Amount is Required
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="form-group">
+            <input
+              type="text"
+              v-model="narrative"
+              :id="narrative"
+              name="narrative"
+              placeholder="Narrative"
+              class="form-control"
+              :class="{
+                'is-invalid': submitted && $v.narrative.$error,
+              }"
+            />
+            <div
+              v-if="submitted && !$v.narrative.required"
+              class="invalid-feedback"
+            >
+              Narrrative is Required
+            </div>
+          </div>
+        </td>
+      </table>
+
+      <button class="btn btn-primary action-button">
+        Submit
+      </button>
+    </form>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { required } from 'vuelidate/lib/validators';
+
+export default {
+  name: 'RepayLoanComponent',
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      amount: '',
+      narrative: '',
+      submitted: false,
+      typeofloan: null,
+      repaymentamount: '',
+      repayment_mode: '',
+    };
+  },
+  validations: {
+    amount: { required },
+    narrative: { required },
+    repaymentamount: { required },
+  },
+  computed: {
+    currency() {
+      const currency = this.user.payments.default_currency
+        ? this.user.payments.default_currency
+        : 'KES';
+      return currency;
+    },
+    actionUser() {
+      return this.session.payload.data.name;
+    },
+  },
+  methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
+    }),
+    ...mapActions({
+      request_payment_methods: 'request_payment_methods',
+      perform_user_action: 'perform_user_action',
+    }),
+    handleError(status, error) {
+      const notification = [];
+      let actionClass = '';
+      if (!status) {
+        notification.push(data.error);
+        actionClass = this.display_order_action_notification(status);
+        this.updateClass(actionClass);
+        this.updateErrors(notification);
+      }
+    },
+    // async getLoanTypes() {},
+    async submitRepayment() {
+      const notification = [];
+      let actionClass = '';
+
+      this.submitted = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
+      }
+      const riderID = this.user.payments.rider_id;
+      const userID = 0;
+
+      const payload = {
+        app: 'CUSTOMERS_APP',
+        endpoint: 'sendy/cc_actions',
+        apiKey: true,
+        params: {
+          channel: 'rider_team',
+          data_set: 'rt_actions',
+          action_id: 1,
+          action_data: {
+            pay_out: true,
+            pay_frommpesa: false,
+            rider_id: riderID,
+            loan_type: 1,
+            amount: this.amount,
+            narrative: this.narrative,
+            repayment_amount: this.repayment_amount,
+            frequency: this.repayment_mode,
+            payment_type: 7,
+            mpesa_ref: 'None',
+            currency: this.currency,
+          },
+          request_id: 207,
+          action_user: user,
+          r,
+        },
+      };
+
+      try {
+        const data = await this.perform_user_action(payload);
+        notification.push(data.reason);
+        actionClass = this.display_order_action_notification(data.status);
+        if (data.status) {
+          this.updateSuccess(true);
+        }
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+  },
+};
+</script>

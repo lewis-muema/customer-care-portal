@@ -16,7 +16,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link action-list"
+            class="nav-link action-list repay-loan"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('repayloan', riderID)"
@@ -52,7 +52,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link action-list"
+            class="nav-link action-list new-loan"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('newloan', riderID)"
@@ -94,7 +94,7 @@
             role="tabpanel"
             v-if="showTab === `billrider_${riderID}`"
           >
-            <PaymentsComponent :user="riderID" />
+            <BillRiderComponent :user="this.riders_data" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -102,7 +102,7 @@
             role="tabpanel"
             v-if="showTab === `repayloan_${riderID}`"
           >
-            <LoansComponent :user="riderID" />
+            <RepayLoanComponent :user="this.riders_data" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -110,7 +110,7 @@
             role="tabpanel"
             v-if="showTab === `transfer_${riderID}`"
           >
-            <PaymentsComponent :user="user" :session="userData" />
+            <TransferComponent :user="this.riders_data" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -118,7 +118,7 @@
             role="tabpanel"
             v-if="showTab === `payrider_${riderID}`"
           >
-            <PaymentsComponent :user="user" :session="userData" />
+            <PayRiderComponent :user="this.riders_data" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -126,7 +126,7 @@
             role="tabpanel"
             v-if="showTab === `newloan_${riderID}`"
           >
-            <LoansComponent :user="user" :session="userData" />
+            <RepayLoanComponent :user="this.riders_data" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -134,7 +134,7 @@
             role="tabpanel"
             v-if="showTab === `edit_${riderID}`"
           >
-            <EditComponent :user="user" :session="userData" />
+            <EditComponent :user="this.riders_data" :session="userData" />
           </div>
         </div>
       </div>
@@ -147,9 +147,12 @@ import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 export default {
   name: 'RiderActionsComponent',
   components: {
-    LoansComponent: () => import('./RiderActions/LoansComponent'),
+    BillRiderComponent: () => import('./RiderActions/BillRiderComponent'),
+    RepayLoanComponent: () => import('./RiderActions/RepayLoanComponent'),
+    TransferComponent: () => import('./RiderActions/TransferComponent'),
+    PayRiderComponent: () => import('./RiderActions/PayRiderComponent'),
+    RepayLoanComponent: () => import('./RiderActions/RepayLoanComponent'),
     EditComponent: () => import('./RiderActions/EditComponent'),
-    PaymentsComponent: () => import('./RiderActions/PaymentsComponent'),
   },
   props: {
     user: {
@@ -167,9 +170,18 @@ export default {
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
+    currency() {
+      const currency = this.user.user_details.default_currency
+        ? this.user.user_details.default_currency
+        : 'KES';
+      return currency;
+    },
   },
   mounted() {
-    this.riderID = this.riders_data.rider_id;
+    this.riderID = this.user.payments.rider_id;
   },
   methods: {
     ...mapMutations({
@@ -193,3 +205,14 @@ export default {
   },
 };
 </script>
+<style>
+.fa .fa-fw .fa-book {
+  width: 100%;
+}
+.nav-link .action-list .repay-loan {
+  width: max-content;
+}
+.nav-link .action-list .new-loan {
+  width: max-content;
+}
+</style>

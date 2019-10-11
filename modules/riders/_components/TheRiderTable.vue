@@ -20,7 +20,7 @@
     </thead>
     <tbody>
       <tr v-if="riderID === null">
-        <td colspan="8">Search to view Rider details.</td>
+        <td colspan="10">Search to view Rider details.</td>
       </tr>
       <template v-else>
         <tr v-if="riderDetails === null">
@@ -52,7 +52,7 @@
         </tr>
 
         <tr v-if="opened.includes('rider')">
-          <td colspan="8" class="user-details">
+          <td colspan="10" class="user-details">
             <div class="lower_slide_bit" style="" :id="`bumba_${riderID}`">
               <div class="row">
                 <SideComponent :details="this.riders_data" />
@@ -113,6 +113,7 @@ export default {
     }),
     get_rdier() {
       console.log(this.riders_data);
+      this.riderDetails = this.riders_data;
     },
     get_vendor_type() {
       // eslint-disable-next-line eqeqeq
@@ -153,3 +154,8 @@ export default {
   },
 };
 </script>
+<style>
+.user-details {
+  background-color: rgba(245, 245, 245, 0.56) !important;
+}
+</style>

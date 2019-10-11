@@ -30,7 +30,7 @@
           data-toggle="tab"
           role="tab"
           aria-selected="false"
-          @click="viewTab('riders', riderID)"
+          @click="viewTab('savings', riderID)"
           >Savings</a
         >
       </li>
@@ -41,7 +41,7 @@
           data-toggle="tab"
           role="tab"
           aria-selected="false"
-          @click="viewTab('users', riderID)"
+          @click="viewTab('loans', riderID)"
           >Loans</a
         >
       </li>
@@ -50,11 +50,11 @@
       <div class="body-box">
         <div
           :class="`tab-pane fade ${firstShow} ${firstActive}`"
-          :id="`deliveries_${riderID}`"
+          :id="`info_${riderID}`"
           role="tabpanel"
           v-if="showTab === `info_${riderID}`"
         >
-          <InfoComponent :info="info" :user="riderID" />
+          <InfoComponent :user="user" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -62,11 +62,7 @@
           role="tabpanel"
           v-if="showTab === `statement_${riderID}`"
         >
-          <StatementComponent
-            :payments="payments"
-            :user="riderID"
-            :currency="currency"
-          />
+          <StatementComponent />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -74,7 +70,7 @@
           role="tabpanel"
           v-if="showTab === `savings_${riderID}`"
         >
-          <SavingsComponent :riders="riderDetails" :user="riderID" />
+          <SavingsComponent />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -82,7 +78,7 @@
           role="tabpanel"
           v-if="showTab === `loans_${riderID}`"
         >
-          <LoansComponent :receivers="invoiceReceivers" :user="riderID" />
+          <LoansComponent />
         </div>
       </div>
     </div>
@@ -110,7 +106,7 @@ export default {
       firstShow: false,
       firstActive: false,
       riderID: null,
-      showTab: `deliveries_${this.user.user_details.cop_id}`,
+      showTab: `info_${this.user.payments.rider_id}`,
       deliveryList: null,
       payments: null,
       riderDetails: null,
@@ -137,7 +133,7 @@ export default {
   mounted() {
     this.firstShow = 'show';
     this.firstActive = 'active';
-    this.riderID = this.user.user_details.cop_id;
+    this.riderID = this.user.payments.rider_id;
     this.deliveryList = this.user.delivey_list;
     this.payments = this.user.payments;
     this.riderDetails = this.user.rider_list;
