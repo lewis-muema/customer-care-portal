@@ -79,7 +79,6 @@ export default {
       riderID: null,
       user: null,
       riderInfo: null,
-      riderID: null,
       riderDetails: null,
       opened: [],
       riderTable: 0,
@@ -90,6 +89,7 @@ export default {
   },
   watch: {
     getRider(user) {
+      this.requestsingleRdier(user, 'rider');
       return (this.riderID = user);
     },
     getUserActionSuccess(status) {
@@ -102,7 +102,7 @@ export default {
       this.updateSuccess(false);
       this.updateClass('');
       this.updateErrors(arr);
-      this.singleCopUserRequest(this.copID, 'cop');
+      this.requestsingleRdier(this.riderID, 'rider');
     },
   },
   methods: {
@@ -111,9 +111,20 @@ export default {
       updateClass: 'setActionClass',
       updateSuccess: 'setUserActionSuccess',
     }),
-    get_rdier() {
-      console.log(this.riders_data);
-      this.riderDetails = this.riders_data;
+    ...mapActions({
+      request_single_rider: 'request_single_rider',
+    }),
+    async requestsingleRdier(user) {
+      const payload = { riderID: user };
+      try {
+        const data = await this.request_single_rider(payload);
+        this.riderDetails = data;
+        console.log('This is the data that has gotten to the component', data);
+      } catch {
+        this.errors.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+      }
     },
     get_vendor_type() {
       // eslint-disable-next-line eqeqeq
