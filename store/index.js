@@ -17,6 +17,7 @@ const apix = new Apix({
     { name: 'orders', url: 'orders' },
     { name: 'exchangeRates', url: `exchange-rates` },
     { name: 'businessUnits', url: `business-units` },
+    { name: 'cities', url: `cities` },
   ],
 });
 const baseUrl = process.env.baseUrl;
@@ -40,6 +41,7 @@ export default {
       dbUpdated: false,
       actionSuccess: false,
       reorganizeStatus: false,
+      orderCount: 0,
       searchedUser: '',
       userData: {},
       baseUrl,
