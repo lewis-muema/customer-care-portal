@@ -11,6 +11,7 @@
           label="Schedule Date"
           hint=""
           :no-header="true"
+          :no-button-now="true"
           input-size="sm"
           :class="{
             'is-invalid': submitted && $v.time.$error,
