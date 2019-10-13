@@ -84,7 +84,7 @@
           <td>Weight of Load</td>
           <td>{{ moreData.load_weight }} Tonnes</td>
         </tr>
-        <tr v-if="riderDetails.vendor_type_id === 1">
+        <tr>
           <td>Loaders needed</td>
           <td>{{ loaderDisplay }}</td>
         </tr>
@@ -199,6 +199,7 @@ export default {
   computed: {
     loaderDisplay() {
       const loaders = this.moreData.no_of_loaders;
+      console.log('loaders', loaders);
       return Number(loaders) === 0 ? '-' : loaders;
     },
   },
