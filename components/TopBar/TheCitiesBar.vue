@@ -48,7 +48,6 @@ export default {
   mounted() {
     const countryCode = JSON.parse(this.countryCodes);
     this.setCities({
-      code: 'ke',
       params: {
         code: countryCode,
       },
