@@ -12,7 +12,7 @@
   </td>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   name: 'TheCitiesBar',
@@ -25,7 +25,12 @@ export default {
     };
   },
   computed: {
+    ...mapState(['userData']),
     ...mapGetters(['getCities']),
+
+    countryCodes() {
+      return this.userData.payload.data.country_codes;
+    },
   },
   watch: {
     getCities(cities) {
@@ -41,7 +46,13 @@ export default {
     },
   },
   mounted() {
-    this.setCities();
+    const countryCode = JSON.parse(this.countryCodes);
+    this.setCities({
+      code: 'ke',
+      params: {
+        code: countryCode,
+      },
+    });
   },
   methods: {
     ...mapMutations({
