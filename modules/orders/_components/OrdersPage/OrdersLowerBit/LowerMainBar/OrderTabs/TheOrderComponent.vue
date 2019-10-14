@@ -84,7 +84,7 @@
           <td>Weight of Load</td>
           <td>{{ moreData.load_weight }} Tonnes</td>
         </tr>
-        <tr v-if="riderDetails.vendor_type_id === 1">
+        <tr>
           <td>Loaders needed</td>
           <td>{{ loaderDisplay }}</td>
         </tr>

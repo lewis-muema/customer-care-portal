@@ -1,7 +1,7 @@
 <template>
   <td class="city-class">
     <span v-for="city in cities" :key="city.city_id">
-      {{ city.name }}
+      {{ city.city_name }}
       <input
         type="checkbox"
         :value="city.city_id"
@@ -12,41 +12,52 @@
   </td>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   name: 'TheCitiesBar',
   data() {
     return {
       citiesData: [],
-      cities: [
-        {
-          city_id: 1,
-          name: 'Nairobi',
-        },
-        {
-          city_id: 2,
-          name: 'Mombasa',
-        },
-      ],
+      cities: null,
       checkedCities: [],
       selectedCities: [],
     };
   },
+  computed: {
+    ...mapState(['userData']),
+    ...mapGetters(['getCities']),
+
+    countryCodes() {
+      return this.userData.payload.data.country_codes;
+    },
+  },
+  watch: {
+    getCities(cities) {
+      this.checkedCities = [];
+      for (let i = 0; i < cities.length; i += 1) {
+        this.citiesData.push(cities[i].city_id);
+      }
+      // eslint-disable-next-line guard-for-in
+      for (const key in this.citiesData) {
+        this.checkedCities.push(this.citiesData[key]);
+      }
+      return (this.cities = cities);
+    },
+  },
   mounted() {
-    this.checkedCities = [];
-    for (let i = 0; i < this.cities.length; i += 1) {
-      this.citiesData.push(this.cities[i].city_id);
-    }
-    // eslint-disable-next-line guard-for-in
-    for (const key in this.citiesData) {
-      this.checkedCities.push(this.citiesData[key]);
-    }
+    const countryCode = JSON.parse(this.countryCodes);
+    this.setCities({
+      params: {
+        code: countryCode,
+      },
+    });
   },
   methods: {
     ...mapMutations({
       updateSelectedCities: 'setSelectedCities',
     }),
+    ...mapActions(['setCities']),
     updateCheckall() {
       if (this.checkedCities.length === this.citiesData.length) {
         this.isCheckAll = true;

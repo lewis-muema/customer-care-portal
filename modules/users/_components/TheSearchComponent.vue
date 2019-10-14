@@ -20,7 +20,7 @@
         @input="update"
         @blur="reset"
       />
-      <ul v-show="hasItems" @blur="reset" v-if="isProduction">
+      <ul v-show="hasItems" @blur="reset">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"

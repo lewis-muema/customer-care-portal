@@ -8,7 +8,7 @@
             {{
               this.getOrderFormattedDate(
                 eta.placed,
-                'dddd. hh:mm a DD-MMM-YYYY',
+                'dddd. hh:mm a Do MMM, YYYY',
               )
             }}
           </td>
@@ -73,7 +73,7 @@ export default {
     displayDateTime(date) {
       let displayString = '--';
       if (typeof date !== 'undefined') {
-        displayString = this.getOrderFormattedDate(date, 'h.mm a');
+        displayString = this.getOrderFormattedDate(date, 'h.mm a Do MMM, YYYY');
       }
       return displayString;
     },
@@ -86,8 +86,8 @@ export default {
         const start = eta_split[0].replace(/\s+/g, '');
         const end = eta_split[1].replace(/\s+/g, '');
 
-        const timeFrom = this.getFormattedDate(start, 'h.mm a');
-        const timeTo = this.getFormattedDate(end, 'h.mm a');
+        const timeFrom = this.getFormattedDate(start, 'Do MMM, YYYY hh.mm a');
+        const timeTo = this.getFormattedDate(end, 'Do MMM, YYYY hh.mm a');
         displayString = `${timeFrom} - ${timeTo}`;
       }
       return displayString;
