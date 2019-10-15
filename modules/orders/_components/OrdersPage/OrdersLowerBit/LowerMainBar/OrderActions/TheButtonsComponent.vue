@@ -1,7 +1,10 @@
 <template>
   <div id="tabs" class="container">
     <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
-      <li class="nav-item">
+      <li
+        class="nav-item"
+        v-if="order.order_details.order_status === 'pending'"
+      >
         <a
           class="force_blue"
           data-toggle="tab"
@@ -16,7 +19,10 @@
       <li
         class="nav-item"
         v-if="
-          order.order_details.delivery_status < 1 && permissions.reassign_orders
+          order.order_details.order_status !== 'pending' &&
+            permissions.reassign_orders &&
+            order.order_details.order_status !== 'delivered' &&
+            order.order_details.order_status !== 'cancelled'
         "
       >
         <a
@@ -33,7 +39,8 @@
       <li
         class="nav-item"
         v-if="
-          order.order_details.delivery_status < 3 &&
+          order.order_details.order_status !== 'delivered' &&
+            order.order_details.order_status !== 'cancelled' &&
             userData['admin_type'] !== 1
         "
       >
@@ -48,7 +55,13 @@
           Cancel
         </a>
       </li>
-      <li class="nav-item">
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.order_status !== 'delivered' &&
+            order.order_details.order_status !== 'cancelled'
+        "
+      >
         <a
           class="force_blue"
           data-toggle="tab"
@@ -63,7 +76,8 @@
       <li
         class="nav-item"
         v-if="
-          order.order_details.delivery_status < 3 &&
+          order.order_details.order_status !== 'delivered' &&
+            order.order_details.order_status !== 'cancelled' &&
             userData['admin_type'] !== 1
         "
       >
@@ -78,7 +92,10 @@
           Return
         </a>
       </li>
-      <li class="nav-item">
+      <li
+        class="nav-item"
+        v-if="order.order_details.order_status !== 'cancelled'"
+      >
         <a
           class="force_blue"
           data-toggle="tab"
@@ -93,8 +110,9 @@
       <li
         class="nav-item"
         v-if="
-          order.order_details.confirm_status === 1 &&
-            order.order_details.delivery_status < 3 &&
+          order.order_details.order_status !== 'pending' &&
+            order.order_details.order_status !== 'delivered' &&
+            order.order_details.order_status !== 'cancelled' &&
             permissions.location_proximity
         "
       >
@@ -125,7 +143,9 @@
         class="nav-item"
         v-if="
           isTruck &&
-            confirmedStatus === 1 &&
+            order.order_details.order_status !== 'delivered' &&
+            order.order_details.order_status !== 'cancelled' &&
+            order.order_details.order_status !== 'pending' &&
             mm === 0 &&
             permissions.update_delivery_status
         "
