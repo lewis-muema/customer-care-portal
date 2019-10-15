@@ -15,15 +15,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+          <tr v-for="loan in user.loans_list" :key="loan">
+            <td>{{ loan.pay_type }}</td>
+            <td>{{ loan.pay_method }}</td>
+            <td>{{ loan.txn }}</td>
+            <td>{{ loan.amount }}</td>
+            <td>{{ loan.rb }}</td>
+            <td>{{ loan.status }}</td>
+            <td>{{ loan.date_time }}</td>
+            <td>{{ loan.description }}</td>
           </tr>
 
           <tr>
@@ -64,5 +64,11 @@
 <script>
 export default {
   name: 'LoansComponent',
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
 };
 </script>

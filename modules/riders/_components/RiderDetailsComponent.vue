@@ -62,7 +62,7 @@
           role="tabpanel"
           v-if="showTab === `statement_${riderID}`"
         >
-          <StatementComponent />
+          <StatementComponent :user="user" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -70,7 +70,7 @@
           role="tabpanel"
           v-if="showTab === `savings_${riderID}`"
         >
-          <SavingsComponent />
+          <SavingsComponent :user="user" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -78,7 +78,7 @@
           role="tabpanel"
           v-if="showTab === `loans_${riderID}`"
         >
-          <LoansComponent />
+          <LoansComponent :user="user" />
         </div>
       </div>
     </div>
@@ -106,7 +106,7 @@ export default {
       firstShow: false,
       firstActive: false,
       riderID: null,
-      showTab: `info_${this.user.payments.rider_id}`,
+      showTab: `info_${this.user.rider_id}`,
       deliveryList: null,
       payments: null,
       riderDetails: null,
@@ -114,29 +114,22 @@ export default {
   },
 
   computed: {
-    deliveries() {
-      return this.user.delivery_list;
-    },
-    userDetails() {
-      return this.user.user_details;
-    },
-    currency() {
-      return this.userDetails.default_currency
-        ? this.userDetails.default_currency
-        : '';
-    },
-    invoiceReceivers() {
-      const arr = [];
-      return this.user.invoice_receivers ? this.user.invoice_receivers : arr;
-    },
+    // userDetails() {
+    //   return this.user.user_details;
+    // },
+    // currency() {
+    //   return this.userDetails.default_currency
+    //     ? this.userDetails.default_currency
+    //     : '';
+    // },
   },
   mounted() {
     this.firstShow = 'show';
     this.firstActive = 'active';
-    this.riderID = this.user.payments.rider_id;
-    this.deliveryList = this.user.delivey_list;
-    this.payments = this.user.payments;
-    this.riderDetails = this.user.rider_list;
+    this.riderID = this.user.rider_id;
+    this.deliveryList = this.user.delivery_detail;
+    // this.payments = this.user.payments;
+    // this.riderDetails = this.user.rider_list;
   },
   methods: {
     viewTab(tab, riderID) {

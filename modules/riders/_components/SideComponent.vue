@@ -1,7 +1,7 @@
 <template>
   <div class="col-md-4">
     <div class="box box-primary" style="padding-bottom:1px;">
-      <div class="map_custom" :id="`${details.payments.rider_id}`">
+      <div class="map_custom" :id="`${details.rider_id}`">
         <img
           :src="
             `https://maps.googleapis.com/maps/api/staticmap?center=-1.300041,36.780792&zoom=13&size=351x200&maptype=roadmap&markers=color:blue%7Clabel:R%7C-1.300041,36.780792&key=${googleApiKey}`
@@ -13,26 +13,29 @@
       <!-- end profile image -->
       <img
         class="profile-user-img img-responsive rider_picture_custom"
-        :src="
-          `https://api.sendyit.com/parcel/doc/photo/${details.payments.rider_id};?>`
-        "
+        :src="`https://api.sendyit.com/parcel/doc/photo/${details.rider_id};?>`"
       />
 
       <div class="rider_name_here">
-        {{ details.payments.rider_name }}
+        {{ details.rider_name }}
       </div>
-      <ul class="timeline timeline-inverse" style="margin-top:35px;">
+      <ul
+        v-for="delivery in details.delivery_detail"
+        :key="delivery.index"
+        class="timeline timeline-inverse"
+        style="margin-top:35px;"
+      >
         {{
-          this.determine_delivery_status()
+          determine_delivery_status(delivery.status)
         }}
         <div class="timeline-item">
           <span class="time">
-            {{ details.delivery_detail.user_name }}
+            {{ delivery.user_name }}
           </span>
 
           <h3 class="timeline-header no-border">
-            {{ details.delivery_detail.from_name }}
-            {{ details.delivery_detail.to_name }}
+            {{ delivery.from_name }}
+            {{ delivery.to_name }}
           </h3>
         </div>
       </ul>
@@ -64,19 +67,17 @@ export default {
   },
 
   methods: {
-    determine_delivery_status() {
-      const delivery_status = this.details.delivery_detail.delivery_status;
-      const confirm_status = this.details.delivery_detail.confirm_status;
-      if (delivery_status === 3) {
+    determine_delivery_status(status) {
+      if (status === 'delivered') {
         this.riderSideClass = 'fa fa-thumbs-up bg-green fasendy';
       }
-      if (delivery_status === 2) {
+      if (status === 'in transit') {
         this.riderSideClass = 'fa  fa-road bg-yellow fasendy';
       }
-      if (delivery_status === 0) {
+      if (status === 'confirmed') {
         this.riderSideClass = 'fa fa-clock-o bg-orange fasendy';
       }
-      if (confirm_status === 0) {
+      if (status === 'pending') {
         this.riderSideClass = 'fa fa-exclamation bg-red fasendy';
       }
     },

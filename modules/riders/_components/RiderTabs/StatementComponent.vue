@@ -15,15 +15,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+          <tr v-for="statement in user.current_list" :key="statement">
+            <td>{{ statement.pay_type }}</td>
+            <td>{{ statement.pay_method }}</td>
+            <td>{{ statement.txn }}</td>
+            <td>{{ statement.amount }}</td>
+            <td>{{ statement.rb }}</td>
+            <td>{{ statement.status }}</td>
+            <td>{{ statement.date_time }}</td>
+            <td>{{ statement.description }}</td>
           </tr>
 
           <tr>
@@ -64,5 +64,11 @@
 <script>
 export default {
   name: 'StatementComponent',
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
 };
 </script>

@@ -8,6 +8,7 @@
         <td>Cost</td>
 
         <td>Return cost</td>
+        <td>cost</td>
       </tr>
       <tr
         v-for="tier in priceTiers"
@@ -20,7 +21,7 @@
             Best option
           </span>
         </td>
-        <td>{{ tier.eta / 60 }}</td>
+        <td>{{ determineETA(eta.etc, 'DD/MM/YYYY hh.mm a ') }}</td>
         <td
           v-html="
             showCurrencyBasedAmounts(orderDetails, rates, tier.discount_amount)
@@ -34,11 +35,14 @@
             showCurrencyBasedAmounts(orderDetails, rates, tier.return_cost)
           "
         ></td>
+        <td>{{ test() }}</td>
       </tr>
     </tbody>
   </table>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex';
+
 export default {
   name: 'ThePriceTiersComponent',
   props: {
@@ -50,13 +54,20 @@ export default {
       type: Array,
       required: true,
     },
+    eta: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       orderDetails: this.order,
       priceTiers: this.order.price_tiers,
+      orderNo: this.order.order_details.order_no,
+      ETA: this.eta,
     };
   },
+
   methods: {
     determine_class(bestOption) {
       let rowClass = null;
@@ -65,6 +76,10 @@ export default {
       }
       return rowClass;
     },
+    test() {
+      console.log('this is the price tiers', this.ETA);
+    },
+    determineETA() {},
   },
 };
 </script>

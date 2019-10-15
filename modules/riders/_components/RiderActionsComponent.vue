@@ -94,7 +94,7 @@
             role="tabpanel"
             v-if="showTab === `billrider_${riderID}`"
           >
-            <BillRiderComponent :user="this.riders_data" :session="userData" />
+            <BillRiderComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -102,7 +102,7 @@
             role="tabpanel"
             v-if="showTab === `repayloan_${riderID}`"
           >
-            <RepayLoanComponent :user="this.riders_data" />
+            <RepayLoanComponent :user="user" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -110,7 +110,7 @@
             role="tabpanel"
             v-if="showTab === `transfer_${riderID}`"
           >
-            <TransferComponent :user="this.riders_data" :session="userData" />
+            <TransferComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -118,7 +118,7 @@
             role="tabpanel"
             v-if="showTab === `payrider_${riderID}`"
           >
-            <PayRiderComponent :user="this.riders_data" :session="userData" />
+            <PayRiderComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -126,7 +126,7 @@
             role="tabpanel"
             v-if="showTab === `newloan_${riderID}`"
           >
-            <RepayLoanComponent :user="this.riders_data" :session="userData" />
+            <RepayLoanComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -134,7 +134,7 @@
             role="tabpanel"
             v-if="showTab === `edit_${riderID}`"
           >
-            <EditComponent :user="this.riders_data" :session="userData" />
+            <EditComponent :user="user" :session="userData" />
           </div>
         </div>
       </div>
@@ -181,7 +181,7 @@ export default {
     },
   },
   mounted() {
-    this.riderID = this.user.payments.rider_id;
+    this.riderID = this.user.rider_id;
   },
   methods: {
     ...mapMutations({

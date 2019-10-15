@@ -30,33 +30,35 @@
           @click="toggle('rider')"
           :class="{ opened: opened.includes('rider') }"
         >
-          <td>{{ this.riders_data.payments.rider_name }}</td>
-          <td>{{ this.riders_data.phone_no }}</td>
-          <td>{{ this.get_vendor_type() }}</td>
-          <td>{{ this.riders_data.payments.city_name }}</td>
-          <td>{{ this.get_carrier_type() }}</td>
+          <td>{{ this.riderDetails.rider_name }}</td>
+          <td>{{ this.riderDetails.phone_no }}</td>
+          <td>{{ this.get_vendor_type(this.riderDetails.vendor_type) }}</td>
+          <td>{{ this.riderDetails.city_name }}</td>
+          <td>{{ this.get_carrier_type(this.riderDetails.carrier_type) }}</td>
           <td>
-            {{ this.riders_data.payments.default_currency }}
+            {{ this.riderDetails.default_currency }}
             {{ this.riders_data.running_bal }}
           </td>
           <td>
-            {{ this.riders_data.payments.default_currency }}
+            {{ this.riderDetails.default_currency }}
             {{ this.riders_data.payments.loan_list.running_balance }}
           </td>
           <td>
-            {{ this.riders_data.payments.default_currency }}
+            {{ this.riderDetails.default_currency }}
             {{ this.riders_data.payments.savings_list.running_balance }}
           </td>
-          <td>{{ this.riders_data.payments.rider_status }}</td>
-          <td>{{ this.get_suspension_status() }}</td>
+          <td>{{ this.riderDetails.email }}</td>
+          <td>
+            {{ this.get_suspension_status(this.riderDetails.rider_stat) }}
+          </td>
         </tr>
 
         <tr v-if="opened.includes('rider')">
           <td colspan="10" class="user-details">
             <div class="lower_slide_bit" style="" :id="`bumba_${riderID}`">
               <div class="row">
-                <SideComponent :details="this.riders_data" />
-                <MainComponent :rider="this.riders_data" />
+                <SideComponent :details="this.riderDetails" />
+                <MainComponent :rider="this.riderDetails" />
               </div>
             </div>
           </td>
@@ -119,35 +121,38 @@ export default {
       try {
         const data = await this.request_single_rider(payload);
         this.riderDetails = data;
-        console.log('This is the data that has gotten to the component', data);
+        console.log(
+          'This is the data that has gotten to the component',
+          JSON.stringify(this.riderDetails),
+        );
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',
         );
       }
     },
-    get_vendor_type() {
+    get_vendor_type(vendor) {
       // eslint-disable-next-line eqeqeq
-      if (this.riders_data.payments.vendor_type == 1) {
+      if (vendor == 1) {
         return 'Bike';
         // eslint-disable-next-line no-unreachable
       }
     },
-    get_carrier_type() {
-      console.log(this.riders_data);
-      if (this.riders_data.payments.carrier_type === 1) {
+    get_carrier_type(carrier) {
+      if (carrier === 1) {
         return 'Box';
       }
+      return 'No box';
     },
 
-    get_suspension_status() {
-      if (this.riders_data.payments.rider_stat === 0) {
+    get_suspension_status(suspension) {
+      if (suspension === 0) {
         return 'Inactive';
       }
-      if (this.riders_data.payments.rider_stat === 1) {
+      if (suspension === 1) {
         return 'Active';
       }
-      if (this.riders_data.payments.rider_stat === 2) {
+      if (suspension === 2) {
         return 'Suspended';
       }
     },

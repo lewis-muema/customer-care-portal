@@ -53,7 +53,7 @@
             </div>
           </td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td>
             <div class="form-group">
               <input
@@ -72,7 +72,7 @@
                 v-model="client"
                 :id="client"
                 name="client"
-                placeholder="SENDY1083"
+                placeholder="SENDY669"
                 class="form-control"
                 :class="{
                   'is-invalid': submitted && $v.client.$error,
@@ -82,11 +82,11 @@
                 v-if="submitted && !$v.client.required"
                 class="invalid-feedback"
               >
-                Narrative is required
+                Client ID is Required
               </div>
             </div>
-          </td>
-        </tr>
+          </td> -->
+        <!-- </tr> -->
       </table>
 
       <button class="btn btn-primary action-button">
@@ -110,35 +110,26 @@ export default {
   },
   data() {
     return {
-      paymentMethods: null,
-      paymentMethod: '',
       amount: '',
-      refNo: '',
-      refName: '',
       narrative: '',
-      phone: '',
       submitted: false,
     };
   },
   validations: {
-    paymentMethod: { required },
     amount: { required },
-    refNo: { required },
-    phone: { required },
     narrative: { required },
-    refName: { required },
   },
 
   computed: {
     currency() {
-      const currency = this.user.payments.default_currency
-        ? this.user.payments.default_currency
+      const currency = this.user.default_currency
+        ? this.user.default_currency
         : 'KES';
       return currency;
     },
-    // actionUser() {
-    //   return this.session.payload.data.name;
-    // },
+    actionUser() {
+      return this.session.payload.data.name;
+    },
   },
 
   methods: {
@@ -160,9 +151,6 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-      const reverse = false;
-      const copID = this.user.user_details.cop_id;
-      const userID = 0;
 
       const payload = {
         app: 'CUSTOMERS_APP',
@@ -173,20 +161,20 @@ export default {
           data_set: 'rt_actions',
           action_id: 1,
           action_data: {
-            amount,
-            narrative,
-            rider_id,
-            pay_customer,
-            account_no,
+            amount: this.amount,
+            narrative: this.narrative,
+            rider_id: this.user.rider_id,
+            pay_customer: '',
+            account_no: '',
             pay_out: true,
             pay_frommpesa: false,
             loan_type: 1,
             payment_type: 2,
             mpesa_ref: 'None',
-            currency,
+            currency: this.currency,
           },
           request_id: 202,
-          action_user: user,
+          action_user: this.actionUser,
         },
       };
 
