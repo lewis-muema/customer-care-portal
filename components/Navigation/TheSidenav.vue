@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <!-- <span>
     <aside class="main-sidebar">
       <section class="sidebar">
         <div class="user-panel">
@@ -75,7 +75,7 @@
       <input type="hidden" value="online" id="online_stat" />
     </aside>
     <modals :user="modalUser" />
-  </span>
+  </span> -->
 </template>
 <script>
 import { mapMutations } from 'vuex';
@@ -83,7 +83,7 @@ import { mapMutations } from 'vuex';
 export default {
   name: 'TheSidenav',
   components: {
-    modals: () => import('~/modules/users/_components/TheUserModalsComponent'),
+    // modals: () => import('~/modules/users/_components/TheUserModalsComponent'),
   },
   props: {
     user: {
