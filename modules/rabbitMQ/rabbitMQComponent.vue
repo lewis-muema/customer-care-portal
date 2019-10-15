@@ -54,6 +54,7 @@ export default {
      * which then subscribes to the exchange for order pushes.
      */
     connectCallback(message) {
+      console.log('RabbitMQ is connected');
       const exchangeStr = this.client.subscribe(
         '/exchange/order_pushes/sendy.orders.ke',
         ({ body }) => {
@@ -70,15 +71,19 @@ export default {
     errorCallback() {
       console.log('Connection Dropped Trying to Reconnect');
       this.client = Stomp.client(this.url);
-      this.client.connect(
-        this.headers,
-        () => {
-          this.connectCallback();
-        },
-        () => {
-          this.errorCallback();
-        },
-      );
+      this.client.debug = function(str) {};
+      this.client.reconnect_delay = 5000;
+      setTimeout(() => {
+        this.client.connect(
+          this.headers,
+          () => {
+            this.connectCallback();
+          },
+          () => {
+            this.errorCallback();
+          },
+        );
+      }, 5000);
     },
 
     /**
