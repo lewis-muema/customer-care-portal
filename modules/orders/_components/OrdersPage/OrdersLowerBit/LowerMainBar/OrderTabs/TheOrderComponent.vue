@@ -101,7 +101,7 @@
               display_conditional_amounts(
                 orderDetails,
                 currencyConversions,
-                riderDetails.rider_cost,
+                riderDetails.rider_amount,
               )
             "
           ></td>
@@ -198,7 +198,7 @@ export default {
   },
   computed: {
     loaderDisplay() {
-      const loaders = this.moreData.no_of_loaders;
+      const loaders = this.order.loader_details.no_of_loaders;
       return Number(loaders) === 0 ? '-' : loaders;
     },
   },
