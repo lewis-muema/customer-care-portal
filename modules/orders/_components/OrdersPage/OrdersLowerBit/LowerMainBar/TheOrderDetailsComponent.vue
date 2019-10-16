@@ -100,14 +100,7 @@
           >Dispatch List</a
         >
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          moreData.delivery_status === 3 &&
-            (moreData.dispute_delivery_doc_status === 0) |
-              (moreData.dispute_delivery_doc_status === 4)
-        "
-      >
+      <li class="nav-item" v-if="moreData.delivery_status === 3">
         <a
           class="nav-link"
           :id="`deliverydetails_${orderNo}`"
@@ -228,7 +221,11 @@
           role="tabpanel"
           v-if="showTab === `pricetiers_${orderNo}`"
         >
-          <ThePriceTiersComponent :order="orderDetails" :rates="rates" />
+          <ThePriceTiersComponent
+            :order="orderDetails"
+            :rates="rates"
+            :eta="eta"
+          />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
