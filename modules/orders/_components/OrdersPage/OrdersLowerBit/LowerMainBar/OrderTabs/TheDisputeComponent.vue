@@ -1,7 +1,7 @@
 <template>
   <div class="box-body">
-    <span :class="determineClass(dispute_status)">
-      {{ determineMsg(dispute_status) }}
+    <span :class="determineClass(this.dispute_status)">
+      {{ determineMsg(this.dispute_status) }}
     </span>
     <span
       v-if="
