@@ -3,7 +3,7 @@
     <span :class="determineClass(this.dispute_status)">
       {{ determineMsg(this.dispute_status) }}
     </span>
-    <span
+    <!-- <span
       v-if="
         paymentDetails.extra_distance_amount > 0 ||
           paymentDetails.waiting_time_amount > 0
@@ -16,7 +16,7 @@
       >
         Dispute
       </span>
-    </span>
+    </span> -->
     <br />
     <br />
     <table class="table table-bordered">
@@ -70,8 +70,8 @@ export default {
       paymentDetails: this.order.payment_details,
       dispute_status: this.order.order_details.dispute_status,
       disputeParams: {
-        0: { class: 'badge bg-red pull-left', msg: 'Unverified' },
-        1: { class: 'badge bg-aqua pull-left', msg: 'Verified' },
+        0: { class: 'badge bg-green pull-left', msg: 'Undisputed' },
+        1: { class: 'badge bg-green pull-left', msg: 'Verified' },
         2: { class: 'badge bg-red pull-left', msg: 'Disputed ' },
         3: { class: 'badge bg-aqua pull-left', msg: 'Appealed' },
         4: { class: 'badge bg-aqua pull-left', msg: 'Disputed and resolved' },
