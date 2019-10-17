@@ -248,9 +248,6 @@ export default {
     ...mapState(['userData']),
   },
   methods: {
-    test() {
-      console.log('this is the image data', this.order);
-    },
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
@@ -383,7 +380,6 @@ export default {
           rider_id: this.riderID,
         },
       };
-      console.log('ereirjaosjd');
       try {
         const data = await this.perform_order_action(payload);
         notification.push(data.reason);
@@ -400,11 +396,9 @@ export default {
     update_delivery_docs_dispute_action(switched) {
       if (switched) {
         this.switched = false;
-        console.log('1', this.switched);
         return this.switched;
       } else {
         this.switched = true;
-        console.log('2', this.switched);
         return this.switched;
       }
     },
