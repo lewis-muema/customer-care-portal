@@ -70,9 +70,11 @@ export default {
       paymentDetails: this.order.payment_details,
       dispute_status: this.order.order_details.dispute_status,
       disputeParams: {
-        0: { class: 'badge bg-green pull-left', msg: 'Not disputed' },
-        1: { class: 'badge bg-red pull-left', msg: 'Not Resolved' },
-        2: { class: 'badge bg-aqua pull-left', msg: 'Disputed and resolved' },
+        0: { class: 'badge bg-red pull-left', msg: 'Unverified' },
+        1: { class: 'badge bg-aqua pull-left', msg: 'Verified' },
+        2: { class: 'badge bg-red pull-left', msg: 'Disputed ' },
+        3: { class: 'badge bg-aqua pull-left', msg: 'Appealed' },
+        4: { class: 'badge bg-aqua pull-left', msg: 'Disputed and resolved' },
       },
     };
   },
