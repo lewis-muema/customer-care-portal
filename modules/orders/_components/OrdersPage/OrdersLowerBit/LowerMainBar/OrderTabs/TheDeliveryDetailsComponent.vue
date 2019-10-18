@@ -155,7 +155,7 @@
               dispute reason is required
             </div>
             <textarea
-              v-if="dispute_status > 1 && dispute_status < 4"
+              v-if="switched && dispute_status < 4"
               type="text"
               v-model="description"
               :id="`dispute_description_${orderNo}`"
