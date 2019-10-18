@@ -3,7 +3,7 @@ import axios from 'axios';
 export default {
   async request_single_order({ rootState }, orderNo) {
     const config = rootState.config;
-    const url = `${config.ADONIS_API}orders/${orderNo}`;
+    const url = `${config.ADONIS_API}/orders/${orderNo}`;
     try {
       const response = await axios.get(url);
       const data = await response;
