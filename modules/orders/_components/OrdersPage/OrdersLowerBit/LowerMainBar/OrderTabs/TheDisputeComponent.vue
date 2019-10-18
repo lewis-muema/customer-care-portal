@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'TheDisputeComponent',
   props: {
@@ -69,6 +71,8 @@ export default {
       moreData: this.order.order_details,
       paymentDetails: this.order.payment_details,
       dispute_status: this.order.order_details.dispute_status,
+      errors: [],
+      notifications: '',
       disputeParams: {
         0: { class: 'badge bg-green pull-left', msg: 'Not disputed' },
         1: { class: 'badge bg-green pull-left', msg: 'Verified' },
@@ -78,7 +82,17 @@ export default {
       },
     };
   },
+  mounted() {
+    const notification = [];
+    const actionClass = '';
+    this.updateClass(actionClass);
+    this.updateErrors(notification);
+  },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
     determineClass(disputeStatus) {
       const disputeClass = this.disputeParams[disputeStatus];
       return disputeClass.class;
