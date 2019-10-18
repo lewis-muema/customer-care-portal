@@ -55,27 +55,28 @@
       <div class="row">
         <div
           class="col-sm-3"
-          v-if="orderDetails.order_details.dispute_delivery_doc_status === 2"
+          v-if="dispute_status === 0 || dispute_status === 1"
         >
-          <div
-            class="form-group"
-            @change="update_delivery_docs_dispute_action(switched)"
-          >
+          <div class="form-group">
             <div class="radio">
               <label>
                 <input
                   name="delivery_docs_dispute_value1_${orderNo}"
                   id="delivery_docs_action2_${orderNo}"
+                  @change="update_delivery_docs_dispute_action(switched)"
                   checked
                   value="3"
                   type="radio"
                 />
-                Reject Customer Dispute
+                Dispute Driver Documents
               </label>
             </div>
           </div>
         </div>
-        <div class="col-sm-3" v-else>
+        <div
+          class="col-sm-3"
+          v-if="dispute_status === 2 || dispute_status === 3"
+        >
           <div class="form-group">
             <div class="radio">
               <label>
@@ -93,7 +94,10 @@
           </div>
         </div>
         <div class="col-sm-3">
-          <div class="form-group" v-if="dispute_status < 4">
+          <div
+            class="form-group"
+            v-if="dispute_status === 2 || dispute_status === 3"
+          >
             <div class="radio">
               <label>
                 <input
@@ -104,6 +108,22 @@
                   @change="update_delivery_docs_dispute_action(switched)"
                 />
                 Accept Driver Appeal
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group" v-if="dispute_status === 0">
+            <div class="radio">
+              <label>
+                <input
+                  name="delivery_docs_dispute_value1_${orderNo}"
+                  id="delivery_docs_action1_${orderNo}"
+                  value="1"
+                  type="radio"
+                  @change="update_delivery_docs_dispute_action(switched)"
+                />
+                Accept Driver Documents
               </label>
             </div>
           </div>
@@ -262,6 +282,9 @@ export default {
       if (this.dispute_status === 0 && this.switched) {
         return this.disputeOrder();
       }
+      if (this.dispute_status === 1 && this.switched) {
+        return this.disputeOrder();
+      }
       if (
         !this.switched &&
         (this.dispute_status === 2 || this.dispute_status === 3)
@@ -382,7 +405,7 @@ export default {
       };
       try {
         const data = await this.perform_order_action(payload);
-        notification.push(data.reason);
+        notification.push('Successfully verified delivery documents');
         actionClass = this.display_order_action_notification(data.status);
       } catch (error) {
         notification.push(
