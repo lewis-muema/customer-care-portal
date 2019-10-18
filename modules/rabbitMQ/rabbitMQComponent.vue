@@ -31,11 +31,10 @@ export default {
       show: false,
       ordersDB: process.browser ? PouchDB('orders') : '',
       headers: {
-        login: 'staging',
-        passcode: '0FAHmQQmjfsIXdro',
+        login: 'production',
+        passcode: 'Z_EQ-T5rO-oQVx-OqL2',
       },
-      url:
-        'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+      url: 'wss://prod-stomp.sendyit.com:15675/ws',
     };
     /**
      * Function for debugging rabbitMQ
@@ -46,7 +45,8 @@ export default {
   },
 
   computed: {
-    ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
+    ...mapState(['config']),
+    ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev', 'config']),
   },
   methods: {
     /**
