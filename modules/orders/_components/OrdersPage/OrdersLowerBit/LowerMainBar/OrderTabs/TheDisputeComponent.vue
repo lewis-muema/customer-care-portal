@@ -70,7 +70,7 @@ export default {
       paymentDetails: this.order.payment_details,
       dispute_status: this.order.order_details.dispute_status,
       disputeParams: {
-        0: { class: 'badge bg-green pull-left', msg: 'Undisputed' },
+        0: { class: 'badge bg-green pull-left', msg: 'Not disputed' },
         1: { class: 'badge bg-green pull-left', msg: 'Verified' },
         2: { class: 'badge bg-red pull-left', msg: 'Disputed ' },
         3: { class: 'badge bg-aqua pull-left', msg: 'Appealed' },
