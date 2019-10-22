@@ -86,6 +86,7 @@ export default {
     const riderData = await this.requestPartnerLastPosition(riderArray);
     this.partnerData = riderData;
     this.initialize(riderData, this.order);
+    this.data_to_display_on_bar(this.order, this.ETA);
   },
   methods: {
     ...mapActions({
@@ -194,14 +195,16 @@ export default {
       const myPathArray = [];
 
       for (let mp = 0; mp < myPath.length; mp += 1) {
-        const cordinate = myPath[mp].coordinates.split(',');
-        myPathArray.push([
-          myPath[mp].name,
-          parseFloat(cordinate[0]),
-          parseFloat(cordinate[1]),
-          mp + 1,
-          'url',
-        ]);
+        if (myPath.length) {
+          const cordinate = myPath[mp].coordinates.split(',');
+          myPathArray.push([
+            myPath[mp].name,
+            parseFloat(cordinate[0]),
+            parseFloat(cordinate[1]),
+            mp + 1,
+            'url',
+          ]);
+        }
       }
 
       let myLatlng = new google.maps.LatLng(
