@@ -18,21 +18,21 @@
         <table width="100%" class="tracking_map_table">
           <tr>
             <td id="f10">
-              <span :id="`f2${orderDetails.order_no}`"></span><br />
-              <span :id="`f3${orderDetails.order_no}`"></span>
+              <span :id="`f2${orderNo}`"></span><br />
+              <span :id="`f3${orderNo}`"></span>
             </td>
             <td id="f20">
-              <span :id="`f1${orderDetails.order_no}`"></span>
-              <span :id="`f4${orderDetails.order_no}`"></span><br />
-              <span :id="`f5${orderDetails.order_no}`"></span>
+              <span :id="`f1${orderNo}`"></span>
+              <span :id="`f4${orderNo}`"></span><br />
+              <span :id="`f5${orderNo}`"></span>
             </td>
             <td id="f30">
-              <span :id="`f11${orderDetails.order_no}`"></span><br />
-              <span :id="`f12${orderDetails.order_no}`"></span><br />
+              <span :id="`f11${orderNo}`"></span><br />
+              <span :id="`f12${orderNo}`"></span><br />
             </td>
             <td id="f40">
-              <span :id="`f6${orderDetails.order_no}`"></span><br />
-              <span :id="`f7${orderDetails.order_no}`"></span>
+              <span :id="`f6${orderNo}`"></span><br />
+              <span :id="`f7${orderNo}`"></span>
             </td>
           </tr>
         </table>
@@ -65,6 +65,7 @@ export default {
     return {
       orderDetails: this.order.order_details,
       riderDetails: this.order.rider_details,
+      orderNo: this.order.order_details.order_no,
       positions: null,
       partnerData: null,
       cityId: 1,
@@ -81,12 +82,12 @@ export default {
   },
   created() {},
   async mounted() {
-    const riderArray = [17179];
-
+    const riderArray = [this.order.rider_details.rider_id];
     const riderData = await this.requestPartnerLastPosition(riderArray);
     this.partnerData = riderData;
     this.initialize(riderData, this.order);
     this.data_to_display_on_bar(this.order, this.ETA);
+    this.display_rider_info(riderData, this.orderNo);
   },
   methods: {
     ...mapActions({
@@ -119,9 +120,9 @@ export default {
       }
       const partnerArray = data.partnerArray[0];
       let riderTime = '';
-      let riderLat = -1.299923;
-      let riderLong = 36.780921;
-      let speed = 0;
+      let riderLat = partnerArray.lat;
+      let riderLong = partnerArray.lng;
+      let speed = partnerArray.speed;
       let status;
       if (JSON.parse(data.status) && partnerArray !== 'undefined') {
         speed = partnerArray.speed;
@@ -145,8 +146,8 @@ export default {
       return partnerData;
     },
     initialize(riderData, order) {
-      const pickUpLocation = '-1.3001097,36.772822099999985';
-      const deliveryLocation = '-1.294629,36.812681999999995';
+      const pickUpLocation = this.orderDetails.from;
+      const deliveryLocation = this.orderDetails.to;
       const pickUpDelay = 0;
       let map = {};
       let marker = {};
