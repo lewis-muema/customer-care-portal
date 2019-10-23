@@ -78,7 +78,7 @@
           >Price Tiers</a
         >
       </li>
-      <li class="nav-item">
+      <li class="nav-item" v-if="moreData.delivery_status === 3">
         <a
           class="nav-link"
           :id="`dispute_${orderNo}`"
