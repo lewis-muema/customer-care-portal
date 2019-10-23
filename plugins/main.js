@@ -74,14 +74,20 @@ Vue.mixin({
   },
   methods: {
     deliveryStatus(order) {
-      const verification = order.order_details.delivery_verification;
+      const verification = order.order_details.values.delivery_verification;
       const notesStatus = verification.physical_delivery_note_status;
       let status = 'delivered';
       if (notesStatus) {
         // eslint-disable-next-line prettier/prettier
-          const imgStatus = Object.prototype.hasOwnProperty.call(order, 'rider_deliver_img');
+        const imgStatus = Object.prototype.hasOwnProperty.call(
+          order,
+          'rider_deliver_img',
+        );
         // eslint-disable-next-line prettier/prettier
-        if(imgStatus && order.rider_deliver_img[0].physical_delivery_note_status === 2) {
+        if (
+          imgStatus &&
+          order.rider_deliver_img[0].physical_delivery_note_status === 2
+        ) {
           status = 'delivered';
         } else {
           status = 'Dnotes';
@@ -163,9 +169,22 @@ Vue.mixin({
       return displayString;
     },
     // eslint-disable-next-line prettier/prettier
-    displayAmount(currency, amount, vendor_type_id,fixed_cost, customer_min_amount,confirm_status) {
+    displayAmount(
+      currency,
+      amount,
+      vendor_type_id,
+      fixed_cost,
+      customer_min_amount,
+      confirm_status,
+    ) {
       // eslint-disable-next-line prettier/prettier
-      const computedAmount = this.determineOrderAmounts(amount, vendor_type_id, fixed_cost, customer_min_amount, confirm_status);
+      const computedAmount = this.determineOrderAmounts(
+        amount,
+        vendor_type_id,
+        fixed_cost,
+        customer_min_amount,
+        confirm_status,
+      );
       currency = currency || '';
       amount = this.numberWithCommas(computedAmount);
       let amountString = `${currency} ${amount}`;
@@ -175,7 +194,13 @@ Vue.mixin({
       return amountString;
     },
     // eslint-disable-next-line prettier/prettier
-    determineOrderAmounts(amount, vendorTypeID, fixedCost,  customerMinAmount, confirmStatus) {
+    determineOrderAmounts(
+      amount,
+      vendorTypeID,
+      fixedCost,
+      customerMinAmount,
+      confirmStatus,
+    ) {
       const freightArray = [20, 25];
       if (freightArray.includes(vendorTypeID) && !fixedCost) {
         if (confirmStatus < 1) {
@@ -229,7 +254,9 @@ Vue.mixin({
       const res = currency_conversions.filter(conversion =>
         conversion.from_currency.includes(fromCurrency),
       );
-      const newArray = res.filter(arr => arr.to_currency.includes(toCurrency));
+
+      const newArray = res.filter(arr => arr.to_currency === 'UGX');
+
       return newArray;
     },
 
