@@ -10,11 +10,7 @@
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
-import PouchDB from 'pouchdb-browser';
-import PouchFind from 'pouchdb-find';
-
 let _ = require('lodash');
-PouchDB.plugin(require('pouchdb-upsert'));
 
 export default {
   name: 'rabbitMQComponent',
