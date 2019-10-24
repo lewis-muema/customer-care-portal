@@ -3,6 +3,7 @@ import custom_actions from './actions';
 import custom_getters from './getters';
 import custom_mutations from './mutations';
 import configurations from '~/config/configs';
+import auth from '~/config/auth-token';
 
 const apix = new Apix({
   prefix: configurations.CONFIG.ADONIS_API,
@@ -10,7 +11,7 @@ const apix = new Apix({
     headers: {
       'Content-Type': 'text/plain',
       Accept: 'application/json',
-      // Authorization: jwtToken1,
+      Authorization: auth.jwtToken,
     },
   },
   resources: [
