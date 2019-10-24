@@ -38,7 +38,7 @@ const config = {
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
     POSITIONS: 'https://auth.sendyit.com/positions/',
     CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
-    ADONIS_API: 'https://adonis.sendyit.com/',
+    ADONIS_API: 'https://auth.sendyit.com/adonis/',
     RIDER_DELIVERY_IMG: 'https://sendy-delivery-signatures.s3.amazonaws.com/',
     DISPATCH_LIST: 'https://auth.sendyit.com/dispatch/',
     NODE_PRIVATE_API: 'https://auth.sendyit.com/v1/',
