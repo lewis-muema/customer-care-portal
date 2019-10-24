@@ -18,21 +18,21 @@
         <table width="100%" class="tracking_map_table">
           <tr>
             <td id="f10">
-              <span :id="`f2${orderDetails.order_no}`"></span><br />
-              <span :id="`f3${orderDetails.order_no}`"></span>
+              <span :id="`f2${orderNo}`"></span><br />
+              <span :id="`f3${orderNo}`"></span>
             </td>
             <td id="f20">
-              <span :id="`f1${orderDetails.order_no}`"></span>
-              <span :id="`f4${orderDetails.order_no}`"></span><br />
-              <span :id="`f5${orderDetails.order_no}`"></span>
+              <span :id="`f1${orderNo}`"></span>
+              <span :id="`f4${orderNo}`"></span><br />
+              <span :id="`f5${orderNo}`"></span>
             </td>
             <td id="f30">
-              <span :id="`f11${orderDetails.order_no}`"></span><br />
-              <span :id="`f12${orderDetails.order_no}`"></span><br />
+              <span :id="`f11${orderNo}`"></span><br />
+              <span :id="`f12${orderNo}`"></span><br />
             </td>
             <td id="f40">
-              <span :id="`f6${orderDetails.order_no}`"></span><br />
-              <span :id="`f7${orderDetails.order_no}`"></span>
+              <span :id="`f6${orderNo}`"></span><br />
+              <span :id="`f7${orderNo}`"></span>
             </td>
           </tr>
         </table>
@@ -65,6 +65,7 @@ export default {
     return {
       orderDetails: this.order.order_details,
       riderDetails: this.order.rider_details,
+      orderNo: this.order.order_details.order_no,
       positions: null,
       partnerData: null,
       cityId: 1,
@@ -81,12 +82,12 @@ export default {
   },
   created() {},
   async mounted() {
-    const riderArray = [17179];
-
+    const riderArray = [this.order.rider_details.rider_id];
     const riderData = await this.requestPartnerLastPosition(riderArray);
     this.partnerData = riderData;
     this.initialize(riderData, this.order);
-    this.data_to_display_on_bar(this.order, this.ETA);
+    this.data_to_display_on_bar(this.order, this.eta);
+    this.display_rider_info(riderData, this.orderNo);
   },
   methods: {
     ...mapActions({
@@ -109,27 +110,30 @@ export default {
         apiKey: true,
         params: { rider_id: riderArray },
       };
-      const lastPosition = await this.request_partner_last_position(payload);
       let data = null;
-      if (typeof lastPosition.data === 'undefined') {
-        const notification = this.display_code_notification(data);
-        this.updateNotification(notification);
-      } else {
+
+      try {
+        const lastPosition = await this.request_partner_last_position(payload);
         data = lastPosition.data;
+      } catch (error) {
+        this.updateNotification(
+          'Something went wrong. Failed to retrieve partner last position',
+        );
       }
-      const partnerArray = data.partnerArray[0];
       let riderTime = '';
-      let riderLat = -1.299923;
-      let riderLong = 36.780921;
-      let speed = 0;
+      let riderLat;
+      let riderLong;
+      let speed;
       let status;
-      if (JSON.parse(data.status) && partnerArray !== 'undefined') {
+      if (JSON.parse(data.status)) {
+        const partnerArray = data.partnerArray[0];
         speed = partnerArray.speed;
         riderLat = partnerArray.lat;
         riderLong = partnerArray.lng;
         riderTime = partnerArray.time;
         status = data.status;
       }
+
       const partnerData = {
         latitude: riderLat,
         course: 0,
@@ -145,8 +149,8 @@ export default {
       return partnerData;
     },
     initialize(riderData, order) {
-      const pickUpLocation = '-1.3001097,36.772822099999985';
-      const deliveryLocation = '-1.294629,36.812681999999995';
+      const pickUpLocation = this.orderDetails.from;
+      const deliveryLocation = this.orderDetails.to;
       const pickUpDelay = 0;
       let map = {};
       let marker = {};
@@ -171,7 +175,6 @@ export default {
         this.timeToDelivery = deliveryTime;
       }
 
-      // ********** FIX ME!!! Handle time delay ****************//
       this.data_to_display_on_bar(order, this.eta);
       const orderNo = order.order_details.order_no;
 
@@ -206,11 +209,15 @@ export default {
           ]);
         }
       }
+      const defaultLocations = pickUpLocation.split(',');
+      // console.log('riderData', res);
+      // eslint-disable-next-line prettier/prettier
+      const centerLat = parseFloat(riderData.latitude === 'undefined' ? parseFloat(defaultLocations[0]) : riderData.latitude);
+      // eslint-disable-next-line prettier/prettier
+      const centerLong = parseFloat(riderData.longitude === 'undefined' ? parseFloat(defaultLocations[1]) : riderData.longitude);
 
-      let myLatlng = new google.maps.LatLng(
-        riderData.latitude,
-        riderData.longitude,
-      );
+      let myLatlng = new google.maps.LatLng(centerLat, centerLong);
+
       const center = new google.maps.LatLng(-1.299923, 36.780921);
       const mapOptions = {
         zoom: 14,

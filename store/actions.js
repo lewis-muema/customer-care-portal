@@ -92,7 +92,7 @@ export default {
     const userType = payload.userType;
     const userID = payload.userID;
 
-    const url = `${config.ADONIS_API}/users/${userType}/${userID}`;
+    const url = `${config.ADONIS_API}users/${userType}/${userID}`;
     try {
       const response = await axios.get(url);
       const userDetails = response.data;
@@ -103,9 +103,17 @@ export default {
   },
   async request_single_order({ state }, orderNo) {
     const config = state.config;
-    const url = `${config.ADONIS_API}/orders/${orderNo}`;
+    const url = `${config.ADONIS_API}orders/${orderNo}`;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, param);
       const data = await response;
       const orderDetails = data.data;
       return orderDetails;
