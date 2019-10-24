@@ -26,16 +26,6 @@ export default {
       pushes: [],
       orderNo: null,
       destination: null,
-      orderColorClass: '#fff',
-      busy: false,
-      show: false,
-      ordersDB: process.browser ? PouchDB('orders') : '',
-      headers: {
-        login: 'staging',
-        passcode: '0FAHmQQmjfsIXdro',
-      },
-      url:
-        'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     };
     /**
      * Function for debugging rabbitMQ
@@ -47,7 +37,16 @@ export default {
 
   computed: {
     ...mapState(['config']),
-    ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev', 'config']),
+    url() {
+      return this.config.RABBITMQ_URL;
+    },
+    headers() {
+      const params = {
+        login: this.config.BROKER_USER,
+        passcode: this.config.BROKER_PASS,
+      };
+      return params;
+    },
   },
   methods: {
     /**
