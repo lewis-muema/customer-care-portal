@@ -86,7 +86,6 @@ export default {
     const riderData = await this.requestPartnerLastPosition(riderArray);
     this.partnerData = riderData;
     this.initialize(riderData, this.order);
-    console.log('hapa', this.eta);
     this.data_to_display_on_bar(this.order, this.eta);
     this.display_rider_info(riderData, this.orderNo);
   },
@@ -121,13 +120,6 @@ export default {
           'Something went wrong. Failed to retrieve partner last position',
         );
       }
-      // if (typeof lastPosition.data === 'undefined') {
-      //   const notification = this.display_code_notification(data);
-      //   this.updateNotification(notification);
-      // } else {
-      //   data = lastPosition.data;
-      //   console.log('lastPosition', data);
-      // }
       let riderTime = '';
       let riderLat;
       let riderLong;
@@ -141,7 +133,6 @@ export default {
         riderTime = partnerArray.time;
         status = data.status;
       }
-      console.log('riderLat', riderLat);
 
       const partnerData = {
         latitude: riderLat,
@@ -218,7 +209,6 @@ export default {
           ]);
         }
       }
-      console.log('pickUpLocation', typeof pickUpLocation);
       const defaultLocations = pickUpLocation.split(',');
       // console.log('riderData', res);
       // eslint-disable-next-line prettier/prettier
@@ -227,8 +217,6 @@ export default {
       const centerLong = parseFloat(riderData.longitude === 'undefined' ? parseFloat(defaultLocations[1]) : riderData.longitude);
 
       let myLatlng = new google.maps.LatLng(centerLat, centerLong);
-      console.log('centerLong', Number(defaultLocations[0]));
-      console.log('centerLat', typeof centerLong);
 
       const center = new google.maps.LatLng(-1.299923, 36.780921);
       const mapOptions = {
@@ -316,7 +304,6 @@ export default {
       }
 
       // center the map to a specific spot (city)
-      console.log('center', center);
       map.setCenter(center);
 
       // center the map to the geometric center of all markers
@@ -348,7 +335,6 @@ export default {
 
     // eslint-disable-next-line prettier/prettier
     data_to_display_on_bar(order, ETA) {
-      console.log('ETA', ETA);
       const pickupTime =
         typeof ETA.picked !== 'undefined'
           ? `Pickup Time: ${this.displayDateTime(ETA.picked)}`
