@@ -105,6 +105,7 @@ export default {
     const config = state.config;
     const url = `${config.ADONIS_API}orders/${orderNo}`;
     const jwtToken = localStorage.getItem('jwtToken');
+
     const params = {
       headers: {
         'Content-Type': 'text/plain',
