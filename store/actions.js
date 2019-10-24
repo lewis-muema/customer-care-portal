@@ -114,7 +114,7 @@ export default {
       },
     };
     try {
-      const response = await axios.get(url, params);
+      const response = await axios.get(url);
       const data = await response;
       const orderDetails = data.data;
       return orderDetails;
