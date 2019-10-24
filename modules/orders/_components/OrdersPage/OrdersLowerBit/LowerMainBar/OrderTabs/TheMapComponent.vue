@@ -86,7 +86,7 @@ export default {
     const riderData = await this.requestPartnerLastPosition(riderArray);
     this.partnerData = riderData;
     this.initialize(riderData, this.order);
-    this.data_to_display_on_bar(this.order, this.ETA);
+    this.data_to_display_on_bar(this.order, this.eta);
     this.display_rider_info(riderData, this.orderNo);
   },
   methods: {
@@ -110,27 +110,30 @@ export default {
         apiKey: true,
         params: { rider_id: riderArray },
       };
-      const lastPosition = await this.request_partner_last_position(payload);
       let data = null;
-      if (typeof lastPosition.data === 'undefined') {
-        const notification = this.display_code_notification(data);
-        this.updateNotification(notification);
-      } else {
+
+      try {
+        const lastPosition = await this.request_partner_last_position(payload);
         data = lastPosition.data;
+      } catch (error) {
+        this.updateNotification(
+          'Something went wrong. Failed to retrieve partner last position',
+        );
       }
-      const partnerArray = data.partnerArray[0];
       let riderTime = '';
-      let riderLat = partnerArray.lat;
-      let riderLong = partnerArray.lng;
-      let speed = partnerArray.speed;
+      let riderLat;
+      let riderLong;
+      let speed;
       let status;
-      if (JSON.parse(data.status) && partnerArray !== 'undefined') {
+      if (JSON.parse(data.status)) {
+        const partnerArray = data.partnerArray[0];
         speed = partnerArray.speed;
         riderLat = partnerArray.lat;
         riderLong = partnerArray.lng;
         riderTime = partnerArray.time;
         status = data.status;
       }
+
       const partnerData = {
         latitude: riderLat,
         course: 0,
@@ -172,7 +175,6 @@ export default {
         this.timeToDelivery = deliveryTime;
       }
 
-      // ********** FIX ME!!! Handle time delay ****************//
       this.data_to_display_on_bar(order, this.eta);
       const orderNo = order.order_details.order_no;
 
@@ -207,11 +209,15 @@ export default {
           ]);
         }
       }
+      const defaultLocations = pickUpLocation.split(',');
+      // console.log('riderData', res);
+      // eslint-disable-next-line prettier/prettier
+      const centerLat = parseFloat(riderData.latitude === 'undefined' ? parseFloat(defaultLocations[0]) : riderData.latitude);
+      // eslint-disable-next-line prettier/prettier
+      const centerLong = parseFloat(riderData.longitude === 'undefined' ? parseFloat(defaultLocations[1]) : riderData.longitude);
 
-      let myLatlng = new google.maps.LatLng(
-        riderData.latitude,
-        riderData.longitude,
-      );
+      let myLatlng = new google.maps.LatLng(centerLat, centerLong);
+
       const center = new google.maps.LatLng(-1.299923, 36.780921);
       const mapOptions = {
         zoom: 14,
