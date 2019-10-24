@@ -105,8 +105,7 @@ export default {
     const config = state.config;
     const url = `${config.ADONIS_API}orders/${orderNo}`;
     const jwtToken = localStorage.getItem('jwtToken');
-
-    const params = {
+    const param = {
       headers: {
         'Content-Type': 'text/plain',
         Accept: 'application/json',
@@ -114,7 +113,7 @@ export default {
       },
     };
     try {
-      const response = await axios.get(url, params);
+      const response = await axios.get(url, param);
       const data = await response;
       const orderDetails = data.data;
       return orderDetails;
