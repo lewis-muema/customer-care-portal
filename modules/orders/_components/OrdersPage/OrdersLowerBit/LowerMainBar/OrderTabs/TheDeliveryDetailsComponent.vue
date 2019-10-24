@@ -278,9 +278,6 @@ export default {
 
     ...mapState(['userData']),
   },
-  mounted() {
-    console.log('this is the length', this.riderDeliverImg.length);
-  },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
