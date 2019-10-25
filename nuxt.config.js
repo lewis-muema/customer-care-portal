@@ -105,6 +105,11 @@ export default {
         href:
           ' https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
       },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic',
+      },
     ],
   },
   /*
@@ -142,7 +147,6 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
-    'nuxt-pouch',
     [
       'nuxt-env',
       {
@@ -152,6 +156,8 @@ export default {
           'BACKEND_KEY',
           'SOLR_JWT',
           'APP_ENV',
+          'BROKER_USER',
+          'BROKER_PASS',
         ],
       },
     ],

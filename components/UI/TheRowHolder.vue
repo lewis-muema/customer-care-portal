@@ -25,9 +25,11 @@
               <span :id="`tip_order_${orderNo}`" data-toggle="tooltip" title="">
                 <span
                   :id="`order_indicator_${orderNo}`"
-                  :class="`label ${status.toLowerCase()}_ind`"
+                  :class="
+                    `label ${order.order_details.order_status.toLowerCase()}_ind`
+                  "
                 >
-                  {{ status }}
+                  {{ order.order_details.order_status }}
                 </span>
               </span>
             </td>
@@ -87,8 +89,8 @@
             <td>
               {{
                 displayAmount(
-                  order.order_currency,
-                  riderDetails.rider_cost,
+                  paymentDetails.order_currency,
+                  riderDetails.rider_amount,
                   vendorTypeId,
                   paymentDetails.fixed_cost,
                   paymentDetails.customer_min_amount,

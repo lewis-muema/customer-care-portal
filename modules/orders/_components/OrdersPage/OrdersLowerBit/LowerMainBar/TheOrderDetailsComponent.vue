@@ -78,7 +78,7 @@
           >Price Tiers</a
         >
       </li>
-      <li class="nav-item">
+      <li class="nav-item" v-if="moreData.delivery_status === 3">
         <a
           class="nav-link"
           :id="`dispute_${orderNo}`"
@@ -100,14 +100,7 @@
           >Dispatch List</a
         >
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          moreData.delivery_status === 3 &&
-            (moreData.dispute_delivery_doc_status === 0) |
-              (moreData.dispute_delivery_doc_status === 4)
-        "
-      >
+      <li class="nav-item" v-if="moreData.delivery_status === 3">
         <a
           class="nav-link"
           :id="`deliverydetails_${orderNo}`"

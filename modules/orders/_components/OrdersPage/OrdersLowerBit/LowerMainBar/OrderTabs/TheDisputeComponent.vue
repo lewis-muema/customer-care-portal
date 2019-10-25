@@ -1,9 +1,9 @@
 <template>
   <div class="box-body">
-    <span :class="determineClass(dispute_status)">
-      {{ determineMsg(dispute_status) }}
+    <span :class="determineClass(this.dispute_status)">
+      {{ determineMsg(this.dispute_status) }}
     </span>
-    <span
+    <!-- <span
       v-if="
         paymentDetails.extra_distance_amount > 0 ||
           paymentDetails.waiting_time_amount > 0
@@ -16,7 +16,7 @@
       >
         Dispute
       </span>
-    </span>
+    </span> -->
     <br />
     <br />
     <table class="table table-bordered">
@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'TheDisputeComponent',
   props: {
@@ -69,14 +71,28 @@ export default {
       moreData: this.order.order_details,
       paymentDetails: this.order.payment_details,
       dispute_status: this.order.order_details.dispute_status,
+      errors: [],
+      notifications: '',
       disputeParams: {
         0: { class: 'badge bg-green pull-left', msg: 'Not disputed' },
-        1: { class: 'badge bg-red pull-left', msg: 'Not Resolved' },
-        2: { class: 'badge bg-aqua pull-left', msg: 'Disputed and resolved' },
+        1: { class: 'badge bg-green pull-left', msg: 'Verified' },
+        2: { class: 'badge bg-red pull-left', msg: 'Disputed ' },
+        3: { class: 'badge bg-aqua pull-left', msg: 'Appealed' },
+        4: { class: 'badge bg-aqua pull-left', msg: 'Disputed and resolved' },
       },
     };
   },
+  mounted() {
+    const notification = [];
+    const actionClass = '';
+    this.updateClass(actionClass);
+    this.updateErrors(notification);
+  },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
     determineClass(disputeStatus) {
       const disputeClass = this.disputeParams[disputeStatus];
       return disputeClass.class;

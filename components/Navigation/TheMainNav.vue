@@ -5,7 +5,7 @@
     </a>
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
-        <li
+        <!-- <li
           class="dropdown notifications-menu "
           id="notifivarion_major_contaianber"
         >
@@ -26,7 +26,7 @@
               <a onclick="clear_all_notes();" href="#">Clear all</a>
             </li>
           </ul>
-        </li>
+        </li> -->
 
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
