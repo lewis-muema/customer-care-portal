@@ -11,8 +11,8 @@ const config = {
     LOGIN_URL: 'https://authtest.sendyit.com/parcel/admin_glogin',
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
-    PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
-    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
+    PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
+    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
@@ -32,8 +32,8 @@ const config = {
     LOGIN_URL: 'https://authtest.sendyit.com/parcel/admin_glogin',
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
-    PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
-    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
+    PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
+    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging /',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',

@@ -128,7 +128,7 @@ export default {
             name: this.recepient,
             cop_id: this.copID,
             email: this.email,
-            option: this.status,
+            remove: this.status,
           },
           request_id: 18,
           action_user: this.actionUser,

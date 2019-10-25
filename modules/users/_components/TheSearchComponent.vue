@@ -89,9 +89,6 @@ export default {
       localStorage.setItem('query', this.query);
       return this.query;
     },
-    isProduction() {
-      return this.$env.APP_ENV === 'production';
-    },
     solarBase() {
       const solrArray = this.solr;
       const currentUser = this.user;
