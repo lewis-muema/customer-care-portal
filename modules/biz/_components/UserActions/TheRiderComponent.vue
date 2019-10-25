@@ -75,6 +75,17 @@ export default {
       }
       const notification = [];
       let actionClass = '';
+      const riderList = this.user.rider_list;
+
+      const existingRider = riderList.filter(list => {
+        return list.rider_id === Number(this.rider);
+      });
+      if (existingRider.length > 0) {
+        notification.push('This rider has already been allocated to this user');
+        this.updateClass('danger');
+        this.updateErrors(notification);
+        return;
+      }
 
       const payload = {
         app: 'CUSTOMERS_APP',
