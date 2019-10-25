@@ -130,7 +130,16 @@ export default {
       return arr;
     },
   },
+  mounted() {
+    const arr = [];
+    this.updateErrors(arr);
+    this.updateClass('');
+  },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
