@@ -37,17 +37,6 @@
       <li class="nav-item">
         <a
           class="nav-link"
-          :id="`users_${copID}`"
-          data-toggle="tab"
-          role="tab"
-          aria-selected="false"
-          @click="viewTab('users', copID)"
-          >Users</a
-        >
-      </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
           :id="`invoice_${copID}`"
           data-toggle="tab"
           role="tab"
