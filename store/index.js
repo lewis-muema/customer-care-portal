@@ -31,6 +31,7 @@ export default {
       token: null,
       config: configurations.CONFIG,
       jwtToken: null,
+      refreshToken: null,
       session: {},
       searchState: false,
       searchedOrder: null,
