@@ -18,7 +18,7 @@
         @input="update"
         @blur="reset"
       />
-      <ul v-show="hasItems" @blur="reset" v-if="isProduction">
+      <ul v-show="hasItems" @blur="reset">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -80,9 +80,6 @@ export default {
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
-    },
-    isProduction() {
-      return this.$env.APP_ENV !== 'production';
     },
     solarBase() {
       const solrArray = this.solr;
@@ -168,13 +165,15 @@ i {
 ul {
   position: absolute;
   padding: 0;
-  margin-top: 8px;
   min-width: 90%;
   background-color: #fff;
   list-style: none;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   z-index: 1000;
+  top: 100%;
+  left: 0;
+  margin: auto;
 }
 li {
   padding: 6px 13px;
