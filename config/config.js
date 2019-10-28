@@ -33,7 +33,7 @@ const config = {
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
-    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging /',
+    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
