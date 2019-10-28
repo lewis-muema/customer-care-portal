@@ -29,7 +29,7 @@ const config = {
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
-    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging /',
+    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
   },
   beta: {},
