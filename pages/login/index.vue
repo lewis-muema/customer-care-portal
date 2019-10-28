@@ -35,14 +35,16 @@ export default {
       clearToken: 'clearToken',
     }),
     signIn(data) {
-      const token = data.token;
-      this.setToken(token);
-      localStorage.setItem('jwtToken', token);
+      const refreshToken = data.data.refresh_token;
+      const accessToken = data.data.access_token;
+      this.setToken(accessToken);
+      localStorage.setItem('jwtToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
       const tokenDuration = 24 * 60 * 60;
       const expirationDate = new Date().getTime() + tokenDuration;
       this.setLogoutTimer(tokenDuration);
       localStorage.setItem('tokenExpiration', expirationDate);
-      Cookie.set('jwt', token);
+      Cookie.set('jwt', accessToken);
       Cookie.set('tokenExpiration', expirationDate);
 
       this.$router.push('/orders');
