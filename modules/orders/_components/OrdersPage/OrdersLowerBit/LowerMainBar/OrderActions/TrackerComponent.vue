@@ -88,7 +88,7 @@ export default {
       };
       try {
         const data = await this.tracker_status(payload);
-        if (data.status === true) {
+        if (data.status) {
           this.assignedImei = data.tracker_imei;
           notification.push(
             `This order is assigned GPS Tracker - ${data.tracker_name}`,

@@ -84,6 +84,20 @@
         </tr>
       </template>
     </tbody>
+    <tfoot>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Vendor</th>
+        <th>City</th>
+        <th>Box</th>
+        <th>Current</th>
+        <th>Loan</th>
+        <th>Savings</th>
+        <th>Status</th>
+        <th>Suspension Status</th>
+      </tr>
+    </tfoot>
   </table>
 </template>
 <script>
@@ -140,10 +154,6 @@ export default {
       try {
         const data = await this.request_single_rider(payload);
         this.riderDetails = data;
-        console.log(
-          'This is the data that has gotten to the component',
-          this.riderDetails,
-        );
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',

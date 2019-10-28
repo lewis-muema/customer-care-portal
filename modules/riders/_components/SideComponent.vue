@@ -54,7 +54,6 @@ export default {
     },
   },
   data() {
-    console.log('this is the prop data', this.details);
     return {
       riderSideClass: null,
     };
