@@ -19,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-if="riderID === null">
+      <tr v-if="riderDetails === null">
         <td colspan="10">Search to view Rider details.</td>
       </tr>
       <template v-else>
@@ -30,26 +30,38 @@
           @click="toggle('rider')"
           :class="{ opened: opened.includes('rider') }"
         >
-          <td>{{ this.riderDetails.rider_name }}</td>
-          <td>{{ this.riderDetails.phone_no }}</td>
-          <td>{{ this.get_vendor_type(this.riderDetails.vendor_type) }}</td>
-          <td>{{ this.riderDetails.city_name }}</td>
-          <td>{{ this.get_carrier_type(this.riderDetails.carrier_type) }}</td>
+          <td>{{ riderDetails.rider_name }}</td>
+          <td>{{ riderDetails.phone_no }}</td>
+          <td>{{ determine_vendor_name(riderDetails.vendor_type) }}</td>
+          <td>{{ riderDetails.city_name }}</td>
+          <td>{{ get_carrier_type(riderDetails.carrier_type) }}</td>
           <td>
-            {{ this.riderDetails.default_currency }}
-            {{ this.riders_data.running_bal }}
+            {{ riderDetails.default_currency }}
+            {{
+              riderDetails.current_list.length > 0
+                ? Math.round(riderDetails.current_list[0].rb)
+                : '0'
+            }}
           </td>
           <td>
-            {{ this.riderDetails.default_currency }}
-            {{ this.riders_data.payments.loan_list.running_balance }}
+            {{ riderDetails.default_currency }}
+            {{
+              riderDetails.loans_list.length > 0
+                ? Math.round(riderDetails.loans_list[0].rb)
+                : '0'
+            }}
           </td>
           <td>
-            {{ this.riderDetails.default_currency }}
-            {{ this.riders_data.payments.savings_list.running_balance }}
+            {{ riderDetails.default_currency }}
+            {{
+              riderDetails.savings_list.length > 0
+                ? Math.round(riderDetails.savings_list[0].rb)
+                : '0'
+            }}
           </td>
-          <td>{{ this.riderDetails.email }}</td>
+          <td>{{ riderDetails.email }}</td>
           <td>
-            {{ this.get_suspension_status(this.riderDetails.rider_stat) }}
+            {{ get_suspension_status(riderDetails.rider_stat) }}
           </td>
         </tr>
 
@@ -57,8 +69,8 @@
           <td colspan="10" class="user-details">
             <div class="lower_slide_bit" style="" :id="`bumba_${riderID}`">
               <div class="row">
-                <SideComponent :details="this.riderDetails" />
-                <MainComponent :rider="this.riderDetails" />
+                <SideComponent :details="riderDetails" />
+                <MainComponent :rider="riderDetails" />
               </div>
             </div>
           </td>
@@ -123,7 +135,7 @@ export default {
         this.riderDetails = data;
         console.log(
           'This is the data that has gotten to the component',
-          JSON.stringify(this.riderDetails),
+          this.riderDetails,
         );
       } catch {
         this.errors.push(
@@ -133,10 +145,7 @@ export default {
     },
     get_vendor_type(vendor) {
       // eslint-disable-next-line eqeqeq
-      if (vendor == 1) {
-        return 'Bike';
-        // eslint-disable-next-line no-unreachable
-      }
+      console.log('these are the vendor types', this.vendorTypes);
     },
     get_carrier_type(carrier) {
       if (carrier === 1) {
