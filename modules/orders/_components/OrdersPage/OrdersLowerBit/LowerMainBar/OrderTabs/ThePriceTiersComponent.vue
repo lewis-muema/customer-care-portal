@@ -8,6 +8,7 @@
         <td>Cost</td>
 
         <td>Return cost</td>
+        <td>cost</td>
       </tr>
       <tr
         v-for="tier in priceTiers"
@@ -39,6 +40,8 @@
   </table>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex';
+
 export default {
   name: 'ThePriceTiersComponent',
   props: {
@@ -59,8 +62,11 @@ export default {
     return {
       orderDetails: this.order,
       priceTiers: this.order.price_tiers,
+      orderNo: this.order.order_details.order_no,
+      ETA: this.eta,
     };
   },
+
   methods: {
     determine_class(bestOption) {
       let rowClass = null;

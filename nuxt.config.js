@@ -147,7 +147,6 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
-    'nuxt-pouch',
     [
       'nuxt-env',
       {

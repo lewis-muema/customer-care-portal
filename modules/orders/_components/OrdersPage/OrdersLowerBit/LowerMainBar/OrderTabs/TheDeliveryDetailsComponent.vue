@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div v-if="riderDeliverImg.length !== null">
+    <div v-if="riderDeliverImg.length === 0">
       No docs found for this delivery
     </div>
     <div v-else>
