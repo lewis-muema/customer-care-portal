@@ -70,7 +70,6 @@ export default {
     }
   },
   async tracker_status({ dispatch }, payload) {
-    console.log('Hii ndo payload imefika', payload);
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
@@ -79,18 +78,14 @@ export default {
     }
   },
   async retrieve_available_trackers({ dispatch }, payload) {
-    console.log('Hii ndo payload imefika', payload);
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
-      console.log('Response', typeof res);
       return res.data;
     } catch (error) {
-      console.log('Error', error);
       return error;
     }
   },
   async assign_tracker({ dispatch }, payload) {
-    console.log('Hii ndo payload imefika', payload);
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
@@ -99,7 +94,6 @@ export default {
     }
   },
   async unassign_tracker({ dispatch }, payload) {
-    console.log('Hii ndo payload imefika', payload);
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
