@@ -53,40 +53,6 @@
             </div>
           </td>
         </tr>
-        <!-- <tr>
-          <td>
-            <div class="form-group">
-              <input
-                type="checkbox"
-                v-model="checked"
-                :id="client"
-                class="form-control"
-              />
-              <label for="checkbox">Credit Client</label>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
-              <input
-                type="text"
-                v-model="client"
-                :id="client"
-                name="client"
-                placeholder="SENDY669"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.client.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.client.required"
-                class="invalid-feedback"
-              >
-                Client ID is Required
-              </div>
-            </div>
-          </td> -->
-        <!-- </tr> -->
       </table>
 
       <button class="btn btn-primary action-button">

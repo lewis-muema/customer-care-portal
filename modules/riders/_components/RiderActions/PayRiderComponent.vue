@@ -62,7 +62,7 @@
                 class="form-control proximity point"
               >
                 <option :value="1"> Normal Pay</option>
-                <!-- <option :value="2"> Credit Mpesa </option> -->
+                <option :value="2"> Credit Mpesa </option>
               </select>
             </div>
           </td>
@@ -93,7 +93,6 @@ export default {
       amount: '',
       narrative: '',
       submitted: false,
-      //   options: ['Savings to Current', 'Current to Savings'],
     };
   },
   validations: {
@@ -135,9 +134,6 @@ export default {
       }
     },
 
-    // determinePayMethod() {
-    //     if(this.permissions)
-    // }
     async savingsTransfer() {
       const notification = [];
       let actionClass = '';

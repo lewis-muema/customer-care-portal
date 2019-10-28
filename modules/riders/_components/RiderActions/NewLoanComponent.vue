@@ -169,7 +169,6 @@ export default {
         this.updateErrors(notification);
       }
     },
-    // async getLoanTypes() {},
     async submitRepayment() {
       const notification = [];
       let actionClass = '';

@@ -50,9 +50,7 @@ export default {
     },
   },
   data() {
-    return {
-      //   options: ['Savings to Current', 'Current to Savings'],
-    };
+    return {};
   },
   computed: {
     currency() {
@@ -89,9 +87,6 @@ export default {
       }
     },
 
-    // determinePayMethod() {
-    //     if(this.permissions)
-    // }
     async edit() {
       const notification = [];
       let actionClass = '';

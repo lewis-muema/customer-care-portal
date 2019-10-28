@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tab-pane" id="statement<?php echo $unique_rider_id;?>">
+    <div class="tab-pane" :id="`loans${user.rider_id}`">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -19,8 +19,8 @@
             <td>{{ loan.pay_type }}</td>
             <td>{{ loan.pay_method }}</td>
             <td>{{ loan.txn }}</td>
-            <td>{{ loan.amount }}</td>
-            <td>{{ loan.rb }}</td>
+            <td>{{ user.default_currency }} {{ loan.amount }}</td>
+            <td>{{ user.default_currency }} {{ Math.round(loan.rb) }}</td>
             <td>{{ loan.status }}</td>
             <td>{{ loan.date_time }}</td>
             <td>{{ loan.description }}</td>
@@ -48,11 +48,17 @@
           <tr>
             <td>
               Running Bal
-              <span class="badge"></span>
+              <span class="badge"
+                >{{ user.default_currency }}
+                {{ Math.round(user.loans_list[0].rb) }}</span
+              >
             </td>
             <td>
               Next Transfer
-              <span class="badge"></span>
+              <span class="badge"
+                >{{ user.default_currency }}
+                {{ Math.round(user.loans_list[0].rb) }}</span
+              >
             </td>
           </tr>
         </tbody>

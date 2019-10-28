@@ -34,7 +34,14 @@
           <td>{{ riderDetails.phone_no }}</td>
           <td>{{ determine_vendor_name(riderDetails.vendor_type) }}</td>
           <td>{{ riderDetails.city_name }}</td>
-          <td>{{ get_carrier_type(riderDetails.carrier_type) }}</td>
+          <td>
+            {{
+              get_carrier_type(
+                riderDetails.carrier_type,
+                riderDetails.vendor_type,
+              )
+            }}
+          </td>
           <td>
             {{ riderDetails.default_currency }}
             {{
@@ -59,7 +66,7 @@
                 : '0'
             }}
           </td>
-          <td>{{ riderDetails.email }}</td>
+          <td>{{ get_account_status(riderDetails.status) }}</td>
           <td>
             {{ get_suspension_status(riderDetails.rider_stat) }}
           </td>
@@ -143,15 +150,25 @@ export default {
         );
       }
     },
-    get_vendor_type(vendor) {
-      // eslint-disable-next-line eqeqeq
-      console.log('these are the vendor types', this.vendorTypes);
-    },
-    get_carrier_type(carrier) {
-      if (carrier === 1) {
-        return 'Box';
+    get_carrier_type(carrier, vendorType) {
+      if (
+        vendorType === 1 ||
+        vendorType === 11 ||
+        vendorType === 22 ||
+        vendorType === 23 ||
+        vendorType === 24
+      ) {
+        if (carrier === 1) {
+          return 'Box';
+        }
+        return 'No box';
+      } else {
+        if (carrier === 1) {
+          return 'Open';
+        } else {
+          return 'Closed';
+        }
       }
-      return 'No box';
     },
 
     get_suspension_status(suspension) {
@@ -164,6 +181,13 @@ export default {
       if (suspension === 2) {
         return 'Suspended';
       }
+    },
+
+    get_account_status(status) {
+      if (status === 1) {
+        return 'Active';
+      }
+      return 'Deactivated';
     },
     toggle(id) {
       const index = this.opened.indexOf(id);

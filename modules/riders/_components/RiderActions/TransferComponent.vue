@@ -93,7 +93,6 @@ export default {
       amount: '',
       narrative: '',
       submitted: false,
-      //   options: ['Savings to Current', 'Current to Savings'],
     };
   },
   validations: {

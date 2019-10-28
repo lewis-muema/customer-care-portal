@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tab-pane" id="saving<?php echo $unique_rider_id;?>">
+    <div class="tab-pane" :id="`savings${user.rider_id}`">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -19,8 +19,8 @@
             <td>{{ saving.pay_type }}</td>
             <td>{{ saving.pay_method }}</td>
             <td>{{ saving.txn }}</td>
-            <td>{{ saving.amount }}</td>
-            <td>{{ saving.rb }}</td>
+            <td>{{ user.default_currency }} {{ saving.amount }}</td>
+            <td>{{ user.default_currency }} {{ saving.rb }}</td>
             <td>{{ saving.status }}</td>
             <td>{{ saving.date_time }}</td>
             <td>{{ saving.description }}</td>
@@ -48,11 +48,11 @@
           <tr>
             <td>
               Running Bal
-              <span class="badge"></span>
+              <span class="badge">{{ user.default_currency }} </span>
             </td>
             <td>
               Next Transfer
-              <span class="badge"></span>
+              <span class="badge">{{ user.default_currency }} </span>
             </td>
           </tr>
         </tbody>
