@@ -113,23 +113,11 @@ export default {
     };
   },
 
-  computed: {
-    // userDetails() {
-    //   return this.user.user_details;
-    // },
-    // currency() {
-    //   return this.userDetails.default_currency
-    //     ? this.userDetails.default_currency
-    //     : '';
-    // },
-  },
   mounted() {
     this.firstShow = 'show';
     this.firstActive = 'active';
     this.riderID = this.user.rider_id;
     this.deliveryList = this.user.delivery_detail;
-    // this.payments = this.user.payments;
-    // this.riderDetails = this.user.rider_list;
   },
   methods: {
     viewTab(tab, riderID) {
