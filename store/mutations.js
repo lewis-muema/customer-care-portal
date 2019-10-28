@@ -43,6 +43,9 @@ export default {
   setToken(state, val) {
     state.jwtToken = val;
   },
+  setRefreshToken(state, val) {
+    state.refreshToken = val;
+  },
   clearToken(state) {
     state.jwtToken = null;
   },
