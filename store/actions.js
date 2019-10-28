@@ -102,7 +102,6 @@ export default {
     }
   },
   async request_single_rider({ state }, payload) {
-    console.log('Riders payload', payload);
     const config = state.config;
     const riderID = payload.riderID;
 
@@ -110,7 +109,6 @@ export default {
     try {
       const response = await axios.get(url);
       const rider_details = response.data;
-      console.log('ridersresponse', rider_details);
       return rider_details;
     } catch (error) {
       return error.response;
