@@ -35,7 +35,6 @@
             showCurrencyBasedAmounts(orderDetails, rates, tier.return_cost)
           "
         ></td>
-        <td>{{ test() }}</td>
       </tr>
     </tbody>
   </table>
