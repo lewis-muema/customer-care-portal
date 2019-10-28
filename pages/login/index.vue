@@ -35,8 +35,8 @@ export default {
       clearToken: 'clearToken',
     }),
     signIn(data) {
-      const refreshToken = data.refresh_token;
-      const accessToken = data.access_token;
+      const refreshToken = data.data.refresh_token;
+      const accessToken = data.data.access_token;
       this.setToken(accessToken);
       localStorage.setItem('jwtToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
