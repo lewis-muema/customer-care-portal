@@ -19,26 +19,36 @@
       <div class="rider_name_here">
         {{ details.rider_name }}
       </div>
-      <ul
-        v-for="delivery in details.delivery_detail"
-        :key="delivery.index"
-        class="timeline timeline-inverse"
-        style="margin-top:35px;"
-      >
-        {{
-          determine_delivery_status(delivery.status)
-        }}
-        <div class="timeline-item">
-          <span class="time">
-            {{ delivery.user_name }}
-          </span>
+      <div v-for="delivery in details.delivery_detail" :key="delivery.index">
+        <ul class="timeline timeline-inverse" style="margin-top:35px;">
+          <li>
+            <i> {{ determine_delivery_status(delivery.status) }} </i>
+            <div class="timeline-item">
+              <span class="time">
+                {{ delivery.user_name }}
 
-          <h3 class="timeline-header no-border">
-            {{ delivery.from_name }}
-            {{ delivery.to_name }}
-          </h3>
-        </div>
-      </ul>
+                <h3 class="timeline-header no-border">
+                  {{ delivery.from_name }}
+                  {{ delivery.to_name }}
+                </h3>
+              </span>
+            </div>
+          </li>
+          <!-- <li>
+            
+            <div class="timeline-item">
+              <span class="time">
+                {{ delivery.user_name }}
+
+                <h3 class="timeline-header no-border">
+                  {{ delivery.from_name }}
+                  {{ delivery.to_name }}
+                </h3>
+              </span>
+            </div>
+          </li> -->
+        </ul>
+      </div>
     </div>
   </div>
 </template>

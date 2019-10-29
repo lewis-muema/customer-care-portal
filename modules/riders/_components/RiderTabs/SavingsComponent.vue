@@ -14,7 +14,7 @@
             <th>Description</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="this.user.savings_list.length > 0">
           <tr v-for="saving in user.savings_list" :key="saving">
             <td>{{ saving.pay_type }}</td>
             <td>{{ saving.pay_method }}</td>
@@ -48,11 +48,15 @@
           <tr>
             <td>
               Running Bal
-              <span class="badge">{{ user.default_currency }} </span>
+              <span v-if="this.user.savings_list.length > 0" class="badge"
+                >{{ user.default_currency }}
+              </span>
             </td>
             <td>
               Next Transfer
-              <span class="badge">{{ user.default_currency }} </span>
+              <span v-if="this.user.savings_list.length > 0" class="badge"
+                >{{ user.default_currency }}
+              </span>
             </td>
           </tr>
         </tbody>

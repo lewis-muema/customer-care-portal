@@ -14,7 +14,7 @@
             <th>Narrative</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="this.user.current_list.length > 0">
           <tr v-for="statement in user.current_list" :key="statement">
             <td>{{ statement.pay_type }}</td>
             <td>{{ statement.pay_method }}</td>
@@ -48,11 +48,15 @@
           <tr>
             <td>
               Running Bal
-              <span class="badge">{{ user.default_currency }} </span>
+              <span v-if="this.user.current_list.length > 0" class="badge"
+                >{{ user.default_currency }}
+              </span>
             </td>
             <td>
               Next Transfer
-              <span class="badge">{{ user.default_currency }} </span>
+              <span v-if="this.user.current_list.length > 0" class="badge"
+                >{{ user.default_currency }}
+              </span>
             </td>
           </tr>
         </tbody>

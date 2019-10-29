@@ -14,7 +14,7 @@
             <th>Narrative</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="this.user.loans_list.length > 0">
           <tr v-for="loan in user.loans_list" :key="loan">
             <td>{{ loan.pay_type }}</td>
             <td>{{ loan.pay_method }}</td>
@@ -48,14 +48,14 @@
           <tr>
             <td>
               Running Bal
-              <span class="badge"
+              <span v-if="this.user.loans_list.length > 0" class="badge"
                 >{{ user.default_currency }}
                 {{ Math.round(user.loans_list[0].rb) }}</span
               >
             </td>
             <td>
               Next Transfer
-              <span class="badge"
+              <span v-if="this.user.loans_list.length > 0" class="badge"
                 >{{ user.default_currency }}
                 {{ Math.round(user.loans_list[0].rb) }}</span
               >
