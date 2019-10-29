@@ -16,6 +16,7 @@
         <tr>
           <td width="50%">
             <div class="form-group actions">
+              <label>Payment Method</label>
               <v-select
                 :options="paymentMethods"
                 :reduce="name => name.payment_method_id"
@@ -40,6 +41,7 @@
           </td>
           <td>
             <div class="form-group">
+              <label>Amount</label>
               <div class="input-group">
                 <div class="input-group-icon">
                   <span> {{ currency }}</span>
@@ -70,27 +72,7 @@
         <tr>
           <td>
             <div class="form-group">
-              <input
-                type="text"
-                v-model="refNo"
-                :id="refNo"
-                name="refNo"
-                placeholder="Ref No"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.refNo.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.refNo.required"
-                class="invalid-feedback"
-              >
-                Reference No is required
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
+              <label>Other Notes</label>
               <input
                 type="text"
                 v-model="narrative"
@@ -106,7 +88,23 @@
                 v-if="submitted && !$v.narrative.required"
                 class="invalid-feedback"
               >
-                Narrative is required
+                Payment Narrative is required
+              </div>
+            </div>
+          </td>
+          <td v-if="refNoMethods.includes(paymentMethod)">
+            <div class="form-group">
+              <label>Payment ID</label>
+              <input
+                type="text"
+                v-model="refNo"
+                :id="refNo"
+                name="refNo"
+                placeholder="Payment ID"
+                :class="`form-control ${hide}`"
+              />
+              <div :class="`invalid-feedback`">
+                Payment ID is required
               </div>
             </div>
           </td>
@@ -137,23 +135,20 @@ export default {
       paymentMethod: '',
       amount: '',
       refNo: '',
-      refName: '',
       narrative: '',
-      phone: '',
       submitted: false,
+      hide: '',
+      refNoMethods: [1, 4],
     };
   },
   validations: {
     paymentMethod: { required },
     amount: { required },
-    refNo: { required },
     narrative: { required },
   },
   computed: {
     currency() {
-      const currency = this.user.user_details.default_currency
-        ? this.user.user_details.default_currency
-        : 'KES';
+      const currency = this.user.user_details.default_currency;
       return currency;
     },
     actionUser() {
@@ -222,6 +217,11 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+
+      if (this.refNoMethods.includes(this.paymentMethod) && this.refNo === '') {
+        this.hide = 'is-invalid';
+        return;
+      }
       const reverse = false;
       const userID = this.user.user_details.user_id;
 
@@ -236,10 +236,12 @@ export default {
           action_data: {
             reverse,
             amount: this.amount,
-            ref_no: this.refNo,
+            ref_no: this.refNoMethods.includes(this.paymentMethod)
+              ? this.refNo
+              : '',
             pay_method: this.paymentMethod,
             cop_id: 0,
-            user_id: 18867,
+            user_id: userID,
             reason: this.narrative,
             currency: this.currency,
           },
@@ -266,3 +268,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.input-group-area {
+  width: 85%;
+}
+</style>
