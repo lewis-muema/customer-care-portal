@@ -16,6 +16,7 @@
         <tr>
           <td width="50%">
             <div class="form-group actions">
+              <label>Payment Method</label>
               <v-select
                 :options="paymentMethods"
                 :reduce="name => name.payment_method_id"
@@ -40,6 +41,8 @@
           </td>
           <td>
             <div class="form-group">
+              <label>Amount</label>
+
               <div class="input-group">
                 <div class="input-group-icon">
                   <span> {{ currency }}</span>
@@ -70,33 +73,13 @@
         <tr>
           <td>
             <div class="form-group">
-              <input
-                type="text"
-                v-model="refNo"
-                :id="refNo"
-                name="refNo"
-                placeholder="Ref No"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.refNo.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.refNo.required"
-                class="invalid-feedback"
-              >
-                Reference No is required
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
+              <label>Other Notes</label>
               <input
                 type="text"
                 v-model="narrative"
                 :id="narrative"
                 name="narrative"
-                placeholder="Narrative"
+                placeholder="Notes"
                 class="form-control"
                 :class="{
                   'is-invalid': submitted && $v.narrative.$error,
@@ -106,51 +89,23 @@
                 v-if="submitted && !$v.narrative.required"
                 class="invalid-feedback"
               >
-                Narrative is required
+                Payment Narrative is required
               </div>
             </div>
           </td>
-        </tr>
-        <tr>
-          <td>
+          <td v-if="refNoMethods.includes(paymentMethod)">
             <div class="form-group">
+              <label>Payment ID</label>
               <input
                 type="text"
-                v-model="refName"
-                :id="refName"
-                name="refName"
-                placeholder="Name"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.refName.$error,
-                }"
+                v-model="refNo"
+                :id="refNo"
+                name="refNo"
+                placeholder="Payment ID"
+                :class="`form-control ${hide}`"
               />
-              <div
-                v-if="submitted && !$v.refName.required"
-                class="invalid-feedback"
-              >
-                Name is required
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
-              <input
-                type="text"
-                v-model="phone"
-                :id="phone"
-                name="phone"
-                placeholder="Phone"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.phone.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.phone.required"
-                class="invalid-feedback"
-              >
-                Phone number is required
+              <div :class="`invalid-feedback`">
+                Payment ID is required
               </div>
             </div>
           </td>
@@ -181,25 +136,20 @@ export default {
       paymentMethod: '',
       amount: '',
       refNo: '',
-      refName: '',
+      hide: '',
       narrative: '',
-      phone: '',
       submitted: false,
+      refNoMethods: [1, 4],
     };
   },
   validations: {
     paymentMethod: { required },
     amount: { required },
-    refNo: { required },
-    phone: { required },
     narrative: { required },
-    refName: { required },
   },
   computed: {
     currency() {
-      const currency = this.user.user_details.default_currency
-        ? this.user.user_details.default_currency
-        : 'KES';
+      const currency = this.user.user_details.default_currency;
       return currency;
     },
     actionUser() {
@@ -271,7 +221,10 @@ export default {
       const reverse = false;
       const copID = this.user.user_details.cop_id;
       const userID = 0;
-
+      if (this.refNoMethods.includes(this.paymentMethod) && this.refNo === '') {
+        this.hide = 'is-invalid';
+        return;
+      }
       const payload = {
         app: 'CUSTOMERS_APP',
         endpoint: 'sendy/cc_actions',
@@ -283,7 +236,9 @@ export default {
           action_data: {
             reverse,
             amount: this.amount,
-            ref_no: this.refNo,
+            ref_no: this.refNoMethods.includes(this.paymentMethod)
+              ? this.refNo
+              : '',
             pay_method: this.paymentMethod,
             cop_id: copID,
             user_id: userID,
