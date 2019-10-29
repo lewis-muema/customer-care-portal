@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     deliveryList() {
-      return this.user.delivery_list;
+      return this.user.orders;
     },
     details() {
       return this.user.user_details;
