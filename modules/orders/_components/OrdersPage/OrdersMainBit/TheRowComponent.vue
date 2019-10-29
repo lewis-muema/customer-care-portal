@@ -282,7 +282,6 @@ export default {
     getSelectedBusinessUnits(units) {
       this.orders = [];
       this.businessUnits = units;
-      console.log('unitsselected', units);
       this.ordersExist = false;
       this.msg = 'There are no orders fitting these criteria';
       if (!this.isEmpty(units)) {
@@ -304,9 +303,6 @@ export default {
     this.setOrders({
       page: 1,
     });
-    // this.companyUnits
-    // state.index = state.array.findIndex(x => x.word === 'you')
-    // console.log('companyUnits', this.getBusinessUnits);
   },
   methods: {
     ...mapMutations({
@@ -322,11 +318,6 @@ export default {
     },
     forceRerender() {
       this.rowComponentKey += 1;
-    },
-    mapVendorToBusinessUnit(array) {
-      // vendorTypes = units[i].vendorTypes;
-
-      console.log('array', array);
     },
     ordersAvailable(orders) {
       const data = orders.data;
