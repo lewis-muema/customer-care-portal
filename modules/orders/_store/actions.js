@@ -69,6 +69,38 @@ export default {
       return error;
     }
   },
+  async tracker_status({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+  async retrieve_available_trackers({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+  async assign_tracker({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+  async unassign_tracker({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
   async cancel_order({ rootState, dispatch }, values) {
     const userData = rootState.userData;
     const params = {

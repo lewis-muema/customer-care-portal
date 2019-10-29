@@ -115,6 +115,19 @@ export default {
       return error.response;
     }
   },
+  async request_single_rider({ state }, payload) {
+    const config = state.config;
+    const riderID = payload.riderID;
+
+    const url = `${config.ADONIS_API}riders/${riderID}`;
+    try {
+      const response = await axios.get(url);
+      const rider_details = response.data;
+      return rider_details;
+    } catch (error) {
+      return error.response;
+    }
+  },
   async request_single_order({ state }, orderNo) {
     const config = state.config;
     const url = `${config.ADONIS_API}orders/${orderNo}`;
