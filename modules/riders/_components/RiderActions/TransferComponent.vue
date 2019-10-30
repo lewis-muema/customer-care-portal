@@ -1,77 +1,83 @@
 <template>
-  <div>
-    <form id="reallocate-form" @submit.prevent="savingsTransfer" class="form">
-      <table class="table user-table">
-        <tr>
-          <td>
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-icon">
-                  <span>{{ currency }}</span>
-                </div>
-                <div class="input-group-area">
-                  <input
-                    type="text"
-                    v-model="amount"
-                    :id="`amount`"
-                    name="amount"
-                    placeholder="Amount"
-                    class="form-control"
-                    :class="{
-                      'is-invalid': submitted && $v.amount.$error,
-                    }"
-                  />
-                </div>
-                <div
-                  v-if="submitted && !$v.amount.required"
-                  class="invalid-feedback"
-                >
-                  Amount is Required
-                </div>
-              </div>
+  <div class="row">
+    <form
+      id="reallocate-form"
+      @submit.prevent="savingsTransfer"
+      class="form-inline"
+    >
+      <div class="col-md-6">
+        <div class="kool_space input-group">
+          <div class="input-group-icon">
+            <span>{{ user.default_currency }}</span>
+          </div>
+          <div class="form-group">
+            <input
+              type="text"
+              v-model="amount"
+              :id="`amount`"
+              name="amount"
+              placeholder="Amount"
+              class="form-control"
+              :class="{
+                'is-invalid': submitted && $v.amount.$error,
+              }"
+            />
+            <div
+              v-if="submitted && !$v.amount.required"
+              class="invalid-feedback"
+            >
+              Amount is Required
             </div>
-          </td>
-          <td>
-            <div class="form-group">
-              <input
-                type="text"
-                v-model="narrative"
-                :id="narrative"
-                name="narrative"
-                placeholder="Narrative"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.narrative.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.narrative.required"
-                class="invalid-feedback"
-              >
-                Narrrative is Required
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="form-group actions">
-              <select
-                name="transfer"
-                id="transfermoney"
-                class="form-control proximity point"
-              >
-                <option :value="1"> Savings to Current</option>
-                <option :value="2"> Current to Savings</option>
-              </select>
-            </div>
-          </td>
-        </tr>
-      </table>
-
-      <button class="btn btn-primary action-button">
-        Submit
-      </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input
+            type="text"
+            v-model="narrative"
+            :id="narrative"
+            name="narrative"
+            placeholder="Narrative"
+            class="form-control"
+            :class="{
+              'is-invalid': submitted && $v.narrative.$error,
+            }"
+          />
+          <div
+            v-if="submitted && !$v.narrative.required"
+            class="invalid-feedback"
+          >
+            Narrrative is Required
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-group col-md-12 actions option">
+          <v-select
+            :options="payType"
+            :reduce="status => status.code"
+            name="status"
+            label="status"
+            class="form-control select"
+            placeholder="Transfer Option"
+            :id="`status`"
+            v-model="status"
+            :class="{
+              'is-invalid': submitted && $v.status.$error,
+            }"
+          >
+          </v-select>
+          <div v-if="submitted && !$v.status.required" class="invalid-feedback">
+            Transfer Option is required
+          </div>
+        </div>
+        <div class="col-md-12">
+          <button class="btn btn-primary action-button transfer-button">
+            Submit
+          </button>
+        </div>
+      </div>
     </form>
   </div>
 </template>
@@ -93,19 +99,19 @@ export default {
       amount: '',
       narrative: '',
       submitted: false,
+      status: '',
+      payType: [
+        { code: '3', status: 'Savings to Current' },
+        { code: '4', status: 'Current to Savings' },
+      ],
     };
   },
   validations: {
     amount: { required },
     narrative: { required },
+    status: { required },
   },
   computed: {
-    currency() {
-      const currency = this.user.payments.default_currency
-        ? this.user.payments.default_currency
-        : 'KES';
-      return currency;
-    },
     actionUser() {
       return this.session.payload.data.name;
     },
@@ -130,6 +136,7 @@ export default {
         this.updateErrors(notification);
       }
     },
+  
     async savingsTransfer() {
       const notification = [];
       let actionClass = '';
@@ -139,30 +146,35 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-      const riderID = this.user.payments.cop_id;
+      const riderID = this.user.rider_id;
+      const riderCurrency = this.user.default_currency;
       const userID = 0;
 
       const payload = {
-        app: 'CUSTOMERS_APP',
-        endpoint: 'sendy/cc_actions',
+        app: 'PARTNERS_APP',
+        endpoint: 'sendy/rt_actions',
         apiKey: true,
         params: {
           channel: 'rider_team',
           data_set: 'rt_actions',
           action_id: 1,
           action_data: {
-            pay_out: true,
-            pay_frommpesa: false,
-            rider_id: riderID,
-            loan_type: 1,
             amount: this.amount,
             narrative: this.narrative,
-            payment_type: 5,
+            rider_id: riderID,
+            pay_customer: false,
+            account_no: '',
+            pay_out: true,
+            pay_frommpesa: false,
+            loan_type: 1,
+            payment_type: this.status,
             mpesa_ref: 'None',
-            currency: this.currency,
+            currency: riderCurrency,
+            transaction_id: 1,
+            billing_type: 1,
           },
-          request_id: 205,
-          action_user: user,
+          request_id: this.status === 3 ? 203 : 204,
+          action_user: this.actionUser,
         },
       };
 
@@ -185,3 +197,15 @@ export default {
   },
 };
 </script>
+<style scoped>
+.form-inline .form-control {
+  width: 100%;
+}
+.option {
+  margin-top: 16px;
+}
+.transfer-button {
+  width: 100%;
+  margin-top: 23px;
+}
+</style>
