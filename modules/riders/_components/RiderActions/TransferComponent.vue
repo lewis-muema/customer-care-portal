@@ -136,7 +136,7 @@ export default {
         this.updateErrors(notification);
       }
     },
-  
+
     async savingsTransfer() {
       const notification = [];
       let actionClass = '';
