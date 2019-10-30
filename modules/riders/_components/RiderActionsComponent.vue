@@ -126,7 +126,7 @@
             role="tabpanel"
             v-if="showTab === `newloan_${riderID}`"
           >
-            <RepayLoanComponent :user="user" :session="userData" />
+            <NewLoanComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -151,7 +151,7 @@ export default {
     RepayLoanComponent: () => import('./RiderActions/RepayLoanComponent'),
     TransferComponent: () => import('./RiderActions/TransferComponent'),
     PayRiderComponent: () => import('./RiderActions/PayRiderComponent'),
-    RepayLoanComponent: () => import('./RiderActions/RepayLoanComponent'),
+    NewLoanComponent: () => import('./RiderActions/NewLoanComponent'),
     EditComponent: () => import('./RiderActions/EditComponent'),
   },
   props: {
