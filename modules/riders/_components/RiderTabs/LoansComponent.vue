@@ -15,12 +15,18 @@
           </tr>
         </thead>
         <tbody v-if="this.user.loans_list.length > 0">
-          <tr v-for="loan in user.loans_list" :key="loan">
+          <tr v-for="loan in user.loans_list" :key="loan.index">
             <td>{{ loan.pay_type }}</td>
             <td>{{ loan.pay_method }}</td>
             <td>{{ loan.txn }}</td>
-            <td>{{ user.default_currency }} {{ loan.amount }}</td>
-            <td>{{ user.default_currency }} {{ Math.round(loan.rb) }}</td>
+            <td>
+              {{ user.default_currency }}
+              {{ new Intl.NumberFormat().format(loan.amount) }}
+            </td>
+            <td>
+              {{ user.default_currency }}
+              {{ new Intl.NumberFormat().format(Math.round(loan.rb)) }}
+            </td>
             <td>{{ loan.status }}</td>
             <td>{{ loan.date_time }}</td>
             <td>{{ loan.description }}</td>
@@ -42,6 +48,7 @@
         <thead>
           <tr>
             <th colspan="1" class="text-center">Summary</th>
+            <th colspan="1" class="text-center"></th>
           </tr>
         </thead>
         <tbody>
@@ -50,15 +57,25 @@
               Running Bal
               <span v-if="this.user.loans_list.length > 0" class="badge"
                 >{{ user.default_currency }}
-                {{ Math.round(user.loans_list[0].rb) }}</span
+                {{
+                  new Intl.NumberFormat().format(
+                    Math.round(user.loans_list[0].rb),
+                  )
+                }}</span
               >
+              <span v-else class="badge">{{ user.default_currency }} 0</span>
             </td>
             <td>
               Next Transfer
-              <span v-if="this.user.loans_list.length > 0" class="badge"
+              <span v-if="this.user.current_list.length > 0" class="badge"
                 >{{ user.default_currency }}
-                {{ Math.round(user.loans_list[0].rb) }}</span
+                {{
+                  new Intl.NumberFormat().format(
+                    Math.round(user.current_list[0].next_transfer),
+                  )
+                }}</span
               >
+              <span v-else class="badge">{{ user.default_currency }} 0</span>
             </td>
           </tr>
         </tbody>

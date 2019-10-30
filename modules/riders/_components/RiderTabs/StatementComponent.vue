@@ -15,12 +15,18 @@
           </tr>
         </thead>
         <tbody v-if="this.user.current_list.length > 0">
-          <tr v-for="statement in user.current_list" :key="statement">
+          <tr v-for="statement in user.current_list" :key="statement.index">
             <td>{{ statement.pay_type }}</td>
             <td>{{ statement.pay_method }}</td>
             <td>{{ statement.txn }}</td>
-            <td>{{ user.default_currency }} {{ statement.amount }}</td>
-            <td>{{ user.default_currency }} {{ statement.rb }}</td>
+            <td>
+              {{ user.default_currency }}
+              {{ new Intl.NumberFormat().format(statement.amount) }}
+            </td>
+            <td>
+              {{ user.default_currency }}
+              {{ new Intl.NumberFormat().format(statement.rb) }}
+            </td>
             <td>{{ statement.status }}</td>
             <td>{{ statement.date_time }}</td>
             <td>{{ statement.description }}</td>
@@ -42,6 +48,7 @@
         <thead>
           <tr>
             <th colspan="1" class="text-center">Summary</th>
+            <th colspan="1" class="text-center"></th>
           </tr>
         </thead>
         <tbody>
@@ -50,13 +57,25 @@
               Running Bal
               <span v-if="this.user.current_list.length > 0" class="badge"
                 >{{ user.default_currency }}
-              </span>
+                {{
+                  new Intl.NumberFormat().format(
+                    Math.round(user.current_list[0].rb),
+                  )
+                }}</span
+              >
+              <span v-else class="badge">{{ user.default_currency }} 0</span>
             </td>
             <td>
               Next Transfer
               <span v-if="this.user.current_list.length > 0" class="badge"
                 >{{ user.default_currency }}
-              </span>
+                {{
+                  new Intl.NumberFormat().format(
+                    Math.round(user.current_list[0].next_transfer),
+                  )
+                }}</span
+              >
+              <span v-else class="badge">{{ user.default_currency }} 0</span>
             </td>
           </tr>
         </tbody>
