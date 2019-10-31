@@ -18,7 +18,7 @@
         @input="update"
         @blur="reset"
       />
-      <ul v-show="hasItems" @blur="reset">
+      <ul v-show="hasItems">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -58,7 +58,7 @@ export default {
       currentUser: 'rider',
       limit: 10,
       minChars: 1,
-      query: this.category === 'billing' ? 'Sendy Bill' : '',
+      query: '',
       rider: 0,
       riderDisplay: '',
       hide: '',
@@ -71,7 +71,7 @@ export default {
   computed: {
     ...mapState(['config']),
     placeholder() {
-      return this.category === 'billing' ? '' : 'Select Rider';
+      return 'Select account to pay';
     },
 
     query_string() {
@@ -100,7 +100,15 @@ export default {
       this.hide = '';
     },
     prepareResponseData(data) {
-      return data.response.docs;
+      const results = data.response.docs;
+      const arr = {
+        rider_name: 'Sendy Bill',
+        phone_no: '',
+        rider_id: 0,
+      };
+      results.splice(0, 0, arr);
+
+      return results;
     },
     onHit(item) {
       this.hide = 'hide';
@@ -134,6 +142,9 @@ export default {
 .Typeahead {
   position: relative;
 }
+.Typeahead__input ::placeholder {
+  color: red;
+}
 .Typeahead__input {
   width: 90%;
   font-size: 14px;
@@ -141,7 +152,7 @@ export default {
   line-height: 1.42857143;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   font-weight: 300;
-  padding: 8px 26px;
+  padding: 8px 11px;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
 }
