@@ -1,13 +1,14 @@
 <template>
-  <span>
+  <span :id="`mmm${orderNo}`">
     <div class="order_map_here">
       <div
-        id="map-canvas4"
+        :id="`map-canvas4-${orderNo}`"
+        :ref="`map-canvas4-${orderNo}`"
         style="width: 100%; height: 446px;"
         class="tracking_map"
       ></div>
       <div
-        id="over_map"
+        :id="`over_map_${orderNo}`"
         :class="
           determine_class(
             orderDetails.delivery_status,
@@ -18,21 +19,32 @@
         <table width="100%" class="tracking_map_table">
           <tr>
             <td id="f10">
-              <span :id="`f2${orderNo}`"></span><br />
-              <span :id="`f3${orderNo}`"></span>
+              <span :id="`f2${orderNo}`"> {{ rider_name }}</span
+              ><br />
+              <span :id="`f3${orderNo}`">{{ rider_phone }}</span>
             </td>
             <td id="f20">
-              <span :id="`f1${orderNo}`"></span>
-              <span :id="`f4${orderNo}`"></span><br />
-              <span :id="`f5${orderNo}`"></span>
+              <span :id="`f1${orderNo}`"> {{ rider_online_status }}</span>
+              <span :id="`f4${orderNo}`"> {{ rider_speed }}</span
+              ><br />
+              <span
+                :id="`f5${orderNo}`"
+                v-if="timeDifference > 1800000 && timeDifference < 3600000"
+                >{{ `Last seen:  ${str_date}` }}</span
+              >
             </td>
             <td id="f30">
-              <span :id="`f11${orderNo}`"></span><br />
-              <span :id="`f12${orderNo}`"></span><br />
+              <span v-if="pickupETA !== null" :id="`f11${orderNo}`">{{
+                pickupETA
+              }}</span>
+              <span :id="`f12${orderNo}`"> {{ pickupTime }}</span
+              ><br />
             </td>
             <td id="f40">
-              <span :id="`f6${orderNo}`"></span><br />
-              <span :id="`f7${orderNo}`"></span>
+              <span v-if="deliveryETA !== null" :id="`f6${orderNo}`">
+                {{ deliveryETA }}</span
+              ><br />
+              <span :id="`f7${orderNo}`"> {{ deliveryTime }}</span>
             </td>
           </tr>
         </table>
@@ -75,10 +87,26 @@ export default {
       distToDelivery: 'N/A',
       timeToDelivery: 'N/A',
       riderMarker: {},
+      pickupETA: null,
+      pickupTime: '',
+      deliveryETA: null,
+      deliveryTime: '',
+      rider_online_status: '',
+      rider_name: '',
+      rider_phone: '',
+      rider_speed: '',
+      str_date: '',
+      timeDifference: '',
     };
   },
   computed: {
     ...mapState(['jwtToken']),
+    pickUpLocation() {
+      return this.orderDetails.from;
+    },
+    deliveryLocation() {
+      return this.orderDetails.to;
+    },
   },
   created() {},
   async mounted() {
@@ -120,11 +148,13 @@ export default {
           'Something went wrong. Failed to retrieve partner last position',
         );
       }
+      const defaultLocations = this.pickUpLocation.split(',');
+
       let riderTime = '';
-      let riderLat;
-      let riderLong;
-      let speed;
-      let status;
+      let riderLat = defaultLocations[0];
+      let riderLong = defaultLocations[1];
+      let speed = 0;
+      let status = data.status;
       if (JSON.parse(data.status)) {
         const partnerArray = data.partnerArray[0];
         speed = partnerArray.speed;
@@ -149,8 +179,8 @@ export default {
       return partnerData;
     },
     initialize(riderData, order) {
-      const pickUpLocation = this.orderDetails.from;
-      const deliveryLocation = this.orderDetails.to;
+      const pickUpLocation = this.pickUpLocation;
+      const deliveryLocation = this.deliveryLocation;
       const pickUpDelay = 0;
       let map = {};
       let marker = {};
@@ -209,25 +239,28 @@ export default {
           ]);
         }
       }
-      const defaultLocations = pickUpLocation.split(',');
-      // console.log('riderData', res);
       // eslint-disable-next-line prettier/prettier
-      const centerLat = parseFloat(riderData.latitude === 'undefined' ? parseFloat(defaultLocations[0]) : riderData.latitude);
+      const centerLat = riderData.latitude;
       // eslint-disable-next-line prettier/prettier
-      const centerLong = parseFloat(riderData.longitude === 'undefined' ? parseFloat(defaultLocations[1]) : riderData.longitude);
+      const centerLong = riderData.longitude;
+      const defaultLocations = this.pickUpLocation.split(',');
 
       let myLatlng = new google.maps.LatLng(centerLat, centerLong);
+      const center = new google.maps.LatLng(
+        defaultLocations[0],
+        defaultLocations[1],
+      );
 
-      const center = new google.maps.LatLng(-1.299923, 36.780921);
       const mapOptions = {
         zoom: 14,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
       };
-      map = new google.maps.Map(
-        document.getElementById('map-canvas4'),
-        mapOptions,
-      );
+      const divRef = `map-canvas4-${this.orderNo}`;
+      // eslint-disable-next-line prettier/prettier
+      const mapID = document.getElementById(`map-canvas4-${this.orderNo}`);
+      map = new google.maps.Map(mapID, mapOptions);
+
       const locations = myPathArray;
 
       if (riderData !== null) {
@@ -332,31 +365,47 @@ export default {
 
       return decodedLevels;
     },
+    displayDateTime(date) {
+      let displayString = '--';
+      if (typeof date !== 'undefined') {
+        displayString = this.getFormattedDate(date, 'h.mm a DD/MM/YYYY');
+      }
+      return displayString;
+    },
+    displayDateRange(dateRange) {
+      let displayString = '--';
+      if (typeof dateRange !== 'undefined') {
+        const range = dateRange.split('to');
 
+        const eta_split = dateRange.split('to');
+        const start = eta_split[0].replace(/\s+/g, '');
+        const end = eta_split[1].replace(/\s+/g, '');
+
+        const timeFrom = this.getFormattedDate(start, 'h.mm a DD/MM/YYYY');
+        const timeTo = this.getFormattedDate(end, 'h.mm a DD/MM/YYYY');
+        displayString = `${timeFrom} - ${timeTo}`;
+      }
+      return displayString;
+    },
     // eslint-disable-next-line prettier/prettier
     data_to_display_on_bar(order, ETA) {
-      const pickupTime =
+      this.pickupTime =
         typeof ETA.picked !== 'undefined'
           ? `Pickup Time: ${this.displayDateTime(ETA.picked)}`
           : '';
-      const pickupETA =
+      this.pickupETA =
         typeof ETA.etp !== 'undefined'
           ? `Pickup ETA: ${this.displayDateRange(ETA.etp)} `
           : '';
-      const deliveryTime =
+      this.deliveryTime =
         typeof ETA.delivered !== 'undefined'
           ? `Delivery Time: ${this.displayDateTime(ETA.delivered)} `
           : '';
-      const deliveryETA =
+      this.deliveryETA =
         typeof ETA.etd !== 'undefined'
           ? `Delivery ETA: ${this.displayDateRange(ETA.etd)} `
           : '';
       const orderNo = order.order_details.order_no;
-
-      document.getElementById(`f11${orderNo}`).innerHTML = pickupETA;
-      document.getElementById(`f12${orderNo}`).innerHTML = pickupTime;
-      document.getElementById(`f6${orderNo}`).innerHTML = deliveryETA;
-      document.getElementById(`f7${orderNo}`).innerHTML = deliveryTime;
     },
 
     show_vendor_image(order, riderData) {
@@ -414,17 +463,12 @@ export default {
         rider_online_status = 'Offline';
         rider_speed = '';
       }
-
-      document.getElementById(`f1${orderNo}`).innerHTML = rider_online_status;
-      document.getElementById(`f2${orderNo}`).innerHTML = rider_name;
-      document.getElementById(`f3${orderNo}`).innerHTML = rider_phone;
-      document.getElementById(`f4${orderNo}`).innerHTML = rider_speed;
-
-      if (timeDifference > 1800000 && timeDifference < 3600000) {
-        document.getElementById(
-          `f5${orderNo}`,
-        ).innerHTML = `Last seen:  ${str_date}`;
-      }
+      this.rider_online_status = rider_online_status;
+      this.rider_name = rider_name;
+      this.rider_phone = rider_phone;
+      this.rider_speed = rider_speed;
+      this.str_date = str_date;
+      this.timeDifference = timeDifference;
     },
     get_current_timestamp() {
       const currentdate = new Date();
