@@ -315,7 +315,6 @@ export default {
           action_user: this.actionUser,
         },
       };
-      console.log('payload', payload);
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
