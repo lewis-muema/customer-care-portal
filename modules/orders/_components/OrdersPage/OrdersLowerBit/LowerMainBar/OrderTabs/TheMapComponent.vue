@@ -148,9 +148,11 @@ export default {
           'Something went wrong. Failed to retrieve partner last position',
         );
       }
+      const defaultLocations = this.pickUpLocation.split(',');
+
       let riderTime = '';
-      let riderLat = -1.299923;
-      let riderLong = 36.780921;
+      let riderLat = defaultLocations[0];
+      let riderLong = defaultLocations[1];
       let speed = 0;
       let status = data.status;
       if (JSON.parse(data.status)) {
@@ -237,14 +239,17 @@ export default {
           ]);
         }
       }
-      const defaultLocations = pickUpLocation.split(',');
       // eslint-disable-next-line prettier/prettier
       const centerLat = riderData.latitude;
       // eslint-disable-next-line prettier/prettier
       const centerLong = riderData.longitude;
+      const defaultLocations = this.pickUpLocation.split(',');
 
       let myLatlng = new google.maps.LatLng(centerLat, centerLong);
-      const center = new google.maps.LatLng(-1.299923, 36.780921);
+      const center = new google.maps.LatLng(
+        defaultLocations[0],
+        defaultLocations[1],
+      );
 
       const mapOptions = {
         zoom: 14,
