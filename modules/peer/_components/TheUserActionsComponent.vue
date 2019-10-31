@@ -54,7 +54,11 @@
             role="tabpanel"
             v-if="showTab === `bill_${userID}`"
           >
-            <TheBillingComponent />
+            <TheBillingComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
           </div>
         </div>
       </div>
