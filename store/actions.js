@@ -119,10 +119,18 @@ export default {
     const config = state.config;
     const userType = payload.userType;
     const userID = payload.userID;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
 
     const url = `${config.ADONIS_API}users/${userType}/${userID}`;
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, param);
       const userDetails = response.data;
       return userDetails;
     } catch (error) {
@@ -133,9 +141,18 @@ export default {
     const config = state.config;
     const riderID = payload.riderID;
 
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
     const url = `${config.ADONIS_API}riders/${riderID}`;
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, param);
       const rider_details = response.data;
       return rider_details;
     } catch (error) {
