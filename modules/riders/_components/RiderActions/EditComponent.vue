@@ -2,25 +2,46 @@
   <div>
     <form id="reallocate-form" @submit.prevent="edit" class="form-inline">
       <div class="form-group col-md-6">
-        <select
-          name="suspension"
-          id="suspension"
-          class="form-control proximity point"
+        <v-select
+          :options="suspension"
+          :reduce="type => type.code"
+          name="type"
+          label="type"
+          class="form-control select suspension"
+          placeholder="Select Status"
+          :id="`Status`"
+          v-model="Status"
+          :class="{
+            'is-invalid': submitted && $v.Status.$error,
+          }"
         >
-          <option :value="1"> Suspend </option>
-          <option :value="2"> Deactivate </option>
-        </select>
+        </v-select>
+        <div v-if="submitted && !$v.Status.required" class="invalid-feedback">
+          Suspension Status is required
+        </div>
       </div>
 
       <div class="form-group actions col-md-6">
-        <select
-          name="exclusitivity"
-          id="exclusitivity"
-          class="form-control rider-input"
+        <v-select
+          :options="dedication"
+          :reduce="type => type.code"
+          name="type"
+          label="type"
+          class="form-control select exclusivity"
+          placeholder="Select Exclusivity status"
+          :id="`Exclusivity`"
+          v-model="Exclusivity"
+          :class="{
+            'is-invalid': submitted && $v.Exclusivity.$error,
+          }"
         >
-          <option :value="1"> Dedicated</option>
-          <option :value="2"> Open </option>
-        </select>
+        </v-select>
+        <div
+          v-if="submitted && !$v.Exclusivity.required"
+          class="invalid-feedback"
+        >
+          Exclusivity status is Required
+        </div>
       </div>
 
       <div class="form-group actions col-md-12">
@@ -45,20 +66,24 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      submitted: false,
+      Status: '',
+      Exclusivity: '',
+      suspension: [
+        { code: 2, type: 'Suspend' },
+        { code: 0, type: 'Deactivate' },
+      ],
+      dedication: [{ code: 0, type: 'Open' }, { code: 1, type: 'Dedicated' }],
+    };
+  },
+  validations: {
+    Status: { required },
+    Exclusivity: { required },
   },
   computed: {
-    currency() {
-      const currency = this.user.payments.default_currency
-        ? this.user.payments.default_currency
-        : 'KES';
-      return currency;
-    },
     actionUser() {
       return this.session.payload.data.name;
-    },
-    permissions() {
-      return JSON.parse(this.userData.payload.data.privilege);
     },
   },
   methods: {
@@ -91,12 +116,13 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-      const riderID = this.user.payments.rider_id;
-      const userID = 0;
+      const riderID = this.user.rider_id;
+      const email = this.session.payload.data.email;
+      const adminID = this.session.payload.data.admin_id;
 
       const payload = {
-        app: 'CUSTOMERS_APP',
-        endpoint: 'sendy/cc_actions',
+        app: 'PARTNERS_APP',
+        endpoint: 'sendy/rt_actions',
         apiKey: true,
         params: {
           channel: 'rider_team',
@@ -104,11 +130,14 @@ export default {
           action_id: 2,
           action_data: {
             rider_id: riderID,
-            rider_stat: stat,
-            exclusivity_status: strict_allocation,
+            rider_stat: this.Status,
+            exclusivity_status: this.Exclusivity,
+            _user_id: adminID,
+            action_user: this.actionUser,
+            _user_email: email,
           },
           request_id: 208,
-          action_user: user,
+          action_user: this.actionUser,
         },
       };
 
@@ -133,9 +162,15 @@ export default {
 </script>
 <style scoped>
 .rider-input {
-  width: 100%;
+  width: 162px;
 }
 .action-button {
   margin-top: 15px;
+}
+.suspension {
+  width: 210px;
+}
+.exclusivity {
+  width: 225px;
 }
 </style>
