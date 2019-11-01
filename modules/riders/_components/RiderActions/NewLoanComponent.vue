@@ -5,12 +5,13 @@
       @submit.prevent="savingsTransfer"
       class="form-inline"
     >
-      <div class="col-md-6">
-        <div class="kool_space input-group">
+      <div class="form-group col-md-4 user-input">
+        <label>Amount</label>
+        <div class="input-group">
           <div class="input-group-icon">
-            <span>{{ user.default_currency }}</span>
+            <span> {{ user.default_currency }}</span>
           </div>
-          <div class="form-group">
+          <div class="input-group-area">
             <input
               type="text"
               v-model="amount"
@@ -22,103 +23,94 @@
                 'is-invalid': submitted && $v.amount.$error,
               }"
             />
-            <div
-              v-if="submitted && !$v.amount.required"
-              class="invalid-feedback"
-            >
-              Amount is Required
-            </div>
+          </div>
+          <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
+            Amount is required
           </div>
         </div>
       </div>
-      <div class="form-group">
-        <div class="form-group col-md-12 actions option">
-          <label>Type of Loan </label>
-          <v-select
-            :options="loanTypes"
-            :reduce="type => type.code"
-            name="type"
-            label="type"
-            class="form-control select"
-            placeholder="Type of Loan"
-            :id="`loantype`"
-            v-model="loantype"
-            :class="{
-              'is-invalid': submitted && $v.loantype.$error,
-            }"
-          >
-          </v-select>
-          <div
-            v-if="submitted && !$v.loantype.required"
-            class="invalid-feedback"
-          >
-            loantype is required
-          </div>
+      <div class="form-group col-md-4 actions user-input">
+        <label>Type of Loan </label>
+        <v-select
+          :options="loanTypes"
+          :reduce="type => type.code"
+          name="type"
+          label="type"
+          class="form-control select"
+          placeholder="Type of Loan"
+          :id="`loantype`"
+          v-model="loantype"
+          :class="{
+            'is-invalid': submitted && $v.loantype.$error,
+          }"
+        >
+        </v-select>
+        <div v-if="submitted && !$v.loantype.required" class="invalid-feedback">
+          loantype is required
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Narrative </label>
-            <input
-              type="text"
-              v-model="narrative"
-              :id="narrative"
-              name="narrative"
-              placeholder="Narrative"
-              class="form-control"
-              :class="{
-                'is-invalid': submitted && $v.narrative.$error,
-              }"
-            />
-            <div
-              v-if="submitted && !$v.narrative.required"
-              class="invalid-feedback"
-            >
-              Narrrative is Required
-            </div>
-          </div>
+      </div>
+      <!-- <div class=""> -->
+      <div class="col-md-4 form-group user-input">
+        <label>Narrative </label>
+        <input
+          type="text"
+          v-model="narrative"
+          :id="narrative"
+          name="narrative"
+          placeholder="Narrative"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.narrative.$error,
+          }"
+        />
+        <div
+          v-if="submitted && !$v.narrative.required"
+          class="invalid-feedback"
+        >
+          Narrrative is Required
         </div>
-        <div class="form-group col-md-12 actions option">
-          <label>Repayment Frequency</label>
-          <v-select
-            :options="repaymentModes"
-            :reduce="status => status.code"
-            name="status"
-            label="status"
-            class="form-control select"
-            placeholder="Repayment Mode"
-            :id="`mode`"
-            v-model="repaymentmode"
-            :class="{
-              'is-invalid': submitted && $v.repaymentmode.$error,
-            }"
-          >
-          </v-select>
-          <div
-            v-if="submitted && !$v.repaymentmode.required"
-            class="invalid-feedback"
-          >
-            Repayment Mode is required
-          </div>
+      </div>
+      <div class="form-group col-md-4 actions user-input">
+        <label>Repayment Frequency</label>
+        <v-select
+          :options="repaymentModes"
+          :reduce="status => status.code"
+          name="status"
+          label="status"
+          class="form-control select"
+          placeholder="Repayment Mode"
+          :id="`mode`"
+          v-model="repaymentmode"
+          :class="{
+            'is-invalid': submitted && $v.repaymentmode.$error,
+          }"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.repaymentmode.required"
+          class="invalid-feedback"
+        >
+          Repayment Mode is required
         </div>
-        <div class="form-group" v-if="this.repaymentmode === '1'">
-          <input
-            type="text"
-            v-model="repaymentamount"
-            :id="repaymentamount"
-            name="repaymentamount"
-            placeholder="Repayment Amount"
-            class="form-control bill-input"
-            :class="`form-control bill-input ${hide}`"
-          />
-          <div class="invalid-feedback">
-            Reference No is required
-          </div>
+      </div>
+      <div class="form-group user-input" v-if="this.repaymentmode === '1'">
+        <input
+          type="text"
+          v-model="repaymentamount"
+          :id="repaymentamount"
+          name="repaymentamount"
+          placeholder="Repayment Amount"
+          class="form-control bill-input"
+          :class="`form-control bill-input ${hide}`"
+        />
+        <div class="invalid-feedback">
+          Reference No is required
         </div>
-        <div class="col-md-12">
-          <button class="btn btn-primary action-button transfer-button">
-            Submit
-          </button>
-        </div>
+      </div>
+      <div class="col-md-12">
+        <button class="btn btn-primary action-button transfer-button">
+          Submit
+        </button>
       </div>
     </form>
   </div>
@@ -256,8 +248,8 @@ export default {
 .option {
   margin-top: 16px;
 }
-.transfer-button {
-  width: 100%;
-  margin-top: 23px;
+
+.user-input {
+  margin-bottom: 15px;
 }
 </style>
