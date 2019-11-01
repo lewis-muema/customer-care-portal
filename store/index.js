@@ -15,10 +15,10 @@ const apix = new Apix({
     },
   },
   resources: [
-    { name: 'orders', url: 'orders' },
-    { name: 'exchangeRates', url: `exchange-rates` },
-    { name: 'businessUnits', url: `business-units` },
-    { name: 'cities', url: `cities` },
+    { name: 'orders', url: 'orders', ssr: false },
+    { name: 'exchangeRates', url: `exchange-rates`, ssr: false },
+    { name: 'businessUnits', url: `business-units`, ssr: false },
+    { name: 'cities', url: `cities`, ssr: false },
   ],
 });
 const baseUrl = process.env.baseUrl;
