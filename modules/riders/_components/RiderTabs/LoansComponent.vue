@@ -27,7 +27,7 @@
               {{ user.default_currency }}
               {{ new Intl.NumberFormat().format(Math.round(loan.rb)) }}
             </td>
-            <td>{{ loan.status }}</td>
+            <td>{{ loan.status === 1 ? 'Completed' : 'Incomplete' }}</td>
             <td>{{ loan.date_time }}</td>
             <td>{{ loan.description }}</td>
           </tr>
