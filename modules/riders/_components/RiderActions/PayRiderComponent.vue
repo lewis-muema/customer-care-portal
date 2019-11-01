@@ -1,73 +1,82 @@
 <template>
   <div>
-    <form id="reallocate-form" @submit.prevent="savingsTransfer" class="form">
-      <table class="table user-table">
-        <tr>
-          <td>
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-icon">
-                  <span>{{ currency }}</span>
-                </div>
-                <div class="input-group-area">
-                  <input
-                    type="text"
-                    v-model="amount"
-                    :id="`amount`"
-                    name="amount"
-                    placeholder="Amount"
-                    class="form-control"
-                    :class="{
-                      'is-invalid': submitted && $v.amount.$error,
-                    }"
-                  />
-                </div>
-                <div
-                  v-if="submitted && !$v.amount.required"
-                  class="invalid-feedback"
-                >
-                  Amount is Required
-                </div>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
-              <input
-                type="text"
-                v-model="narrative"
-                :id="narrative"
-                name="narrative"
-                placeholder="Narrative"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.narrative.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.narrative.required"
-                class="invalid-feedback"
-              >
-                Narrrative is Required
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="form-group actions">
-              <select
-                name="transfer"
-                id="transfermoney"
-                class="form-control proximity point"
-              >
-                <option :value="1"> Normal Pay</option>
-                <option :value="2"> Credit Mpesa </option>
-              </select>
-            </div>
-          </td>
-        </tr>
-      </table>
+    <!-- <div v-if="paymentMethods === null">
+      <p>
+        Fetching user payment methods ...
+        <i class="fa fa-spinner fa-spin loader"></i>
+      </p>
+    </div> -->
+    <form id="reallocate-form" @submit.prevent="submitPayment" class="form">
+      <div class="form-group">
+        <label>Amount</label>
+
+        <div class="input-group">
+          <div class="input-group-icon">
+            <span> {{ user.default_currency }}</span>
+          </div>
+          <div class="input-group-area">
+            <input
+              type="text"
+              v-model="amount"
+              :id="`amount`"
+              name="amount"
+              placeholder="Amount"
+              class="form-control"
+              :class="{
+                'is-invalid': submitted && $v.amount.$error,
+              }"
+            />
+          </div>
+          <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
+            Amount is required
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Narrative</label>
+        <input
+          type="text"
+          v-model="narrative"
+          :id="narrative"
+          name="narrative"
+          placeholder="Narrative"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.narrative.$error,
+          }"
+        />
+        <div
+          v-if="submitted && !$v.narrative.required"
+          class="invalid-feedback"
+        >
+          Payment Narrative is required
+        </div>
+      </div>
+
+      <div class="form-group actions">
+        <label>Payment Method</label>
+        <v-select
+          :options="payMethods"
+          :reduce="type => type.code"
+          name="type"
+          label="type"
+          placeholder="Payment Method"
+          class="form-control select"
+          :id="`reallocate_reason`"
+          v-model="paymentMethod"
+          :class="{
+            'is-invalid': submitted && $v.paymentMethod.$error,
+          }"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.paymentMethod.required"
+          class="invalid-feedback"
+        >
+          Payment Method is required
+        </div>
+      </div>
 
       <button class="btn btn-primary action-button">
         Submit
@@ -75,13 +84,12 @@
     </form>
   </div>
 </template>
-
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 
 export default {
-  name: 'PayRiderComponent',
+  name: 'ThePaymentComponent',
   props: {
     user: {
       type: Object,
@@ -90,29 +98,24 @@ export default {
   },
   data() {
     return {
+      paymentMethod: '',
       amount: '',
       narrative: '',
       submitted: false,
+      payMethods: [{ code: 1, type: 'Normal Pay' }],
     };
   },
   validations: {
+    paymentMethod: { required },
     amount: { required },
     narrative: { required },
   },
   computed: {
-    currency() {
-      const currency = this.user.payments.default_currency
-        ? this.user.payments.default_currency
-        : 'KES';
-      return currency;
-    },
     actionUser() {
       return this.session.payload.data.name;
     },
-    permissions() {
-      return JSON.parse(this.userData.payload.data.privilege);
-    },
   },
+
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -123,6 +126,7 @@ export default {
       request_payment_methods: 'request_payment_methods',
       perform_user_action: 'perform_user_action',
     }),
+
     handleError(status, error) {
       const notification = [];
       let actionClass = '';
@@ -133,8 +137,7 @@ export default {
         this.updateErrors(notification);
       }
     },
-
-    async savingsTransfer() {
+    async submitPayment() {
       const notification = [];
       let actionClass = '';
 
@@ -143,12 +146,14 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-      const riderID = this.user.payments.cop_id;
-      const userID = 0;
+      const riderID = this.user.rider_id;
+      const riderCurrency = this.user.default_currency;
+      const email = this.session.payload.data.email;
+      const adminID = this.session.payload.data.admin_id;
 
       const payload = {
-        app: 'CUSTOMERS_APP',
-        endpoint: 'sendy/cc_actions',
+        app: 'PARTNERS_APP',
+        endpoint: 'sendy/rt_actions',
         apiKey: true,
         params: {
           channel: 'rider_team',
@@ -161,12 +166,15 @@ export default {
             loan_type: 1,
             amount: this.amount,
             narrative: this.narrative,
-            payment_type: 5,
-            mpesa_ref: 'None',
-            currency: this.currency,
+            payment_type: 1,
+            mpesa_ref: this.narrative,
+            currency: riderCurrency,
+            _user_id: adminID,
+            action_user: this.actionUser,
+            _user_email: email,
           },
-          request_id: 205,
-          action_user: user,
+          request_id: 201,
+          action_user: this.actionUser,
         },
       };
 

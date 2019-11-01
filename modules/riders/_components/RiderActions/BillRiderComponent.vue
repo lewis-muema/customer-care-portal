@@ -1,60 +1,108 @@
 <template>
   <div>
     <form id="reallocate-form" @submit.prevent="submitPayment" class="form">
-      <table class="table user-table">
-        <tr>
-          <td width="50%">
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-icon">
-                  <span> {{ currency }}</span>
-                </div>
-                <div class="input-group-area">
-                  <input
-                    type="text"
-                    v-model="amount"
-                    :id="`amount`"
-                    name="amount"
-                    placeholder="Amount"
-                    class="form-control"
-                    :class="{
-                      'is-invalid': submitted && $v.amount.$error,
-                    }"
-                  />
-                </div>
-                <div
-                  v-if="submitted && !$v.amount.required"
-                  class="invalid-feedback"
-                >
-                  Amount is required
-                </div>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
-              <input
-                type="text"
-                v-model="narrative"
-                :id="narrative"
-                name="narrative"
-                placeholder="Narrative"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.narrative.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.narrative.required"
-                class="invalid-feedback"
-              >
-                Narrative is required
-              </div>
-            </div>
-          </td>
-        </tr>
-      </table>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-icon">
+            <span> {{ user.default_currency }}</span>
+          </div>
+          <div class="input-group-area">
+            <input
+              type="text"
+              v-model="amount"
+              :id="`amount`"
+              name="amount"
+              placeholder="Amount"
+              class="form-control"
+              :class="{
+                'is-invalid': submitted && $v.amount.$error,
+              }"
+            />
+          </div>
+          <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
+            Amount is required
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6 user-input">
+        <label class="bill">Billing Type</label>
+        <v-select
+          :options="billingTypes"
+          :reduce="name => name.value"
+          name="name"
+          label="name"
+          placeholder="Select Billing Type"
+          class="form-control select user-billing"
+          :id="`billing_types`"
+          v-model="billingType"
+          :class="{
+            'is-invalid': submitted && $v.billingType.$error,
+          }"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.billingType.required"
+          class="invalid-feedback"
+        >
+          Billing type is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="bill">Other Notes</label>
+        <input
+          type="text"
+          v-model="narrative"
+          :id="narrative"
+          name="narrative"
+          placeholder="Narrative"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.narrative.$error,
+          }"
+        />
+        <div
+          v-if="submitted && !$v.narrative.required"
+          class="invalid-feedback"
+        >
+          Narrative is required
+        </div>
+      </div>
+      <div class="form-group  col-md-6 user-input">
+        <label class="bill">Order Number / Transaction ID</label>
 
+        <input
+          type="text"
+          v-model="refNo"
+          name="refNo"
+          placeholder="Reference No"
+          class="form-control bill-input"
+          :class="`form-control bill-input ${hide}`"
+        />
+        <div class="invalid-feedback">
+          Reference No is required
+        </div>
+      </div>
+      <div>
+        <input type="checkbox" id="checkbox" v-model="ischecked" />
+        <label for="checkbox" class="charge_commission--label"
+          >Credit Client</label
+        >
+      </div>
+      <div class="form-group  col-md-6 user-input" v-if="ischecked">
+        <label class="bill">Cop Account Name / User Phone Number </label>
+
+        <input
+          type="text"
+          v-model="clientNo"
+          name="clientNo"
+          placeholder="SENDY1083/0701234567"
+          class="form-control bill-input"
+          :class="`form-control bill-input ${hide}`"
+        />
+        <div class="invalid-feedback">
+          Client No is required
+        </div>
+      </div>
       <button class="btn btn-primary action-button">
         Pay
       </button>
@@ -72,29 +120,62 @@ export default {
       type: Object,
       required: true,
     },
-    // session,
   },
   data() {
     return {
       amount: '',
       narrative: '',
       submitted: false,
+      account: '',
+      ischecked: false,
+      clientNo: '',
+      billingType: '',
+      refNo: '',
+      peer: null,
+      hide: '',
+      billingTypes: [
+        { value: 1, name: 'Extra Miles', transactionID: 1 },
+        { value: 2, name: 'Waiting Time', transactionID: 1 },
+        { value: 4, name: 'Return Trip', transactionID: 1 },
+        { value: 5, name: 'Extra Stops', transactionID: 1 },
+        { value: 6, name: 'Offline Orders', transactionID: 1 },
+        { value: 7, name: 'Dedicated Driver', transactionID: 1 },
+        { value: 8, name: 'Cancellation Fee', transactionID: 1 },
+        { value: 9, name: 'Offloading Charges', transactionID: 1 },
+        { value: 10, name: 'Loaders', transactionID: 1 },
+        { value: 11, name: 'Top Up', transactionID: 1 },
+        { value: 12, name: 'Cash Order', transactionID: 1 },
+        { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
+        { value: 100, name: 'Other', transactionID: 100 },
+      ],
+      noTransactiodIDTypes: [6, 7, 14],
     };
   },
   validations: {
     amount: { required },
     narrative: { required },
+    billingType: { required },
+    refNo: { required },
   },
 
   computed: {
-    currency() {
-      const currency = this.user.default_currency
-        ? this.user.default_currency
-        : 'KES';
-      return currency;
-    },
     actionUser() {
       return this.session.payload.data.name;
+    },
+    transactionID() {
+      const arr = this.billingTypes;
+      const index = arr
+        .map(c => {
+          return c.value;
+        })
+        .indexOf(this.billingType);
+      const selectedType = arr[index];
+      return typeof selectedType !== 'undefined'
+        ? selectedType.transactionID
+        : '';
+    },
+    client() {
+      return this.isPeer();
     },
   },
 
@@ -108,6 +189,17 @@ export default {
       request_payment_methods: 'request_payment_methods',
       perform_user_action: 'perform_user_action',
     }),
+    isPeer() {
+      if (this.clientNo.length > 5) {
+        if (this.clientNo.includes('sendy')) {
+          this.peer = false;
+          return this.peer;
+        } else {
+          this.peer = true;
+          return this.peer;
+        }
+      }
+    },
     async submitPayment() {
       const notification = [];
       let actionClass = '';
@@ -117,27 +209,38 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+      const riderID = this.user.rider_id;
+      const riderCurrency = this.user.default_currency;
+      const email = this.session.payload.data.email;
+      const adminID = this.session.payload.data.admin_id;
 
       const payload = {
-        app: 'CUSTOMERS_APP',
-        endpoint: 'sendy/cc_actions',
+        app: 'PARTNERS_APP',
+        endpoint: 'sendy/rt_actions',
         apiKey: true,
         params: {
           channel: 'rider_team',
           data_set: 'rt_actions',
           action_id: 1,
           action_data: {
-            amount: this.amount,
-            narrative: this.narrative,
-            rider_id: this.user.rider_id,
-            pay_customer: '',
-            account_no: '',
             pay_out: true,
             pay_frommpesa: false,
+            rider_id: riderID,
             loan_type: 1,
+            amount: this.amount,
+            narrative: this.narrative,
             payment_type: 2,
             mpesa_ref: 'None',
-            currency: this.currency,
+            currency: riderCurrency,
+            _user_id: adminID,
+            action_user: this.actionUser,
+            _user_email: email,
+            pay_customer: this.ischecked,
+            account_no: this.clientNo,
+            billing_type: this.billingType,
+            order_number: this.refNo,
+            transaction_id: this.transactionID,
+            is_peer: this.client,
           },
           request_id: 202,
           action_user: this.actionUser,
