@@ -252,4 +252,12 @@ export default {
 .user-input {
   margin-bottom: 15px;
 }
+.input-group-area {
+  width: 77%;
+}
+.select {
+  margin-left: 0;
+  padding: 0;
+  width: 95%;
+}
 </style>

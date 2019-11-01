@@ -167,4 +167,9 @@ export default {
 .action-button {
   margin: 15px;
 }
+.select {
+  margin-left: -15px;
+  padding: 0;
+  width: 95%;
+}
 </style>

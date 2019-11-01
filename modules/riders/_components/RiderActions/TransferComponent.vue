@@ -206,4 +206,12 @@ export default {
 .input-group-area {
   width: 85%;
 }
+.input-group-icon {
+  padding: 8px 12px;
+}
+.select {
+  margin-left: 0;
+  padding: 0;
+  width: 95%;
+}
 </style>

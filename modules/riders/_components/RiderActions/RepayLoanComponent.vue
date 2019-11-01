@@ -6,7 +6,7 @@
       class="form-inline"
     >
       <div class="form-group col-md-6 actions option user-input">
-        <label>Payment Method</label>
+        <label class="rider-lable">Payment Method</label>
         <v-select
           :options="reapymentmethod"
           :reduce="type => type.code"
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="form-group col-md-6 actions option user-input">
-        <label>OutStanding Loan </label>
+        <label class="rider-lable">OutStanding Loan </label>
         <v-select
           :options="loanTypes"
           :reduce="type => type.code"
@@ -92,7 +92,7 @@
         </div>
       </div>
       <div class="form-group col-md-6 actions option user-input">
-        <label>Repayment Frequency</label>
+        <label class="rider-lable">Repayment Frequency</label>
         <v-select
           :options="repaymentModes"
           :reduce="status => status.code"
@@ -276,5 +276,14 @@ export default {
 }
 .user-input {
   margin-bottom: 17px;
+}
+.input-group-icon {
+  padding: 8px 12px;
+}
+.input-group-area {
+  width: 85%;
+}
+.rider-lable {
+  margin-left: 15px;
 }
 </style>

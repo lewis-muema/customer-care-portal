@@ -31,4 +31,10 @@ export default {
 .user-main {
   border-top: 3px solid #3c8dbc;
 }
+.form-inline .input-group {
+  width: 100%;
+}
+.input-group-icon {
+  padding: 8px 12px;
+}
 </style>
