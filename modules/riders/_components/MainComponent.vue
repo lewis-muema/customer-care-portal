@@ -28,7 +28,4 @@ export default {
 .user-main {
   border-top: 3px solid #3c8dbc;
 }
-.col-md-8 {
-  padding-left: 65px;
-}
 </style>
