@@ -101,20 +101,10 @@ export default {
     },
   },
   mounted() {
+    this.clearErrorMessages();
     this.userID = this.user.user_details.user_id;
   },
   methods: {
-    ...mapMutations({
-      updateErrors: 'setActionErrors',
-      updateClass: 'setActionClass',
-    }),
-    clearErrorMessages() {
-      const notification = [];
-      const actionClass = '';
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
-    },
-
     viewTab(tab, userID) {
       this.clearErrorMessages();
 

@@ -22,6 +22,9 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    this.clearErrorMessages();
+  },
 };
 </script>
 <style>
