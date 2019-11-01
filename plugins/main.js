@@ -73,6 +73,16 @@ Vue.mixin({
     },
   },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
+    clearErrorMessages() {
+      const notification = [];
+      const actionClass = '';
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     deliveryStatus(order) {
       const verification = order.order_details.values.delivery_verification;
       const notesStatus = verification.physical_delivery_note_status;
