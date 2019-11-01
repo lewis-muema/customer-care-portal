@@ -199,7 +199,18 @@ export default {
       return this.moreData.price_type === 1 ? 'Standard' : 'Express';
     },
   },
+  mounted() {
+    const actionClass = '';
+    const arr = [];
+
+    this.updateClass(actionClass);
+    this.updateErrors(arr);
+  },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
     toggle(id) {
       const index = this.opened.indexOf(id);
       if (index > -1) {
