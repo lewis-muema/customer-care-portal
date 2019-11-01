@@ -10,45 +10,35 @@
           height="200px;"
         />
       </div>
-      <!-- end profile image -->
       <img
         class="profile-user-img img-responsive rider_picture_custom"
-        :src="`https://api.sendyit.com/parcel/doc/photo/${details.rider_id};?>`"
+        :src="`https://api.sendyit.com/parcel/doc/photo/${details.rider_id}`"
       />
 
       <div class="rider_name_here">
         {{ details.rider_name }}
       </div>
-      <div v-for="delivery in details.delivery_detail" :key="delivery.index">
-        <ul class="timeline timeline-inverse" style="margin-top:35px;">
-          <li>
-            <i> {{ determine_delivery_status(delivery.status) }} </i>
-            <div class="timeline-item">
-              <span class="time">
-                {{ delivery.user_name }}
 
-                <h3 class="timeline-header no-border">
-                  {{ delivery.from_name }}
-                  {{ delivery.to_name }}
-                </h3>
-              </span>
-            </div>
-          </li>
-          <!-- <li>
-            
-            <div class="timeline-item">
-              <span class="time">
-                {{ delivery.user_name }}
-
-                <h3 class="timeline-header no-border">
-                  {{ delivery.from_name }}
-                  {{ delivery.to_name }}
-                </h3>
-              </span>
-            </div>
-          </li> -->
-        </ul>
-      </div>
+      <ul class="timeline timeline-inverse" style="margin-top:35px;">
+        <li v-for="delivery in details.delivery_detail" :key="delivery.index">
+          <i
+            :class="
+              `${log[delivery.order_status.replace(/ +/g, '')] ||
+                'fa fa-envelope bg-blue fasendy'} `
+            "
+          >
+          </i>
+          <div class="timeline-item">
+            <span class="time">
+              {{ delivery.user_name }}
+            </span>
+            <h3 class="timeline-header no-border">
+              {{ delivery.from_name }}
+              {{ delivery.to_name }}
+            </h3>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -66,6 +56,12 @@ export default {
   data() {
     return {
       riderSideClass: null,
+      log: {
+        delivered: 'fa fa-thumbs-up bg-green fasendy',
+        intransit: 'fa  fa-road bg-yellow fasendy',
+        pending: 'fa fa-exclamation bg-red fasendy',
+        confirmed: 'fa fa-clock-o bg-orange fasendy',
+      },
     };
   },
   computed: {
@@ -74,23 +70,10 @@ export default {
     },
     ...mapState(['config']),
   },
-
-  methods: {
-    determine_delivery_status(status) {
-      if (status === 'delivered') {
-        this.riderSideClass = 'fa fa-thumbs-up bg-green fasendy';
-      }
-      if (status === 'in transit') {
-        this.riderSideClass = 'fa  fa-road bg-yellow fasendy';
-      }
-      if (status === 'confirmed') {
-        this.riderSideClass = 'fa fa-clock-o bg-orange fasendy';
-      }
-      if (status === 'pending') {
-        this.riderSideClass = 'fa fa-exclamation bg-red fasendy';
-      }
-    },
-  },
 };
 </script>
-<style scoped></style>
+<style scoped>
+.rider_picture_custom {
+  margin-top: -114px;
+}
+</style>

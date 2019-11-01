@@ -7,27 +7,29 @@
     >
       <div class="body-box">
         <table class="table table-bordered">
-          <tr>
-            <td width="50%">Email</td>
-            <td>{{ user.email }}</td>
-          </tr>
-          <tr>
-            <td width="50%">City</td>
-            <td>{{ user.city_name }}</td>
-          </tr>
-          <tr>
-            <td width="50%">Carrier</td>
-            <td>{{ determine_carrier_type(user.carrier_type) }}</td>
-          </tr>
-          <tr>
-            <td width="50%">Tracking Mode</td>
-            <td>{{ determine_tracker_status(user.tracker) }}</td>
-          </tr>
+          <tbody>
+            <tr>
+              <td width="50%">Email</td>
+              <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+              <td width="50%">City</td>
+              <td>{{ user.city_name }}</td>
+            </tr>
+            <tr>
+              <td width="50%">Carrier</td>
+              <td>{{ determine_carrier_type(user.carrier_type) }}</td>
+            </tr>
+            <tr>
+              <td width="50%">Tracking Mode</td>
+              <td>{{ determine_tracker_status(user.tracker) }}</td>
+            </tr>
 
-          <tr>
-            <td width="50%">Allocation</td>
-            <td>{{ determine_allocation(user.exclusivity_status) }}</td>
-          </tr>
+            <tr>
+              <td width="50%">Allocation</td>
+              <td>{{ determine_allocation(user.exclusivity_status) }}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

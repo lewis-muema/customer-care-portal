@@ -1,38 +1,33 @@
 <template>
   <div>
-    <form id="reallocate-form" @submit.prevent="edit" class="form">
-      <table class="table user-table">
-        <tr>
-          <td>
-            <div class="form-group actions">
-              <select
-                name="suspension"
-                id="suspension"
-                class="form-control proximity point"
-              >
-                <option :value="1"> Suspend </option>
-                <option :value="2"> Deactivate </option>
-              </select>
-            </div>
-          </td>
-          <td>
-            <div class="form-group actions">
-              <select
-                name="exclusitivity"
-                id="exclusitivity"
-                class="form-control proximity point"
-              >
-                <option :value="1"> Dedicated</option>
-                <option :value="2"> Open </option>
-              </select>
-            </div>
-          </td>
-        </tr>
-      </table>
+    <form id="reallocate-form" @submit.prevent="edit" class="form-inline">
+      <div class="form-group col-md-6">
+        <select
+          name="suspension"
+          id="suspension"
+          class="form-control proximity point"
+        >
+          <option :value="1"> Suspend </option>
+          <option :value="2"> Deactivate </option>
+        </select>
+      </div>
 
-      <button class="btn btn-primary action-button">
-        Submit
-      </button>
+      <div class="form-group actions col-md-6">
+        <select
+          name="exclusitivity"
+          id="exclusitivity"
+          class="form-control rider-input"
+        >
+          <option :value="1"> Dedicated</option>
+          <option :value="2"> Open </option>
+        </select>
+      </div>
+
+      <div class="form-group actions col-md-12">
+        <button class="btn btn-primary action-button">
+          Submit
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -136,3 +131,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+.rider-input {
+  width: 100%;
+}
+.action-button {
+  margin-top: 15px;
+}
+</style>
