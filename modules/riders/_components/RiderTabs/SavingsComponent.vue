@@ -27,7 +27,7 @@
               {{ user.default_currency }}
               {{ new Intl.NumberFormat().format(saving.rb) }}
             </td>
-            <td>{{ saving.status }}</td>
+            <td>{{ saving.status === 1 ? 'Completed' : 'Incomplete' }}</td>
             <td>{{ saving.date_time }}</td>
             <td>{{ saving.description }}</td>
           </tr>

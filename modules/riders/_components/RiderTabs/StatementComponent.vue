@@ -27,7 +27,7 @@
               {{ user.default_currency }}
               {{ new Intl.NumberFormat().format(statement.rb) }}
             </td>
-            <td>{{ statement.status }}</td>
+            <td>{{ statement.status === 1 ? 'Completed' : 'Incomplete' }}</td>
             <td>{{ statement.date_time }}</td>
             <td>{{ statement.description }}</td>
           </tr>
