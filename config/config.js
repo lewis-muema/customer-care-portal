@@ -1,7 +1,7 @@
 const config = {
   development: {
     BASE_URL: 'http://localhost:8080/',
-    PRIVATE_API: 'https://auth.sendyit.com/parcel',
+    PRIVATE_API: 'https://authtest.sendyit.com/parcel',
     POSITIONS: 'https://authtest.sendyit.com/positions/',
     CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
     PARTNERS_APP: 'https://authtest.sendyit.com/partners/',
@@ -15,6 +15,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
+    AUTH: 'https://authtest.sendyit.com/',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
@@ -37,6 +38,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
+    AUTH: 'https://authtest.sendyit.com/',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
@@ -60,6 +62,8 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
+    AUTH: 'https://auth.sendyit.com/',
+
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',
     BROKER_PASS: 'Z_EQ-T5rO-oQVx-OqL2',

@@ -33,13 +33,27 @@ export default {
     commit('setToken', token);
     commit('setRefreshToken', refreshToken);
   },
-  logout({ commit }) {
-    // https://authtest.sendyit.com/parcel/admin_glogin
-    commit('clearToken');
-    Cookie.remove('jwt');
-    Cookie.remove('tokenExpiration');
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('tokenExpiration');
+  async logout({ commit, state }) {
+    const customConfig = state.config;
+    const url = customConfig.AUTH;
+    const endpoint = 'logout';
+    const refreshToken = localStorage.getItem('refreshToken');
+    const params = { refresh_token: refreshToken };
+    const payload = JSON.stringify(params);
+
+    try {
+      const response = await axios.post(`${url}${endpoint}`, payload);
+      commit('clearToken');
+      Cookie.remove('jwt');
+      Cookie.remove('refreshToken');
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('refreshToken');
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
   setBreadCrumbs({ commit }) {
     const breadcrumbsObject = {
