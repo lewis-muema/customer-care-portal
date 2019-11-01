@@ -142,6 +142,26 @@
       <li
         class="nav-item"
         v-if="
+          (order.order_details.confirm_status > 0 &&
+            order.rider_details.vendor_type_id === 20) ||
+            (order.order_details.confirm_status > 0 &&
+              order.rider_details.vendor_type_id === 25)
+        "
+      >
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('tracker', orderNo)"
+          :id="`tracker__${orderNo}`"
+        >
+          <span class="fa fa-fw fa-map-marker"></span>
+          GPS-Tracker
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        v-if="
           isTruck &&
             order.order_details.order_status !== 'delivered' &&
             order.order_details.order_status !== 'cancelled' &&
@@ -239,6 +259,14 @@
         >
           <TheTicketComponent :order="order" />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`tracker_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `tracker_${orderNo}`"
+        >
+          <TrackerComponent :order="order" />
+        </div>
       </div>
       <div
         :class="`tab-pane fade ${show} ${active}`"
@@ -265,6 +293,7 @@ export default {
     TheProximityComponent: () => import('./TheProximityComponent'),
     TheSMSComponent: () => import('./TheSMSComponent'),
     TheTicketComponent: () => import('./TheTicketComponent'),
+    TrackerComponent: () => import('./TrackerComponent'),
     TheMarkInTransitComponent: () => import('./TheMarkInTransitComponent'),
   },
   props: {

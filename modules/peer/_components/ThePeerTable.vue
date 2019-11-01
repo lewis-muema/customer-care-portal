@@ -88,11 +88,11 @@ export default {
     ...mapGetters(['getPeerUser', 'getUserActionSuccess']),
   },
   watch: {
-    getPeerUser(user) {
-      this.singlePeerUserRequest(user, 'peer');
+    async getPeerUser(user) {
+      await this.singlePeerUserRequest(user, 'peer');
       return (this.userID = user);
     },
-    getUserActionSuccess(status) {
+    async getUserActionSuccess(status) {
       const arr = [];
       this.userInfo = null;
       this.details = null;
@@ -102,7 +102,7 @@ export default {
       this.updateSuccess(false);
       this.updateClass('');
       this.updateErrors(arr);
-      this.singlePeerUserRequest(this.userID, 'peer');
+      await this.singlePeerUserRequest(this.userID, 'peer');
     },
   },
   mounted() {

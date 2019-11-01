@@ -12,7 +12,7 @@
 import VueTypeahead from 'vue-typeahead';
 
 export default {
-  name: 'TheBizSearchDisplay',
+  name: 'TheRiderSearchDisplay',
   extends: VueTypeahead,
 
   props: {

@@ -6,7 +6,7 @@ import Cookie from 'js-cookie';
 export default {
   initAuth({ state, commit }, req) {
     let token = null;
-    let expirationDate = null;
+    let refreshToken = null;
     if (req) {
       if (!req.headers.cookie) {
         return;
@@ -18,26 +18,42 @@ export default {
         return;
       }
       token = jwtCookie.split('=')[1];
-      expirationDate = req.headers.cookie
+      refreshToken = req.headers.cookie
         .split(';')
-        .find(c => c.trim().startsWith('tokenExpiration='))
+        .find(c => c.trim().startsWith('refreshToken='))
         .split('=')[1];
     } else {
       token = localStorage.getItem('jwtToken');
-      expirationDate = localStorage.getItem('tokenExpiration');
+      refreshToken = localStorage.getItem('refreshToken');
 
-      if (new Date() > expirationDate || !token) {
+      if (!refreshToken || !token) {
         return;
       }
     }
     commit('setToken', token);
+    commit('setRefreshToken', refreshToken);
   },
-  logout({ commit }) {
-    commit('clearToken');
-    Cookie.remove('jwt');
-    Cookie.remove('tokenExpiration');
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('tokenExpiration');
+  async logout({ commit, state }) {
+    const customConfig = state.config;
+    const url = customConfig.AUTH;
+    const endpoint = 'logout';
+    const refreshToken = localStorage.getItem('refreshToken');
+    const params = { refresh_token: refreshToken };
+    const payload = JSON.stringify(params);
+
+    try {
+      const response = await axios.post(`${url}${endpoint}`, payload);
+      commit('clearToken');
+      Cookie.remove('jwt');
+      Cookie.remove('refreshToken');
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('refreshToken');
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
   setBreadCrumbs({ commit }) {
     const breadcrumbsObject = {
@@ -60,7 +76,7 @@ export default {
     const routeName = $nuxt.$route.name;
     commit('setbreadcrumbs', breadcrumbsObject.peer);
   },
-  async requestAxiosPost({ state, commit }, payload) {
+  async requestAxiosPost({ state, commit, dispatch }, payload) {
     const customConfig = state.config;
     const url = customConfig[payload.app];
     let endpoint = payload.endpoint;
@@ -84,7 +100,19 @@ export default {
       const response = await axios.post(`${url}${endpoint}`, values, config);
       return response;
     } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+
       return error.response;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async handleErrors({ state }, error) {
+    switch (error) {
+      case 403:
+        break;
+      default:
     }
   },
   async request_single_user({ state }, payload) {
@@ -97,6 +125,19 @@ export default {
       const response = await axios.get(url);
       const userDetails = response.data;
       return userDetails;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async request_single_rider({ state }, payload) {
+    const config = state.config;
+    const riderID = payload.riderID;
+
+    const url = `${config.ADONIS_API}riders/${riderID}`;
+    try {
+      const response = await axios.get(url);
+      const rider_details = response.data;
+      return rider_details;
     } catch (error) {
       return error.response;
     }

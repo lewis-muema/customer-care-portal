@@ -178,6 +178,7 @@ export default {
       cities: null,
       msg: '',
       returned: false,
+      companyUnits: [],
     };
   },
   computed: {
@@ -188,6 +189,7 @@ export default {
       'getSelectedCities',
       'getReorganizeStatus',
       'getOrderCount',
+      'getBusinessUnits',
     ]),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
     autoLoadDisabled() {
@@ -246,6 +248,9 @@ export default {
       const newOrders = currentOrdersData.concat(ordersData.data);
       this.orders = newOrders;
       return this.updateOrderCount(this.orderCount);
+    },
+    getBusinessUnits(units) {
+      return (this.companyUnits = units);
     },
     getOrderStatuses(statusArray) {
       this.orders = [];
@@ -388,6 +393,34 @@ export default {
         `${pushobj.order_no}`,
       ]);
 
+      const units = this.companyUnits;
+      const selectedUnits = this.businessUnits;
+      let vendorTypes = [];
+      const vendorID = pushobj.vendor_type_id;
+      for (let i = 0; i < units.length; i++) {
+        const types = units[i].vendorTypes;
+
+        vendorTypes = vendorTypes.concat(types);
+      }
+
+      const existIndex = vendorTypes.findIndex(
+        type => type.vendor_type_id === vendorID,
+      );
+      const unitArray = vendorTypes[existIndex];
+
+      const vendorUnit = units.findIndex(
+        unit => unit.business_unit_id === unitArray.business_unit_id,
+      );
+      const vendorAbbr = units[vendorUnit].abbr;
+      if (selectedUnits !== null) {
+        if (selectedUnits.includes(vendorAbbr.toLowerCase())) {
+          this.displayPushedOrder(pushobj, index);
+        }
+      } else {
+        this.displayPushedOrder(pushobj, index);
+      }
+    },
+    displayPushedOrder(pushobj, index) {
       if (index >= 0) {
         this.orders.splice(index, 1);
         this.orders.unshift(pushobj);

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :id="`response_${orderNo}_reallocate`"></div>
-    <form id="reallocate-form" @submit.prevent="reallocateOrder">
+    <form id="reallocate-form" @submit.prevent="checkTrackerStatus">
       <div class="form-group">
         <v-select
           :options="customerInfo"
@@ -62,6 +62,8 @@ export default {
   data() {
     return {
       orderNo: this.order.order_details.order_no,
+      vendorType: this.order.rider_details.vendor_type_id,
+      assignedImei: '',
       reason: '',
       description: '',
       submitted: false,
@@ -78,7 +80,42 @@ export default {
     }),
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
+      tracker_status: '$_orders/tracker_status',
     }),
+    async checkTrackerStatus() {
+      if (this.vendorType === 25 || this.vendorType === 20) {
+        const notification = [];
+        let actionClass = '';
+
+        const payload = {
+          app: 'POSITIONS',
+          endpoint: 'get_tracker_details',
+          apiKey: true,
+          params: { order_no: this.orderNo },
+        };
+        try {
+          const data = await this.tracker_status(payload);
+          if (data.status) {
+            this.assignedImei = data.tracker_imei;
+            notification.push(
+              `This order is assigned GPS Tracker - ${data.tracker_name}. Unassign the tracker before reallocating the order`,
+            );
+            actionClass = 'alert alert-info';
+          } else {
+            return this.reallocateOrder();
+          }
+        } catch (error) {
+          notification.push(
+            'Something went wrong. Try again or contact Tech Support',
+          );
+          actionClass = 'danger';
+        }
+        this.updateClass(actionClass);
+        this.updateErrors(notification);
+      } else {
+        return this.reallocateOrder();
+      }
+    },
     async reallocateOrder() {
       this.submitted = true;
       this.$v.$touch();

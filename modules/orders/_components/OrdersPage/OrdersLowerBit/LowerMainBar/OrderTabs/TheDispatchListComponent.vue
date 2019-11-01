@@ -8,16 +8,18 @@
     </div>
     <div v-if="dispatchStatus && !this.check_partner_list(partnerList)">
       <p>
-        No driver has been found. Please check whether there is a driver nearby
-        or if the nearby drivers have the correct carrier type. Other factors to
-        check are the vendor type, order exclusivity to the account, driver
-        exclusivity, driver approval status among others. Check
-        <a
-          href="https://gitlab.com/sendy/docs/wikis/order-dispatch-checklist"
-          target="_blank"
-          >https://gitlab.com/sendy/docs/wikis/order-dispatch-checklist</a
-        >
-        for more.
+        {{ msg }}.
+        <mark>
+          <strong
+            >Last Dispatch Time :
+            {{
+              getOrderFormattedDate(
+                originalDispatchList.last_dispatch_time,
+                'LLLL',
+              )
+            }}
+          </strong>
+        </mark>
       </p>
     </div>
     <table
@@ -30,12 +32,21 @@
           <th>Phone</th>
           <th>Distance</th>
           <th>Dispatch Count</th>
+          <th>Last Dispatch Time</th>
         </tr>
         <tr v-for="list in partnerList" :key="list.index">
           <td>{{ list.name }}</td>
           <td>{{ list.phone_no }}</td>
           <td>{{ list.distance }}</td>
           <td>{{ list.dispatch_count }}</td>
+          <td>
+            {{
+              getOrderFormattedDate(
+                list.last_dispatch_time,
+                'DD/MM/YYYY, hh:mm a',
+              )
+            }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -69,6 +80,8 @@ export default {
       dispatchList: null,
       partnerList: {},
       dispatchStatus: null,
+      originalDispatchList: {},
+      msg: '',
     };
   },
   mounted() {
@@ -87,14 +100,20 @@ export default {
       };
       const data = await this.request_dispatch_list(payload);
       this.dispatchStatus = data.status;
+      let initialRider = 0;
+      if (this.dispatchStatus) {
+        this.msg = data.message;
+      }
 
       const partnerArray = data.partner_list;
-
       for (let i = 0; i < partnerArray.length; i++)
         if (partnerArray[i].rider_id === 1) {
+          initialRider = partnerArray[i];
           partnerArray.splice(i, 1);
           break;
         }
+      this.originalDispatchList = initialRider;
+
       this.partnerList = partnerArray;
       return (this.dispatchList = data);
     },

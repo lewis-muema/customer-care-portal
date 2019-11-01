@@ -1,7 +1,7 @@
 <template>
-  <span>
+  <span :key="searchInput">
     <div @click="trigger" :class="`trigger ${hideInput}`">
-      {{ riderDisplay }}
+      {{ userDisplay }}
     </div>
     <div :class="`Typeahead form-group ${hide}`">
       <input
@@ -18,7 +18,7 @@
         @input="update"
         @blur="reset"
       />
-      <ul v-show="hasItems">
+      <ul v-show="hasItems" @blur="reset">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -28,7 +28,12 @@
         >
           <span class="tt-suggestion">
             <p>
-              <strong>{{ item.rider_name }} | {{ item.phone_no }} </strong>
+              <strong v-if="userType === 'business'">
+                {{ item.cop_name }} | {{ item.cop_phone }}
+              </strong>
+              <strong v-if="userType === 'peer'">
+                {{ item.user_name }} | {{ item.user_phone }}
+              </strong>
             </p>
           </span>
         </li>
@@ -43,11 +48,11 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import VueTypeahead from 'vue-typeahead';
 
 export default {
-  name: 'TheSearchRiderComponent',
+  name: 'TheSearchUserComponent',
   extends: VueTypeahead,
 
   props: {
-    category: {
+    user: {
       type: String,
       required: true,
     },
@@ -55,67 +60,90 @@ export default {
 
   data() {
     return {
-      currentUser: 'rider',
+      currentUser: this.user,
       limit: 10,
       minChars: 1,
       query: '',
-      rider: 0,
-      riderDisplay: '',
+      userID: null,
+      userDisplay: '',
+      searchInput: 0,
       hide: '',
       hideInput: 'hide',
       solr: {
-        riders: 'RIDER_SEARCH',
+        business: 'BIZ_SEARCH',
+        peer: 'PEER_SEARCH',
       },
     };
   },
+
   computed: {
     ...mapState(['config']),
     placeholder() {
-      return 'Select account to pay';
+      return 'Select account to transfer';
     },
 
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
     },
+    userType() {
+      const user = this.user;
+      return user.toLowerCase();
+    },
     solarBase() {
       const solrArray = this.solr;
-      const currentUser = 'riders';
-      const userSearch = solrArray[currentUser];
+      const currentUser = this.user;
+      const userSearch = solrArray[currentUser.toLowerCase()];
       return this.config[userSearch];
     },
     solarToken() {
       return this.$env.SOLR_JWT;
     },
     src() {
-      const searchString = `${this.solarBase}select?q=(rider_name:*${this.query_string}*+OR+email:*${this.query_string}*+OR+phone_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=rider_id%20desc&jwt=${this.solarToken}`;
+      let searchString = '';
+      if (this.userType === 'business') {
+        searchString = `${this.solarBase}select?q=(cop_name:*${this.query_string}*+OR+contact_person:*${this.query_string}*+OR+cop_phone:*${this.query_string}*+OR+account_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=cop_id%20desc&jwt=${this.solarToken}`;
+      } else if (this.userType === 'peer') {
+        searchString = `${this.solarBase}select?q=(user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+user_status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=user_id%20desc&jwt=${this.solarToken}`;
+      }
       return searchString;
     },
   },
+  watch: {
+    user(val) {
+      this.userDisplay = '';
+      this.userID = null;
+      this.hide = '';
+      this.hideInput = 'hide';
+    },
+  },
+  mounted() {
+    this.userDisplay = '';
+    this.userID = null;
+  },
   methods: {
     trigger() {
-      this.rider = null;
       this.hideInput = 'hide';
-      this.$emit('riderID', this.rider);
       this.hide = '';
     },
+    forceRerender() {
+      this.searchInput += 1;
+    },
     prepareResponseData(data) {
-      const results = data.response.docs;
-      const arr = {
-        rider_name: 'Sendy Bill',
-        phone_no: '',
-        rider_id: 0,
-      };
-      results.splice(0, 0, arr);
-
-      return results;
+      return data.response.docs;
     },
     onHit(item) {
+      const display =
+        this.userType === 'business'
+          ? `${item.cop_name} | ${item.cop_phone}`
+          : `${item.user_name} | ${item.user_phone}`;
+
       this.hide = 'hide';
       this.hideInput = '';
-      this.riderDisplay = `${item.rider_name} | ${item.phone_no}`;
-      this.$emit('riderID', item.rider_id);
-      return (this.rider = item.rider_id);
+      this.userDisplay = display;
+      const userID = this.userType === 'business' ? item.cop_id : item.user_id;
+      this.$emit('userID', userID);
+      return (this.userID = userID);
     },
   },
 };
@@ -142,9 +170,6 @@ export default {
 .Typeahead {
   position: relative;
 }
-.Typeahead__input ::placeholder {
-  color: red;
-}
 .Typeahead__input {
   width: 90%;
   font-size: 14px;
@@ -152,7 +177,7 @@ export default {
   line-height: 1.42857143;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   font-weight: 300;
-  padding: 8px 11px;
+  padding: 8px 26px;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
 }

@@ -36,14 +36,14 @@ export default {
     }),
     signIn(data) {
       const token = data.token;
-      this.setToken(token);
-      localStorage.setItem('jwtToken', token);
-      const tokenDuration = 24 * 60 * 60;
-      const expirationDate = new Date().getTime() + tokenDuration;
-      this.setLogoutTimer(tokenDuration);
-      localStorage.setItem('tokenExpiration', expirationDate);
-      Cookie.set('jwt', token);
-      Cookie.set('tokenExpiration', expirationDate);
+      const accessToken = token.access_token;
+      const refreshToken = token.refresh_token;
+
+      this.setToken(accessToken);
+      localStorage.setItem('jwtToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      Cookie.set('jwt', accessToken);
+      Cookie.set('refreshToken', refreshToken);
 
       this.$router.push('/orders');
     },
