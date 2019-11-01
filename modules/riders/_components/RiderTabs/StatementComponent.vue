@@ -28,7 +28,9 @@
               {{ new Intl.NumberFormat().format(statement.rb) }}
             </td>
             <td>{{ statement.status === 1 ? 'Completed' : 'Incomplete' }}</td>
-            <td>{{ getFormattedDate(statement.date_time, 'YYYY-m-d HH.mm.ss a') }}</td>
+            <td>
+              {{ getFormattedDate(statement.date_time, 'YYYY-m-d HH.mm.ss a') }}
+            </td>
             <td>{{ statement.description }}</td>
           </tr>
 
