@@ -1,7 +1,7 @@
 <template>
   <div>
     <form id="reallocate-form" @submit.prevent="edit" class="form-inline">
-      <div class="form-group col-md-6">
+      <div class="form-group actions col-md-6">
         <v-select
           :options="suspension"
           :reduce="type => type.code"
@@ -165,12 +165,6 @@ export default {
   width: 162px;
 }
 .action-button {
-  margin-top: 15px;
-}
-.suspension {
-  width: 210px;
-}
-.exclusivity {
-  width: 225px;
+  margin: 15px;
 }
 </style>

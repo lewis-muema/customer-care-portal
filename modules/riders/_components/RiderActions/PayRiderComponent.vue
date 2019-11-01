@@ -1,15 +1,12 @@
 <template>
   <div>
-    <!-- <div v-if="paymentMethods === null">
-      <p>
-        Fetching user payment methods ...
-        <i class="fa fa-spinner fa-spin loader"></i>
-      </p>
-    </div> -->
-    <form id="reallocate-form" @submit.prevent="submitPayment" class="form">
-      <div class="form-group">
+    <form
+      id="reallocate-form"
+      @submit.prevent="submitPayment"
+      class="form-inline"
+    >
+      <div class="form-group col-md-4 user-input">
         <label>Amount</label>
-
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ user.default_currency }}</span>
@@ -33,7 +30,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group col-md-4">
         <label>Narrative</label>
         <input
           type="text"
@@ -54,7 +51,7 @@
         </div>
       </div>
 
-      <div class="form-group actions">
+      <div class="form-group actions col-md-4">
         <label>Payment Method</label>
         <v-select
           :options="payMethods"
@@ -197,3 +194,14 @@ export default {
   },
 };
 </script>
+<style scoped>
+.input-group-area {
+  width: 76%;
+}
+.form-inline .form-control {
+  width: 100%;
+}
+.action-button {
+  margin: 13px;
+}
+</style>

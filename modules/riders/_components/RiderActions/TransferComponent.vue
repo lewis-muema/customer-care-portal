@@ -5,12 +5,12 @@
       @submit.prevent="savingsTransfer"
       class="form-inline"
     >
-      <div class="col-md-6">
-        <div class="kool_space input-group">
+      <div class="form-group col-md-6 user-input">
+        <div class="input-group">
           <div class="input-group-icon">
-            <span>{{ user.default_currency }}</span>
+            <span> {{ user.default_currency }}</span>
           </div>
-          <div class="form-group">
+          <div class="input-group-area">
             <input
               type="text"
               v-model="amount"
@@ -22,12 +22,9 @@
                 'is-invalid': submitted && $v.amount.$error,
               }"
             />
-            <div
-              v-if="submitted && !$v.amount.required"
-              class="invalid-feedback"
-            >
-              Amount is Required
-            </div>
+          </div>
+          <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
+            Amount is required
           </div>
         </div>
       </div>
@@ -52,25 +49,23 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
-        <div class="form-group col-md-12 actions option">
-          <v-select
-            :options="payType"
-            :reduce="status => status.code"
-            name="status"
-            label="status"
-            class="form-control select"
-            placeholder="Transfer Option"
-            :id="`status`"
-            v-model="status"
-            :class="{
-              'is-invalid': submitted && $v.status.$error,
-            }"
-          >
-          </v-select>
-          <div v-if="submitted && !$v.status.required" class="invalid-feedback">
-            Transfer Option is required
-          </div>
+      <div class="form-group col-md-6 actions option">
+        <v-select
+          :options="payType"
+          :reduce="status => status.code"
+          name="status"
+          label="status"
+          class="form-control select"
+          placeholder="Transfer Option"
+          :id="`status`"
+          v-model="status"
+          :class="{
+            'is-invalid': submitted && $v.status.$error,
+          }"
+        >
+        </v-select>
+        <div v-if="submitted && !$v.status.required" class="invalid-feedback">
+          Transfer Option is required
         </div>
         <div class="col-md-12">
           <button class="btn btn-primary action-button transfer-button">
@@ -205,7 +200,10 @@ export default {
   margin-top: 16px;
 }
 .transfer-button {
-  width: 100%;
   margin-top: 23px;
+  margin-left: -14px;
+}
+.input-group-area {
+  width: 85%;
 }
 </style>

@@ -5,7 +5,7 @@
       @submit.prevent="savingsTransfer"
       class="form-inline"
     >
-      <div class="form-group col-md-12 actions option">
+      <div class="form-group col-md-6 actions option user-input">
         <label>Payment Method</label>
         <v-select
           :options="reapymentmethod"
@@ -25,12 +25,13 @@
           Payment Method is required
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="kool_space input-group">
+      <div class="form-group col-md-6 user-input">
+        <label>Amount</label>
+        <div class="input-group">
           <div class="input-group-icon">
-            <span>{{ user.default_currency }}</span>
+            <span> {{ user.default_currency }}</span>
           </div>
-          <div class="form-group">
+          <div class="input-group-area">
             <input
               type="text"
               v-model="amount"
@@ -42,103 +43,95 @@
                 'is-invalid': submitted && $v.amount.$error,
               }"
             />
-            <div
-              v-if="submitted && !$v.amount.required"
-              class="invalid-feedback"
-            >
-              Amount is Required
-            </div>
+          </div>
+          <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
+            Amount is required
           </div>
         </div>
       </div>
-      <div class="form-group">
-        <div class="form-group col-md-12 actions option">
-          <label>OutStanding Loan </label>
-          <v-select
-            :options="loanTypes"
-            :reduce="type => type.code"
-            name="type"
-            label="type"
-            class="form-control select"
-            placeholder="OutStanding Loan"
-            :id="`loantype`"
-            v-model="loantype"
-            :class="{
-              'is-invalid': submitted && $v.loantype.$error,
-            }"
-          >
-          </v-select>
-          <div
-            v-if="submitted && !$v.loantype.required"
-            class="invalid-feedback"
-          >
-            OutStanding Loan is required
-          </div>
+      <div class="form-group col-md-6 actions option user-input">
+        <label>OutStanding Loan </label>
+        <v-select
+          :options="loanTypes"
+          :reduce="type => type.code"
+          name="type"
+          label="type"
+          class="form-control select"
+          placeholder="OutStanding Loan"
+          :id="`loantype`"
+          v-model="loantype"
+          :class="{
+            'is-invalid': submitted && $v.loantype.$error,
+          }"
+        >
+        </v-select>
+        <div v-if="submitted && !$v.loantype.required" class="invalid-feedback">
+          OutStanding Loan is required
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Narrative </label>
-            <input
-              type="text"
-              v-model="narrative"
-              :id="narrative"
-              name="narrative"
-              placeholder="Narrative"
-              class="form-control"
-              :class="{
-                'is-invalid': submitted && $v.narrative.$error,
-              }"
-            />
-            <div
-              v-if="submitted && !$v.narrative.required"
-              class="invalid-feedback"
-            >
-              Narrrative is Required
-            </div>
-          </div>
-        </div>
-        <div class="form-group col-md-12 actions option">
-          <label>Repayment Frequency</label>
-          <v-select
-            :options="repaymentModes"
-            :reduce="status => status.code"
-            name="status"
-            label="status"
-            class="form-control select"
-            placeholder="Repayment Mode"
-            :id="`mode`"
-            v-model="repaymentmode"
-            :class="{
-              'is-invalid': submitted && $v.repaymentmode.$error,
-            }"
-          >
-          </v-select>
-          <div
-            v-if="submitted && !$v.repaymentmode.required"
-            class="invalid-feedback"
-          >
-            Repayment Mode is required
-          </div>
-        </div>
-        <div class="form-group" v-if="this.method === '1'">
+      </div>
+      <div class="col-md-6 user-input">
+        <div class="form-group">
+          <label>Narrative </label>
           <input
             type="text"
-            v-model="PaymentID"
-            :id="PaymentID"
-            name="PaymentID"
-            placeholder="PaymentID"
-            class="form-control bill-input"
-            :class="`form-control bill-input ${hide}`"
+            v-model="narrative"
+            :id="narrative"
+            name="narrative"
+            placeholder="Narrative"
+            class="form-control"
+            :class="{
+              'is-invalid': submitted && $v.narrative.$error,
+            }"
           />
-          <div class="invalid-feedback">
-            PaymentID is required
+          <div
+            v-if="submitted && !$v.narrative.required"
+            class="invalid-feedback"
+          >
+            Narrrative is Required
           </div>
         </div>
-        <div class="col-md-12">
-          <button class="btn btn-primary action-button transfer-button">
-            Submit
-          </button>
+      </div>
+      <div class="form-group col-md-6 actions option user-input">
+        <label>Repayment Frequency</label>
+        <v-select
+          :options="repaymentModes"
+          :reduce="status => status.code"
+          name="status"
+          label="status"
+          class="form-control select"
+          placeholder="Repayment Mode"
+          :id="`mode`"
+          v-model="repaymentmode"
+          :class="{
+            'is-invalid': submitted && $v.repaymentmode.$error,
+          }"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.repaymentmode.required"
+          class="invalid-feedback"
+        >
+          Repayment Mode is required
         </div>
+      </div>
+      <div class="form-group col-md-6" v-if="this.method === '1'">
+        <input
+          type="text"
+          v-model="PaymentID"
+          :id="PaymentID"
+          name="PaymentID"
+          placeholder="PaymentID"
+          class="form-control bill-input"
+          :class="`form-control bill-input ${hide}`"
+        />
+        <div class="invalid-feedback">
+          PaymentID is required
+        </div>
+      </div>
+      <div class="col-md-12">
+        <button class="btn btn-primary action-button transfer-button">
+          Submit
+        </button>
       </div>
     </form>
   </div>
@@ -281,11 +274,7 @@ export default {
 .form-inline .form-control {
   width: 100%;
 }
-.option {
-  margin-top: 16px;
-}
-.transfer-button {
-  width: 100%;
-  margin-top: 23px;
+.user-input {
+  margin-bottom: 17px;
 }
 </style>

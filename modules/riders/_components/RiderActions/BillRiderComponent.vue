@@ -1,7 +1,12 @@
 <template>
   <div>
-    <form id="reallocate-form" @submit.prevent="submitPayment" class="form">
-      <div class="form-group">
+    <form
+      id="reallocate-form"
+      @submit.prevent="submitPayment"
+      class="form-inline"
+    >
+      <div class="form-group col-md-6 bill-div user-input">
+        <label>Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ user.default_currency }}</span>
@@ -10,13 +15,9 @@
             <input
               type="text"
               v-model="amount"
-              :id="`amount`"
               name="amount"
               placeholder="Amount"
               class="form-control"
-              :class="{
-                'is-invalid': submitted && $v.amount.$error,
-              }"
             />
           </div>
           <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
@@ -47,7 +48,7 @@
           Billing type is required
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group col-md-6">
         <label class="bill">Other Notes</label>
         <input
           type="text"
@@ -55,7 +56,7 @@
           :id="narrative"
           name="narrative"
           placeholder="Narrative"
-          class="form-control"
+          class="form-control bill-input"
           :class="{
             'is-invalid': submitted && $v.narrative.$error,
           }"
@@ -82,11 +83,15 @@
           Reference No is required
         </div>
       </div>
-      <div>
-        <input type="checkbox" id="checkbox" v-model="ischecked" />
-        <label for="checkbox" class="charge_commission--label"
-          >Credit Client</label
-        >
+      <div class="form-group col-md-12 bill-check">
+        <input
+          value="1"
+          id="checkbox>"
+          type="checkbox"
+          class=""
+          v-model="ischecked"
+        />
+        <label for="" class="charge_commission--label">Credit Client</label>
       </div>
       <div class="form-group  col-md-6 user-input" v-if="ischecked">
         <label class="bill">Cop Account Name / User Phone Number </label>
@@ -266,3 +271,58 @@ export default {
   },
 };
 </script>
+<style scoped>
+.form-inline .form-control {
+  width: 100%;
+  border-radius: 0.25rem;
+}
+.form-inline .custom-select,
+.form-inline .input-group {
+  width: 100%;
+  border-radius: 0.25rem;
+}
+.bill {
+  width: 100%;
+  margin-left: -15px;
+}
+.bill-check {
+  margin: 15px 0 15px -13px;
+}
+.charge_commission--label {
+  margin: 0 4px 0;
+}
+.bill-div {
+  padding-left: 0;
+}
+.input-group-area {
+  width: 80%;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+.form-inline label {
+  align-items: center;
+  justify-content: left;
+  margin-bottom: 0;
+  font-size: small;
+}
+.bill-input {
+  margin-left: -15px;
+}
+.select {
+  margin-left: -15px;
+  padding: 0;
+  width: 95%;
+}
+.display-input {
+  margin-left: 14px;
+}
+.user-input {
+  margin-bottom: 15px;
+}
+.search-invalid {
+  /* display: none; */
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 46%;
+  color: #dc3545;
+}
+</style>
