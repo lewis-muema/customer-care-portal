@@ -28,7 +28,9 @@
               {{ new Intl.NumberFormat().format(Math.round(loan.rb)) }}
             </td>
             <td>{{ loan.status === 1 ? 'Completed' : 'Incomplete' }}</td>
-            <td>{{ loan.date_time }}</td>
+            <td>
+              {{ getFormattedDate(loan.date_time, 'YYYY-m-d HH.mm.ss a') }}
+            </td>
             <td>{{ loan.description }}</td>
           </tr>
 
