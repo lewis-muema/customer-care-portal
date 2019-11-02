@@ -300,9 +300,11 @@ export default {
     }
   },
   mounted() {
-    this.setOrders({
-      page: 1,
-    });
+    if (process.client) {
+      this.setOrders({
+        page: 1,
+      });
+    }
   },
   methods: {
     ...mapMutations({
