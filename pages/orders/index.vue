@@ -9,7 +9,13 @@ export default {
     TheOrdersComponent,
   },
   mounted() {
-    this.$router.push('/orders');
+    if (localStorage.getItem('reloaded')) {
+      localStorage.removeItem('reloaded');
+    } else {
+      localStorage.setItem('reloaded', '1');
+      // eslint-disable-next-line no-restricted-globals
+      location.reload();
+    }
   },
 };
 </script>
