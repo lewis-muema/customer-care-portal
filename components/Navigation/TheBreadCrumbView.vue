@@ -94,7 +94,9 @@ export default {
   },
   mounted() {
     this.setBreadcrumbs();
-    this.setBusinessUnits();
+    if (process.client) {
+      this.setBusinessUnits();
+    }
   },
   methods: {
     ...mapMutations({

@@ -46,12 +46,14 @@ export default {
     },
   },
   mounted() {
-    const countryCode = JSON.parse(this.countryCodes);
-    this.setCities({
-      params: {
-        code: countryCode,
-      },
-    });
+    if (process.client) {
+      const countryCode = JSON.parse(this.countryCodes);
+      this.setCities({
+        params: {
+          code: countryCode,
+        },
+      });
+    }
   },
   methods: {
     ...mapMutations({
