@@ -28,7 +28,9 @@
               {{ new Intl.NumberFormat().format(saving.rb) }}
             </td>
             <td>{{ saving.status === 1 ? 'Completed' : 'Incomplete' }}</td>
-            <td>{{ saving.date_time }}</td>
+            <td>
+              {{ getFormattedDate(saving.date_time, 'YYYY-m-d HH.mm.ss a') }}
+            </td>
             <td>{{ saving.description }}</td>
           </tr>
 
