@@ -8,5 +8,8 @@ export default {
   components: {
     TheOrdersComponent,
   },
+  mounted() {
+    this.$router.push('/orders');
+  },
 };
 </script>
