@@ -9,9 +9,7 @@ export default {
     TheOrdersComponent,
   },
   mounted() {
-    if (localStorage.getItem('reloaded')) {
-      localStorage.removeItem('reloaded');
-    } else {
+    if (!localStorage.getItem('reloaded')) {
       localStorage.setItem('reloaded', '1');
       // eslint-disable-next-line no-restricted-globals
       location.reload();

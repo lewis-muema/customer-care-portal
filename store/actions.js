@@ -48,6 +48,8 @@ export default {
       Cookie.remove('refreshToken');
       localStorage.removeItem('jwtToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('reloaded');
+
       return response;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
