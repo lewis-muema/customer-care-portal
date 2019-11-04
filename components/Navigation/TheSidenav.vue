@@ -29,13 +29,6 @@
           </li>
 
           <li class="treeview">
-            <nuxt-link to="/disputed"
-              ><i class="fa fa-stethoscope"></i>
-              <span> Disputed </span></nuxt-link
-            >
-          </li>
-
-          <li class="treeview">
             <a
               class="fancybox fancybox.iframe fancyboxy"
               @click="showModal('riders')"
