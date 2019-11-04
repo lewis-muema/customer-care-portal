@@ -44,7 +44,8 @@
             </span>
           </span>
         </td>
-        <td v-html="smartify_display(order.client_name, 20)">
+        <td>
+          <span v-html="smartify_display(order.client_name, 20)"></span>
           <span
             v-if="order.pay_cash_on_delivery"
             title="Cash"
