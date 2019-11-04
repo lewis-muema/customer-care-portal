@@ -27,7 +27,12 @@ export default {
       errors: [],
     };
   },
-
+  mounted() {
+    const token = localStorage.getItem('jwtToken');
+    if (token !== null) {
+      this.$router.push('/orders');
+    }
+  },
   methods: {
     ...mapMutations({
       setToken: 'setToken',
