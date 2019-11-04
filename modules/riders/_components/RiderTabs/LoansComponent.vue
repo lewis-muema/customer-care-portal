@@ -29,7 +29,7 @@
             </td>
             <td>{{ loan.status === 1 ? 'Completed' : 'Incomplete' }}</td>
             <td>
-              {{ getFormattedDate(loan.date_time, 'YYYY-m-d HH.mm.ss a') }}
+              {{ getFormattedDate(loan.date_time, 'DD/MM/YYYY hh.mm a ') }}
             </td>
             <td>{{ loan.description }}</td>
           </tr>

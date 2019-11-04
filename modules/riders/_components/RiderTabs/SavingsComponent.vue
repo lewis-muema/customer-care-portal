@@ -29,7 +29,7 @@
             </td>
             <td>{{ saving.status === 1 ? 'Completed' : 'Incomplete' }}</td>
             <td>
-              {{ getFormattedDate(saving.date_time, 'YYYY-m-d HH.mm.ss a') }}
+              {{ getFormattedDate(saving.date_time, 'DD/MM/YYYY hh.mm a ') }}
             </td>
             <td>{{ saving.description }}</td>
           </tr>
