@@ -87,7 +87,8 @@ export default {
 
     query_string() {
       localStorage.setItem('query', this.query);
-      return this.query;
+      const q = this.query;
+      return q.replace(/\s/g, '');
     },
     solarBase() {
       const solrArray = this.solr;
