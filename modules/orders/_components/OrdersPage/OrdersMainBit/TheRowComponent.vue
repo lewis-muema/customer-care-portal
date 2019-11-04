@@ -413,7 +413,8 @@ export default {
       const vendorUnit = units.findIndex(
         unit => unit.business_unit_id === unitArray.business_unit_id,
       );
-      const vendorAbbr = units[vendorUnit].abbr;
+      const vendorAbbr =
+        units[vendorUnit] === 'undefined' ? '' : units[vendorUnit].abbr;
       if (selectedUnits !== null) {
         if (selectedUnits.includes(vendorAbbr.toLowerCase())) {
           this.displayPushedOrder(pushobj, index);
