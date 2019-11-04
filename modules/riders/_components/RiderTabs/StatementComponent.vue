@@ -29,7 +29,7 @@
             </td>
             <td>{{ statement.status === 1 ? 'Completed' : 'Incomplete' }}</td>
             <td>
-              {{ getFormattedDate(statement.date_time, 'YYYY-m-d HH.mm.ss a') }}
+              {{ getFormattedDate(statement.date_time, 'DD/MM/YYYY hh.mm a ') }}
             </td>
             <td>{{ statement.description }}</td>
           </tr>
