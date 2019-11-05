@@ -202,4 +202,8 @@ export default {
       return error;
     }
   },
+  async request_nextTransfer({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
 };
