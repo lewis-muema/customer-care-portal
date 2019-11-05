@@ -72,9 +72,7 @@
               <span v-if="this.user.current_list.length > 0" class="badge"
                 >{{ user.default_currency }}
                 {{
-                  new Intl.NumberFormat().format(
-                    Math.round(user.current_list[0].next_transfer),
-                  )
+                  new Intl.NumberFormat().format(Math.round(this.nextTransfer))
                 }}</span
               >
               <span v-else class="badge">{{ user.default_currency }} 0</span>
@@ -87,12 +85,45 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'SavingsComponent',
   props: {
     user: {
       type: Object,
       required: true,
+    },
+  },
+  data() {
+    return {
+      riderId: this.user.rider_id,
+      nextTransfer: null,
+    };
+  },
+  mounted() {
+    this.transfer();
+  },
+  methods: {
+    ...mapActions({
+      next_transfer: 'request_nextTransfer',
+    }),
+    async transfer() {
+      const payload = {
+        app: 'PARTNERS_APP',
+        endpoint: 'rider_next_transfer',
+        apiKey: true,
+        params: {
+          rider_id: this.riderId,
+        },
+      };
+
+      try {
+        const data = await this.next_transfer(payload);
+        this.nextTransfer = data.amount;
+      } catch (error) {
+        return error;
+      }
     },
   },
 };
