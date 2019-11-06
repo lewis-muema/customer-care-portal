@@ -277,6 +277,9 @@ export default {
     ...mapState(['config']),
 
     ...mapState(['userData']),
+    actionUser() {
+      return this.session.payload.data.name;
+    },
   },
   methods: {
     ...mapMutations({
@@ -315,19 +318,24 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+      const email = this.session.payload.data.email;
+      const adminID = this.session.payload.data.admin_id;
 
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'dispute_delivery_docs_cc',
         apiKey: true,
         params: {
+          _user_email: email,
+          _user_id: adminID,
+          action_id: 22,
+          action_user: this.actionUser,
           admin_id: 0,
+          channel: 'customer_support',
           cop_name: this.order.client_details.corporate_name,
           customer_email: this.order.client_details.email,
           customer_name: this.order.client_details.name,
           customer_phone: this.order.client_details.phone_no,
-          action_id: 22,
-          channel: 'customer_support',
           data_set: 'cc_actions',
           description: this.description,
           dispute_delivery_doc_status: 2,
