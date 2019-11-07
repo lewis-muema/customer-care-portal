@@ -2,9 +2,6 @@
   <div class="col-md-7 user-search">
     <div class="Typeahead">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
-      <template v-else>
-        <i class="fa fa-search" @click="byPassSolrSearch(user)"></i>
-      </template>
 
       <input
         type="text"
