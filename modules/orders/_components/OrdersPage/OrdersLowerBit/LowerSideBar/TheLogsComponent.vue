@@ -11,7 +11,7 @@
       <div class="timeline-item">
         <span class="time"
           ><i class="fa fa-clock-o"></i>
-          {{ getFormattedDate(deliveryLog.log_time, 'd MMM, h.mm a') }}
+          {{ getFormattedDate(deliveryLog.log_time, 'DD MMM ,YYYY hh.mm a ') }}
         </span>
         <h3 class="timeline-header no-border">
           {{ deliveryLog.description }}
