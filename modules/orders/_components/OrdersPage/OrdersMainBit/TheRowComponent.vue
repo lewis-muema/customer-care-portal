@@ -19,7 +19,7 @@
       </td>
     </tr>
     <template
-      v-for="(order, index) in orders"
+      v-for="order in orders"
       :class="determineOrderColor(order.time_of_delivery, order.push_order)"
     >
       <tr
@@ -28,7 +28,7 @@
           ({ opened: opened.includes(order.order_no) },
           determineOrderColor(order.time_of_delivery, order.push_order))
         "
-        :key="`main_${index}`"
+        :key="`main_${order.order_no}_${order.order_status}`"
       >
         <td>
           <span
@@ -127,7 +127,7 @@
       <tr
         class="order_row_home_lower"
         v-if="opened.includes(order.order_no)"
-        :key="`details_${index}`"
+        :key="`details_${order.order_no}_${order.order_status}`"
         :id="`child_row_${order.order_no}`"
       >
         <TheLowerSlideComponent :orderno="order.order_no" />
