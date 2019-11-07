@@ -112,12 +112,13 @@ export default {
       let state = true;
       const arr = {};
       const imgStatus = Object.prototype.hasOwnProperty.call(
-        this.order,
-        'rider_deliver_img',
+        this.order.delivery_details,
+        'rider_delivery_image',
       );
       if (
         imgStatus &&
-        this.order.rider_deliver_img[0].physical_delivery_note_status === 2
+        this.order.delivery_details.rider_delivery_image[0]
+          .physical_delivery_note_status === 2
       ) {
         status = 'Delivered';
         color = 'green';
@@ -184,6 +185,9 @@ export default {
 }
 .color-red {
   color: #dc4a38;
+}
+.color-green {
+  color: #51a65b;
 }
 .tab-pane__update-button {
   width: 90px;
