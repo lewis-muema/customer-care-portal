@@ -25,11 +25,9 @@
               <span :id="`tip_order_${orderNo}`" data-toggle="tooltip" title="">
                 <span
                   :id="`order_indicator_${orderNo}`"
-                  :class="
-                    `label ${order.order_details.order_status.toLowerCase()}_ind`
-                  "
+                  :class="`label ${status.toLowerCase()}_ind`"
                 >
-                  {{ order.order_details.order_status }}
+                  {{ status }}
                 </span>
               </span>
             </td>
@@ -175,17 +173,9 @@ export default {
       const confirmStatus = this.moreData.confirm_status;
       const orderStatus = this.moreData.order_status;
 
-      let status = '';
-      if (deliveryStatus === 0 && confirmStatus === 0 && orderStatus === 1) {
-        status = 'pending';
-      } else if (deliveryStatus === 0 && confirmStatus === 1) {
-        status = 'confirmed';
-      } else if (deliveryStatus === 2 && confirmStatus === 1) {
-        status = 'in transit';
-      } else if (deliveryStatus === 3 && confirmStatus === 1) {
+      let status = orderStatus;
+      if (deliveryStatus === 3 && confirmStatus === 1) {
         status = this.deliveryStatus(this.order);
-      } else if (deliveryStatus === 2 && confirmStatus === 0) {
-        status = 'Cancelled';
       }
       if (
         this.moreData.dispute_status === 2 ||
@@ -230,5 +220,8 @@ export default {
   padding: 0px;
   background-color: rgba(245, 245, 245, 0.56) !important;
   font-size: 13px;
+}
+.label {
+  text-transform: capitalize;
 }
 </style>
