@@ -1,5 +1,5 @@
 <template>
-  <section class="content-header">
+  <section class="content-header" v-if="typeof pageBreadCrumbs !== 'undefined'">
     <h1>
       {{ pageBreadCrumbs.name }}
       <small> {{ pageBreadCrumbs.description }} </small>
@@ -35,12 +35,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'TheBreadCrumbView',
-  props: {
-    route: {
-      type: String,
-      required: true,
-    },
-  },
+  props: ['route'],
   data() {
     return {
       isCheckAll: true,
@@ -93,7 +88,6 @@ export default {
     },
   },
   mounted() {
-    this.setBreadcrumbs();
     if (process.client) {
       this.setBusinessUnits();
     }
@@ -104,10 +98,6 @@ export default {
     }),
     ...mapActions(['setBusinessUnits']),
 
-    setBreadcrumbs() {
-      console.log('breadcrumbs');
-      this.$store.dispatch('setBreadCrumbs');
-    },
     checkAll() {
       this.isCheckAll = !this.isCheckAll;
       this.businessUnits = [];

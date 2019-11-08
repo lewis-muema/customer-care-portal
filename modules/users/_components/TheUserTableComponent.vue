@@ -3,13 +3,13 @@
     <div class="row">
       <div class="box">
         <div class="box-body" :key="searchKey">
-          <div v-if="getUser === 'biz'">
+          <div v-if="userType === 'biz'">
             <TheBizTable />
           </div>
-          <div v-if="getUser === 'peer'">
+          <div v-if="userType === 'peer'">
             <ThePeerTable />
           </div>
-          <div v-if="getUser === 'riders'">
+          <div v-if="userType === 'riders'">
             <TheRiderTable />
           </div>
         </div>
@@ -35,6 +35,13 @@ export default {
   },
   computed: {
     ...mapGetters(['getUser']),
+    userType() {
+      const user = this.getUser === '' ? this.routeName : this.getUser;
+      return user;
+    },
+    routeName() {
+      return this.$route.name;
+    },
   },
   watch: {
     getUser(user) {
@@ -50,3 +57,52 @@ export default {
   },
 };
 </script>
+<style>
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding-left: 0;
+}
+.form-control {
+  font-size: 15px;
+}
+.buttons-tab {
+  padding-bottom: 10px;
+}
+.nav-tabs > li {
+  float: left;
+  margin-bottom: -1px;
+}
+.nav > li {
+  position: relative;
+  display: block;
+}
+.fa-class {
+  padding-right: 2px;
+}
+.force_blue {
+  color: #3c8dbc !important;
+  cursor: pointer;
+}
+
+.vs__dropdown-toggle {
+  padding: 6px 4px;
+  color: #ccc;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+.vs__dropdown-toggle ::placeholder {
+  color: #666;
+}
+.form-control {
+  font-size: 13px;
+}
+.vs__dropdown-menu {
+  border-top: 1px solid #d3d7de;
+}
+</style>
