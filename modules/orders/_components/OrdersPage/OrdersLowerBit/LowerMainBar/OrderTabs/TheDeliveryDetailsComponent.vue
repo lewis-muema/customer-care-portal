@@ -1,6 +1,8 @@
 <template>
   <span>
-    <div v-if="riderDeliverImg.length === 0">
+    <div
+      v-if="typeof riderDeliverImg === 'undefined' || riderDeliverImg === null"
+    >
       No docs found for this delivery
     </div>
     <div v-else>
