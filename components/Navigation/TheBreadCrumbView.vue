@@ -88,7 +88,6 @@ export default {
     },
   },
   mounted() {
-    // this.setBreadcrumbs();
     if (process.client) {
       this.setBusinessUnits();
     }
@@ -99,10 +98,6 @@ export default {
     }),
     ...mapActions(['setBusinessUnits']),
 
-    // setBreadcrumbs() {
-    //   console.log('breadcrumbs');
-    //   this.$store.dispatch('setBreadCrumbs');
-    // },
     checkAll() {
       this.isCheckAll = !this.isCheckAll;
       this.businessUnits = [];
