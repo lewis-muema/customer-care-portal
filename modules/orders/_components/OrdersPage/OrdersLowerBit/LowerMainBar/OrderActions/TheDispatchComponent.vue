@@ -46,6 +46,7 @@ export default {
     return {
       orderNo: this.order.order_details.order_no,
       options: [
+        { code: '1', reason: 'Rider with a box' },
         { code: '2', reason: 'Rider without a box' },
         { code: '11', reason: 'Rider Unreachable' },
         { code: '12', reason: 'Rider rejected' },

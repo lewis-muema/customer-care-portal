@@ -19,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-if="riderDetails === null">
+      <tr v-if="riderID === null">
         <td colspan="10">Search to view Rider details.</td>
       </tr>
       <template v-else>
@@ -27,6 +27,7 @@
           <i class="fa fa-spinner fa-spin loader"></i>
         </tr>
         <tr
+          v-else
           @click="toggle('rider')"
           :class="{ opened: opened.includes('rider') }"
         >
@@ -123,21 +124,20 @@ export default {
     ...mapGetters(['getRider', 'getUserActionSuccess']),
   },
   watch: {
-    getRider(user) {
-      this.requestsingleRdier(user, 'rider');
+    async getRider(user) {
+      await this.requestsingleRdier(user, 'rider');
       return (this.riderID = user);
     },
-    getUserActionSuccess(status) {
+    async getUserActionSuccess(status) {
       const arr = [];
-      this.userInfo = null;
-      this.userDetails = null;
+      this.riderDetails = null;
       const index = this.opened.indexOf('biz');
       this.opened.splice(index, 1);
       this.forceRerender();
       this.updateSuccess(false);
       this.updateClass('');
       this.updateErrors(arr);
-      this.requestsingleRdier(this.riderID, 'rider');
+      await this.requestsingleRdier(this.riderID, 'rider');
     },
   },
   methods: {
@@ -150,10 +150,12 @@ export default {
       request_single_rider: 'request_single_rider',
     }),
     async requestsingleRdier(user) {
+      this.opened = [];
+      this.riderDetails = null;
       const payload = { riderID: user };
       try {
         const data = await this.request_single_rider(payload);
-        this.riderDetails = data;
+        return (this.riderDetails = data);
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',
