@@ -12,7 +12,9 @@
       </div>
       <img
         class="profile-user-img img-responsive rider_picture_custom"
-        :src="`https://api.sendyit.com/parcel/doc/photo/${details.rider_id}`"
+        :src="
+          `https://s3-eu-west-1.amazonaws.com/sendy-partner-docs/photo/${photo}`
+        "
       />
 
       <div class="rider_name_here">
@@ -67,6 +69,11 @@ export default {
   computed: {
     googleApiKey() {
       return this.$env.GOOGL_API_KEY;
+    },
+    photo() {
+      return this.details.photo
+        ? this.details.photo
+        : '1533214131993profile_picture_placeholder.png';
     },
     ...mapState(['config']),
   },
