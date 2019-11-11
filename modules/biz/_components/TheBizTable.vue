@@ -145,6 +145,9 @@ export default {
       request_single_user: 'request_single_user',
     }),
     async singleCopUserRequest(user, userType) {
+      this.opened = [];
+      this.userInfo = null;
+      this.userDetails = null;
       const payload = { userID: user, userType };
       try {
         const data = await this.request_single_user(payload);

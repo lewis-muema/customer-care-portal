@@ -27,18 +27,19 @@
               <span> Ongoing </span></nuxt-link
             >
           </li>
-
           <li class="treeview">
             <a
               class="fancybox fancybox.iframe fancyboxy"
-              @click="showModal('riders')"
+              href="/riders"
+              @click="showModal('riders', $event)"
               ><i class="fa fa-motorcycle"></i> <span> Riders </span>
             </a>
           </li>
           <li class="treeview">
             <a
               class="fancybox fancybox.iframe fancyboxy"
-              @click="showModal('peer')"
+              href="/peer"
+              @click="showModal('peer', $event)"
               ><i class="fa fa-user"></i> <span> Peer </span>
             </a>
           </li>
@@ -46,7 +47,8 @@
           <li class="treeview">
             <a
               class="fancybox fancybox.iframe fancyboxy"
-              @click="showModal('biz')"
+              href="/biz"
+              @click="showModal('biz', $event)"
               ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
@@ -122,11 +124,11 @@ export default {
       document.getElementById('online_2').className = 'hidden';
       document.getElementById('online_1').className = 'hidden';
     },
-
-    showModal(user) {
+    showModal(user, e) {
       this.modalUser = user;
       this.updateUser(user);
       $(`#usersModal`).modal('show');
+      e.preventDefault();
     },
   },
 };

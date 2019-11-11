@@ -76,7 +76,7 @@ export default {
       userID: null,
       user: null,
       userInfo: null,
-      details: {},
+      details: null,
       opened: [],
       offset: 1,
       status: '',
@@ -105,9 +105,6 @@ export default {
       await this.singlePeerUserRequest(this.userID, 'peer');
     },
   },
-  mounted() {
-    this.singlePeerUserRequest(this.userID, 'peer');
-  },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -118,6 +115,10 @@ export default {
       request_single_user: 'request_single_user',
     }),
     async singlePeerUserRequest(user, userType) {
+      this.opened = [];
+      this.details = null;
+      this.userInfo = null;
+      this.forceRerender();
       const payload = { userID: user, userType };
       try {
         const data = await this.request_single_user(payload);
