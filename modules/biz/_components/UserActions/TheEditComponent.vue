@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- {{ admins }} -->
     <form id="reallocate-form" @submit.prevent="editUser" class="form-inline">
       <div class="form-group  col-md-6">
         <label>Approval Status</label>
@@ -401,7 +400,12 @@ export default {
       const option = isNaN(Number(this.payOption))
         ? this.user.user_details.payment_option
         : this.payOption;
-      const admin = this.admin[0].admin_id;
+
+      // eslint-disable-next-line no-restricted-globals
+      const admin = isNaN(Number(this.admin))
+        ? this.user.user_details.cop_admin_id
+        : this.admin;
+
       // eslint-disable-next-line no-restricted-globals
       const rider = isNaN(Number(this.riderType))
         ? this.user.user_details.strict_allocation
