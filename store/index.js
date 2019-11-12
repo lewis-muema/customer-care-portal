@@ -14,11 +14,14 @@ const apix = new Apix({
       Authorization: auth.jwtToken,
     },
   },
+
   resources: [
     { name: 'orders', url: 'orders' },
     { name: 'exchangeRates', url: `exchange-rates` },
     { name: 'businessUnits', url: `business-units` },
     { name: 'cities', url: `cities` },
+    { name: 'copTypes', url: `cop-types` },
+    { name: 'admins', url: `admins` },
   ],
 });
 const baseUrl = process.env.baseUrl;

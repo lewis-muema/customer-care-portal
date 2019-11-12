@@ -4,6 +4,8 @@
       <div class="error-page">
         <h3>An error was Encountered!</h3>
         <h6><strong>Error: </strong> {{ errors[error.statusCode] }}</h6>
+        <h6><strong>Error message: </strong> {{ error.message }}</h6>
+
         <h6><strong>Status Code: </strong> {{ error.statusCode }}</h6>
 
         <p>Back to <a href="/orders">safety</a>!</p>
