@@ -47,7 +47,9 @@
             {{ riderDetails.default_currency }}
             {{
               riderDetails.current_list.length > 0
-                ? Math.round(riderDetails.current_list[0].rb)
+                ? new Intl.NumberFormat().format(
+                    Math.round(riderDetails.current_list[0].rb),
+                  )
                 : '0'
             }}
           </td>
@@ -55,7 +57,9 @@
             {{ riderDetails.default_currency }}
             {{
               riderDetails.loans_list.length > 0
-                ? Math.round(riderDetails.loans_list[0].rb)
+                ? new Intl.NumberFormat().format(
+                    Math.round(riderDetails.loans_list[0].rb),
+                  )
                 : '0'
             }}
           </td>
@@ -63,7 +67,9 @@
             {{ riderDetails.default_currency }}
             {{
               riderDetails.savings_list.length > 0
-                ? Math.round(riderDetails.savings_list[0].rb)
+                ? new Intl.NumberFormat().format(
+                    Math.round(riderDetails.savings_list[0].rb),
+                  )
                 : '0'
             }}
           </td>

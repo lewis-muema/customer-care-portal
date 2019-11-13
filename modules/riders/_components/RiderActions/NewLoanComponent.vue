@@ -215,7 +215,6 @@ export default {
             mpesa_ref: 'None',
             currency: riderCurrency,
             action_user: this.actionUser,
-            _user_email: email,
           },
           request_id: 207,
           action_user: this.actionUser,

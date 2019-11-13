@@ -50,7 +50,7 @@ const config = {
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
     POSITIONS: 'https://auth.sendyit.com/positions/',
     CUSTOMERS_APP: 'https://auth.sendyit.com/customers/',
-    PARTNERS_APP: 'https://authtest.sendyit.com/partners/',
+    PARTNERS_APP: 'https://auth.sendyit.com/partners/',
     ADONIS_API: 'https://auth.sendyit.com/adonis/',
     RIDER_DELIVERY_IMG: 'https://sendy-delivery-signatures.s3.amazonaws.com/',
     DISPATCH_LIST: 'https://auth.sendyit.com/dispatch/',

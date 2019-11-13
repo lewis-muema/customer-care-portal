@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 // global functions (es6)
 import axios from 'axios';
 import moment from 'moment';
@@ -195,11 +196,19 @@ export default {
   },
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
+    const userData = rootState.userData;
+    payload.params._user_email = userData.payload.data.email;
+    payload.params._user_id = userData.payload.data.admin_id;
+
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
       return error;
     }
+  },
+  async request_nextTransfer({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
   },
 };
