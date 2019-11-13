@@ -447,8 +447,8 @@ export default {
       }
       return true;
     },
-    getVendorClass(orderNo) {
-      return orderNo === 2 ? 'pickupClass' : 'vendorClass';
+    getVendorClass(vendorTypeID) {
+      return vendorTypeID === 2 ? 'pickupClass' : 'vendorClass';
     },
   },
 };
