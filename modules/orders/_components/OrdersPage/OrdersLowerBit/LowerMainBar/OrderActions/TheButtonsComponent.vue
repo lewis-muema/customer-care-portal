@@ -400,4 +400,7 @@ export default {
 .form-inline .form-group {
   margin-bottom: 15px;
 }
+.order-input {
+  padding: 19px 0.75rem;
+}
 </style>

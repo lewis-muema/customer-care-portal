@@ -22,35 +22,13 @@
         Ticket reason is required
       </div>
     </div>
-    <!-- <div class="form-group">
-      <v-select
-        :options="departments"
-        :reduce="department => department.code"
-        name="department"
-        label="department"
-        placeholder="Select department assigned to .."
-        class="form-control proximity-point"
-        :id="`department_${orderNo}`"
-        v-model="params.department"
-        :class="{
-          'is-invalid': submitted && $v.params.department.$error,
-        }"
-      >
-      </v-select>
-      <div
-        v-if="submitted && !$v.params.department.required"
-        class="invalid-feedback"
-      >
-        Ticket department is required
-      </div>
-    </div> -->
     <div class="form-group  col-md-6">
       <input
         type="text"
         v-model="params.department"
         name="department"
         placeholder="department"
-        class="form-control"
+        class="form-control order-input"
         readonly
         :class="{
           'is-invalid': submitted && $v.params.department.$error,
