@@ -1,6 +1,6 @@
 <template>
-  <form @submit.prevent="submitTicket" class="form-group">
-    <div class="form-group">
+  <form @submit.prevent="submitTicket" class="form-inline">
+    <div class="form-group col-md-6">
       <v-select
         :options="customerInfo"
         :reduce="reason => reason.code"
@@ -22,7 +22,7 @@
         Ticket reason is required
       </div>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <v-select
         :options="departments"
         :reduce="department => department.code"
@@ -43,8 +43,27 @@
       >
         Ticket department is required
       </div>
+    </div> -->
+    <div class="form-group  col-md-6">
+      <input
+        type="text"
+        v-model="params.department"
+        name="department"
+        placeholder="department"
+        class="form-control"
+        readonly
+        :class="{
+          'is-invalid': submitted && $v.params.department.$error,
+        }"
+      />
+      <div
+        v-if="submitted && !$v.params.department.required"
+        class="invalid-feedback"
+      >
+        Ticket department is required
+      </div>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-12">
       <textarea
         type="text"
         v-model="params.message"
@@ -90,6 +109,7 @@ export default {
       params: {
         reason: '',
         message: '',
+        department: 'Customer Support',
       },
       submitted: false,
     };
@@ -117,7 +137,7 @@ export default {
       }
       const notification = [];
       let actionClass = '';
-
+      const department = 2;
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'ticket_order_cc',
@@ -126,7 +146,7 @@ export default {
           activity_narrative: this.params.message,
           action_id: 9,
           user_phone: this.phone,
-          assignedType: this.params.department,
+          assignedType: department,
           client_mode: this.order.order_details.client_mode,
           order_no: this.orderNo,
           reporter_id: 1,

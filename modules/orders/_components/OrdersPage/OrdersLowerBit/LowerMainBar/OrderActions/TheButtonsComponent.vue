@@ -382,7 +382,7 @@ export default {
 .vs__dropdown-toggle {
   padding: 6px 4px;
   color: #ccc;
-  border: 1px solid #ccc;
+  border: none;
   width: 100%;
 }
 .vs__dropdown-toggle ::placeholder {
@@ -393,5 +393,11 @@ export default {
 }
 .vs__dropdown-menu {
   border-top: 1px solid #d3d7de;
+}
+.form-inline .form-control {
+  width: 100%;
+}
+.form-inline .form-group {
+  margin-bottom: 15px;
 }
 </style>
