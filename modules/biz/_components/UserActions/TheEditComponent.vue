@@ -168,6 +168,14 @@ export default {
       type: Object,
       required: true,
     },
+    categories: {
+      type: Array,
+      required: true,
+    },
+    admins: {
+      type: Array,
+      required: true,
+    },
     permissions: {
       type: Object,
       required: true,
@@ -184,75 +192,14 @@ export default {
       riderType: '',
       category: '',
       period: '',
-      cop_type_list: [
-        {
-          cop_type_id: 1,
-          name: 'Ecommerce',
-        },
-        {
-          cop_type_id: 2,
-          name: 'Legal',
-        },
-        {
-          cop_type_id: 3,
-          name: 'Hospitality',
-        },
-        {
-          cop_type_id: 4,
-          name: 'Insurance',
-        },
-        {
-          cop_type_id: 5,
-          name: 'Construction',
-        },
-        {
-          cop_type_id: 6,
-          name: 'Health Care',
-        },
-        {
-          cop_type_id: 7,
-          name: 'Grocery',
-        },
-        {
-          cop_type_id: 8,
-          name: 'Communications',
-        },
-      ],
-      admin_list: [
-        {
-          admin_id: 0,
-          name: 'Marketing',
-          admin_type: '0',
-          email: 'marketing@sendyit.com',
-        },
-        {
-          admin_id: 1,
-          name: 'Evanson KB',
-          admin_type: '0',
-          email: 'ebiwott@sendyit.com',
-        },
-        {
-          admin_id: 2,
-          name: 'Don',
-          admin_type: '0',
-          email: 'don@sendyit.com',
-        },
-        {
-          admin_id: 8,
-          name: 'Denis Gachoki',
-          admin_type: '0',
-          email: 'don@sendyit.com',
-        },
-      ],
+      cop_type_list: [],
+      admin_list: [],
     };
   },
 
   computed: {
-    companyTypeData() {
-      const state = this.user.user_details.cop_type_name;
-      const arr = this.copTypeList;
-      return arr.filter(c => c.name.indexOf(state) > -1);
-    },
+    ...mapGetters(['getCopTypes', 'getAdmins']),
+
     canEditPayMethod() {
       const option = this.user.user_details.payment_option;
       let disabled = false;
@@ -274,17 +221,25 @@ export default {
       const state = manager;
       return state;
     },
+    // eslint-disable-next-line vue/return-in-computed-property
     adminData() {
-      const state = this.manager;
-      const arr = this.adminList;
-      return arr.filter(c => c.name.indexOf(state) > -1);
+      const state = this.user.user_details.cop_admin_id;
+      const arr = this.admins;
+      return arr.filter(el => {
+        return el.admin_id === state;
+      });
     },
     adminList() {
       return this.user.admin_list ? this.user.admin_list : this.admin_list;
     },
     copTypeList() {
       const list = this.cop_type_list;
-      return list.length === 0 ? this.cop_type_list : list;
+      return list;
+    },
+    companyTypeData() {
+      const state = this.user.user_details.cop_type_name;
+      const arr = this.categories;
+      return arr.filter(c => c.name.indexOf(state) > -1);
     },
     riderAllocation() {
       const riderAllocation = [
@@ -324,14 +279,15 @@ export default {
     },
     companyCategory() {
       const companyCategory = [
-        { code: '1', name: 'Merchant' },
-        { code: '2', name: 'Enterprise' },
+        { code: '0', name: 'Merchant' },
+        { code: '1', name: 'Enterprise' },
       ];
       return companyCategory;
     },
     categoryData() {
       const state = this.user.user_details.cop_category;
       const arr = this.companyCategory;
+
       return arr.filter(c => c.code.indexOf(state) > -1);
     },
     riderTypeData() {
@@ -363,6 +319,12 @@ export default {
     },
   },
   watch: {
+    getCopTypes(types) {
+      return (this.cop_type_list = types);
+    },
+    getAdmins(admins) {
+      return (this.admin_list = admins);
+    },
     approveStatus() {
       this.approveStatus = this.approveStatus;
     },
@@ -385,11 +347,13 @@ export default {
       this.period = this.period;
     },
   },
-  mounted() {
+  async mounted() {
+    await this.setCopTypes();
+    await this.setAdmins();
     this.approveStatus = this.approval.status;
     this.payOption = this.paymentOption[0].option;
     this.companyType = this.companyTypeData[0].name;
-    this.admin = this.adminData[0].name;
+    this.admin = this.adminData;
     this.riderType = this.riderTypeData[0].type;
     this.category = this.categoryData[0].name;
     this.period = this.periodData[0].name;
@@ -409,9 +373,9 @@ export default {
       updateClass: 'setActionClass',
       updateSuccess: 'setUserActionSuccess',
     }),
-    ...mapActions({
-      perform_user_action: 'perform_user_action',
-    }),
+    ...mapActions(['setCopTypes', 'perform_user_action', 'setAdmins']),
+
+    // eslint-disable-next-line require-await
     async editUser() {
       const notification = [];
       let actionClass = '';
@@ -436,12 +400,12 @@ export default {
       const option = isNaN(Number(this.payOption))
         ? this.user.user_details.payment_option
         : this.payOption;
+
       // eslint-disable-next-line no-restricted-globals
       const admin = isNaN(Number(this.admin))
-        ? this.admin_list.filter(
-            c => c.name.indexOf(this.user.user_details.account_manager) > -1,
-          )[0].admin_id
+        ? this.user.user_details.cop_admin_id
         : this.admin;
+
       // eslint-disable-next-line no-restricted-globals
       const rider = isNaN(Number(this.riderType))
         ? this.user.user_details.strict_allocation

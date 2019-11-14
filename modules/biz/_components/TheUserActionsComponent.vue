@@ -82,7 +82,12 @@
             role="tabpanel"
             v-if="showTab === `edit_${copID}`"
           >
-            <TheEditComponent :user="user" :permissions="permissions" />
+            <TheEditComponent
+              :user="user"
+              :permissions="permissions"
+              :categories="cop_type_list"
+              :admins="admin_list"
+            />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
@@ -149,10 +154,14 @@ export default {
       showTab: null,
       show: false,
       active: false,
+      cop_type_list: [],
+      admin_list: [],
     };
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
+    ...mapGetters(['getCopTypes', 'getAdmins']),
+
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
     },
@@ -163,14 +172,26 @@ export default {
       return currency;
     },
   },
-  mounted() {
+  watch: {
+    getCopTypes(types) {
+      return (this.cop_type_list = types);
+    },
+    getAdmins(admins) {
+      return (this.admin_list = admins);
+    },
+  },
+  async mounted() {
     this.copID = this.user.user_details.cop_id;
+    await this.setCopTypes();
+    await this.setAdmins();
   },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
     }),
+    ...mapActions(['setCopTypes', 'setAdmins']),
+
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
