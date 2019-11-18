@@ -28,6 +28,7 @@ export default {
     };
   },
   mounted() {
+    localStorage.removeItem('reloaded');
     const token = localStorage.getItem('jwtToken');
     if (token !== null) {
       this.$router.push('/orders');

@@ -58,4 +58,7 @@ export default {
   getOrderCount(state) {
     return state.orderCount;
   },
+  getTokenExpiryStatus(state) {
+    return state.tokenExpired;
+  },
 };

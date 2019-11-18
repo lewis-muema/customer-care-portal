@@ -67,4 +67,7 @@ export default {
   setOrderCount(state, val) {
     state.orderCount = val;
   },
+  setTokenExpiryStatus(state, val) {
+    state.tokenExpired = val;
+  },
 };

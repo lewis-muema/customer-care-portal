@@ -2,8 +2,13 @@
   <div class="wrapper" v-if="loggedUser !== null">
     <TheHeader :user="loggedUser" />
     <div class="content-wrapper full-width">
-      <TheBreadCrumbView :breadcrumbs="breadcrumbs" />
-      <TheMainSection />
+      <span v-if="getTokenExpiryStatus">
+        <TheGlobalNotification />
+      </span>
+      <span v-else>
+        <TheBreadCrumbView :breadcrumbs="breadcrumbs" />
+        <TheMainSection />
+      </span>
     </div>
     <TheFooter />
   </div>
@@ -16,6 +21,7 @@ import TheBreadCrumbView from '@/components/Navigation/TheBreadCrumbView';
 import TheMainSection from '@/components/UI/TheMainSection';
 import TheFooter from '@/components/Navigation/TheFooter';
 import SessionMxn from '@/mixins/session_mixin';
+import TheGlobalNotification from '@/components/UI/TheGlobalNotification';
 
 export default {
   middleware: ['check-auth', 'auth'],
@@ -25,6 +31,7 @@ export default {
     TheBreadCrumbView,
     TheMainSection,
     TheFooter,
+    TheGlobalNotification,
   },
   mixins: [SessionMxn],
   data() {
@@ -41,7 +48,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getAuthenticationToken']),
+    ...mapGetters(['getAuthenticationToken', 'getTokenExpiryStatus']),
 
     breadcrumbs() {
       return this.$store.getters.breadcrumbs;

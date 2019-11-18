@@ -53,6 +53,7 @@ export default {
       breadcrumbs: [],
       notification: {},
       errors: [],
+      tokenExpired: false,
       actionErrors: [],
       actionClass: [],
       selectedStatus: [],
