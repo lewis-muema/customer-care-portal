@@ -8,7 +8,7 @@
       <div :class="`col-md-12 user-search`">
         <TheSearchRiderComponent
           @riderID="searchedRider"
-          :category="category"
+          :category="placehoder"
         />
         <div :class="`invalid ${hide}`">
           Please select a rider
@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      category: 'dedicated',
+      placehoder: 'Select Rider account to pay',
       rider: null,
       submitted: false,
       hide: 'hide',
