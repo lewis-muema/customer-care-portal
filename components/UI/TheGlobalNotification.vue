@@ -44,8 +44,6 @@ export default {
       await this.logout();
       this.setTokenExpiryStatus(false);
       this.$router.push('/login');
-      // eslint-disable-next-line no-restricted-globals
-      location.reload();
     },
   },
 };
