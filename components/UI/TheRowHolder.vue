@@ -31,21 +31,23 @@
                 </span>
               </span>
             </td>
-            <td v-html="smartify_display(clientDetails.name, 20)">
+            <td>
+              <span v-html="smartify_display(clientDetails.name, 20)"></span>
               <span
-                v-if="paymentDetails.cash_status"
+                v-if="paymentDetails.cash_status === 1"
                 title="Cash"
-                class="badge cash-dispaly"
+                class="badge"
+                style="float:right; background-color: transparent;"
               >
-                <i class="fa fa-fw fa-money"></i
+                <i class="fa fa-fw fa-money" style=" color:green;"></i
               ></span>
-              <span
+              <!-- <span
                 v-if="priceType === 'Standard'"
                 title="Standard"
                 class="badge bg-aqua"
               >
                 s
-              </span>
+              </span> -->
             </td>
             <td>
               {{ riderDetails.name }}
@@ -190,6 +192,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.order);
     const actionClass = '';
     const arr = [];
 
