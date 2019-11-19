@@ -70,11 +70,9 @@
                 </button>
               </div>
               <div class="modal-body">
-                <div class="images">
+                <div class="modalimages">
                   <img
-                    class="signatures"
-                    data-toggle="modal"
-                    data-target="#exampleModalCenter"
+                    class="modalimages"
                     :src="
                   `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,              
               "
@@ -120,14 +118,12 @@
               </div>
               <div class="modal-body">
                 <div
-                  class="images"
+                  class="modalimages"
                   v-for="image in img.delivery_image"
                   :key="image.index"
                 >
                   <img
-                    class="delivery-images"
-                    data-toggle="modal"
-                    data-target="#ModalCenter"
+                    class="modalimages"
                     :src="
                   `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,              
               "
@@ -553,5 +549,9 @@ export default {
 }
 .signatures {
   max-width: 300px;
+}
+.modalimages {
+  max-width: 100%;
+  max-height: 100%;
 }
 </style>
