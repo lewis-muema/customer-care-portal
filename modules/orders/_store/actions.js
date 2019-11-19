@@ -101,6 +101,14 @@ export default {
       return error;
     }
   },
+  async assign_order({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
   async cancel_order({ rootState, dispatch }, values) {
     const userData = rootState.userData;
     const params = {
