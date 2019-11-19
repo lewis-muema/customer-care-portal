@@ -19,11 +19,8 @@
           <div class="images">
             <img
               class="signatures"
-              @click="
-                lightbox.openImage(
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,
-                )
-              "
+              data-toggle="modal"
+              data-target="#exampleModalCenter"
               :src="
                   `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,              
               "
@@ -40,17 +37,115 @@
           >
             <img
               class="delivery-images"
-              @click="
-                lightbox.openImage(
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,
-                )
-              "
+              data-toggle="modal"
+              data-target="#ModalCenter"
               :src="
                   `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,              
               "
             />
           </div>
           <small style="display: block;">By: {{ img.name }}</small>
+        </div>
+        <div
+          class="modal fade"
+          id="exampleModalCenter"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                  Signatures
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="images">
+                  <img
+                    class="signatures"
+                    data-toggle="modal"
+                    data-target="#exampleModalCenter"
+                    :src="
+                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,              
+              "
+                  />
+                </div>
+                <small style="display: block;">By: {{ img.name }}</small>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="modal fade"
+          id="ModalCenter"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLongTitle">
+                  Delivery Notes
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div
+                  class="images"
+                  v-for="image in img.delivery_image"
+                  :key="image.index"
+                >
+                  <img
+                    class="delivery-images"
+                    data-toggle="modal"
+                    data-target="#ModalCenter"
+                    :src="
+                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,              
+              "
+                  />
+                </div>
+                <small style="display: block;">By: {{ img.name }}</small>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div :id="`response_${orderDetails.order_details.order_no}a_11b`"></div>
