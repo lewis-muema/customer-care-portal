@@ -9,7 +9,6 @@
         <input type="checkbox" @click="checkAll()" v-model="isCheckAll" />
         All
       </span>
-
       <span v-for="unit in units" :key="unit.index">
         <input
           type="checkbox"
@@ -89,15 +88,18 @@ export default {
   },
   mounted() {
     if (process.client) {
-      this.setBusinessUnits();
+      this.requestUnits();
     }
   },
   methods: {
     ...mapMutations({
       updateSelectedUnits: 'setSelectedBusinessUnits',
     }),
-    ...mapActions(['setBusinessUnits']),
-
+    ...mapActions(['setBusinessUnits', 'requestBusinessUnits']),
+    async requestUnits() {
+      const arr = await this.requestBusinessUnits();
+      await this.setBusinessUnits();
+    },
     checkAll() {
       this.isCheckAll = !this.isCheckAll;
       this.businessUnits = [];

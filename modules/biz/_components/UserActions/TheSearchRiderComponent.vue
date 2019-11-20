@@ -71,7 +71,7 @@ export default {
   computed: {
     ...mapState(['config']),
     placeholder() {
-      return 'Select account to pay';
+      return this.category;
     },
 
     query_string() {

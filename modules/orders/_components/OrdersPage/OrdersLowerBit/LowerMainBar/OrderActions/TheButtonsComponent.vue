@@ -159,6 +159,21 @@
           GPS-Tracker
         </a>
       </li>
+      <!-- <li
+        class="nav-item"
+        v-if="order.order_details.order_status === 'pending'"
+      >
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded=" false"
+          @click="viewTab('allocate', orderNo)"
+          :id="`allocate__${orderNo}`"
+        >
+          <span class="fa fa-cloud-upload"></span>
+          Allocate Orders
+        </a>
+      </li> -->
       <li
         class="nav-item"
         v-if="
@@ -261,6 +276,14 @@
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
+          :id="`allocate_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `allocate_${orderNo}`"
+        >
+          <AllocateComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
           :id="`tracker_${orderNo}`"
           role="tabpanel"
           v-if="showTab === `tracker_${orderNo}`"
@@ -293,6 +316,7 @@ export default {
     TheProximityComponent: () => import('./TheProximityComponent'),
     TheSMSComponent: () => import('./TheSMSComponent'),
     TheTicketComponent: () => import('./TheTicketComponent'),
+    AllocateComponent: () => import('./AllocateComponent'),
     TrackerComponent: () => import('./TrackerComponent'),
     TheMarkInTransitComponent: () => import('./TheMarkInTransitComponent'),
   },
