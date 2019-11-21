@@ -79,6 +79,134 @@ export default {
     const routeName = $nuxt.$route.name;
     commit('setbreadcrumbs', breadcrumbsObject.peer);
   },
+  // eslint-disable-next-line require-await
+  async request_helpscoute_post({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+    const authorization = payload.params.authorization;
+    let customHeaders = {
+      'Content-Type': 'text/plain',
+      Accept: 'text/plain',
+    };
+    if (authorization) {
+      customHeaders = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${payload.params.token}`,
+      };
+      delete payload.params.token;
+    }
+    delete payload.params.authorization;
+
+    const config = {
+      headers: customHeaders,
+    };
+
+    const values = JSON.stringify(payload.params);
+
+    try {
+      const response = await axios.post(`${url}`, values, config);
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      const err = await dispatch('handleHelpScoutErrors', payload.params, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async request_helpscout_token({ rootState, dispatch, commit }) {
+    const url = 'HELPSCOUT_TOKEN';
+    const apiKey = this.$env.HELP_SCOUT_API_KEY;
+    const clientId = this.$env.HELP_SCOUT_CLIENT_ID;
+    const payload = {
+      url,
+      params: {
+        apiKey,
+        clientId,
+        authorization: false,
+      },
+    };
+
+    try {
+      const res = await dispatch('request_helpscoute_post', payload);
+      commit('setHelpScoutToken', res.data);
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async refresh_helpscout_token({ state, dispatch, commit }, payload) {
+    const customConfig = state.config;
+    const token = state.helpScoutToken;
+    const refresh_token = token.refreshToken;
+
+    const url = 'HELPSCOUT_REFRESH';
+    const grant_type = 'refresh_token';
+    const client_id = this.$env.HELP_SCOUT_CLIENT_ID;
+    const client_secret = this.$env.HELP_SCOUT_SECRET_KEY;
+
+    const values = {
+      url,
+      params: {
+        refresh_token,
+        client_id,
+        client_secret,
+        grant_type,
+        authorization: true,
+      },
+    };
+
+    try {
+      const res = await dispatch('request_helpscoute_post', values);
+
+      if (res.status === 200) {
+        commit('setHelpScoutToken', res.data);
+        payload.token = res.data.access_token;
+
+        await dispatch('ticket_action', payload);
+      }
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+
+  // eslint-disable-next-line require-await
+  async ticket_action({ state, dispatch, commit }, payload) {
+    const url = 'HELPSCOUT_CONVERSATIONS';
+    payload.authorization = true;
+
+    const values = {
+      url,
+      params: payload,
+    };
+    try {
+      const res = await dispatch('request_helpscoute_post', values);
+      payload.error = res.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
+    } catch (error) {
+      payload.error = error.response.status;
+
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
+      return error;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async create_ticket({ state, dispatch, commit }, payload) {
+    const token = state.helpScoutToken;
+    const accessToken = token.accessToken;
+    payload.authorization = true;
+    payload.token = accessToken;
+
+    await dispatch('ticket_action', payload);
+  },
   async requestAxiosPost({ state, commit, dispatch }, payload) {
     const customConfig = state.config;
     const url = customConfig[payload.app];
@@ -115,6 +243,32 @@ export default {
     switch (error) {
       case 403:
         commit('setTokenExpiryStatus', true);
+        break;
+      default:
+    }
+  },
+  // eslint-disable-next-line require-await
+  async handleHelpScoutErrors({ state, commit, dispatch }, payload) {
+    const error = payload.error;
+    switch (error) {
+      case 201:
+        // eslint-disable-next-line no-case-declarations
+        const arr = ['Ticket created successfully'];
+        commit('setActionErrors', arr);
+        commit('setActionClass', 'success');
+        break;
+      case 400:
+        // eslint-disable-next-line no-case-declarations
+        const arr1 = [
+          'Failed to create Ticket. Try again. If persist, contact Tech support',
+        ];
+        commit('setActionErrors', arr1);
+        commit('setActionClass', 'success');
+        break;
+      case 401:
+        delete payload.error;
+        await dispatch('refresh_helpscout_token', payload);
+
         break;
       default:
     }

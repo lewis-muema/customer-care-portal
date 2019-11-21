@@ -65,11 +65,16 @@
     <div class="form-group">
       <button class="btn btn-primary action-button">
         Ticket
+        <span v-if="loading">
+          <i class="fa fa-spinner fa-spin loader"></i
+        ></span>
       </button>
     </div>
   </form>
 </template>
 <script>
+import moment from 'moment';
+
 import { required } from 'vuelidate/lib/validators';
 import { mapState, mapActions, mapMutations } from 'vuex';
 
@@ -90,6 +95,7 @@ export default {
         department: 'Customer Support',
       },
       submitted: false,
+      loading: false,
     };
   },
   validations: {
@@ -99,13 +105,16 @@ export default {
       department: { required },
     },
   },
+  computed: {
+    ...mapState(['userData']),
+  },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
     }),
     ...mapActions({
-      perform_order_action: '$_orders/perform_order_action',
+      create_ticket: 'create_ticket',
     }),
     async submitTicket() {
       this.submitted = true;
@@ -113,42 +122,53 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+      this.loading = true;
       const notification = [];
-      let actionClass = '';
+      const actionClass = '';
       const department = 2;
+
+      const userName = this.order.client_details.name.split(' ');
+      const loggedUser = this.userData.payload.data.name;
+      const msg = `${this.params.message} <br /> <code class="pull-right">Created By : ${loggedUser}</code>`;
+
       const payload = {
-        app: 'ORDERS_APP',
-        endpoint: 'ticket_order_cc',
-        apiKey: true,
-        params: {
-          activity_narrative: this.params.message,
-          action_id: 9,
-          user_phone: this.phone,
-          assignedType: department,
-          client_mode: this.order.order_details.client_mode,
-          order_no: this.orderNo,
-          reporter_id: 1,
-          type_id: 1,
-          type_title: this.params.reason,
-          user_email: this.order.client_details.email,
-          user_id: 18867,
-          user_name: this.order.client_details.name,
-          user_phone: this.order.client_details.phone_no,
+        subject: `${this.params.reason} - ${this.orderNo}`,
+        mailboxId: 43421,
+        mailboxname: 'Support',
+        isDraft: false,
+        type: 'phone',
+        status: 'active',
+        customer: {
+          firstName: userName[0],
+          lastName: userName.length > 1 ? userName[1] : 'n ',
+          email: this.order.client_details.email,
+          phone: this.order.client_details.phone_no,
         },
+        threads: [
+          {
+            type: 'phone',
+            to: [],
+            cc: [],
+            bcc: [],
+            attachments: [],
+            status: 'active',
+            customer: {
+              email: this.order.client_details.email,
+            },
+            text: msg,
+          },
+        ],
       };
-      try {
-        const data = await this.perform_order_action(payload);
-        notification.push(data.reason);
-        actionClass = this.display_order_action_notification(data.status);
-      } catch (error) {
-        notification.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-        actionClass = 'danger';
-      }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
+      const data = await this.create_ticket(payload);
+      this.loading = false;
     },
   },
 };
 </script>
+<style scoped>
+.loader {
+  color: #f8f9fa;
+  font-weight: 700;
+  font-size: 15px;
+}
+</style>

@@ -76,9 +76,15 @@ export default {
       return (this.order = order);
     },
   },
+  async mounted() {
+    await this.requestHelpscoutToken();
+  },
   methods: {
     ...mapMutations({
       updateSearchState: 'setSearchState',
+    }),
+    ...mapActions({
+      requestHelpscoutToken: 'request_helpscout_token',
     }),
     remove() {
       this.updateSearchState(false);
