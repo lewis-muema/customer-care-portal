@@ -34,7 +34,7 @@ export default {
     commit('setToken', token);
     commit('setRefreshToken', refreshToken);
   },
-  async logout({ commit, state }) {
+  async logout({ commit, state, dispatch }) {
     const customConfig = state.config;
     const url = customConfig.AUTH;
     const endpoint = 'logout';
@@ -111,14 +111,35 @@ export default {
     }
   },
   // eslint-disable-next-line require-await
-  async handleErrors({ state }, error) {
+  async handleErrors({ state, commit }, error) {
     switch (error) {
       case 403:
+        commit('setTokenExpiryStatus', true);
         break;
       default:
     }
   },
-  async request_single_user({ state }, payload) {
+  async requestBusinessUnits({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}business-units`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_single_user({ state, dispatch }, payload) {
     const config = state.config;
     const userType = payload.userType;
     const userID = payload.userID;
@@ -137,6 +158,9 @@ export default {
       const userDetails = response.data;
       return userDetails;
     } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
       return error.response;
     }
   },
@@ -162,7 +186,7 @@ export default {
       return error.response;
     }
   },
-  async request_single_order({ state }, orderNo) {
+  async request_single_order({ state, dispatch }, orderNo) {
     const config = state.config;
     const url = `${config.ADONIS_API}orders/${orderNo}`;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -179,6 +203,9 @@ export default {
       const orderDetails = data.data;
       return orderDetails;
     } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
       return error.message;
     }
   },

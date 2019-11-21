@@ -159,6 +159,21 @@
           GPS-Tracker
         </a>
       </li>
+      <!-- <li
+        class="nav-item"
+        v-if="order.order_details.order_status === 'pending'"
+      >
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded=" false"
+          @click="viewTab('allocate', orderNo)"
+          :id="`allocate__${orderNo}`"
+        >
+          <span class="fa fa-cloud-upload"></span>
+          Allocate Orders
+        </a>
+      </li> -->
       <li
         class="nav-item"
         v-if="
@@ -261,6 +276,14 @@
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
+          :id="`allocate_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `allocate_${orderNo}`"
+        >
+          <AllocateComponent :order="order" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
           :id="`tracker_${orderNo}`"
           role="tabpanel"
           v-if="showTab === `tracker_${orderNo}`"
@@ -293,6 +316,7 @@ export default {
     TheProximityComponent: () => import('./TheProximityComponent'),
     TheSMSComponent: () => import('./TheSMSComponent'),
     TheTicketComponent: () => import('./TheTicketComponent'),
+    AllocateComponent: () => import('./AllocateComponent'),
     TrackerComponent: () => import('./TrackerComponent'),
     TheMarkInTransitComponent: () => import('./TheMarkInTransitComponent'),
   },
@@ -382,7 +406,7 @@ export default {
 .vs__dropdown-toggle {
   padding: 6px 4px;
   color: #ccc;
-  border: 1px solid #ccc;
+  border: none;
   width: 100%;
 }
 .vs__dropdown-toggle ::placeholder {
@@ -393,5 +417,14 @@ export default {
 }
 .vs__dropdown-menu {
   border-top: 1px solid #d3d7de;
+}
+.form-inline .form-control {
+  width: 100%;
+}
+.form-inline .form-group {
+  margin-bottom: 15px;
+}
+.order-input {
+  padding: 19px 0.75rem;
 }
 </style>

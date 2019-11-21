@@ -72,8 +72,7 @@
               :src="
                 `https://images.sendyit.com/web_platform/vendor_type/side/v2/${order.vendor_type_id}.svg`
               "
-              height="14"
-              style="float: right; image-rendering: auto;height:18px"
+              :class="getVendorClass(order.vendor_type_id)"
             />
           </span>
         </td>
@@ -192,7 +191,7 @@ export default {
       'getOrderCount',
       'getBusinessUnits',
     ]),
-    ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev']),
+    ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev', 'userData']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
     },
@@ -219,15 +218,25 @@ export default {
       count.pending = this.pendingOrders.length;
       return count;
     },
+    sessionData() {
+      const data = this.userData.payload.data;
+      return data;
+    },
+    countryCode() {
+      const code = this.sessionData.country_codes;
+      return JSON.parse(code);
+    },
     params() {
       const city = this.cities;
       const business_unit = this.businessUnits;
       const status = this.statusArray;
+      const country_code = this.countryCode;
 
       const params = {
         business_unit,
         status,
         city,
+        country_code,
       };
       for (const param in params) {
         if (params[param] === null || params[param] === undefined) {
@@ -304,6 +313,9 @@ export default {
     if (process.client) {
       this.setOrders({
         page: 1,
+        params: {
+          country_code: this.countryCode,
+        },
       });
     }
   },
@@ -448,11 +460,22 @@ export default {
       }
       return true;
     },
+    getVendorClass(vendorTypeID) {
+      return vendorTypeID === 2 ? 'pickupClass' : 'vendorClass';
+    },
   },
 };
 </script>
 <style scoped>
 .label {
   text-transform: capitalize;
+}
+.vendorClass {
+  float: right;
+  image-rendering: auto;
+  height: 18px;
+}
+.pickupClass {
+  height: 25px;
 }
 </style>
