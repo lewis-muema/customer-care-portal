@@ -16,7 +16,7 @@ const config = {
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     AUTH: 'https://authtest.sendyit.com/',
-    HELPSCOUT_TOKEN: 'https://transition.helpscout.net',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
 
@@ -43,7 +43,7 @@ const config = {
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     AUTH: 'https://authtest.sendyit.com/',
-    HELPSCOUT_TOKEN: 'https://transition.helpscout.net',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
 
@@ -71,7 +71,7 @@ const config = {
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     AUTH: 'https://auth.sendyit.com/',
-    HELPSCOUT_TOKEN: 'https://transition.helpscout.net',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
 
