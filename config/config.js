@@ -15,6 +15,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
+    PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
@@ -38,6 +39,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
+    PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
@@ -62,6 +64,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
+    PRICING_SERVICE: 'https://auth.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
 
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',

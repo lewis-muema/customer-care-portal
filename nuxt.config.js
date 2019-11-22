@@ -59,7 +59,7 @@ export default {
       },
       {
         src:
-          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry,places',
         type: 'text/javascript',
       },
       {
@@ -110,6 +110,10 @@ export default {
         href:
           'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic',
       },
+      {
+        rel: 'stylesheet',
+        href: 'https://unpkg.com/element-ui/lib/theme-chalk/index.css',
+      },
     ],
   },
   /*
@@ -123,6 +127,7 @@ export default {
     '@assets/style/custom.css',
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
+    '@assets/style/pricing-config.css',
     'aos/dist/aos.css',
     'vue-select/dist/vue-select.css',
   ],
@@ -134,6 +139,7 @@ export default {
     { src: '~plugins/aos.js', ssr: false },
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
+    { src: '~plugins/element-ui', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',

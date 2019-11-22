@@ -61,4 +61,31 @@ export default {
   getTokenExpiryStatus(state) {
     return state.tokenExpired;
   },
+  getSectionView(state) {
+    return state.section;
+  },
+  getAddPricingState(state) {
+    return state.addPricing;
+  },
+  getFirstPricingState(state) {
+    return state.firstPricing;
+  },
+  getEditStatus(state) {
+    return state.editStatus;
+  },
+  getViewStatus(state) {
+    return state.viewDetails;
+  },
+  getSummaryStatus(state) {
+    return state.viewSummary;
+  },
+  getConfiguredDistancePricing(state) {
+    return state.distancePricingData;
+  },
+  getPendingDistancePricing(state) {
+    return state.pendingPricingData;
+  },
+  getApproveStatus(state) {
+    return state.approveStatus;
+  },
 };
