@@ -51,6 +51,9 @@ export default {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('reloaded');
 
+      commit('setHelpScoutToken', null);
+      localStorage.removeItem('helpscoutTokenRequested');
+
       return response;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
@@ -78,6 +81,155 @@ export default {
     };
     const routeName = $nuxt.$route.name;
     commit('setbreadcrumbs', breadcrumbsObject.peer);
+  },
+  // eslint-disable-next-line require-await
+  async request_helpscoute_post({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+    const authorization = payload.params.authorization;
+    let customHeaders = {
+      'Content-Type': 'text/plain',
+      Accept: 'text/plain',
+    };
+    if (authorization) {
+      customHeaders = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${payload.params.token}`,
+      };
+      delete payload.params.token;
+    }
+    delete payload.params.authorization;
+
+    const config = {
+      headers: customHeaders,
+    };
+
+    const values = JSON.stringify(payload.params);
+
+    try {
+      const response = await axios.post(`${url}`, values, config);
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      const err = await dispatch('handleHelpScoutErrors', payload.params, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async request_helpscout_token({ rootState, dispatch, commit }) {
+    const url = 'HELPSCOUT_TOKEN';
+    const apiKey = this.$env.HELP_SCOUT_API_KEY;
+    const clientId = this.$env.HELP_SCOUT_CLIENT_ID;
+    const payload = {
+      url,
+      params: {
+        apiKey,
+        clientId,
+        authorization: false,
+      },
+    };
+
+    try {
+      const res = await dispatch('request_helpscoute_post', payload);
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async refresh_helpscout_token({ state, dispatch, commit }, payload) {
+    const customConfig = state.config;
+    const refresh_token = payload.refreshToken;
+
+    const url = 'HELPSCOUT_REFRESH';
+    const grant_type = 'refresh_token';
+    const client_id = this.$env.HELP_SCOUT_CLIENT_ID;
+    const client_secret = this.$env.HELP_SCOUT_SECRET_KEY;
+
+    const values = {
+      url,
+      params: {
+        refresh_token,
+        client_id,
+        client_secret,
+        grant_type,
+        authorization: true,
+      },
+    };
+
+    try {
+      const res = await dispatch('request_helpscoute_post', values);
+      if (res.status === 200) {
+        localStorage.removeItem('helpscoutrefreshToken');
+
+        const token = res.data;
+        const expiresIn = token.expires_in;
+        const expiryDatetime = moment()
+          .add(expiresIn, 'seconds')
+          .format('LLLL');
+        token.expiryDatetime = expiryDatetime;
+        commit('setHelpScoutToken', token);
+        localStorage.setItem('helpscoutAccessToken', token.access_token);
+        localStorage.setItem('helpscoutrefreshToken', token.refresh_token);
+        localStorage.setItem('helpscoutExpiryTime', token.expiryDatetime);
+
+        return token.access_token;
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+
+  // eslint-disable-next-line require-await
+  async ticket_action({ state, dispatch, commit }, payload) {
+    const url = 'HELPSCOUT_CONVERSATIONS';
+    payload.authorization = true;
+
+    const values = {
+      url,
+      params: payload,
+    };
+    try {
+      const res = await dispatch('request_helpscoute_post', values);
+      payload.error = res.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
+    } catch (error) {
+      payload.error = error.response.status;
+
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
+      return error;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async retrieveHelpscoutToken({ state, dispatch, commit }) {
+    let accessToken = localStorage.getItem('helpscoutAccessToken');
+    // const accessToken = tokenArray.accessToken;
+    const refreshToken = localStorage.getItem('helpscoutrefreshToken');
+    const expiryDateTime = localStorage.getItem('helpscoutExpiryTime');
+    const currentDate = moment().format('LLLL');
+    const expired = expiryDateTime === currentDate;
+    if (expired) {
+      localStorage.removeItem('helpscoutAccessToken');
+      localStorage.removeItem('helpscoutExpiryTime');
+      const payload = { refreshToken };
+      const token = await dispatch('refresh_helpscout_token', payload);
+      accessToken = token;
+    }
+    return accessToken;
+  },
+  // eslint-disable-next-line require-await
+  async create_ticket({ state, dispatch, commit }, payload) {
+    const token = await dispatch('retrieveHelpscoutToken');
+    payload.authorization = true;
+    payload.token = token;
+    await dispatch('ticket_action', payload);
   },
   async requestAxiosPost({ state, commit, dispatch }, payload) {
     const customConfig = state.config;
@@ -115,6 +267,33 @@ export default {
     switch (error) {
       case 403:
         commit('setTokenExpiryStatus', true);
+        break;
+      default:
+    }
+  },
+  // eslint-disable-next-line require-await
+  async handleHelpScoutErrors({ state, commit, dispatch }, payload) {
+    const error = payload.error;
+    switch (error) {
+      case 201:
+        // eslint-disable-next-line no-case-declarations
+        const arr = ['Ticket created successfully'];
+        commit('setActionErrors', arr);
+        commit('setActionClass', 'success');
+        break;
+      case 400:
+        // eslint-disable-next-line no-case-declarations
+        const arr1 = [
+          'Failed to create Ticket. Try again. If persist, contact Tech support',
+        ];
+        commit('setActionErrors', arr1);
+        commit('setActionClass', 'success');
+        break;
+      case 401:
+        // eslint-disable-next-line no-case-declarations
+        const refreshToken = localStorage.getItem('helpscoutrefreshToken');
+        await dispatch('refresh_helpscout_token', { refreshToken });
+
         break;
       default:
     }

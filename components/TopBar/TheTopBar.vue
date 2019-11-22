@@ -39,6 +39,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import moment from 'moment';
 
 import TheSearchBar from '@/components/TopBar/TheSearchBar';
 import TheStatusButtonsBar from '@/components/TopBar/TheStatusButtonsBar';
@@ -65,7 +66,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getSearchedOrder', 'getSearchState']),
+    ...mapGetters(['getSearchedOrder', 'getSearchState', 'getHelpScoutToken']),
     searchState() {
       return this.getSearchState;
     },
@@ -76,10 +77,39 @@ export default {
       return (this.order = order);
     },
   },
+  async mounted() {
+    if (localStorage.getItem('helpscoutTokenRequested') === null) {
+      await this.setHelpscoutToken();
+    }
+  },
   methods: {
     ...mapMutations({
       updateSearchState: 'setSearchState',
+      updateHelpScoutToken: 'setHelpScoutToken',
     }),
+    ...mapActions({
+      requestHelpscoutToken: 'request_helpscout_token',
+    }),
+    async setHelpscoutToken() {
+      try {
+        const token = await this.requestHelpscoutToken();
+        const expiresIn = token.expiresIn;
+        const currentDate = moment().format('LLLL');
+        const expiryDatetime = moment()
+          .add(expiresIn, 'seconds')
+          .format('LLLL');
+        token.expiryDatetime = expiryDatetime;
+
+        this.updateHelpScoutToken(token);
+        localStorage.setItem('helpscoutTokenRequested', 1);
+        localStorage.setItem('helpscoutAccessToken', token.accessToken);
+        localStorage.setItem('helpscoutrefreshToken', token.refreshToken);
+        localStorage.setItem('helpscoutExpiryTime', expiryDatetime);
+        localStorage.setItem('currentDate', currentDate);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     remove() {
       this.updateSearchState(false);
     },
