@@ -70,6 +70,12 @@ export default {
   setTokenExpiryStatus(state, val) {
     state.tokenExpired = val;
   },
+  setHelpScoutTokenExpiryStatus(state, val) {
+    state.helpScoutTokenExpired = val;
+  },
+  setHelpScoutToken(state, val) {
+    state.helpScoutToken = val;
+  },
   setSectionView(state, val) {
     state.section = val;
   },

@@ -61,6 +61,9 @@ export default {
   getTokenExpiryStatus(state) {
     return state.tokenExpired;
   },
+  getHelpScoutToken(state) {
+    return state.helpScoutToken;
+  },
   getSectionView(state) {
     return state.section;
   },
