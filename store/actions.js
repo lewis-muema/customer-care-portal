@@ -51,6 +51,9 @@ export default {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('reloaded');
 
+      commit('setHelpScoutToken', null);
+      localStorage.removeItem('helpscoutTokenRequested');
+
       return response;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
@@ -131,7 +134,6 @@ export default {
 
     try {
       const res = await dispatch('request_helpscoute_post', payload);
-      commit('setHelpScoutToken', res.data);
       return res.data;
     } catch (error) {
       return error;
@@ -140,8 +142,7 @@ export default {
   // eslint-disable-next-line require-await
   async refresh_helpscout_token({ state, dispatch, commit }, payload) {
     const customConfig = state.config;
-    const token = state.helpScoutToken;
-    const refresh_token = token.refreshToken;
+    const refresh_token = payload.refreshToken;
 
     const url = 'HELPSCOUT_REFRESH';
     const grant_type = 'refresh_token';
@@ -161,14 +162,22 @@ export default {
 
     try {
       const res = await dispatch('request_helpscoute_post', values);
-
       if (res.status === 200) {
-        commit('setHelpScoutToken', res.data);
-        payload.token = res.data.access_token;
+        localStorage.removeItem('helpscoutrefreshToken');
 
-        await dispatch('ticket_action', payload);
+        const token = res.data;
+        const expiresIn = token.expires_in;
+        const expiryDatetime = moment()
+          .add(expiresIn, 'seconds')
+          .format('LLLL');
+        token.expiryDatetime = expiryDatetime;
+        commit('setHelpScoutToken', token);
+        localStorage.setItem('helpscoutAccessToken', token.access_token);
+        localStorage.setItem('helpscoutrefreshToken', token.refresh_token);
+        localStorage.setItem('helpscoutExpiryTime', token.expiryDatetime);
+
+        return token.access_token;
       }
-      return res.data;
     } catch (error) {
       return error;
     }
@@ -199,12 +208,27 @@ export default {
     }
   },
   // eslint-disable-next-line require-await
+  async retrieveHelpscoutToken({ state, dispatch, commit }) {
+    let accessToken = localStorage.getItem('helpscoutAccessToken');
+    // const accessToken = tokenArray.accessToken;
+    const refreshToken = localStorage.getItem('helpscoutrefreshToken');
+    const expiryDateTime = localStorage.getItem('helpscoutExpiryTime');
+    const currentDate = moment().format('LLLL');
+    const expired = expiryDateTime === currentDate;
+    if (expired) {
+      localStorage.removeItem('helpscoutAccessToken');
+      localStorage.removeItem('helpscoutExpiryTime');
+      const payload = { refreshToken };
+      const token = await dispatch('refresh_helpscout_token', payload);
+      accessToken = token;
+    }
+    return accessToken;
+  },
+  // eslint-disable-next-line require-await
   async create_ticket({ state, dispatch, commit }, payload) {
-    const token = state.helpScoutToken;
-    const accessToken = token.accessToken;
+    const token = await dispatch('retrieveHelpscoutToken');
     payload.authorization = true;
-    payload.token = accessToken;
-
+    payload.token = token;
     await dispatch('ticket_action', payload);
   },
   async requestAxiosPost({ state, commit, dispatch }, payload) {
@@ -266,8 +290,9 @@ export default {
         commit('setActionClass', 'success');
         break;
       case 401:
-        delete payload.error;
-        await dispatch('refresh_helpscout_token', payload);
+        // eslint-disable-next-line no-case-declarations
+        const refreshToken = localStorage.getItem('helpscoutrefreshToken');
+        await dispatch('refresh_helpscout_token', { refreshToken });
 
         break;
       default:
