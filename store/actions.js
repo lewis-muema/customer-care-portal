@@ -50,9 +50,11 @@ export default {
       localStorage.removeItem('jwtToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('reloaded');
+      localStorage.removeItem('helpscoutExpiryTime');
+      localStorage.removeItem('helpscoutTokenRequested');
+      localStorage.removeItem('helpscoutAccessToken');
 
       commit('setHelpScoutToken', null);
-      localStorage.removeItem('helpscoutTokenRequested');
 
       return response;
     } catch (error) {
@@ -87,16 +89,12 @@ export default {
     const customConfig = state.config;
     const url = customConfig[payload.url];
     const authorization = payload.params.authorization;
-    let customHeaders = {
-      'Content-Type': 'text/plain',
-      Accept: 'text/plain',
+    const customHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     };
     if (authorization) {
-      customHeaders = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${payload.params.token}`,
-      };
+      customHeaders.Authorization = `Bearer ${payload.params.token}`;
       delete payload.params.token;
     }
     delete payload.params.authorization;
@@ -122,18 +120,33 @@ export default {
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
     const apiKey = this.$env.HELP_SCOUT_API_KEY;
-    const clientId = this.$env.HELP_SCOUT_CLIENT_ID;
+    const client_secret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const grant_type = 'client_credentials';
+    const client_id = this.$env.HELP_SCOUT_CLIENT_ID;
     const payload = {
       url,
       params: {
-        apiKey,
-        clientId,
+        client_secret,
+        client_id,
+        grant_type,
         authorization: false,
       },
     };
 
     try {
       const res = await dispatch('request_helpscoute_post', payload);
+      const token = res.data;
+
+      const expiresIn = token.expires_in;
+      const expiryDatetime = moment()
+        .add(expiresIn, 'seconds')
+        .format('LLLL');
+      token.expiryDatetime = expiryDatetime;
+      commit('setHelpScoutToken', token);
+
+      localStorage.setItem('helpscoutTokenRequested', 1);
+      localStorage.setItem('helpscoutAccessToken', token.access_token);
+      localStorage.setItem('helpscoutExpiryTime', expiryDatetime);
       return res.data;
     } catch (error) {
       return error;
@@ -210,17 +223,14 @@ export default {
   // eslint-disable-next-line require-await
   async retrieveHelpscoutToken({ state, dispatch, commit }) {
     let accessToken = localStorage.getItem('helpscoutAccessToken');
-    // const accessToken = tokenArray.accessToken;
-    const refreshToken = localStorage.getItem('helpscoutrefreshToken');
     const expiryDateTime = localStorage.getItem('helpscoutExpiryTime');
     const currentDate = moment().format('LLLL');
-    const expired = expiryDateTime === currentDate;
-    if (expired) {
+    if (expiryDateTime === currentDate) {
       localStorage.removeItem('helpscoutAccessToken');
       localStorage.removeItem('helpscoutExpiryTime');
-      const payload = { refreshToken };
-      const token = await dispatch('refresh_helpscout_token', payload);
-      accessToken = token;
+      commit('setHelpScoutToken', null);
+      const token = await dispatch('request_helpscout_token');
+      accessToken = token.access_token;
     }
     return accessToken;
   },
