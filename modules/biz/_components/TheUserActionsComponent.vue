@@ -62,6 +62,30 @@
             Invoice
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('pricing', copID)"
+            :id="`pricing_${copID}`"
+          >
+            <span class="fa fa-fw fa-gbp"></span>
+            Pricing
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('approval', copID)"
+            :id="`approval_${copID}`"
+          >
+            <span class="fa fa-fw fa-check"></span>
+            Approvals
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -125,6 +149,22 @@
           >
             <TheInvoiceComponent :user="user" :session="userData" />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`pricing_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `pricing_${copID}`"
+          >
+            <TheAddNewPricingComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `approval_${copID}`"
+          >
+            <ThePricingApprovalComponent :user="user" :session="userData" />
+          </div>
         </div>
       </div>
     </div>
@@ -141,6 +181,10 @@ export default {
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
     TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
+    TheAddNewPricingComponent: () =>
+      import('./UserActions/TheAddNewPricingComponent'),
+    ThePricingApprovalComponent: () =>
+      import('./UserActions/ThePricingApprovalComponent'),
   },
   props: {
     user: {
