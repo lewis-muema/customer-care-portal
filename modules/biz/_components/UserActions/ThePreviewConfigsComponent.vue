@@ -108,7 +108,6 @@ export default {
       required: true,
     },
   },
-  // props: ['configs'],
   data() {
     return {
       tableData: this.configs,
@@ -154,7 +153,6 @@ export default {
     },
     async submitConfigs() {
       const configParams = this.createPayload(this.tableData);
-      console.log('fuck', configParams);
       const notification = [];
       let actionClass = '';
       const payload = {

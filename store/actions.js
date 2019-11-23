@@ -457,7 +457,7 @@ export default {
       const pendingDistancePricing = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
-        for (let i = 0; i < pendingPricingDetails.length; i++) {
+        for (let i = 0; i < pendingPricingDetails.length; i += 1) {
           pendingDistancePricing.push(
             pendingPricingDetails[i].distance_pricing,
           );
@@ -475,7 +475,7 @@ export default {
       const distancePricing = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
-        for (let i = 0; i < customPricingDetails.length; i++) {
+        for (let i = 0; i < customPricingDetails.length; i += 1) {
           distancePricing.push(customPricingDetails[i].distance_pricing);
         }
         commit('updateDistancePricing', distancePricing);

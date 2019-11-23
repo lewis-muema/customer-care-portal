@@ -1,6 +1,5 @@
 <template>
   <div class="post">
-    <input id="pac-input" type="text" placeholder="Enter a location" />
     <div class="user-block">
       <img
         class="img-circle img-bordered-sm"
@@ -36,22 +35,6 @@ export default {
     return {
       notesLog: this.order,
     };
-  },
-  mounted() {
-    if (process.client) {
-      const defaultBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(-1.299923, 36.780921),
-        new google.maps.LatLng(-1.319923, 36.800921),
-      );
-      const gInput = document.getElementById('pac-input');
-      const options = {
-        bounds: defaultBounds,
-        types: ['geocode'],
-      };
-      this.autocomplete = new google.maps.places.Autocomplete(gInput, options);
-    } else {
-      console.log('working on server');
-    }
   },
 };
 </script>

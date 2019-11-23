@@ -180,6 +180,7 @@ export default {
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
+    TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
     TheAddNewPricingComponent: () =>
       import('./UserActions/TheAddNewPricingComponent'),
     ThePricingApprovalComponent: () =>

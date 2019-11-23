@@ -9,8 +9,7 @@
     <el-table
       :data="tableData"
       border
-      class="pricing-table-styling"
-      style="width: 1000px"
+      class="pricing-table-styling configs-view-table"
     >
       <el-table-column prop="city" label="City" width="170"> </el-table-column>
       <el-table-column prop="name" label="Vendor Type" width="150">
@@ -103,6 +102,7 @@ export default {
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
       updateSuccess: 'setUserActionSuccess',
+      updateSection: 'setSectionView',
     }),
     ...mapActions({
       deactivate_distance_pricing_configs:
@@ -129,7 +129,7 @@ export default {
       try {
         const data = await this.deactivate_distance_pricing_configs(payload);
         if (data.status) {
-          // this.sendEmailNotification();
+          this.updateSection(0);
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -170,4 +170,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.configs-view-table {
+  width: 1000px;
+}
+</style>

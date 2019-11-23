@@ -118,14 +118,6 @@
         </div>
         <div class="pricing-table-styling" v-show="this.section === 2">
           <template>
-            <!--            <el-autocomplete-->
-            <!--              class="inline-input"-->
-            <!--              v-model="pacInput"-->
-            <!--              :fetch-suggestions="querySearch"-->
-            <!--              placeholder="Please Input"-->
-            <!--              :trigger-on-focus="false"-->
-            <!--              @select="handleSelect"-->
-            <!--            ></el-autocomplete>-->
             <el-table
               :data="tableData"
               row-class-name="no-hover"
@@ -133,12 +125,6 @@
               max-height="300"
             >
               <el-table-column prop="city" label="City" width="200">
-                <!--                <input-->
-                <!--                  id="pac-input"-->
-                <!--                  type="text"-->
-                <!--                  v-model="pacInput"-->
-                <!--                  placeholder="Enter a location"-->
-                <!--                />-->
                 <template slot-scope="scope">
                   <el-input
                     size="small"
@@ -290,17 +276,6 @@
                   >
                 </template>
               </el-table-column>
-              <!--              <el-table-column label="Operations" width="100" fixed="right">-->
-              <!--                <template slot-scope="scope">-->
-              <!--                  <el-button-->
-              <!--                    @click.native.prevent="deleteRow(scope.$index, scope.row)"-->
-              <!--                    type="text"-->
-              <!--                    size="small"-->
-              <!--                  >-->
-              <!--                    Delete-->
-              <!--                  </el-button>-->
-              <!--                </template>-->
-              <!--              </el-table-column>-->
             </el-table>
 
             <p class="pricing-add-row" @click="addRow">
@@ -447,10 +422,6 @@ export default {
       }
     }
     this.fetchVendorTypes(countryCode);
-    // const autocomplete = new google.maps.places.Autocomplete(
-    //   /** @type {!HTMLInputElement} */ (this.$refs.autocomplete),
-    //   { types: ['geocode'] },
-    // );
   },
   beforeMount() {},
   methods: {
