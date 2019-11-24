@@ -152,7 +152,6 @@ export default {
     this.adminName = this.getSessionData.payload.data.name;
     this.adminMail = this.getSessionData.payload.data.email;
     this.getDistancePricingConfigs();
-    console.log('sess', this.getSessionData.payload.data);
   },
   methods: {
     ...mapMutations({
