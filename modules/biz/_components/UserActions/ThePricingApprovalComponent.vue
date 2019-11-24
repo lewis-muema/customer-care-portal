@@ -120,6 +120,8 @@ export default {
       customPricingDetails: [],
       copId: '',
       adminId: '',
+      adminName: '',
+      adminMail: '',
       currency: '',
       rejectionReason: '',
       crmName: '',
@@ -147,8 +149,10 @@ export default {
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
-    this.crmName = this.getSessionData.payload.data.name;
+    this.adminName = this.getSessionData.payload.data.name;
+    this.adminMail = this.getSessionData.payload.data.email;
     this.getDistancePricingConfigs();
+    console.log('sess', this.getSessionData.payload.data);
   },
   methods: {
     ...mapMutations({
@@ -260,10 +264,10 @@ export default {
         endpoint: 'v1/send_email',
         apiKey: false,
         params: {
-          email: 'ndervine@sendyit.com',
+          email: this.adminMail,
           message: `Greetings! You have a new custom pricing config approval request from ${this.crmName} for ${this.copName}`,
           subject: 'New Custom Pricing Config',
-          name: 'Dervine',
+          name: this.adminName,
         },
       };
       try {
