@@ -211,7 +211,7 @@ export default {
 
       const data = {
         id,
-        title: `${userPhone} ( Peer User)`,
+        title: `${userPhone} ( Rider)`,
         customer: {
           firstName: userName[0],
           lastName: userName.length > 1 ? userName[1] : '. ',
