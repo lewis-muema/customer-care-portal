@@ -225,7 +225,7 @@ export default {
     let accessToken = localStorage.getItem('helpscoutAccessToken');
     const expiryDateTime = localStorage.getItem('helpscoutExpiryTime');
     const currentDate = moment().format('LLLL');
-    if (expiryDateTime === currentDate) {
+    if (expiryDateTime < currentDate) {
       localStorage.removeItem('helpscoutAccessToken');
       localStorage.removeItem('helpscoutExpiryTime');
       commit('setHelpScoutToken', null);
@@ -297,7 +297,7 @@ export default {
           'Failed to create Ticket. Try again. If persist, contact Tech support',
         ];
         commit('setActionErrors', arr1);
-        commit('setActionClass', 'success');
+        commit('setActionClass', 'danger');
         break;
       case 401:
         // eslint-disable-next-line no-case-declarations
