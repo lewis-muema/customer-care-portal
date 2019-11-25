@@ -141,7 +141,6 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
-    console.log('gewgf', this.configs);
   },
   methods: {
     ...mapMutations({
