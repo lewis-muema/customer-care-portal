@@ -33,7 +33,7 @@
               </tr>
               <tr>
                 <td>
-                  <p class="pricingmodelname">[pricing model]</p>
+                  <p class="pricingmodelname">Distance Based Pricing</p>
                 </td>
               </tr>
               <br />
@@ -124,9 +124,33 @@
               style="width: 1000px"
               max-height="300"
             >
+              <el-table-column class="delete-col" width="40" fixed="left">
+                <template slot-scope="scope">
+                  <el-button
+                    @click.native.prevent="deleteRow(scope.$index, scope.row)"
+                    type="text"
+                    size="small"
+                  >
+                    <i class="fa fa-fw fa-close pricing-delete-icon"></i>
+                  </el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="city" label="City" width="200">
                 <template slot-scope="scope">
+                  <el-autocomplete
+                    v-if="!scope.row.city"
+                    size="small"
+                    class="inline-input"
+                    v-model="pacInput"
+                    :value="handleSelect"
+                    :fetch-suggestions="querySearch"
+                    placeholder="Search city"
+                    :trigger-on-focus="false"
+                    @select="handleSelect($event, scope.$index, scope.row)"
+                  >
+                  </el-autocomplete>
                   <el-input
+                    v-if="scope.row.city"
                     size="small"
                     style="text-align:center"
                     placeholder="Search city"
@@ -134,11 +158,7 @@
                   ></el-input>
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="service_fee"
-                label="Vendor Type"
-                width="200"
-              >
+              <el-table-column prop="name" label="Vendor Type" width="200">
                 <template slot-scope="scope">
                   <el-select
                     v-model="scope.row.vendor_type"
@@ -229,7 +249,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="service_fee"
+                prop="loader_cost"
                 label="Loading fee (per loader)"
                 width="200"
               >
@@ -237,7 +257,7 @@
                   <el-input
                     size="small"
                     style="text-align:center"
-                    v-model="scope.row.service_fee"
+                    v-model="scope.row.loader_cost"
                     ><template class="pricing-prepend" slot="prepend">{{
                       currency
                     }}</template></el-input
@@ -339,6 +359,15 @@ export default {
       checkedBusinessUnit: '',
       pricingTitle: 'New Custom Pricing',
       pricingModels,
+      tableData: [],
+      distancePricingTableData: [],
+      customPricingDetails: [],
+      vendorTypes: [],
+      suggestions: [],
+      selectedVendor: '',
+      pricingStatus: '',
+      addCount: 0,
+      pricingTable: 0,
       pricingData: [
         {
           city: 'Entebbe',
@@ -353,15 +382,6 @@ export default {
           cancellation_fee: '40000',
         },
       ],
-      tableData: [],
-      distancePricingTableData: [],
-      customPricingDetails: [],
-      vendorTypes: [],
-      suggestions: [],
-      selectedVendor: '',
-      pricingStatus: '',
-      addCount: 0,
-      pricingTable: 0,
     };
   },
   computed: {
@@ -414,7 +434,7 @@ export default {
     } else {
       this.updatePricing(true);
     }
-    for (let i = 0; i < this.distancePricingTableData.length; i++) {
+    for (let i = 0; i < this.distancePricingTableData.length; i += 1) {
       if (this.distancePricingTableData[i].status === 'Pending') {
         this.pricingStatus = 'Pending';
       } else {
@@ -448,8 +468,7 @@ export default {
       this.updateSection(this.section - 1);
     },
     deleteRow(index, rows) {
-      this.configuredDistancePricing.splice(index, 1);
-      if (this.addCount > 0) --this.addCount;
+      this.tableData.splice(index, 1);
     },
     addRow() {
       const anotherRow = {
@@ -511,6 +530,16 @@ export default {
       } catch (error) {
         this.status = false;
       }
+    },
+    querySearch(queryString, cb) {
+      for (let i = 0; i < this.suggestions.length; i += 1) {
+        this.suggestions[i].value = this.suggestions[i]['description'];
+        delete this.suggestions[i].description;
+      }
+      cb(this.suggestions);
+    },
+    handleSelect(item, index, rows) {
+      this.tableData[index].city = item.value;
     },
   },
 };

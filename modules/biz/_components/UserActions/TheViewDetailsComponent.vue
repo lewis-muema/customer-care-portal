@@ -141,7 +141,7 @@ export default {
       }
     },
     createPayload(pricingApprovalData) {
-      for (let i = 0; i < pricingApprovalData.length; i++) {
+      for (let i = 0; i < pricingApprovalData.length; i += 1) {
         pricingApprovalData[i].cop_id = this.copId;
         pricingApprovalData[i].custom_pricing_details = {};
         pricingApprovalData[i].custom_pricing_details.admin_id =

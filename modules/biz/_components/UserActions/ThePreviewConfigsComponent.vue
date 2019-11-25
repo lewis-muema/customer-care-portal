@@ -11,7 +11,7 @@
         class="pricing-table-styling"
         style="width: 1000px"
       >
-        <el-table-column prop="city" label="City" width="110">
+        <el-table-column prop="city" label="City" width="180">
         </el-table-column>
         <el-table-column prop="vendor_type" label="Vendor Type" width="110">
         </el-table-column>
@@ -37,7 +37,7 @@
           width="170"
         >
         </el-table-column>
-        <el-table-column prop="loading_fee" label="Loading Fee" width="120">
+        <el-table-column prop="loader_cost" label="Loading Fee" width="120">
         </el-table-column>
         <el-table-column prop="service_fee" label="Service Charge" width="120">
         </el-table-column>
@@ -69,10 +69,10 @@
             placeholder="Select approver"
           >
             <el-option
-              v-for="approver in approvers"
-              :key="approver.admin_id"
-              :label="approver.name"
-              :value="approver.admin_id"
+              v-for="admin in admin_list"
+              :key="admin.admin_id"
+              :label="admin.name"
+              :value="admin.admin_id"
             >
             </el-option>
           </el-select>
@@ -117,20 +117,24 @@ export default {
       copId: this.user.user_details.cop_id,
       isHidden: false,
       approverSelect: false,
-      approvers: [
-        { admin_id: 1, name: 'Philemon Ope', business_unit: 'EBU' },
-        { admin_id: 2, name: 'Don Okoth', business_unit: 'FBU' },
-        { admin_id: 35, name: 'Everlyne Ndanu', business_unit: 'MBU' },
-      ],
+      admin_list: [],
     };
   },
   computed: {
     ...mapGetters({
+      getAdmins: 'getAdmins',
       section: 'getSectionView',
       addPricing: 'getAddPricingState',
     }),
   },
-  mounted() {},
+  watch: {
+    getAdmins(admins) {
+      return (this.admin_list = admins);
+    },
+  },
+  async mounted() {
+    await this.setAdmins();
+  },
   methods: {
     ...mapMutations({
       updateSection: 'setSectionView',
@@ -141,6 +145,7 @@ export default {
     }),
     ...mapActions({
       submit_custom_pricing: 'submit_custom_pricing',
+      setAdmins: 'setAdmins',
     }),
     editTable() {
       this.updateSection(2);
@@ -188,38 +193,58 @@ export default {
         pricingConfigData[i].custom_pricing_details.distance_pricing = {};
         pricingConfigData[i].custom_pricing_details.distance_pricing.status =
           'Pending';
-        pricingConfigData[i].custom_pricing_details.distance_pricing.base_km =
-          pricingConfigData[i].base_km;
-        pricingConfigData[i].custom_pricing_details.distance_pricing.base_cost =
-          pricingConfigData[i].base_cost;
         pricingConfigData[
           i
-        ].custom_pricing_details.distance_pricing.cancellation_fee =
-          pricingConfigData[i].cancellation_fee;
+        ].custom_pricing_details.distance_pricing.base_km = parseInt(
+          pricingConfigData[i].base_km,
+          10,
+        );
+        pricingConfigData[
+          i
+        ].custom_pricing_details.distance_pricing.base_cost = parseInt(
+          pricingConfigData[i].base_cost,
+          10,
+        );
+        pricingConfigData[
+          i
+        ].custom_pricing_details.distance_pricing.cancellation_fee = parseInt(
+          pricingConfigData[i].cancellation_fee,
+          10,
+        );
         pricingConfigData[i].custom_pricing_details.distance_pricing.city =
           pricingConfigData[i].city;
         pricingConfigData[
           i
-        ].custom_pricing_details.distance_pricing.loader_cost =
-          pricingConfigData[i].loader_cost;
+        ].custom_pricing_details.distance_pricing.loader_cost = parseInt(
+          pricingConfigData[i].loader_cost,
+          10,
+        );
         pricingConfigData[
           i
-        ].custom_pricing_details.distance_pricing.cost_per_km_above_base_km =
-          pricingConfigData[i].cost_per_km_above_base_km;
+        ].custom_pricing_details.distance_pricing.cost_per_km_above_base_km = parseInt(
+          pricingConfigData[i].cost_per_km_above_base_km,
+          10,
+        );
         pricingConfigData[
           i
-        ].custom_pricing_details.distance_pricing.additional_location_cost =
-          pricingConfigData[i].additional_location_cost;
+        ].custom_pricing_details.distance_pricing.additional_location_cost = parseInt(
+          pricingConfigData[i].additional_location_cost,
+          10,
+        );
         pricingConfigData[
           i
-        ].custom_pricing_details.distance_pricing.service_fee =
-          pricingConfigData[i].service_fee;
+        ].custom_pricing_details.distance_pricing.service_fee = parseInt(
+          pricingConfigData[i].service_fee,
+          10,
+        );
         pricingConfigData[i].custom_pricing_details.distance_pricing.name =
           pricingConfigData[i].name;
         pricingConfigData[
           i
-        ].custom_pricing_details.distance_pricing.waiting_time_cost_per_min =
-          pricingConfigData[i].waiting_time_cost_per_min;
+        ].custom_pricing_details.distance_pricing.waiting_time_cost_per_min = parseInt(
+          pricingConfigData[i].waiting_time_cost_per_min,
+          10,
+        );
 
         delete pricingConfigData[i].waiting_time_cost_per_min;
         delete pricingConfigData[i].name;
