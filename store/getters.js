@@ -61,4 +61,7 @@ export default {
   getTokenExpiryStatus(state) {
     return state.tokenExpired;
   },
+  getHelpScoutToken(state) {
+    return state.helpScoutToken;
+  },
 };
