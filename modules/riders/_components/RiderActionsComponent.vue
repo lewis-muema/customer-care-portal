@@ -150,9 +150,9 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`ticket_${copID}`"
+            :id="`ticket_${riderID}`"
             role="tabpanel"
-            v-if="showTab === `ticket_${copID}`"
+            v-if="showTab === `ticket_${riderID}`"
           >
             <TheTicketComponent
               :order="user"
@@ -177,6 +177,7 @@ export default {
     PayRiderComponent: () => import('./RiderActions/PayRiderComponent'),
     NewLoanComponent: () => import('./RiderActions/NewLoanComponent'),
     EditComponent: () => import('./RiderActions/EditComponent'),
+    TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
   },
   props: {
     user: {
