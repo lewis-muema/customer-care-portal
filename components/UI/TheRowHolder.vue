@@ -192,7 +192,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.order);
     const actionClass = '';
     const arr = [];
 
