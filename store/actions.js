@@ -110,9 +110,6 @@ export default {
       return response;
     } catch (error) {
       payload.params.error = error.response.status;
-      const err = await dispatch('handleHelpScoutErrors', payload.params, {
-        root: true,
-      });
       return error.response;
     }
   },
@@ -212,11 +209,6 @@ export default {
         root: true,
       });
     } catch (error) {
-      payload.error = error.response.status;
-
-      const err = await dispatch('handleHelpScoutErrors', payload, {
-        root: true,
-      });
       return error;
     }
   },
@@ -239,7 +231,11 @@ export default {
     const token = await dispatch('retrieveHelpscoutToken');
     payload.authorization = true;
     payload.token = token;
-    await dispatch('ticket_action', payload);
+    try {
+      await dispatch('ticket_action', payload);
+    } catch (error) {
+      return error;
+    }
   },
   async requestAxiosPost({ state, commit, dispatch }, payload) {
     const customConfig = state.config;
@@ -300,9 +296,23 @@ export default {
         commit('setActionClass', 'danger');
         break;
       case 401:
-        // eslint-disable-next-line no-case-declarations
-        const refreshToken = localStorage.getItem('helpscoutrefreshToken');
-        await dispatch('refresh_helpscout_token', { refreshToken });
+        try {
+          // eslint-disable-next-line no-case-declarations
+          const token = await dispatch('request_helpscout_token');
+          commit('setHelpScoutToken', token);
+
+          await localStorage.setItem(
+            'helpscoutAccessToken',
+            token.access_token,
+          );
+          await localStorage.setItem(
+            'helpscoutExpiryTime',
+            token.expiryDatetime,
+          );
+          await dispatch('create_ticket', payload);
+        } catch (e) {
+          return e;
+        }
 
         break;
       default:
