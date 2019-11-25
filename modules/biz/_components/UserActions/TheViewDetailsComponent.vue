@@ -11,8 +11,8 @@
       border
       class="pricing-table-styling configs-view-table"
     >
-      <el-table-column prop="city" label="City" width="170"> </el-table-column>
-      <el-table-column prop="name" label="Vendor Type" width="150">
+      <el-table-column prop="city" label="City" width="160"> </el-table-column>
+      <el-table-column prop="name" label="Vendor Type" width="160">
       </el-table-column>
       <el-table-column prop="base_cost" label="Base Fee" width="120">
       </el-table-column>

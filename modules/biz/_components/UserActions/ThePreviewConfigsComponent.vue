@@ -8,12 +8,11 @@
       <el-table
         :data="tableData"
         border
-        class="pricing-table-styling"
-        style="width: 1000px"
+        class="pricing-table-styling preview-container"
       >
-        <el-table-column prop="city" label="City" width="180">
+        <el-table-column prop="city" label="City" width="170">
         </el-table-column>
-        <el-table-column prop="vendor_type" label="Vendor Type" width="110">
+        <el-table-column prop="vendor_type" label="Vendor Type" width="150">
         </el-table-column>
         <el-table-column prop="base_cost" label="Base Fee" width="120">
         </el-table-column>
@@ -39,7 +38,12 @@
         </el-table-column>
         <el-table-column prop="loader_cost" label="Loading Fee" width="120">
         </el-table-column>
-        <el-table-column prop="service_fee" label="Service Charge" width="120">
+        <el-table-column
+          prop="service_fee"
+          style="preview-fee-td"
+          label="Service Charge"
+          width="120"
+        >
         </el-table-column>
         <el-table-column
           prop="cancellation_fee"
@@ -66,7 +70,8 @@
           <el-select
             v-model="approver"
             size="small"
-            placeholder="Select approver"
+            filterable
+            placeholder="Select manager"
           >
             <el-option
               v-for="admin in admin_list"
@@ -110,14 +115,15 @@ export default {
   },
   data() {
     return {
-      tableData: this.configs,
       pricingData: [],
-      customPricingDetails: this.customdata,
+      admin_list: [],
       approver: '',
-      copId: this.user.user_details.cop_id,
+      currency: '',
       isHidden: false,
       approverSelect: false,
-      admin_list: [],
+      tableData: this.configs,
+      copId: this.user.user_details.cop_id,
+      customPricingDetails: this.customdata,
     };
   },
   computed: {
@@ -134,6 +140,8 @@ export default {
   },
   async mounted() {
     await this.setAdmins();
+    this.currency = this.user.user_details.default_currency;
+    console.log('gewgf', this.configs);
   },
   methods: {
     ...mapMutations({
@@ -186,7 +194,7 @@ export default {
       }
     },
     createPayload(pricingConfigData) {
-      for (let i = 0; i < pricingConfigData.length; i++) {
+      for (let i = 0; i < pricingConfigData.length; i += 1) {
         pricingConfigData[i].cop_id = this.copId;
         pricingConfigData[i].custom_pricing_details = {};
         pricingConfigData[i].custom_pricing_details.admin_id = this.approver;
@@ -272,5 +280,12 @@ export default {
   background-image: none;
   background-color: #3c8dbc !important;
   border-color: #ebeef5;
+}
+.preview-container {
+  width: 1000px;
+}
+.preview-fee-td {
+  text-align: right !important;
+  float: right !important;
 }
 </style>

@@ -109,7 +109,9 @@
             Previous page
           </button>
           <button
-            :disabled="checkedPricingModel === ''"
+            :disabled="
+              checkedPricingModel !== 'Distance based pricing(Customised)'
+            "
             @click="goNext"
             class="btn btn-primary action-button pricing-next-button"
           >
@@ -135,7 +137,7 @@
                   </el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="city" label="City" width="200">
+              <el-table-column prop="city" label="City" width="335">
                 <template slot-scope="scope">
                   <el-autocomplete
                     v-if="!scope.row.city"
@@ -179,8 +181,9 @@
                 <template slot-scope="scope">
                   <el-input
                     size="small"
+                    type="number"
                     style="text-align:center"
-                    v-model="scope.row.base_cost"
+                    v-model.number="scope.row.base_cost"
                     ><template class="pricing-prepend" slot="prepend">{{
                       currency
                     }}</template></el-input
@@ -191,8 +194,9 @@
                 <template slot-scope="scope">
                   <el-input
                     size="small"
+                    type="number"
                     style="text-align:center"
-                    v-model="scope.row.base_km"
+                    v-model.number="scope.row.base_km"
                   >
                     <template class="pricing-prepend" slot="prepend"
                       >KM</template
@@ -207,9 +211,10 @@
               >
                 <template slot-scope="scope">
                   <el-input
+                    type="number"
                     size="small"
                     style="text-align:center"
-                    v-model="scope.row.cost_per_km_above_base_km"
+                    v-model.number="scope.row.cost_per_km_above_base_km"
                     ><template class="pricing-prepend" slot="prepend">{{
                       currency
                     }}</template></el-input
@@ -224,8 +229,9 @@
                 <template slot-scope="scope">
                   <el-input
                     size="small"
+                    type="number"
                     style="text-align:center"
-                    v-model="scope.row.additional_location_cost"
+                    v-model.number="scope.row.additional_location_cost"
                     ><template class="pricing-prepend" slot="prepend">{{
                       currency
                     }}</template></el-input
@@ -240,8 +246,9 @@
                 <template slot-scope="scope">
                   <el-input
                     size="small"
+                    type="number"
                     style="text-align:center"
-                    v-model="scope.row.waiting_time_cost_per_min"
+                    v-model.number="scope.row.waiting_time_cost_per_min"
                     ><template class="pricing-prepend" slot="prepend">{{
                       currency
                     }}</template></el-input
@@ -256,8 +263,9 @@
                 <template slot-scope="scope">
                   <el-input
                     size="small"
+                    type="number"
                     style="text-align:center"
-                    v-model="scope.row.loader_cost"
+                    v-model.number="scope.row.loader_cost"
                     ><template class="pricing-prepend" slot="prepend">{{
                       currency
                     }}</template></el-input
@@ -272,8 +280,9 @@
                 <template slot-scope="scope">
                   <el-input
                     size="small"
+                    type="number"
                     style="text-align:center"
-                    v-model="scope.row.service_fee"
+                    v-model.number="scope.row.service_fee"
                     ><template class="pricing-prepend" slot="append"
                       >%</template
                     ></el-input
@@ -288,8 +297,9 @@
                 <template slot-scope="scope">
                   <el-input
                     size="small"
+                    type="number"
                     style="text-align:center"
-                    v-model="scope.row.cancellation_fee"
+                    v-model.number="scope.row.cancellation_fee"
                     ><template class="pricing-prepend" slot="prepend">{{
                       currency
                     }}</template></el-input
