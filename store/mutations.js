@@ -76,4 +76,31 @@ export default {
   setHelpScoutToken(state, val) {
     state.helpScoutToken = val;
   },
+  setSectionView(state, val) {
+    state.section = val;
+  },
+  updatePricing(state, val) {
+    state.addPricing = val;
+  },
+  setFirstPricing(state, val) {
+    state.firstPricing = val;
+  },
+  updateEditStatus(state, val) {
+    state.editStatus = val;
+  },
+  updateViewStatus(state, val) {
+    state.viewDetails = val;
+  },
+  updateSummaryStatus(state, val) {
+    state.viewSummary = val;
+  },
+  updateDistancePricing(state, val) {
+    state.distancePricingData = val;
+  },
+  updatePendingDistancePricing(state, val) {
+    state.pendingPricingData = val;
+  },
+  updateApproveStatus(state, val) {
+    state.approveStatus = val;
+  },
 };
