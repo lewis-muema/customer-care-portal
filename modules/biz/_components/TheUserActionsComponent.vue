@@ -82,8 +82,6 @@
             @click="viewTab('pricing', copID)"
             :id="`pricing_${copID}`"
           >
-            <span class="fa fa-fw fa-envelope"></span>
-            Ticket @click="viewTab('pricing', copID)" :id="`pricing_${copID}`" >
             <span class="fa fa-fw fa-gbp"></span>
             Pricing
           </a>

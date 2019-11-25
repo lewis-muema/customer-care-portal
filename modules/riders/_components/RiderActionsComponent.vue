@@ -74,6 +74,18 @@
             Edit
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('ticket', riderID)"
+            :id="`ticket_${riderID}`"
+          >
+            <span class="fa fa-fw fa-envelope"></span>
+            Ticket
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -136,6 +148,18 @@
           >
             <EditComponent :user="user" :session="userData" />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`ticket_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `ticket_${copID}`"
+          >
+            <TheTicketComponent
+              :order="user"
+              :category="category"
+              :ticket="ticketData"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -166,6 +190,7 @@ export default {
       showTab: null,
       show: false,
       active: false,
+      category: 'rider',
     };
   },
   computed: {
@@ -178,6 +203,23 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
+    },
+    ticketData() {
+      const userName = this.user.rider_name.split(' ');
+      const id = this.user.rider_id;
+      const userPhone = this.user.phone_no !== '' ? this.user.phone_no : '';
+
+      const data = {
+        id,
+        title: `${userPhone} ( Peer User)`,
+        customer: {
+          firstName: userName[0],
+          lastName: userName.length > 1 ? userName[1] : '. ',
+          email: this.user.email,
+          phone: userPhone,
+        },
+      };
+      return data;
     },
   },
   mounted() {
