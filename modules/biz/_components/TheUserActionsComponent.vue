@@ -71,6 +71,18 @@
             :id="`ticket_${copID}`"
           >
             <span class="fa fa-fw fa-envelope"></span>
+            Ticket
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('pricing', copID)"
+            :id="`pricing_${copID}`"
+          >
+            <span class="fa fa-fw fa-envelope"></span>
             Ticket @click="viewTab('pricing', copID)" :id="`pricing_${copID}`" >
             <span class="fa fa-fw fa-gbp"></span>
             Pricing
