@@ -163,9 +163,10 @@
               <el-table-column prop="name" label="Vendor Type" width="200">
                 <template slot-scope="scope">
                   <el-select
-                    v-model="scope.row.vendor_type"
+                    v-model="scope.row.name"
                     placeholder="Select Vendor"
                     size="small"
+                    @change="onChange($event, scope.$index, scope.row)"
                   >
                     <el-option
                       v-for="vendor in vendorTypes"
@@ -373,6 +374,7 @@ export default {
       distancePricingTableData: [],
       customPricingDetails: [],
       vendorTypes: [],
+      vendorName: '',
       suggestions: [],
       selectedVendor: '',
       pricingStatus: '',
@@ -381,14 +383,14 @@ export default {
       pricingData: [
         {
           city: 'Entebbe',
-          vendor_type: '5 Ton Truck',
-          base_fee: '280',
-          base_distance: '20',
-          price_per_additional_KM: '2,160',
-          price_per_additional_dropoff: '10,800',
-          waiting_fee_per_hour: '18,000',
-          loading_fee: '18,000',
-          service_charge: '20',
+          name: '5 Ton Truck',
+          base_cost: '280',
+          base_km: '20',
+          cost_per_km_above_base_km: '2,160',
+          additional_location_cost: '10,800',
+          waiting_time_cost_per_min: '18,000',
+          loader_cost: '18,000',
+          service_fee: '20',
           cancellation_fee: '40000',
         },
       ],
@@ -409,6 +411,11 @@ export default {
     },
     status() {
       return this.pricingStatus === 'Active';
+    },
+    vendor() {
+      return this.vendorTypes.find(op => {
+        return op.name === this.vendorName;
+      });
     },
   },
   watch: {
@@ -483,14 +490,14 @@ export default {
     addRow() {
       const anotherRow = {
         city: this.pricingData.city,
-        name: this.pricingData.vendor_type,
-        base_cost: this.pricingData.base_fee,
-        base_km: this.pricingData.base_distance,
-        cost_per_km_above_base_km: this.pricingData.price_per_additional_KM,
-        additional_location_cost: this.pricingData.price_per_additional_dropoff,
-        waiting_time_cost_per_min: this.pricingData.waiting_fee_per_hour,
-        loader_cost: this.pricingData.loading_fee,
-        service_fee: this.pricingData.service_charge,
+        name: this.pricingData.name,
+        base_cost: this.pricingData.base_cost,
+        base_km: this.pricingData.base_km,
+        cost_per_km_above_base_km: this.pricingData.cost_per_km_above_base_km,
+        additional_location_cost: this.pricingData.additional_location_cost,
+        waiting_time_cost_per_min: this.pricingData.waiting_time_cost_per_min,
+        loader_cost: this.pricingData.loader_cost,
+        service_fee: this.pricingData.service_fee,
         cancellation_fee: this.pricingData.cancellation_fee,
       };
       this.tableData.push(anotherRow);
@@ -550,6 +557,10 @@ export default {
     },
     handleSelect(item, index, rows) {
       this.tableData[index].city = item.value;
+    },
+    onChange(event, index, row) {
+      this.vendorName = row.name;
+      this.tableData[index].vendor_id = this.vendor.id;
     },
   },
 };

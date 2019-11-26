@@ -12,7 +12,7 @@
       >
         <el-table-column prop="city" label="City" width="170">
         </el-table-column>
-        <el-table-column prop="vendor_type" label="Vendor Type" width="150">
+        <el-table-column prop="name" label="Vendor Type" width="150">
         </el-table-column>
         <el-table-column prop="base_cost" label="Base Fee" width="120">
         </el-table-column>
@@ -38,12 +38,7 @@
         </el-table-column>
         <el-table-column prop="loader_cost" label="Loading Fee" width="120">
         </el-table-column>
-        <el-table-column
-          prop="service_fee"
-          style="preview-fee-td"
-          label="Service Charge"
-          width="120"
-        >
+        <el-table-column prop="service_fee" label="Service Charge" width="120">
         </el-table-column>
         <el-table-column
           prop="cancellation_fee"
@@ -100,9 +95,11 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex';
+import SessionMxn from '@/mixins/session_mixin';
 
 export default {
   name: 'ThePreviewConfigsComponent',
+  mixins: [SessionMxn],
   props: {
     user: {
       type: Object,
@@ -118,6 +115,7 @@ export default {
       pricingData: [],
       admin_list: [],
       approver: '',
+      approverMail: '',
       currency: '',
       isHidden: false,
       approverSelect: false,
@@ -130,8 +128,14 @@ export default {
     ...mapGetters({
       getAdmins: 'getAdmins',
       section: 'getSectionView',
+      getSessionData: 'getSession',
       addPricing: 'getAddPricingState',
     }),
+    admin() {
+      return this.admin_list.find(op => {
+        return op.admin_id === this.approver;
+      });
+    },
   },
   watch: {
     getAdmins(admins) {
@@ -153,6 +157,7 @@ export default {
     ...mapActions({
       submit_custom_pricing: 'submit_custom_pricing',
       setAdmins: 'setAdmins',
+      send_mail_to_admin: 'send_mail_to_admin',
     }),
     editTable() {
       this.updateSection(2);
@@ -181,6 +186,7 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
+          this.sendEmailNotification();
           this.updateSection(-1);
         } else {
           notification.push(data.error);
@@ -266,6 +272,39 @@ export default {
       }
       return pricingConfigData;
     },
+    async sendEmailNotification() {
+      const notification = [];
+      let actionClass = '';
+      const crmName = this.getSessionData.payload.data.name;
+      const copName = this.user.user_details.cop_name;
+      const payload = {
+        app: 'AUTH',
+        endpoint: 'v1/send_email',
+        apiKey: false,
+        params: {
+          email: this.admin.email,
+          message: `Greetings! You have a new custom pricing config approval request from ${crmName} for ${copName}`,
+          subject: 'New Custom Pricing Config',
+          name: this.admin.name,
+        },
+      };
+      try {
+        const data = await this.send_mail_to_admin(payload);
+        if (data.result.status) {
+          notification.push(
+            'Your new custom pricing config has been sent to your manager for approval.',
+          );
+          actionClass = this.display_order_action_notification(data.status);
+        } else {
+          notification.push(data.error);
+          actionClass = this.display_order_action_notification(data.status);
+        }
+        this.updateClass(actionClass);
+        this.updateErrors(notification);
+      } catch (error) {
+        this.status = false;
+      }
+    },
   },
 };
 </script>
@@ -282,9 +321,5 @@ export default {
 }
 .preview-container {
   width: 1000px;
-}
-.preview-fee-td {
-  text-align: right !important;
-  float: right !important;
 }
 </style>
