@@ -185,8 +185,8 @@ export default {
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
     TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
-    TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
+    TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
   },
   props: {
     user: {
