@@ -39,6 +39,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import moment from 'moment';
 
 import TheSearchBar from '@/components/TopBar/TheSearchBar';
 import TheStatusButtonsBar from '@/components/TopBar/TheStatusButtonsBar';
@@ -65,7 +66,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getSearchedOrder', 'getSearchState']),
+    ...mapGetters(['getSearchedOrder', 'getSearchState', 'getHelpScoutToken']),
     searchState() {
       return this.getSearchState;
     },
@@ -76,9 +77,18 @@ export default {
       return (this.order = order);
     },
   },
+  async mounted() {
+    if (localStorage.getItem('helpscoutTokenRequested') === null) {
+      await this.requestHelpscoutToken();
+    }
+  },
   methods: {
     ...mapMutations({
       updateSearchState: 'setSearchState',
+      updateHelpScoutToken: 'setHelpScoutToken',
+    }),
+    ...mapActions({
+      requestHelpscoutToken: 'request_helpscout_token',
     }),
     remove() {
       this.updateSearchState(false);

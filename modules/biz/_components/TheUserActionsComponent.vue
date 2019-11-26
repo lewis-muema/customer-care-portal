@@ -74,6 +74,18 @@
             Invoice
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('ticket', copID)"
+            :id="`ticket_${copID}`"
+          >
+            <span class="fa fa-fw fa-envelope"></span>
+            Ticket
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -145,6 +157,18 @@
           >
             <TheInvoiceComponent :user="user" :session="userData" />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`ticket_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `ticket_${copID}`"
+          >
+            <TheTicketComponent
+              :order="user"
+              :category="category"
+              :ticket="ticketData"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -161,6 +185,7 @@ export default {
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
     TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
+    TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
   },
   props: {
@@ -177,6 +202,7 @@ export default {
       active: false,
       cop_type_list: [],
       admin_list: [],
+      category: 'biz',
     };
   },
   computed: {
@@ -191,6 +217,22 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
+    },
+    ticketData() {
+      const userName = this.user.user_details.cop_name.split(' ');
+      const id = this.user.user_details.cop_id;
+
+      const data = {
+        id,
+        title: `SENDY${id} ( Cop User)`,
+        customer: {
+          firstName: userName[0],
+          lastName: userName.length > 1 ? userName[1] : '. ',
+          email: this.user.user_details.cop_email,
+          phone: this.user.user_details.cop_phone,
+        },
+      };
+      return data;
     },
   },
   watch: {
