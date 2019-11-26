@@ -52,6 +52,18 @@
         </li>
         <li class="nav-item">
           <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverserider', riderID)"
+            :id="`reverserider_${riderID}`"
+          >
+            <span class="fa fa-fw fa-undo"></span>
+            Reverse
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
             class="nav-link action-list new-loan"
             data-toggle="tab"
             aria-expanded="false"
@@ -134,6 +146,14 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverserider_${riderID}`"
+            role="tabpanel"
+            v-if="showTab === `reverserider_${riderID}`"
+          >
+            <ReverseRiderComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
             :id="`newloan_${riderID}`"
             role="tabpanel"
             v-if="showTab === `newloan_${riderID}`"
@@ -178,6 +198,7 @@ export default {
     NewLoanComponent: () => import('./RiderActions/NewLoanComponent'),
     EditComponent: () => import('./RiderActions/EditComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    ReverseRiderComponent: () => import('./RiderActions/ReverseRiderComponent'),
   },
   props: {
     user: {
