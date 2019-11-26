@@ -26,6 +26,18 @@
             Bill
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverse', userID)"
+            :id="`reverse_${userID}`"
+          >
+            <span class="fa fa-fw fa-undo"></span>
+            Reverse
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -54,11 +66,15 @@
             role="tabpanel"
             v-if="showTab === `bill_${userID}`"
           >
-            <TheBillingComponent
-              :user="user"
-              :session="userData"
-              :currency="currency"
-            />
+            <TheBillingComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverse_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `reverse_${userID}`"
+          >
+            <TheReverseComponent :user="user" :session="userData" />
           </div>
         </div>
       </div>
@@ -73,6 +89,7 @@ export default {
   components: {
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
+    TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
   },
   props: {
     user: {
