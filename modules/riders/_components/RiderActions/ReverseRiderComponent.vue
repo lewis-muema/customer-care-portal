@@ -109,7 +109,6 @@ export default {
         this.notificationHandler(false, true, data.reason);
         if (data.status) {
           this.notificationHandler(true, false, data.reason);
-          this.updateSuccess(true);
         }
       } catch (error) {
         const msg = 'Something went wrong. Try again or contact Tech Support';
