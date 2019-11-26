@@ -53,6 +53,8 @@ export default {
       localStorage.removeItem('helpscoutExpiryTime');
       localStorage.removeItem('helpscoutTokenRequested');
       localStorage.removeItem('helpscoutAccessToken');
+      localStorage.removeItem('_sessionSnack');
+      localStorage.removeItem('query');
 
       commit('setHelpScoutToken', null);
 
