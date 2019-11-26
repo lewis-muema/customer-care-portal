@@ -120,8 +120,6 @@ export default {
       customPricingDetails: [],
       copId: '',
       adminId: '',
-      adminName: '',
-      adminMail: '',
       currency: '',
       rejectionReason: '',
       crmName: '',
@@ -149,8 +147,6 @@ export default {
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
-    this.adminName = this.getSessionData.payload.data.name;
-    this.adminMail = this.getSessionData.payload.data.email;
     this.getDistancePricingConfigs();
   },
   methods: {
@@ -165,7 +161,6 @@ export default {
         'request_pending_distance_pricing_data',
       approve_distance_pricing_configs: 'approve_distance_pricing_configs',
       reject_distance_pricing_configs: 'reject_distance_pricing_configs',
-      send_mail_to_admin: 'send_mail_to_admin',
     }),
     async getDistancePricingConfigs() {
       const payload = {
@@ -244,41 +239,13 @@ export default {
       try {
         const data = await this.approve_distance_pricing_configs(payload);
         if (data.status) {
-          this.sendEmailNotification();
-        } else {
-          notification.push(data.error);
-          actionClass = this.display_order_action_notification(data.status);
-        }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
-      } catch (error) {
-        this.status = false;
-      }
-    },
-    async sendEmailNotification() {
-      const notification = [];
-      let actionClass = '';
-      const payload = {
-        app: 'AUTH',
-        endpoint: 'v1/send_email',
-        apiKey: false,
-        params: {
-          email: this.adminMail,
-          message: `Greetings! You have a new custom pricing config approval request from ${this.crmName} for ${this.copName}`,
-          subject: 'New Custom Pricing Config',
-          name: this.adminName,
-        },
-      };
-      try {
-        const data = await this.send_mail_to_admin(payload);
-        if (data.result.status) {
-          this.updateApproveStatus(false);
           notification.push(
             'You have successfully approved the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(
             data.result.status,
           );
+          this.updateApproveStatus(false);
           this.updateSuccess(false);
         } else {
           notification.push(data.error);
