@@ -74,6 +74,7 @@ export default {
   methods: {
     ...mapActions({
       perform_user_action: 'perform_user_action',
+      updateSuccess: 'setUserActionSuccess',
     }),
     async submitReversal() {
       this.submitted = true;
@@ -109,6 +110,7 @@ export default {
         this.notificationHandler(false, true, data.reason);
         if (data.status) {
           this.notificationHandler(true, false, data.reason);
+          this.updateSuccess(true);
         }
       } catch (error) {
         const msg = 'Something went wrong. Try again or contact Tech Support';
