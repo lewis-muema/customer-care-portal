@@ -38,7 +38,7 @@
             Bill
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.reverse_billing">
           <a
             class="nav-link action-list"
             data-toggle="tab"
