@@ -286,7 +286,7 @@ export default {
               amount: this.amount,
               narrative: this.narrative,
               repayment_amount:
-                this.repaymentmode === '3' ? '0' : this.repaymentamount,
+                this.repaymentmode === '3' ? this.amount : this.repaymentamount,
               frequency: this.repaymentmode,
               payment_type: 7,
               mpesa_ref: 'None',
