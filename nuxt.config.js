@@ -86,6 +86,14 @@ export default {
         src: 'js/raven.js',
         type: 'text/javascript',
       },
+      {
+        src: 'js/hotjar.js',
+        type: 'text/javascript',
+      },
+      {
+        src: 'js/mixpanel.js',
+        type: 'text/javascript',
+      },
     ],
     link: [
       {

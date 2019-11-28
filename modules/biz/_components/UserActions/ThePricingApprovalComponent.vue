@@ -104,10 +104,11 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import SessionMxn from '@/mixins/session_mixin';
+import FetchConfigsMxn from '@/mixins/fetch_configs_mixin';
 
 export default {
   name: 'ThePricingApprovalComponent',
-  mixins: [SessionMxn],
+  mixins: [SessionMxn, FetchConfigsMxn],
   props: {
     user: {
       type: Object,
@@ -147,7 +148,9 @@ export default {
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
+    this.crmName = this.getSessionData.payload.data.name;
     this.getDistancePricingConfigs();
+    this.trackMixpanelPage();
   },
   methods: {
     ...mapMutations({
@@ -162,31 +165,9 @@ export default {
       approve_distance_pricing_configs: 'approve_distance_pricing_configs',
       reject_distance_pricing_configs: 'reject_distance_pricing_configs',
     }),
-    async getDistancePricingConfigs() {
-      const payload = {
-        app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_custom_distance_details',
-        apiKey: false,
-        params: {
-          cop_id: this.copId,
-          currency: this.currency,
-          status: 'Pending',
-          admin_id: this.adminId,
-        },
-      };
-      try {
-        const data = await this.request_pending_distance_pricing_data(payload);
-        if (data.status) {
-          this.customPricingDetails = data.custom_pricing_details;
-          return (this.distancePricingTableData = this.pendingDistancePricing);
-        } else {
-          this.distancePricingTableData = [];
-        }
-      } catch (error) {
-        this.status = false;
-      }
-    },
     async rejectDistancePricingConfigs() {
+      this.trackMixpanelIdentify();
+      this.trackMixpanelPeople();
       const pricingApprovalData = this.customPricingDetails;
       const approvalParams = this.createPayload(
         pricingApprovalData,
@@ -226,6 +207,8 @@ export default {
       this.rejectWithReason = false;
     },
     async approveDistancePricingConfigs() {
+      this.trackMixpanelIdentify();
+      this.trackMixpanelPeople();
       const pricingApprovalData = this.customPricingDetails;
       const approvalParams = this.createPayload(pricingApprovalData, 'Active');
       const notification = [];
@@ -240,13 +223,11 @@ export default {
         const data = await this.approve_distance_pricing_configs(payload);
         if (data.status) {
           notification.push(
-            'You have successfully approved the custom pricing config!',
+            'You have successfully created the custom pricing config!',
           );
-          actionClass = this.display_order_action_notification(
-            data.result.status,
-          );
-          this.updateApproveStatus(false);
+          actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
+          this.updateApproveStatus(false);
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -288,6 +269,22 @@ export default {
         delete pricingApprovalData[i].name;
       }
       return pricingApprovalData;
+    },
+    trackMixpanelPage() {
+      mixpanel.track('Pricing Config Approval Page');
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify(this.getSessionData.payload.data.name, {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Approving Manager',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
     },
   },
 };

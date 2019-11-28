@@ -200,8 +200,8 @@
                     v-model.number="scope.row.base_km"
                   >
                     <template class="pricing-prepend" slot="prepend"
-                      >KM</template
-                    >
+                      >KM
+                    </template>
                   </el-input>
                 </template>
               </el-table-column>
@@ -284,9 +284,10 @@
                     type="number"
                     style="text-align:center"
                     v-model.number="scope.row.service_fee"
-                    ><template class="pricing-prepend" slot="append"
-                      >%</template
-                    ></el-input
+                  >
+                    <template class="pricing-prepend" slot="append"
+                      >%
+                    </template></el-input
                   >
                 </template>
               </el-table-column>
@@ -459,6 +460,7 @@ export default {
       }
     }
     this.fetchVendorTypes(countryCode);
+    this.trackMixpanelPage();
   },
   beforeMount() {},
   methods: {
@@ -504,6 +506,7 @@ export default {
     },
     previewConfig() {
       this.updateSection(3);
+      this.trackMixpanelNewConfig();
     },
     viewConfigDetails() {
       this.updateSummaryStatus(false);
@@ -561,6 +564,12 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].vendor_id = this.vendor.id;
+    },
+    trackMixpanelPage() {
+      mixpanel.track('Pricing Config Summary Page');
+    },
+    trackMixpanelNewConfig() {
+      mixpanel.track('New Pricing Config Page');
     },
   },
 };
