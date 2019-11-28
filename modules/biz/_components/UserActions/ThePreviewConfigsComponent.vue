@@ -145,6 +145,7 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
+    this.trackMixpanelPage();
   },
   methods: {
     ...mapMutations({
@@ -169,6 +170,8 @@ export default {
       this.approverSelect = true;
     },
     async submitConfigs() {
+      this.trackMixpanelPeople();
+      this.trackMixpanelIdentify();
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
@@ -304,6 +307,22 @@ export default {
       } catch (error) {
         this.status = false;
       }
+    },
+    trackMixpanelPage() {
+      mixpanel.track('Pricing Config Preview and Submit');
+    },
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Client Relationship Manager',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify(this.getSessionData.payload.data.name, {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
     },
   },
 };

@@ -60,9 +60,11 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex';
+import SessionMxn from '@/mixins/session_mixin';
 
 export default {
   name: 'TheViewDetailsComponent',
+  mixins: [SessionMxn],
   props: {
     customdata: {
       type: Array,
@@ -90,10 +92,12 @@ export default {
     ...mapGetters({
       viewStatus: 'getViewStatus',
       summaryStatus: 'getSummaryStatus',
+      getSessionData: 'getSession',
     }),
   },
   mounted() {
     this.copId = this.user.user_details.cop_id;
+    this.trackMixpanelPage();
   },
   methods: {
     ...mapMutations({
@@ -116,6 +120,8 @@ export default {
       this.updateViewStatus(false);
     },
     async resetCustomPricing() {
+      this.trackMixpanelDeactivateConfigs();
+      this.trackMixpanelIdentify();
       const pricingApprovalData = this.customPricingDetails;
       const approvalParams = this.createPayload(pricingApprovalData);
       const notification = [];
@@ -165,6 +171,18 @@ export default {
         delete pricingApprovalData[i].name;
       }
       return pricingApprovalData;
+    },
+    trackMixpanelPage() {
+      mixpanel.track('Pricing Config Summary View Page');
+    },
+    trackMixpanelDeactivateConfigs() {
+      mixpanel.track('Pricing Config Deactivate Configs');
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify(this.getSessionData.payload.data.name, {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
     },
   },
 };
