@@ -47,15 +47,7 @@ export default {
       commit('clearToken');
       Cookie.remove('jwt');
       Cookie.remove('refreshToken');
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('reloaded');
-      localStorage.removeItem('helpscoutExpiryTime');
-      localStorage.removeItem('helpscoutTokenRequested');
-      localStorage.removeItem('helpscoutAccessToken');
-      localStorage.removeItem('_sessionSnack');
-      localStorage.removeItem('query');
-
+      localStorage.clear();
       commit('setHelpScoutToken', null);
 
       return response;
