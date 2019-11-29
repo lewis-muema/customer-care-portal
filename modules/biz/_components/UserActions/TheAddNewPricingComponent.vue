@@ -340,6 +340,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
 import ThePreviewConfigsComponent from './ThePreviewConfigsComponent.vue';
 import TheViewConfigDetailsComponent from './TheViewDetailsComponent.vue';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 const pricingModels = [
   { pricing_model_name: 'Distance based pricing(Customised)' },
@@ -352,6 +353,7 @@ export default {
     'the-preview-configs-component': ThePreviewConfigsComponent,
     'the-view-config-details-component': TheViewConfigDetailsComponent,
   },
+  mixins: [PricingConfigsMxn],
   props: {
     user: {
       type: Object,
@@ -473,10 +475,6 @@ export default {
       updateSummaryStatus: 'updateSummaryStatus',
       updateDistancePricing: 'updateDistancePricing',
     }),
-    ...mapActions({
-      request_vendor_types: 'request_vendor_types',
-      request_pricing_data: 'request_pricing_data',
-    }),
     goNext() {
       this.updateSection(this.section + 1);
       if (this.section === 2) {
@@ -512,45 +510,6 @@ export default {
       this.updateSummaryStatus(false);
       this.updateViewStatus(true);
     },
-    async fetchVendorTypes(countryCode) {
-      const payload = {
-        app: 'PRICING_SERVICE',
-        endpoint: 'vendors/types',
-        apiKey: false,
-        params: {
-          pickup_country_code: countryCode,
-          dropoff_country_code: countryCode,
-        },
-      };
-      try {
-        const data = await this.request_vendor_types(payload);
-        return (this.vendorTypes = data.vendor_types);
-      } catch (error) {
-        this.status = false;
-      }
-    },
-    async fetchCustomDistancePricingData() {
-      const payload = {
-        app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_custom_distance_details',
-        apiKey: false,
-        params: {
-          cop_id: this.copId,
-          currency: this.currency,
-        },
-      };
-      try {
-        const data = await this.request_pricing_data(payload);
-        if (data.status) {
-          this.customPricingDetails = data.custom_pricing_details;
-          return (this.distancePricingTableData = this.configuredDistancePricing);
-        } else {
-          this.distancePricingTableData = [];
-        }
-      } catch (error) {
-        this.status = false;
-      }
-    },
     querySearch(queryString, cb) {
       for (let i = 0; i < this.suggestions.length; i += 1) {
         this.suggestions[i].value = this.suggestions[i]['description'];
@@ -563,7 +522,7 @@ export default {
     },
     onChange(event, index, row) {
       this.vendorName = row.name;
-      this.tableData[index].vendor_id = this.vendor.id;
+      this.tableData[index].id = this.vendor.id;
     },
     trackMixpanelPage() {
       mixpanel.track('Pricing Config Summary Page');
@@ -594,5 +553,8 @@ export default {
 }
 tr:hover {
   background-color: white !important;
+}
+.table td {
+  padding: 5px !important;
 }
 </style>

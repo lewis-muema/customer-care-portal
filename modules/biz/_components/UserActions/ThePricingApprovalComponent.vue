@@ -104,11 +104,11 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import SessionMxn from '@/mixins/session_mixin';
-import FetchConfigsMxn from '@/mixins/fetch_configs_mixin';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
   name: 'ThePricingApprovalComponent',
-  mixins: [SessionMxn, FetchConfigsMxn],
+  mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
       type: Object,
@@ -251,16 +251,13 @@ export default {
         pricingApprovalData[
           i
         ].custom_pricing_details.distance_pricing.status = status;
-        pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
         pricingApprovalData[i].custom_pricing_details.id =
           pricingApprovalData[i].id;
         pricingApprovalData[i].custom_pricing_details.name =
           pricingApprovalData[i].name;
-        pricingApprovalData[i].custom_pricing_details.rejection_message =
-          status === 'Deactivated'
-            ? this.rejectionReason
-            : delete pricingApprovalData[i].custom_pricing_details
-                .rejection_message;
+        pricingApprovalData[
+          i
+        ].custom_pricing_details.rejection_message = this.rejectionReason;
 
         delete pricingApprovalData[i].admin_id;
         delete pricingApprovalData[i].currency;
@@ -299,5 +296,8 @@ export default {
   background-image: none;
   background-color: #3c8dbc !important;
   border-color: #ebeef5;
+}
+.table td {
+  padding: 5px !important;
 }
 </style>

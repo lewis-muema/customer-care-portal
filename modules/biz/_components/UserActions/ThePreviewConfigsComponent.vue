@@ -96,10 +96,11 @@
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import SessionMxn from '@/mixins/session_mixin';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
   name: 'ThePreviewConfigsComponent',
-  mixins: [SessionMxn],
+  mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
       type: Object,
@@ -170,8 +171,6 @@ export default {
       this.approverSelect = true;
     },
     async submitConfigs() {
-      this.trackMixpanelPeople();
-      this.trackMixpanelIdentify();
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
@@ -191,6 +190,7 @@ export default {
           this.updateSuccess(false);
           this.sendEmailNotification();
           this.updateSection(-1);
+          this.fetchCustomDistancePricingData();
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -200,12 +200,19 @@ export default {
       } catch (error) {
         this.status = false;
       }
+      this.trackMixpanelPeople();
+      this.trackMixpanelIdentify();
     },
     createPayload(pricingConfigData) {
       for (let i = 0; i < pricingConfigData.length; i += 1) {
         pricingConfigData[i].cop_id = this.copId;
         pricingConfigData[i].custom_pricing_details = {};
         pricingConfigData[i].custom_pricing_details.admin_id = this.approver;
+        pricingConfigData[i].custom_pricing_details.name =
+          pricingConfigData[i].name;
+        pricingConfigData[i].custom_pricing_details.currency = this.currency;
+        pricingConfigData[i].custom_pricing_details.id =
+          pricingConfigData[i].id;
         pricingConfigData[i].custom_pricing_details.distance_pricing = {};
         pricingConfigData[i].custom_pricing_details.distance_pricing.status =
           'Pending';
@@ -263,7 +270,7 @@ export default {
         );
 
         delete pricingConfigData[i].waiting_time_cost_per_min;
-        delete pricingConfigData[i].name;
+        delete pricingConfigData[i].id;
         delete pricingConfigData[i].service_fee;
         delete pricingConfigData[i].additional_location_cost;
         delete pricingConfigData[i].cost_per_km_above_base_km;
@@ -340,5 +347,8 @@ export default {
 }
 .preview-container {
   width: 1000px;
+}
+.table td {
+  padding: 5px !important;
 }
 </style>
