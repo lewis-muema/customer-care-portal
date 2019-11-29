@@ -239,7 +239,6 @@ export default {
       }
     },
     createPayload(pricingApprovalData, status) {
-      console.log(pricingApprovalData);
       for (let i = 0; i < pricingApprovalData.length; i += 1) {
         pricingApprovalData[i].cop_id = this.copId;
         pricingApprovalData[i].custom_pricing_details = {};
