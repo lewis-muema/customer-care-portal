@@ -42,6 +42,7 @@ export default {
     },
     async onLogout() {
       await this.logout();
+      localStorage.clear();
       this.setTokenExpiryStatus(false);
       this.$router.push('/login');
     },
