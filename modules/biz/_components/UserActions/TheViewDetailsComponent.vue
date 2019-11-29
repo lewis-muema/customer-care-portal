@@ -61,10 +61,11 @@
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import SessionMxn from '@/mixins/session_mixin';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
   name: 'TheViewDetailsComponent',
-  mixins: [SessionMxn],
+  mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     customdata: {
       type: Array,
@@ -86,6 +87,7 @@ export default {
       tableTitle: 'Distance Pricing Table',
       showSummary: true,
       copId: '',
+      pricingApprovalData: [],
     };
   },
   computed: {
@@ -122,8 +124,8 @@ export default {
     async resetCustomPricing() {
       this.trackMixpanelDeactivateConfigs();
       this.trackMixpanelIdentify();
-      const pricingApprovalData = this.customPricingDetails;
-      const approvalParams = this.createPayload(pricingApprovalData);
+      this.pricingApprovalData = this.customPricingDetails;
+      const approvalParams = this.createPayload(this.pricingApprovalData);
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -135,7 +137,12 @@ export default {
       try {
         const data = await this.deactivate_distance_pricing_configs(payload);
         if (data.status) {
-          this.updateSection(0);
+          notification.push(
+            'You have successfully deativated the custom pricing config!',
+          );
+          actionClass = this.display_order_action_notification(data.status);
+          this.updateSuccess(false);
+          this.updateViewStatus(false);
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -191,5 +198,8 @@ export default {
 <style scoped>
 .configs-view-table {
   width: 1000px;
+}
+.table td {
+  padding: 5px !important;
 }
 </style>
