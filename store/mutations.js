@@ -103,4 +103,7 @@ export default {
   updateApproveStatus(state, val) {
     state.approveStatus = val;
   },
+  updateApproverId(state, val) {
+    state.approverId = val;
+  },
 };

@@ -201,7 +201,6 @@ export default {
         this.status = false;
       }
       this.trackMixpanelPeople();
-      this.trackMixpanelIdentify();
     },
     createPayload(pricingConfigData) {
       for (let i = 0; i < pricingConfigData.length; i += 1) {
@@ -323,12 +322,6 @@ export default {
         'User Type': 'Client Relationship Manager',
         $email: this.getSessionData.payload.data.email,
         $name: this.getSessionData.payload.data.name,
-      });
-    },
-    trackMixpanelIdentify() {
-      mixpanel.identify(this.getSessionData.payload.data.name, {
-        email: this.getSessionData.payload.data.email,
-        admin_id: this.getSessionData.payload.data.admin_id,
       });
     },
   },

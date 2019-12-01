@@ -472,13 +472,16 @@ export default {
   async request_pricing_data({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
+      let approverId = 0;
       const distancePricing = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < customPricingDetails.length; i += 1) {
+          approverId = customPricingDetails[i].admin_id;
           distancePricing.push(customPricingDetails[i].distance_pricing);
         }
         commit('updateDistancePricing', distancePricing);
+        commit('updateApproverId', approverId);
       }
       return res.data;
     } catch (error) {
