@@ -47,13 +47,7 @@ export default {
       commit('clearToken');
       Cookie.remove('jwt');
       Cookie.remove('refreshToken');
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('reloaded');
-      localStorage.removeItem('helpscoutExpiryTime');
-      localStorage.removeItem('helpscoutTokenRequested');
-      localStorage.removeItem('helpscoutAccessToken');
-
+      localStorage.clear();
       commit('setHelpScoutToken', null);
 
       return response;
@@ -110,9 +104,6 @@ export default {
       return response;
     } catch (error) {
       payload.params.error = error.response.status;
-      const err = await dispatch('handleHelpScoutErrors', payload.params, {
-        root: true,
-      });
       return error.response;
     }
   },
@@ -212,11 +203,6 @@ export default {
         root: true,
       });
     } catch (error) {
-      payload.error = error.response.status;
-
-      const err = await dispatch('handleHelpScoutErrors', payload, {
-        root: true,
-      });
       return error;
     }
   },
@@ -225,7 +211,7 @@ export default {
     let accessToken = localStorage.getItem('helpscoutAccessToken');
     const expiryDateTime = localStorage.getItem('helpscoutExpiryTime');
     const currentDate = moment().format('LLLL');
-    if (expiryDateTime === currentDate) {
+    if (expiryDateTime < currentDate) {
       localStorage.removeItem('helpscoutAccessToken');
       localStorage.removeItem('helpscoutExpiryTime');
       commit('setHelpScoutToken', null);
@@ -239,7 +225,11 @@ export default {
     const token = await dispatch('retrieveHelpscoutToken');
     payload.authorization = true;
     payload.token = token;
-    await dispatch('ticket_action', payload);
+    try {
+      await dispatch('ticket_action', payload);
+    } catch (error) {
+      return error;
+    }
   },
   async requestAxiosPost({ state, commit, dispatch }, payload) {
     const customConfig = state.config;
@@ -297,12 +287,26 @@ export default {
           'Failed to create Ticket. Try again. If persist, contact Tech support',
         ];
         commit('setActionErrors', arr1);
-        commit('setActionClass', 'success');
+        commit('setActionClass', 'danger');
         break;
       case 401:
-        // eslint-disable-next-line no-case-declarations
-        const refreshToken = localStorage.getItem('helpscoutrefreshToken');
-        await dispatch('refresh_helpscout_token', { refreshToken });
+        try {
+          // eslint-disable-next-line no-case-declarations
+          const token = await dispatch('request_helpscout_token');
+          commit('setHelpScoutToken', token);
+
+          await localStorage.setItem(
+            'helpscoutAccessToken',
+            token.access_token,
+          );
+          await localStorage.setItem(
+            'helpscoutExpiryTime',
+            token.expiryDatetime,
+          );
+          await dispatch('create_ticket', payload);
+        } catch (e) {
+          return e;
+        }
 
         break;
       default:
@@ -413,8 +417,8 @@ export default {
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
     const userData = rootState.userData;
-    payload.params._user_email = userData.payload.data.email;
-    payload.params._user_id = userData.payload.data.admin_id;
+    payload.params.action_data._user_email = userData.payload.data.email;
+    payload.params.action_data._user_id = userData.payload.data.admin_id;
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -428,12 +432,8 @@ export default {
     return res.data;
   },
   async request_loan_types({ dispatch }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
-    } catch (error) {
-      return error;
-    }
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res;
   },
   async request_vendor_types({ dispatch }, payload) {
     try {

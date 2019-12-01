@@ -26,6 +26,30 @@
             Bill
           </a>
         </li>
+        <li class="nav-item" v-if="permissions.reverse_billing">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverse', userID)"
+            :id="`reverse_${userID}`"
+          >
+            <span class="fa fa-fw fa-undo"></span>
+            Reverse
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('ticket', userID)"
+            :id="`ticket_${userID}`"
+          >
+            <span class="fa fa-fw fa-envelope"></span>
+            Ticket
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -54,10 +78,26 @@
             role="tabpanel"
             v-if="showTab === `bill_${userID}`"
           >
-            <TheBillingComponent
-              :user="user"
-              :session="userData"
-              :currency="currency"
+            <TheBillingComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverse_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `reverse_${userID}`"
+          >
+            <TheReverseComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active} col-md-10`"
+            :id="`ticket_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `ticket_${userID}`"
+          >
+            <TheTicketComponent
+              :order="user"
+              :category="category"
+              :ticket="ticketData"
             />
           </div>
         </div>
@@ -73,6 +113,8 @@ export default {
   components: {
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
+    TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
   },
   props: {
     user: {
@@ -86,6 +128,7 @@ export default {
       showTab: null,
       show: false,
       active: false,
+      category: 'peer',
     };
   },
   computed: {
@@ -98,6 +141,26 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
+    },
+    ticketData() {
+      const userName = this.user.user_details.user_name.split(' ');
+      const id = this.user.user_details.user_id;
+      const userPhone =
+        this.user.user_details.user_phone !== ''
+          ? this.user.user_details.user_phone
+          : '';
+
+      const data = {
+        id,
+        title: `${userPhone} ( Peer User)`,
+        customer: {
+          firstName: userName[0],
+          lastName: userName.length > 1 ? userName[1] : '. ',
+          email: this.user.user_details.user_email,
+          phone: this.user.user_details.user_phone,
+        },
+      };
+      return data;
     },
   },
   mounted() {

@@ -50,6 +50,18 @@
             Pay Rider
           </a>
         </li>
+        <li class="nav-item" v-if="permissions.reverse_billing">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverserider', riderID)"
+            :id="`reverserider_${riderID}`"
+          >
+            <span class="fa fa-fw fa-undo"></span>
+            Reverse
+          </a>
+        </li>
         <li class="nav-item">
           <a
             class="nav-link action-list new-loan"
@@ -72,6 +84,18 @@
           >
             <span class="fa fa-fw fa-edit"></span>
             Edit
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('ticket', riderID)"
+            :id="`ticket_${riderID}`"
+          >
+            <span class="fa fa-fw fa-envelope"></span>
+            Ticket
           </a>
         </li>
       </ul>
@@ -122,6 +146,14 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverserider_${riderID}`"
+            role="tabpanel"
+            v-if="showTab === `reverserider_${riderID}`"
+          >
+            <ReverseRiderComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
             :id="`newloan_${riderID}`"
             role="tabpanel"
             v-if="showTab === `newloan_${riderID}`"
@@ -135,6 +167,18 @@
             v-if="showTab === `edit_${riderID}`"
           >
             <EditComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`ticket_${riderID}`"
+            role="tabpanel"
+            v-if="showTab === `ticket_${riderID}`"
+          >
+            <TheTicketComponent
+              :order="user"
+              :category="category"
+              :ticket="ticketData"
+            />
           </div>
         </div>
       </div>
@@ -153,6 +197,8 @@ export default {
     PayRiderComponent: () => import('./RiderActions/PayRiderComponent'),
     NewLoanComponent: () => import('./RiderActions/NewLoanComponent'),
     EditComponent: () => import('./RiderActions/EditComponent'),
+    TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    ReverseRiderComponent: () => import('./RiderActions/ReverseRiderComponent'),
   },
   props: {
     user: {
@@ -166,6 +212,7 @@ export default {
       showTab: null,
       show: false,
       active: false,
+      category: 'rider',
     };
   },
   computed: {
@@ -178,6 +225,23 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
+    },
+    ticketData() {
+      const userName = this.user.rider_name.split(' ');
+      const id = this.user.rider_id;
+      const userPhone = this.user.phone_no !== '' ? this.user.phone_no : '';
+
+      const data = {
+        id,
+        title: `${userPhone} ( Rider)`,
+        customer: {
+          firstName: userName[0],
+          lastName: userName.length > 1 ? userName[1] : '. ',
+          email: this.user.email,
+          phone: userPhone,
+        },
+      };
+      return data;
     },
   },
   mounted() {
