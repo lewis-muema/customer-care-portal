@@ -16,6 +16,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
+import { Base64 } from 'js-base64';
 import TheHeader from '@/components/Navigation/TheHeader';
 import TheBreadCrumbView from '@/components/Navigation/TheBreadCrumbView';
 import TheMainSection from '@/components/UI/TheMainSection';
@@ -65,7 +66,7 @@ export default {
     getloggedUser() {
       const token = this.getAuthenticationToken;
       const partsOfToken = token.split('.');
-      const middleString = atob(partsOfToken[1]);
+      const middleString = Base64.decode(partsOfToken[1]);
       const payload = JSON.parse(middleString);
       this.setSession(payload);
       this.updateSession(payload);

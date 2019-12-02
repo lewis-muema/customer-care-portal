@@ -5,7 +5,7 @@
         <tbody>
           <tr>
             <TheSearchBar />
-            <TheStatusButtonsBar :orders="storedData" />
+            <TheStatusButtonsBar :orders="storedData" :pushed="pushedOrder" />
             <TheCitiesBar :orders="storedData" />
             <TheReorganizeBar />
             <rabbitMQcomponent @pushedSomething="handlePushInParent" />
@@ -62,6 +62,7 @@ export default {
       order: {},
       storedData: [],
       componentKey: 0,
+      pushedOrder: {},
     };
   },
 
@@ -103,10 +104,15 @@ export default {
         `${pushobj.order_no}`,
       ]);
 
+      this.pushedOrder = pushobj;
       if (index >= 0) {
+        console.log('here');
+
         this.storedData.splice(index, 1);
         this.storedData.unshift(pushobj);
       } else {
+        console.log('there');
+
         this.storedData.unshift(pushobj);
       }
     },

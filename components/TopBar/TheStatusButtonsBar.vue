@@ -58,6 +58,10 @@ export default {
       type: Array,
       required: true,
     },
+    pushed: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -97,11 +101,22 @@ export default {
   },
   watch: {
     getOrderCount(count) {
-      this.pendingCount = count !== null ? count.pending : this.pendingCount;
+      const pendingCount = count.pendingOrders;
+      const confirmedCount = count.confirmedOrders;
+      const transitCount = count.inTransitOrders;
+      console.log('here pushed', this.pushed);
+
+      this.pendingCount = count !== null ? pendingCount : this.pendingCount;
       this.confirmedCount =
-        count !== null ? count.confirmed : this.confirmedCount;
-      this.transitCount = count !== null ? count.transit : this.transitCount;
+        count !== null ? confirmedCount : this.confirmedCount;
+      this.transitCount =
+        count !== null ? count.transitCount : this.transitCount;
       return (this.count = count);
+    },
+    pushed(order) {
+      const status = order.order_status;
+
+      console.log('changes', order);
     },
   },
   methods: {
