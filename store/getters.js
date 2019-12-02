@@ -91,4 +91,7 @@ export default {
   getApproveStatus(state) {
     return state.approveStatus;
   },
+  getApproverId(state) {
+    return state.approverId;
+  },
 };

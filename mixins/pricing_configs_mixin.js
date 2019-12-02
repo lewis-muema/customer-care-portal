@@ -11,7 +11,7 @@ const PricingConfigsMxn = {
     return {
       copId: '',
       adminId: '',
-      currency: '',
+      defaultCurrency: '',
       vendorTypes: [],
       customPricingDetails: [],
       distancePricingTableData: [],
@@ -19,7 +19,7 @@ const PricingConfigsMxn = {
   },
   mounted() {
     this.copId = this.user.user_details.cop_id;
-    this.currency = this.user.user_details.default_currency;
+    this.defaultCurrency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.session.payload.data.admin_id, 10);
   },
   computed: {
@@ -41,7 +41,7 @@ const PricingConfigsMxn = {
         apiKey: false,
         params: {
           cop_id: this.copId,
-          currency: this.currency,
+          currency: this.defaultCurrency,
           status: ['Pending'],
           admin_id: this.adminId,
         },
@@ -65,7 +65,7 @@ const PricingConfigsMxn = {
         apiKey: false,
         params: {
           cop_id: this.copId,
-          currency: this.currency,
+          currency: this.defaultCurrency,
           status: ['Pending', 'Active'],
         },
       };

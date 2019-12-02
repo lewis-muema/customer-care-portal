@@ -74,7 +74,7 @@
             Invoice
           </a>
         </li>
-        <li class="nav-item">
+        <li v-if="testAdmins" class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -98,7 +98,7 @@
             Pricing
           </a>
         </li>
-        <li class="nav-item">
+        <li v-if="approvingAdmin" class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -217,6 +217,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
   name: 'TheUserActionsComponent',
@@ -233,6 +234,7 @@ export default {
     ThePricingApprovalComponent: () =>
       import('./UserActions/ThePricingApprovalComponent'),
   },
+  mixins: [PricingConfigsMxn],
   props: {
     user: {
       type: Object,
@@ -247,12 +249,15 @@ export default {
       active: false,
       cop_type_list: [],
       admin_list: [],
+      configData: [],
+      pricingTestAccounts: [20, 35, 43, 75, 117, 207],
+      testAdmin: false,
       category: 'biz',
     };
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
-    ...mapGetters(['getCopTypes', 'getAdmins']),
+    ...mapGetters(['getCopTypes', 'getAdmins', 'getApproverId']),
 
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -262,6 +267,15 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
+    },
+    testAdmins() {
+      const testerId = parseInt(this.session.payload.data.admin_id, 10);
+      return this.pricingTestAccounts.includes(testerId);
+    },
+    approvingAdmin() {
+      return (
+        parseInt(this.session.payload.data.admin_id, 10) === this.getApproverId
+      );
     },
     ticketData() {
       const userName = this.user.user_details.cop_name.split(' ');
@@ -292,6 +306,7 @@ export default {
     this.copID = this.user.user_details.cop_id;
     await this.setCopTypes();
     await this.setAdmins();
+    await this.fetchCustomDistancePricingData();
   },
   methods: {
     ...mapMutations({

@@ -119,6 +119,7 @@ export default {
     return {
       distancePricingTableData: [],
       customPricingDetails: [],
+      approvalParams: [],
       copId: '',
       adminId: '',
       currency: '',
@@ -169,7 +170,7 @@ export default {
       this.trackMixpanelIdentify();
       this.trackMixpanelPeople();
       const pricingApprovalData = this.customPricingDetails;
-      const approvalParams = this.createPayload(
+      this.approvalParams = this.createPayload(
         pricingApprovalData,
         'deactivated',
       );
@@ -179,7 +180,7 @@ export default {
         app: 'PRICING_SERVICE',
         endpoint: 'price_config/update_custom_distance_details',
         apiKey: false,
-        params: approvalParams,
+        params: this.approvalParams,
       };
       try {
         const data = await this.reject_distance_pricing_configs(payload);
@@ -210,14 +211,14 @@ export default {
       this.trackMixpanelIdentify();
       this.trackMixpanelPeople();
       const pricingApprovalData = this.customPricingDetails;
-      const approvalParams = this.createPayload(pricingApprovalData, 'Active');
+      this.approvalParams = this.createPayload(pricingApprovalData, 'Active');
       const notification = [];
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'price_config/update_custom_distance_details',
         apiKey: false,
-        params: approvalParams,
+        params: this.approvalParams,
       };
       try {
         const data = await this.approve_distance_pricing_configs(payload);
@@ -241,6 +242,7 @@ export default {
     createPayload(pricingApprovalData, status) {
       for (let i = 0; i < pricingApprovalData.length; i += 1) {
         pricingApprovalData[i].cop_id = this.copId;
+        pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
         pricingApprovalData[i].custom_pricing_details = {};
         pricingApprovalData[i].custom_pricing_details.admin_id =
           pricingApprovalData[i].admin_id;

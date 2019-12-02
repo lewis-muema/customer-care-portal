@@ -462,7 +462,7 @@ export default {
       }
     }
     this.fetchVendorTypes(countryCode);
-    this.trackMixpanelPage();
+    // this.trackMixpanelPage();
   },
   beforeMount() {},
   methods: {

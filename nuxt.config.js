@@ -79,19 +79,23 @@ export default {
         type: 'text/javascript',
       },
       {
-        src: 'https://cdn.ravenjs.com/3.14.1/raven.min.js',
-        type: 'text/javascript',
-      },
-      {
-        src: 'js/raven.js',
-        type: 'text/javascript',
-      },
-      {
         src: 'js/hotjar.js',
         type: 'text/javascript',
       },
       {
         src: 'js/mixpanel.js',
+        type: 'text/javascript',
+      },
+      {
+        src: 'js/mixpanel_people.js',
+        type: 'text/javascript',
+      },
+      {
+        src: 'https://cdn.ravenjs.com/3.14.1/raven.min.js',
+        type: 'text/javascript',
+      },
+      {
+        src: 'js/raven.js',
         type: 'text/javascript',
       },
     ],

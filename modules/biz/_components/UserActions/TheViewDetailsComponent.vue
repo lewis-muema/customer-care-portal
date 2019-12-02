@@ -51,7 +51,11 @@
       <button @click="viewSummary" class="back-to-summary-link">
         Back to summary
       </button>
-      <button @click="resetCustomPricing" class="pricing-remove">
+      <button
+        v-show="deactivateConfig"
+        @click="resetCustomPricing"
+        class="pricing-remove"
+      >
         Remove custom pricing
       </button>
     </div>
@@ -86,6 +90,7 @@ export default {
       customPricingDetails: this.customdata,
       tableTitle: 'Distance Pricing Table',
       showSummary: true,
+      deactivateConfig: true,
       copId: '',
       pricingApprovalData: [],
     };
@@ -99,6 +104,7 @@ export default {
   },
   mounted() {
     this.copId = this.user.user_details.cop_id;
+    this.setConfigDeactivateStatus();
     this.trackMixpanelPage();
   },
   methods: {
@@ -123,9 +129,7 @@ export default {
     },
     async resetCustomPricing() {
       this.trackMixpanelDeactivateConfigs();
-      this.trackMixpanelIdentify();
-      this.pricingApprovalData = this.customPricingDetails;
-      const approvalParams = this.createPayload(this.pricingApprovalData);
+      const approvalParams = this.createPayload(this.customPricingDetails);
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -185,11 +189,15 @@ export default {
     trackMixpanelDeactivateConfigs() {
       mixpanel.track('Pricing Config Deactivate Configs');
     },
-    trackMixpanelIdentify() {
-      mixpanel.identify(this.getSessionData.payload.data.name, {
-        email: this.getSessionData.payload.data.email,
-        admin_id: this.getSessionData.payload.data.admin_id,
-      });
+    setConfigDeactivateStatus() {
+      for (let i = 0; i < this.tableData.length; i += 1) {
+        if (this.tableData[i].status === 'Active') {
+          this.deactivateConfig = false;
+          break;
+        } else {
+          this.deactivateConfig = true;
+        }
+      }
     },
   },
 };
