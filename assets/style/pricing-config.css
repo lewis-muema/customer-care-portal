@@ -213,6 +213,7 @@ h4 {
   display: flex;
   align-items: center;
   text-align: center;
+  float: right;
 
   /* Green - Partner App */
 
@@ -337,6 +338,7 @@ h4 {
   color: #1b7fc3 !important;
   border: none;
   text-decoration: underline;
+  float: right;
 }
 .back-to-summary-link {
   margin-top: 3%;
