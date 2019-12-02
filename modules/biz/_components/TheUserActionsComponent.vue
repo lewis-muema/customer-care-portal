@@ -74,7 +74,7 @@
             Invoice
           </a>
         </li>
-        <li v-if="testAdmins" class="nav-item">
+        <li class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -86,7 +86,7 @@
             Ticket
           </a>
         </li>
-        <li class="nav-item">
+        <li v-if="testAdmins" class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -263,6 +263,7 @@ export default {
         151,
         148,
         122,
+        196,
       ],
       testAdmin: false,
       category: 'biz',
