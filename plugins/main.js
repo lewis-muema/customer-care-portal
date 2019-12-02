@@ -100,6 +100,7 @@ Vue.mixin({
         // eslint-disable-next-line prettier/prettier
         if (
           imgStatus &&
+          order.delivery_details.rider_delivery_image !== null &&
           order.delivery_details.rider_delivery_image[0]
             .physical_delivery_note_status === 2
         ) {

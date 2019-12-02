@@ -257,7 +257,7 @@ export default {
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
       this.orders = newOrders;
-      return this.updateOrderCount(ordersData.meta);
+      return this.updateOrderCount(this.orderCount);
     },
     getBusinessUnits(units) {
       return (this.companyUnits = units);
