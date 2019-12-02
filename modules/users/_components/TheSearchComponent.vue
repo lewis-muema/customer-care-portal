@@ -104,11 +104,11 @@ export default {
     src() {
       let searchString = '';
       if (this.user === 'riders') {
-        searchString = `${this.solarBase}select?q=(rider_name:*${this.query_string}*+OR+email:*${this.query_string}*+OR+phone_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=rider_id%20desc&jwt=${this.solarToken}`;
+        searchString = `${this.solarBase}select?q=(rider_name:*${this.query_string}*+OR+email:*${this.query_string}*+OR+phone_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=rider_id%20asc&jwt=${this.solarToken}`;
       } else if (this.user === 'biz') {
-        searchString = `${this.solarBase}select?q=(cop_name:*${this.query_string}*+OR+contact_person:*${this.query_string}*+OR+cop_phone:*${this.query_string}*+OR+account_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=cop_id%20desc&jwt=${this.solarToken}`;
+        searchString = `${this.solarBase}select?q=(cop_name:*${this.query_string}*+OR+contact_person:*${this.query_string}*+OR+cop_phone:*${this.query_string}*+OR+account_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=cop_id%20asc&jwt=${this.solarToken}`;
       } else if (this.user === 'peer') {
-        searchString = `${this.solarBase}select?q=(user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+user_status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=user_id%20desc&jwt=${this.solarToken}`;
+        searchString = `${this.solarBase}select?q=(user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+user_status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=user_id%20asc&jwt=${this.solarToken}`;
       }
       return searchString;
     },
