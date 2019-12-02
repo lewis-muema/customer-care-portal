@@ -5,6 +5,26 @@
       @submit.prevent="assignOrder"
       class="form-inline"
     >
+      <div class="form-group col-md-12">
+        <textarea
+          type="text"
+          v-model="description"
+          :id="`cancel_description_${orderNo}`"
+          name="description"
+          placeholder="Reason for manual assign"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.description.$error,
+          }"
+        >
+        </textarea>
+        <div
+          v-if="submitted && !$v.description.required"
+          class="invalid-feedback"
+        >
+          Description is required
+        </div>
+      </div>
       <div :class="`col-md-12 user-search`">
         <TheSearchRiderComponent
           @riderID="searchedRider"
@@ -23,6 +43,7 @@
 </template>
 <script>
 import { mapMutations, mapActions, mapGetters } from 'vuex';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'AllocateComponent',
@@ -45,7 +66,12 @@ export default {
       rider: null,
       hide: 'hide',
       riderDetails: null,
+      description: '',
+      submitted: false,
     };
+  },
+  validations: {
+    description: { required },
   },
   computed: {
     ...mapGetters(['getRider']),
@@ -56,6 +82,7 @@ export default {
       return (this.riderID = user);
     },
   },
+
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -87,9 +114,17 @@ export default {
       await this.requestsingleRdier(this.rider);
       const notification = [];
       let actionClass = '';
+      this.submitted = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
+      }
 
       const serialNo = this.riderDetails.serial_no;
       const phoneNo = this.riderDetails.phone_no;
+      const email = this.session.payload.data.email;
+      const id = this.session.payload.data.admin_id;
+      const name = this.session.payload.data.name;
 
       const payload = {
         app: 'ORDERS_APP',
@@ -99,9 +134,17 @@ export default {
           sim_card_sn: serialNo,
           rider_phone: phoneNo,
           order_no: this.orderNo,
+          // batch_no: 'AK44HJ236-5DV',
           distance: 9,
           polyline: 'encoded_string',
-          version_code: 600,
+          version_code: 680,
+          action_user: name,
+          _user_email: email,
+          _user_id: id,
+          reason: this.description,
+          channel: 'customer_support',
+          data_set: 'cc_actions',
+          action_id: '',
         },
       };
       try {
@@ -134,5 +177,8 @@ export default {
 }
 .allocate {
   margin: 10px 0;
+}
+.form-group.col-md-12 {
+  width: 730px;
 }
 </style>
