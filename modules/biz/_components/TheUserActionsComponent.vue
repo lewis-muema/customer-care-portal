@@ -74,7 +74,7 @@
             Invoice
           </a>
         </li>
-        <li v-if="testAdmins" class="nav-item">
+        <li class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -86,7 +86,7 @@
             Ticket
           </a>
         </li>
-        <li class="nav-item">
+        <li v-if="testAdmins" class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -250,7 +250,21 @@ export default {
       cop_type_list: [],
       admin_list: [],
       configData: [],
-      pricingTestAccounts: [20, 35, 43, 75, 117, 207, 223, 189, 170, 151, 148, 122],
+      pricingTestAccounts: [
+        20,
+        35,
+        43,
+        75,
+        117,
+        207,
+        223,
+        189,
+        170,
+        151,
+        148,
+        122,
+        196,
+      ],
       testAdmin: false,
       category: 'biz',
     };
