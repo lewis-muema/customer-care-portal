@@ -22,14 +22,14 @@ export default {
   },
   computed: {
     ticketData() {
-      const userName = this.order.client_details.name.split(' ');
+      const userName = this.order.client_details.name;
 
       const data = {
         id: this.order.order_details.order_no,
         title: this.order.order_details.order_no,
         customer: {
-          firstName: userName[0],
-          lastName: userName.length > 1 ? userName[1] : '. ',
+          firstName: userName,
+          lastName: '.',
           email: this.order.client_details.email,
           phone: this.order.client_details.phone_no,
         },
