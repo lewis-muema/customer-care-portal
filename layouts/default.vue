@@ -1,55 +1,83 @@
 <template>
-  <div>
-    <nuxt />
+  <div class="wrapper" v-if="loggedUser !== null">
+    <TheHeader :user="loggedUser" />
+    <TheSidenav :user="loggedUser" />
+    <div class="content-wrapper">
+      <span v-if="getTokenExpiryStatus">
+        <TheGlobalNotification />
+      </span>
+      <span v-else>
+        <TheBreadCrumbView :route="name" />
+        <TheTopBar />
+        <TheMainSection />
+      </span>
+    </div>
+    <TheFooter />
   </div>
 </template>
 
-<style>
-html {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-}
+<script>
+import { mapGetters, mapMutations } from 'vuex';
+import { Base64 } from 'js-base64';
+import TheHeader from '@/components/Navigation/TheHeader';
+import TheSidenav from '@/components/Navigation/TheSidenav';
+import TheBreadCrumbView from '@/components/Navigation/TheBreadCrumbView';
+import TheTopBar from '@/components/TopBar/TheTopBar';
+import TheFooter from '@/components/Navigation/TheFooter';
+import TheMainSection from '@/components/UI/TheMainSection';
+import SessionMxn from '@/mixins/session_mixin';
+import TheGlobalNotification from '@/components/UI/TheGlobalNotification';
 
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-  margin: 0;
-}
+export default {
+  middleware: ['check-auth', 'auth'],
 
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
+  components: {
+    TheHeader,
+    TheSidenav,
+    TheBreadCrumbView,
+    TheTopBar,
+    TheFooter,
+    TheMainSection,
+    TheGlobalNotification,
+  },
+  mixins: [SessionMxn],
+  data() {
+    return {
+      logged_user: '',
+      loggedUser: null,
+      token: null,
+      name: 'orders',
+    };
+  },
+  head: {
+    bodyAttrs: {
+      class: 'hold-transition skin-blue sidebar-mini  sidebar-collapse',
+    },
+  },
+  computed: {
+    ...mapGetters(['getAuthenticationToken', 'getTokenExpiryStatus']),
 
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
+    breadcrumbs() {
+      return this.$store.getters.breadcrumbs;
+    },
+  },
+  mounted() {
+    this.getloggedUser();
+  },
+  methods: {
+    ...mapMutations({
+      updateSession: 'setSession',
+    }),
+    getloggedUser() {
+      const token = this.getAuthenticationToken;
+      const partsOfToken = token.split('.');
+      const middleString = Base64.decode(partsOfToken[1]);
+      const payload = JSON.parse(middleString);
+      this.setSession(payload);
+      this.updateSession(payload);
 
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
-</style>
+      return (this.loggedUser = payload);
+    },
+  },
+};
+</script>
