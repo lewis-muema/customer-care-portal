@@ -58,7 +58,7 @@ const config = {
     POSITIONS: 'https://auth.staging.sendyit.com/positions/',
     CUSTOMERS_APP: 'https://auth.staging.sendyit.com/customers/',
     PARTNERS_APP: 'https://auth.staging.sendyit.com/partners/',
-    ADONIS_API: 'https://auth.staging.sendyit.com/adonis/',
+    ADONIS_API: 'https://authtest.sendyit.com/adonis/',
     DISPATCH_LIST: 'https://auth.staging.sendyit.com/dispatch/',
     NODE_PRIVATE_API: 'https://auth.staging.sendyit.com/v1/',
     ORDERS_APP: 'https://auth.staging.sendyit.com/orders/',
