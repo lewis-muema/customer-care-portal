@@ -25,7 +25,7 @@ const config = {
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
   },
-  staging: {
+  dev: {
     BASE_URL: 'http://localhost:8080/',
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
     POSITIONS: 'https://authtest.sendyit.com/positions/',
@@ -52,7 +52,32 @@ const config = {
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
   },
-  beta: {},
+  staging: {
+    BASE_URL: 'http://localhost:8080/',
+    PRIVATE_API: 'https://auth.staging.sendyit.com/parcel',
+    POSITIONS: 'https://auth.staging.sendyit.com/positions/',
+    CUSTOMERS_APP: 'https://auth.staging.sendyit.com/customers/',
+    PARTNERS_APP: 'https://auth.staging.sendyit.com/partners/',
+    ADONIS_API: 'https://auth.staging.sendyit.com/adonis/',
+    DISPATCH_LIST: 'https://auth.staging.sendyit.com/dispatch/',
+    NODE_PRIVATE_API: 'https://auth.staging.sendyit.com/v1/',
+    ORDERS_APP: 'https://auth.staging.sendyit.com/orders/',
+    LOGIN_URL: 'https://auth.staging.sendyit.com/parcel/admin_glogin',
+    SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
+    RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
+    PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
+    BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
+    PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
+    AUTH: 'https://auth.staging.sendyit.com/',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+
+    RABBITMQ_URL:
+      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    BROKER_USER: 'staging',
+    BROKER_PASS: '0FAHmQQmjfsIXdro',
+  },
   production: {
     BASE_URL: 'http://localhost:8080/',
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
