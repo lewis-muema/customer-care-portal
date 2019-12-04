@@ -35,16 +35,18 @@ export default {
     }),
     ...mapActions(['logout']),
 
-    redirect() {
-      setTimeout(() => {
-        this.onLogout();
-      }, 1000);
+    async redirect() {
+      await this.onLogout();
     },
     async onLogout() {
-      await this.logout();
-      localStorage.clear();
-      this.setTokenExpiryStatus(false);
-      this.$router.push('/login');
+      try {
+        await this.logout();
+        localStorage.clear();
+        this.setTokenExpiryStatus(false);
+        this.$router.push('/login');
+      } catch (e) {
+        return e;
+      }
     },
   },
 };
