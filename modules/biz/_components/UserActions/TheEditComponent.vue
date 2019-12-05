@@ -352,7 +352,8 @@ export default {
     await this.setAdmins();
     this.approveStatus = this.approval.status;
     this.payOption = this.paymentOption[0].option;
-    this.companyType = this.companyTypeData[0].name;
+    this.companyType =
+      this.companyTypeData.length === 0 ? '' : this.companyTypeData[0].name;
     this.admin = this.adminData;
     this.riderType = this.riderTypeData[0].type;
     this.category = this.categoryData[0].name;

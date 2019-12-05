@@ -39,6 +39,7 @@ export default {
       setToken: 'setToken',
       updateSession: 'setSession',
       clearToken: 'clearToken',
+      setTokenExpiryStatus: 'setTokenExpiryStatus',
     }),
     signIn(data) {
       const token = data.token;
@@ -46,6 +47,7 @@ export default {
       const refreshToken = token.refresh_token;
 
       this.setToken(accessToken);
+      this.setTokenExpiryStatus(false);
       localStorage.setItem('jwtToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       Cookie.set('jwt', accessToken);

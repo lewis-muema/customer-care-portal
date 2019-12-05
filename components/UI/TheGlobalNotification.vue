@@ -35,15 +35,17 @@ export default {
     }),
     ...mapActions(['logout']),
 
-    async redirect() {
-      await this.onLogout();
+    redirect() {
+      setTimeout(() => {
+        this.onLogout();
+      }, 1000);
     },
     async onLogout() {
       try {
         await this.logout();
-        localStorage.clear();
-        this.setTokenExpiryStatus(false);
-        this.$router.push('/login');
+        await this.$router.push('/login');
+        // eslint-disable-next-line no-restricted-globals
+        location.reload();
       } catch (e) {
         return e;
       }
