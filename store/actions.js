@@ -376,6 +376,9 @@ export default {
       const rider_details = response.data;
       return rider_details;
     } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
       return error.response;
     }
   },
