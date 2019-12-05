@@ -2,7 +2,7 @@
   <div class="body-box user_button_view_peer">
     <div id="tabs" class="container custom_more">
       <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_payment">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -14,7 +14,7 @@
             Payment
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_prepay_billing">
           <a
             class="nav-link action-list"
             data-toggle="tab"
