@@ -2,11 +2,7 @@
   <form id="reallocate-form" @submit.prevent="bill" class="form-inline">
     <div :class="`col-md-6 user-search user-input`" v-if="!isTransferOrder">
       <label>Account to Pay</label>
-      <TheSearchRiderComponent
-        @riderID="searchedRider"
-        :category="category"
-        :arr="array"
-      />
+      <TheSearchRiderComponent @riderID="searchedRider" :category="category" />
       <div :class="`${emptyClass} ${hid}`">
         Account to pay is required
       </div>
@@ -194,11 +190,6 @@ export default {
         { value: 100, name: 'Other', transactionID: 100 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
-      array: {
-        rider_name: 'Sendy Bill',
-        phone_no: '',
-        rider_id: 0,
-      },
     };
   },
   validations: {

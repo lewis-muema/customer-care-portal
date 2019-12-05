@@ -51,10 +51,6 @@ export default {
       type: String,
       required: true,
     },
-    arr: {
-      type: Object,
-      required: true,
-    },
   },
 
   data() {
@@ -105,7 +101,12 @@ export default {
     },
     prepareResponseData(data) {
       const results = data.response.docs;
-      results.splice(0, 0, this.arr);
+      const arr = {
+        rider_name: 'Sendy Bill',
+        phone_no: '',
+        rider_id: 0,
+      };
+      results.splice(0, 0, arr);
 
       return results;
     },
