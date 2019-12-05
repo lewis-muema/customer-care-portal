@@ -449,6 +449,8 @@ export default {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+    }
+  },
   async request_loan_types({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
@@ -535,7 +537,6 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
-
       return error.response;
     }
   },
