@@ -47,13 +47,7 @@ export default {
       commit('clearToken');
       Cookie.remove('jwt');
       Cookie.remove('refreshToken');
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('reloaded');
-      localStorage.removeItem('helpscoutExpiryTime');
-      localStorage.removeItem('helpscoutTokenRequested');
-      localStorage.removeItem('helpscoutAccessToken');
-
+      localStorage.clear();
       commit('setHelpScoutToken', null);
 
       return response;
@@ -436,5 +430,26 @@ export default {
   async request_nextTransfer({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
+  },
+  async requestAppVersion({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}version`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
   },
 };
