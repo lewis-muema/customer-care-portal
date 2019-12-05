@@ -2,7 +2,7 @@
   <div class="body-box user_button_view">
     <div id="tabs" class="container custom_more">
       <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_rider_billing">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -14,7 +14,7 @@
             Bill Rider
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_rider_transaction">
           <a
             class="nav-link action-list repay-loan"
             data-toggle="tab"
@@ -26,7 +26,7 @@
             Repay Loan
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_rider_transaction">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -38,7 +38,7 @@
             Transfer
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_rider_payment">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -62,7 +62,7 @@
             Reverse
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_rider_transaction">
           <a
             class="nav-link action-list new-loan"
             data-toggle="tab"
