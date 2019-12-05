@@ -3,33 +3,12 @@
     <form
       id="reallocate-form"
       @submit.prevent="assignOrder"
-      class="form-inline col-md-12"
+      class="form-inline"
     >
-      <div class="form-group col-md-12">
-        <textarea
-          type="text"
-          v-model="description"
-          :id="`cancel_description_${orderNo}`"
-          name="description"
-          placeholder="Reason for Manual Allocation"
-          class="form-control"
-          :class="{
-            'is-invalid': submitted && $v.description.$error,
-          }"
-        >
-        </textarea>
-        <div
-          v-if="submitted && !$v.description.required"
-          class="invalid-feedback"
-        >
-          Description is required
-        </div>
-      </div>
       <div :class="`col-md-12 user-search`">
         <TheSearchRiderComponent
           @riderID="searchedRider"
           :category="placehoder"
-          :arr="array"
         />
         <div :class="`invalid ${hide}`">
           Please select a rider
@@ -44,7 +23,6 @@
 </template>
 <script>
 import { mapMutations, mapActions, mapGetters } from 'vuex';
-import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'AllocateComponent',
@@ -67,15 +45,7 @@ export default {
       rider: null,
       hide: 'hide',
       riderDetails: null,
-      description: '',
-      submitted: false,
-      version_code: '',
-      batch_no: this.order.order_details.batch_no,
-      array: {},
     };
-  },
-  validations: {
-    description: { required },
   },
   computed: {
     ...mapGetters(['getRider']),
@@ -86,7 +56,6 @@ export default {
       return (this.riderID = user);
     },
   },
-
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -96,7 +65,6 @@ export default {
     ...mapActions({
       request_single_rider: 'request_single_rider',
       assign_order: '$_orders/assign_order',
-      requestAppVersion: 'requestAppVersion',
     }),
     searchedRider(riderID) {
       return (this.rider = riderID);
@@ -115,38 +83,13 @@ export default {
         );
       }
     },
-    async getAppVersion() {
-      const payload = {
-        app: 'ADONIS_API',
-        endpoint: 'version',
-        apiKey: true,
-      };
-      try {
-        this.version_code = await this.request_payment_methods(payload);
-      } catch (error) {
-        notification.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-        actionClass = 'danger';
-      }
-    },
-
     async assignOrder() {
       await this.requestsingleRdier(this.rider);
-      this.version_code = await this.requestAppVersion();
       const notification = [];
       let actionClass = '';
-      this.submitted = true;
-      this.$v.$touch();
-      if (this.$v.$invalid) {
-        return;
-      }
 
       const serialNo = this.riderDetails.serial_no;
       const phoneNo = this.riderDetails.phone_no;
-      const email = this.session.payload.data.email;
-      const id = this.session.payload.data.admin_id;
-      const name = this.session.payload.data.name;
 
       const payload = {
         app: 'ORDERS_APP',
@@ -158,20 +101,9 @@ export default {
           order_no: this.orderNo,
           distance: 9,
           polyline: 'encoded_string',
-          version_code: this.version_code,
-          action_user: name,
-          _user_email: email,
-          _user_id: id,
-          allocation_reason: this.description,
-          channel: 'customer_support',
-          data_set: 'cc_actions',
-          action_id: '',
+          version_code: 600,
         },
       };
-
-      if (this.batch_no !== null) {
-        payload.params.batch_no = this.batch_no;
-      }
       try {
         const data = await this.assign_order(payload);
         if (data.status) {
@@ -201,15 +133,6 @@ export default {
   color: #dc3545;
 }
 .allocate {
-  margin-left: 0%;
-}
-.form-group.col-md-12 {
-  width: 91%;
-  margin-left: -2%;
-}
-.col-md-12 .user-search {
-  padding-left: 15px;
-  width: 99%;
-  margin-left: -2%;
+  margin: 10px 0;
 }
 </style>

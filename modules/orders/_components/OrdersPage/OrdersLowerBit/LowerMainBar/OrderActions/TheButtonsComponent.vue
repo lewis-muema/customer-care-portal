@@ -159,12 +159,9 @@
           GPS-Tracker
         </a>
       </li>
-      <li
+      <!-- <li
         class="nav-item"
-        v-if="
-          order.order_details.order_status === 'pending' &&
-            permissions.assign_orders
-        "
+        v-if="order.order_details.order_status === 'pending'"
       >
         <a
           class="force_blue"
@@ -176,7 +173,7 @@
           <span class="fa fa-cloud-upload"></span>
           Allocate Orders
         </a>
-      </li>
+      </li> -->
       <li
         class="nav-item"
         v-if="
