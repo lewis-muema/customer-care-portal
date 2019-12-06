@@ -3,7 +3,7 @@
     <form
       id="reallocate-form"
       @submit.prevent="assignOrder"
-      class="form-inline"
+      class="form-inline col-md-12"
     >
       <div class="form-group col-md-12">
         <textarea
@@ -11,7 +11,7 @@
           v-model="description"
           :id="`cancel_description_${orderNo}`"
           name="description"
-          placeholder="Reason for manual assign"
+          placeholder="Reason for Manual Allocation"
           class="form-control"
           :class="{
             'is-invalid': submitted && $v.description.$error,
@@ -29,6 +29,7 @@
         <TheSearchRiderComponent
           @riderID="searchedRider"
           :category="placehoder"
+          :arr="array"
         />
         <div :class="`invalid ${hide}`">
           Please select a rider
@@ -68,6 +69,9 @@ export default {
       riderDetails: null,
       description: '',
       submitted: false,
+      version_code: '',
+      batch_no: this.order.order_details.batch_no,
+      array: {},
     };
   },
   validations: {
@@ -92,6 +96,7 @@ export default {
     ...mapActions({
       request_single_rider: 'request_single_rider',
       assign_order: '$_orders/assign_order',
+      requestAppVersion: 'requestAppVersion',
     }),
     searchedRider(riderID) {
       return (this.rider = riderID);
@@ -110,8 +115,25 @@ export default {
         );
       }
     },
+    async getAppVersion() {
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: 'version',
+        apiKey: true,
+      };
+      try {
+        this.version_code = await this.request_payment_methods(payload);
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+    },
+
     async assignOrder() {
       await this.requestsingleRdier(this.rider);
+      this.version_code = await this.requestAppVersion();
       const notification = [];
       let actionClass = '';
       this.submitted = true;
@@ -128,25 +150,28 @@ export default {
 
       const payload = {
         app: 'ORDERS_APP',
-        endpoint: 'rider_app_confirm',
+        endpoint: 'allocate_cc',
         apiKey: true,
         params: {
           sim_card_sn: serialNo,
           rider_phone: phoneNo,
           order_no: this.orderNo,
-          // batch_no: 'AK44HJ236-5DV',
           distance: 9,
           polyline: 'encoded_string',
-          version_code: 680,
+          version_code: this.version_code,
           action_user: name,
           _user_email: email,
           _user_id: id,
-          reason: this.description,
+          allocation_reason: this.description,
           channel: 'customer_support',
           data_set: 'cc_actions',
           action_id: '',
         },
       };
+
+      if (this.batch_no !== null) {
+        payload.params.batch_no = this.batch_no;
+      }
       try {
         const data = await this.assign_order(payload);
         if (data.status) {
@@ -176,9 +201,15 @@ export default {
   color: #dc3545;
 }
 .allocate {
-  margin: 10px 0;
+  margin-left: 0%;
 }
 .form-group.col-md-12 {
-  width: 730px;
+  width: 91%;
+  margin-left: -2%;
+}
+.col-md-12 .user-search {
+  padding-left: 15px;
+  width: 99%;
+  margin-left: -2%;
 }
 </style>
