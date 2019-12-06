@@ -106,4 +106,10 @@ export default {
   updateApproverId(state, val) {
     state.approverId = val;
   },
+  setTableData(state, val) {
+    state.tableData = val;
+  },
+  setCustomPricingDetails(state, val) {
+    state.customPricingDetails = val;
+  },
 };

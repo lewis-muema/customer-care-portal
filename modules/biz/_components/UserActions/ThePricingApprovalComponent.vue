@@ -223,9 +223,7 @@ export default {
       try {
         const data = await this.approve_distance_pricing_configs(payload);
         if (data.status) {
-          notification.push(
-            'You have successfully created the custom pricing config!',
-          );
+          notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateApproveStatus(false);
@@ -240,6 +238,8 @@ export default {
       }
     },
     createPayload(pricingApprovalData, status) {
+      console.log('here', pricingApprovalData);
+      console.log('status', status);
       for (let i = 0; i < pricingApprovalData.length; i += 1) {
         pricingApprovalData[i].cop_id = this.copId;
         pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
