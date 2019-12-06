@@ -43,6 +43,7 @@ export default {
     async onLogout() {
       try {
         await this.logout();
+        localStorage.clear();
         await this.$router.push('/login');
         // eslint-disable-next-line no-restricted-globals
         location.reload();
