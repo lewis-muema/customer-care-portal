@@ -41,9 +41,14 @@ export default {
       }, 1000);
     },
     async onLogout() {
-      await this.logout();
-      this.setTokenExpiryStatus(false);
-      this.$router.push('/login');
+      try {
+        await this.logout();
+        await this.$router.push('/login');
+        // eslint-disable-next-line no-restricted-globals
+        location.reload();
+      } catch (e) {
+        return e;
+      }
     },
   },
 };

@@ -47,13 +47,7 @@ export default {
       commit('clearToken');
       Cookie.remove('jwt');
       Cookie.remove('refreshToken');
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('reloaded');
-      localStorage.removeItem('helpscoutExpiryTime');
-      localStorage.removeItem('helpscoutTokenRequested');
-      localStorage.removeItem('helpscoutAccessToken');
-
+      localStorage.clear();
       commit('setHelpScoutToken', null);
 
       return response;
@@ -382,6 +376,9 @@ export default {
       const rider_details = response.data;
       return rider_details;
     } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
       return error.response;
     }
   },

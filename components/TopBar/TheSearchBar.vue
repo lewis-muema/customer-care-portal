@@ -17,9 +17,9 @@
         @keydown.enter="hit"
         @keydown.esc="reset"
         @input="update"
-        @blur="reset"
+        @click="clear"
       />
-      <ul v-show="hasItems" @blur="reset">
+      <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
@@ -34,6 +34,12 @@
           <span>Client phone: {{ item.user_phone }}</span>
           <span>Rider: {{ item.rider_name }}</span>
           <span>Date: {{ getFormattedDate(item.date_time, 'LLLL') }}</span>
+          <span>
+            <strong>Pickup: {{ item.pickup }}</strong>
+          </span>
+          <span>
+            <strong>Delivery: {{ item.destination }}</strong>
+          </span>
         </li>
       </ul>
     </div>
@@ -52,6 +58,7 @@ export default {
       minChars: 1,
       query: '',
       order: null,
+      isActive: true,
     };
   },
   computed: {
@@ -59,7 +66,7 @@ export default {
 
     query_string() {
       localStorage.setItem('query', this.query);
-      return this.query;
+      return this.query.trim();
     },
     solarBase() {
       return this.config.SOLR_BASE;
@@ -68,7 +75,7 @@ export default {
       return this.$env.SOLR_JWT;
     },
     src() {
-      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*)&jwt=${this.solarToken}`;
+      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
     },
   },
   methods: {
@@ -85,6 +92,7 @@ export default {
       await this.singleOrderRequest(orderNo);
     },
     async onHit(item) {
+      this.isActive = false;
       this.updateSearchState(true);
       const orderNo = item.order_no;
       await this.singleOrderRequest(orderNo);
@@ -103,6 +111,9 @@ export default {
     },
     prepareResponseData(data) {
       return data.response.docs;
+    },
+    clear() {
+      this.isActive = true;
     },
   },
 };
@@ -186,5 +197,8 @@ span {
 }
 .screen-name {
   font-style: italic;
+}
+.inactiveClass {
+  display: none;
 }
 </style>
