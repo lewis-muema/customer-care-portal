@@ -18,7 +18,7 @@
         <td colspan="5">Search to view User details.</td>
       </tr>
       <template v-else>
-        <tr v-if="details === null">
+        <tr v-if="loading">
           <i class="fa fa-spinner fa-spin loader"></i>
         </tr>
         <tr
@@ -82,14 +82,16 @@ export default {
       status: '',
       showClass: '',
       peerTable: 0,
+      loading: false,
     };
   },
   computed: {
     ...mapGetters(['getPeerUser', 'getUserActionSuccess']),
   },
   watch: {
-    async getPeerUser(user) {
-      await this.singlePeerUserRequest(user, 'peer');
+    getPeerUser(user) {
+      this.loading = true;
+      this.singlePeerUserRequest(user, 'peer');
       return (this.userID = user);
     },
     async getUserActionSuccess(status) {
@@ -123,6 +125,7 @@ export default {
       try {
         const data = await this.request_single_user(payload);
         this.details = data.user_details;
+        this.loading = false;
         return (this.userInfo = data);
       } catch {
         this.errors.push(

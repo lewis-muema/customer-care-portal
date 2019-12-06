@@ -11,6 +11,7 @@
           class="form-control select"
           :id="`status`"
           v-model="approveStatus"
+          :disabled="checkPermission('set_approval_status')"
           :class="{
             'is-invalid': submitted && $v.approveStatus.$error,
           }"
@@ -33,7 +34,7 @@
           class="form-control select"
           :id="`option`"
           v-model="payOption"
-          :disabled="canEditPayMethod"
+          :disabled="checkPermission('set_biz_payment_option')"
           :class="{
             'is-invalid': submitted && $v.payOption.$error,
           }"
@@ -78,7 +79,7 @@
           class="form-control select"
           :id="`admin`"
           v-model="admin"
-          :disabled="canChangeManager"
+          :disabled="checkPermission('change_account_manager')"
           :class="{
             'is-invalid': submitted && $v.admin.$error,
           }"
@@ -120,7 +121,7 @@
           class="form-control select"
           :id="`creditPeriod`"
           v-model="period"
-          :disabled="canEditPeriod"
+          :disabled="checkPermission('set_biz_credit_period')"
           :class="{
             'is-invalid': submitted && $v.period.$error,
           }"
@@ -200,22 +201,6 @@ export default {
   computed: {
     ...mapGetters(['getCopTypes', 'getAdmins']),
 
-    canEditPayMethod() {
-      const option = this.user.user_details.payment_option;
-      let disabled = false;
-      if (!this.permissions['approve_postpay'] && option === 1) {
-        disabled = true;
-      }
-      return disabled;
-    },
-    canChangeManager() {
-      const option = this.manager;
-      let disabled = false;
-      if (!this.permissions['change_account_manager']) {
-        disabled = true;
-      }
-      return disabled;
-    },
     manager() {
       const manager = this.user.user_details.account_manager;
       const state = manager;
@@ -376,6 +361,13 @@ export default {
     }),
     ...mapActions(['setCopTypes', 'perform_user_action', 'setAdmins']),
 
+    checkPermission(permission) {
+      let disabled = false;
+      if (!this.permissions[permission]) {
+        disabled = true;
+      }
+      return disabled;
+    },
     // eslint-disable-next-line require-await
     async editUser() {
       const notification = [];
