@@ -14,7 +14,7 @@
             Edit
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_payment">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -26,7 +26,7 @@
             Payment
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="setBillingPriviledge()">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -247,6 +247,20 @@ export default {
       this.showTab = `${tab}_${copID}`;
       this.active = 'active';
       this.show = 'show';
+    },
+    setBillingPriviledge() {
+      const user = this.user.user_details;
+      let approve_billing = false;
+      if (user.payment_option === '2') {
+        if (this.permissions.approve_postpay_billing) {
+          approve_billing = true;
+        }
+      } else {
+        if (this.permissions.approve_prepay_billing) {
+          approve_billing = true;
+        }
+      }
+      return approve_billing;
     },
   },
 };
