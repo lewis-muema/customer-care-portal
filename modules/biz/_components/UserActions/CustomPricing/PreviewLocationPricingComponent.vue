@@ -152,8 +152,7 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          // this.sendEmailNotification();
-          // this.fetchCustomDistancePricingData();
+          this.sendEmailNotification();
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -163,11 +162,9 @@ export default {
       } catch (error) {
         this.status = false;
       }
-      // this.trackMixpanelPeople();
+      this.trackMixpanelPeople();
     },
-    createPayload(data) {
-      console.log('data', data);
-    },
+    createPayload(data) {},
   },
 };
 </script>
