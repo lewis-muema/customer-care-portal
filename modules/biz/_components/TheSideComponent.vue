@@ -34,7 +34,7 @@
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
               <span class="cop-class"> Payment Option</span> :
-              {{ details.payment_option === 1 ? 'Prepay' : 'Postpay' }}
+              {{ details.payment_option === '1' ? 'Prepay' : 'Postpay' }}
             </h3>
           </div>
         </li>
