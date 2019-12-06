@@ -12,8 +12,13 @@
           </button>
 
           <div class="modal-body">
-            <span v-if="user !== ''">
-              <TheUserPageComponent :user="user" />
+            <span v-if="getTokenExpiryStatus">
+              <TheGlobalNotification />
+            </span>
+            <span v-else>
+              <span v-if="user !== ''">
+                <TheUserPageComponent :user="user" />
+              </span>
             </span>
           </div>
         </div>
@@ -22,9 +27,13 @@
   </span>
 </template>
 <script>
+import { mapGetters, mapMutations } from 'vuex';
+import TheGlobalNotification from '@/components/UI/TheGlobalNotification';
+
 export default {
   name: 'TheUserModalsComponent',
   components: {
+    TheGlobalNotification,
     TheUserPageComponent: () =>
       import('~/modules/users/_components/TheUserPageComponent'),
   },
@@ -35,6 +44,8 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['getTokenExpiryStatus']),
+
     userComponent() {
       return `<${this.user} />`;
     },

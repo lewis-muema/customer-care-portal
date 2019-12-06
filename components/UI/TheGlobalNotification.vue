@@ -41,10 +41,15 @@ export default {
       }, 1000);
     },
     async onLogout() {
-      await this.logout();
-      localStorage.clear();
-      this.setTokenExpiryStatus(false);
-      this.$router.push('/login');
+      try {
+        await this.logout();
+        localStorage.clear();
+        await this.$router.push('/login');
+        // eslint-disable-next-line no-restricted-globals
+        location.reload();
+      } catch (e) {
+        return e;
+      }
     },
   },
 };
