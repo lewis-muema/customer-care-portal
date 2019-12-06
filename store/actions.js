@@ -417,8 +417,8 @@ export default {
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
     const userData = rootState.userData;
-    payload.params._user_email = userData.payload.data.email;
-    payload.params._user_id = userData.payload.data.admin_id;
+    payload.params.action_data._user_email = userData.payload.data.email;
+    payload.params.action_data._user_id = userData.payload.data.admin_id;
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -449,6 +449,93 @@ export default {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+  async request_loan_types({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res;
+  },
+  async request_vendor_types({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async submit_custom_pricing({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async request_pending_distance_pricing_data({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      const pendingDistancePricing = [];
+      if (res.data.status) {
+        const pendingPricingDetails = res.data.custom_pricing_details;
+        for (let i = 0; i < pendingPricingDetails.length; i += 1) {
+          pendingDistancePricing.push(
+            pendingPricingDetails[i].distance_pricing,
+          );
+        }
+        commit('updatePendingDistancePricing', pendingDistancePricing);
+      }
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async request_pricing_data({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      let approverId = 0;
+      const distancePricing = [];
+      if (res.data.status) {
+        const customPricingDetails = res.data.custom_pricing_details;
+        for (let i = 0; i < customPricingDetails.length; i += 1) {
+          approverId = customPricingDetails[i].admin_id;
+          distancePricing.push(customPricingDetails[i].distance_pricing);
+        }
+        commit('updateDistancePricing', distancePricing);
+        commit('updateApproverId', approverId);
+      }
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async approve_distance_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async deactivate_distance_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async reject_distance_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async send_mail_to_admin({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+
       return error.response;
     }
   },
