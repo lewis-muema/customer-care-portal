@@ -150,7 +150,7 @@ export default {
 
       const payload = {
         app: 'ORDERS_APP',
-        endpoint: 'rider_app_confirm',
+        endpoint: 'allocate_cc',
         apiKey: true,
         params: {
           sim_card_sn: serialNo,
