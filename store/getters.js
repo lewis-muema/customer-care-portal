@@ -94,4 +94,10 @@ export default {
   getApproverId(state) {
     return state.approverId;
   },
+  getTableData(state) {
+    return state.tableData;
+  },
+  getCustomPricingDetails(state) {
+    return state.customPricingDetails;
+  },
 };

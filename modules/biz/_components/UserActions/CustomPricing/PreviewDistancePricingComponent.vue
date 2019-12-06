@@ -1,10 +1,40 @@
 <template>
-  <div>
-    <div
-      v-show="
-        this.addPricing === false && this.section === 3 && !this.approverSelect
-      "
-    >
+  <div v-if="previewing">
+    <div class="approver-select" v-if="approverSelect">
+      <template>
+        <div class="pricing-approver-select">
+          <div class="approver-title">
+            Select the manager to approve
+          </div>
+          <el-select
+            v-model="approver"
+            size="small"
+            filterable
+            placeholder="Select manager"
+          >
+            <el-option
+              v-for="admin in admin_list"
+              :key="admin.admin_id"
+              :label="admin.name"
+              :value="admin.admin_id"
+            >
+            </el-option>
+          </el-select>
+          <div>
+            <button @click="previewTable" class="edit-table-link">
+              Preview Table
+            </button>
+            <el-button
+              :disabled="approver === ''"
+              class="pricing-save-btn submit-approval-btn btn-primary"
+              @click="submitConfigs"
+              >Submit Request</el-button
+            >
+          </div>
+        </div>
+      </template>
+    </div>
+    <div v-else>
       <el-table
         :data="tableData"
         border
@@ -56,40 +86,6 @@
         >Submit for approval</el-button
       >
     </div>
-    <div class="approver-select" v-if="approverSelect">
-      <template>
-        <div class="pricing-approver-select">
-          <div class="approver-title">
-            Select the manager to approve
-          </div>
-          <el-select
-            v-model="approver"
-            size="small"
-            filterable
-            placeholder="Select manager"
-          >
-            <el-option
-              v-for="admin in admin_list"
-              :key="admin.admin_id"
-              :label="admin.name"
-              :value="admin.admin_id"
-            >
-            </el-option>
-          </el-select>
-          <div>
-            <button @click="previewTable" class="edit-table-link">
-              Preview Table
-            </button>
-            <el-button
-              :disabled="approver === ''"
-              class="pricing-save-btn submit-approval-btn btn-primary"
-              @click="submitConfigs"
-              >Submit Request</el-button
-            >
-          </div>
-        </div>
-      </template>
-    </div>
   </div>
 </template>
 
@@ -99,7 +95,7 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'ThePreviewConfigsComponent',
+  name: 'PreviewDistancePricingComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
@@ -120,6 +116,7 @@ export default {
       currency: '',
       isHidden: false,
       approverSelect: false,
+      previewing: true,
       tableData: this.configs,
       copId: this.user.user_details.cop_id,
       customPricingDetails: this.customdata,
@@ -150,7 +147,6 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSection: 'setSectionView',
       updatePricing: 'updatePricing',
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
@@ -159,10 +155,9 @@ export default {
     ...mapActions({
       submit_custom_pricing: 'submit_custom_pricing',
       setAdmins: 'setAdmins',
-      send_mail_to_admin: 'send_mail_to_admin',
     }),
     editTable() {
-      this.updateSection(2);
+      this.$emit('sectionUpdate', false);
     },
     previewTable() {
       this.approverSelect = false;
@@ -188,9 +183,8 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.sendEmailNotification();
-          this.updateSection(-1);
-          this.fetchCustomDistancePricingData();
+          this.previewing = false;
+          this.sendEmailNotification(this.admin.email, this.admin.name);
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -280,39 +274,6 @@ export default {
         delete pricingConfigData[i].base_km;
       }
       return pricingConfigData;
-    },
-    async sendEmailNotification() {
-      const notification = [];
-      let actionClass = '';
-      const crmName = this.getSessionData.payload.data.name;
-      const copName = this.user.user_details.cop_name;
-      const payload = {
-        app: 'AUTH',
-        endpoint: 'v1/send_email',
-        apiKey: false,
-        params: {
-          email: this.admin.email,
-          message: `Greetings! You have a new custom pricing config approval request from ${crmName} for ${copName}`,
-          subject: 'New Custom Pricing Config',
-          name: this.admin.name,
-        },
-      };
-      try {
-        const data = await this.send_mail_to_admin(payload);
-        if (data.result.status) {
-          notification.push(
-            'Your new custom pricing config has been sent to your manager for approval.',
-          );
-          actionClass = this.display_order_action_notification(data.status);
-        } else {
-          notification.push(data.error);
-          actionClass = this.display_order_action_notification(data.status);
-        }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
-      } catch (error) {
-        this.status = false;
-      }
     },
     trackMixpanelPage() {
       mixpanel.track('Pricing Config Preview and Submit');

@@ -51,11 +51,7 @@
       <button @click="viewSummary" class="back-to-summary-link">
         Back to summary
       </button>
-      <button
-        v-show="deactivateConfig"
-        @click="resetCustomPricing"
-        class="pricing-remove"
-      >
+      <button @click="resetCustomPricing" class="pricing-remove">
         Remove custom pricing
       </button>
     </div>
@@ -86,11 +82,10 @@ export default {
   },
   data() {
     return {
-      tableData: this.configs,
-      customPricingDetails: this.customdata,
+      tableData: [],
+      customPricingDetails: [],
       tableTitle: 'Distance Pricing Table',
       showSummary: true,
-      deactivateConfig: true,
       copId: '',
       pricingApprovalData: [],
     };
@@ -100,11 +95,14 @@ export default {
       viewStatus: 'getViewStatus',
       summaryStatus: 'getSummaryStatus',
       getSessionData: 'getSession',
+      getTableData: 'getTableData',
+      getCustomPricingDetails: 'getCustomPricingDetails',
     }),
   },
   mounted() {
+    this.tableData = this.getTableData;
+    this.customPricingDetails = this.getCustomPricingDetails;
     this.copId = this.user.user_details.cop_id;
-    this.setConfigDeactivateStatus();
     this.trackMixpanelPage();
   },
   methods: {
@@ -141,9 +139,7 @@ export default {
       try {
         const data = await this.deactivate_distance_pricing_configs(payload);
         if (data.status) {
-          notification.push(
-            'You have successfully deativated the custom pricing config!',
-          );
+          notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateViewStatus(false);
@@ -188,16 +184,6 @@ export default {
     },
     trackMixpanelDeactivateConfigs() {
       mixpanel.track('Pricing Config Deactivate Configs');
-    },
-    setConfigDeactivateStatus() {
-      for (let i = 0; i < this.tableData.length; i += 1) {
-        if (this.tableData[i].status === 'Active') {
-          this.deactivateConfig = false;
-          break;
-        } else {
-          this.deactivateConfig = true;
-        }
-      }
     },
   },
 };
