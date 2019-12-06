@@ -5,14 +5,10 @@
         <li>
           <i class="fa fa-get-pocket bg-green fasendy"> </i>
           <div class="timeline-item">
-            <h3 class="timeline-header no-border">SENDY{{ details.cop_id }}</h3>
-          </div>
-        </li>
-        <li>
-          <i class="fa fa-get-pocket bg-green fasendy"></i>
-          <div class="timeline-item">
             <h3 class="timeline-header no-border">
-              {{ channel }}
+              <span class="cop-class"> Account </span>: SENDY{{
+                details.cop_id
+              }}
             </h3>
           </div>
         </li>
@@ -20,6 +16,15 @@
           <i class="fa fa-get-pocket bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
+              <span class="cop-class">Channel </span>: {{ channel }}
+            </h3>
+          </div>
+        </li>
+        <li>
+          <i class="fa fa-get-pocket bg-green fasendy"></i>
+          <div class="timeline-item">
+            <h3 class="timeline-header no-border">
+              <span class="cop-class">Industry </span> :
               {{ details.cop_type_name }}
             </h3>
           </div>
@@ -28,7 +33,8 @@
           <i class="fa fa-get-pocket bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
-              {{ details.payment_option === 1 ? 'Prepay' : 'Postpay' }}
+              <span class="cop-class"> Payment Option</span> :
+              {{ details.payment_option === '1' ? 'Prepay' : 'Postpay' }}
             </h3>
           </div>
         </li>
@@ -36,7 +42,8 @@
           <i class="fa fa-user bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
-              Contact Person - {{ details.cop_contact_person }}
+              <span class="cop-class"> Contact Person </span> :
+              {{ details.cop_contact_person }}
             </h3>
           </div>
         </li>
@@ -44,6 +51,7 @@
           <i class="fa fa-get-pocket bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
+              <span class="cop-class">Contact Email</span> :
               {{ details.cop_email }}
             </h3>
           </div>
@@ -52,6 +60,7 @@
           <i class="fa fa-check bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
+              <span class="cop-class">Approval Status</span> :
               {{ details.approved === 1 ? 'Approved' : 'Pending' }}
             </h3>
           </div>
@@ -60,14 +69,7 @@
           <i class="fa fa-get-pocket bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
-              {{ details.city_name }}
-            </h3>
-          </div>
-        </li>
-        <li>
-          <i class="fa fa-get-pocket bg-green fasendy"></i>
-          <div class="timeline-item">
-            <h3 class="timeline-header no-border">
+              <span class="cop-class">Address </span> :
               {{ details.cop_address }}
             </h3>
           </div>
@@ -76,7 +78,7 @@
           <i class="fa fa-get-pocket bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
-              {{ details.country_name }}
+              <span class="cop-class">Country </span> : {{ country }}
             </h3>
           </div>
         </li>
@@ -84,15 +86,8 @@
           <i class="fa fa-get-pocket bg-green fasendy"></i>
           <div class="timeline-item">
             <h3 class="timeline-header no-border">
+              <span class="cop-class"> Category</span> :
               {{ details.cop_category === 0 ? 'Merchant' : 'Enterprise' }}
-            </h3>
-          </div>
-        </li>
-        <li>
-          <i class="fa fa-user bg-green fasendy"></i>
-          <div class="timeline-item">
-            <h3 class="timeline-header no-border">
-              Sales Ops Agent -
             </h3>
           </div>
         </li>
@@ -115,6 +110,13 @@ export default {
         ? this.details.channel_name
         : 'Unspecified Channel name';
     },
+    country() {
+      let country = this.details.country_name;
+      if (country === '' || country === 'undefined') {
+        country = 'Unspecified';
+      }
+      return country;
+    },
   },
 };
 </script>
@@ -125,5 +127,9 @@ export default {
 .user-side {
   padding-bottom: 1px;
   border-top: 3px solid #3c8dbc;
+}
+.cop-class {
+  color: #010910;
+  font-weight: 600;
 }
 </style>
