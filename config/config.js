@@ -28,7 +28,7 @@ const config = {
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
-    PRIVATE_API: 'https://authtest.sendyit.com/parcel',
+    PRIVATE_API: 'https://auth.sendyit.com/parcel',
     POSITIONS: 'https://authtest.sendyit.com/positions/',
     CUSTOMERS_APP: 'https://authtest.sendyit.com/customers/',
     PARTNERS_APP: 'https://authtest.sendyit.com/partners/',
