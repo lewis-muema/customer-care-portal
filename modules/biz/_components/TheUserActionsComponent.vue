@@ -74,6 +74,30 @@
             Ticket
           </a>
         </li>
+        <li v-if="testAdmins" class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('pricing', copID)"
+            :id="`pricing_${copID}`"
+          >
+            <span class="fa fa-fw fa-gbp"></span>
+            Pricing
+          </a>
+        </li>
+        <li v-if="approvingAdmin" class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('approval', copID)"
+            :id="`approval_${copID}`"
+          >
+            <span class="fa fa-fw fa-check"></span>
+            Approvals
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -149,6 +173,23 @@
               :ticket="ticketData"
             />
           </div>
+
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`pricing_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `pricing_${copID}`"
+          >
+            <TheAddNewPricingComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `approval_${copID}`"
+          >
+            <ThePricingApprovalComponent :user="user" :session="userData" />
+          </div>
         </div>
       </div>
     </div>
@@ -156,6 +197,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
   name: 'TheUserActionsComponent',
@@ -166,7 +208,12 @@ export default {
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
     TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    TheAddNewPricingComponent: () =>
+      import('./UserActions/TheAddNewPricingComponent'),
+    ThePricingApprovalComponent: () =>
+      import('./UserActions/ThePricingApprovalComponent'),
   },
+  mixins: [PricingConfigsMxn],
   props: {
     user: {
       type: Object,
@@ -181,12 +228,29 @@ export default {
       active: false,
       cop_type_list: [],
       admin_list: [],
+      configData: [],
+      pricingTestAccounts: [
+        20,
+        35,
+        43,
+        75,
+        117,
+        207,
+        223,
+        189,
+        170,
+        151,
+        148,
+        122,
+        196,
+      ],
+      testAdmin: false,
       category: 'biz',
     };
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
-    ...mapGetters(['getCopTypes', 'getAdmins']),
+    ...mapGetters(['getCopTypes', 'getAdmins', 'getApproverId']),
 
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -196,6 +260,15 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
+    },
+    testAdmins() {
+      const testerId = parseInt(this.session.payload.data.admin_id, 10);
+      return this.pricingTestAccounts.includes(testerId);
+    },
+    approvingAdmin() {
+      return (
+        parseInt(this.session.payload.data.admin_id, 10) === this.getApproverId
+      );
     },
     ticketData() {
       const userName = this.user.user_details.cop_name.split(' ');
@@ -226,6 +299,7 @@ export default {
     this.copID = this.user.user_details.cop_id;
     await this.setCopTypes();
     await this.setAdmins();
+    await this.fetchCustomDistancePricingData();
   },
   methods: {
     ...mapMutations({
