@@ -50,6 +50,7 @@
             Pay Rider
           </a>
         </li>
+
         <li class="nav-item" v-if="permissions.approve_rider_transaction">
           <a
             class="nav-link action-list new-loan"

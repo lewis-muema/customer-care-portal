@@ -38,18 +38,6 @@
             Bill
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.reverse_billing">
-          <a
-            class="nav-link action-list"
-            data-toggle="tab"
-            aria-expanded="false"
-            @click="viewTab('reverse', copID)"
-            :id="`reverse_${copID}`"
-          >
-            <span class="fa fa-fw fa-undo"></span>
-            Reverse
-          </a>
-        </li>
         <li class="nav-item">
           <a
             class="nav-link action-list"
@@ -159,14 +147,6 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`reverse_${copID}`"
-            role="tabpanel"
-            v-if="showTab === `reverse_${copID}`"
-          >
-            <TheReverseComponent :user="user" :session="userData" />
-          </div>
-          <div
-            :class="`tab-pane fade ${show} ${active}`"
             :id="`rider_${copID}`"
             role="tabpanel"
             v-if="showTab === `rider_${copID}`"
@@ -227,7 +207,6 @@ export default {
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
     TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
-    TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheAddNewPricingComponent: () =>
       import('./UserActions/TheAddNewPricingComponent'),

@@ -462,10 +462,6 @@ export default {
       });
     }
   },
-  async request_loan_types({ dispatch }, payload) {
-    const res = await dispatch('requestAxiosPost', payload, { root: true });
-    return res;
-  },
   async request_vendor_types({ dispatch }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
