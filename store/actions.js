@@ -34,6 +34,13 @@ export default {
     commit('setToken', token);
     commit('setRefreshToken', refreshToken);
   },
+  clearCache({ commit }) {
+    commit('clearToken');
+    Cookie.remove('jwt');
+    Cookie.remove('refreshToken');
+    localStorage.clear();
+    commit('setHelpScoutToken', null);
+  },
   async logout({ commit, state, dispatch }) {
     const customConfig = state.config;
     const url = customConfig.AUTH;
@@ -44,17 +51,13 @@ export default {
 
     try {
       const response = await axios.post(`${url}${endpoint}`, payload);
-      commit('clearToken');
-      Cookie.remove('jwt');
-      Cookie.remove('refreshToken');
-      localStorage.clear();
-      commit('setHelpScoutToken', null);
-
+      await dispatch('clearCache');
       return response;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+      await dispatch('clearCache');
     }
   },
   setBreadCrumbs({ commit }) {
