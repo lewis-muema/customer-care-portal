@@ -40,7 +40,7 @@ const PricingConfigsMxn = {
     async getDistancePricingConfigs() {
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_custom_distance_details',
+        endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
@@ -64,7 +64,7 @@ const PricingConfigsMxn = {
     async fetchCustomDistancePricingData() {
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_custom_distance_details',
+        endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
