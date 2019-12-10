@@ -68,6 +68,8 @@ export default {
       section: 0,
       distancePricingData: [],
       pendingPricingData: [],
+      tableData: [],
+      customPricingDetails: [],
       approverId: 0,
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',

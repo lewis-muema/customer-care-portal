@@ -14,7 +14,7 @@
             Edit
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_payment">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -26,7 +26,7 @@
             Payment
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="setBillingPriviledge()">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -36,18 +36,6 @@
           >
             <span class="fa fa-fw fa-btc"></span>
             Bill
-          </a>
-        </li>
-        <li class="nav-item" v-if="permissions.reverse_billing">
-          <a
-            class="nav-link action-list"
-            data-toggle="tab"
-            aria-expanded="false"
-            @click="viewTab('reverse', copID)"
-            :id="`reverse_${copID}`"
-          >
-            <span class="fa fa-fw fa-undo"></span>
-            Reverse
           </a>
         </li>
         <li class="nav-item">
@@ -159,14 +147,6 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`reverse_${copID}`"
-            role="tabpanel"
-            v-if="showTab === `reverse_${copID}`"
-          >
-            <TheReverseComponent :user="user" :session="userData" />
-          </div>
-          <div
-            :class="`tab-pane fade ${show} ${active}`"
             :id="`rider_${copID}`"
             role="tabpanel"
             v-if="showTab === `rider_${copID}`"
@@ -227,7 +207,6 @@ export default {
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
     TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
-    TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheAddNewPricingComponent: () =>
       import('./UserActions/TheAddNewPricingComponent'),
@@ -342,6 +321,20 @@ export default {
       this.showTab = `${tab}_${copID}`;
       this.active = 'active';
       this.show = 'show';
+    },
+    setBillingPriviledge() {
+      const user = this.user.user_details;
+      let approve_billing = false;
+      if (user.payment_option === '2') {
+        if (this.permissions.approve_postpay_billing) {
+          approve_billing = true;
+        }
+      } else {
+        if (this.permissions.approve_prepay_billing) {
+          approve_billing = true;
+        }
+      }
+      return approve_billing;
     },
   },
 };

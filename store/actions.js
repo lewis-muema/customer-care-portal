@@ -34,6 +34,13 @@ export default {
     commit('setToken', token);
     commit('setRefreshToken', refreshToken);
   },
+  clearCache({ commit }) {
+    commit('clearToken');
+    Cookie.remove('jwt');
+    Cookie.remove('refreshToken');
+    localStorage.clear();
+    commit('setHelpScoutToken', null);
+  },
   async logout({ commit, state, dispatch }) {
     const customConfig = state.config;
     const url = customConfig.AUTH;
@@ -44,17 +51,13 @@ export default {
 
     try {
       const response = await axios.post(`${url}${endpoint}`, payload);
-      commit('clearToken');
-      Cookie.remove('jwt');
-      Cookie.remove('refreshToken');
-      localStorage.clear();
-      commit('setHelpScoutToken', null);
-
+      await dispatch('clearCache');
       return response;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+      await dispatch('clearCache');
     }
   },
   setBreadCrumbs({ commit }) {
@@ -376,6 +379,9 @@ export default {
       const rider_details = response.data;
       return rider_details;
     } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
       return error.response;
     }
   },
@@ -417,8 +423,8 @@ export default {
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
     const userData = rootState.userData;
-    payload.params.action_data._user_email = userData.payload.data.email;
-    payload.params.action_data._user_id = userData.payload.data.admin_id;
+    payload.params._user_email = userData.payload.data.email;
+    payload.params._user_id = userData.payload.data.admin_id;
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -430,6 +436,14 @@ export default {
   async request_nextTransfer({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
+  },
+  async request_loan_types({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error;
+    }
   },
   async requestAppVersion({ state, dispatch }) {
     const config = state.config;
@@ -450,10 +464,6 @@ export default {
         root: true,
       });
     }
-  },
-  async request_loan_types({ dispatch }, payload) {
-    const res = await dispatch('requestAxiosPost', payload, { root: true });
-    return res;
   },
   async request_vendor_types({ dispatch }, payload) {
     try {
