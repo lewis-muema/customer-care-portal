@@ -26,18 +26,6 @@
             Bill
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.reverse_billing">
-          <a
-            class="nav-link action-list"
-            data-toggle="tab"
-            aria-expanded="false"
-            @click="viewTab('reverse', userID)"
-            :id="`reverse_${userID}`"
-          >
-            <span class="fa fa-fw fa-undo"></span>
-            Reverse
-          </a>
-        </li>
         <li class="nav-item">
           <a
             class="nav-link action-list"
@@ -95,14 +83,6 @@
               :session="userData"
               :currency="currency"
             />
-          </div>
-          <div
-            :class="`tab-pane fade ${show} ${active}`"
-            :id="`reverse_${userID}`"
-            role="tabpanel"
-            v-if="showTab === `reverse_${userID}`"
-          >
-            <TheReverseComponent :user="user" :session="userData" />
           </div>
           <div
             :class="`tab-pane fade ${show} ${active} col-md-10`"

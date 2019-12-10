@@ -171,7 +171,7 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/add_custom_distance_details',
+        endpoint: 'pricing/price_config/add_custom_distance_details',
         apiKey: false,
         params: configParams,
       };

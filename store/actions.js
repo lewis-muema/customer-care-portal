@@ -423,8 +423,8 @@ export default {
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
     const userData = rootState.userData;
-    payload.params.action_data._user_email = userData.payload.data.email;
-    payload.params.action_data._user_id = userData.payload.data.admin_id;
+    payload.params._user_email = userData.payload.data.email;
+    payload.params._user_id = userData.payload.data.admin_id;
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -436,6 +436,14 @@ export default {
   async request_nextTransfer({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
+  },
+  async request_loan_types({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error;
+    }
   },
   async requestAppVersion({ state, dispatch }) {
     const config = state.config;
@@ -456,10 +464,6 @@ export default {
         root: true,
       });
     }
-  },
-  async request_loan_types({ dispatch }, payload) {
-    const res = await dispatch('requestAxiosPost', payload, { root: true });
-    return res;
   },
   async request_vendor_types({ dispatch }, payload) {
     try {
