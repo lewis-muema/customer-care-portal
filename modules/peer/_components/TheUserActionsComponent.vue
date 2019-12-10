@@ -148,7 +148,8 @@ export default {
       return currency;
     },
     ticketData() {
-      const userName = this.user.user_details.user_name.split(' ');
+      const userName = this.user.user_details.user_name;
+
       const id = this.user.user_details.user_id;
       const userPhone =
         this.user.user_details.user_phone !== ''
@@ -159,8 +160,8 @@ export default {
         id,
         title: `${userPhone} ( Peer User)`,
         customer: {
-          firstName: userName[0],
-          lastName: userName.length > 1 ? userName[1] : '. ',
+          firstName: userName,
+          lastName: '.',
           email: this.user.user_details.user_email,
           phone: this.user.user_details.user_phone,
         },

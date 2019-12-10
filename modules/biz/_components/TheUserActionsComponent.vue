@@ -292,15 +292,15 @@ export default {
       );
     },
     ticketData() {
-      const userName = this.user.user_details.cop_name.split(' ');
+      const userName = this.user.user_details.cop_name;
       const id = this.user.user_details.cop_id;
 
       const data = {
         id,
         title: `SENDY${id} ( Cop User)`,
         customer: {
-          firstName: userName[0],
-          lastName: userName.length > 1 ? userName[1] : '. ',
+          firstName: userName,
+          lastName: '.',
           email: this.user.user_details.cop_email,
           phone: this.user.user_details.cop_phone,
         },
