@@ -79,8 +79,6 @@ export default {
     },
 
     query_string() {
-      // localStorage.setItem('query', this.query);
-      // return this.query;
       localStorage.setItem('query', this.query);
       const q = this.query;
       return q.replace(/\s/g, '');
@@ -108,7 +106,7 @@ export default {
     },
     prepareResponseData(data) {
       const results = data.response.docs;
-      // results.splice(0, 0, this.arr);
+      results.splice(0, 0, this.arr);
 
       return results;
     },

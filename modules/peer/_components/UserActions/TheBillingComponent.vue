@@ -16,6 +16,7 @@
         <TheSearchRiderComponent
           @riderID="searchedRider"
           :category="category"
+          :arr="array"
         />
         <div :class="`${emptyClass} ${hid}`">
           Account to pay is required
@@ -199,6 +200,11 @@ export default {
       userRb: '0',
       paymentOption: '',
       max_amount: '0',
+      array: {
+        rider_name: 'Sendy Bill',
+        phone_no: '',
+        rider_id: 0,
+      },
     };
   },
   validations: {
