@@ -546,4 +546,12 @@ export default {
       return error.response;
     }
   },
+  async update_vat_config({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
 };

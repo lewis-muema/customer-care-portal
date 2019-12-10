@@ -110,6 +110,18 @@
             Approvals
           </a>
         </li>
+        <li class="nav-item" v-if="permissions.approve_vat_configs">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('vat_config', copID)"
+            :id="`vat_config_${copID}`"
+          >
+            <span class="fa  fa-cogs"></span>
+            VAT Config
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -210,6 +222,14 @@
           >
             <ThePricingApprovalComponent :user="user" :session="userData" />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`vat_config_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `vat_config_${copID}`"
+          >
+            <TheVATConfigComponent :user="user" :session="userData" />
+          </div>
         </div>
       </div>
     </div>
@@ -233,6 +253,7 @@ export default {
       import('./UserActions/TheAddNewPricingComponent'),
     ThePricingApprovalComponent: () =>
       import('./UserActions/ThePricingApprovalComponent'),
+    TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {

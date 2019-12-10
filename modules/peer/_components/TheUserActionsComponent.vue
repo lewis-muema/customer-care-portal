@@ -50,6 +50,18 @@
             Ticket
           </a>
         </li>
+        <li class="nav-item" v-if="permissions.approve_vat_configs">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('vat_config', userID)"
+            :id="`vat_config_${userID}`"
+          >
+            <span class="fa  fa-cogs"></span>
+            VAT Config
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -104,6 +116,14 @@
               :ticket="ticketData"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`vat_config_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `vat_config_${userID}`"
+          >
+            <TheVATConfigComponent :user="user" />
+          </div>
         </div>
       </div>
     </div>
@@ -119,6 +139,7 @@ export default {
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
+    TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
   },
   props: {
     user: {
