@@ -125,11 +125,19 @@
       </tr>
       <tr
         class="order_row_home_lower"
-        v-if="opened.includes(order.order_no)"
+        v-if="opened.includes(order.order_no) && order.vendor_type_id !== 25"
         :key="`details_${order.order_no}_${order.order_status}`"
         :id="`child_row_${order.order_no}`"
       >
         <TheLowerSlideComponent :orderno="order.order_no" />
+      </tr>
+      <tr
+        class="order_row_home_lower"
+        v-if="opened.includes(order.order_no) && order.vendor_type_id === 25"
+        :key="`details_${order.order_no}_${order.order_status}`"
+        :id="`child_row_${order.order_no}`"
+      >
+        <DashboardComponent :orderno="order.order_no" />
       </tr>
     </template>
     <tr v-if="!returned">
@@ -152,13 +160,17 @@
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
+import LowerSlideComponent from '../OrdersLowerBit/FBU/LowerSlideComponent';
 import rabbitMQcomponent from '../../../../rabbitMQ/rabbitMQComponent';
+import DashboardComponent from '../OrdersLowerBit/FBU/DashboardComponent';
 
 export default {
   name: 'TheRowComponent',
   components: {
     TheLowerSlideComponent,
     rabbitMQcomponent,
+    // LowerSlideComponent,
+    DashboardComponent,
   },
   data() {
     return {
@@ -331,6 +343,9 @@ export default {
     initialOrderRequest() {
       this.setOrders();
     },
+    // checkFBUorders() {
+
+    // },
     forceRerender() {
       this.rowComponentKey += 1;
     },
