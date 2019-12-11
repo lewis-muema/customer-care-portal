@@ -103,6 +103,7 @@ export default {
           order_no: this.orderNo,
           action_id: 6,
           date_time: this.time,
+          timezone: this.timezone,
         },
       };
       try {
