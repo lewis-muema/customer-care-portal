@@ -118,7 +118,7 @@ export default {
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
-    TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
+    // TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
     TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
   },
   props: {
