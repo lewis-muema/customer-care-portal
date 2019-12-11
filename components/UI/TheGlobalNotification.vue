@@ -22,6 +22,9 @@ export default {
   computed: {
     ...mapGetters(['getBusinessUnits', 'getTokenExpiryStatus']),
   },
+  mounted() {
+    localStorage.removeItem('jwtToken');
+  },
   methods: {
     ...mapMutations({
       setTokenExpiryStatus: 'setTokenExpiryStatus',
