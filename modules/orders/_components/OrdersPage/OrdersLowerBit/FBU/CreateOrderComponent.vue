@@ -1,5 +1,9 @@
 <template>
-  <div></div>
+  <div>
+    <div>
+      Create Child order
+    </div>
+  </div>
 </template>
 <script>
 export default {
