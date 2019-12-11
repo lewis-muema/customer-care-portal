@@ -98,7 +98,10 @@ export default {
     return {
       vatCompliance: false,
       submitted: false,
-      vat: [{ code: true, option: 'True' }, { code: false, option: 'False' }],
+      vat: [
+        { code: true, option: 'Activate' },
+        { code: false, option: 'Deactivate' },
+      ],
       invoicing_cycle: 100,
       cycle: [
         { code: 0, name: 'Per Order' },

@@ -96,7 +96,10 @@ export default {
     return {
       vatCompliance: false,
       submitted: false,
-      vat: [{ code: true, name: 'True' }, { code: false, name: 'False' }],
+      vat: [
+        { code: true, name: 'Activate' },
+        { code: false, name: 'Deactivate' },
+      ],
       invoicing_cycle: '30',
       tax_authority_pin: '',
     };
