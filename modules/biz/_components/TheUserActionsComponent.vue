@@ -62,16 +62,42 @@
             Rider
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" style="width: 18%;">
           <a
             class="nav-link action-list"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('invoice', copID)"
             :id="`invoice_${copID}`"
+            style="width: 98% !important;"
           >
-            <span class="fa fa-fw fa-usd"></span>
-            Invoice
+            <span class="fa fa-fw fa-users"></span>
+            Invoice Receiver
+          </a>
+        </li>
+        <li class="nav-item" style="padding-right: 1%;">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('custom_invoice', copID)"
+            :id="`custom_invoice_${copID}`"
+            style="width: 100%;"
+          >
+            <span class="fa fa-fw fa-file "></span>
+            New Invoice
+          </a>
+        </li>
+        <li class="nav-item" v-if="permissions.approve_vat_configs">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('vat_config', copID)"
+            :id="`vat_config_${copID}`"
+          >
+            <span class="fa  fa-cogs"></span>
+            VAT Config
           </a>
         </li>
         <li class="nav-item">
@@ -108,18 +134,6 @@
           >
             <span class="fa fa-fw fa-check"></span>
             Approvals
-          </a>
-        </li>
-        <li class="nav-item" v-if="permissions.approve_vat_configs">
-          <a
-            class="nav-link action-list"
-            data-toggle="tab"
-            aria-expanded="false"
-            @click="viewTab('vat_config', copID)"
-            :id="`vat_config_${copID}`"
-          >
-            <span class="fa  fa-cogs"></span>
-            VAT Config
           </a>
         </li>
       </ul>
@@ -230,6 +244,18 @@
           >
             <TheVATConfigComponent :user="user" :session="userData" />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`custom_invoice_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `custom_invoice_${copID}`"
+          >
+            <TheCustomInvoiceComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -254,6 +280,8 @@ export default {
     ThePricingApprovalComponent: () =>
       import('./UserActions/ThePricingApprovalComponent'),
     TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
+    TheCustomInvoiceComponent: () =>
+      import('./UserActions/TheCustomInvoiceComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {

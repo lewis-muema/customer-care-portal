@@ -37,6 +37,17 @@
       <li class="nav-item">
         <a
           class="nav-link"
+          :id="`invoice_receiver_${copID}`"
+          data-toggle="tab"
+          role="tab"
+          aria-selected="false"
+          @click="viewTab('invoice_receiver', copID)"
+          >Invoice Receivers</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
           :id="`invoice_${copID}`"
           data-toggle="tab"
           role="tab"
@@ -86,11 +97,19 @@
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
+          :id="`invoice_receiver_${copID}`"
+          role="tabpanel"
+          v-if="showTab === `invoice_receiver_${copID}`"
+        >
+          <TheInvoiceComponent :receivers="invoiceReceivers" :user="copID" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
           :id="`invoice_${copID}`"
           role="tabpanel"
           v-if="showTab === `invoice_${copID}`"
         >
-          <TheInvoiceComponent :receivers="invoiceReceivers" :user="copID" />
+          <TheInvoiceLogsComponent :user="copID" :currency="currency" />
         </div>
       </div>
     </div>
@@ -104,6 +123,7 @@ export default {
     TheStatementComponent: () => import('./UserTabs/TheStatementComponent'),
     TheRidersComponent: () => import('./UserTabs/TheRidersComponent'),
     TheInvoiceComponent: () => import('./UserTabs/TheInvoiceComponent'),
+    TheInvoiceLogsComponent: () => import('./UserTabs/TheInvoiceLogsComponent'),
   },
   props: {
     user: {
