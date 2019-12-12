@@ -50,6 +50,19 @@
             VAT Config
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('custom_invoice', userID)"
+            :id="`custom_invoice_${userID}`"
+            style="width: 100% !important;"
+          >
+            <span class="fa fa-fw fa-file "></span>
+            New Invoice
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -104,6 +117,18 @@
           >
             <TheVATConfigComponent :user="user" />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`custom_invoice_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `custom_invoice_${userID}`"
+          >
+            <TheCustomInvoiceComponent
+              :user="user"
+              :currency="currency"
+              :session="userData"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -120,6 +145,8 @@ export default {
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     // TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
     TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
+    TheCustomInvoiceComponent: () =>
+      import('./UserActions/TheCustomInvoiceComponent'),
   },
   props: {
     user: {
