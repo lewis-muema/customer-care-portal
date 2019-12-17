@@ -2,19 +2,22 @@
   <td
     colspan="9"
     class="order_view_lower_cell cell-override"
-    :id="`order_view_lower${orderNo}`"
+    :id="`order_view_lower${orderno}`"
     style="padding:0px; background-color: rgba(245, 245, 245, 0.56) !important; font-size: 13px;"
   >
-    <div>
+    <div class="row" v-if="order === null">
+      loading ....
+    </div>
+    <div v-else>
       <!-- <span class="badge badge-pill badge-primary rounded">Primary</span> -->
       <span class=""
-        ><AssignedComponent :order="orderNo" :rates="conversionRates"
+        ><AssignedComponent :order="order" :rates="conversionRates"
       /></span>
       <span class=""
-        ><CreateOrderComponent :order="orderNo" :rates="conversionRates"
+        ><CreateOrderComponent :order="order" :rates="conversionRates"
       /></span>
       <span class=""
-        ><UnassignedComponent :order="orderNo" :rates="conversionRates"
+        ><UnassignedComponent :order="order" :rates="conversionRates"
       /></span>
     </div>
   </td>
@@ -40,11 +43,10 @@ export default {
   },
   data() {
     return {
-      orderNo: '',
       order: null,
       errors: [],
       conversionRates: [],
-      showTab: `total_${this.order.order_details.order_no}`,
+      // showTab: `total_${order.order_details.order_no}`,
       show: false,
       active: false,
       activetab: null,
@@ -78,8 +80,6 @@ export default {
 
     this.firstShow = 'show';
     this.firstActive = 'active';
-    this.orderNo = this.order.order_details.order_no;
-    const vendorTypeID = this.order.rider_details.vendor_type_id;
   },
   methods: {
     ...mapMutations({
@@ -99,7 +99,7 @@ export default {
     },
     async singleOrderRequest() {
       try {
-        const data = await this.request_single_order(this.orderNo);
+        const data = await this.request_single_order(this.orderno);
         console.log(data);
         return (this.order = data);
       } catch {
