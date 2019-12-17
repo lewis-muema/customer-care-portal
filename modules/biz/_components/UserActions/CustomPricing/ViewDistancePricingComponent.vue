@@ -64,17 +64,9 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'TheViewDetailsComponent',
+  name: 'ViewDistancePricingComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
-    customdata: {
-      type: Array,
-      required: true,
-    },
-    configs: {
-      type: Array,
-      required: true,
-    },
     user: {
       type: Object,
       required: true,
@@ -118,9 +110,6 @@ export default {
       deactivate_distance_pricing_configs:
         'deactivate_distance_pricing_configs',
     }),
-    deleteRow(index, rows) {
-      this.tableData.splice(index, 1);
-    },
     viewSummary() {
       this.updateSummaryStatus(true);
       this.updateViewStatus(false);

@@ -16,6 +16,7 @@ const PricingConfigsMxn = {
       tableData: [],
       customPricingDetails: [],
       distancePricingTableData: [],
+      locationPricingTableData: [],
     };
   },
   mounted() {
@@ -26,6 +27,7 @@ const PricingConfigsMxn = {
   computed: {
     ...mapGetters({
       configuredDistancePricing: 'getConfiguredDistancePricing',
+      configuredLocationPricing: 'getConfiguredLocationPricing',
       getSessionData: 'getSession',
     }),
   },
@@ -53,9 +55,11 @@ const PricingConfigsMxn = {
         const data = await this.request_pending_distance_pricing_data(payload);
         if (data.status) {
           this.customPricingDetails = data.custom_pricing_details;
-          return (this.distancePricingTableData = this.pendingDistancePricing);
+          this.distancePricingTableData = this.pendingDistancePricing;
+          this.locationPricingTableData = this.pendingLocationPricing;
         } else {
-          return (this.distancePricingTableData = []);
+          this.distancePricingTableData = [];
+          this.locationPricingTableData = [];
         }
       } catch (error) {
         this.status = false;
@@ -76,9 +80,11 @@ const PricingConfigsMxn = {
         const data = await this.request_pricing_data(payload);
         if (data.status) {
           this.customPricingDetails = data.custom_pricing_details;
-          return (this.distancePricingTableData = this.configuredDistancePricing);
+          this.distancePricingTableData = this.configuredDistancePricing;
+          this.locationPricingTableData = this.configuredLocationPricing;
         } else {
-          return (this.distancePricingTableData = []);
+          this.distancePricingTableData = [];
+          this.locationPricingTableData = [];
         }
       } catch (error) {
         this.status = false;

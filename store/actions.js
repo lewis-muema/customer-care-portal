@@ -482,14 +482,19 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       const pendingDistancePricing = [];
+      const pendingLocationPricing = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < pendingPricingDetails.length; i += 1) {
           pendingDistancePricing.push(
             pendingPricingDetails[i].distance_pricing,
           );
+          pendingLocationPricing.push(
+            pendingPricingDetails[i].location_pricing,
+          );
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
+        commit('updatePendingLocationPricing', pendingLocationPricing);
       }
       return res.data;
     } catch (error) {
@@ -501,12 +506,19 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let approverId = 0;
       const distancePricing = [];
+      let locationPricing = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < customPricingDetails.length; i += 1) {
-          approverId = customPricingDetails[i].admin_id;
-          distancePricing.push(customPricingDetails[i].distance_pricing);
+          if (customPricingDetails[i].location_pricing) {
+            approverId = customPricingDetails[i].location_pricing[0].admin_id;
+            locationPricing = customPricingDetails[i].location_pricing;
+          } else {
+            approverId = customPricingDetails[i].admin_id;
+            distancePricing.push(customPricingDetails[i].distance_pricing);
+          }
         }
+        commit('updateLocationPricing', locationPricing);
         commit('updateDistancePricing', distancePricing);
         commit('updateApproverId', approverId);
       }
@@ -532,6 +544,14 @@ export default {
     }
   },
   async reject_distance_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async deactivate_location_pricing({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;

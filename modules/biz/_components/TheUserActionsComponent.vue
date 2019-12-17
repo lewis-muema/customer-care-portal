@@ -186,9 +186,29 @@
             :class="`tab-pane fade ${show} ${active}`"
             :id="`approval_${copID}`"
             role="tabpanel"
-            v-if="showTab === `approval_${copID}`"
+            v-if="
+              showTab === `approval_${copID}` &&
+                this.approvalModel === 'Distance'
+            "
           >
-            <ThePricingApprovalComponent :user="user" :session="userData" />
+            <DistancePricingApprovalComponent
+              :user="user"
+              :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="
+              showTab === `approval_${copID}` &&
+                this.approvalModel === 'Location'
+            "
+          >
+            <LocationPricingApprovalComponent
+              :user="user"
+              :session="userData"
+            />
           </div>
         </div>
       </div>
@@ -210,8 +230,10 @@ export default {
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheAddNewPricingComponent: () =>
       import('./UserActions/TheAddNewPricingComponent'),
-    ThePricingApprovalComponent: () =>
-      import('./UserActions/ThePricingApprovalComponent'),
+    DistancePricingApprovalComponent: () =>
+      import('./UserActions/PricingApproval/DistancePricingApprovalComponent'),
+    LocationPricingApprovalComponent: () =>
+      import('./UserActions/PricingApproval/LocationPricingApprovalComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -246,6 +268,9 @@ export default {
       ],
       testAdmin: false,
       category: 'biz',
+      approvalModel: '',
+      distancePricingTableData: [],
+      locationPricingTableData: [],
     };
   },
   computed: {
@@ -300,6 +325,7 @@ export default {
     await this.setCopTypes();
     await this.setAdmins();
     await this.fetchCustomDistancePricingData();
+    this.setApprovalModel();
   },
   methods: {
     ...mapMutations({
@@ -314,10 +340,15 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-
+    setApprovalModel() {
+      if (typeof this.distancePricingTableData[0] === 'object') {
+        this.approvalModel = 'Distance';
+      } else if (typeof this.locationPricingTableData[0] === 'object') {
+        this.approvalModel = 'Location';
+      }
+    },
     viewTab(tab, copID) {
       this.clearErrorMessages();
-
       this.showTab = `${tab}_${copID}`;
       this.active = 'active';
       this.show = 'show';

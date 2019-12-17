@@ -111,7 +111,7 @@ export default {
     return {
       pricingData: [],
       admin_list: [],
-      approver: '',
+      approver: 0,
       approverMail: '',
       currency: '',
       isHidden: false,

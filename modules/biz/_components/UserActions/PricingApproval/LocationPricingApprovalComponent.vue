@@ -9,50 +9,25 @@
           {{ approvalText }}
         </div>
         <el-table
-          :data="distancePricingTableData"
+          :data="locationPricingTableData"
           border
-          class="pricing-table-styling"
-          style="width: 1000px"
+          class="pricing-table-styling preview-container"
         >
-          <el-table-column prop="city" label="City" width="170">
+          <el-table-column prop="from" label="Pick up location" width="200">
           </el-table-column>
-          <el-table-column prop="name" label="Vendor Type" width="170">
+          <el-table-column prop="to" label="Drop off location" width="200">
           </el-table-column>
-          <el-table-column prop="base_cost" label="Base Fee" width="150">
+          <el-table-column prop="name" label="Vendor type" width="130">
           </el-table-column>
-          <el-table-column prop="base_km" label="Base Distance" width="120">
-          </el-table-column>
-          <el-table-column
-            prop="cost_per_km_above_base_km"
-            label="Price per additional KM"
-            width="170"
-          >
+          <el-table-column prop="order_amount" label="Client fee" width="130">
           </el-table-column>
           <el-table-column
-            prop="additional_location_cost"
-            label="Price per additional dropoff"
-            width="200"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="waiting_time_cost_per_min"
-            label="Waiting fee per min"
-            width="150"
-          >
-          </el-table-column>
-          <el-table-column prop="loader_cost" label="Loading Fee" width="120">
-          </el-table-column>
-          <el-table-column
-            prop="service_fee"
-            label="Service Charge"
-            width="120"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="cancellation_fee"
-            label="cancellation Fee"
+            prop="rider_amount"
+            label="Partner price"
             width="130"
           >
+          </el-table-column>
+          <el-table-column prop="service_fee" label="Sendy fee" width="130">
           </el-table-column>
         </el-table>
         <button @click="provideReason" class="reject-config-text">
@@ -107,7 +82,7 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'ThePricingApprovalComponent',
+  name: 'DistancePricingApprovalComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
@@ -117,7 +92,7 @@ export default {
   },
   data() {
     return {
-      distancePricingTableData: [],
+      locationPricingTableData: [],
       customPricingDetails: [],
       approvalParams: [],
       copId: '',
@@ -127,30 +102,31 @@ export default {
       crmName: '',
       copName: '',
       rejectWithReason: false,
-      pricingTitle: 'Distance Pricing Table',
+      pricingTitle: 'Location Pricing Table',
       approvalText: 'Requires your approval',
     };
   },
   computed: {
     ...mapGetters({
-      pendingDistancePricing: 'getPendingDistancePricing',
+      pendingLocationPricing: 'getPendingLocationPricing',
       getSessionData: 'getSession',
       getApproveStatus: 'getApproveStatus',
     }),
     pendingRequests() {
       return (
         this.getApproveStatus === true &&
-        this.distancePricingTableData.length !== 0
+        this.locationPricingTableData.length !== 0
       );
     },
   },
-  mounted() {
+  async mounted() {
+    await this.getDistancePricingConfigs();
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.getDistancePricingConfigs();
+    this.locationPricingTableData = this.pendingLocationPricing;
     this.trackMixpanelPage();
   },
   methods: {
@@ -161,8 +137,6 @@ export default {
       updateApproveStatus: 'updateApproveStatus',
     }),
     ...mapActions({
-      request_pending_distance_pricing_data:
-        'request_pending_distance_pricing_data',
       approve_distance_pricing_configs: 'approve_distance_pricing_configs',
       reject_distance_pricing_configs: 'reject_distance_pricing_configs',
     }),
