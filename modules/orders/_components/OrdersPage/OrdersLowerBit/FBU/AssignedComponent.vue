@@ -22,7 +22,7 @@ export default {
   name: 'CreateOrderComponent',
   props: {
     order: {
-      type: String,
+      type: Object,
       required: true,
     },
     rates: {
