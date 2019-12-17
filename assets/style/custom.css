@@ -883,3 +883,44 @@ table {
   margin-left: 10px;
   text-decoration: underline;
 }
+.child-orders-table {
+  width: -webkit-fill-available;
+  margin: 20px;
+  background-color: #F6F6F6;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
+}
+.child-orders-table-head {
+  font-weight: 600;
+}
+.child-orders-table-head, .child-orders-table-row {
+  display: flex;
+}
+.child-orders-table-head:hover {
+  background: #F6F6F6 !important;
+}
+.child-orders-table-row:hover {
+  background: rgba(202, 198, 198, 0.47843);
+}
+.child1, .child2, .child3, .child4, .child5, .child6 {
+  min-height: 40px;
+  padding: 12px;
+  border: 0.1px solid rgba(202, 198, 198, 0.47843);
+}
+.child1 {
+  width: 10%;
+}
+.child2 {
+  width: 10%;
+}
+.child3 {
+  width: 20%;
+}
+.child4 {
+  width: 10%;
+}
+.child5 {
+  width: 30%;
+}
+.child6 {
+  width: 20%;
+}

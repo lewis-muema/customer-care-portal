@@ -8,13 +8,13 @@
     <div>
       <!-- <span class="badge badge-pill badge-primary rounded">Primary</span> -->
       <span class=""
-        ><AssignedComponent :order="order" :rates="conversionRates"
+        ><AssignedComponent :order="orderNo" :rates="conversionRates"
       /></span>
       <span class=""
-        ><CreateOrderComponent :order="order" :rates="conversionRates"
+        ><CreateOrderComponent :order="orderNo" :rates="conversionRates"
       /></span>
-      <span class="badge badge-pill badge-success"
-        ><UnassignedComponent :order="order" :rates="conversionRates"
+      <span class=""
+        ><UnassignedComponent :order="orderNo" :rates="conversionRates"
       /></span>
     </div>
   </td>
