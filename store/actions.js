@@ -34,6 +34,13 @@ export default {
     commit('setToken', token);
     commit('setRefreshToken', refreshToken);
   },
+  clearCache({ commit }) {
+    commit('clearToken');
+    Cookie.remove('jwt');
+    Cookie.remove('refreshToken');
+    localStorage.clear();
+    commit('setHelpScoutToken', null);
+  },
   async logout({ commit, state, dispatch }) {
     const customConfig = state.config;
     const url = customConfig.AUTH;
@@ -44,17 +51,13 @@ export default {
 
     try {
       const response = await axios.post(`${url}${endpoint}`, payload);
-      commit('clearToken');
-      Cookie.remove('jwt');
-      Cookie.remove('refreshToken');
-      localStorage.clear();
-      commit('setHelpScoutToken', null);
-
+      await dispatch('clearCache');
       return response;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+      await dispatch('clearCache');
     }
   },
   setBreadCrumbs({ commit }) {
@@ -566,5 +569,41 @@ export default {
     } catch (error) {
       return error.response;
     }
+  },
+  async update_vat_config({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async request_tax_rates({ state }) {
+    const config = state.config;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vat-rates`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async request_invoice_logs({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res;
   },
 };

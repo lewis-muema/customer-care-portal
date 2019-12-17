@@ -24,7 +24,7 @@
           :class="activeClass($item)"
           @mousedown="hit"
           @mousemove="setActive($item)"
-          :key="item.index"
+          :key="item.rider_id"
         >
           <span class="tt-suggestion">
             <p>
@@ -80,7 +80,8 @@ export default {
 
     query_string() {
       localStorage.setItem('query', this.query);
-      return this.query;
+      const q = this.query;
+      return q.replace(/\s/g, '');
     },
     solarBase() {
       const solrArray = this.solr;

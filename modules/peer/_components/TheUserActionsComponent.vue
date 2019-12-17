@@ -38,6 +38,31 @@
             Ticket
           </a>
         </li>
+        <li class="nav-item" v-if="permissions.approve_vat_configs">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('vat_config', userID)"
+            :id="`vat_config_${userID}`"
+          >
+            <span class="fa  fa-cogs"></span>
+            VAT Config
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('custom_invoice', userID)"
+            :id="`custom_invoice_${userID}`"
+            style="width: 100% !important;"
+          >
+            <span class="fa fa-fw fa-file "></span>
+            New Invoice
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -84,6 +109,26 @@
               :ticket="ticketData"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`vat_config_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `vat_config_${userID}`"
+          >
+            <TheVATConfigComponent :user="user" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`custom_invoice_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `custom_invoice_${userID}`"
+          >
+            <TheCustomInvoiceComponent
+              :user="user"
+              :currency="currency"
+              :session="userData"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -98,6 +143,10 @@ export default {
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    // TheReverseComponent: () => import('./UserActions/TheReverseComponent'),
+    TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
+    TheCustomInvoiceComponent: () =>
+      import('./UserActions/TheCustomInvoiceComponent'),
   },
   props: {
     user: {
@@ -126,7 +175,8 @@ export default {
       return currency;
     },
     ticketData() {
-      const userName = this.user.user_details.user_name.split(' ');
+      const userName = this.user.user_details.user_name;
+
       const id = this.user.user_details.user_id;
       const userPhone =
         this.user.user_details.user_phone !== ''
@@ -137,8 +187,8 @@ export default {
         id,
         title: `${userPhone} ( Peer User)`,
         customer: {
-          firstName: userName[0],
-          lastName: userName.length > 1 ? userName[1] : '. ',
+          firstName: userName,
+          lastName: '.',
           email: this.user.user_details.user_email,
           phone: this.user.user_details.user_phone,
         },
