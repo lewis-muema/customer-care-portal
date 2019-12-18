@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="previewing">
     <div class="approver-select" v-if="approverSelect">
       <template>
         <div class="pricing-approver-select">
@@ -44,8 +44,6 @@
         </el-table-column>
         <el-table-column prop="to" label="Drop off location" width="200">
         </el-table-column>
-        <el-table-column prop="proximity" label="Proximity" width="130">
-        </el-table-column>
         <el-table-column prop="name" label="Vendor type" width="130">
         </el-table-column>
         <el-table-column prop="order_amount" label="Client fee" width="130">
@@ -89,11 +87,12 @@ export default {
     return {
       pricingData: [],
       admin_list: [],
-      approver: '',
+      approver: 0,
       approverMail: '',
       currency: '',
       isHidden: false,
       approverSelect: false,
+      previewing: true,
       tableData: this.configs,
       copId: this.user.user_details.cop_id,
       customPricingDetails: this.customdata,
@@ -140,19 +139,17 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/add_custom_distance_details',
+        endpoint: 'pricing/price_config/add_custom_distance_details',
         apiKey: false,
         params: configParams,
       };
       try {
         const data = await this.submit_custom_pricing(payload);
         if (data.status) {
-          notification.push(
-            'You have successfully created the custom pricing config!',
-          );
+          notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
-          this.updateSuccess(false);
-          this.sendEmailNotification();
+          this.previewing = false;
+          this.sendEmailNotification(this.admin.email, this.admin.name);
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -164,7 +161,71 @@ export default {
       }
       this.trackMixpanelPeople();
     },
-    createPayload(data) {},
+    createPayload(data) {
+      const locationData = data;
+      for (let i = 0; i < data.length; i += 1) {
+        data[i].cop_id = this.copId;
+        data[i].custom_pricing_details = {};
+        data[i].custom_pricing_details.id = data[i].id;
+        data[i].custom_pricing_details.name = data[i].name;
+        data[i].custom_pricing_details.currency = this.currency;
+        data[i].custom_pricing_details.admin_id = this.approver;
+        data[i].custom_pricing_details.location_pricing = [];
+        data[i].custom_pricing_details.location_pricing[i] = {};
+        data[i].custom_pricing_details.location_pricing[i].id = data[i].id;
+        data[i].custom_pricing_details.location_pricing[i].name = data[i].name;
+        data[i].custom_pricing_details.location_pricing[i].cop_id =
+          data[i].cop_id;
+        data[i].custom_pricing_details.location_pricing[i].cop_name =
+          data[i].cop_name;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].currency = this.currency;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].admin_id = this.approver;
+        data[i].custom_pricing_details.location_pricing[i].service_fee =
+          data[i].service_fee;
+        data[i].custom_pricing_details.location_pricing[i].from = data[i].from;
+        data[i].custom_pricing_details.location_pricing[i].from_location = {};
+        data[i].custom_pricing_details.location_pricing[i].from_location.type =
+          data[i].from_location.type;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].from_location.coordinates = data[i].from_location.coordinates;
+        data[i].custom_pricing_details.location_pricing[i].to_location = {};
+        data[i].custom_pricing_details.location_pricing[i].to_location.type =
+          data[i].to_location.type;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].to_location.coordinates = data[i].to_location.coordinates;
+        data[i].custom_pricing_details.location_pricing[i].to = data[i].to;
+        data[i].custom_pricing_details.location_pricing[i].status = 'Pending';
+        data[i].custom_pricing_details.location_pricing[i].city = data[i].city;
+        data[i].custom_pricing_details.location_pricing[i].order_amount =
+          data[i].order_amount;
+        data[i].custom_pricing_details.location_pricing[i].rider_amount =
+          data[i].rider_amount;
+
+        delete data[i].admin_id;
+        delete data[i].cop_name;
+        delete data[i].id;
+        delete data[i].name;
+        delete data[i].currency;
+        delete data[i].city;
+        delete data[i].from;
+        delete data[i].from_coordinates;
+        delete data[i].from_location;
+        delete data[i].order_amount;
+        delete data[i].rider_amount;
+        delete data[i].service_fee;
+        delete data[i].status;
+        delete data[i].to;
+        delete data[i].to_coordinates;
+        delete data[i].to_location;
+      }
+      return data;
+    },
   },
 };
 </script>

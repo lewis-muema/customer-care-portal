@@ -33,11 +33,11 @@
                 size="small"
                 class="inline-input"
                 v-model="pacInput1"
-                :value="handleSelect"
+                :value="handleSelectFrom"
                 :fetch-suggestions="querySearch"
                 placeholder="Search location"
                 :trigger-on-focus="false"
-                @select="handleSelect($event, scope.$index, scope.row)"
+                @select="handleSelectFrom($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
               <el-input
@@ -56,11 +56,11 @@
                 size="small"
                 class="inline-input"
                 v-model="pacInput2"
-                :value="handleSelect"
+                :value="handleSelectTo"
                 :fetch-suggestions="querySearch"
                 placeholder="Search location"
                 :trigger-on-focus="false"
-                @select="handleSelect($event, scope.$index, scope.row)"
+                @select="handleSelectTo($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
               <el-input
@@ -70,19 +70,6 @@
                 placeholder="Search location"
                 v-model="scope.row.to"
               ></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="proximity" label="Proximity" width="200">
-            <template slot-scope="scope">
-              <el-input
-                size="small"
-                type="number"
-                style="text-align:center"
-                v-model.number="scope.row.proximity"
-                ><template class="pricing-prepend" slot="append"
-                  >KM
-                </template></el-input
-              >
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
@@ -221,12 +208,17 @@ export default {
         return op.name === this.vendorName;
       });
     },
+    fromLocation() {
+      return this.suggestions.find(op => {
+        return op.place_id === this.fromPlaceId;
+      });
+    },
   },
   watch: {
     pacInput1(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
@@ -246,6 +238,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     this.fetchVendorTypes(countryCode);
+    this.trackMixpanelPage();
   },
   methods: {
     ...mapMutations({
@@ -262,8 +255,43 @@ export default {
       }
       cb(this.suggestions);
     },
-    handleSelect(item, index, rows) {
-      this.tableData[index].city = item.value;
+    handleSelectFrom(item, index, rows) {
+      this.tableData[index].from = item.value;
+      const fromPlaceId = item.place_id;
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
+        )
+        .then(response => {
+          const fromLatLong = response.data.result.geometry.location;
+          const coordinatesArray = Object.keys(fromLatLong).map(
+            key => fromLatLong[key],
+          );
+          [coordinatesArray[0], coordinatesArray[1]] = [
+            parseFloat(coordinatesArray[1].toFixed(6)),
+            parseFloat(coordinatesArray[0].toFixed(6)),
+          ];
+          this.tableData[index].from_location.coordinates = coordinatesArray;
+        });
+    },
+    handleSelectTo(item, index, rows) {
+      this.tableData[index].to = item.value;
+      const toPlaceId = item.place_id;
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
+        )
+        .then(response => {
+          const toLatLong = response.data.result.geometry.location;
+          const coordinatesArray = Object.keys(toLatLong).map(
+            key => toLatLong[key],
+          );
+          [coordinatesArray[0], coordinatesArray[1]] = [
+            parseFloat(coordinatesArray[1].toFixed(6)),
+            parseFloat(coordinatesArray[0].toFixed(6)),
+          ];
+          this.tableData[index].to_location.coordinates = coordinatesArray;
+        });
     },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
@@ -277,6 +305,9 @@ export default {
     },
     onSectionUpdate(value) {
       this.previewLocationPricing = value;
+    },
+    trackMixpanelPage() {
+      mixpanel.track('New Location Pricing Config Page Loaded');
     },
   },
 };

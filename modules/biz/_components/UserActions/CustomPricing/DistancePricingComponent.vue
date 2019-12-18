@@ -270,6 +270,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     this.fetchVendorTypes(countryCode);
+    this.trackMixpanelPage();
   },
   methods: {
     ...mapMutations({
@@ -301,6 +302,9 @@ export default {
     },
     onSectionUpdate(value) {
       this.previewDistancePricing = value;
+    },
+    trackMixpanelPage() {
+      mixpanel.track('New Distance Pricing Config Page Loaded');
     },
   },
 };
