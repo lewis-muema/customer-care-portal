@@ -44,6 +44,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
+    PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
