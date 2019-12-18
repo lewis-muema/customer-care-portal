@@ -41,7 +41,12 @@
               }}
             </td>
             <td>{{ currency }} {{ invoice.invoice_amount }}</td>
-            <td>{{ invoice.file_url }}</td>
+
+            <td>
+              <a :href="`${invoice.signed_file_url}`">
+                Download Invoice
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -94,15 +99,12 @@ export default {
       try {
         const res = await this.request_invoice_logs(payload);
         const error = !this.status ? res.error : '';
-        if (!res.data.status) {
-          this.fetch_invoice_logs = 'fail';
-        } else {
-          if (!res.data.length > 0) {
-            this.fetch_invoice_logs = 'no_data';
-          }
-          this.fetch_invoice_logs = false;
-          return (this.invoice = res.data);
+
+        if (!res.data.length > 0) {
+          this.fetch_invoice_logs = 'no_data';
         }
+        this.fetch_invoice_logs = false;
+        return (this.invoice = res.data);
       } catch (error) {
         this.fetch_invoice_logs = 'fail';
       }
