@@ -14,7 +14,17 @@
       <el-table-column prop="city" label="City" width="160"> </el-table-column>
       <el-table-column prop="name" label="Vendor Type" width="160">
       </el-table-column>
-      <el-table-column prop="base_cost" label="Base Fee" width="120">
+      <el-table-column prop="base_cost" label="Partner Amount" width="150">
+      </el-table-column>
+      <el-table-column prop="service_fee" label="Service Fee" width="120">
+      </el-table-column>
+      <el-table-column
+        prop="sendy_commission"
+        label="Sendy Commission"
+        width="170"
+      >
+      </el-table-column>
+      <el-table-column prop="client_fee" label="Client Fee" width="120">
       </el-table-column>
       <el-table-column prop="base_km" label="Base Distance" width="120">
       </el-table-column>
@@ -37,8 +47,6 @@
       >
       </el-table-column>
       <el-table-column prop="base_km" label="Loading Fee" width="120">
-      </el-table-column>
-      <el-table-column prop="service_fee" label="Service Charge" width="120">
       </el-table-column>
       <el-table-column
         prop="cancellation_fee"
