@@ -95,22 +95,17 @@
               >
             </template>
           </el-table-column>
-          <el-table-column
-            prop="sendy_commission"
-            label="Sendy Commission"
-            width="200"
-          >
+          <el-table-column prop="insurance" label="Insurance" width="200">
             <template slot-scope="scope">
               <el-input
                 size="small"
                 type="number"
                 style="text-align:center"
-                v-model.number="scope.row.sendy_commission"
+                v-model.number="scope.row.insurance"
                 @change="calculateClientFee(scope.$index, scope.row)"
-              >
-                <template class="pricing-prepend" slot="append"
-                  >%
-                </template></el-input
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
               >
             </template>
           </el-table-column>
@@ -273,7 +268,7 @@ export default {
           waiting_time_cost_per_min: '18',
           loader_cost: '100',
           service_fee: '40',
-          sendy_commission: '20',
+          insurance: '20',
           client_fee: '500',
           cancellation_fee: '40',
         },
@@ -325,9 +320,8 @@ export default {
     calculateClientFee(index, row) {
       const partnerAmount = parseInt(row.base_cost, 10);
       const serviceFee = parseInt(row.service_fee, 10);
-      const sendyCommission = parseInt(row.sendy_commission, 10);
-      const orderAmount =
-        partnerAmount + serviceFee + (sendyCommission / 100) * partnerAmount;
+      const insurance = parseInt(row.insurance, 10);
+      const orderAmount = partnerAmount + serviceFee + insurance;
       return (this.tableData[index].client_fee = orderAmount);
     },
     querySearch(queryString, cb) {

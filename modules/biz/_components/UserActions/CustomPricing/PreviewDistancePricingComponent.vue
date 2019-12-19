@@ -48,11 +48,7 @@
         </el-table-column>
         <el-table-column prop="service_fee" label="Service Fee" width="120">
         </el-table-column>
-        <el-table-column
-          prop="sendy_commission"
-          label="Sendy Commission"
-          width="170"
-        >
+        <el-table-column prop="insurance" label="Insurance" width="120">
         </el-table-column>
         <el-table-column prop="client_fee" label="Client Fee" width="120">
         </el-table-column>
@@ -231,14 +227,8 @@ export default {
         );
         pricingConfigData[
           i
-        ].custom_pricing_details.distance_pricing.sendy_commission = parseInt(
-          pricingConfigData[i].sendy_commission,
-          10,
-        );
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.client_fee = parseInt(
-          pricingConfigData[i].client_fee,
+        ].custom_pricing_details.distance_pricing.insurance = parseInt(
+          pricingConfigData[i].insurance,
           10,
         );
         pricingConfigData[
@@ -291,6 +281,8 @@ export default {
         delete pricingConfigData[i].city;
         delete pricingConfigData[i].cancellation_fee;
         delete pricingConfigData[i].base_cost;
+        delete pricingConfigData[i].client_fee;
+        delete pricingConfigData[i].insurance;
         delete pricingConfigData[i].base_km;
       }
       return pricingConfigData;
