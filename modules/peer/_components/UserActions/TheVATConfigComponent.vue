@@ -102,7 +102,7 @@ export default {
         { code: true, option: 'Activate' },
         { code: false, option: 'Deactivate' },
       ],
-      invoicing_cycle: 100,
+      invoicing_cycle: '',
       cycle: [
         { code: 0, name: 'Per Order' },
         { code: 1, name: 'Daily' },
