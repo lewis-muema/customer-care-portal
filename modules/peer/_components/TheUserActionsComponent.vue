@@ -50,7 +50,7 @@
             VAT Config
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_custom_invoice">
           <a
             class="nav-link action-list"
             data-toggle="tab"

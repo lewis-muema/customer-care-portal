@@ -13,27 +13,6 @@
         class="form-inline custom-biz-inline col-md-12"
       >
         <div class="form-group col-md-4 user-input">
-          <label class="config"> Invoice Number</label>
-
-          <input
-            type="text"
-            v-model="invoice_number"
-            name="invoice_number"
-            placeholder="Invoice Number"
-            class="form-control config-input"
-            :class="{
-              'is-invalid': submitted && $v.invoice_number.$error,
-            }"
-          />
-          <div
-            v-if="submitted && !$v.invoice_number.required"
-            class="invalid-feedback"
-          >
-            Invoice Number is required
-          </div>
-        </div>
-
-        <div class="form-group col-md-4 user-input">
           <label class="config"> Invoice for the period </label>
 
           <date-picker
@@ -50,7 +29,7 @@
           />
           <div
             class="invoice_valid"
-            v-if="submitted && !$v.invoice_number.required"
+            v-if="submitted && !$v.invoice_period.required"
           >
             Invoice for the period is required
           </div>
@@ -67,10 +46,7 @@
               readonly: true,
             }"
           />
-          <div
-            class="invoice_valid"
-            v-if="submitted && !$v.invoice_number.required"
-          >
+          <div class="invoice_valid" v-if="submitted && !$v.due_date.required">
             Invoice due date is required
           </div>
         </div>
@@ -185,7 +161,6 @@ export default {
     return {
       loading_tax_rates: true,
       submitted: false,
-      invoice_number: '',
       due_date: '',
       invoice_period: '',
       narration: '',
@@ -196,7 +171,6 @@ export default {
   },
 
   validations: {
-    invoice_number: { required },
     due_date: { required },
     invoice_period: { required },
     narration: { required },
@@ -219,6 +193,7 @@ export default {
     }),
     ...mapActions({
       request_tax_rates: 'request_tax_rates',
+      perform_user_action: 'perform_user_action',
     }),
     // eslint-disable-next-line require-await
     async update_peer_invoice() {
@@ -230,6 +205,7 @@ export default {
         return;
       }
 
+      const rate = this.tax.rate * 100;
       const payload = {
         app: 'CUSTOMERS_APP',
         endpoint: 'sendy/cc_actions',
@@ -237,26 +213,22 @@ export default {
         params: {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
-          action_id: 10,
+          action_id: 23,
           action_data: {
-            invoice_number: this.invoice_number,
-            due_date: moment(this.due_date).format('YYYY-MM-DD HH:mm:ss'),
-            start_date: moment(this.invoice_period.start).format(
-              'YYYY-MM-DD HH:mm:ss',
-            ),
-            end_date: moment(this.invoice_period.end).format(
-              'YYYY-MM-DD HH:mm:ss',
-            ),
-            narration: this.narration,
             amount: this.amount,
-            tax: this.tax,
+            description: this.narration,
+            due_date: moment(this.due_date).format('YYYY-MM-DD'),
+            end_date: moment(this.invoice_period.end).format('YYYY-MM-DD'),
+            individual_id: this.user.user_details.cop_id,
+            individual_type: 0,
+            invoice_type: 0,
+            start_date: moment(this.invoice_period.start).format('YYYY-MM-DD'),
+            vat_rate: parseInt(rate, 10),
           },
-          request_id: '100',
+          request_id: '1622',
           action_user: this.actionUser,
         },
       };
-
-      console.log('payload', payload);
 
       try {
         const data = await this.perform_user_action(payload);

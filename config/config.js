@@ -26,7 +26,7 @@ const config = {
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
   },
-  
+
   dev: {
     BASE_URL: 'http://localhost:8080/',
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
@@ -55,7 +55,7 @@ const config = {
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
   },
-  
+
   staging: {
     BASE_URL: 'http://localhost:8080/',
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
