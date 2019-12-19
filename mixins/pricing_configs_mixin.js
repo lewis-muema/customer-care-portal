@@ -119,6 +119,8 @@ const PricingConfigsMxn = {
           waiting_time_cost_per_min: '18000',
           loader_cost: '18000',
           service_fee: '20',
+          insurance: '20',
+          client_fee: '2000',
           cancellation_fee: '40000',
         };
         this.tableData.push(distancePricingRow);
