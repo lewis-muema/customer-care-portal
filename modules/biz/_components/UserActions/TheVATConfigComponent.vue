@@ -31,17 +31,20 @@
       <div class="form-group col-md-6 user-input" v-if="this.vatCompliance">
         <label class="config">Invoicing Cycle</label>
 
-        <input
-          type="number"
-          v-model="invoicing_cycle"
-          name="invoicing_cycle"
+        <v-select
+          :options="invoice"
+          :reduce="name => name.code"
+          name="name"
+          label="name"
           placeholder="Invoicing Cycle"
-          class="form-control config-input"
+          class="form-control select user-billing"
           :id="`invoicing_cycle`"
+          v-model="invoicing_cycle"
           :class="{
             'is-invalid': submitted && $v.invoicing_cycle.$error,
           }"
-        />
+        >
+        </v-select>
         <div
           v-if="submitted && !$v.invoicing_cycle.required"
           class="invalid-feedback"
@@ -100,7 +103,14 @@ export default {
         { code: true, name: 'Activate' },
         { code: false, name: 'Deactivate' },
       ],
-      invoicing_cycle: '30',
+      invoice: [
+        { code: 0, name: 'Per Order' },
+        { code: 1, name: 'Daily' },
+        { code: 7, name: 'Weekly' },
+        { code: 30, name: 'Monthly' },
+        { code: 100, name: 'Custom' },
+      ],
+      invoicing_cycle: '',
       tax_authority_pin: '',
     };
   },
