@@ -274,7 +274,7 @@ export default {
           loader_cost: '100',
           service_fee: '40',
           sendy_commission: '20',
-          cleint_fee: '500',
+          client_fee: '500',
           cancellation_fee: '40',
         },
       ],
