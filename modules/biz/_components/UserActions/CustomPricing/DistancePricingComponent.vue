@@ -67,16 +67,65 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="base_cost" label="Base Fee" width="200">
+          <el-table-column prop="base_cost" label="Partner Amount" width="200">
             <template slot-scope="scope">
               <el-input
                 size="small"
                 type="number"
                 style="text-align:center"
                 v-model.number="scope.row.base_cost"
+                @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="service_fee" label="Service Fee" width="200">
+            <template slot-scope="scope">
+              <el-input
+                size="small"
+                type="number"
+                style="text-align:center"
+                v-model.number="scope.row.service_fee"
+                @change="calculateClientFee(scope.$index, scope.row)"
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="sendy_commission"
+            label="Sendy Commission"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input
+                size="small"
+                type="number"
+                style="text-align:center"
+                v-model.number="scope.row.sendy_commission"
+                @change="calculateClientFee(scope.$index, scope.row)"
+              >
+                <template class="pricing-prepend" slot="append"
+                  >%
+                </template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="client_fee" label="Client Fee" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="number"
+                style="text-align:center"
+                v-model.number="scope.row.client_fee"
+              >
+                <template class="pricing-prepend" slot="prepend"
+                  >{{ currency }}
+                </template></el-input
               >
             </template>
           </el-table-column>
@@ -163,24 +212,6 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="service_fee"
-            label="Service Charge"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input
-                size="small"
-                type="number"
-                style="text-align:center"
-                v-model.number="scope.row.service_fee"
-              >
-                <template class="pricing-prepend" slot="append"
-                  >%
-                </template></el-input
-              >
-            </template>
-          </el-table-column>
-          <el-table-column
             prop="cancellation_fee"
             label="Cancellation Fee"
             width="200"
@@ -238,14 +269,17 @@ export default {
           base_cost: '280',
           base_km: '20',
           cost_per_km_above_base_km: '2160',
-          additional_location_cost: '10800',
-          waiting_time_cost_per_min: '18000',
-          loader_cost: '18000',
-          service_fee: '20',
-          cancellation_fee: '40000',
+          additional_location_cost: '108',
+          waiting_time_cost_per_min: '18',
+          loader_cost: '100',
+          service_fee: '40',
+          sendy_commission: '20',
+          cleint_fee: '500',
+          cancellation_fee: '40',
         },
       ],
       previewDistancePricing: false,
+      clientFee: 0,
     };
   },
   computed: {
@@ -265,6 +299,7 @@ export default {
           this.suggestions = response.data.predictions;
         });
     },
+    calculateClientFee(val) {},
   },
   mounted() {
     this.currency = this.user.user_details.default_currency;
@@ -286,6 +321,14 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
+    },
+    calculateClientFee(index, row) {
+      const partnerAmount = parseInt(row.base_cost, 10);
+      const serviceFee = parseInt(row.service_fee, 10);
+      const sendyCommission = parseInt(row.sendy_commission, 10);
+      const orderAmount =
+        partnerAmount + serviceFee + (sendyCommission / 100) * partnerAmount;
+      return (this.tableData[index].client_fee = orderAmount);
     },
     querySearch(queryString, cb) {
       for (let i = 0; i < this.suggestions.length; i += 1) {
