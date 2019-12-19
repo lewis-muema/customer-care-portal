@@ -22,13 +22,7 @@
           </el-table-column>
           <el-table-column prop="service_fee" label="Service Fee" width="120">
           </el-table-column>
-          <el-table-column
-            prop="sendy_commission"
-            label="Sendy Commission"
-            width="170"
-          >
-          </el-table-column>
-          <el-table-column prop="client_fee" label="Client Fee" width="120">
+          <el-table-column prop="insurance" label="Insurance" width="120">
           </el-table-column>
           <el-table-column prop="base_km" label="Base Distance" width="120">
           </el-table-column>
