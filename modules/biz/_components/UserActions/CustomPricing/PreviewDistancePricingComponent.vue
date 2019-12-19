@@ -148,7 +148,6 @@ export default {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
     this.trackMixpanelPage();
-    console.log('hey', this.tableData);
   },
   methods: {
     ...mapMutations({
