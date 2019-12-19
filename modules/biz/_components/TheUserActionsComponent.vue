@@ -63,7 +63,11 @@
             Invoice Receiver
           </a>
         </li>
-        <li class="nav-item" style="padding-right: 1%;">
+        <li
+          class="nav-item"
+          style="padding-right: 1%;"
+          v-if="permissions.approve_custom_invoice"
+        >
           <a
             class="nav-link action-list"
             data-toggle="tab"
