@@ -50,22 +50,20 @@
             Rider
           </a>
         </li>
-        <li class="nav-item" style="width: 18%;">
+        <li class="nav-item invoice-item">
           <a
-            class="nav-link action-list"
+            class="nav-link action-list invoice-action"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('invoice', copID)"
             :id="`invoice_${copID}`"
-            style="width: 98% !important;"
           >
             <span class="fa fa-fw fa-users"></span>
             Invoice Receiver
           </a>
         </li>
         <li
-          class="nav-item"
-          style="padding-right: 1%;"
+          class="nav-item custom-padding"
           v-if="permissions.approve_custom_invoice"
         >
           <a
@@ -457,5 +455,14 @@ export default {
 }
 .user-search {
   padding: 0;
+}
+.invoice-item{
+  width: 18%;
+}
+.invoice-action{
+  width: 98% !important;
+}
+.custom-padding{
+  padding-right: 1%;
 }
 </style>
