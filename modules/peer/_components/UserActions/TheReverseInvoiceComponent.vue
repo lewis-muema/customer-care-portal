@@ -214,7 +214,13 @@ export default {
         if (data.status) {
           this.updateSuccess(true);
         } else {
-          notification.push(data.message);
+          let msg = '';
+          if (Object.prototype.hasOwnProperty.call(data, 'message')) {
+            msg = data.message;
+          } else {
+            msg = 'Something went wrong. Try again or contact Tech Support';
+          }
+          notification.push(msg);
           actionClass = 'danger';
         }
       } catch (error) {
