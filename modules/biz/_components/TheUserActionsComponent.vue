@@ -67,15 +67,29 @@
           v-if="permissions.approve_custom_invoice"
         >
           <a
-            class="nav-link action-list"
+            class="nav-link action-list custom-width"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('custom_invoice', copID)"
             :id="`custom_invoice_${copID}`"
-            style="width: 100%;"
           >
             <span class="fa fa-fw fa-file "></span>
             New Invoice
+          </a>
+        </li>
+        <li
+          class="nav-item custom-padding"
+          v-if="permissions.approve_custom_invoice"
+        >
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverse_invoice', copID)"
+            :id="`reverse_invoice_${copID}`"
+          >
+            <span class="fa fa-fw fa-history "></span>
+            Reverse Invoice
           </a>
         </li>
         <li class="nav-item" v-if="permissions.approve_vat_configs">
@@ -258,6 +272,18 @@
               :currency="currency"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverse_invoice_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `reverse_invoice_${copID}`"
+          >
+            <TheReverseInvoiceComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -285,6 +311,8 @@ export default {
     TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
     TheCustomInvoiceComponent: () =>
       import('./UserActions/TheCustomInvoiceComponent'),
+    TheReverseInvoiceComponent: () =>
+      import('./UserActions/TheReverseInvoiceComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -456,13 +484,16 @@ export default {
 .user-search {
   padding: 0;
 }
-.invoice-item{
+.invoice-item {
   width: 18%;
 }
-.invoice-action{
+.invoice-action {
   width: 98% !important;
 }
-.custom-padding{
-  padding-right: 1%;
+.custom-padding {
+  padding-right: 3px !important;
+}
+.custom-width {
+  width: 100% !important;
 }
 </style>
