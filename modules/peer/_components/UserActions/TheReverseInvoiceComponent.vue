@@ -194,7 +194,7 @@ export default {
           data_set: 'cc_actions',
           action_id: 24,
           action_data: {
-            invoice_number: this.invoice_number,
+            invoice_no: this.invoice_number,
             amount: this.amount,
             description: this.narration,
             individual_id: this.user.user_details.user_id,
