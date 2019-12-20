@@ -209,7 +209,6 @@ export default {
 
       try {
         const data = await this.perform_user_action(payload);
-        notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
         if (data.status) {
           this.updateSuccess(true);
