@@ -50,17 +50,31 @@
             VAT Config
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_custom_invoice">
+        <li
+          class="nav-item custom_invoice-padding"
+          v-if="permissions.approve_custom_invoice"
+        >
           <a
-            class="nav-link action-list"
+            class="nav-link action-list custom-width"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('custom_invoice', userID)"
             :id="`custom_invoice_${userID}`"
-            style="width: 100% !important;"
           >
             <span class="fa fa-fw fa-file "></span>
             New Invoice
+          </a>
+        </li>
+        <li class="nav-item" v-if="permissions.approve_custom_invoice">
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverse_invoice', userID)"
+            :id="`reverse_invoice_${userID}`"
+          >
+            <span class="fa fa-fw fa-history"></span>
+            Reverse Invoice
           </a>
         </li>
       </ul>
@@ -129,6 +143,18 @@
               :session="userData"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverse_invoice_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `reverse_invoice_${userID}`"
+          >
+            <TheReverseInvoiceComponent
+              :user="user"
+              :currency="currency"
+              :session="userData"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -147,6 +173,8 @@ export default {
     TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
     TheCustomInvoiceComponent: () =>
       import('./UserActions/TheCustomInvoiceComponent'),
+    TheReverseInvoiceComponent: () =>
+      import('./UserActions/TheReverseInvoiceComponent'),
   },
   props: {
     user: {
@@ -250,5 +278,11 @@ export default {
 }
 .input-group .invalid-feedback {
   border: none;
+}
+.custom_invoice-padding {
+  padding-right: 3px !important;
+}
+.custom-width {
+  width: 100% !important;
 }
 </style>
