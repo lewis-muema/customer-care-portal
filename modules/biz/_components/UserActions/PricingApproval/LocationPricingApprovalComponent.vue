@@ -129,6 +129,7 @@ export default {
     ) {
       this.pendingRequests = true;
     }
+    this.pendingRequests = false;
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
