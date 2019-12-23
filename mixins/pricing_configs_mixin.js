@@ -29,6 +29,7 @@ const PricingConfigsMxn = {
       configuredDistancePricing: 'getConfiguredDistancePricing',
       configuredLocationPricing: 'getConfiguredLocationPricing',
       getSessionData: 'getSession',
+      pendingLocationPricing: 'getPendingLocationPricing',
     }),
   },
   methods: {
@@ -133,7 +134,7 @@ const PricingConfigsMxn = {
           currency: 'KES',
           admin_id: 1,
           service_fee: 1200,
-          from: 'Muchai Drive',
+          from: '',
           from_location: {
             type: 'Point',
             coordinates: [36.799157, -1.299287],
@@ -142,9 +143,9 @@ const PricingConfigsMxn = {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
-          to: 'Mombasa Plastics, Mombasa',
+          to: '',
           status: 'Active',
-          city: 'Mombasa County',
+          city: '',
           order_amount: 23000,
           rider_amount: 21400,
         };

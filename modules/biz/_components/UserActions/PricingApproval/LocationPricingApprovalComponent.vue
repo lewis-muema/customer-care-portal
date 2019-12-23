@@ -35,7 +35,7 @@
         </button>
         <el-button
           class="approve-config-btn btn-primary"
-          @click="approveDistancePricingConfigs"
+          @click="approveLocationPricingConfigs"
           >Approve pricing</el-button
         >
       </div>
@@ -101,6 +101,7 @@ export default {
       rejectionReason: '',
       crmName: '',
       copName: '',
+      pendingRequests: false,
       rejectWithReason: false,
       pricingTitle: 'Location Pricing Table',
       approvalText: 'Requires your approval',
@@ -112,21 +113,28 @@ export default {
       getSessionData: 'getSession',
       getApproveStatus: 'getApproveStatus',
     }),
-    pendingRequests() {
-      return (
-        this.getApproveStatus === true &&
-        this.locationPricingTableData.length !== 0
-      );
+  },
+  watch: {
+    pendingRequests(val) {
+      this.pendingRequests = val;
     },
   },
   async mounted() {
+    this.updateApproveStatus(true);
     await this.getDistancePricingConfigs();
+    this.locationPricingTableData = this.pendingLocationPricing;
+    if (
+      this.getApproveStatus === true &&
+      this.locationPricingTableData.length !== 0
+    ) {
+      this.pendingRequests = true;
+    }
+    this.pendingRequests = false;
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.locationPricingTableData = this.pendingLocationPricing;
     this.trackMixpanelPage();
   },
   methods: {
@@ -137,15 +145,14 @@ export default {
       updateApproveStatus: 'updateApproveStatus',
     }),
     ...mapActions({
-      approve_distance_pricing_configs: 'approve_distance_pricing_configs',
-      reject_distance_pricing_configs: 'reject_distance_pricing_configs',
+      approve_location_pricing_configs: 'approve_location_pricing_configs',
+      reject_location_pricing_configs: 'reject_location_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
       this.trackMixpanelIdentify();
       this.trackMixpanelPeople();
-      const pricingApprovalData = this.customPricingDetails;
       this.approvalParams = this.createPayload(
-        pricingApprovalData,
+        this.locationPricingTableData,
         'deactivated',
       );
       const notification = [];
@@ -154,17 +161,17 @@ export default {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/update_custom_distance_details',
         apiKey: false,
-        params: this.approvalParams,
+        params: this.locationPricingTableData,
       };
       try {
-        const data = await this.reject_distance_pricing_configs(payload);
+        const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.getDistancePricingConfigs();
+          this.pendingRequests = false;
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -181,11 +188,13 @@ export default {
     goBack() {
       this.rejectWithReason = false;
     },
-    async approveDistancePricingConfigs() {
+    async approveLocationPricingConfigs() {
       this.trackMixpanelIdentify();
       this.trackMixpanelPeople();
-      const pricingApprovalData = this.customPricingDetails;
-      this.approvalParams = this.createPayload(pricingApprovalData, 'Active');
+      this.approvalParams = this.createPayload(
+        this.locationPricingTableData,
+        'Active',
+      );
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -195,12 +204,12 @@ export default {
         params: this.approvalParams,
       };
       try {
-        const data = await this.approve_distance_pricing_configs(payload);
+        const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.updateApproveStatus(false);
+          this.pendingRequests = false;
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -211,35 +220,126 @@ export default {
         this.status = false;
       }
     },
-    createPayload(pricingApprovalData, status) {
-      for (let i = 0; i < pricingApprovalData.length; i += 1) {
-        pricingApprovalData[i].cop_id = this.copId;
-        pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details = {};
-        pricingApprovalData[i].custom_pricing_details.admin_id =
-          pricingApprovalData[i].admin_id;
-        pricingApprovalData[i].custom_pricing_details.currency =
-          pricingApprovalData[i].currency;
-        pricingApprovalData[i].custom_pricing_details.distance_pricing =
-          pricingApprovalData[i].distance_pricing;
-        pricingApprovalData[
+    createPayload(data, status) {
+      for (let i = 0; i < data.length; i += 1) {
+        data[i].cop_id = this.copId;
+        data[i].custom_pricing_details = {};
+        data[i].custom_pricing_details.location_pricing = [];
+        data[i].custom_pricing_details.location_pricing[i] = {};
+        data[i].custom_pricing_details.location_pricing[i].id = data[i].id;
+        data[i].custom_pricing_details.location_pricing[i].name = data[i].name;
+        data[i].custom_pricing_details.location_pricing[i].cop_id =
+          data[i].cop_id;
+        data[i].custom_pricing_details.location_pricing[i].cop_name =
+          data[i].cop_name;
+        data[i].custom_pricing_details.location_pricing[
           i
-        ].custom_pricing_details.distance_pricing.status = status;
-        pricingApprovalData[i].custom_pricing_details.id =
-          pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details.name =
-          pricingApprovalData[i].name;
-        pricingApprovalData[
+        ].currency = this.currency;
+        data[i].custom_pricing_details.location_pricing[i].admin_id = parseInt(
+          this.adminId,
+          10,
+        );
+        data[i].custom_pricing_details.location_pricing[
           i
-        ].custom_pricing_details.rejection_message = this.rejectionReason;
+        ].waiting_time_cost_per_min = data[i].waiting_time_cost_per_min;
+        data[i].custom_pricing_details.location_pricing[i].sendy_commission =
+          data[i].sendy_commission;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].order_confirmation_time_delay = data[i].order_confirmation_time_delay;
+        data[i].custom_pricing_details.location_pricing[i].waiting_time_base =
+          data[i].waiting_time_base;
+        data[i].custom_pricing_details.location_pricing[i].fixed_status =
+          data[i].fixed_status;
+        data[i].custom_pricing_details.location_pricing[i].cancellation_fee =
+          data[i].cancellation_fee;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].min_cancellation_fee = data[i].min_cancellation_fee;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].extra_distance_base_km = data[i].extra_distance_base_km;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].order_pickup_time_delay = data[i].order_pickup_time_delay;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].percentage_cancellation_fee = data[i].percentage_cancellation_fee;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].max_cancellation_fee = data[i].max_cancellation_fee;
+        data[i].custom_pricing_details.location_pricing[i].time = data[i].time;
+        data[i].custom_pricing_details.location_pricing[i].fixed_cost =
+          data[i].fixed_cost;
+        data[i].custom_pricing_details.location_pricing[i].base_cost =
+          data[i].base_cost;
+        data[i].custom_pricing_details.location_pricing[i].base_km =
+          data[i].base_km;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].cost_per_km_above_base_km = data[i].cost_per_km_above_base_km;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].additional_location_cost = data[i].additional_location_cost;
+        data[i].custom_pricing_details.location_pricing[i].service_fee =
+          data[i].service_fee;
+        data[i].custom_pricing_details.location_pricing[i].from = data[i].from;
+        data[i].custom_pricing_details.location_pricing[i].from_location = {};
+        data[i].custom_pricing_details.location_pricing[i].from_location.type =
+          data[i].from_location.type;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].from_location.coordinates = data[i].from_location.coordinates;
+        data[i].custom_pricing_details.location_pricing[i].to_location = {};
+        data[i].custom_pricing_details.location_pricing[i].to_location.type =
+          data[i].to_location.type;
+        data[i].custom_pricing_details.location_pricing[
+          i
+        ].to_location.coordinates = data[i].to_location.coordinates;
+        data[i].custom_pricing_details.location_pricing[i].to = data[i].to;
+        data[i].custom_pricing_details.location_pricing[i].status = status;
+        data[i].custom_pricing_details.location_pricing[i].city = data[i].city;
+        data[i].custom_pricing_details.location_pricing[i].order_amount =
+          data[i].order_amount;
+        data[i].custom_pricing_details.location_pricing[i].rider_amount =
+          data[i].rider_amount;
+        data[i].vendor_id = data[i].id;
+        data[i].from_coordinates = data[i].from_location.coordinates;
+        data[i].to_coordinates = data[i].to_location.coordinates;
 
-        delete pricingApprovalData[i].admin_id;
-        delete pricingApprovalData[i].currency;
-        delete pricingApprovalData[i].distance_pricing;
-        delete pricingApprovalData[i].id;
-        delete pricingApprovalData[i].name;
+        delete data[i].admin_id;
+        delete data[i].cop_name;
+        delete data[i].id;
+        delete data[i].name;
+        delete data[i].currency;
+        delete data[i].city;
+        delete data[i].from;
+        delete data[i].from_location;
+        delete data[i].order_amount;
+        delete data[i].rider_amount;
+        delete data[i].service_fee;
+        delete data[i].status;
+        delete data[i].to;
+        delete data[i].to_location;
+        delete data[i].additional_location_cost;
+        delete data[i].base_cost;
+        delete data[i].base_km;
+        delete data[i].cancellation_fee;
+        delete data[i].cost_per_km_above_base_km;
+        delete data[i].extra_distance_base_km;
+        delete data[i].fixed_cost;
+        delete data[i].fixed_status;
+        delete data[i].max_cancellation_fee;
+        delete data[i].min_cancellation_fee;
+        delete data[i].order_confirmation_time_delay;
+        delete data[i].order_pickup_time_delay;
+        delete data[i].percentage_cancellation_fee;
+        delete data[i].sendy_commission;
+        delete data[i].time;
+        delete data[i].waiting_time_base;
+        delete data[i].waiting_time_cost_per_min;
       }
-      return pricingApprovalData;
+      return data;
     },
     trackMixpanelPage() {
       mixpanel.track('Pricing Config Approval Page');
