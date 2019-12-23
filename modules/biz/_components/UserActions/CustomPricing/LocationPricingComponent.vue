@@ -183,7 +183,7 @@ export default {
           currency: 'KES',
           admin_id: 1,
           service_fee: 1200,
-          from: 'Muchai Drive',
+          from: '',
           from_location: {
             type: 'Point',
             coordinates: [36.799157, -1.299287],
@@ -192,7 +192,7 @@ export default {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
-          to: 'Mombasa Plastics, Mombasa',
+          to: '',
           status: 'Active',
           city: 'Mombasa County',
           order_amount: 23000,

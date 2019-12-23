@@ -278,7 +278,12 @@ export default {
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
-    ...mapGetters(['getCopTypes', 'getAdmins', 'getApproverId']),
+    ...mapGetters([
+      'getCopTypes',
+      'getAdmins',
+      'getApproverId',
+      'getConfiguredLocationPricing',
+    ]),
 
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -322,6 +327,9 @@ export default {
     getAdmins(admins) {
       return (this.admin_list = admins);
     },
+    approvalModel(model) {
+      this.approvalModel = model;
+    },
   },
   async mounted() {
     this.copID = this.user.user_details.cop_id;
@@ -344,9 +352,9 @@ export default {
       this.updateErrors(notification);
     },
     setApprovalModel() {
-      if (typeof this.distancePricingTableData[0] === 'object') {
+      if (this.distancePricingTableData.length !== 0) {
         this.approvalModel = 'Distance';
-      } else if (typeof this.locationPricingTableData[0] === 'object') {
+      } else if (this.locationPricingTableData.length !== 0) {
         this.approvalModel = 'Location';
       }
     },

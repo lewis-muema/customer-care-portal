@@ -482,16 +482,17 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       const pendingDistancePricing = [];
-      const pendingLocationPricing = [];
+      let pendingLocationPricing = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < pendingPricingDetails.length; i += 1) {
-          pendingDistancePricing.push(
-            pendingPricingDetails[i].distance_pricing,
-          );
-          pendingLocationPricing.push(
-            pendingPricingDetails[i].location_pricing,
-          );
+          if (pendingPricingDetails[i].location_pricing) {
+            pendingLocationPricing = pendingPricingDetails[i].location_pricing;
+          } else {
+            pendingDistancePricing.push(
+              pendingPricingDetails[i].distance_pricing,
+            );
+          }
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
         commit('updatePendingLocationPricing', pendingLocationPricing);
@@ -528,6 +529,14 @@ export default {
     }
   },
   async approve_distance_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async approve_location_pricing_configs({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
