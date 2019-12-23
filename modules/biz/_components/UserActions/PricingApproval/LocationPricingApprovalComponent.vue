@@ -114,7 +114,11 @@ export default {
       getApproveStatus: 'getApproveStatus',
     }),
   },
-  watch: {},
+  watch: {
+    pendingRequests(val) {
+      this.pendingRequests = val;
+    },
+  },
   async mounted() {
     this.updateApproveStatus(true);
     await this.getDistancePricingConfigs();
