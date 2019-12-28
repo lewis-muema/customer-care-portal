@@ -22,6 +22,7 @@
             :input-props="{
               placeholder: 'Select Date range',
               readonly: true,
+              class: 'form-control config-input ',
             }"
             :class="{
               'is-invalid': submitted && $v.invoice_period.$error,
@@ -44,6 +45,7 @@
             :input-props="{
               placeholder: 'Please enter Date',
               readonly: true,
+              class: 'form-control config-input ',
             }"
           />
           <div class="invoice_valid" v-if="submitted && !$v.due_date.required">
@@ -85,7 +87,6 @@
                 name="amount"
                 placeholder="Amount"
                 class="form-control"
-                style="font-size: 16px !important;"
               />
             </div>
             <div
@@ -108,6 +109,7 @@
             name="description"
             label="description"
             class="form-control select user-billing"
+            placeholder="Select VAT"
             :id="`name`"
             v-model="tax"
             :class="{
@@ -307,7 +309,7 @@ export default {
 .config-input {
   margin-left: -15px;
   max-width: 103%;
-  font-size: 16px;
+  font-size: 13px;
 }
 .config-div {
   padding-left: 0;
@@ -315,6 +317,11 @@ export default {
 .config {
   width: 100%;
   margin-left: -15px;
+}
+.date-picker-input {
+  max-width: 103%;
+  font-size: 16px;
+  background-color: #fff !important;
 }
 .invalid-feedback {
   font-size: 14px !important;
