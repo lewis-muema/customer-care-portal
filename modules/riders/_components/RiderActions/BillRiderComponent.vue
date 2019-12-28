@@ -6,7 +6,7 @@
       class="form-inline"
     >
       <div class="form-group col-md-6 bill-div user-input">
-        <label>Amount</label>
+        <label>Base Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ user.default_currency }}</span>
@@ -16,12 +16,12 @@
               type="text"
               v-model="amount"
               name="amount"
-              placeholder="Amount"
+              placeholder="Amount without VAT"
               class="form-control"
             />
           </div>
           <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
-            Amount is required
+            Base Amount is required
           </div>
         </div>
       </div>

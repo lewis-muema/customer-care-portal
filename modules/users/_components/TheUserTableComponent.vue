@@ -101,6 +101,7 @@ export default {
 }
 .form-control {
   font-size: 13px;
+  background-color: #fff !important;
 }
 .vs__dropdown-menu {
   border-top: 1px solid #d3d7de;
