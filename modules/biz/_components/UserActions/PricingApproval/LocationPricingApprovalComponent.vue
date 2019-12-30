@@ -124,10 +124,7 @@ export default {
     await this.getDistancePricingConfigs();
     this.locationPricingTableData = this.pendingLocationPricing;
     this.pendingRequests = false;
-    if (
-      this.getApproveStatus === true &&
-      this.locationPricingTableData.length !== 0
-    ) {
+    if (this.getApproveStatus && this.locationPricingTableData.length !== 0) {
       this.pendingRequests = true;
     }
     this.copId = this.user.user_details.cop_id;
