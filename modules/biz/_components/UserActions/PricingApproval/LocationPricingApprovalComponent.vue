@@ -123,13 +123,10 @@ export default {
     this.updateApproveStatus(true);
     await this.getDistancePricingConfigs();
     this.locationPricingTableData = this.pendingLocationPricing;
-    if (
-      this.getApproveStatus === true &&
-      this.locationPricingTableData.length !== 0
-    ) {
+    this.pendingRequests = false;
+    if (this.getApproveStatus && this.locationPricingTableData.length !== 0) {
       this.pendingRequests = true;
     }
-    this.pendingRequests = false;
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
