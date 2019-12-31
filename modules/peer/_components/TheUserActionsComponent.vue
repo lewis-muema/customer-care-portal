@@ -38,6 +38,45 @@
             Ticket
           </a>
         </li>
+        <li class="nav-item" v-if="permissions.approve_vat_configs">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('vat_config', userID)"
+            :id="`vat_config_${userID}`"
+          >
+            <span class="fa  fa-cogs"></span>
+            VAT Config
+          </a>
+        </li>
+        <li
+          class="nav-item custom_invoice-padding"
+          v-if="permissions.approve_custom_invoice"
+        >
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('custom_invoice', userID)"
+            :id="`custom_invoice_${userID}`"
+          >
+            <span class="fa fa-fw fa-file "></span>
+            New Invoice
+          </a>
+        </li>
+        <li class="nav-item" v-if="permissions.approve_custom_invoice">
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverse_invoice', userID)"
+            :id="`reverse_invoice_${userID}`"
+          >
+            <span class="fa fa-fw fa-history"></span>
+            Reverse Invoice
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -84,6 +123,38 @@
               :ticket="ticketData"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`vat_config_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `vat_config_${userID}`"
+          >
+            <TheVATConfigComponent :user="user" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`custom_invoice_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `custom_invoice_${userID}`"
+          >
+            <TheCustomInvoiceComponent
+              :user="user"
+              :currency="currency"
+              :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverse_invoice_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `reverse_invoice_${userID}`"
+          >
+            <TheReverseInvoiceComponent
+              :user="user"
+              :currency="currency"
+              :session="userData"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -98,6 +169,11 @@ export default {
     ThePaymentComponent: () => import('./UserActions/ThePaymentComponent'),
     TheBillingComponent: () => import('./UserActions/TheBillingComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
+    TheCustomInvoiceComponent: () =>
+      import('./UserActions/TheCustomInvoiceComponent'),
+    TheReverseInvoiceComponent: () =>
+      import('./UserActions/TheReverseInvoiceComponent'),
   },
   props: {
     user: {
@@ -201,5 +277,11 @@ export default {
 }
 .input-group .invalid-feedback {
   border: none;
+}
+.custom_invoice-padding {
+  padding-right: 3px !important;
+}
+.custom-width {
+  width: 100% !important;
 }
 </style>
