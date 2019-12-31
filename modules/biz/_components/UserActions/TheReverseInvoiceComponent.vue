@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="loading_tax_rates" style="margin-left: 1%;">
+    <div v-if="loading_tax_rates" class="tax-loader">
       <p>
         Fetching VAT Tax Rates ...
         <i class="fa fa-spinner fa-spin loader"></i>
@@ -284,5 +284,8 @@ export default {
 }
 .config-submit {
   padding-left: 2px !important;
+}
+.tax-loader {
+  margin-left: 1%;
 }
 </style>
