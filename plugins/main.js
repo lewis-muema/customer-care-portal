@@ -161,7 +161,11 @@ Vue.mixin({
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     numberWithCommas(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      if (x !== 'null' || x !== null) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      } else {
+        return x;
+      }
     },
     compareDates(date) {
       let currentDate = new Date();
