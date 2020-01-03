@@ -817,3 +817,8 @@ table {
 .select {
   border: none;
 }
+.bg-info {
+  font-size: 8px;
+  background: #00c0ef !important;
+  margin-left: 1px;
+}
