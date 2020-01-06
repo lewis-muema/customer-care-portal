@@ -217,7 +217,7 @@ export default {
         customer: {
           firstName: userName[0],
           lastName: userName.length > 1 ? userName[1] : '. ',
-          email: this.user.email,
+          email: this.user.email === null ? '' : this.user.email,
           phone: userPhone,
         },
       };
