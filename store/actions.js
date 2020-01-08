@@ -423,8 +423,8 @@ export default {
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
     const userData = rootState.userData;
-    payload.params._user_email = userData.payload.data.email;
-    payload.params._user_id = userData.payload.data.admin_id;
+    payload.params.action_data._user_email = userData.payload.data.email;
+    payload.params.action_data._user_id = userData.payload.data.admin_id;
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -549,5 +549,41 @@ export default {
     } catch (error) {
       return error.response;
     }
+  },
+  async update_vat_config({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async request_tax_rates({ state }) {
+    const config = state.config;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vat-rates`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async request_invoice_logs({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res;
   },
 };

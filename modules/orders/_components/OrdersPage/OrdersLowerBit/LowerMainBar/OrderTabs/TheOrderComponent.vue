@@ -198,7 +198,7 @@ export default {
   },
   computed: {
     loaderDisplay() {
-      const loaders = this.order.loader_details.no_of_loaders;
+      const loaders = this.order.order_details.no_of_loaders;
       return Number(loaders) === 0 ? '-' : loaders;
     },
   },

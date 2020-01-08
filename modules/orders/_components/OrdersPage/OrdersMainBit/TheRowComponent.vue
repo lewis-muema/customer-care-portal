@@ -112,6 +112,14 @@
             )
           }}
           <span
+            v-if="order.order_status === 'pending'"
+            data-toggle="tooltip"
+            title="This rider amount is less VAT"
+            class="badge bg-info"
+          >
+            <i class="fa fa-info"></i>
+          </span>
+          <span
             title="showCity(order.city)"
             class="badge bg-aqua "
             style="float: right;"
