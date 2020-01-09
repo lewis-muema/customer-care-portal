@@ -235,9 +235,17 @@ export default {
     }
   },
   async requestAxiosPost({ state, commit, dispatch }, payload) {
-    const customConfig = state.config;
-    const url = customConfig[payload.app];
     let endpoint = payload.endpoint;
+    const app = payload.app;
+
+    // Capture custom HTTP request actions via managed transactions.
+    this._vm.$apm
+      .startTransaction(`${endpoint}`, 'custom', { managed: true })
+      .addLabels({ app });
+
+    const customConfig = state.config;
+    const url = customConfig[app];
+
     let backendKey = null;
     const jwtToken = localStorage.getItem('jwtToken');
     const config = {
