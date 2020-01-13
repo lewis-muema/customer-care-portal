@@ -2,17 +2,19 @@
   <div class="assigned-component">
     <div class="assigned-component-tabs">
       <span>total orders</span><br />
-      <span class="orders-counter">10</span><br />
+      <span class="orders-counter">{{ order.freight_details.length }}</span
+      ><br />
       <span>containers</span><br />
     </div>
     <div class="assigned-component-tabs">
       <span>assigned orders</span><br />
-      <span class="orders-counter">8</span><br />
+      <span class="orders-counter">0</span><br />
       <span>containers</span><br />
     </div>
     <div class="assigned-component-tabs">
       <span>unassigned orders</span><br />
-      <span class="orders-counter">2</span><br />
+      <span class="orders-counter">{{ order.freight_details.length }}</span
+      ><br />
       <span>containers</span><br />
     </div>
   </div>
