@@ -100,7 +100,6 @@ export default {
     async singleOrderRequest() {
       try {
         const data = await this.request_single_order(this.orderno);
-        console.log(data);
         return (this.order = data);
       } catch {
         this.errors.push(
