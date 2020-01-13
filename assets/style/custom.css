@@ -852,8 +852,8 @@ table {
   box-shadow: 0 1px 6px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
 }
 .container-inputs {
-  width: 22%;
-  margin: 1%;
+  width: 18%;
+  margin: 0.5%;
   height: 45px;
   border-radius: 5px;
   border: 1px solid #d4d4d4;
@@ -901,7 +901,7 @@ table {
 .child-orders-table-row:hover {
   background: rgba(202, 198, 198, 0.47843);
 }
-.child1, .child2, .child3, .child4, .child5, .child6 {
+.child1, .child2, .child3, .child4, .child5, .child6, .child7 {
   min-height: 40px;
   padding: 12px;
   border: 0.1px solid rgba(202, 198, 198, 0.47843);
@@ -910,22 +910,255 @@ table {
   width: 10%;
 }
 .child2 {
-  width: 10%;
-}
-.child3 {
   width: 20%;
 }
-.child4 {
+.child3 {
   width: 10%;
 }
-.child5 {
-  width: 30%;
+.child4 {
+  width: 20%;
 }
-.child6 {
+.child5, .child6 {
+  width: 10%;
+  position: relative;
+  padding: 0 !important;
+}
+.child7 {
   width: 20%;
 }
 .bg-info {
   font-size: 8px;
   background: #00c0ef !important;
   margin-left: 1px;
+}
+.freight-actions {
+  background: white;
+  margin: 15px;
+  max-width: -webkit-fill-available;
+  padding: 10px;
+}
+.freight-order-actions-tabs {
+  margin: 15px 5px 15px;
+}
+.freight-assign-rider-buttons, .freight-assign-new-rider-buttons {
+  height: 40px;
+  padding: 7px;
+  border-radius: 5px;
+  border: 1px solid #d3d6d8;
+  margin: 5px;
+}
+.freight-assign-rider-buttons {
+  width: auto;
+}
+.freight-assign-new-rider-buttons {
+  width: 118px;
+}
+.freight-assign-rider-buttons:focus, .freight-assign-new-rider-buttons {
+  border: 1px solid #c0c2c3 !important;
+}
+.assign-order-button {
+  color: white;
+  background: #1a7fc3;
+  border: 1px solid #1B7FC3;
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  float: right;
+  margin-right: 10px;
+}
+.no-margin {
+  margin: 0 !important;
+}
+.driver-assign-row {
+  display: flex;
+  border-bottom: 1px solid #d3d6d8;
+  overflow: visible;
+  height: 40px;
+  margin-bottom: 10px;
+}
+.driver-assign-tabs {
+  width: 70px;
+  text-align: center;
+  margin-right: 2%;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  height: 40px;
+}
+.driver-assign-inputs {
+}
+.freight-order-assign {
+  width: 60%;
+}
+.active-driver-assign-tabs {
+  border-top: 3px solid #1a7fc3;
+  border-left: 1px solid #d3d6d8;
+  border-right: 1px solid #d3d6d8;
+  border-bottom: 4px solid white;
+}
+.inactive-driver-assign-tabs {
+  border-top: solid 3px white;
+}
+.pointer {
+  cursor: pointer;
+}
+.container-edit-input {
+  width: 80%;
+}
+.input-blinder {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #ffffff85;
+  cursor: not-allowed;
+}
+.edit-container-icon {
+  margin: 12px;
+}
+.container-cancel-input {
+  color: #E53935;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.container-save-input {
+  color: #1B7FC3;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.pending-container {
+  color: white;
+  background: #E53935;
+}
+.transit-container, .ec-container {
+  color: white;
+  background: #155D8D;
+}
+.complete-container {
+  color: white;
+  background: #43A047;
+}
+.container-button {
+  width: 100%;
+  font-weight: 900;
+  border: none;
+  font-size: 11px;
+  padding: 4px;
+}
+.freight-order-actions-buttons {
+  width: 110px;
+  margin: 5px;
+  height: 40px;
+  border: 1px solid #1B7FC3;
+}
+.freight-order-actions-buttons:focus {
+  border: 1px solid #1B7FC3 !important;
+}
+.active-tab {
+  background: #1B7FC3;
+  color: white;
+}
+.inactive-tab {
+  background: white;
+  color: #1B7FC3;
+}
+.new-driver-details, .new-truck-details {
+  border: 1px solid #d3d6d8;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+}
+.input-labels {
+  position: absolute;
+  background: white;
+  margin-top: -35px;
+  margin-left: 20px;
+  padding: 10px;
+  color: #1B7FC3;
+  font-weight: 700;
+}
+.status-indicator {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #1B7FC3;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: auto;
+  margin-bottom: 5px;
+  position: relative;
+  background: white;
+}
+.active-status-indicator {
+  border: 1px solid #F57F20 !important;
+}
+.progress-indicator {
+  background-color: #1B7FC3;
+  width: 100%;
+  height: 100%;
+}
+.indicator-container {
+  width: 85px;
+}
+.indicators {
+  display: flex;
+}
+.center-text {
+  text-align: center;
+}
+.indicator-divide {
+  height: 2px;
+  background: #E1E3E8;
+  width: 85px;
+  margin-left: 42.5px;
+  position: relative;
+  top: 8px;
+}
+.status-action {
+  display: flex;
+  margin-bottom: 25px;
+}
+.status-action-label {
+  width: 200px;
+  height: 40px;
+  border: 1px solid #d3d6d8;
+  padding: 12px;
+  text-align: center;
+}
+.status-action-button {
+  width: 100px;
+  height: 40px;
+}
+.status-action-button-confirm {
+  background: #1a7fc3;
+  color: white;
+  border: 1px solid #1B7FC3;
+}
+.status-action-button-complete {
+  background: #43A047;
+  color: white;
+  border: 1px solid #43A047;
+}
+.status-progress {
+  display: flex;
+}
+.progress-icon-inactive {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  background: #d3d6d8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.progress-icon-active {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  background: #1B7FC3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.progress-icon-left, .progress-icon-right {
+  margin-left: 20px;
+  margin-right: 20px;
 }

@@ -10,6 +10,11 @@
       <p class="create--order-header">Create child order</p>
       <div>
         <input
+          type="text"
+          class="container-inputs"
+          placeholder="Container Number"
+        />
+        <input
           type="number"
           class="container-inputs"
           placeholder="Container Weight"
