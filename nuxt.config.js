@@ -1,4 +1,4 @@
-import 'isomorphic-fetch';
+require('isomorphic-fetch');
 
 const bodyParser = require('body-parser');
 
@@ -8,7 +8,7 @@ if (process.env.APP_ENV !== 'production' || process.env.APP_ENV !== 'staging') {
 }
 process.env.DEBUG = 'nuxt:*';
 
-export default {
+module.exports = {
   mode: 'universal',
   server: {
     port: 8080, // default: 3000
@@ -149,6 +149,7 @@ export default {
   plugins: [
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
+    { src: '~plugins/apm.js', mode: 'client', ssr: false },
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
     { src: '~plugins/element-ui', ssr: false },

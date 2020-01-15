@@ -76,6 +76,13 @@ export default {
       this.setSession(payload);
       this.updateSession(payload);
 
+      const userData = payload.payload.data;
+      this.$apm.setUserContext({
+        id: userData.admin_id,
+        username: userData.name,
+        email: userData.email,
+      });
+
       return (this.loggedUser = payload);
     },
   },
