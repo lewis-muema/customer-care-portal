@@ -39,7 +39,7 @@
               type="number"
               v-model="amount"
               name="amount"
-              :placeholder="Amount"
+              placeholder="Amount"
               class="form-control"
               :max="max_amount"
               :disabled="billingStatus()"
