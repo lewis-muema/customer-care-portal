@@ -425,6 +425,7 @@ export default {
     const userData = rootState.userData;
     payload.params.action_data._user_email = userData.payload.data.email;
     payload.params.action_data._user_id = userData.payload.data.admin_id;
+    payload.params.action_data.action_user = userData.payload.data.name;
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
