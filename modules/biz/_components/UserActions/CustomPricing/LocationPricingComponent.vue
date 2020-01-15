@@ -203,6 +203,9 @@ export default {
     };
   },
   computed: {
+    herokuKey() {
+      return this.$env.HEROKU_GOOGLE_API_KEY;
+    },
     vendor() {
       return this.vendorTypes.find(op => {
         return op.name === this.vendorName;
@@ -218,7 +221,7 @@ export default {
     pacInput1(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=AIzaSyAWtx2xEu2OZyRqcm8JD5OXOITsdwHLl5M`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
@@ -227,7 +230,7 @@ export default {
     pacInput2(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=AIzaSyAWtx2xEu2OZyRqcm8JD5OXOITsdwHLl5M`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
@@ -260,7 +263,7 @@ export default {
       const fromPlaceId = item.place_id;
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=AIzaSyAWtx2xEu2OZyRqcm8JD5OXOITsdwHLl5M`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=${this.herokuKey}`,
         )
         .then(response => {
           const fromLatLong = response.data.result.geometry.location;
@@ -279,7 +282,7 @@ export default {
       const toPlaceId = item.place_id;
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=AIzaSyAWtx2xEu2OZyRqcm8JD5OXOITsdwHLl5M`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=${this.herokuKey}`,
         )
         .then(response => {
           const toLatLong = response.data.result.geometry.location;
