@@ -108,7 +108,10 @@
               >
             </td>
           </tr>
-          <tr v-if="opened.includes(orderNo)" class="order_view_lower_cell">
+          <tr
+            v-if="opened.includes(orderNo) && vendorTypeId !== 25"
+            class="order_view_lower_cell"
+          >
             <td
               colspan="9"
               class="order_view_lower_cell search-view"
@@ -125,6 +128,12 @@
                 </div>
               </div>
             </td>
+          </tr>
+          <tr
+            v-if="opened.includes(orderNo) && vendorTypeId === 25"
+            class="order_view_lower_cell"
+          >
+            <DashboardComponent :orderno="orderNo" />
           </tr>
         </template>
         <tr v-else>
@@ -149,6 +158,10 @@ export default {
     TheMainComponent: () =>
       import(
         '~/modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/TheMainComponent'
+      ),
+    DashboardComponent: () =>
+      import(
+        '~/modules/orders/_components/OrdersPage/OrdersLowerBit/FBU/DashboardComponent'
       ),
   },
   props: ['order'],
