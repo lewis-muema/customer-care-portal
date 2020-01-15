@@ -20,7 +20,7 @@
       </div>
 
       <div class="form-group col-md-6 bill-div user-input">
-        <label>Base Amount</label>
+        <label>Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ currency }}</span>
@@ -39,7 +39,7 @@
               type="number"
               v-model="amount"
               name="amount"
-              placeholder="Amount without VAT"
+              :placeholder="Amount"
               class="form-control"
               :max="max_amount"
               :disabled="billingStatus()"
@@ -130,19 +130,35 @@
         <label>Account Details to Transfer</label>
         <TheSearchUserComponent @userID="searchedUser" :user="userType" />
       </div>
-
-      <div class="form-group col-md-12 bill-check" v-if="!isTransferOrder">
-        <input
-          value="1"
-          name="charge_biz_commission"
-          id="charge_biz_commission>"
-          type="checkbox"
-          class=""
-          @click="check($event)"
-          v-model="checked"
-          checked
-        />
-        <label for="" class="charge_commission--label">Charge Commission</label>
+      <div class="row col-md-12">
+        <div class="form-group col-md-3 bill-check" v-if="!isTransferOrder">
+          <input
+            value="1"
+            name="charge_biz_commission"
+            id="charge_biz_commission>"
+            type="checkbox"
+            class=""
+            @click="check($event)"
+            v-model="checked"
+            checked
+          />
+          <label for="" class="charge_commission--label"
+            >Charge Commission</label
+          >
+        </div>
+        <div class="form-group col-md-3 bill-check">
+          <input
+            value="1"
+            name="charge_biz_vat"
+            id="charge_biz_vat"
+            type="checkbox"
+            class=""
+            @click="check($event)"
+            v-model="isVAT"
+            checked
+          />
+          <label for="" class="charge_vat--label">Charge VAT</label>
+        </div>
       </div>
       <button class="btn btn-primary action-button">
         Process
@@ -225,6 +241,7 @@ export default {
       userRb: '0',
       paymentOption: '',
       max_amount: '0',
+      isVAT: true,
     };
   },
   validations: {
@@ -348,6 +365,7 @@ export default {
             transaction_id: this.transactionID,
             is_peer,
             creditor_id: creditor_details,
+            is_VAT: this.isVAT,
           },
           request_id: this.requestID,
           action_user: this.actionUser,
@@ -475,5 +493,8 @@ export default {
   font-weight: 700;
   font-size: 19px;
   padding-right: 2%;
+}
+.charge_vat--label {
+  margin: 0 4px 0;
 }
 </style>
