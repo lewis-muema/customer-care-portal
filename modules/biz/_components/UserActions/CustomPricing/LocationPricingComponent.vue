@@ -141,7 +141,10 @@
         <button @click="goBack()" class="pricing-back-text">
           Previous page
         </button>
-        <el-button class="pricing-save-btn btn-primary" @click="previewConfig"
+        <el-button
+          class="pricing-save-btn btn-primary"
+          @click="previewConfig"
+          :disabled="containsNull"
           >Save & Preview
         </el-button>
       </template>
@@ -205,6 +208,11 @@ export default {
   computed: {
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
+    },
+    containsNull() {
+      return this.tableData.every(
+        item => item.name === '' || item.from === '' || item.to === '',
+      );
     },
     vendor() {
       return this.vendorTypes.find(op => {
