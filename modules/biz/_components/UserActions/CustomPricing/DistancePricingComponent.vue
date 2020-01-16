@@ -231,7 +231,10 @@
         <button @click="goBack()" class="pricing-back-text">
           Previous page
         </button>
-        <el-button class="pricing-save-btn btn-primary" @click="previewConfig"
+        <el-button
+          class="pricing-save-btn btn-primary"
+          @click="previewConfig"
+          :disabled="containsNull"
           >Save & Preview
         </el-button>
       </template>
@@ -283,12 +286,18 @@ export default {
         return op.name === this.vendorName;
       });
     },
+    herokuKey() {
+      return this.$env.HEROKU_GOOGLE_API_KEY;
+    },
+    containsNull() {
+      return this.tableData.every(item => item.city === '' || item.name === '');
+    },
   },
   watch: {
     pacInput(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
