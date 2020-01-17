@@ -162,7 +162,7 @@ export default {
       this.trackMixpanelPeople();
     },
     createPayload(data) {
-      const locationData = data;
+      console.log('data', data);
       for (let i = 0; i < data.length; i += 1) {
         data[i].cop_id = this.copId;
         data[i].custom_pricing_details = {};
