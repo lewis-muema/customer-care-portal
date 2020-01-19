@@ -16,13 +16,14 @@
         <TheSearchRiderComponent
           @riderID="searchedRider"
           :category="category"
+          :arr="array"
         />
         <div :class="`${emptyClass} ${hid}`">
           Account to pay is required
         </div>
       </div>
       <div class="form-group col-md-4 bill-div user-input">
-        <label>Amount</label>
+        <label>Base Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ currency }}</span>
@@ -32,14 +33,14 @@
               type="number"
               v-model="amount"
               name="amount"
-              placeholder="Amount"
+              placeholder="Amount without VAT"
               class="form-control"
               :max="max_amount"
               :disabled="billingStatus()"
             />
           </div>
           <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
-            Amount is required
+            Base Amount is required
           </div>
         </div>
       </div>
@@ -199,6 +200,11 @@ export default {
       userRb: '0',
       paymentOption: '',
       max_amount: '0',
+      array: {
+        rider_name: 'Sendy Bill',
+        phone_no: '',
+        rider_id: 0,
+      },
     };
   },
   validations: {

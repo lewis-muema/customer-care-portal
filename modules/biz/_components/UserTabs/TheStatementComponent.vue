@@ -14,6 +14,7 @@
           <td>Amount</td>
           <td>Rb</td>
           <td>Method</td>
+          <td>Narrative</td>
         </tr>
       </thead>
       <tbody>
@@ -26,6 +27,7 @@
           <td>{{ currency }} {{ payment.amount }}</td>
           <td>{{ currency }} {{ payment.rb }}</td>
           <td>{{ payment.pay_method }}</td>
+          <td>{{ payment.description }}</td>
         </tr>
       </tbody>
     </table>

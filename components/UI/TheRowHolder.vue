@@ -98,6 +98,14 @@
                 )
               }}
               <span
+                v-if="moreData.order_status === 'pending'"
+                data-toggle="tooltip"
+                title="This rider amount is less VAT"
+                class="badge bg-info"
+              >
+                <i class="fa fa-info"></i>
+              </span>
+              <span
                 title="showCity(riderDetails.city_id)"
                 class="badge bg-aqua "
                 >{{ showCity(riderDetails.city_id) }}

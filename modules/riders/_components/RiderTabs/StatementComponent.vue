@@ -11,6 +11,7 @@
             <th>Balance</th>
             <th>Status</th>
             <th>Date</th>
+            <th>Pay Narrative</th>
             <th>Narrative</th>
           </tr>
         </thead>
@@ -31,10 +32,12 @@
             <td>
               {{ getFormattedDate(statement.date_time, 'DD/MM/YYYY hh.mm a ') }}
             </td>
+            <td>{{ statement.pay_narrative }}</td>
             <td>{{ statement.description }}</td>
           </tr>
 
           <tr>
+            <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>

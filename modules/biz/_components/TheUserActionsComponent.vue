@@ -50,16 +50,58 @@
             Rider
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item invoice-item">
           <a
-            class="nav-link action-list"
+            class="nav-link action-list invoice-action"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('invoice', copID)"
             :id="`invoice_${copID}`"
           >
-            <span class="fa fa-fw fa-usd"></span>
-            Invoice
+            <span class="fa fa-fw fa-users"></span>
+            Invoice Receiver
+          </a>
+        </li>
+        <li
+          class="nav-item custom-padding"
+          v-if="permissions.approve_custom_invoice"
+        >
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('custom_invoice', copID)"
+            :id="`custom_invoice_${copID}`"
+          >
+            <span class="fa fa-fw fa-file "></span>
+            New Invoice
+          </a>
+        </li>
+        <li
+          class="nav-item custom-padding"
+          v-if="permissions.approve_custom_invoice"
+        >
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverse_invoice', copID)"
+            :id="`reverse_invoice_${copID}`"
+          >
+            <span class="fa fa-fw fa-history "></span>
+            Reverse Invoice
+          </a>
+        </li>
+        <li class="nav-item" v-if="permissions.approve_vat_configs">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('vat_config', copID)"
+            :id="`vat_config_${copID}`"
+          >
+            <span class="fa  fa-cogs"></span>
+            VAT Config
           </a>
         </li>
         <li class="nav-item">
@@ -184,7 +226,7 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`approval_${copID}`"
+            :id="`vat_config_${copID}`"
             role="tabpanel"
             v-if="
               showTab === `approval_${copID}` &&
@@ -194,6 +236,20 @@
             <DistancePricingApprovalComponent
               :user="user"
               :session="userData"
+            v-if="showTab === `vat_config_${copID}`"
+          >
+            <TheVATConfigComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`custom_invoice_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `custom_invoice_${copID}`"
+          >
+            <TheCustomInvoiceComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
             />
           </div>
           <div
@@ -208,6 +264,14 @@
             <LocationPricingApprovalComponent
               :user="user"
               :session="userData"
+            :id="`reverse_invoice_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `reverse_invoice_${copID}`"
+          >
+            <TheReverseInvoiceComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
             />
           </div>
         </div>
@@ -234,6 +298,11 @@ export default {
       import('./UserActions/PricingApproval/DistancePricingApprovalComponent'),
     LocationPricingApprovalComponent: () =>
       import('./UserActions/PricingApproval/LocationPricingApprovalComponent'),
+    TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
+    TheCustomInvoiceComponent: () =>
+      import('./UserActions/TheCustomInvoiceComponent'),
+    TheReverseInvoiceComponent: () =>
+      import('./UserActions/TheReverseInvoiceComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -304,15 +373,15 @@ export default {
       );
     },
     ticketData() {
-      const userName = this.user.user_details.cop_name.split(' ');
+      const userName = this.user.user_details.cop_name;
       const id = this.user.user_details.cop_id;
 
       const data = {
         id,
         title: `SENDY${id} ( Cop User)`,
         customer: {
-          firstName: userName[0],
-          lastName: userName.length > 1 ? userName[1] : '. ',
+          firstName: userName,
+          lastName: '.',
           email: this.user.user_details.cop_email,
           phone: this.user.user_details.cop_phone,
         },
@@ -415,5 +484,17 @@ export default {
 }
 .user-search {
   padding: 0;
+}
+.invoice-item {
+  width: 18%;
+}
+.invoice-action {
+  width: 98% !important;
+}
+.custom-padding {
+  padding-right: 3px !important;
+}
+.custom-width {
+  width: 100% !important;
 }
 </style>

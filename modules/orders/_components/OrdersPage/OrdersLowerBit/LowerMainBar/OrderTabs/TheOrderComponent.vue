@@ -134,6 +134,34 @@
           </td>
         </tr>
         <tr>
+          <td>Sendy Commission</td>
+          <td
+            v-html="
+              showCurrencyBasedAmounts(
+                orderDetails,
+                currencyConversions,
+                paymentDetails.sendy_commission,
+              )
+            "
+          >
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td>VAT Amount</td>
+          <td
+            v-html="
+              showCurrencyBasedAmounts(
+                orderDetails,
+                currencyConversions,
+                paymentDetails.vat_amount,
+              )
+            "
+          >
+            ?>
+          </td>
+        </tr>
+        <tr>
           <td>Rider cost</td>
           <td
             v-html="
@@ -144,6 +172,12 @@
               )
             "
           ></td>
+        </tr>
+        <tr>
+          <td>Rider VAT Compliance</td>
+          <td>
+            {{ riderDetails.vat_compliant ? 'Compliant' : 'Non-Compliant' }}
+          </td>
         </tr>
         <tr>
           <td>Cash Status</td>
@@ -198,7 +232,7 @@ export default {
   },
   computed: {
     loaderDisplay() {
-      const loaders = this.order.loader_details.no_of_loaders;
+      const loaders = this.order.order_details.no_of_loaders;
       return Number(loaders) === 0 ? '-' : loaders;
     },
   },
