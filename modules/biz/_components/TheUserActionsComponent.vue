@@ -226,7 +226,7 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`vat_config_${copID}`"
+            :id="`approval_${copID}`"
             role="tabpanel"
             v-if="
               showTab === `approval_${copID}` &&
@@ -236,6 +236,26 @@
             <DistancePricingApprovalComponent
               :user="user"
               :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="
+              showTab === `approval_${copID}` &&
+                this.approvalModel === 'Location'
+            "
+          >
+            <LocationPricingApprovalComponent
+              :user="user"
+              :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`vat_config_${copID}`"
+            role="tabpanel"
             v-if="showTab === `vat_config_${copID}`"
           >
             <TheVATConfigComponent :user="user" :session="userData" />
@@ -254,16 +274,6 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`approval_${copID}`"
-            role="tabpanel"
-            v-if="
-              showTab === `approval_${copID}` &&
-                this.approvalModel === 'Location'
-            "
-          >
-            <LocationPricingApprovalComponent
-              :user="user"
-              :session="userData"
             :id="`reverse_invoice_${copID}`"
             role="tabpanel"
             v-if="showTab === `reverse_invoice_${copID}`"
