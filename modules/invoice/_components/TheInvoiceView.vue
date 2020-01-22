@@ -215,7 +215,7 @@ export default {
   border-radius: 0.25rem;
 }
 .form-inline {
-  width : 50% !important ;
+  width: 50% !important ;
 }
 .form-inline .custom-select,
 .form-inline .input-group {
@@ -226,7 +226,7 @@ export default {
   margin-left: -15px;
   padding: 0;
   width: 95%;
-  height : 2%;
+  height: 2%;
 }
 .user-input {
   margin-bottom: 15px;
@@ -234,50 +234,50 @@ export default {
 .form-inline {
   margin-left: 2%;
 }
-.centre-loader{
+.centre-loader {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;
 }
-.outline-inner-data{
-  width : 100% ;
+.outline-inner-data {
+  width: 100%;
 }
-.response-section{
+.response-section {
   width: 95.5%;
   height: 55px;
   background: rgba(255, 255, 255, 0.91);
-  border: 2px solid #00AE55;
+  border: 2px solid #00ae55;
   box-sizing: border-box;
   border-radius: 4px;
-  margin-left: 2% ;
+  margin-left: 2%;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
   line-height: 28px;
 }
-.invoice-loader--align{
+.invoice-loader--align {
   margin-left: 2%;
   margin-right: 1%;
 }
-.submit-success{
-  color: #00AE55;
+.submit-success {
+  color: #00ae55;
 }
-.submit-error{
+.submit-error {
   color: #ff0000;
 }
-.response-text{
-  margin-top : 1% ;
+.response-text {
+  margin-top: 1%;
 }
-.invoice-number-highlight{
-  color: #00AE55 ;
+.invoice-number-highlight {
+  color: #00ae55;
 }
-.table-content{
-  max-width : 98%;
-  margin-left:1% ;
-  margin-top:2%;
+.table-content {
+  max-width: 98%;
+  margin-left: 1%;
+  margin-top: 2%;
 }
-.table-background{
+.table-background {
   background: #fff;
 }
 </style>

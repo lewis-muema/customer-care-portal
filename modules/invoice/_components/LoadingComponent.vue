@@ -61,7 +61,7 @@ export default {
     transform: rotate(360deg);
   }
 }
-.loader--title{
+.loader--title {
   font-size: 20px;
 }
 </style>
