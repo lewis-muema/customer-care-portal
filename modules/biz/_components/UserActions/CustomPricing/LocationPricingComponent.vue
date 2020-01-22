@@ -12,7 +12,7 @@
         <el-table
           :data="tableData"
           row-class-name="no-hover"
-          style="width: 1000px"
+          class="table--width"
           max-height="300"
         >
           <el-table-column class="delete-col" width="40" fixed="left">
@@ -43,7 +43,7 @@
               <el-input
                 v-if="scope.row.from"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 placeholder="Search location"
                 v-model="scope.row.from"
               ></el-input>
@@ -66,7 +66,7 @@
               <el-input
                 v-if="scope.row.to"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 placeholder="Search location"
                 v-model="scope.row.to"
               ></el-input>
@@ -95,7 +95,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.order_amount"
               >
                 <template class="pricing-prepend" slot="prepend">{{
@@ -113,7 +113,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.rider_amount"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -126,7 +126,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.service_fee"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -345,5 +345,11 @@ tr:hover {
 }
 .table td {
   padding: 5px !important;
+}
+.table--col-text {
+  text-align: center !important;
+}
+.table--width {
+  width: 1000px !important;
 }
 </style>

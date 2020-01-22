@@ -218,125 +218,64 @@ export default {
       }
     },
     createPayload(data, status) {
+      const locationPricingArray = [];
       for (let i = 0; i < data.length; i += 1) {
-        data[i].cop_id = this.copId;
-        data[i].custom_pricing_details = {};
-        data[i].custom_pricing_details.location_pricing = [];
-        data[i].custom_pricing_details.location_pricing[i] = {};
-        data[i].custom_pricing_details.location_pricing[i].id = data[i].id;
-        data[i].custom_pricing_details.location_pricing[i].name = data[i].name;
-        data[i].custom_pricing_details.location_pricing[i].cop_id =
-          data[i].cop_id;
-        data[i].custom_pricing_details.location_pricing[i].cop_name =
-          data[i].cop_name;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].currency = this.currency;
-        data[i].custom_pricing_details.location_pricing[i].admin_id = parseInt(
-          this.adminId,
-          10,
+        const locationPricingObject = {
+          cop_id: this.copId,
+          vendor_id: data[i].id,
+          from_coordinates: data[i].from_location.coordinates,
+          to_coordinates: data[i].to_location.coordinates,
+          custom_pricing_details: {
+            location_pricing: [],
+          },
+        };
+        const locationData = {
+          id: data[i].id,
+          name: data[i].name,
+          cop_id: data[i].cop_id,
+          cop_name: data[i].cop_name,
+          currency: this.currency,
+          admin_id: parseInt(this.adminId, 10),
+          waiting_time_cost_per_min: data[i].waiting_time_cost_per_min,
+          sendy_commission: data[i].sendy_commission,
+          order_confirmation_time_delay: data[i].order_confirmation_time_delay,
+          waiting_time_base: data[i].waiting_time_base,
+          fixed_status: data[i].fixed_status,
+          cancellation_fee: data[i].cancellation_fee,
+          min_cancellation_fee: data[i].min_cancellation_fee,
+          extra_distance_base_km: data[i].extra_distance_base_km,
+          order_pickup_time_delay: data[i].order_pickup_time_delay,
+          percentage_cancellation_fee: data[i].percentage_cancellation_fee,
+          max_cancellation_fee: data[i].max_cancellation_fee,
+          time: data[i].time,
+          fixed_cost: data[i].fixed_cost,
+          base_cost: data[i].base_cost,
+          base_km: data[i].base_km,
+          cost_per_km_above_base_km: data[i].cost_per_km_above_base_km,
+          additional_location_cost: data[i].additional_location_cost,
+          service_fee: data[i].service_fee,
+          from: data[i].from,
+          service_fee: data[i].service_fee,
+          from_location: {
+            type: data[i].from_location.type,
+            coordinates: data[i].from_location.coordinates,
+          },
+          to_location: {
+            type: data[i].to_location.type,
+            coordinates: data[i].to_location.coordinates,
+          },
+          to: data[i].to,
+          status: data[i].status,
+          city: data[i].city,
+          order_amount: data[i].order_amount,
+          rider_amount: data[i].rider_amount,
+        };
+        locationPricingObject.custom_pricing_details.location_pricing.push(
+          locationData,
         );
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].waiting_time_cost_per_min = data[i].waiting_time_cost_per_min;
-        data[i].custom_pricing_details.location_pricing[i].sendy_commission =
-          data[i].sendy_commission;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].order_confirmation_time_delay = data[i].order_confirmation_time_delay;
-        data[i].custom_pricing_details.location_pricing[i].waiting_time_base =
-          data[i].waiting_time_base;
-        data[i].custom_pricing_details.location_pricing[i].fixed_status =
-          data[i].fixed_status;
-        data[i].custom_pricing_details.location_pricing[i].cancellation_fee =
-          data[i].cancellation_fee;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].min_cancellation_fee = data[i].min_cancellation_fee;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].extra_distance_base_km = data[i].extra_distance_base_km;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].order_pickup_time_delay = data[i].order_pickup_time_delay;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].percentage_cancellation_fee = data[i].percentage_cancellation_fee;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].max_cancellation_fee = data[i].max_cancellation_fee;
-        data[i].custom_pricing_details.location_pricing[i].time = data[i].time;
-        data[i].custom_pricing_details.location_pricing[i].fixed_cost =
-          data[i].fixed_cost;
-        data[i].custom_pricing_details.location_pricing[i].base_cost =
-          data[i].base_cost;
-        data[i].custom_pricing_details.location_pricing[i].base_km =
-          data[i].base_km;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].cost_per_km_above_base_km = data[i].cost_per_km_above_base_km;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].additional_location_cost = data[i].additional_location_cost;
-        data[i].custom_pricing_details.location_pricing[i].service_fee =
-          data[i].service_fee;
-        data[i].custom_pricing_details.location_pricing[i].from = data[i].from;
-        data[i].custom_pricing_details.location_pricing[i].from_location = {};
-        data[i].custom_pricing_details.location_pricing[i].from_location.type =
-          data[i].from_location.type;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].from_location.coordinates = data[i].from_location.coordinates;
-        data[i].custom_pricing_details.location_pricing[i].to_location = {};
-        data[i].custom_pricing_details.location_pricing[i].to_location.type =
-          data[i].to_location.type;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].to_location.coordinates = data[i].to_location.coordinates;
-        data[i].custom_pricing_details.location_pricing[i].to = data[i].to;
-        data[i].custom_pricing_details.location_pricing[i].status = status;
-        data[i].custom_pricing_details.location_pricing[i].city = data[i].city;
-        data[i].custom_pricing_details.location_pricing[i].order_amount =
-          data[i].order_amount;
-        data[i].custom_pricing_details.location_pricing[i].rider_amount =
-          data[i].rider_amount;
-        data[i].vendor_id = data[i].id;
-        data[i].from_coordinates = data[i].from_location.coordinates;
-        data[i].to_coordinates = data[i].to_location.coordinates;
-
-        delete data[i].admin_id;
-        delete data[i].cop_name;
-        delete data[i].id;
-        delete data[i].name;
-        delete data[i].currency;
-        delete data[i].city;
-        delete data[i].from;
-        delete data[i].from_location;
-        delete data[i].order_amount;
-        delete data[i].rider_amount;
-        delete data[i].service_fee;
-        delete data[i].status;
-        delete data[i].to;
-        delete data[i].to_location;
-        delete data[i].additional_location_cost;
-        delete data[i].base_cost;
-        delete data[i].base_km;
-        delete data[i].cancellation_fee;
-        delete data[i].cost_per_km_above_base_km;
-        delete data[i].extra_distance_base_km;
-        delete data[i].fixed_cost;
-        delete data[i].fixed_status;
-        delete data[i].max_cancellation_fee;
-        delete data[i].min_cancellation_fee;
-        delete data[i].order_confirmation_time_delay;
-        delete data[i].order_pickup_time_delay;
-        delete data[i].percentage_cancellation_fee;
-        delete data[i].sendy_commission;
-        delete data[i].time;
-        delete data[i].waiting_time_base;
-        delete data[i].waiting_time_cost_per_min;
+        locationPricingArray.push(locationPricingObject);
       }
-      return data;
+      return locationPricingArray;
     },
     trackMixpanelPage() {
       mixpanel.track('Pricing Config Approval Page');

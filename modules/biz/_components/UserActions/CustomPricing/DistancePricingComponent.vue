@@ -12,7 +12,7 @@
         <el-table
           :data="tableData"
           row-class-name="no-hover"
-          style="width: 1000px"
+          class="table--width"
           max-height="300"
         >
           <el-table-column class="delete-col" width="40" fixed="left">
@@ -43,7 +43,7 @@
               <el-input
                 v-if="scope.row.city"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 placeholder="Search city"
                 v-model="scope.row.city"
               ></el-input>
@@ -72,7 +72,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.base_cost"
                 @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
@@ -86,7 +86,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.service_fee"
                 @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
@@ -100,7 +100,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.insurance"
                 @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
@@ -115,7 +115,7 @@
                 :disabled="true"
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.client_fee"
               >
                 <template class="pricing-prepend" slot="prepend"
@@ -129,7 +129,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.base_km"
               >
                 <template class="pricing-prepend" slot="prepend"
@@ -147,7 +147,7 @@
               <el-input
                 type="number"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.cost_per_km_above_base_km"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -164,7 +164,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.additional_location_cost"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -181,7 +181,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.waiting_time_cost_per_min"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -198,7 +198,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.loader_cost"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -215,7 +215,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.cancellation_fee"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -355,3 +355,11 @@ export default {
   },
 };
 </script>
+<style>
+.table--col-text {
+  text-align: center !important;
+}
+.table--width {
+  width: 1000px !important;
+}
+</style>

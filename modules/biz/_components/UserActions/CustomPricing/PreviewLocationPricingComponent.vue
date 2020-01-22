@@ -162,69 +162,48 @@ export default {
       this.trackMixpanelPeople();
     },
     createPayload(data) {
-      const locationData = data;
+      const locationPricingArray = [];
       for (let i = 0; i < data.length; i += 1) {
-        data[i].cop_id = this.copId;
-        data[i].custom_pricing_details = {};
-        data[i].custom_pricing_details.id = data[i].id;
-        data[i].custom_pricing_details.name = data[i].name;
-        data[i].custom_pricing_details.currency = this.currency;
-        data[i].custom_pricing_details.admin_id = this.approver;
-        data[i].custom_pricing_details.location_pricing = [];
-        data[i].custom_pricing_details.location_pricing[i] = {};
-        data[i].custom_pricing_details.location_pricing[i].id = data[i].id;
-        data[i].custom_pricing_details.location_pricing[i].name = data[i].name;
-        data[i].custom_pricing_details.location_pricing[i].cop_id =
-          data[i].cop_id;
-        data[i].custom_pricing_details.location_pricing[i].cop_name =
-          data[i].cop_name;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].currency = this.currency;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].admin_id = this.approver;
-        data[i].custom_pricing_details.location_pricing[i].service_fee =
-          data[i].service_fee;
-        data[i].custom_pricing_details.location_pricing[i].from = data[i].from;
-        data[i].custom_pricing_details.location_pricing[i].from_location = {};
-        data[i].custom_pricing_details.location_pricing[i].from_location.type =
-          data[i].from_location.type;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].from_location.coordinates = data[i].from_location.coordinates;
-        data[i].custom_pricing_details.location_pricing[i].to_location = {};
-        data[i].custom_pricing_details.location_pricing[i].to_location.type =
-          data[i].to_location.type;
-        data[i].custom_pricing_details.location_pricing[
-          i
-        ].to_location.coordinates = data[i].to_location.coordinates;
-        data[i].custom_pricing_details.location_pricing[i].to = data[i].to;
-        data[i].custom_pricing_details.location_pricing[i].status = 'Pending';
-        data[i].custom_pricing_details.location_pricing[i].city = data[i].city;
-        data[i].custom_pricing_details.location_pricing[i].order_amount =
-          data[i].order_amount;
-        data[i].custom_pricing_details.location_pricing[i].rider_amount =
-          data[i].rider_amount;
+        const locationPricingObject = {
+          cop_id: this.copId,
+          custom_pricing_details: {
+            id: data[i].id,
+            name: data[i].name,
+            currency: this.currency,
+            admin_id: this.approver,
+            location_pricing: [],
+          },
+        };
+        const locationData = {
+          id: data[i].id,
+          name: data[i].name,
+          cop_id: data[i].cop_id,
+          cop_name: data[i].cop_name,
+          currency: this.currency,
+          admin_id: this.approver,
+          service_fee: data[i].service_fee,
+          from: data[i].from,
+          from_location: {
+            type: data[i].from_location.type,
+            coordinates: data[i].from_location.coordinates,
+          },
+          to_location: {
+            type: data[i].to_location.type,
+            coordinates: data[i].to_location.coordinates,
+          },
+          to: data[i].to,
+          status: 'Pending',
+          city: data[i].city,
+          order_amount: data[i].order_amount,
+          rider_amount: data[i].rider_amount,
+        };
 
-        delete data[i].admin_id;
-        delete data[i].cop_name;
-        delete data[i].id;
-        delete data[i].name;
-        delete data[i].currency;
-        delete data[i].city;
-        delete data[i].from;
-        delete data[i].from_coordinates;
-        delete data[i].from_location;
-        delete data[i].order_amount;
-        delete data[i].rider_amount;
-        delete data[i].service_fee;
-        delete data[i].status;
-        delete data[i].to;
-        delete data[i].to_coordinates;
-        delete data[i].to_location;
+        locationPricingObject.custom_pricing_details.location_pricing.push(
+          locationData,
+        );
+        locationPricingArray.push(locationPricingObject);
       }
-      return data;
+      return locationPricingArray;
     },
   },
 };
