@@ -1,5 +1,8 @@
 <template>
-  <span>
+  <span v-if="vendortype === 25">
+    <TheOrderDetailsComponent :order="order" :rates="conversionRates" />
+  </span>
+  <span v-else>
     <TheOrderActionsComponent :order="order" :rates="conversionRates" />
     <TheOrderDetailsComponent :order="order" :rates="conversionRates" />
   </span>
@@ -32,6 +35,9 @@ export default {
     ...mapGetters({
       getExchangeRates: 'getExchangeRates',
     }),
+    vendortype() {
+      return this.order.rider_details.vendor_type_id;
+    },
   },
   watch: {
     getExchangeRates(value) {

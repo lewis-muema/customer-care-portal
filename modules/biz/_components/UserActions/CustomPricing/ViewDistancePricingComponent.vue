@@ -14,7 +14,11 @@
       <el-table-column prop="city" label="City" width="160"> </el-table-column>
       <el-table-column prop="name" label="Vendor Type" width="160">
       </el-table-column>
-      <el-table-column prop="base_cost" label="Base Fee" width="120">
+      <el-table-column prop="base_cost" label="Partner Amount" width="150">
+      </el-table-column>
+      <el-table-column prop="service_fee" label="Service Fee" width="120">
+      </el-table-column>
+      <el-table-column prop="insurance" label="Insurance" width="120">
       </el-table-column>
       <el-table-column prop="base_km" label="Base Distance" width="120">
       </el-table-column>
@@ -37,8 +41,6 @@
       >
       </el-table-column>
       <el-table-column prop="base_km" label="Loading Fee" width="120">
-      </el-table-column>
-      <el-table-column prop="service_fee" label="Service Charge" width="120">
       </el-table-column>
       <el-table-column
         prop="cancellation_fee"
@@ -64,17 +66,9 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'TheViewDetailsComponent',
+  name: 'ViewDistancePricingComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
-    customdata: {
-      type: Array,
-      required: true,
-    },
-    configs: {
-      type: Array,
-      required: true,
-    },
     user: {
       type: Object,
       required: true,
@@ -118,9 +112,6 @@ export default {
       deactivate_distance_pricing_configs:
         'deactivate_distance_pricing_configs',
     }),
-    deleteRow(index, rows) {
-      this.tableData.splice(index, 1);
-    },
     viewSummary() {
       this.updateSummaryStatus(true);
       this.updateViewStatus(false);
@@ -154,30 +145,25 @@ export default {
       }
     },
     createPayload(pricingApprovalData) {
+      const distancePricingArray = [];
       for (let i = 0; i < pricingApprovalData.length; i += 1) {
-        pricingApprovalData[i].cop_id = this.copId;
-        pricingApprovalData[i].custom_pricing_details = {};
-        pricingApprovalData[i].custom_pricing_details.admin_id =
-          pricingApprovalData[i].admin_id;
-        pricingApprovalData[i].custom_pricing_details.currency =
-          pricingApprovalData[i].currency;
-        pricingApprovalData[i].custom_pricing_details.distance_pricing =
-          pricingApprovalData[i].distance_pricing;
-        pricingApprovalData[i].custom_pricing_details.distance_pricing.status =
+        const distancePricingObject = {
+          cop_id: this.copId,
+          vendor_id: pricingApprovalData[i].id,
+          custom_pricing_details: {
+            id: pricingApprovalData[i].id,
+            name: pricingApprovalData[i].name,
+            currency: pricingApprovalData[i].currency,
+            admin_id: pricingApprovalData[i].admin_id,
+            distance_pricing: pricingApprovalData[i].distance_pricing,
+            rejection_message: this.rejectionReason,
+          },
+        };
+        distancePricingObject.custom_pricing_details.distance_pricing.status =
           'Deactivated';
-        pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details.id =
-          pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details.name =
-          pricingApprovalData[i].name;
-
-        delete pricingApprovalData[i].admin_id;
-        delete pricingApprovalData[i].currency;
-        delete pricingApprovalData[i].distance_pricing;
-        delete pricingApprovalData[i].id;
-        delete pricingApprovalData[i].name;
+        distancePricingArray.push(distancePricingObject);
       }
-      return pricingApprovalData;
+      return distancePricingArray;
     },
     trackMixpanelPage() {
       mixpanel.track('Pricing Config Summary View Page');

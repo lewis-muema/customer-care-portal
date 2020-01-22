@@ -1,6 +1,6 @@
 <template>
   <div class="col-md-7 user-search">
-    <div class="Typeahead">
+    <div class="Typeahead" v-if="user !== 'invoice'">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
 
       <input

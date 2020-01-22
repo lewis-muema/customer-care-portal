@@ -65,6 +65,11 @@ export default {
           description: 'Rider',
           mainName: 'Home',
         },
+        invoice: {
+          name: 'Invoice Numbers',
+          description: 'invoices',
+          mainName: 'Home',
+        },
       },
     };
   },

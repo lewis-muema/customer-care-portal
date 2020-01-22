@@ -44,7 +44,13 @@
         </el-table-column>
         <el-table-column prop="name" label="Vendor Type" width="150">
         </el-table-column>
-        <el-table-column prop="base_cost" label="Base Fee" width="120">
+        <el-table-column prop="base_cost" label="Partner Amount" width="150">
+        </el-table-column>
+        <el-table-column prop="service_fee" label="Service Fee" width="120">
+        </el-table-column>
+        <el-table-column prop="insurance" label="Insurance" width="120">
+        </el-table-column>
+        <el-table-column prop="client_fee" label="Client Fee" width="120">
         </el-table-column>
         <el-table-column prop="base_km" label="Base Distance" width="120">
         </el-table-column>
@@ -67,8 +73,6 @@
         >
         </el-table-column>
         <el-table-column prop="loader_cost" label="Loading Fee" width="120">
-        </el-table-column>
-        <el-table-column prop="service_fee" label="Service Charge" width="120">
         </el-table-column>
         <el-table-column
           prop="cancellation_fee"
@@ -111,7 +115,7 @@ export default {
     return {
       pricingData: [],
       admin_list: [],
-      approver: '',
+      approver: 0,
       approverMail: '',
       currency: '',
       isHidden: false,
@@ -197,83 +201,46 @@ export default {
       this.trackMixpanelPeople();
     },
     createPayload(pricingConfigData) {
+      const distancePricingArray = [];
       for (let i = 0; i < pricingConfigData.length; i += 1) {
-        pricingConfigData[i].cop_id = this.copId;
-        pricingConfigData[i].custom_pricing_details = {};
-        pricingConfigData[i].custom_pricing_details.admin_id = this.approver;
-        pricingConfigData[i].custom_pricing_details.name =
-          pricingConfigData[i].name;
-        pricingConfigData[i].custom_pricing_details.currency = this.currency;
-        pricingConfigData[i].custom_pricing_details.id =
-          pricingConfigData[i].id;
-        pricingConfigData[i].custom_pricing_details.distance_pricing = {};
-        pricingConfigData[i].custom_pricing_details.distance_pricing.status =
-          'Pending';
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.base_km = parseInt(
-          pricingConfigData[i].base_km,
-          10,
-        );
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.base_cost = parseInt(
-          pricingConfigData[i].base_cost,
-          10,
-        );
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.cancellation_fee = parseInt(
-          pricingConfigData[i].cancellation_fee,
-          10,
-        );
-        pricingConfigData[i].custom_pricing_details.distance_pricing.city =
-          pricingConfigData[i].city;
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.loader_cost = parseInt(
-          pricingConfigData[i].loader_cost,
-          10,
-        );
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.cost_per_km_above_base_km = parseInt(
-          pricingConfigData[i].cost_per_km_above_base_km,
-          10,
-        );
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.additional_location_cost = parseInt(
-          pricingConfigData[i].additional_location_cost,
-          10,
-        );
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.service_fee = parseInt(
-          pricingConfigData[i].service_fee,
-          10,
-        );
-        pricingConfigData[i].custom_pricing_details.distance_pricing.name =
-          pricingConfigData[i].name;
-        pricingConfigData[
-          i
-        ].custom_pricing_details.distance_pricing.waiting_time_cost_per_min = parseInt(
-          pricingConfigData[i].waiting_time_cost_per_min,
-          10,
-        );
-
-        delete pricingConfigData[i].waiting_time_cost_per_min;
-        delete pricingConfigData[i].id;
-        delete pricingConfigData[i].service_fee;
-        delete pricingConfigData[i].additional_location_cost;
-        delete pricingConfigData[i].cost_per_km_above_base_km;
-        delete pricingConfigData[i].loader_cost;
-        delete pricingConfigData[i].city;
-        delete pricingConfigData[i].cancellation_fee;
-        delete pricingConfigData[i].base_cost;
-        delete pricingConfigData[i].base_km;
+        const distancePricingObject = {
+          cop_id: this.copId,
+          custom_pricing_details: {
+            id: pricingConfigData[i].id,
+            name: pricingConfigData[i].name,
+            currency: this.currency,
+            admin_id: this.approver,
+            distance_pricing: {
+              status: 'Pending',
+              name: pricingConfigData[i].name,
+              base_km: parseInt(pricingConfigData[i].base_km, 10),
+              base_cost: parseInt(pricingConfigData[i].base_cost, 10),
+              insurance: parseInt(pricingConfigData[i].insurance, 10),
+              cancellation_fee: parseInt(
+                pricingConfigData[i].cancellation_fee,
+                10,
+              ),
+              city: pricingConfigData[i].city,
+              loader_cost: parseInt(pricingConfigData[i].loader_cost, 10),
+              cost_per_km_above_base_km: parseInt(
+                pricingConfigData[i].cost_per_km_above_base_km,
+                10,
+              ),
+              additional_location_cost: parseInt(
+                pricingConfigData[i].additional_location_cost,
+                10,
+              ),
+              service_fee: parseInt(pricingConfigData[i].service_fee, 10),
+              waiting_time_cost_per_min: parseInt(
+                pricingConfigData[i].waiting_time_cost_per_min,
+                10,
+              ),
+            },
+          },
+        };
+        distancePricingArray.push(distancePricingObject);
       }
-      return pricingConfigData;
+      return distancePricingArray;
     },
     trackMixpanelPage() {
       mixpanel.track('Pricing Config Preview and Submit');
