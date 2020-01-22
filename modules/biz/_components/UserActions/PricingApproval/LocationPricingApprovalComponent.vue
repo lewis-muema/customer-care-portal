@@ -265,7 +265,7 @@ export default {
             coordinates: data[i].to_location.coordinates,
           },
           to: data[i].to,
-          status: data[i].status,
+          status,
           city: data[i].city,
           order_amount: data[i].order_amount,
           rider_amount: data[i].rider_amount,
