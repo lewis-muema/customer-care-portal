@@ -19,8 +19,6 @@
           <div class="images">
             <img
               class="signatures"
-              data-toggle="modal"
-              data-target="#exampleModalCenter"
               :src="
                   `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`,              
               "
@@ -37,8 +35,7 @@
             <div class="images" v-for="image in img.images" :key="image.index">
               <img
                 class="delivery-images"
-                data-toggle="modal"
-                data-target="#ModalCenter"
+                @click="triggerDnotesModal(image, $event)"
                 :src="
                   `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
               "
@@ -46,104 +43,8 @@
             </div>
           </div>
         </div>
-        <div
-          class="modal fade"
-          id="exampleModalCenter"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content dnotes">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                  Signature
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="modalimages">
-                  <img
-                    class="modalimages"
-                    :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`,              
-              "
-                  />
-                </div>
-                <small> Order Signed By: </small>
-                <span class="signature">{{ img.name }}</span>
-                <small> Phone Number: </small>
-                <span class="signature">{{ img.phone_no }}</span>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="modal fade"
-          id="ModalCenter"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="ModalLongTitle">
-                  Delivery Notes
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div
-                  class="modalimages"
-                  v-for="image in img.images"
-                  :key="image.index"
-                >
-                  <img
-                    class="modalimages"
-                    :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
-              "
-                  />
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
+        <div>
+          <DeliveryDetailsModals :image="modalImage" />
         </div>
       </div>
       <div :id="`response_${orderDetails.order_details.order_no}a_11b`"></div>
@@ -333,6 +234,9 @@ import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TheDeliveryDetailsComponent',
+  components: {
+    DeliveryDetailsModals: () => import('./DeliveryDetailsModals'),
+  },
   props: {
     order: {
       type: Object,
@@ -341,6 +245,7 @@ export default {
   },
   data() {
     return {
+      modalImage: '',
       orderDetails: this.order,
       orderNo: this.order.order_details.order_no,
       riderDeliverImg: this.order.delivery_details.delivery_images,
@@ -384,6 +289,11 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
+    triggerDnotesModal(image, e) {
+      this.modalImage = image;
+      $(`#ModalCenter`).modal('show');
+      e.preventDefault();
+    },
     determineAction() {
       if (this.dispute_status === 0 && !this.switched) {
         return this.verifyDnote();
