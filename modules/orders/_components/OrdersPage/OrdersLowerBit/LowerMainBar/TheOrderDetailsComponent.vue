@@ -144,6 +144,17 @@
           >Quotes</a
         >
       </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          :id="`billing_data_${orderNo}`"
+          data-toggle="tab"
+          role="tab"
+          aria-selected="false"
+          @click="viewTab('billing_data', orderNo)"
+          >Billing Data</a
+        >
+      </li>
       <li
         class="nav-item"
         v-if="
@@ -267,6 +278,14 @@
         >
           <TheQuotesComponent :order="orderDetails" />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`billing_data_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `billing_data_${orderNo}`"
+        >
+          <TheBillingDataComponent :order="orderDetails" />
+        </div>
       </div>
     </div>
   </div>
@@ -288,6 +307,8 @@ export default {
     TheDispatchComponent: () => import('./OrderTabs/TheDispatchListComponent'),
     TheDNotesComponent: () => import('./OrderTabs/TheDNotesComponent'),
     TheQuotesComponent: () => import('./OrderTabs/TheQuotesComponent'),
+    TheBillingDataComponent: () =>
+      import('./OrderTabs/TheBillingDataComponent'),
 
     TheDeliveryDetailsComponent: () =>
       import('./OrderTabs/TheDeliveryDetailsComponent'),
