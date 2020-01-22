@@ -1,66 +1,36 @@
 <template>
-  <div v-if="previewing">
-    <div class="approver-select" v-if="approverSelect">
-      <template>
-        <div class="pricing-approver-select">
-          <div class="approver-title">
-            Select the manager to approve
-          </div>
-          <el-select
-            v-model="approver"
-            size="small"
-            filterable
-            placeholder="Select manager"
-          >
-            <el-option
-              v-for="admin in admin_list"
-              :key="admin.admin_id"
-              :label="admin.name"
-              :value="admin.admin_id"
-            >
-            </el-option>
-          </el-select>
-          <div>
-            <button @click="previewTable" class="edit-table-link">
-              Preview Table
-            </button>
-            <el-button
-              :disabled="approver === ''"
-              class="pricing-save-btn submit-approval-btn btn-primary"
-              @click="submitConfigs"
-              >Submit Request</el-button
-            >
-          </div>
-        </div>
-      </template>
+  <div>
+    <div class="approval-sub-title">
+      {{ tableTitle }}
     </div>
-    <div v-else>
-      <el-table
-        :data="tableData"
-        border
-        class="pricing-table-styling preview-container"
-      >
-        <el-table-column prop="from" label="Pick up location" width="200">
-        </el-table-column>
-        <el-table-column prop="to" label="Drop off location" width="200">
-        </el-table-column>
-        <el-table-column prop="name" label="Vendor type" width="130">
-        </el-table-column>
-        <el-table-column prop="order_amount" label="Client fee" width="130">
-        </el-table-column>
-        <el-table-column prop="rider_amount" label="Partner price" width="130">
-        </el-table-column>
-        <el-table-column prop="service_fee" label="Sendy fee" width="130">
-        </el-table-column>
-      </el-table>
-      <button @click="editTable" class="edit-table-link">
-        Edit Table
+    <div class="approval-text-title">
+      View mode
+    </div>
+    <el-table
+      :data="tableData"
+      border
+      class="pricing-table-styling preview-container"
+    >
+      <el-table-column prop="from" label="Pick up location" width="200">
+      </el-table-column>
+      <el-table-column prop="to" label="Drop off location" width="200">
+      </el-table-column>
+      <el-table-column prop="name" label="Vendor type" width="130">
+      </el-table-column>
+      <el-table-column prop="order_amount" label="Client fee" width="130">
+      </el-table-column>
+      <el-table-column prop="rider_amount" label="Partner price" width="130">
+      </el-table-column>
+      <el-table-column prop="service_fee" label="Sendy fee" width="130">
+      </el-table-column>
+    </el-table>
+    <div class="pricing-view-actions">
+      <button @click="viewSummary" class="back-to-summary-link">
+        Back to summary
       </button>
-      <el-button
-        class="pricing-save-btn submit-approval-btn btn-primary"
-        @click="getApprover"
-        >Submit for approval</el-button
-      >
+      <button @click="resetCustomPricing" class="pricing-remove">
+        Remove custom pricing
+      </button>
     </div>
   </div>
 </template>
@@ -71,15 +41,11 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'PreviewLocationPricingComponent',
+  name: 'ViewLocationPricingComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
       type: Object,
-      required: true,
-    },
-    configs: {
-      type: Array,
       required: true,
     },
   },
@@ -87,21 +53,21 @@ export default {
     return {
       pricingData: [],
       admin_list: [],
-      approver: 0,
-      approverMail: '',
+      adminId: 0,
       currency: '',
+      tableTitle: 'Location Pricing Table',
       isHidden: false,
       approverSelect: false,
-      previewing: true,
-      tableData: this.configs,
+      tableData: [],
       copId: this.user.user_details.cop_id,
-      customPricingDetails: this.customdata,
     };
   },
   computed: {
     ...mapGetters({
       getAdmins: 'getAdmins',
       getSessionData: 'getSession',
+      getTableData: 'getTableData',
+      summaryStatus: 'getSummaryStatus',
     }),
     admin() {
       return this.admin_list.find(op => {
@@ -117,39 +83,37 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
+    this.tableData = this.getTableData;
+    this.adminId = this.getSessionData.payload.data.admin_id;
   },
   methods: {
-    ...mapMutations({}),
+    ...mapMutations({
+      updateSummaryStatus: 'updateSummaryStatus',
+    }),
     ...mapActions({
       setAdmins: 'setAdmins',
-      submit_custom_pricing: 'submit_custom_pricing',
+      deactivate_location_pricing: 'deactivate_location_pricing',
     }),
-    editTable() {
-      this.$emit('sectionUpdate', false);
+    viewSummary() {
+      this.updateSummaryStatus(true);
+      this.$emit('viewUpdate', false);
     },
-    getApprover() {
-      this.approverSelect = true;
-    },
-    previewTable() {
-      this.approverSelect = false;
-    },
-    async submitConfigs() {
+    async resetCustomPricing() {
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/add_custom_distance_details',
+        endpoint: 'pricing/price_config/update_custom_distance_details',
         apiKey: false,
         params: configParams,
       };
       try {
-        const data = await this.submit_custom_pricing(payload);
+        const data = await this.deactivate_location_pricing(payload);
         if (data.status) {
-          notification.push(data.message);
+          notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
-          this.previewing = false;
-          this.sendEmailNotification(this.admin.email, this.admin.name);
+          this.$emit('viewUpdate', false);
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -166,11 +130,10 @@ export default {
       for (let i = 0; i < data.length; i += 1) {
         const locationPricingObject = {
           cop_id: this.copId,
+          vendor_id: data[i].id,
+          from_coordinates: data[i].from_location.coordinates,
+          to_coordinates: data[i].to_location.coordinates,
           custom_pricing_details: {
-            id: data[i].id,
-            name: data[i].name,
-            currency: this.currency,
-            admin_id: this.approver,
             location_pricing: [],
           },
         };
@@ -180,9 +143,27 @@ export default {
           cop_id: this.copId,
           cop_name: data[i].cop_name,
           currency: this.currency,
-          admin_id: this.approver,
+          admin_id: parseInt(this.adminId, 10),
+          waiting_time_cost_per_min: data[i].waiting_time_cost_per_min,
+          sendy_commission: data[i].sendy_commission,
+          order_confirmation_time_delay: data[i].order_confirmation_time_delay,
+          waiting_time_base: data[i].waiting_time_base,
+          fixed_status: data[i].fixed_status,
+          cancellation_fee: data[i].cancellation_fee,
+          min_cancellation_fee: data[i].min_cancellation_fee,
+          extra_distance_base_km: data[i].extra_distance_base_km,
+          order_pickup_time_delay: data[i].order_pickup_time_delay,
+          percentage_cancellation_fee: data[i].percentage_cancellation_fee,
+          max_cancellation_fee: data[i].max_cancellation_fee,
+          time: data[i].time,
+          fixed_cost: data[i].fixed_cost,
+          base_cost: data[i].base_cost,
+          base_km: data[i].base_km,
+          cost_per_km_above_base_km: data[i].cost_per_km_above_base_km,
+          additional_location_cost: data[i].additional_location_cost,
           service_fee: data[i].service_fee,
           from: data[i].from,
+          service_fee: data[i].service_fee,
           from_location: {
             type: data[i].from_location.type,
             coordinates: data[i].from_location.coordinates,
@@ -192,12 +173,11 @@ export default {
             coordinates: data[i].to_location.coordinates,
           },
           to: data[i].to,
-          status: 'Pending',
+          status: 'Deactivated',
           city: data[i].city,
           order_amount: data[i].order_amount,
           rider_amount: data[i].rider_amount,
         };
-
         locationPricingObject.custom_pricing_details.location_pricing.push(
           locationData,
         );

@@ -16,6 +16,7 @@ const PricingConfigsMxn = {
       tableData: [],
       customPricingDetails: [],
       distancePricingTableData: [],
+      locationPricingTableData: [],
     };
   },
   mounted() {
@@ -26,7 +27,9 @@ const PricingConfigsMxn = {
   computed: {
     ...mapGetters({
       configuredDistancePricing: 'getConfiguredDistancePricing',
+      configuredLocationPricing: 'getConfiguredLocationPricing',
       getSessionData: 'getSession',
+      pendingLocationPricing: 'getPendingLocationPricing',
     }),
   },
   methods: {
@@ -53,9 +56,11 @@ const PricingConfigsMxn = {
         const data = await this.request_pending_distance_pricing_data(payload);
         if (data.status) {
           this.customPricingDetails = data.custom_pricing_details;
-          return (this.distancePricingTableData = this.pendingDistancePricing);
+          this.distancePricingTableData = this.pendingDistancePricing;
+          this.locationPricingTableData = this.pendingLocationPricing;
         } else {
-          return (this.distancePricingTableData = []);
+          this.distancePricingTableData = [];
+          this.locationPricingTableData = [];
         }
       } catch (error) {
         this.status = false;
@@ -76,9 +81,11 @@ const PricingConfigsMxn = {
         const data = await this.request_pricing_data(payload);
         if (data.status) {
           this.customPricingDetails = data.custom_pricing_details;
-          return (this.distancePricingTableData = this.configuredDistancePricing);
+          this.distancePricingTableData = this.configuredDistancePricing;
+          this.locationPricingTableData = this.configuredLocationPricing;
         } else {
-          return (this.distancePricingTableData = []);
+          this.distancePricingTableData = [];
+          this.locationPricingTableData = [];
         }
       } catch (error) {
         this.status = false;
@@ -113,6 +120,8 @@ const PricingConfigsMxn = {
           waiting_time_cost_per_min: '18000',
           loader_cost: '18000',
           service_fee: '20',
+          insurance: '20',
+          client_fee: '2000',
           cancellation_fee: '40000',
         };
         this.tableData.push(distancePricingRow);
@@ -125,7 +134,7 @@ const PricingConfigsMxn = {
           currency: 'KES',
           admin_id: 1,
           service_fee: 1200,
-          from: 'Muchai Drive',
+          from: '',
           from_location: {
             type: 'Point',
             coordinates: [36.799157, -1.299287],
@@ -134,9 +143,9 @@ const PricingConfigsMxn = {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
-          to: 'Mombasa Plastics, Mombasa',
+          to: '',
           status: 'Active',
-          city: 'Mombasa County',
+          city: '',
           order_amount: 23000,
           rider_amount: 21400,
         };

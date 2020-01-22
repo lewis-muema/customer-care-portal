@@ -12,7 +12,7 @@
         <el-table
           :data="tableData"
           row-class-name="no-hover"
-          style="width: 1000px"
+          class="table--width"
           max-height="300"
         >
           <el-table-column class="delete-col" width="40" fixed="left">
@@ -43,7 +43,7 @@
               <el-input
                 v-if="scope.row.city"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 placeholder="Search city"
                 v-model="scope.row.city"
               ></el-input>
@@ -67,16 +67,60 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="base_cost" label="Base Fee" width="200">
+          <el-table-column prop="base_cost" label="Partner Amount" width="200">
             <template slot-scope="scope">
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.base_cost"
+                @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="service_fee" label="Service Fee" width="200">
+            <template slot-scope="scope">
+              <el-input
+                size="small"
+                type="number"
+                class="table--col-text"
+                v-model.number="scope.row.service_fee"
+                @change="calculateClientFee(scope.$index, scope.row)"
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="insurance" label="Insurance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                size="small"
+                type="number"
+                class="table--col-text"
+                v-model.number="scope.row.insurance"
+                @change="calculateClientFee(scope.$index, scope.row)"
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="client_fee" label="Client Fee" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="number"
+                class="table--col-text"
+                v-model.number="scope.row.client_fee"
+              >
+                <template class="pricing-prepend" slot="prepend"
+                  >{{ currency }}
+                </template></el-input
               >
             </template>
           </el-table-column>
@@ -85,7 +129,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.base_km"
               >
                 <template class="pricing-prepend" slot="prepend">
@@ -103,7 +147,7 @@
               <el-input
                 type="number"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.cost_per_km_above_base_km"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -120,7 +164,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.additional_location_cost"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -137,7 +181,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.waiting_time_cost_per_min"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -154,29 +198,11 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.loader_cost"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
-              >
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="service_fee"
-            label="Service Charge"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input
-                size="small"
-                type="number"
-                style="text-align:center"
-                v-model.number="scope.row.service_fee"
-              >
-                <template class="pricing-prepend" slot="append"
-                  >%
-                </template></el-input
               >
             </template>
           </el-table-column>
@@ -189,7 +215,7 @@
               <el-input
                 size="small"
                 type="number"
-                style="text-align:center"
+                class="table--col-text"
                 v-model.number="scope.row.cancellation_fee"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -205,7 +231,10 @@
         <button @click="goBack()" class="pricing-back-text">
           Previous page
         </button>
-        <el-button class="pricing-save-btn btn-primary" @click="previewConfig"
+        <el-button
+          class="pricing-save-btn btn-primary"
+          @click="previewConfig"
+          :disabled="containsNull"
           >Save & Preview
         </el-button>
       </template>
@@ -238,14 +267,17 @@ export default {
           base_cost: '280',
           base_km: '20',
           cost_per_km_above_base_km: '2160',
-          additional_location_cost: '10800',
-          waiting_time_cost_per_min: '18000',
-          loader_cost: '18000',
-          service_fee: '20',
-          cancellation_fee: '40000',
+          additional_location_cost: '108',
+          waiting_time_cost_per_min: '18',
+          loader_cost: '100',
+          service_fee: '40',
+          insurance: '20',
+          client_fee: '500',
+          cancellation_fee: '40',
         },
       ],
       previewDistancePricing: false,
+      clientFee: 0,
     };
   },
   computed: {
@@ -254,22 +286,30 @@ export default {
         return op.name === this.vendorName;
       });
     },
+    herokuKey() {
+      return this.$env.HEROKU_GOOGLE_API_KEY;
+    },
+    containsNull() {
+      return this.tableData.every(item => item.city === '' || item.name === '');
+    },
   },
   watch: {
     pacInput(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
         });
     },
+    calculateClientFee(val) {},
   },
   mounted() {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     this.fetchVendorTypes(countryCode);
+    this.trackMixpanelPage();
   },
   methods: {
     ...mapMutations({
@@ -285,6 +325,13 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
+    },
+    calculateClientFee(index, row) {
+      const partnerAmount = parseInt(row.base_cost, 10);
+      const serviceFee = parseInt(row.service_fee, 10);
+      const insurance = parseInt(row.insurance, 10);
+      const orderAmount = partnerAmount + serviceFee + insurance;
+      return (this.tableData[index].client_fee = orderAmount);
     },
     querySearch(queryString, cb) {
       for (let i = 0; i < this.suggestions.length; i += 1) {
@@ -302,6 +349,17 @@ export default {
     onSectionUpdate(value) {
       this.previewDistancePricing = value;
     },
+    trackMixpanelPage() {
+      mixpanel.track('New Distance Pricing Config Page Loaded');
+    },
   },
 };
 </script>
+<style>
+.table--col-text {
+  text-align: center !important;
+}
+.table--width {
+  width: 1000px !important;
+}
+</style>

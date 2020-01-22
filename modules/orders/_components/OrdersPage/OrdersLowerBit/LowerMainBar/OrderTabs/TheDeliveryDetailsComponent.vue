@@ -15,133 +15,36 @@
           {{ ` Delivery at waypoint ${img.waypoint_no} ` }}
         </div>
         <div class="delivery-images__signature">
-          <h3>Signatures</h3>
+          <h3>Signature</h3>
           <div class="images">
             <img
               class="signatures"
-              data-toggle="modal"
-              data-target="#exampleModalCenter"
               :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,              
+                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`,              
               "
             />
           </div>
-          <small style="display: block;">By: {{ img.name }}</small>
+          <small> Order Signed By: </small>
+          <span class="signature">{{ img.name }}</span>
+          <small> Phone Number: </small>
+          <span class="signature">{{ img.phone_no }}</span>
         </div>
         <div class="delivery-images__signature">
           <h3>Delivery Notes</h3>
-          <div
-            class="images"
-            v-for="image in img.delivery_image"
-            :key="image.index"
-          >
-            <img
-              class="delivery-images"
-              data-toggle="modal"
-              data-target="#ModalCenter"
-              :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,              
+          <div class="images-container">
+            <div class="images" v-for="image in img.images" :key="image.index">
+              <img
+                class="delivery-images"
+                @click="triggerDnotesModal(image, $event)"
+                :src="
+                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
               "
-            />
-          </div>
-          <small style="display: block;">By: {{ img.name }}</small>
-        </div>
-        <div
-          class="modal fade"
-          id="exampleModalCenter"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                  Signatures
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="modalimages">
-                  <img
-                    class="modalimages"
-                    :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,              
-              "
-                  />
-                </div>
-                <small style="display: block;">By: {{ img.name }}</small>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
+              />
             </div>
           </div>
         </div>
-
-        <div
-          class="modal fade"
-          id="ModalCenter"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="ModalLongTitle">
-                  Delivery Notes
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div
-                  class="modalimages"
-                  v-for="image in img.delivery_image"
-                  :key="image.index"
-                >
-                  <img
-                    class="modalimages"
-                    :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,              
-              "
-                  />
-                </div>
-                <small style="display: block;">By: {{ img.name }}</small>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
+        <div>
+          <DeliveryDetailsModals :image="modalImage" />
         </div>
       </div>
       <div :id="`response_${orderDetails.order_details.order_no}a_11b`"></div>
@@ -331,6 +234,9 @@ import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TheDeliveryDetailsComponent',
+  components: {
+    DeliveryDetailsModals: () => import('./DeliveryDetailsModals'),
+  },
   props: {
     order: {
       type: Object,
@@ -339,9 +245,10 @@ export default {
   },
   data() {
     return {
+      modalImage: '',
       orderDetails: this.order,
       orderNo: this.order.order_details.order_no,
-      riderDeliverImg: this.order.delivery_details.rider_delivery_image,
+      riderDeliverImg: this.order.delivery_details.delivery_images,
       riderID: this.order.rider_details.rider_id,
       dispute_status: this.order.order_details.dispute_status,
       errors: [],
@@ -382,6 +289,11 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
+    triggerDnotesModal(image, e) {
+      this.modalImage = image;
+      $(`#ModalCenter`).modal('show');
+      e.preventDefault();
+    },
     determineAction() {
       if (this.dispute_status === 0 && !this.switched) {
         return this.verifyDnote();
@@ -423,7 +335,7 @@ export default {
           _user_id: adminID,
           action_id: 22,
           action_user: this.actionUser,
-          admin_id: 0,
+          admin_id: adminID,
           channel: 'customer_support',
           cop_name: this.order.client_details.corporate_name,
           customer_email: this.order.client_details.email,
@@ -461,12 +373,14 @@ export default {
         return;
       }
 
+      const adminID = this.session.payload.data.admin_id;
+
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'dispute_delivery_docs_cc',
         apiKey: true,
         params: {
-          admin_id: 0,
+          admin_id: adminID,
           cop_name: this.order.client_details.corporate_name,
           customer_email: this.order.client_details.email,
           customer_name: this.order.client_details.name,
@@ -497,13 +411,14 @@ export default {
     async verifyDnote() {
       const notification = [];
       let actionClass = '';
+      const adminID = this.session.payload.data.admin_id;
 
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'dispute_delivery_docs_cc',
         apiKey: true,
         params: {
-          admin_id: 0,
+          admin_id: adminID,
           cop_name: this.order.client_details.corporate_name,
           customer_email: this.order.client_details.email,
           customer_name: this.order.client_details.name,
@@ -545,7 +460,7 @@ export default {
 </script>
 <style>
 .delivery-images {
-  max-width: 300px;
+  width: 100%;
 }
 .signatures {
   max-width: 300px;
@@ -553,5 +468,20 @@ export default {
 .modalimages {
   max-width: 100%;
   max-height: 100%;
+}
+.signature {
+  display: block;
+  font-weight: bold;
+}
+.images {
+  grid-column: span 3;
+  width: 100%;
+}
+.images-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+.modal-dialog {
+  max-width: 1000px !important;
 }
 </style>

@@ -9,50 +9,25 @@
           {{ approvalText }}
         </div>
         <el-table
-          :data="distancePricingTableData"
+          :data="locationPricingTableData"
           border
-          class="pricing-table-styling"
-          style="width: 1000px"
+          class="pricing-table-styling preview-container"
         >
-          <el-table-column prop="city" label="City" width="170">
+          <el-table-column prop="from" label="Pick up location" width="200">
           </el-table-column>
-          <el-table-column prop="name" label="Vendor Type" width="170">
+          <el-table-column prop="to" label="Drop off location" width="200">
           </el-table-column>
-          <el-table-column prop="base_cost" label="Base Fee" width="150">
+          <el-table-column prop="name" label="Vendor type" width="130">
           </el-table-column>
-          <el-table-column prop="base_km" label="Base Distance" width="120">
-          </el-table-column>
-          <el-table-column
-            prop="cost_per_km_above_base_km"
-            label="Price per additional KM"
-            width="170"
-          >
+          <el-table-column prop="order_amount" label="Client fee" width="130">
           </el-table-column>
           <el-table-column
-            prop="additional_location_cost"
-            label="Price per additional dropoff"
-            width="200"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="waiting_time_cost_per_min"
-            label="Waiting fee per min"
-            width="150"
-          >
-          </el-table-column>
-          <el-table-column prop="loader_cost" label="Loading Fee" width="120">
-          </el-table-column>
-          <el-table-column
-            prop="service_fee"
-            label="Service Charge"
-            width="120"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="cancellation_fee"
-            label="cancellation Fee"
+            prop="rider_amount"
+            label="Partner price"
             width="130"
           >
+          </el-table-column>
+          <el-table-column prop="service_fee" label="Sendy fee" width="130">
           </el-table-column>
         </el-table>
         <button @click="provideReason" class="reject-config-text">
@@ -60,7 +35,7 @@
         </button>
         <el-button
           class="approve-config-btn btn-primary"
-          @click="approveDistancePricingConfigs"
+          @click="approveLocationPricingConfigs"
           >Approve pricing</el-button
         >
       </div>
@@ -107,7 +82,7 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'ThePricingApprovalComponent',
+  name: 'DistancePricingApprovalComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
@@ -117,7 +92,7 @@ export default {
   },
   data() {
     return {
-      distancePricingTableData: [],
+      locationPricingTableData: [],
       customPricingDetails: [],
       approvalParams: [],
       copId: '',
@@ -126,31 +101,37 @@ export default {
       rejectionReason: '',
       crmName: '',
       copName: '',
+      pendingRequests: false,
       rejectWithReason: false,
-      pricingTitle: 'Distance Pricing Table',
+      pricingTitle: 'Location Pricing Table',
       approvalText: 'Requires your approval',
     };
   },
   computed: {
     ...mapGetters({
-      pendingDistancePricing: 'getPendingDistancePricing',
+      pendingLocationPricing: 'getPendingLocationPricing',
       getSessionData: 'getSession',
       getApproveStatus: 'getApproveStatus',
     }),
-    pendingRequests() {
-      return (
-        this.getApproveStatus === true &&
-        this.distancePricingTableData.length !== 0
-      );
+  },
+  watch: {
+    pendingRequests(val) {
+      this.pendingRequests = val;
     },
   },
-  mounted() {
+  async mounted() {
+    this.updateApproveStatus(true);
+    await this.getDistancePricingConfigs();
+    this.locationPricingTableData = this.pendingLocationPricing;
+    this.pendingRequests = false;
+    if (this.getApproveStatus && this.locationPricingTableData.length !== 0) {
+      this.pendingRequests = true;
+    }
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.getDistancePricingConfigs();
     this.trackMixpanelPage();
   },
   methods: {
@@ -161,17 +142,14 @@ export default {
       updateApproveStatus: 'updateApproveStatus',
     }),
     ...mapActions({
-      request_pending_distance_pricing_data:
-        'request_pending_distance_pricing_data',
-      approve_distance_pricing_configs: 'approve_distance_pricing_configs',
-      reject_distance_pricing_configs: 'reject_distance_pricing_configs',
+      approve_location_pricing_configs: 'approve_location_pricing_configs',
+      reject_location_pricing_configs: 'reject_location_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
       this.trackMixpanelIdentify();
       this.trackMixpanelPeople();
-      const pricingApprovalData = this.customPricingDetails;
       this.approvalParams = this.createPayload(
-        pricingApprovalData,
+        this.locationPricingTableData,
         'deactivated',
       );
       const notification = [];
@@ -180,17 +158,17 @@ export default {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/update_custom_distance_details',
         apiKey: false,
-        params: this.approvalParams,
+        params: this.locationPricingTableData,
       };
       try {
-        const data = await this.reject_distance_pricing_configs(payload);
+        const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.getDistancePricingConfigs();
+          this.pendingRequests = false;
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -207,11 +185,13 @@ export default {
     goBack() {
       this.rejectWithReason = false;
     },
-    async approveDistancePricingConfigs() {
+    async approveLocationPricingConfigs() {
       this.trackMixpanelIdentify();
       this.trackMixpanelPeople();
-      const pricingApprovalData = this.customPricingDetails;
-      this.approvalParams = this.createPayload(pricingApprovalData, 'Active');
+      this.approvalParams = this.createPayload(
+        this.locationPricingTableData,
+        'Active',
+      );
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -221,12 +201,12 @@ export default {
         params: this.approvalParams,
       };
       try {
-        const data = await this.approve_distance_pricing_configs(payload);
+        const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.updateApproveStatus(false);
+          this.pendingRequests = false;
         } else {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -237,35 +217,65 @@ export default {
         this.status = false;
       }
     },
-    createPayload(pricingApprovalData, status) {
-      for (let i = 0; i < pricingApprovalData.length; i += 1) {
-        pricingApprovalData[i].cop_id = this.copId;
-        pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details = {};
-        pricingApprovalData[i].custom_pricing_details.admin_id =
-          pricingApprovalData[i].admin_id;
-        pricingApprovalData[i].custom_pricing_details.currency =
-          pricingApprovalData[i].currency;
-        pricingApprovalData[i].custom_pricing_details.distance_pricing =
-          pricingApprovalData[i].distance_pricing;
-        pricingApprovalData[
-          i
-        ].custom_pricing_details.distance_pricing.status = status;
-        pricingApprovalData[i].custom_pricing_details.id =
-          pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details.name =
-          pricingApprovalData[i].name;
-        pricingApprovalData[
-          i
-        ].custom_pricing_details.rejection_message = this.rejectionReason;
-
-        delete pricingApprovalData[i].admin_id;
-        delete pricingApprovalData[i].currency;
-        delete pricingApprovalData[i].distance_pricing;
-        delete pricingApprovalData[i].id;
-        delete pricingApprovalData[i].name;
+    createPayload(data, status) {
+      const locationPricingArray = [];
+      for (let i = 0; i < data.length; i += 1) {
+        const locationPricingObject = {
+          cop_id: this.copId,
+          vendor_id: data[i].id,
+          from_coordinates: data[i].from_location.coordinates,
+          to_coordinates: data[i].to_location.coordinates,
+          custom_pricing_details: {
+            location_pricing: [],
+          },
+        };
+        const locationData = {
+          id: data[i].id,
+          name: data[i].name,
+          cop_id: this.copId,
+          cop_name: data[i].cop_name,
+          currency: this.currency,
+          admin_id: parseInt(this.adminId, 10),
+          waiting_time_cost_per_min: data[i].waiting_time_cost_per_min,
+          sendy_commission: data[i].sendy_commission,
+          order_confirmation_time_delay: data[i].order_confirmation_time_delay,
+          waiting_time_base: data[i].waiting_time_base,
+          fixed_status: data[i].fixed_status,
+          cancellation_fee: data[i].cancellation_fee,
+          min_cancellation_fee: data[i].min_cancellation_fee,
+          extra_distance_base_km: data[i].extra_distance_base_km,
+          order_pickup_time_delay: data[i].order_pickup_time_delay,
+          percentage_cancellation_fee: data[i].percentage_cancellation_fee,
+          max_cancellation_fee: data[i].max_cancellation_fee,
+          time: data[i].time,
+          fixed_cost: data[i].fixed_cost,
+          base_cost: data[i].base_cost,
+          base_km: data[i].base_km,
+          cost_per_km_above_base_km: data[i].cost_per_km_above_base_km,
+          additional_location_cost: data[i].additional_location_cost,
+          service_fee: data[i].service_fee,
+          from: data[i].from,
+          service_fee: data[i].service_fee,
+          from_location: {
+            type: data[i].from_location.type,
+            coordinates: data[i].from_location.coordinates,
+          },
+          to_location: {
+            type: data[i].to_location.type,
+            coordinates: data[i].to_location.coordinates,
+          },
+          to: data[i].to,
+          status,
+          city: data[i].city,
+          order_amount: data[i].order_amount,
+          rider_amount: data[i].rider_amount,
+        };
+        locationPricingObject.custom_pricing_details.location_pricing.push(
+          locationData,
+        );
+        locationPricingArray.push(locationPricingObject);
       }
-      return pricingApprovalData;
+      return locationPricingArray;
     },
     trackMixpanelPage() {
       mixpanel.track('Pricing Config Approval Page');

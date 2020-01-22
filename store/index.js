@@ -68,6 +68,8 @@ export default {
       section: 0,
       distancePricingData: [],
       pendingPricingData: [],
+      pendingLocationData: [],
+      locationPricingData: [],
       tableData: [],
       customPricingDetails: [],
       approverId: 0,
