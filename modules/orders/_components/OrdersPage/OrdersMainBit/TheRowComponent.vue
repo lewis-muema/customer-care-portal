@@ -119,14 +119,10 @@
           >
             <i class="fa fa-info"></i>
           </span>
-          <span
-            title="showCity(order.city)"
-            class="badge bg-aqua "
-            style="float: right;"
-          >
+          <span title="showCity(order.city)" class="badge bg-aqua showCity">
             {{ order.city.name }}
           </span>
-          <span style="float: right;"> &nbsp; </span>
+          <span class="showCity"> &nbsp; </span>
           <span title="Corporate Name" class="badge bg-aqua pull-right">
             {{ order.distance_read }} km</span
           >
@@ -492,5 +488,8 @@ export default {
 }
 .pickupClass {
   height: 25px;
+}
+.showCity {
+  float: right;
 }
 </style>
