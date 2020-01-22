@@ -33,15 +33,17 @@
         </div>
         <div class="delivery-images__signature">
           <h3>Delivery Notes</h3>
-          <div class="images" v-for="image in img.images" :key="image.index">
-            <img
-              class="delivery-images"
-              data-toggle="modal"
-              data-target="#ModalCenter"
-              :src="
+          <div class="images-container">
+            <div class="images" v-for="image in img.images" :key="image.index">
+              <img
+                class="delivery-images"
+                data-toggle="modal"
+                data-target="#ModalCenter"
+                :src="
                   `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
               "
-            />
+              />
+            </div>
           </div>
         </div>
         <div
@@ -53,7 +55,7 @@
           aria-hidden="true"
         >
           <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
+            <div class="modal-content dnotes">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">
                   Signature
@@ -423,7 +425,7 @@ export default {
           _user_id: adminID,
           action_id: 22,
           action_user: this.actionUser,
-          admin_id: 0,
+          admin_id: adminID,
           channel: 'customer_support',
           cop_name: this.order.client_details.corporate_name,
           customer_email: this.order.client_details.email,
@@ -461,12 +463,14 @@ export default {
         return;
       }
 
+      const adminID = this.session.payload.data.admin_id;
+
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'dispute_delivery_docs_cc',
         apiKey: true,
         params: {
-          admin_id: 0,
+          admin_id: adminID,
           cop_name: this.order.client_details.corporate_name,
           customer_email: this.order.client_details.email,
           customer_name: this.order.client_details.name,
@@ -497,13 +501,14 @@ export default {
     async verifyDnote() {
       const notification = [];
       let actionClass = '';
+      const adminID = this.session.payload.data.admin_id;
 
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'dispute_delivery_docs_cc',
         apiKey: true,
         params: {
-          admin_id: 0,
+          admin_id: adminID,
           cop_name: this.order.client_details.corporate_name,
           customer_email: this.order.client_details.email,
           customer_name: this.order.client_details.name,
@@ -545,7 +550,7 @@ export default {
 </script>
 <style>
 .delivery-images {
-  max-width: 300px;
+  width: 100%;
 }
 .signatures {
   max-width: 300px;
@@ -557,5 +562,16 @@ export default {
 .signature {
   display: block;
   font-weight: bold;
+}
+.images {
+  grid-column: span 3;
+  width: 100%;
+}
+.images-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+.modal-dialog {
+  max-width: 1000px !important;
 }
 </style>
