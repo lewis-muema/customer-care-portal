@@ -15,36 +15,34 @@
           {{ ` Delivery at waypoint ${img.waypoint_no} ` }}
         </div>
         <div class="delivery-images__signature">
-          <h3>Signatures</h3>
+          <h3>Signature</h3>
           <div class="images">
             <img
               class="signatures"
               data-toggle="modal"
               data-target="#exampleModalCenter"
               :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,              
+                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`,              
               "
             />
           </div>
-          <small style="display: block;">By: {{ img.name }}</small>
+          <small> Order Signed By: </small>
+          <span class="signature">{{ img.name }}</span>
+          <small> Phone Number: </small>
+          <span class="signature">{{ img.phone_no }}</span>
         </div>
         <div class="delivery-images__signature">
           <h3>Delivery Notes</h3>
-          <div
-            class="images"
-            v-for="image in img.delivery_image"
-            :key="image.index"
-          >
+          <div class="images" v-for="image in img.images" :key="image.index">
             <img
               class="delivery-images"
               data-toggle="modal"
               data-target="#ModalCenter"
               :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,              
+                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
               "
             />
           </div>
-          <small style="display: block;">By: {{ img.name }}</small>
         </div>
         <div
           class="modal fade"
@@ -58,7 +56,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">
-                  Signatures
+                  Signature
                 </h5>
                 <button
                   type="button"
@@ -74,11 +72,14 @@
                   <img
                     class="modalimages"
                     :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.img}`,              
+                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`,              
               "
                   />
                 </div>
-                <small style="display: block;">By: {{ img.name }}</small>
+                <small> Order Signed By: </small>
+                <span class="signature">{{ img.name }}</span>
+                <small> Phone Number: </small>
+                <span class="signature">{{ img.phone_no }}</span>
               </div>
               <div class="modal-footer">
                 <button
@@ -119,17 +120,16 @@
               <div class="modal-body">
                 <div
                   class="modalimages"
-                  v-for="image in img.delivery_image"
+                  v-for="image in img.images"
                   :key="image.index"
                 >
                   <img
                     class="modalimages"
                     :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image.images}`,              
+                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
               "
                   />
                 </div>
-                <small style="display: block;">By: {{ img.name }}</small>
               </div>
               <div class="modal-footer">
                 <button
@@ -341,7 +341,7 @@ export default {
     return {
       orderDetails: this.order,
       orderNo: this.order.order_details.order_no,
-      riderDeliverImg: this.order.delivery_details.rider_delivery_image,
+      riderDeliverImg: this.order.delivery_details.delivery_images,
       riderID: this.order.rider_details.rider_id,
       dispute_status: this.order.order_details.dispute_status,
       errors: [],
@@ -553,5 +553,9 @@ export default {
 .modalimages {
   max-width: 100%;
   max-height: 100%;
+}
+.signature {
+  display: block;
+  font-weight: bold;
 }
 </style>
