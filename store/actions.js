@@ -507,6 +507,9 @@ export default {
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
         commit('updatePendingLocationPricing', pendingLocationPricing);
+      } else {
+        commit('updatePendingDistancePricing', pendingDistancePricing);
+        commit('updatePendingLocationPricing', pendingLocationPricing);
       }
       return res.data;
     } catch (error) {
