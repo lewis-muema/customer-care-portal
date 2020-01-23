@@ -146,8 +146,7 @@ export default {
       reject_location_pricing_configs: 'reject_location_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
-      this.trackMixpanelIdentify();
-      this.trackMixpanelPeople();
+      this.trackRejectConfigs();
       this.approvalParams = this.createPayload(
         this.locationPricingTableData,
         'deactivated',
@@ -163,6 +162,8 @@ export default {
       try {
         const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
@@ -170,6 +171,8 @@ export default {
           this.updateSuccess(false);
           this.pendingRequests = false;
         } else {
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -181,6 +184,7 @@ export default {
     },
     provideReason() {
       this.rejectWithReason = true;
+      this.trackRejectConfigsPage();
     },
     goBack() {
       this.rejectWithReason = false;
@@ -203,12 +207,16 @@ export default {
         const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
           this.trackPassedApproval();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.pendingRequests = false;
         } else {
           this.trackFailedApproval();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -282,32 +290,44 @@ export default {
       mixpanel.track('Open Approval tab - PageView', {
         type: 'PageView',
       });
-      mixpanel.people.set({
-        'User Type': 'Approver',
-      });
     },
     trackApproveConfig() {
       mixpanel.track('"Approve Pricing" Page - ButtonClick', {
         type: 'Click',
-      });
-      mixpanel.people.set({
-        'User Type': 'Approver',
       });
     },
     trackPassedApproval() {
       mixpanel.track('Configs Approved successfully - Success', {
         type: 'Success',
       });
-      mixpanel.people.set({
-        'User Type': 'Approver',
-      });
     },
     trackFailedApproval() {
       mixpanel.track('Approval fails - Fail', {
         type: 'Fail',
       });
+    },
+    trackRejectConfigs() {
+      mixpanel.track('"Reject Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackRejectConfigsPage() {
+      mixpanel.track('Request Rejected - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('Approver', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
       mixpanel.people.set({
         'User Type': 'Approver',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
       });
     },
   },

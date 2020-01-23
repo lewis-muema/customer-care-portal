@@ -131,12 +131,16 @@ export default {
         const data = await this.deactivate_distance_pricing_configs(payload);
         if (data.status) {
           this.trackResetConfigsSuccess();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateViewStatus(false);
         } else {
           this.trackResetConfigsFail();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -171,32 +175,34 @@ export default {
       mixpanel.track('View Details Link - PageView', {
         type: 'PageView',
       });
-      mixpanel.people.set({
-        'User Type': 'All Users',
-      });
     },
     trackResetConfigs() {
       mixpanel.track('"Reset Pricing" Button - ButtonClick', {
         type: 'Click',
-      });
-      mixpanel.people.set({
-        'User Type': 'Approver',
       });
     },
     trackResetConfigsSuccess() {
       mixpanel.track('Reset successful - Success', {
         type: 'Success',
       });
-      mixpanel.people.set({
-        'User Type': 'Approver',
-      });
     },
     trackResetConfigsFail() {
       mixpanel.track('Reset failed - Fail', {
         type: 'Fail',
       });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('Approver', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
       mixpanel.people.set({
         'User Type': 'Approver',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
       });
     },
   },

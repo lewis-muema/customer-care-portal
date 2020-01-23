@@ -184,6 +184,8 @@ export default {
         const data = await this.submit_custom_pricing(payload);
         if (data.status) {
           this.trackPassedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(
             'You have successfully created the custom pricing config!',
           );
@@ -193,6 +195,8 @@ export default {
           this.sendEmailNotification(this.admin.email, this.admin.name);
         } else {
           this.trackFailedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -249,32 +253,34 @@ export default {
       mixpanel.track('Submit distance pricing for approval Page - PageView', {
         type: 'PageView',
       });
-      mixpanel.people.set({
-        'User Type': 'CRM',
-      });
     },
     trackPricingSubmit() {
       mixpanel.track('"Submit Request" Button - ButtonClick', {
         type: 'Click',
-      });
-      mixpanel.people.set({
-        'User Type': 'CRM',
       });
     },
     trackPassedSubmission() {
       mixpanel.track('Distance pricing saved - Success', {
         type: 'Success',
       });
-      mixpanel.people.set({
-        'User Type': 'CRM',
-      });
     },
     trackFailedSubmission() {
       mixpanel.track('Distance pricing not saved - Fail', {
         type: 'Fail',
       });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('CRM', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
       mixpanel.people.set({
         'User Type': 'CRM',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
       });
     },
   },

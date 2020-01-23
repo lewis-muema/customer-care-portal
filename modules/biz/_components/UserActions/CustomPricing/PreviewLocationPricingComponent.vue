@@ -153,8 +153,12 @@ export default {
           this.previewing = false;
           this.sendEmailNotification(this.admin.email, this.admin.name);
           this.trackPassedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
         } else {
           this.trackFailedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -213,32 +217,34 @@ export default {
       mixpanel.track('Submit location pricing for approval Page - PageView', {
         type: 'PageView',
       });
-      mixpanel.people.set({
-        'User Type': 'CRM',
-      });
     },
     trackPricingSubmit() {
       mixpanel.track('"Submit Request" Button - ButtonClick', {
         type: 'Click',
-      });
-      mixpanel.people.set({
-        'User Type': 'CRM',
       });
     },
     trackPassedSubmission() {
       mixpanel.track('Location pricing saved - Success', {
         type: 'Success',
       });
-      mixpanel.people.set({
-        'User Type': 'CRM',
-      });
     },
     trackFailedSubmission() {
       mixpanel.track('Location pricing not saved - Fail', {
         type: 'Fail',
       });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('CRM', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
       mixpanel.people.set({
         'User Type': 'CRM',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
       });
     },
   },
