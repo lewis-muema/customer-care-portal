@@ -97,7 +97,7 @@ export default {
     this.tableData = this.getTableData;
     this.customPricingDetails = this.getCustomPricingDetails;
     this.copId = this.user.user_details.cop_id;
-    this.trackMixpanelPage();
+    this.trackViewDetailsPage();
   },
   methods: {
     ...mapMutations({
@@ -117,7 +117,7 @@ export default {
       this.updateViewStatus(false);
     },
     async resetCustomPricing() {
-      this.trackMixpanelDeactivateConfigs();
+      this.trackResetConfigs();
       const approvalParams = this.createPayload(this.customPricingDetails);
       const notification = [];
       let actionClass = '';
@@ -130,11 +130,17 @@ export default {
       try {
         const data = await this.deactivate_distance_pricing_configs(payload);
         if (data.status) {
+          this.trackResetConfigsSuccess();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateViewStatus(false);
         } else {
+          this.trackResetConfigsFail();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -165,11 +171,39 @@ export default {
       }
       return distancePricingArray;
     },
-    trackMixpanelPage() {
-      mixpanel.track('Pricing Config Summary View Page');
+    trackViewDetailsPage() {
+      mixpanel.track('View Details Link - PageView', {
+        type: 'PageView',
+      });
     },
-    trackMixpanelDeactivateConfigs() {
-      mixpanel.track('Pricing Config Deactivate Configs');
+    trackResetConfigs() {
+      mixpanel.track('"Reset Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackResetConfigsSuccess() {
+      mixpanel.track('Reset successful - Success', {
+        type: 'Success',
+      });
+    },
+    trackResetConfigsFail() {
+      mixpanel.track('Reset failed - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('Approver', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Approver',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
     },
   },
 };

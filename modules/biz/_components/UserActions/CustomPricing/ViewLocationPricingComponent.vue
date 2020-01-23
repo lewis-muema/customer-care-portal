@@ -85,6 +85,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.tableData = this.getTableData;
     this.adminId = this.getSessionData.payload.data.admin_id;
+    this.trackViewDetailsPage();
   },
   methods: {
     ...mapMutations({
@@ -99,6 +100,7 @@ export default {
       this.$emit('viewUpdate', false);
     },
     async resetCustomPricing() {
+      this.trackResetConfigs();
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
@@ -114,7 +116,13 @@ export default {
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
           this.$emit('viewUpdate', false);
+          this.trackResetConfigsSuccess();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
         } else {
+          this.trackResetConfigsFail();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -123,7 +131,6 @@ export default {
       } catch (error) {
         this.status = false;
       }
-      this.trackMixpanelPeople();
     },
     createPayload(data) {
       const locationPricingArray = [];
@@ -184,6 +191,40 @@ export default {
         locationPricingArray.push(locationPricingObject);
       }
       return locationPricingArray;
+    },
+    trackViewDetailsPage() {
+      mixpanel.track('View Details Link - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackResetConfigs() {
+      mixpanel.track('"Reset Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackResetConfigsSuccess() {
+      mixpanel.track('Reset successful - Success', {
+        type: 'Success',
+      });
+    },
+    trackResetConfigsFail() {
+      mixpanel.track('Reset failed - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('Approver', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Approver',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
     },
   },
 };

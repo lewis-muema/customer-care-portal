@@ -75,7 +75,10 @@
           {{ this.copName }} has no custom pricing set up at the moment.
         </p>
         <button
-          @click="goNext()"
+          @click="
+            trackAddNewConfig();
+            goNext();
+          "
           class="btn btn-primary action-button pricing-btn"
         >
           Add Custom Pricing
@@ -112,7 +115,10 @@
           <button
             :disabled="checkedPricingModel === 3"
             class="btn btn-primary action-button pricing-next-button"
-            @click="goNext"
+            @click="
+              trackSetUpConfig();
+              goNext();
+            "
           >
             Setup pricing
           </button>
@@ -243,7 +249,7 @@ export default {
     this.setConfigStatus();
     this.updateSummaryStatus(true);
     this.updateSection(0);
-    this.trackMixpanelPage();
+    this.trackPricingHomePage();
   },
   methods: {
     ...mapMutations({
@@ -257,10 +263,14 @@ export default {
     }),
     goNext() {
       this.updateSection(this.section + 1);
-      if (this.section === 2 && this.checkedPricingModel === 1) {
+      if (this.section === 1) {
+        this.trackModelSelectionPage();
+      } else if (this.section === 2 && this.checkedPricingModel === 1) {
         this.newDistancePricing = true;
+        this.trackNewDistanceConfig();
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
+        this.trackNewLocationConfig();
       }
     },
     goBack() {
@@ -295,6 +305,7 @@ export default {
       }
     },
     viewConfigDetails() {
+      this.trackViewPricingDetails();
       this.updateSummaryStatus(false);
       this.setCustomPricingDetails(this.customPricingDetails);
       if (typeof this.distancePricingTableData[0] === 'object') {
@@ -305,18 +316,47 @@ export default {
         this.setTableData(this.locationPricingTableData);
       }
     },
-    trackMixpanelPage() {
-      mixpanel.track('Pricing Config Summary Page');
-    },
-    trackMixpanelNewConfig() {
-      mixpanel.track('New Pricing Config Page');
-    },
     onSectionUpdate(value) {
       this.newLocationPricing = value;
       this.newDistancePricing = value;
     },
     onViewUpdate(value) {
       this.viewLocation = value;
+    },
+    trackPricingHomePage() {
+      mixpanel.track('Open custom pricing Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackAddNewConfig() {
+      mixpanel.track('Add custom pricing - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackModelSelectionPage() {
+      mixpanel.track('Select Pricing model Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackNewLocationConfig() {
+      mixpanel.track('Location Pricing selected - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackNewDistanceConfig() {
+      mixpanel.track('Distance Pricing selected - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackSetUpConfig() {
+      mixpanel.track('"Setup Pricing" button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackViewPricingDetails() {
+      mixpanel.track('"See pricing details" Link - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };
