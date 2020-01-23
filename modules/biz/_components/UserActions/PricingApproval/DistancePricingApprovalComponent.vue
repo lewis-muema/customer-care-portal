@@ -262,40 +262,64 @@ export default {
       mixpanel.track('Open Approval tab - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
     trackApproveConfig() {
       mixpanel.track('"Approve Pricing" Page - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
     trackPassedApproval() {
       mixpanel.track('Configs Approved successfully - Success', {
         type: 'Success',
       });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
     trackFailedApproval() {
       mixpanel.track('Approval fails - Fail', {
         type: 'Fail',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
     trackRejectConfigs() {
       mixpanel.track('"Reject Pricing" Button - ButtonClick', {
         type: 'Click',
       });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
     trackRejectConfigsPage() {
       mixpanel.track('Request Rejected - PageView', {
         type: 'PageView',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
     trackPassedReject() {
       mixpanel.track('Configs rejected - Success', {
         type: 'Success',
       });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
     trackFailedReject() {
       mixpanel.track('Reject fails - Fail', {
         type: 'Fail',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
   },

@@ -327,35 +327,56 @@ export default {
       mixpanel.track('Open custom pricing Page - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'All Users',
+      });
     },
     trackAddNewConfig() {
       mixpanel.track('Add custom pricing - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'CRM',
       });
     },
     trackModelSelectionPage() {
       mixpanel.track('Select Pricing model Page - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackNewLocationConfig() {
       mixpanel.track('Location Pricing selected - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'CRM',
       });
     },
     trackNewDistanceConfig() {
       mixpanel.track('Distance Pricing selected - ButtonClick', {
         type: 'Click',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackSetUpConfig() {
       mixpanel.track('"Setup Pricing" button - ButtonClick', {
         type: 'Click',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackViewPricingDetails() {
       mixpanel.track('"See pricing details" Link - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
   },

@@ -171,20 +171,32 @@ export default {
       mixpanel.track('View Details Link - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'All Users',
+      });
     },
     trackResetConfigs() {
       mixpanel.track('"Reset Pricing" Button - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
     trackResetConfigsSuccess() {
       mixpanel.track('Reset successful - Success', {
         type: 'Success',
       });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
     trackResetConfigsFail() {
       mixpanel.track('Reset failed - Fail', {
         type: 'Fail',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
   },

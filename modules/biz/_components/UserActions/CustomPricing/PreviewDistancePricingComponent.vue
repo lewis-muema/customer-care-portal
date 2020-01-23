@@ -249,20 +249,32 @@ export default {
       mixpanel.track('Submit distance pricing for approval Page - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackPricingSubmit() {
       mixpanel.track('"Submit Request" Button - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'CRM',
       });
     },
     trackPassedSubmission() {
       mixpanel.track('Distance pricing saved - Success', {
         type: 'Success',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackFailedSubmission() {
       mixpanel.track('Distance pricing not saved - Fail', {
         type: 'Fail',
+      });
+      mixpanel.people.set({
+        'User Type': 'CRM',
       });
     },
   },

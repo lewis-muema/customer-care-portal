@@ -233,7 +233,7 @@ export default {
         const locationData = {
           id: data[i].id,
           name: data[i].name,
-          cop_id: data[i].cop_id,
+          cop_id: this.copId,
           cop_name: data[i].cop_name,
           currency: this.currency,
           admin_id: parseInt(this.adminId, 10),
@@ -282,20 +282,32 @@ export default {
       mixpanel.track('Open Approval tab - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
     trackApproveConfig() {
       mixpanel.track('"Approve Pricing" Page - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
     trackPassedApproval() {
       mixpanel.track('Configs Approved successfully - Success', {
         type: 'Success',
       });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
     trackFailedApproval() {
       mixpanel.track('Approval fails - Fail', {
         type: 'Fail',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
       });
     },
   },

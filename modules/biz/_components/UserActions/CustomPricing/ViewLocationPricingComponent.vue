@@ -85,6 +85,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.tableData = this.getTableData;
     this.adminId = this.getSessionData.payload.data.admin_id;
+    this.trackViewDetailsPage();
   },
   methods: {
     ...mapMutations({
@@ -99,6 +100,7 @@ export default {
       this.$emit('viewUpdate', false);
     },
     async resetCustomPricing() {
+      this.trackResetConfigs();
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
@@ -114,7 +116,9 @@ export default {
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
           this.$emit('viewUpdate', false);
+          this.trackResetConfigsSuccess();
         } else {
+          this.trackResetConfigsFail();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -123,7 +127,6 @@ export default {
       } catch (error) {
         this.status = false;
       }
-      this.trackMixpanelPeople();
     },
     createPayload(data) {
       const locationPricingArray = [];
@@ -140,7 +143,7 @@ export default {
         const locationData = {
           id: data[i].id,
           name: data[i].name,
-          cop_id: data[i].cop_id,
+          cop_id: this.copId,
           cop_name: data[i].cop_name,
           currency: this.currency,
           admin_id: parseInt(this.adminId, 10),
@@ -184,6 +187,38 @@ export default {
         locationPricingArray.push(locationPricingObject);
       }
       return locationPricingArray;
+    },
+    trackViewDetailsPage() {
+      mixpanel.track('View Details Link - PageView', {
+        type: 'PageView',
+      });
+      mixpanel.people.set({
+        'User Type': 'All Users',
+      });
+    },
+    trackResetConfigs() {
+      mixpanel.track('"Reset Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
+    },
+    trackResetConfigsSuccess() {
+      mixpanel.track('Reset successful - Success', {
+        type: 'Success',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
+    },
+    trackResetConfigsFail() {
+      mixpanel.track('Reset failed - Fail', {
+        type: 'Fail',
+      });
+      mixpanel.people.set({
+        'User Type': 'Approver',
+      });
     },
   },
 };

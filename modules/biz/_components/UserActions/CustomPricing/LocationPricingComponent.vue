@@ -322,10 +322,16 @@ export default {
       mixpanel.track('Add Location Pricing data Page - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackSaveAndPreview() {
       mixpanel.track('Save and Preview Location Pricing button - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'CRM',
       });
     },
   },

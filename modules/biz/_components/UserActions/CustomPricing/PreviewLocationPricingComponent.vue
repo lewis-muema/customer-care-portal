@@ -181,7 +181,7 @@ export default {
         const locationData = {
           id: data[i].id,
           name: data[i].name,
-          cop_id: data[i].cop_id,
+          cop_id: this.copId,
           cop_name: data[i].cop_name,
           currency: this.currency,
           admin_id: this.approver,
@@ -213,20 +213,32 @@ export default {
       mixpanel.track('Submit location pricing for approval Page - PageView', {
         type: 'PageView',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackPricingSubmit() {
       mixpanel.track('"Submit Request" Button - ButtonClick', {
         type: 'Click',
+      });
+      mixpanel.people.set({
+        'User Type': 'CRM',
       });
     },
     trackPassedSubmission() {
       mixpanel.track('Location pricing saved - Success', {
         type: 'Success',
       });
+      mixpanel.people.set({
+        'User Type': 'CRM',
+      });
     },
     trackFailedSubmission() {
       mixpanel.track('Location pricing not saved - Fail', {
         type: 'Fail',
+      });
+      mixpanel.people.set({
+        'User Type': 'CRM',
       });
     },
   },
