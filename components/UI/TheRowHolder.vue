@@ -187,11 +187,14 @@ export default {
       if (deliveryStatus === 3 && confirmStatus === 1) {
         status = this.deliveryStatus(this.order);
       }
-      if (
-        this.moreData.dispute_status === 2 ||
-        this.moreData.dispute_status === 3
-      ) {
+      if (this.moreData.dispute_status === 2) {
         status = 'disputed';
+      }
+      if (this.moreData.dispute_status === 3) {
+        status = 'disputed & appealed';
+      }
+      if (this.moreData.dispute_status === 4) {
+        status = 'disputed & resolved';
       }
       return status;
     },
