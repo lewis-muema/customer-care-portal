@@ -163,7 +163,6 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
         }
       } catch (error) {
-        this.status = false;
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }
