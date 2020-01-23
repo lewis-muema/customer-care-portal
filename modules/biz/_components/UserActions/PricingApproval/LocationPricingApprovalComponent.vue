@@ -157,7 +157,7 @@ export default {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/update_custom_distance_details',
         apiKey: false,
-        params: this.locationPricingTableData,
+        params: this.approvalParams,
       };
       try {
         const data = await this.approve_location_pricing_configs(payload);
