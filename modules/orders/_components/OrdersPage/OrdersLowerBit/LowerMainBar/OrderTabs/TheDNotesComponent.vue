@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div v-if="typeof DeliverImg === 'undefined' || DeliverImg === null">
+    <div v-if="!DeliverImg || DeliverImg.length === 0">
       No DNotes found for this delivery
     </div>
     <div v-else>
@@ -100,7 +100,7 @@ export default {
       submitted: false,
       errors: [],
       actionClass: '',
-      DeliverImg: this.order.delivery_details.rider_delivery_image,
+      DeliverImg: this.order.delivery_details.delivery_images,
     };
   },
   validations: {

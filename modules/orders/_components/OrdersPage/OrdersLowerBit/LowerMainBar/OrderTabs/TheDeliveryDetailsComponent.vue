@@ -1,9 +1,7 @@
 <template>
   <span>
-    <div
-      v-if="typeof riderDeliverImg === 'undefined' || riderDeliverImg === null"
-    >
-      No docs found for this delivery
+    <div v-if="!riderDeliverImg || riderDeliverImg.length === 0">
+      No docs found for this Delivery
     </div>
     <div v-else class="holder">
       <div class="form-inline" v-for="img in riderDeliverImg" :key="img.index">
