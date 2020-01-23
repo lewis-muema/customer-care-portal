@@ -132,7 +132,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.trackMixpanelPage();
+    this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -186,8 +186,7 @@ export default {
       this.rejectWithReason = false;
     },
     async approveLocationPricingConfigs() {
-      this.trackMixpanelIdentify();
-      this.trackMixpanelPeople();
+      this.trackApproveConfig();
       this.approvalParams = this.createPayload(
         this.locationPricingTableData,
         'Active',
@@ -203,11 +202,13 @@ export default {
       try {
         const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
+          this.trackPassedApproval();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.pendingRequests = false;
         } else {
+          this.trackFailedApproval();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -277,20 +278,24 @@ export default {
       }
       return locationPricingArray;
     },
-    trackMixpanelPage() {
-      mixpanel.track('Pricing Config Approval Page');
-    },
-    trackMixpanelIdentify() {
-      mixpanel.identify(this.getSessionData.payload.data.name, {
-        email: this.getSessionData.payload.data.email,
-        admin_id: this.getSessionData.payload.data.admin_id,
+    trackApprovalHomePage() {
+      mixpanel.track('Open Approval tab - PageView', {
+        type: 'PageView',
       });
     },
-    trackMixpanelPeople() {
-      mixpanel.people.set({
-        'User Type': 'Approving Manager',
-        $email: this.getSessionData.payload.data.email,
-        $name: this.getSessionData.payload.data.name,
+    trackApproveConfig() {
+      mixpanel.track('"Approve Pricing" Page - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPassedApproval() {
+      mixpanel.track('Configs Approved successfully - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedApproval() {
+      mixpanel.track('Approval fails - Fail', {
+        type: 'Fail',
       });
     },
   },

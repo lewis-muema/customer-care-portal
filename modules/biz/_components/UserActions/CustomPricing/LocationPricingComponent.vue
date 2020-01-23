@@ -249,7 +249,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     this.fetchVendorTypes(countryCode);
-    this.trackMixpanelPage();
+    this.trackAddPricingDataPage();
   },
   methods: {
     ...mapMutations({
@@ -313,12 +313,20 @@ export default {
     },
     previewConfig() {
       this.previewLocationPricing = true;
+      this.trackSaveAndPreview();
     },
     onSectionUpdate(value) {
       this.previewLocationPricing = value;
     },
-    trackMixpanelPage() {
-      mixpanel.track('New Location Pricing Config Page Loaded');
+    trackAddPricingDataPage() {
+      mixpanel.track('Add Location Pricing data Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackSaveAndPreview() {
+      mixpanel.track('Save and Preview Location Pricing button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };

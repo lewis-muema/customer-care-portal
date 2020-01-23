@@ -117,6 +117,7 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
+    this.trackPricingSubmitPage();
   },
   methods: {
     ...mapMutations({}),
@@ -134,6 +135,7 @@ export default {
       this.approverSelect = false;
     },
     async submitConfigs() {
+      this.trackPricingSubmit();
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
@@ -150,7 +152,9 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
           this.previewing = false;
           this.sendEmailNotification(this.admin.email, this.admin.name);
+          this.trackPassedSubmission();
         } else {
+          this.trackFailedSubmission();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -204,6 +208,26 @@ export default {
         locationPricingArray.push(locationPricingObject);
       }
       return locationPricingArray;
+    },
+    trackPricingSubmitPage() {
+      mixpanel.track('Submit location pricing for approval Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackPricingSubmit() {
+      mixpanel.track('"Submit Request" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPassedSubmission() {
+      mixpanel.track('Location pricing saved - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedSubmission() {
+      mixpanel.track('Location pricing not saved - Fail', {
+        type: 'Fail',
+      });
     },
   },
 };

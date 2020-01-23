@@ -147,7 +147,7 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
-    this.trackMixpanelPage();
+    this.trackPricingSubmitPage();
   },
   methods: {
     ...mapMutations({
@@ -170,6 +170,7 @@ export default {
       this.approverSelect = true;
     },
     async submitConfigs() {
+      this.trackPricingSubmit();
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
@@ -182,6 +183,7 @@ export default {
       try {
         const data = await this.submit_custom_pricing(payload);
         if (data.status) {
+          this.trackPassedSubmission();
           notification.push(
             'You have successfully created the custom pricing config!',
           );
@@ -190,6 +192,7 @@ export default {
           this.previewing = false;
           this.sendEmailNotification(this.admin.email, this.admin.name);
         } else {
+          this.trackFailedSubmission();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -242,14 +245,24 @@ export default {
       }
       return distancePricingArray;
     },
-    trackMixpanelPage() {
-      mixpanel.track('Pricing Config Preview and Submit');
+    trackPricingSubmitPage() {
+      mixpanel.track('Submit distance pricing for approval Page - PageView', {
+        type: 'PageView',
+      });
     },
-    trackMixpanelPeople() {
-      mixpanel.people.set({
-        'User Type': 'Client Relationship Manager',
-        $email: this.getSessionData.payload.data.email,
-        $name: this.getSessionData.payload.data.name,
+    trackPricingSubmit() {
+      mixpanel.track('"Submit Request" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPassedSubmission() {
+      mixpanel.track('Distance pricing saved - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedSubmission() {
+      mixpanel.track('Distance pricing not saved - Fail', {
+        type: 'Fail',
       });
     },
   },

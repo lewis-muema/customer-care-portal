@@ -309,7 +309,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     this.fetchVendorTypes(countryCode);
-    this.trackMixpanelPage();
+    this.trackAddPricingDataPage();
   },
   methods: {
     ...mapMutations({
@@ -320,6 +320,7 @@ export default {
       this.$emit('sectionUpdate', false);
     },
     previewConfig() {
+      this.trackSaveAndPreview();
       this.previewDistancePricing = true;
     },
     onChange(event, index, row) {
@@ -349,8 +350,15 @@ export default {
     onSectionUpdate(value) {
       this.previewDistancePricing = value;
     },
-    trackMixpanelPage() {
-      mixpanel.track('New Distance Pricing Config Page Loaded');
+    trackAddPricingDataPage() {
+      mixpanel.track('Add Distance Pricing data Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackSaveAndPreview() {
+      mixpanel.track('Save and Preview Distance Pricing button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };
