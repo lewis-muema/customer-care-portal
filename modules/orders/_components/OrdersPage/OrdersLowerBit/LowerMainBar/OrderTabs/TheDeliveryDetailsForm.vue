@@ -4,7 +4,7 @@
       <div
         class="col-sm-3"
         v-if="
-          (dispute_status === 0 || dispute_status === 1) && dispute_status < 4
+          dispute_status === 0 || dispute_status === 1 || dispute_status === 3
         "
       >
         <div class="form-group">
@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-3" v-if="dispute_status === 2 || dispute_status === 3">
+      <div class="col-sm-3" v-if="dispute_status === 3">
         <div class="form-group">
           <div class="radio">
             <label>
@@ -41,10 +41,7 @@
         </div>
       </div>
       <div class="col-sm-3">
-        <div
-          class="form-group"
-          v-if="dispute_status === 2 || dispute_status === 3"
-        >
+        <div class="form-group" v-if="dispute_status === 3">
           <div class="radio">
             <label>
               <input
@@ -59,6 +56,24 @@
           </div>
         </div>
       </div>
+
+      <div class="col-sm-3">
+        <div class="form-group" v-if="dispute_status === 2">
+          <div class="radio">
+            <label>
+              <input
+                name="delivery_docs_dispute_value1_${orderNo}"
+                id="delivery_docs_action1_${orderNo}"
+                value="1"
+                type="radio"
+                @change="update_delivery_docs_dispute_action(switched)"
+              />
+              Reject Customer Dispute
+            </label>
+          </div>
+        </div>
+      </div>
+
       <div class="col-sm-3">
         <div class="form-group" v-if="dispute_status === 0">
           <div class="radio">
@@ -84,7 +99,12 @@
       <strong> {{ disputeResponse }} </strong>
     </div>
     <form id="dispute-form" @submit.prevent="determineAction">
-      <div class="form-group" v-if="switched && dispute_status < 4">
+      <div
+        class="form-group"
+        v-if="
+          dispute_status === 0 || dispute_status === 1 || dispute_status === 3
+        "
+      >
         <v-select
           :options="options"
           :reduce="reason => reason.code"
@@ -103,7 +123,9 @@
           dispute reason is required
         </div>
         <textarea
-          v-if="switched && dispute_status < 4"
+          v-if="
+            dispute_status === 0 || dispute_status === 1 || dispute_status === 3
+          "
           type="text"
           v-model="description"
           :id="`dispute_description_${orderNo}`"
@@ -116,7 +138,10 @@
         >
         </textarea>
         <div
-          v-if="submitted && !$v.description.required && dispute_status < 4"
+          v-if="
+            // eslint-disable-next-line prettier/prettier
+            submitted && !$v.description.required && (dispute_status === 0 || dispute_status === 1 || dispute_status === 3)
+          "
           class="invalid-feedback"
         >
           Description is required
@@ -124,7 +149,9 @@
       </div>
       <div class="form-group" v-else>
         <v-select
-          v-if="dispute_status > 1 && dispute_status < 4"
+          v-if="
+            dispute_status === 0 || dispute_status === 2 || dispute_status === 3
+          "
           :options="optionz"
           :reduce="reason => reason.code"
           name="reason"
@@ -142,15 +169,18 @@
           v-if="
             submitted &&
               !$v.reason.required &&
-              dispute_status > 1 &&
-              dispute_status < 4
+              (dispute_status === 0 ||
+                dispute_status === 2 ||
+                dispute_status === 3)
           "
           class="invalid-feedback"
         >
           undispute reason is required
         </div>
         <textarea
-          v-if="dispute_status > 1 && dispute_status < 4"
+          v-if="
+            dispute_status === 0 || dispute_status === 2 || dispute_status === 3
+          "
           type="text"
           v-model="description"
           :id="`dispute_description_${orderNo}`"
@@ -163,13 +193,15 @@
         >
         </textarea>
         <div
-          v-if="dispute_status > 1 && dispute_status < 4"
+          v-if="
+            dispute_status === 0 || dispute_status === 2 || dispute_status === 3
+          "
           class="invalid-feedback"
         >
           Description is required
         </div>
       </div>
-      <button v-if="dispute_status < 4" class="btn btn-primary action-button">
+      <button v-if="dispute_status !== 4" class="btn btn-primary action-button">
         submit
       </button>
     </form>
@@ -405,3 +437,9 @@ export default {
   },
 };
 </script>
+<style>
+.alert-success {
+  width: 100%;
+  margin-left: 9px;
+}
+</style>
