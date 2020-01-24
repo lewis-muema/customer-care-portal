@@ -171,6 +171,7 @@ module.exports = {
       {
         keys: [
           'GOOGL_API_KEY',
+          'HEROKU_GOOGLE_API_KEY',
           'GOOGLE_CLIENT_ID',
           'BACKEND_KEY',
           'SOLR_JWT',

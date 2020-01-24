@@ -97,8 +97,14 @@ export default {
   updateDistancePricing(state, val) {
     state.distancePricingData = val;
   },
+  updateLocationPricing(state, val) {
+    state.locationPricingData = val;
+  },
   updatePendingDistancePricing(state, val) {
     state.pendingPricingData = val;
+  },
+  updatePendingLocationPricing(state, val) {
+    state.pendingLocationData = val;
   },
   updateApproveStatus(state, val) {
     state.approveStatus = val;
