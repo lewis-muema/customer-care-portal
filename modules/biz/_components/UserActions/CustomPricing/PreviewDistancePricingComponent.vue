@@ -9,6 +9,7 @@
           <el-select
             v-model="approver"
             size="small"
+            class="el-input--small"
             filterable
             placeholder="Select manager"
           >
@@ -303,5 +304,9 @@ export default {
 }
 .table td {
   padding: 5px !important;
+}
+.el-input--small {
+  border: 1px solid#e4e7ed !important;
+  border-radius: 5px !important;
 }
 </style>
