@@ -41,6 +41,8 @@ const PricingConfigsMxn = {
       send_mail_to_admin: 'send_mail_to_admin',
     }),
     async getDistancePricingConfigs() {
+      const notification = [];
+      let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/get_custom_distance_details',
@@ -63,10 +65,15 @@ const PricingConfigsMxn = {
           this.locationPricingTableData = [];
         }
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     async fetchCustomDistancePricingData() {
+      const notification = [];
+      let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/get_custom_distance_details',
@@ -88,10 +95,15 @@ const PricingConfigsMxn = {
           this.locationPricingTableData = [];
         }
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     async fetchVendorTypes(countryCode) {
+      const notification = [];
+      let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'vendors/types',
@@ -105,8 +117,11 @@ const PricingConfigsMxn = {
         const data = await this.request_vendor_types(payload);
         return (this.vendorTypes = data.vendor_types);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     addRow(model) {
       if (model === 'Distance') {
@@ -177,11 +192,12 @@ const PricingConfigsMxn = {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };

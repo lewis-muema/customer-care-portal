@@ -119,7 +119,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://auth.sendyit.com/pricing/',
+    PRICING_SERVICE: 'https://auth.sendyit.com/',
     AUTH: 'https://auth.sendyit.com/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
