@@ -36,6 +36,7 @@
           <div class="signature-image">
             <img
               class="signature-img-notes"
+              :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
               :src="
                   `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
@@ -45,7 +46,7 @@
         </div>
       </div>
     </div>
-    <DeliveryDetailsModals :image="modalImage" />
+    <DeliveryDetailsModals :image="modalImage" :order="orderNo" />
     <DeliveryDetailsForm :order="order" />
   </span>
 </template>
@@ -113,7 +114,7 @@ export default {
     }),
     triggerDnotesModal(image, e) {
       this.modalImage = image;
-      $(`#ModalCenter`).modal('show');
+      $(`#${this.orderNo}`).modal('show');
       e.preventDefault();
     },
   },

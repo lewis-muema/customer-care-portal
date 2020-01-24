@@ -2,7 +2,7 @@
   <div>
     <div
       class="modal fade"
-      id="ModalCenter"
+      :id="`${order}`"
       tabindex="-1"
       role="dialog"
       aria-labelledby="exampleModalCenterTitle"
@@ -24,7 +24,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="modalimages">
+            <div class="modalimages" :id="`${image}`">
               <img
                 class="modalimages"
                 :src="
@@ -55,6 +55,10 @@ export default {
   name: 'DeliveryDetailsModals',
   props: {
     image: {
+      type: String,
+      required: true,
+    },
+    order: {
       type: String,
       required: true,
     },
