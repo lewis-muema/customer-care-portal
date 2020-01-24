@@ -157,7 +157,7 @@ export default {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/update_custom_distance_details',
         apiKey: false,
-        params: this.locationPricingTableData,
+        params: this.approvalParams,
       };
       try {
         const data = await this.approve_location_pricing_configs(payload);
@@ -176,11 +176,12 @@ export default {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     provideReason() {
       this.rejectWithReason = true;
@@ -220,11 +221,12 @@ export default {
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     createPayload(data, status) {
       const locationPricingArray = [];
@@ -237,6 +239,7 @@ export default {
           custom_pricing_details: {
             location_pricing: [],
           },
+          rejection_message: this.rejectionReason,
         };
         const locationData = {
           id: data[i].id,
