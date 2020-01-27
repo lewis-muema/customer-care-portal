@@ -106,4 +106,7 @@ export default {
   getCustomPricingDetails(state) {
     return state.customPricingDetails;
   },
+  getloginErrors(state) {
+    return state.loginErrors;
+  },
 };
