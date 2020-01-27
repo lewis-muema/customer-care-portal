@@ -146,11 +146,7 @@ export default {
       const user_data = this.user.user_details;
       this.vatCompliance = user_data.vat_compliant;
       this.tax_authority_pin = user_data.tax_authority_pin;
-      if (user_data.payment_option === '2') {
-        this.invoicing_cycle = 7;
-      } else {
-        this.invoicing_cycle = user_data.invoice_circle;
-      }
+      this.invoicing_cycle = user_data.invoice_circle;
     },
     // eslint-disable-next-line require-await
     async update_biz_configs() {
