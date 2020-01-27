@@ -92,7 +92,7 @@ export default {
         endpoint: 'sendy/invoice_logs',
         apiKey: true,
         params: {
-          individualType: 'cop',
+          individualType: 'peer',
           individualId: this.user,
         },
       };
