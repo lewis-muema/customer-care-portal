@@ -1,20 +1,22 @@
 <template>
   <no-ssr>
     <span>
-      <div class="alert alert danger" v-if="errors.length > 0">
-        {{ errors }}
+      <div class="holder">
+        <div class="signin-error">
+          <span v-if="getloginErrors !== null" v-html="getloginErrors"> </span>
+        </div>
+        <sendy-auth-social
+          @authenticated="signIn"
+          @error="signInError"
+          app-name="SENDY"
+          button-text="Sign in with Google"
+        />
       </div>
-      <sendy-auth-social
-        @authenticated="signIn"
-        @error="signInError"
-        app-name="SENDY"
-        button-text="Sign in with Google"
-      />
     </span>
   </no-ssr>
 </template>
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import Cookie from 'js-cookie';
 import SessionMxn from '@/mixins/session_mixin';
 
@@ -22,17 +24,12 @@ export default {
   name: 'login',
   layout: 'login',
   mixins: [SessionMxn],
-  data() {
-    return {
-      errors: [],
-    };
+  computed: {
+    ...mapGetters(['getloginErrors']),
   },
+
   mounted() {
-    localStorage.removeItem('reloaded');
-    const token = localStorage.getItem('jwtToken');
-    if (token !== null) {
-      this.$router.push('/orders');
-    }
+    this.clearCache();
   },
   methods: {
     ...mapMutations({
@@ -40,6 +37,10 @@ export default {
       updateSession: 'setSession',
       clearToken: 'clearToken',
       setTokenExpiryStatus: 'setTokenExpiryStatus',
+      setLoginErrors: 'setLoginErrors',
+    }),
+    ...mapActions({
+      clearCache: 'clearCache',
     }),
     signIn(data) {
       const token = data.token;
@@ -55,8 +56,11 @@ export default {
 
       this.$router.push('/orders');
     },
+    // eslint-disable-next-line handle-callback-err
     signInError(error) {
-      this.errors.push(error.message);
+      this.setLoginErrors(
+        'Sorry, your details could not match.<br /> Please make sure you are using your Sendy email.',
+      );
     },
   },
 };
@@ -64,7 +68,6 @@ export default {
 <style>
 .sendy--social-auth {
   height: auto;
-  position: absolute;
   top: 0;
   bottom: 0;
 }
@@ -77,5 +80,20 @@ export default {
 .sendy--social-auth div.sendy--form {
   text-align: center;
   color: #666;
+}
+.signin-error {
+  color: #f57f20;
+  margin: 100px 0 0px 0;
+  text-align: center;
+}
+.holder {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  background: #d2d6de;
+}
+.sendy--social-auth .sendy--app-name {
+  margin: 0 0 30px 0 !important;
+  padding: 0;
 }
 </style>
