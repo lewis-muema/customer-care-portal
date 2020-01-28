@@ -37,7 +37,7 @@
             <td>{{ invoice.invoice_number }}</td>
             <td>
               {{
-                getFormattedDate(invoice.invoice_date, 'DD/MM/YYYY hh.mm a ')
+                formatInvoiceTime(invoice.invoice_date, 'DD/MM/YYYY hh.mm a ')
               }}
             </td>
             <td>{{ currency }} {{ invoice.invoice_amount }}</td>

@@ -161,6 +161,12 @@ Vue.mixin({
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
+    formatInvoiceTime(date, requiredFormat) {
+      const utcDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(utcDate);
+      const dt = moment(dt1).format(requiredFormat);
+      return dt;
+    },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
