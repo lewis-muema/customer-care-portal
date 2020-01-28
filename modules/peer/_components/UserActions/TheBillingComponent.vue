@@ -139,7 +139,10 @@
         </div>
       </div>
       <div class="form-group  col-md-12 bill-peer">
-        <button class="btn btn-primary action-button">
+        <button
+          class="btn btn-primary action-button"
+          :disabled="checkSubmitStatus()"
+        >
           Bill Account
         </button>
       </div>
@@ -221,6 +224,7 @@ export default {
         rider_id: 0,
       },
       isVAT: true,
+      submit_status: false,
     };
   },
   validations: {
@@ -348,6 +352,13 @@ export default {
           action_user: this.actionUser,
         },
       };
+
+      this.submit_status = true;
+
+      setTimeout(() => {
+        this.submit_status = false;
+      }, 5000);
+
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
@@ -363,6 +374,9 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    checkSubmitStatus() {
+      return this.submit_status;
     },
     handleUserData() {
       if (this.user.payments.length > 0) {
