@@ -58,11 +58,6 @@ export default {
     signInError(error) {
       this.errors.push(error.message);
     },
-    setLogoutTimer(duration) {
-      setTimeout(() => {
-        this.clearToken();
-      }, duration);
-    },
   },
 };
 </script>
