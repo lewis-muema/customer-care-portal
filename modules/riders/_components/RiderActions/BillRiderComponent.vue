@@ -108,7 +108,10 @@
           Client No is required
         </div>
       </div>
-      <button class="btn btn-primary action-button">
+      <button
+        class="btn btn-primary action-button"
+        :disabled="checkSubmitStatus()"
+      >
         Pay
       </button>
     </form>
@@ -154,6 +157,7 @@ export default {
         { value: 100, name: 'Other', transactionID: 100 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
+      submit_status: false,
     };
   },
   validations: {
@@ -250,6 +254,12 @@ export default {
         },
       };
 
+      this.submit_status = true;
+
+      setTimeout(() => {
+        this.submit_status = false;
+      }, 5000);
+
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
@@ -265,6 +275,9 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    checkSubmitStatus() {
+      return this.submit_status;
     },
   },
 };
