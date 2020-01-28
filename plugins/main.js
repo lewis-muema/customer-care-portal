@@ -270,6 +270,11 @@ Vue.mixin({
         clientCurrency,
         currencyConversions,
       );
+      const riderConversionArray = this.getSpecificCurrencyConversion(
+        orderCurrency,
+        riderCurrency,
+        currencyConversions,
+      );
       const clientAmount = this.calculateConvertedAmount(
         clientConversionArray,
         amount,
@@ -277,7 +282,7 @@ Vue.mixin({
         clientCurrency,
       );
       const riderAmount = this.calculateConvertedAmount(
-        clientConversionArray,
+        riderConversionArray,
         amount,
         orderCurrency,
         riderCurrency,
@@ -296,7 +301,7 @@ Vue.mixin({
         conversion.from_currency.includes(fromCurrency),
       );
 
-      const newArray = res.filter(arr => arr.to_currency === 'UGX');
+      const newArray = res.filter(arr => arr.to_currency === toCurrency);
 
       return newArray;
     },
