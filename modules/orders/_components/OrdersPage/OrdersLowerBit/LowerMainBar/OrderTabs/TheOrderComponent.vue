@@ -135,17 +135,7 @@
         </tr>
         <tr>
           <td>Sendy Commission</td>
-          <td
-            v-html="
-              showCurrencyBasedAmounts(
-                orderDetails,
-                currencyConversions,
-                paymentDetails.sendy_commission,
-              )
-            "
-          >
-            ?>
-          </td>
+          <td>{{ paymentDetails.sendy_commission }}%</td>
         </tr>
         <tr>
           <td>VAT Amount</td>
