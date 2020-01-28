@@ -58,6 +58,14 @@ module.exports = {
     'vue/no-v-html': 'off',  
     'radix': 'off',
     "prettier/prettier": ["error", { "singleQuote": true }],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never",
+      "jsx": "never",
+      "ts": "never",
+      "tsx": "never",
+      "mjs": "never",
+      "": "never"
+    }]
   }
 };

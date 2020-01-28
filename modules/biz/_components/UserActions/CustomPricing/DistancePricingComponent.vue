@@ -132,8 +132,8 @@
                 class="table--col-text"
                 v-model.number="scope.row.base_km"
               >
-                <template class="pricing-prepend" slot="prepend"
-                  >KM
+                <template class="pricing-prepend" slot="prepend">
+                  KM
                 </template>
               </el-input>
             </template>

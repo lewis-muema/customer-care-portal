@@ -115,6 +115,7 @@ export default {
       const servicefee = this.order_push.sendy_fee;
       const orderAmount = this.order_push.amount;
       const partner_amount = this.order_push.partner_amount;
+      const orderCountryCode = this.order_push.country_codes;
       const vat_amount = this.order_push.rider_details.rider_vat_compliant
         ? this.order_push.vat_amount
         : 0;
@@ -146,6 +147,7 @@ export default {
       pushobj.time_placed = this.order_push.date_time;
       pushobj.to_name = this.order_push.path[1].name;
       pushobj.vendor_type_id = this.order_push.vendor_type;
+      pushobj.orderCountryCode = this.order_push.country_codes;
       pushobj.push_order = true;
 
       this.pushes.push(pushobj);

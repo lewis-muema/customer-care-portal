@@ -119,13 +119,10 @@
           >
             <i class="fa fa-info"></i>
           </span>
-          <span
-            title="showCity(order.city)"
-            class="badge bg-aqua "
-            style="float: right;"
-            >{{ cityAbbrev[showCity(order.city)] }}
+          <span title="showCity(order.city)" class="badge bg-aqua showCity">
+            {{ order.city.name }}
           </span>
-          <span style="float: right;"> &nbsp; </span>
+          <span class="showCity"> &nbsp; </span>
           <span title="Corporate Name" class="badge bg-aqua pull-right">
             {{ order.distance_read }} km</span
           >
@@ -133,11 +130,19 @@
       </tr>
       <tr
         class="order_row_home_lower"
-        v-if="opened.includes(order.order_no)"
+        v-if="opened.includes(order.order_no) && order.vendor_type_id !== 25"
         :key="`details_${order.order_no}_${order.order_status}`"
         :id="`child_row_${order.order_no}`"
       >
         <TheLowerSlideComponent :orderno="order.order_no" />
+      </tr>
+      <tr
+        class="order_row_home_lower"
+        v-if="opened.includes(order.order_no) && order.vendor_type_id === 25"
+        :key="`details_${order.order_no}_${order.order_status}`"
+        :id="`child_row_${order.order_no}`"
+      >
+        <DashboardComponent :orderno="order.order_no" />
       </tr>
     </template>
     <tr v-if="!returned">
@@ -160,13 +165,17 @@
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
+import LowerSlideComponent from '../OrdersLowerBit/FBU/LowerSlideComponent';
 import rabbitMQcomponent from '../../../../rabbitMQ/rabbitMQComponent';
+import DashboardComponent from '../OrdersLowerBit/FBU/DashboardComponent';
 
 export default {
   name: 'TheRowComponent',
   components: {
     TheLowerSlideComponent,
     rabbitMQcomponent,
+    // LowerSlideComponent,
+    DashboardComponent,
   },
   data() {
     return {
@@ -339,6 +348,9 @@ export default {
     initialOrderRequest() {
       this.setOrders();
     },
+    // checkFBUorders() {
+
+    // },
     forceRerender() {
       this.rowComponentKey += 1;
     },
@@ -411,6 +423,10 @@ export default {
       this.show = orderNo;
     },
     handlePushInParent(pushobj) {
+      const orderCountryCodes = pushobj.orderCountryCode;
+      const isCountryAdmin = orderCountryCodes.some(r =>
+        this.countryCode.includes(r),
+      );
       const index = _.findIndex(this.orders, [
         'order_no',
         `${pushobj.order_no}`,
@@ -435,21 +451,23 @@ export default {
         unit => unit.business_unit_id === unitArray.business_unit_id,
       );
       const vendorAbbr =
-        units[vendorUnit] === 'undefined' ? '' : units[vendorUnit].abbr;
+        typeof units[vendorUnit] === 'undefined' ? '' : units[vendorUnit].abbr;
       if (selectedUnits !== null) {
         if (selectedUnits.includes(vendorAbbr.toLowerCase())) {
-          this.displayPushedOrder(pushobj, index);
+          this.displayPushedOrder(pushobj, index, isCountryAdmin);
         }
       } else {
-        this.displayPushedOrder(pushobj, index);
+        this.displayPushedOrder(pushobj, index, isCountryAdmin);
       }
     },
-    displayPushedOrder(pushobj, index) {
-      if (index >= 0) {
-        this.orders.splice(index, 1);
-        this.orders.unshift(pushobj);
-      } else {
-        this.orders.unshift(pushobj);
+    displayPushedOrder(pushobj, index, isCountryAdmin) {
+      if (isCountryAdmin) {
+        if (index >= 0) {
+          this.orders.splice(index, 1);
+          this.orders.unshift(pushobj);
+        } else {
+          this.orders.unshift(pushobj);
+        }
       }
     },
     sendRequest(payload) {
@@ -485,5 +503,8 @@ export default {
 }
 .pickupClass {
   height: 25px;
+}
+.showCity {
+  float: right;
 }
 </style>
