@@ -116,7 +116,7 @@
             Ticket
           </a>
         </li>
-        <li v-if="testAdmins" class="nav-item">
+        <li class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -330,24 +330,6 @@ export default {
       cop_type_list: [],
       admin_list: [],
       configData: [],
-      pricingTestAccounts: [
-        20,
-        35,
-        43,
-        75,
-        117,
-        207,
-        223,
-        189,
-        170,
-        151,
-        148,
-        122,
-        196,
-        243,
-        208,
-        110,
-      ],
       testAdmin: false,
       category: 'biz',
       approvalModel: '',
@@ -372,10 +354,6 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
-    },
-    testAdmins() {
-      const testerId = parseInt(this.session.payload.data.admin_id, 10);
-      return this.pricingTestAccounts.includes(testerId);
     },
     approvingAdmin() {
       return (
