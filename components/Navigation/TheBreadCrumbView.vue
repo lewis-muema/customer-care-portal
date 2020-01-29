@@ -70,6 +70,11 @@ export default {
           description: 'invoices',
           mainName: 'Home',
         },
+        user: {
+          name: 'User',
+          description: '3CX Users',
+          mainName: 'Home',
+        },
       },
     };
   },
