@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="loading_tax_rates" class="tax-loader">
+    <div v-if="loading_tax_rates" style="margin-left: 1%;">
       <p>
         Fetching VAT Tax Rates ...
         <i class="fa fa-spinner fa-spin loader"></i>
@@ -331,8 +331,5 @@ export default {
 .invoice_valid {
   font-size: 14px !important;
   color: #dc3545;
-}
-.tax-loader {
-  margin-left: 1%;
 }
 </style>

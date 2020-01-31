@@ -118,4 +118,7 @@ export default {
   setCustomPricingDetails(state, val) {
     state.customPricingDetails = val;
   },
+  setLoginErrors(state, val) {
+    state.loginErrors = val;
+  },
 };

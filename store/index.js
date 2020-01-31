@@ -54,6 +54,7 @@ export default {
       breadcrumbs: [],
       notification: {},
       errors: [],
+      loginErrors: null,
       tokenExpired: false,
       helpScoutTokenExpired: false,
       actionErrors: [],

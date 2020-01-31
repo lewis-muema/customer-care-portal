@@ -3,6 +3,8 @@ import moment from 'moment';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import config from '~/config/configs';
 
+const momentTimezone = require('moment-timezone');
+
 Vue.mixin({
   data() {
     return {
@@ -70,6 +72,9 @@ Vue.mixin({
     ...mapGetters({ session: 'getSession' }),
     userData() {
       return this.session.payload.data;
+    },
+    timezone() {
+      return momentTimezone.tz.guess();
     },
   },
   methods: {
@@ -141,8 +146,24 @@ Vue.mixin({
       const dt = moment(date).format(requiredFormat);
       return dt;
     },
+    convertToUTC(date) {
+      const utcDate = moment.utc(date);
+      return utcDate;
+    },
+    convertToLocalTime(UTCDate) {
+      const localTime = moment(UTCDate)
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss');
+      return localTime;
+    },
     getFormattedDate(date, requiredFormat) {
-      const dt1 = moment(date, 'YYYY-MM-DD HH:mm:ss');
+      const dt1 = this.convertToLocalTime(date);
+      const dt = moment(dt1).format(requiredFormat);
+      return dt;
+    },
+    formatInvoiceTime(date, requiredFormat) {
+      const utcDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(utcDate);
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
@@ -249,6 +270,11 @@ Vue.mixin({
         clientCurrency,
         currencyConversions,
       );
+      const riderConversionArray = this.getSpecificCurrencyConversion(
+        orderCurrency,
+        riderCurrency,
+        currencyConversions,
+      );
       const clientAmount = this.calculateConvertedAmount(
         clientConversionArray,
         amount,
@@ -256,7 +282,7 @@ Vue.mixin({
         clientCurrency,
       );
       const riderAmount = this.calculateConvertedAmount(
-        clientConversionArray,
+        riderConversionArray,
         amount,
         orderCurrency,
         riderCurrency,
@@ -275,7 +301,7 @@ Vue.mixin({
         conversion.from_currency.includes(fromCurrency),
       );
 
-      const newArray = res.filter(arr => arr.to_currency === 'UGX');
+      const newArray = res.filter(arr => arr.to_currency === toCurrency);
 
       return newArray;
     },

@@ -17,7 +17,7 @@
       <tr v-if="userID === null">
         <td colspan="5">Search to view User details.</td>
       </tr>
-      <template v-else>
+      <template v-else-if="details !== null">
         <tr v-if="loading">
           <i class="fa fa-spinner fa-spin loader"></i>
         </tr>
