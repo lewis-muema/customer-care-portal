@@ -23,18 +23,6 @@
                             user.caller_name !== '' ? user.caller_name : 'N/A'
                           }}
                         </td>
-                        <td><strong>Running Balance : </strong></td>
-                        <td>
-                          {{ user.rb ? user.rb : '-' }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><strong>Caller Type : </strong></td>
-                        <td>
-                          {{
-                            user.caller_type !== '' ? user.caller_type : 'N/A'
-                          }}
-                        </td>
                         <td><strong>Date signed In : </strong></td>
                         <td>
                           {{
@@ -48,9 +36,11 @@
                         </td>
                       </tr>
                       <tr>
-                        <td><strong>Phone No. : </strong></td>
+                        <td><strong>Caller Type : </strong></td>
                         <td>
-                          {{ user.phone_no !== '' ? user.phone_no : 'N/A' }}
+                          {{
+                            user.caller_type !== '' ? user.caller_type : 'N/A'
+                          }}
                         </td>
                         <td><strong>Account ID. : </strong></td>
                         <td>
@@ -58,6 +48,10 @@
                         </td>
                       </tr>
                       <tr>
+                        <td><strong>Phone No. : </strong></td>
+                        <td>
+                          {{ user.phone_no !== '' ? user.phone_no : 'N/A' }}
+                        </td>
                         <td><strong>Email. : </strong></td>
                         <td>
                           {{ user.email !== '' ? user.email : 'N/A' }}
@@ -116,8 +110,10 @@
                     </tbody>
                   </table>
                 </div>
-
-                <div class="row" v-if="statement !== null && statement.length">
+                <div
+                  class="row"
+                  v-if="statement !== null && statement.length !== 0"
+                >
                   <h4 class="heading">Latest Statement</h4>
                   <hr />
                   <table class="table table-bordered col-md-11 table-3cx">
@@ -140,10 +136,20 @@
                             )
                           }}
                         </td>
-                        <td>{{ statement[0].amount }}</td>
-                        <td>{{ statement[0].rb }}</td>
-                        <td>{{ statement[0].rb }}</td>
+                        <td>
+                          <span v-if="user.caller_type !== 'owner'">
+                            {{ user.currency !== '' ? user.currency : '' }}.
+                          </span>
+                          {{ statement[0].amount }}
+                        </td>
+                        <td>
+                          <span v-if="user.caller_type !== 'owner'">
+                            {{ user.currency !== '' ? user.currency : '' }}.
+                          </span>
+                          {{ statement[0].rb }}
+                        </td>
                         <td>{{ statement[0].pay_method }}</td>
+                        <td>{{ statement[0].pay_narrative }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -158,6 +164,7 @@
 </template>
 <script>
 import { required } from 'vuelidate/lib/validators';
+import moment from 'moment';
 
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import TheBreadCrumbView from '@/components/Navigation/TheBreadCrumbView';
@@ -223,9 +230,11 @@ export default {
   async mounted() {
     if (this.phone !== null) {
       await this.retrieve_user();
-      if (this.user !== null && this.user.latest_order.order_no !== null) {
-        const orderNo = this.user.latest_order.order_no;
-        await this.singleOrderRequest(orderNo);
+      if (this.user !== null) {
+        if (this.user.latest_order.order_no !== null) {
+          const orderNo = this.user.latest_order.order_no;
+          await this.singleOrderRequest(orderNo);
+        }
         const cat = this.category === 'biz' ? 'cop' : this.category;
         await this.singleUserRequest(this.user.account_id, cat);
       }
@@ -240,6 +249,7 @@ export default {
       'request_single_order',
       'request_single_user',
       'request_single_rider',
+      'request_owner_statement',
     ]),
     display_search() {
       this.search = true;
@@ -266,12 +276,49 @@ export default {
       const payload = { userID: ID, userType, riderID: ID };
       let data = null;
       try {
-        if (userType === 'peer' || userType === 'cop') {
-          data = await this.request_single_user(payload);
-          this.statement = data.payments;
-        } else {
-          data = await this.request_single_rider(payload);
-          this.statement = data.current_list;
+        switch (userType) {
+          case 'peer':
+            data = await this.request_single_user(payload);
+            this.statement = data.payments;
+            break;
+          case 'cop':
+            data = await this.request_single_user(payload);
+            this.statement = data.payments;
+            break;
+          case 'rider':
+            data = await this.request_single_rider(payload);
+            this.statement = data.current_list;
+            break;
+          case 'owner':
+            // eslint-disable-next-line no-case-declarations
+            const pload = {
+              app: 'PARTNER_API',
+              endpoint: 'partner_portal/owner_statement',
+              apiKey: false,
+              params: {
+                owner_id: ID,
+                from: this.user.date_signed_up,
+                to: moment.utc().format(),
+              },
+            };
+            data = await this.request_owner_statement(pload);
+            if (data.status) {
+              const payments = data.msg.statement;
+              if (payments.length !== 0) {
+                const arr = {
+                  txn: payments[0].txn,
+                  amount: payments[0].amount,
+                  date_time: payments[0].pay_time,
+                  rb: payments[0].running_balance,
+                  pay_method: payments[0].pay_narrative,
+                  pay_narrative: payments[0].pay_narrative,
+                };
+                this.statement = [];
+                this.statement.push(arr);
+              }
+            }
+            break;
+          default:
         }
         return this.statement;
       } catch {
