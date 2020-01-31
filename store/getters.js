@@ -106,4 +106,10 @@ export default {
   getCustomPricingDetails(state) {
     return state.customPricingDetails;
   },
+  getActionErrors(state) {
+    return state.actionErrors;
+  },
+  getActionClass(state) {
+    return state.actionClass;
+  },
 };
