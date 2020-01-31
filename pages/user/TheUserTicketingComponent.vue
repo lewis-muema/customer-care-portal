@@ -3,6 +3,17 @@
     <div class="form-group col-md-12">
       <h4>Add Ticket</h4>
     </div>
+    <div
+      v-if="actionErrors.length > 0"
+      :class="`alert alert-${actionClass}`"
+      :id="`error_holder`"
+    >
+      <ul>
+        <li v-for="error in actionErrors" :key="error.index">
+          <b>{{ error }}</b>
+        </li>
+      </ul>
+    </div>
 
     <div class="form-group col-md-6">
       <v-select
@@ -80,7 +91,7 @@
 import moment from 'moment';
 
 import { required } from 'vuelidate/lib/validators';
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheUserTicketingComponent',
@@ -97,6 +108,8 @@ export default {
   },
   data() {
     return {
+      actionErrors: [],
+      actionClass: '',
       params: {
         reason: '',
         message: '',
@@ -115,8 +128,20 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
+    ...mapGetters({
+      getActionErrors: 'getActionErrors',
+      getActionClass: 'getActionClass',
+    }),
     idParam() {
       return this.ticket.id;
+    },
+  },
+  watch: {
+    getActionErrors(error) {
+      return (this.actionErrors = error);
+    },
+    getActionClass(action) {
+      return (this.actionClass = action);
     },
   },
   methods: {
