@@ -389,6 +389,14 @@ export default {
       return error.response;
     }
   },
+  async request_owner_statement({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
   async request_single_rider({ state }, payload) {
     const config = state.config;
     const riderID = payload.riderID;
