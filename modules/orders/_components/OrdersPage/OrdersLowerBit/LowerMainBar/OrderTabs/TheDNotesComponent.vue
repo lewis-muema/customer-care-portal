@@ -114,20 +114,13 @@ export default {
       return 'tab-pane__update-button';
     },
     status() {
-      let status = 'Not Delivered';
-      let color = 'red';
+      const status = this.DeliverImg[0].physical_delivery_note_status;
+      let color = '';
       let state = true;
       const arr = {};
-      const imgStatus = Object.prototype.hasOwnProperty.call(
-        this.order.delivery_details,
-        'rider_delivery_image',
-      );
-      if (
-        imgStatus &&
-        this.order.delivery_details.rider_delivery_image[0]
-          .physical_delivery_note_status === 2
-      ) {
-        status = 'Delivered';
+      if (status === 'Pending Approval') {
+        color = 'red';
+      } else if (status === 'Approved') {
         color = 'green';
         state = false;
       }
