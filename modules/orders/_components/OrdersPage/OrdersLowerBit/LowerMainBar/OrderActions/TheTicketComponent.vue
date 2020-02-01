@@ -23,6 +23,10 @@ export default {
   computed: {
     ticketData() {
       const userName = this.order.client_details.name;
+      const email =
+        this.order.client_details.email !== null
+          ? this.order.client_details.email
+          : 'customersupport@sendyit.com';
 
       const data = {
         id: this.order.order_details.order_no,
@@ -30,7 +34,7 @@ export default {
         customer: {
           firstName: userName,
           lastName: '.',
-          email: '',
+          email: email.trim(),
           phone: this.order.client_details.phone_no,
         },
       };
