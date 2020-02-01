@@ -30,7 +30,7 @@ export default {
         customer: {
           firstName: userName,
           lastName: '.',
-          email: this.order.client_details.email,
+          email: '',
           phone: this.order.client_details.phone_no,
         },
       };
