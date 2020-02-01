@@ -187,10 +187,12 @@ export default {
       const deliveryStatus = this.moreData.delivery_status;
       const confirmStatus = this.moreData.confirm_status;
       const orderStatus = this.moreData.order_status;
+      const dnotesStatus = this.order.delivery_details.delivery_images[0]
+        .physical_delivery_note_status;
 
       let status = orderStatus;
       if (deliveryStatus === 3 && confirmStatus === 1) {
-        status = this.deliveryStatus(this.order);
+        status = this.deliveryStatus(this.order, dnotesStatus);
       }
       if (this.moreData.dispute_status === 2) {
         status = 'disputed';
