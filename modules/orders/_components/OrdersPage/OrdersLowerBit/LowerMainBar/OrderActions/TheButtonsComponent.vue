@@ -69,7 +69,7 @@
           @click="viewTab('schedule', orderNo)"
           :id="`schedule_${orderNo}`"
         >
-          <span class="fa fa-fw fa-thumbs-calendar"></span>
+          <span class="fa fa-fw fa-calendar"></span>
           Schedule
         </a>
       </li>
@@ -199,6 +199,18 @@
           Mark in Transit
         </a>
       </li>
+      <li class="nav-item">
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('complete_order', orderNo)"
+          :id="`complete_order_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-check-square"></span>
+          Complete Order
+        </a>
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
@@ -302,6 +314,14 @@
       >
         <TheMarkInTransitComponent :order="order" />
       </div>
+      <div
+        :class="`tab-pane fade ${show} ${active}`"
+        :id="`complete_order_${orderNo}`"
+        role="tabpanel"
+        v-if="showTab === `complete_order_${orderNo}`"
+      >
+        <TheCompleteOrderComponent :order="order" />
+      </div>
     </div>
   </div>
 </template>
@@ -322,6 +342,7 @@ export default {
     AllocateComponent: () => import('./AllocateComponent'),
     TrackerComponent: () => import('./TrackerComponent'),
     TheMarkInTransitComponent: () => import('./TheMarkInTransitComponent'),
+    TheCompleteOrderComponent: () => import('./TheCompleteOrderComponent'),
   },
   props: {
     order: {
