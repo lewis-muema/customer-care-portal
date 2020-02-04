@@ -18,7 +18,11 @@
           </el-table-column>
           <el-table-column prop="name" label="Vendor Type" width="170">
           </el-table-column>
-          <el-table-column prop="base_cost" label="Base Fee" width="150">
+          <el-table-column prop="base_cost" label="Partner Amount" width="150">
+          </el-table-column>
+          <el-table-column prop="service_fee" label="Service Fee" width="120">
+          </el-table-column>
+          <el-table-column prop="insurance" label="Insurance" width="120">
           </el-table-column>
           <el-table-column prop="base_km" label="Base Distance" width="120">
           </el-table-column>
@@ -41,12 +45,6 @@
           >
           </el-table-column>
           <el-table-column prop="loader_cost" label="Loading Fee" width="120">
-          </el-table-column>
-          <el-table-column
-            prop="service_fee"
-            label="Service Charge"
-            width="120"
-          >
           </el-table-column>
           <el-table-column
             prop="cancellation_fee"
@@ -107,7 +105,7 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'ThePricingApprovalComponent',
+  name: 'DistancePricingApprovalComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
@@ -151,7 +149,7 @@ export default {
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
     this.getDistancePricingConfigs();
-    this.trackMixpanelPage();
+    this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -167,8 +165,7 @@ export default {
       reject_distance_pricing_configs: 'reject_distance_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
-      this.trackMixpanelIdentify();
-      this.trackMixpanelPeople();
+      this.trackRejectConfigs();
       const pricingApprovalData = this.customPricingDetails;
       this.approvalParams = this.createPayload(
         pricingApprovalData,
@@ -185,6 +182,9 @@ export default {
       try {
         const data = await this.reject_distance_pricing_configs(payload);
         if (data.status) {
+          this.trackPassedReject();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
@@ -192,24 +192,28 @@ export default {
           this.updateSuccess(false);
           this.getDistancePricingConfigs();
         } else {
+          this.trackFailedReject();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     provideReason() {
       this.rejectWithReason = true;
+      this.trackRejectConfigsPage();
     },
     goBack() {
       this.rejectWithReason = false;
     },
     async approveDistancePricingConfigs() {
-      this.trackMixpanelIdentify();
-      this.trackMixpanelPeople();
+      this.trackApproveConfig();
       const pricingApprovalData = this.customPricingDetails;
       this.approvalParams = this.createPayload(pricingApprovalData, 'Active');
       const notification = [];
@@ -223,62 +227,97 @@ export default {
       try {
         const data = await this.approve_distance_pricing_configs(payload);
         if (data.status) {
+          this.trackPassedApproval();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateApproveStatus(false);
         } else {
+          this.trackMixpanelIdentify();
+          this.trackFailedApproval();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     createPayload(pricingApprovalData, status) {
+      const distancePricingArray = [];
       for (let i = 0; i < pricingApprovalData.length; i += 1) {
-        pricingApprovalData[i].cop_id = this.copId;
-        pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details = {};
-        pricingApprovalData[i].custom_pricing_details.admin_id =
-          pricingApprovalData[i].admin_id;
-        pricingApprovalData[i].custom_pricing_details.currency =
-          pricingApprovalData[i].currency;
-        pricingApprovalData[i].custom_pricing_details.distance_pricing =
-          pricingApprovalData[i].distance_pricing;
-        pricingApprovalData[
-          i
-        ].custom_pricing_details.distance_pricing.status = status;
-        pricingApprovalData[i].custom_pricing_details.id =
-          pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details.name =
-          pricingApprovalData[i].name;
-        pricingApprovalData[
-          i
-        ].custom_pricing_details.rejection_message = this.rejectionReason;
-
-        delete pricingApprovalData[i].admin_id;
-        delete pricingApprovalData[i].currency;
-        delete pricingApprovalData[i].distance_pricing;
-        delete pricingApprovalData[i].id;
-        delete pricingApprovalData[i].name;
+        const distancePricingObject = {
+          cop_id: this.copId,
+          vendor_id: pricingApprovalData[i].id,
+          custom_pricing_details: {
+            id: pricingApprovalData[i].id,
+            name: pricingApprovalData[i].name,
+            currency: pricingApprovalData[i].currency,
+            admin_id: pricingApprovalData[i].admin_id,
+            distance_pricing: pricingApprovalData[i].distance_pricing,
+            rejection_message: this.rejectionReason,
+          },
+        };
+        distancePricingObject.custom_pricing_details.distance_pricing.status = status;
+        distancePricingArray.push(distancePricingObject);
       }
-      return pricingApprovalData;
+      return distancePricingArray;
     },
-    trackMixpanelPage() {
-      mixpanel.track('Pricing Config Approval Page');
+    trackApprovalHomePage() {
+      mixpanel.track('Open Approval tab - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackApproveConfig() {
+      mixpanel.track('"Approve Pricing" Page - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPassedApproval() {
+      mixpanel.track('Configs Approved successfully - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedApproval() {
+      mixpanel.track('Approval fails - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackRejectConfigs() {
+      mixpanel.track('"Reject Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackRejectConfigsPage() {
+      mixpanel.track('Request Rejected - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackPassedReject() {
+      mixpanel.track('Configs rejected - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedReject() {
+      mixpanel.track('Reject fails - Fail', {
+        type: 'Fail',
+      });
     },
     trackMixpanelIdentify() {
-      mixpanel.identify(this.getSessionData.payload.data.name, {
+      mixpanel.identify('Approver', {
         email: this.getSessionData.payload.data.email,
         admin_id: this.getSessionData.payload.data.admin_id,
       });
     },
+
     trackMixpanelPeople() {
       mixpanel.people.set({
-        'User Type': 'Approving Manager',
+        'User Type': 'Approver',
         $email: this.getSessionData.payload.data.email,
         $name: this.getSessionData.payload.data.name,
       });

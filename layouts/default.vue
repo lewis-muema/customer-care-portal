@@ -70,13 +70,26 @@ export default {
     }),
     getloggedUser() {
       const token = this.getAuthenticationToken;
-      const partsOfToken = token.split('.');
-      const middleString = Base64.decode(partsOfToken[1]);
-      const payload = JSON.parse(middleString);
-      this.setSession(payload);
-      this.updateSession(payload);
+      const storedToken = localStorage.getItem('jwtToken');
 
-      return (this.loggedUser = payload);
+      if (token && token !== '' && storedToken !== 'undefined') {
+        const partsOfToken = token.split('.');
+        const middleString = Base64.decode(partsOfToken[1]);
+        const payload = JSON.parse(middleString);
+        this.setSession(payload);
+        this.updateSession(payload);
+
+        const userData = payload.payload.data;
+        this.$apm.setUserContext({
+          id: userData.admin_id,
+          username: userData.name,
+          email: userData.email,
+        });
+
+        return (this.loggedUser = payload);
+      } else {
+        this.$router.push('/login');
+      }
     },
   },
 };

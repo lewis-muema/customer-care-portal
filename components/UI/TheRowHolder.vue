@@ -98,14 +98,6 @@
                 )
               }}
               <span
-                v-if="moreData.order_status === 'pending'"
-                data-toggle="tooltip"
-                title="This rider amount is less VAT"
-                class="badge bg-info"
-              >
-                <i class="fa fa-info"></i>
-              </span>
-              <span
                 title="showCity(riderDetails.city_id)"
                 class="badge bg-aqua "
                 >{{ showCity(riderDetails.city_id) }}
@@ -181,6 +173,7 @@ export default {
       riderDetails: this.order.rider_details,
       riderDetails: this.order.rider_details,
       paymentDetails: this.order.payment_details,
+      images: this.order.delivery_details,
     };
   },
   computed: {
@@ -195,16 +188,22 @@ export default {
       const deliveryStatus = this.moreData.delivery_status;
       const confirmStatus = this.moreData.confirm_status;
       const orderStatus = this.moreData.order_status;
+      const dnotesStatus = this.images.delivery_images
+        ? this.images.delivery_images[0].physical_delivery_note_status
+        : [];
 
       let status = orderStatus;
       if (deliveryStatus === 3 && confirmStatus === 1) {
-        status = this.deliveryStatus(this.order);
+        status = this.deliveryStatus(this.order, dnotesStatus);
       }
-      if (
-        this.moreData.dispute_status === 2 ||
-        this.moreData.dispute_status === 3
-      ) {
+      if (this.moreData.dispute_status === 2) {
         status = 'disputed';
+      }
+      if (this.moreData.dispute_status === 3) {
+        status = 'disputed & appealed';
+      }
+      if (this.moreData.dispute_status === 4) {
+        status = 'disputed & resolved';
       }
       return status;
     },

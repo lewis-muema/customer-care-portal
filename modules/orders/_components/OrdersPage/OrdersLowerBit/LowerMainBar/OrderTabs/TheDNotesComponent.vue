@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div v-if="typeof DeliverImg === 'undefined' || DeliverImg === null">
+    <div v-if="!DeliverImg || DeliverImg.length === 0">
       No DNotes found for this delivery
     </div>
     <div v-else>
@@ -100,7 +100,7 @@ export default {
       submitted: false,
       errors: [],
       actionClass: '',
-      DeliverImg: this.order.delivery_details.rider_delivery_image,
+      DeliverImg: this.order.delivery_details.delivery_images,
     };
   },
   validations: {
@@ -114,20 +114,13 @@ export default {
       return 'tab-pane__update-button';
     },
     status() {
-      let status = 'Not Delivered';
-      let color = 'red';
+      const status = this.DeliverImg[0].physical_delivery_note_status;
+      let color = '';
       let state = true;
       const arr = {};
-      const imgStatus = Object.prototype.hasOwnProperty.call(
-        this.order.delivery_details,
-        'rider_delivery_image',
-      );
-      if (
-        imgStatus &&
-        this.order.delivery_details.rider_delivery_image[0]
-          .physical_delivery_note_status === 2
-      ) {
-        status = 'Delivered';
+      if (status === 'Pending Approval') {
+        color = 'red';
+      } else if (status === 'Approved') {
         color = 'green';
         state = false;
       }

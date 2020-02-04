@@ -116,7 +116,7 @@
             Ticket
           </a>
         </li>
-        <li v-if="testAdmins" class="nav-item">
+        <li class="nav-item">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -226,6 +226,34 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="
+              showTab === `approval_${copID}` &&
+                this.approvalModel === 'Distance'
+            "
+          >
+            <DistancePricingApprovalComponent
+              :user="user"
+              :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="
+              showTab === `approval_${copID}` &&
+                this.approvalModel === 'Location'
+            "
+          >
+            <LocationPricingApprovalComponent
+              :user="user"
+              :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
             :id="`vat_config_${copID}`"
             role="tabpanel"
             v-if="showTab === `vat_config_${copID}`"
@@ -276,6 +304,10 @@ export default {
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheAddNewPricingComponent: () =>
       import('./UserActions/TheAddNewPricingComponent'),
+    DistancePricingApprovalComponent: () =>
+      import('./UserActions/PricingApproval/DistancePricingApprovalComponent'),
+    LocationPricingApprovalComponent: () =>
+      import('./UserActions/PricingApproval/LocationPricingApprovalComponent'),
     TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
     TheCustomInvoiceComponent: () =>
       import('./UserActions/TheCustomInvoiceComponent'),
@@ -298,28 +330,21 @@ export default {
       cop_type_list: [],
       admin_list: [],
       configData: [],
-      pricingTestAccounts: [
-        20,
-        35,
-        43,
-        75,
-        117,
-        207,
-        223,
-        189,
-        170,
-        151,
-        148,
-        122,
-        196,
-      ],
       testAdmin: false,
       category: 'biz',
+      approvalModel: '',
+      distancePricingTableData: [],
+      locationPricingTableData: [],
     };
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
-    ...mapGetters(['getCopTypes', 'getAdmins', 'getApproverId']),
+    ...mapGetters([
+      'getCopTypes',
+      'getAdmins',
+      'getApproverId',
+      'getConfiguredLocationPricing',
+    ]),
 
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -329,10 +354,6 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
-    },
-    testAdmins() {
-      const testerId = parseInt(this.session.payload.data.admin_id, 10);
-      return this.pricingTestAccounts.includes(testerId);
     },
     approvingAdmin() {
       return (
@@ -363,12 +384,16 @@ export default {
     getAdmins(admins) {
       return (this.admin_list = admins);
     },
+    approvalModel(model) {
+      this.approvalModel = model;
+    },
   },
   async mounted() {
     this.copID = this.user.user_details.cop_id;
     await this.setCopTypes();
     await this.setAdmins();
     await this.fetchCustomDistancePricingData();
+    this.setApprovalModel();
   },
   methods: {
     ...mapMutations({
@@ -383,10 +408,15 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-
+    setApprovalModel() {
+      if (this.distancePricingTableData.length !== 0) {
+        this.approvalModel = 'Distance';
+      } else if (this.locationPricingTableData.length !== 0) {
+        this.approvalModel = 'Location';
+      }
+    },
     viewTab(tab, copID) {
       this.clearErrorMessages();
-
       this.showTab = `${tab}_${copID}`;
       this.active = 'active';
       this.show = 'show';

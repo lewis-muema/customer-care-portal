@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="this.addPricing">
+    <div v-if="configured">
       <div v-show="this.summaryStatus">
         <div class="row">
           <div class="col-md-12">
@@ -18,22 +18,19 @@
                 </td>
                 <td>
                   <p
-                    v-show="!status"
-                    class="waiting-status-tag pricing-status-button"
-                  >
-                    Awaiting approval
-                  </p>
-                  <p
-                    v-show="status"
+                    v-if="active"
                     class="active-status-tag pricing-status-button"
                   >
                     Active
+                  </p>
+                  <p v-else class="waiting-status-tag pricing-status-button">
+                    Awaiting approval
                   </p>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <p class="pricingmodelname">Distance Based Pricing</p>
+                  <p class="pricingmodelname">{{ pricingModel }}</p>
                 </td>
               </tr>
               <br />
@@ -58,14 +55,18 @@
         </div>
       </div>
       <div v-if="this.viewStatus">
-        <the-view-config-details-component
-          :configs="distancePricingTableData"
-          :customdata="customPricingDetails"
+        <view-distance-pricing-component
           :user="user"
-        ></the-view-config-details-component>
+        ></view-distance-pricing-component>
+      </div>
+      <div v-if="this.viewLocation">
+        <view-location-pricing-component
+          :user="user"
+          @viewUpdate="onViewUpdate"
+        ></view-location-pricing-component>
       </div>
     </div>
-    <div v-show="this.firstPricing">
+    <div v-else>
       <div v-show="this.section === 0">
         <div>
           Custom Pricing
@@ -74,7 +75,10 @@
           {{ this.copName }} has no custom pricing set up at the moment.
         </p>
         <button
-          @click="goNext()"
+          @click="
+            trackAddNewConfig();
+            goNext();
+          "
           class="btn btn-primary action-button pricing-btn"
         >
           Add Custom Pricing
@@ -109,9 +113,12 @@
             Previous page
           </button>
           <button
-            :disabled="checkedPricingModel === 3 || checkedPricingModel === 2"
+            :disabled="checkedPricingModel === 3"
             class="btn btn-primary action-button pricing-next-button"
-            @click="goNext"
+            @click="
+              trackSetUpConfig();
+              goNext();
+            "
           >
             Setup pricing
           </button>
@@ -137,7 +144,8 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
-import TheViewConfigDetailsComponent from './TheViewDetailsComponent.vue';
+import ViewDistancePricingComponent from './CustomPricing/ViewDistancePricingComponent.vue';
+import ViewLocationPricingComponent from './CustomPricing/ViewLocationPricingComponent.vue';
 import LocationPricingComponent from './CustomPricing/LocationPricingComponent.vue';
 import DistancePricingComponent from './CustomPricing/DistancePricingComponent.vue';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
@@ -150,7 +158,8 @@ const pricingModels = [
 export default {
   name: 'TheAddNewPricingComponent',
   components: {
-    'the-view-config-details-component': TheViewConfigDetailsComponent,
+    'view-distance-pricing-component': ViewDistancePricingComponent,
+    'view-location-pricing-component': ViewLocationPricingComponent,
     'location-pricing-component': LocationPricingComponent,
     'distance-pricing-component': DistancePricingComponent,
   },
@@ -170,18 +179,24 @@ export default {
       currency: '',
       value: '',
       pricingModels,
+      countryCode: '',
+      pricingModel: '',
       checkedVendorTypes: [],
       pricingTitle: 'New Custom Pricing',
       tableData: [],
       distancePricingTableData: [],
+      locationPricingTableData: [],
       customPricingDetails: [],
       vendorTypes: [],
       vendorName: '',
       suggestions: [],
-      pricingStatus: '',
+      distancePricingStatus: '',
+      locationPricingStatus: '',
       pricingTable: 0,
       newLocationPricing: false,
       newDistancePricing: false,
+      viewLocation: false,
+      existingConfigs: false,
     };
   },
   computed: {
@@ -197,8 +212,14 @@ export default {
     customTitle() {
       return this.section === 1 || this.section === 2;
     },
-    status() {
-      return this.pricingStatus === 'Active';
+    configured() {
+      return this.existingConfigs === true;
+    },
+    active() {
+      return (
+        this.distancePricingStatus === 'Active' ||
+        this.locationPricingStatus === 'Active'
+      );
     },
     vendor() {
       return this.vendorTypes.find(op => {
@@ -222,23 +243,13 @@ export default {
     this.copName = this.user.user_details.cop_name;
     this.copId = this.user.user_details.cop_id;
     this.currency = this.user.user_details.default_currency;
-    const countryCode = this.user.user_details.country_code;
-    this.updateSection(0);
+    this.countryCode = this.user.user_details.country_code;
     await this.fetchCustomDistancePricingData();
-    if (this.distancePricingTableData.length === 0) {
-      this.setFirstPricing(true);
-    } else {
-      this.updatePricing(true);
-    }
-    for (let i = 0; i < this.distancePricingTableData.length; i += 1) {
-      if (this.distancePricingTableData[i].status === 'Pending') {
-        this.pricingStatus = 'Pending';
-      } else {
-        this.pricingStatus = 'Active';
-      }
-    }
-    this.fetchVendorTypes(countryCode);
-    this.trackMixpanelPage();
+    this.fetchVendorTypes(this.countryCode);
+    this.setConfigStatus();
+    this.updateSummaryStatus(true);
+    this.updateSection(0);
+    this.trackPricingHomePage();
   },
   methods: {
     ...mapMutations({
@@ -252,30 +263,100 @@ export default {
     }),
     goNext() {
       this.updateSection(this.section + 1);
-      if (this.section === 2 && this.checkedPricingModel === 1) {
+      if (this.section === 1) {
+        this.trackModelSelectionPage();
+      } else if (this.section === 2 && this.checkedPricingModel === 1) {
         this.newDistancePricing = true;
+        this.trackNewDistanceConfig();
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
+        this.trackNewLocationConfig();
       }
     },
     goBack() {
       this.updateSection(this.section - 1);
     },
+    setConfigStatus() {
+      if (typeof this.distancePricingTableData[0] === 'object') {
+        this.pricingModel = 'Distance Based Pricing';
+        this.existingConfigs = true;
+        for (let i = 0; i < this.distancePricingTableData.length; i += 1) {
+          if (this.distancePricingTableData[i].status === 'Pending') {
+            this.distancePricingStatus = 'Pending';
+          } else {
+            this.distancePricingStatus = 'Active';
+          }
+        }
+      } else if (typeof this.locationPricingTableData[0] === 'object') {
+        this.pricingModel = 'Location Pricing';
+        this.existingConfigs = true;
+        for (let i = 0; i < this.locationPricingTableData.length; i += 1) {
+          if (this.locationPricingTableData[i].status === 'Pending') {
+            this.locationPricingStatus = 'Pending';
+          } else {
+            this.locationPricingStatus = 'Active';
+          }
+        }
+      } else if (
+        typeof this.distancePricingTableData[0] === 'undefined' &&
+        typeof this.locationPricingTableData[0] === 'undefined'
+      ) {
+        this.existingConfigs = false;
+      }
+    },
     viewConfigDetails() {
+      this.trackViewPricingDetails();
       this.updateSummaryStatus(false);
-      this.updateViewStatus(true);
       this.setCustomPricingDetails(this.customPricingDetails);
-      this.setTableData(this.distancePricingTableData);
-    },
-    trackMixpanelPage() {
-      mixpanel.track('Pricing Config Summary Page');
-    },
-    trackMixpanelNewConfig() {
-      mixpanel.track('New Pricing Config Page');
+      if (typeof this.distancePricingTableData[0] === 'object') {
+        this.updateViewStatus(true);
+        this.setTableData(this.distancePricingTableData);
+      } else if (typeof this.locationPricingTableData[0] === 'object') {
+        this.viewLocation = true;
+        this.setTableData(this.locationPricingTableData);
+      }
     },
     onSectionUpdate(value) {
       this.newLocationPricing = value;
       this.newDistancePricing = value;
+    },
+    onViewUpdate(value) {
+      this.viewLocation = value;
+    },
+    trackPricingHomePage() {
+      mixpanel.track('Open custom pricing Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackAddNewConfig() {
+      mixpanel.track('Add custom pricing - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackModelSelectionPage() {
+      mixpanel.track('Select Pricing model Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackNewLocationConfig() {
+      mixpanel.track('Location Pricing selected - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackNewDistanceConfig() {
+      mixpanel.track('Distance Pricing selected - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackSetUpConfig() {
+      mixpanel.track('"Setup Pricing" button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackViewPricingDetails() {
+      mixpanel.track('"See pricing details" Link - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };
