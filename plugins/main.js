@@ -143,7 +143,8 @@ Vue.mixin({
       return localTime;
     },
     getFormattedDate(date, requiredFormat) {
-      const dt1 = this.convertToLocalTime(date);
+      const UTCDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(UTCDate);
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
