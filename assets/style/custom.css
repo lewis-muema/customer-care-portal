@@ -1024,6 +1024,12 @@ table {
 .no-margin {
   margin: 0 !important;
 }
+.cell-override {
+  padding:0px;
+  background-color: rgba(245, 245, 245, 0.56) !important;
+  font-size: 13px;
+  width: 100vw;
+}
 .assign-owner-button {
   border-radius: 5px;
   width: 130px;
