@@ -1,112 +1,39 @@
 <template>
   <div>
-    <div class="driver-assign-row">
-      <div
-        class="driver-assign-tabs"
-        :class="
-          (ActiveClass = ActiveTab
-            ? 'active-driver-assign-tabs'
-            : 'inactive-driver-assign-tabs')
-        "
-        @click="ActiveTab = !ActiveTab"
-      >
-        Existing
-      </div>
-      <div
-        class="driver-assign-tabs"
-        :class="
-          (ActiveClass = !ActiveTab
-            ? 'active-driver-assign-tabs'
-            : 'inactive-driver-assign-tabs')
-        "
-        @click="ActiveTab = !ActiveTab"
-      >
-        Add New
-      </div>
-    </div>
     <div class="driver-assign-inputs" v-if="ActiveTab">
-      <input
-        type="text"
-        class="freight-assign-rider-buttons"
-        placeholder="Driver ID"
+      <OwnerDetails @ownerDetails="ownerData" :id="vehicle.owner_id" />
+      <VehicleDetails
+        @vehiclesDetails="vehicleData"
+        :id="owner.owner_id"
+        :ownername="owner.name"
       />
-      <input
-        type="text"
-        class="freight-assign-rider-buttons"
-        placeholder="Driver Details"
-      />
-      <input
-        type="text"
-        class="freight-assign-rider-buttons"
-        placeholder="Truck Details"
-      />
-      <input
-        type="text"
-        class="freight-assign-rider-buttons"
-        placeholder="Driver Rate"
-      />
-      <input
-        type="text"
-        class="freight-assign-rider-buttons"
-        placeholder="Fuel advance(KES)"
-      />
-      <button class="assign-order-button">Assign Order</button>
-    </div>
-    <div class="new-driver-assign-inputs" v-else>
-      <div class="new-driver-details">
-        <p class="input-labels">Driver Details</p>
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="Name"
-        />
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="Phone number"
-        />
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="ID number/Passport no."
-        />
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="License number"
-        />
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="Driver rate"
-        />
-      </div>
-      <div class="new-truck-details">
-        <p class="input-labels">Truck Details</p>
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="Truck number"
-        />
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="Trailer number"
-        />
-        <input
-          type="text"
-          class="freight-assign-new-rider-buttons"
-          placeholder="Fuel Advance (KES)"
-        />
-      </div>
-      <button class="assign-order-button">Assign Order</button>
+      <DriverDetails @driverDetails="driverData" />
+      <button
+        class="assign-order-button"
+        :class="readyStatus ? 'inactive-assign-button' : ''"
+        :disabled="readyStatus"
+        @click="createPayload()"
+      >
+        Assign Order
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+
+import DriverDetails from './DriverDetails';
+import OwnerDetails from './OwnerDetails';
+import VehicleDetails from './VehicleDetails';
+
 export default {
   name: 'AssignRider',
+  components: {
+    DriverDetails,
+    OwnerDetails,
+    VehicleDetails,
+  },
   props: {
     order: {
       type: Object,
@@ -117,10 +44,205 @@ export default {
     return {
       ActiveClass: 'active-driver-assign-tabs',
       ActiveTab: true,
+      owner: {
+        owner_id: 0,
+        name: '',
+      },
+      driver: {},
+      vehicle: {
+        owner_id: 0,
+      },
+      response: '',
     };
   },
+  computed: {
+    readyStatus() {
+      if (this.owner.owner_id > 0 && this.riderCheck && this.vehicleCheck) {
+        return false;
+      }
+      return true;
+    },
+    newRider() {
+      if (Object.prototype.hasOwnProperty.call(this.driver, 'rider_id')) {
+        return false;
+      }
+      return true;
+    },
+    newVehicle() {
+      if (Object.prototype.hasOwnProperty.call(this.vehicle, 'vehicle_id')) {
+        return false;
+      }
+      return true;
+    },
+    riderCheck() {
+      if (this.newRider) {
+        if (
+          Object.prototype.hasOwnProperty.call(this.driver, 'id_no') &&
+          this.driver.id_no &&
+          this.driver.name &&
+          this.driver.dl_no &&
+          this.driver.phone_no &&
+          this.driver.rate
+        ) {
+          return true;
+        }
+      } else if (!this.newRider) {
+        if (
+          Object.prototype.hasOwnProperty.call(this.driver, 'rate') &&
+          this.driver.rate
+        ) {
+          return true;
+        }
+      }
+      return false;
+    },
+    vehicleCheck() {
+      if (this.newVehicle) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            this.vehicle,
+            'registration_no',
+          ) &&
+          this.vehicle.registration_no &&
+          this.vehicle.owner_id &&
+          this.vehicle.insurance_no &&
+          this.vehicle.trailer &&
+          this.vehicle.kwartos
+        ) {
+          return true;
+        }
+      } else if (!this.newVehicle) {
+        if (
+          Object.prototype.hasOwnProperty.call(this.vehicle, 'trailer') &&
+          this.vehicle.trailer &&
+          this.vehicle.kwartos
+        ) {
+          return true;
+        }
+      }
+      return false;
+    },
+  },
   methods: {
-    switchTab() {},
+    ownerData(data) {
+      if (data) {
+        this.owner = data;
+      } else {
+        this.owner = {
+          owner_id: 0,
+          name: '',
+        };
+      }
+    },
+    vehicleData(data) {
+      if (data) {
+        this.vehicle = data;
+      } else {
+        this.vehicle = {
+          owner_id: 0,
+        };
+      }
+    },
+    driverData(data) {
+      if (data) {
+        this.driver = data;
+      } else {
+        this.driver = {};
+      }
+    },
+    createPayload() {
+      const payload = {
+        vehicle_details: '',
+        rider_details: '',
+        order_details: {
+          rider_phone: this.driver.phone_no,
+          order_no: this.order.order_details.order_no,
+          destination: { lat: -1.23, lng: 38.45 },
+          distance: 9,
+          polyline: 'encoded_string',
+        },
+      };
+      if (!this.newVehicle) {
+        payload.vehicle_details = this.existingVehiclePayload();
+      } else {
+        payload.vehicle_details = this.newVehiclePayload();
+      }
+      if (!this.newRider) {
+        payload.rider_details = this.existingRiderPayload();
+      } else {
+        payload.rider_details = this.newRiderPayload();
+      }
+      this.allocateOrder(payload);
+    },
+    existingVehiclePayload() {
+      const payload = {
+        new_vehicle: false,
+        vehicle_id: this.vehicle.vehicle_id,
+        owner_id: this.owner.owner_id,
+      };
+      return payload;
+    },
+    newVehiclePayload() {
+      const payload = {
+        registration_no: this.vehicle.registration_no,
+        box: 0,
+        vendor_type: 25,
+        owner_id: this.owner.owner_id,
+        closed: 1,
+        insurance_no: this.vehicle.insurance_no,
+        new_vehicle: true,
+      };
+      return payload;
+    },
+    existingRiderPayload() {
+      const payload = {
+        new_rider: false,
+        rider_id: this.driver.rider_id,
+        vendor_type: 25,
+        owner_id: this.owner.owner_id,
+      };
+      return payload;
+    },
+    newRiderPayload() {
+      const payload = {
+        registration_no: this.vehicle.registration_no,
+        box: 0,
+        vendor_type: 25,
+        real_owner_id: this.owner.owner_id,
+        closed: 1,
+        driver_name: this.driver.name,
+        phone_no: this.driver.phone_no,
+        vendor_id: 25,
+        owner_phone: this.owner.owner_id,
+        dl_no: this.driver.dl_no,
+        id_no: this.driver.id_no,
+        refrigerated: 0,
+        new_rider: true,
+      };
+      return payload;
+    },
+    ...mapActions({
+      allocate_order: 'allocate_order',
+    }),
+    ...mapMutations({
+      updateErrors: 'setErrors',
+    }),
+    async allocateOrder(orderPayload) {
+      const payload = {
+        app: 'AUTH',
+        endpoint: 'v1/complete_partner_order/',
+        params: orderPayload,
+      };
+      try {
+        const data = await this.allocate_order(payload);
+        return (this.response = data);
+      } catch {
+        this.updateErrors(['Failed to allocate order, Please try again']);
+        setTimeout(() => {
+          this.updateErrors([]);
+        }, 2000);
+      }
+    },
   },
 };
 </script>

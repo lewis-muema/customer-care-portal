@@ -2,20 +2,17 @@
   <td
     colspan="9"
     class="order_view_lower_cell"
-    :id="`order_view_lower${orderNo}`"
+    :id="`order_view_lower${order.order_details.order_no}`"
     style="padding:0px; background-color: rgba(245, 245, 245, 0.56) !important; font-size: 13px; width: 100vw;"
   >
     <TheNotificationsComponent :errors="errors" />
-    <div
-      class="lower_slide_bit"
-      :id="`bumba_${orderNo.freight_details[index].container_number}`"
-    >
+    <div class="lower_slide_bit" :id="`bumba_${order.order_details.order_no}`">
       <div class="row" v-if="order === null">
         loading ....
       </div>
       <div class="row" v-else>
         <div class="col-md-4">
-          <TheSideComponent :order="orderno" />
+          <TheSideComponent :order="order" />
         </div>
         <div class="col-md-8">
           <div class="row">
@@ -42,6 +39,16 @@
                 <button
                   class="freight-order-actions-buttons"
                   :class="
+                    ActiveTab === 'finances' ? 'active-tab' : 'inactive-tab'
+                  "
+                  @click="ActiveTab = 'finances'"
+                >
+                  <span class="fa fa-fw fa-usd"></span>
+                  Finances
+                </button>
+                <button
+                  class="freight-order-actions-buttons"
+                  :class="
                     ActiveTab === 'status' ? 'active-tab' : 'inactive-tab'
                   "
                   @click="ActiveTab = 'status'"
@@ -63,14 +70,22 @@
               <div class="freight-order-actions-tabs">
                 <TheTrackerComponent
                   v-if="ActiveTab === 'gps'"
-                  :order="orderno"
+                  :order="order"
                 />
-                <AssignRider v-if="ActiveTab === 'assign'" :order="orderno" />
-                <OrderStatuses v-if="ActiveTab === 'status'" :order="orderno" />
+                <AuxilliaryServices
+                  v-if="ActiveTab === 'finances'"
+                  :order="order"
+                />
+                <AssignRider v-if="ActiveTab === 'assign'" :order="order" />
+                <OrderStatuses v-if="ActiveTab === 'status'" :order="order" />
+                <TheCancelComponent
+                  v-if="ActiveTab === 'cancel'"
+                  :order="order"
+                />
               </div>
             </div>
             <div class="col-md-12">
-              <TheMainComponent :order="orderno" />
+              <TheMainComponent :order="order" />
             </div>
           </div>
         </div>
@@ -85,6 +100,8 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import TheSideComponent from '../LowerSideBar/TheSideComponent';
 import TheMainComponent from '../LowerMainBar/TheMainComponent';
 import TheTrackerComponent from './OrderActions/TrackerComponent';
+import AuxilliaryServices from './OrderActions/AuxilliaryServices';
+import TheCancelComponent from '../LowerMainBar/OrderActions/TheCancelComponent';
 import AssignRider from './OrderActions/AssignRider';
 import OrderStatuses from './OrderActions/OrderStatuses';
 import TheNotificationsComponent from '~/components/UI/TheNotificationsComponent';
@@ -98,29 +115,23 @@ export default {
     AssignRider,
     OrderStatuses,
     TheNotificationsComponent,
+    TheCancelComponent,
+    AuxilliaryServices,
   },
   props: {
     orderno: {
       type: Object,
       required: true,
     },
-    index: {
-      type: Number,
-      required: true,
-    },
   },
   data() {
     return {
-      orderNo: this.orderno,
-      order: null,
+      order: this.orderno,
       errors: [],
       GPS: false,
       Assign: false,
       ActiveTab: 'assign',
     };
-  },
-  created() {
-    this.singleOrderRequest();
   },
   mounted() {
     const notification = [];
@@ -137,21 +148,6 @@ export default {
       updateClass: 'setActionClass',
       updateOrderErrors: 'setActionErrors',
     }),
-    ...mapActions({
-      request_single_order: 'request_single_order',
-    }),
-    async singleOrderRequest() {
-      try {
-        const data = await this.request_single_order(
-          this.orderNo.order_details.order_no,
-        );
-        return (this.order = data);
-      } catch {
-        this.errors.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-      }
-    },
   },
 };
 </script>
