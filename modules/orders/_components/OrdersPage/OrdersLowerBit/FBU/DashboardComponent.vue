@@ -8,32 +8,35 @@
     <div class="row" v-if="order === null">
       loading ....
     </div>
+    <div
+      class="row"
+      v-else-if="
+        order.freight_details &&
+          order.order_details.order_no !== order.order_details.parent_order_no
+      "
+    >
+      <span class=""
+        ><LowerSlideComponent :orderno="order" :rates="conversionRates"
+      /></span>
+    </div>
     <div v-else>
       <!-- <span class="badge badge-pill badge-primary rounded">Primary</span> -->
       <span class=""
-        ><AssignedComponent :order="order" :rates="conversionRates"
-      /></span>
-      <span class=""
-        ><CreateOrderComponent :order="order" :rates="conversionRates"
-      /></span>
-      <span class=""
-        ><UnassignedComponent :order="order" :rates="conversionRates"
+        ><TheLowerSlideComponent :orderno="orderno" :rates="conversionRates"
       /></span>
     </div>
   </td>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import AssignedComponent from './AssignedComponent';
-import UnassignedComponent from './UnassignedComponent';
-import CreateOrderComponent from './CreateOrderComponent';
+import LowerSlideComponent from './LowerSlideComponent';
+import TheLowerSlideComponent from '../TheLowerSlideComponent';
 
 export default {
   name: 'DashboardComponent',
   components: {
-    AssignedComponent,
-    UnassignedComponent,
-    CreateOrderComponent,
+    LowerSlideComponent,
+    TheLowerSlideComponent,
   },
   props: {
     orderno: {

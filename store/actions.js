@@ -385,6 +385,56 @@ export default {
       return error.response;
     }
   },
+  async request_single_vehicle({ state }, payload) {
+    const config = state.config;
+    const vehicleID = payload.vehicleID;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vehicles/${vehicleID}`;
+    try {
+      const response = await axios.get(url, param);
+      const vehicle_details = response.data;
+      return vehicle_details;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async request_single_owner({ state }, payload) {
+    const config = state.config;
+    const ownerID = payload.ownerID;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}owners/${ownerID}`;
+    try {
+      const response = await axios.get(url, param);
+      const owner_details = response.data;
+      return owner_details;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
   async request_single_order({ state, dispatch }, orderNo) {
     const config = state.config;
     const url = `${config.ADONIS_API}orders/${orderNo}`;
@@ -418,6 +468,37 @@ export default {
       return res.data;
     } catch (error) {
       return error.response;
+    }
+  },
+  async add_owner_vehicle({ state, dispatch }, payload) {
+    const config = state.config;
+    const url = `${config.AUTH}${payload.app}`;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    try {
+      const response = await axios.post(url, payload.payload, param);
+      const data = await response;
+      const orderDetails = data.data;
+      return orderDetails;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.message;
+    }
+  },
+  async allocate_order({ state, dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error;
     }
   },
   // eslint-disable-next-line require-await

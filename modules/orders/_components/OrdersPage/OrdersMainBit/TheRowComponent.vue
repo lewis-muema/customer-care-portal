@@ -66,7 +66,10 @@
         <td>
           {{ order.rider_name }}
           <span style="float:right;">
-            <span> {{ vendorLabels[order.vendor_type_id] }}</span>
+            <span>
+              {{ vendorLabels[order.vendor_type_id]
+              }}{{ freightLabel(order) }}</span
+            >
             &nbsp;
             <img
               :src="
@@ -354,6 +357,11 @@ export default {
     // checkFBUorders() {
 
     // },
+    freightLabel(order) {
+      if (order.order_no !== order.parent_order_no) {
+        return '-C';
+      }
+    },
     forceRerender() {
       this.rowComponentKey += 1;
     },
