@@ -55,40 +55,52 @@
       :readonly="existingStatus"
       @input="passNewDriver()"
     />
-    <input
-      type="text"
-      class="freight-assign-rider-buttons"
-      placeholder="Phone number"
-      v-model="phone"
-      :class="existingStatus ? 'inactive-assign-input' : ''"
-      :readonly="existingStatus"
-      @input="passNewDriver()"
-    />
+    <div class="phone-input-holder">
+      <vue-tel-input
+        v-model="phone"
+        v-bind="bindProps"
+        class="tel-input"
+        :class="existingStatus ? 'inactive-tel-input' : ''"
+        :readonly="existingStatus"
+        @input="passNewDriver()"
+        @validate="Valid"
+      ></vue-tel-input>
+    </div>
     <input
       type="text"
       class="freight-assign-rider-buttons"
       placeholder="Driver's license"
+      maxlength="15"
       v-model="license"
       :class="existingStatus ? 'inactive-assign-input' : ''"
       :readonly="existingStatus"
       @input="passNewDriver()"
     />
     <input
-      type="text"
+      type="number"
       class="freight-assign-rider-buttons"
       placeholder="Driver rate"
-      v-model="rate"
-      @input="passNewDriver()"
+      max="100"
+      v-model.number="rate"
+      @input="
+        rate = rate > 100 ? 100 : rate;
+        passNewDriver();
+      "
     />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import VueTelInput from 'vue-tel-input';
+import 'vue-tel-input/dist/vue-tel-input.css';
 import VueTypeahead from 'vue-typeahead';
 
 export default {
   name: 'AssignRider',
+  components: {
+    VueTelInput,
+  },
   extends: VueTypeahead,
   data() {
     return {
@@ -112,6 +124,31 @@ export default {
       phone: '',
       license: '',
       rate: '',
+      bindProps: {
+        defaultCountry: 'KE',
+        disabledFetchingCountry: false,
+        disabled: false,
+        disabledFormatting: false,
+        placeholder: 'Phone number',
+        required: false,
+        enabledCountryCode: false,
+        enabledFlags: true,
+        preferredCountries: ['KE', 'UG', 'TZ'],
+        onlyCountries: [],
+        ignoredCountries: [],
+        autocomplete: 'off',
+        name: 'telephone',
+        maxLen: 15,
+        wrapperClasses: '',
+        inputClasses: '',
+        dropdownOptions: {
+          disabledDialCode: false,
+        },
+        inputOptions: {
+          showDialCode: false,
+        },
+        validCharactersOnly: true,
+      },
     };
   },
   computed: {
@@ -140,6 +177,17 @@ export default {
     },
   },
   methods: {
+    /* eslint-disable */
+    Valid: function({ number, isValid, country }) {
+      if (this.phone) {
+        if (isValid) {
+          document.querySelector('.tel-input').style.cssText = 'border-color: rgb(34, 255, 112); box-shadow: 0px 1px 5px 1px #00ff5a;';
+        } else {
+          document.querySelector('.tel-input').style.cssText = 'border-color: rgb(255, 160, 160); box-shadow: rgba(255, 0, 0, 0.58) 0px 1px 5px 1px;';
+        }
+      }
+    },
+    /* eslint-enable */
     trigger() {
       this.rider = null;
       this.hideInput = 'hide';
@@ -172,7 +220,7 @@ export default {
       const payload = {
         registration_no: '',
         vendor_type: 25,
-        phone_no: this.phone,
+        phone_no: this.phone.replace(/\s/g, ''),
         name: this.name,
         id_no: this.query,
         dl_no: this.license,
@@ -233,5 +281,22 @@ export default {
 }
 .single-suggestion {
   padding-left: 20px;
+}
+.tel-input {
+  height: 40px;
+  padding: 7px;
+  border-radius: 5px;
+  border: 1px solid #d3d6d8;
+  margin: 5px;
+  width: max-content;
+  float: left;
+}
+.inactive-tel-input {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+.phone-input-holder {
+  display: inline-flex;
+  width: 180px;
 }
 </style>
