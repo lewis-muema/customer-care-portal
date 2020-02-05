@@ -124,6 +124,7 @@ export default {
       previewing: true,
       tableData: this.configs,
       copId: this.user.user_details.cop_id,
+      copName: this.user.user_details.cop_name,
       customPricingDetails: this.customdata,
     };
   },
@@ -214,6 +215,7 @@ export default {
       for (let i = 0; i < pricingConfigData.length; i += 1) {
         const distancePricingObject = {
           cop_id: this.copId,
+          cop_name: this.copName,
           custom_pricing_details: {
             id: pricingConfigData[i].id,
             name: pricingConfigData[i].name,
