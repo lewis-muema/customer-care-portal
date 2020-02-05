@@ -221,6 +221,13 @@ Vue.mixin({
       }
       return amountString;
     },
+    freightLabel(order) {
+      if (
+        order.order_details.order_no !== order.order_details.parent_order_no
+      ) {
+        return '-C';
+      }
+    },
     // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(
       amount,

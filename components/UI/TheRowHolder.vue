@@ -52,7 +52,10 @@
             <td>
               {{ riderDetails.name }}
               <span class="vendor-label">
-                <span> {{ vendorLabels[vendorTypeId] }}</span>
+                <span>
+                  {{ vendorLabels[vendorTypeId]
+                  }}{{ freightLabel(order) }}</span
+                >
                 &nbsp;
                 <img
                   :src="
