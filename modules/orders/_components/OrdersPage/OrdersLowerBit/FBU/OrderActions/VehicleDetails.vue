@@ -19,11 +19,15 @@
       v-else
       v-model="regNo"
       type="text"
+      maxlength="15"
       class="freight-assign-rider-buttons"
       @click="triggerSearch()"
     />
     <p v-if="errorStatus" class="search-failed-owner">
       {{ error }}
+    </p>
+    <p class="add-owner-success">
+      {{ success }}
     </p>
     <div v-show="hasItems" class="driver-suggestions">
       <p
@@ -56,6 +60,7 @@
       type="text"
       class="freight-assign-rider-buttons"
       placeholder="Insurance number"
+      maxlength="15"
       v-model="insurance"
       @input="passNewVehicle()"
       :class="existingStatus ? 'inactive-assign-input' : ''"
@@ -65,6 +70,7 @@
       type="text"
       class="freight-assign-rider-buttons"
       placeholder="Trailer number"
+      maxlength="15"
       v-model="trailer"
       @input="passNewVehicle()"
     />
@@ -72,6 +78,7 @@
       type="text"
       class="freight-assign-rider-buttons"
       placeholder="Kwartos code"
+      maxlength="15"
       v-model="kwartos"
       @input="passNewVehicle()"
     />
@@ -120,6 +127,7 @@ export default {
       existingStatus: false,
       regNo: '',
       error: '',
+      success: '',
       trailer: '',
       kwartos: '',
       insurance: '',
@@ -175,6 +183,14 @@ export default {
   methods: {
     setError(error) {
       this.error = error;
+    },
+    setSuccess(success, timeout) {
+      this.success = success;
+      if (timeout > 0) {
+        setTimeout(() => {
+          this.success = '';
+        }, timeout);
+      }
     },
     trigger() {
       this.vehicle = null;
@@ -247,6 +263,7 @@ export default {
           if (!response.status) {
             this.error = `${response.msg}`;
           } else {
+            this.setSuccess('(Awesome! Truck details have been saved!)', 3000);
             this.requestsingleVehicle(response.vehicle_id);
           }
         });

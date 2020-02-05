@@ -3,8 +3,27 @@
     colspan="9"
     class="order_view_lower_cell cell-override"
     :id="`order_view_lower${orderno}`"
-    style="padding:0px; background-color: rgba(245, 245, 245, 0.56) !important; font-size: 13px;"
   >
+    <div class="blinder" v-if="blinderActive">
+      <div class="driver-details-popup">
+        <img
+          src="https://images.sendyit.com/web_platform/orders/OrderConfirmation.svg"
+          class="add-driver-prompt-photo"
+        />
+        <p class="add-driver-prompt-par">
+          Looks like we have a new driver :)
+        </p>
+        <p class="save-driver-prompt-par">
+          Would you like to save the driver’s details?
+        </p>
+        <button class="save-driver-prompt-button" @click="promptAllocation()">
+          Yes! Save Details
+        </button>
+        <p class="ignore-driver-prompt-par" @click="blinderActive = false">
+          Nah, don’t save
+        </p>
+      </div>
+    </div>
     <div class="row" v-if="order === null">
       loading ....
     </div>
@@ -55,6 +74,7 @@ export default {
       activetab: null,
       firstShow: false,
       firstActive: false,
+      blinderActive: false,
     };
   },
   computed: {
@@ -72,7 +92,7 @@ export default {
   },
   mounted() {
     this.setExchangeRates();
-
+    this.rootListener();
     const notification = [];
     const actionClass = '';
     this.updateClass(actionClass);
@@ -99,6 +119,15 @@ export default {
       this.showTab = `${tab}_${orderNo}`;
       this.active = 'active';
       this.show = 'show';
+    },
+    rootListener() {
+      this.$root.$on(`Save Driver ${this.orderno}`, arg => {
+        this.blinderActive = arg;
+      });
+    },
+    promptAllocation() {
+      this.blinderActive = false;
+      this.$root.$emit(`Allocate Driver ${this.orderno}`);
     },
     async singleOrderRequest() {
       try {

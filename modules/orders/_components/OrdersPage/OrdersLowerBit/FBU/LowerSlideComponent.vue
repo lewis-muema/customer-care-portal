@@ -18,6 +18,7 @@
             <div class="col-md-12 freight-actions">
               <div class="freight-order-actions">
                 <button
+                  v-if="order.order_details.confirm_status === 0"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'assign' ? 'active-tab' : 'inactive-tab'
@@ -139,6 +140,7 @@ export default {
     this.updateOrderErrors(notification);
     this.updateErrors(notification);
     this.updateNotification(actionClass);
+    this.ActiveTabStatus();
   },
   methods: {
     ...mapMutations({
@@ -147,6 +149,13 @@ export default {
       updateClass: 'setActionClass',
       updateOrderErrors: 'setActionErrors',
     }),
+    ActiveTabStatus() {
+      if (this.order.order_details.confirm_status === 0) {
+        this.ActiveTab = 'assign';
+      } else {
+        this.ActiveTab = 'gps';
+      }
+    },
   },
 };
 </script>
