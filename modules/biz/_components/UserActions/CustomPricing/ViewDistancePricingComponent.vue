@@ -163,12 +163,13 @@ export default {
             currency: pricingApprovalData[i].currency,
             admin_id: pricingApprovalData[i].admin_id,
             distance_pricing: pricingApprovalData[i].distance_pricing,
-            rejection_message: this.rejectionReason,
           },
         };
-        distancePricingObject.custom_pricing_details.distance_pricing.status =
-          'Deactivated';
-        distancePricingArray.push(distancePricingObject);
+        if (typeof distancePricingObject.vendor_id !== 'undefined') {
+          distancePricingObject.custom_pricing_details.distance_pricing.status =
+            'Deactivated';
+          distancePricingArray.push(distancePricingObject);
+        }
       }
       return distancePricingArray;
     },

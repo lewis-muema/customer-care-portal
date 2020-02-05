@@ -11,6 +11,9 @@ const PricingConfigsMxn = {
     return {
       copId: '',
       adminId: '',
+      pacInput: '',
+      pacInput1: '',
+      pacInput2: '',
       defaultCurrency: '',
       vendorTypes: [],
       tableData: [],
@@ -125,6 +128,7 @@ const PricingConfigsMxn = {
     },
     addRow(model) {
       if (model === 'Distance') {
+        this.pacInput = '';
         const distancePricingRow = {
           city: '',
           name: '',
@@ -136,11 +140,13 @@ const PricingConfigsMxn = {
           loader_cost: '18000',
           service_fee: '20',
           insurance: '20',
-          client_fee: '2000',
+          client_fee: '340',
           cancellation_fee: '40000',
         };
         this.tableData.push(distancePricingRow);
       } else if (model === 'Location') {
+        this.pacInput1 = '';
+        this.pacInput2 = '';
         const locationPricingRow = {
           id: 10,
           name: '',
