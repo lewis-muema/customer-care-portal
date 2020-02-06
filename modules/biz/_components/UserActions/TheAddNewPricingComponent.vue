@@ -271,7 +271,7 @@ export default {
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
         this.trackNewLocationConfig();
-      }
+      } else return;
     },
     goBack() {
       this.updateSection(this.section - 1);
@@ -320,7 +320,7 @@ export default {
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.viewLocation = true;
         this.setTableData(this.locationPricingTableData);
-      }
+      } else return;
     },
     onSectionUpdate(value) {
       this.newLocationPricing = value;
