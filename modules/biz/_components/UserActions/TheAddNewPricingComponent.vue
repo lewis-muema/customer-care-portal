@@ -291,7 +291,7 @@ export default {
             this.distancePricingTableData[i].status === 'Active'
           ) {
             this.distancePricingStatus = 'Active';
-          }
+          } else return;
         }
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.pricingModel = 'Location Pricing';
