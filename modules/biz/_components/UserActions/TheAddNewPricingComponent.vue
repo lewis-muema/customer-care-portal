@@ -308,7 +308,7 @@ export default {
         typeof this.locationPricingTableData[0] === 'undefined'
       ) {
         this.existingConfigs = false;
-      }
+      } else return;
     },
     viewConfigDetails() {
       this.trackViewPricingDetails();
