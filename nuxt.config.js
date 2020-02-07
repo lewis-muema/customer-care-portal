@@ -158,6 +158,7 @@ module.exports = {
     'plugins/vue-select',
     'plugins/vuelidate',
     'plugins/typeahead',
+    'plugins/multipleImgUpload',
   ],
   /*
    ** Nuxt.js modules
