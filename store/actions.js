@@ -530,7 +530,23 @@ export default {
       return error.message;
     }
   },
-  async allocate_order({ state, dispatch }, payload) {
+  async allocate_rider_vehicle({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  },
+  async allocate_order({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  },
+  async change_order_status({ state, dispatch }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res;

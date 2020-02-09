@@ -204,6 +204,7 @@ Vue.mixin({
       fixed_cost,
       customer_min_amount,
       confirm_status,
+      order,
     ) {
       // eslint-disable-next-line prettier/prettier
       const computedAmount = this.determineOrderAmounts(
@@ -212,18 +213,24 @@ Vue.mixin({
         fixed_cost,
         customer_min_amount,
         confirm_status,
+        order,
       );
       currency = currency || '';
       amount = this.numberWithCommas(computedAmount);
       let amountString = `${currency} ${amount}`;
-      if (vendor_type_id === 25 && confirm_status < 1) {
+      if (
+        vendor_type_id === 25 &&
+        order.order_details.order_no === order.order_details.parent_order_no &&
+        confirm_status < 1
+      ) {
         amountString = '-';
       }
       return amountString;
     },
     freightLabel(order) {
       if (
-        order.order_details.order_no !== order.order_details.parent_order_no
+        order.order_details.order_no !== order.order_details.parent_order_no &&
+        order.rider_details.vendor_type_id === 25
       ) {
         return '-C';
       }
@@ -235,9 +242,14 @@ Vue.mixin({
       fixedCost,
       customerMinAmount,
       confirmStatus,
+      order,
     ) {
       const freightArray = [20, 25];
-      if (freightArray.includes(vendorTypeID) && !fixedCost) {
+      if (
+        freightArray.includes(vendorTypeID) &&
+        !fixedCost &&
+        order.order_details.order_no === order.order_details.parent_order_no
+      ) {
         if (confirmStatus < 1) {
           amount = customerMinAmount;
         }

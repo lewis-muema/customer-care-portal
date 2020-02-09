@@ -355,7 +355,10 @@ export default {
 
     // },
     freightLabel(order) {
-      if (order.order_no !== order.parent_order_no) {
+      if (
+        order.order_no !== order.parent_order_no &&
+        order.vendor_type_id === 25
+      ) {
         return '-C';
       }
     },

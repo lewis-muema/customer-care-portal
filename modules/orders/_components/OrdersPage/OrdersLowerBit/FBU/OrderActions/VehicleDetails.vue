@@ -73,6 +73,8 @@
       maxlength="15"
       v-model="trailer"
       @input="passNewVehicle()"
+      :class="existingStatus ? 'inactive-assign-input' : ''"
+      :readonly="existingStatus"
     />
     <input
       type="text"
@@ -81,6 +83,8 @@
       maxlength="15"
       v-model="kwartos"
       @input="passNewVehicle()"
+      :class="existingStatus ? 'inactive-assign-input' : ''"
+      :readonly="existingStatus"
     />
     <span
       v-if="!hasItems && editStatus && query"
@@ -175,7 +179,7 @@ export default {
   },
   watch: {
     id() {
-      if (this.id === 0) {
+      if (this.id === 0 && this.existingStatus) {
         this.triggerSearch();
       }
     },
@@ -289,6 +293,16 @@ export default {
         this.existingStatus = true;
         this.regNo = data.registration_no;
         this.insurance = data.insurance_no;
+        // eslint-disable-next-line no-multi-assign
+        this.kwartos = Object.prototype.hasOwnProperty.call(
+          data,
+          'kwartos_code',
+        )
+          ? data.kwartos_code
+          : '';
+        this.trailer = Object.prototype.hasOwnProperty.call(data, 'trailer_no')
+          ? data.trailer_no
+          : '';
         data.kwartos = this.kwartos;
         data.trailer = this.trailer;
         this.$emit('vehiclesDetails', data);

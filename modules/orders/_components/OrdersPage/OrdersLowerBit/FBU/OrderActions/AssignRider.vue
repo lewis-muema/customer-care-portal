@@ -122,16 +122,13 @@ export default {
           return true;
         }
       } else if (!this.newVehicle) {
-        if (
-          Object.prototype.hasOwnProperty.call(this.vehicle, 'trailer') &&
-          this.vehicle.trailer &&
-          this.vehicle.kwartos
-        ) {
-          return true;
-        }
+        return true;
       }
       return false;
     },
+  },
+  beforeDestroy() {
+    this.$root.$off(`Allocate Driver ${this.order.order_details.order_no}`);
   },
   mounted() {
     this.rootListener();
@@ -140,6 +137,7 @@ export default {
     ownerData(data) {
       if (data) {
         this.owner = data;
+        this.vehicle.owner_id = this.owner.owner_id;
       } else {
         this.owner = {
           owner_id: 0,
@@ -167,13 +165,6 @@ export default {
       const payload = {
         vehicle_details: '',
         rider_details: '',
-        order_details: {
-          rider_phone: this.driver.phone_no,
-          order_no: this.order.order_details.order_no,
-          destination: { lat: -1.23, lng: 38.45 },
-          distance: 9,
-          polyline: 'encoded_string',
-        },
       };
       if (!this.newVehicle) {
         payload.vehicle_details = this.existingVehiclePayload();
@@ -182,7 +173,7 @@ export default {
       }
       if (!this.newRider) {
         payload.rider_details = this.existingRiderPayload();
-        this.allocateOrder(payload);
+        this.partnerReallocation(payload);
       } else {
         payload.rider_details = this.newRiderPayload();
         this.$root.$emit(
@@ -196,7 +187,6 @@ export default {
       const payload = {
         new_vehicle: false,
         vehicle_id: this.vehicle.vehicle_id,
-        owner_id: this.owner.owner_id,
       };
       return payload;
     },
@@ -216,25 +206,19 @@ export default {
       const payload = {
         new_rider: false,
         rider_id: this.driver.rider_id,
-        vendor_type: 25,
-        owner_id: this.owner.owner_id,
       };
       return payload;
     },
     newRiderPayload() {
       const payload = {
-        registration_no: this.vehicle.registration_no,
-        box: 0,
         vendor_type: 25,
         real_owner_id: this.owner.owner_id,
         closed: 1,
         driver_name: this.driver.name,
         phone_no: this.driver.phone_no,
-        vendor_id: 25,
         owner_phone: this.owner.owner_id,
         dl_no: this.driver.dl_no,
         id_no: this.driver.id_no,
-        refrigerated: 0,
         new_rider: true,
       };
       return payload;
@@ -243,42 +227,65 @@ export default {
       this.$root.$on(
         `Allocate Driver ${this.order.order_details.order_no}`,
         () => {
-          this.allocateOrder(this.payload);
+          this.partnerReallocation(this.payload);
         },
       );
     },
     ...mapActions({
       allocate_order: 'allocate_order',
+      allocate_rider_vehicle: 'allocate_rider_vehicle',
     }),
     ...mapMutations({
       updateErrors: 'setErrors',
     }),
-    async allocateOrder(orderPayload) {
+    async partnerReallocation(orderPayload) {
       const payload = {
-        app: 'AUTH',
-        endpoint: 'v1/complete_partner_order/',
+        app: 'NODE_PARTNER_API',
+        endpoint: 'management/partner_reallocation/',
         params: orderPayload,
+      };
+      try {
+        const data = await this.allocate_rider_vehicle(payload);
+        if (data.data.status) {
+          this.allocateOrder(data.data);
+        } else {
+          this.updateErrors([
+            `Failed to reallocate rider, ${data.data.message}`,
+          ]);
+          setTimeout(() => {
+            this.updateErrors([]);
+          }, 3000);
+        }
+        return (this.response = data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async allocateOrder(rider) {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'rider_app_confirm/',
+        params: {
+          sim_card_sn: rider.rider_serial_number,
+          rider_phone: rider.rider_phone_no,
+          order_no: this.order.order_details.order_no,
+          destination: { lat: -1.23, lng: 38.45 },
+          distance: 9,
+          polyline: 'encoded_string',
+          version_code: 10000,
+        },
       };
       try {
         const data = await this.allocate_order(payload);
         if (!data.data.status) {
-          this.updateErrors([
-            `Failed to assign the order. ${
-              Object.prototype.hasOwnProperty.call(data.data, 'reason')
-                ? data.data.reason
-                : ''
-            }`,
-          ]);
+          this.updateErrors([`Failed to allocate order, ${data.data.reason}`]);
           setTimeout(() => {
             this.updateErrors([]);
           }, 2000);
         }
         return (this.response = data);
-      } catch {
-        this.updateErrors(['Failed to allocate order, Please try again']);
-        setTimeout(() => {
-          this.updateErrors([]);
-        }, 2000);
+      } catch (error) {
+        handleError(error);
       }
     },
   },
