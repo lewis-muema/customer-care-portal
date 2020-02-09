@@ -1291,6 +1291,11 @@ table {
   color: white;
   border: 1px solid #43A047;
 }
+.status-action-button-failed {
+  background: #E53935;
+  color: white;
+  border: 1px solid #E53935;
+}
 .status-progress {
   display: flex;
 }
