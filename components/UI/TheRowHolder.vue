@@ -86,6 +86,7 @@
                   paymentDetails.fixed_cost,
                   paymentDetails.customer_min_amount,
                   moreData.confirm_status,
+                  order,
                 )
               }}
             </td>
@@ -98,6 +99,7 @@
                   paymentDetails.fixed_cost,
                   paymentDetails.customer_min_amount,
                   moreData.confirm_status,
+                  order,
                 )
               }}
               <span

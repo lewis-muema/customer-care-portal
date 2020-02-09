@@ -1,43 +1,21 @@
 <template>
   <div>
-    <div class="status-progress">
-      <div class="progress-icon-left">
-        <div
-          class="progress-icon-active"
-          @click="lastAction()"
-          v-if="statuses[stage].phase === 0"
-        >
-          <i class="el-icon-back" />
-        </div>
-        <div class="progress-icon-inactive" v-else>
-          <i class="el-icon-back" />
-        </div>
-        <p class="center-text">Back</p>
-      </div>
-      <div class="progress-icon-right">
-        <div
-          class="progress-icon-active"
-          @click="nextAction()"
-          v-if="statuses[stage].phase === 2"
-        >
-          <i class="el-icon-right" />
-        </div>
-        <div class="progress-icon-inactive" v-else>
-          <i class="el-icon-right" />
-        </div>
-        <p class="center-text">Next</p>
-      </div>
-    </div>
     <div class="status-action">
       <div class="status-action-label">{{ statuses[stage].title }}</div>
       <button
         class="status-action-button"
         @click="confirmAction()"
-        :class="
+        :class="[
           statuses[stage].phase === 2
             ? 'status-action-button-complete'
-            : 'status-action-button-confirm'
-        "
+            : 'status-action-button-confirm',
+          statuses[stage].phase === 3
+            ? 'status-action-button-failed'
+            : 'status-action-button-confirm',
+          order.order_details.confirm_status === 0
+            ? 'disabled-confirm-button'
+            : '',
+        ]"
       >
         <span v-if="statuses[stage].phase === 0">CONFIRM</span>
         <span v-if="statuses[stage].phase === 1"
@@ -45,6 +23,9 @@
         /></span>
         <span v-if="statuses[stage].phase === 2"
           ><i class="el-icon-check"
+        /></span>
+        <span v-if="statuses[stage].phase === 3"
+          ><i class="el-icon-close"
         /></span>
       </button>
     </div>
@@ -61,6 +42,7 @@
         <div
           class="status-indicator"
           :class="stage === index ? 'active-status-indicator' : ''"
+          @click="progress(index)"
         >
           <div
             class="progress-indicator"
@@ -74,6 +56,8 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+
 export default {
   name: 'OrderStatuses',
   props: {
@@ -85,40 +69,132 @@ export default {
   data() {
     return {
       statuses: [
-        { title: 'Pending', phase: 2 },
-        { title: 'Confirmed', phase: 0 },
-        { title: 'Gate-In', phase: 0 },
-        { title: 'Gate-Out', phase: 0 },
-        { title: 'In transit', phase: 0 },
-        { title: 'Offloaded', phase: 0 },
-        { title: 'Container return', phase: 0 },
-        { title: 'Delivered', phase: 0 },
+        {
+          title: 'Pending',
+          response: 'pending',
+          phase: 2,
+          endpoint: '',
+        },
+        {
+          title: 'Confirmed',
+          response: 'confirmed',
+          phase: 0,
+          endpoint: '',
+        },
+        {
+          title: 'Gate-In',
+          response: 'gated_in',
+          phase: 0,
+          endpoint: 'v1/freight/gate_in',
+        },
+        {
+          title: 'Gate-Out',
+          response: 'gated_out',
+          phase: 0,
+          endpoint: 'v1/freight/gate_out',
+        },
+        {
+          title: 'In transit',
+          response: 'in_transit',
+          phase: 0,
+          endpoint: 'v1/freight/transit',
+        },
+        {
+          title: 'Arrived',
+          response: 'arrived',
+          phase: 0,
+          endpoint: 'v1/freight/arrive',
+        },
+        {
+          title: 'Offloaded',
+          response: 'offloaded',
+          phase: 0,
+          endpoint: 'v1/freight/offload',
+        },
+        {
+          title: 'Container return',
+          response: 'ec_returned',
+          phase: 0,
+          endpoint: '',
+        },
+        {
+          title: 'Delivered',
+          response: 'delivered',
+          phase: 0,
+          endpoint: '',
+        },
       ],
       stage: 1,
     };
   },
+  computed: {
+    ...mapState(['actionErrors', 'actionClass', 'userData']),
+  },
+  created() {
+    this.resetStage();
+  },
   methods: {
-    returnStatus(i) {},
-    nextAction() {
-      if (this.stage >= 0 && this.stage < this.statuses.length - 1) {
+    ...mapActions({
+      change_order_status: 'change_order_status',
+    }),
+    resetStage() {
+      let loopCount = 0;
+      this.statuses.forEach((row, i) => {
+        if (loopCount === 0) {
+          this.statuses[i].phase = 2;
+          this.stage = i + 1;
+          if (this.order.freight_details.freight_status === row.response) {
+            loopCount = 1;
+          }
+        }
+      });
+    },
+    progress(i) {
+      if (
+        i !== 0 &&
+        this.stage !== this.statuses.length - 1 &&
+        this.statuses[i - 1].phase === 2 &&
+        this.stage + 1 === i
+      ) {
         this.stage++;
       }
     },
-    lastAction() {
-      if (this.stage > 0 && this.stage <= this.statuses.length - 1) {
-        this.stage--;
-      }
-    },
     confirmAction() {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: this.statuses[this.stage].endpoint,
+        params: {
+          _user_email: this.userData.payload.data.email,
+          _user_id: this.userData.payload.data.admin_id,
+          action_user: this.userData.payload.data.name,
+          channel: 'operations',
+          data_set: 'cc_actions',
+          order_no: this.order.order_details.order_no,
+          rider_phone: this.order.rider_details.phone_no,
+          sim_card_sn: this.order.rider_details.serial_no,
+        },
+      };
       if (this.statuses[this.stage].phase === 0) {
         this.statuses[this.stage].phase = 1;
-        setTimeout(() => {
-          this.statuses[this.stage].phase = 2;
-        }, 2000);
+        this.change_order_status(payload)
+          .then(response => {
+            this.statuses[this.stage].phase = 2;
+          })
+          // eslint-disable-next-line handle-callback-err
+          .catch(error => {
+            this.statuses[this.stage].phase = 3;
+          });
       }
     },
   },
 };
 </script>
 
-<style></style>
+<style>
+.disabled-confirm-button {
+  pointer-events: none;
+  cursor: not-allowed !important;
+  background: #1a7fc3a8;
+  border: 1px solid #1a7fc3a8;
+}
+</style>

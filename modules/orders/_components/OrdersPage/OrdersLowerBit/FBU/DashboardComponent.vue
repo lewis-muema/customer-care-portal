@@ -90,6 +90,9 @@ export default {
   created() {
     this.singleOrderRequest();
   },
+  beforeDestroy() {
+    this.$root.$off(`Save Driver ${this.orderno}`);
+  },
   mounted() {
     this.setExchangeRates();
     this.rootListener();
