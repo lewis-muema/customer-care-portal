@@ -11,9 +11,9 @@
       border
       class="pricing-table-styling preview-container"
     >
-      <el-table-column prop="from" label="Pick up location" width="200">
+      <el-table-column prop="from" label="Pick up location" width="255">
       </el-table-column>
-      <el-table-column prop="to" label="Drop off location" width="200">
+      <el-table-column prop="to" label="Drop off location" width="255">
       </el-table-column>
       <el-table-column prop="name" label="Vendor type" width="130">
       </el-table-column>
