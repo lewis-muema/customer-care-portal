@@ -96,16 +96,7 @@ import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 export default {
   name: 'TheUserTicketingComponent',
 
-  props: {
-    category: {
-      type: String,
-      required: true,
-    },
-    ticket: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: ['category', 'ticket'],
   data() {
     return {
       actionErrors: [],

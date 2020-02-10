@@ -187,6 +187,8 @@ export default {
       search: false,
       types: {
         'peer|rider': 'rider',
+        'peer|owner|rider': 'rider',
+        'owner|rider': 'rider',
         rider: 'riders',
         cop: 'biz',
         peer: 'peer',
@@ -206,7 +208,7 @@ export default {
       if (this.user.caller_type) {
         const type = this.user.caller_type;
         const allTypes = this.types;
-        cat = allTypes[type];
+        cat = allTypes[type] ? allTypes[type] : 'rider';
       }
       return cat;
     },
