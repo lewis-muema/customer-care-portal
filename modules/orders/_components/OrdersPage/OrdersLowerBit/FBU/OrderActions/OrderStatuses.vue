@@ -178,11 +178,17 @@ export default {
         this.statuses[this.stage].phase = 1;
         this.change_order_status(payload)
           .then(response => {
-            this.statuses[this.stage].phase = 2;
+            if (response.data.status) {
+              this.statuses[this.stage].phase = 2;
+            } else {
+              this.statuses[this.stage].phase = 3;
+              setTimeout(() => {
+                this.statuses[this.stage].phase = 0;
+              }, 3000);
+            }
           })
-          // eslint-disable-next-line handle-callback-err
           .catch(error => {
-            this.statuses[this.stage].phase = 3;
+            handleError(error);
           });
       }
     },
