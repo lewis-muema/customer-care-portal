@@ -55,6 +55,8 @@ const config = {
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
+    VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
+    OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
