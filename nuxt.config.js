@@ -62,6 +62,10 @@ module.exports = {
           'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry,places',
         type: 'text/javascript',
       },
+      // {
+      //   src: 'https://asprise.azureedge.net/scannerjs/scanner.js',
+      //   type: 'text/javascript',
+      // },
       {
         src: 'https://apis.google.com/js/api.js',
         type: 'text/javascript',

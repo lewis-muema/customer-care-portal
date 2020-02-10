@@ -53,6 +53,9 @@
       </div>
     </div>
     <div class="form-group col-md-12">
+      <button type="button" @click="scanToJpg">Scan</button>
+
+      <div id="images"></div>
       <button class="btn btn-primary action-button">
         Complete Order
         <span v-if="loading">
@@ -111,7 +114,7 @@ export default {
     reason: { required },
   },
   computed: {
-    ...mapState(['userData']),
+    ...mapState(['userData', 'config']),
     signedBy() {
       return `Sendy Staff - ${this.userData.payload.data.name}`;
     },
@@ -139,7 +142,7 @@ export default {
       this.loading = true;
       // Notify orders app of uploaded dnotes
       const notify = await this.notifyOrdersApp();
-      if (notify.status) {
+      if (typeof notify !== 'undefined' && notify.status) {
         // complete/deliver the order.
         const payload = {
           app: 'ORDERS_APP',
@@ -164,6 +167,16 @@ export default {
         this.updateClass(actionClass);
         this.updateErrors(notification);
       }
+    },
+    scanToJpg() {
+      scanner.scan(displayImagesOnPage, {
+        output_settings: [
+          {
+            type: 'return-base64',
+            format: 'jpg',
+          },
+        ],
+      });
     },
     async notifyOrdersApp() {
       const notification = [];
@@ -204,11 +217,23 @@ export default {
       this.updateErrors(notification);
     },
     uploadImageSuccess(formData, index, fileList) {
+      const fd = new FormData();
+      fd.append('file', fileList);
+      console.log('fd', fd);
       console.log('data', formData, index, fileList);
+      const url = `${this.config.ADONIS_API}orders/${this.orderNo}/upload`;
+      console.log('config', this.config.ADONIS_API);
+      const jwtToken = localStorage.getItem('jwtToken');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: jwtToken,
+        },
+      };
       // Upload image api
-      // axios.post('http://your-url-upload', { data: formData }).then(response => {
-      //   console.log(response)
-      // })
+      axios.post(url, { data: fd }, config).then(response => {
+        console.log('response images', response);
+      });
     },
     beforeRemove(index, done, fileList) {
       console.log('index', index, fileList);
