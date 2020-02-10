@@ -104,7 +104,7 @@ export default {
       dnotes: [
         {
           document_tag: 'delivery_note',
-          images: ['AP77ZE878-4UQ3-delivery_note-0.jpg'],
+          images: ['BT443Q591-CAZ1-delivery_note-1.jpg'],
           name: 'Delivery Note',
         },
       ],
@@ -132,7 +132,7 @@ export default {
     }),
     async completeOrder() {
       const notification = [];
-      let actionClass = '';
+      // let actionClass = '';
 
       this.submitted = true;
       this.$v.$touch();
@@ -142,6 +142,9 @@ export default {
       this.loading = true;
       // Notify orders app of uploaded dnotes
       const notify = await this.notifyOrdersApp();
+      console.log('typeof notify', typeof notify);
+      console.log('notify.status', notify.status);
+
       if (typeof notify !== 'undefined' && notify.status) {
         // complete/deliver the order.
         const payload = {
@@ -154,18 +157,19 @@ export default {
             sim_card_sn: this.order.rider_details.serial_no,
           },
         };
-        try {
-          const data = await this.perform_order_action(payload);
-          notification.push(data.reason);
-          actionClass = this.display_order_action_notification(data.status);
-        } catch (error) {
-          notification.push(
-            'Failed to complete order. Try again or contact Tech Support',
-          );
-          actionClass = 'danger';
-        }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
+        console.log('payload', payload);
+        // try {
+        //   const data = await this.perform_order_action(payload);
+        //   notification.push(data.reason);
+        //   actionClass = this.display_order_action_notification(data.status);
+        // } catch (error) {
+        //   notification.push(
+        //     'Failed to complete order. Try again or contact Tech Support',
+        //   );
+        //   actionClass = 'danger';
+        // }
+        // this.updateClass(actionClass);
+        // this.updateErrors(notification);
       }
     },
     scanToJpg() {

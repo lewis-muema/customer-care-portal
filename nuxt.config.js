@@ -157,12 +157,12 @@ module.exports = {
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
     { src: '~plugins/element-ui', ssr: false },
+    { src: '~plugins/multiple-img-upload', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',
     'plugins/vuelidate',
     'plugins/typeahead',
-    'plugins/multipleImgUpload',
   ],
   /*
    ** Nuxt.js modules
