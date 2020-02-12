@@ -76,7 +76,7 @@ const config = {
     DISPATCH_LIST: 'https://auth.staging.sendyit.com/dispatch/',
     NODE_PRIVATE_API: 'https://auth.staging.sendyit.com/v1/',
     ORDERS_APP: 'https://auth.staging.sendyit.com/orders/',
-    LOGIN_URL: 'https://auth.staging.sendyit.com/v1/admin_glogin',
+    LOGIN_URL: 'https://auth.staging.sendyit.com/parcel/api/v11/admin_glogin',
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
