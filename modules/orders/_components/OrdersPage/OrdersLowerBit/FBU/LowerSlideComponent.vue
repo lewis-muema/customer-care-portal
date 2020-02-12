@@ -60,10 +60,7 @@
                   Order Status
                 </button>
                 <button
-                  v-if="
-                    !completeStatus() &&
-                      order.order_details.confirm_status === 0
-                  "
+                  v-if="!completeStatus()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'cancel' ? 'active-tab' : 'inactive-tab'
