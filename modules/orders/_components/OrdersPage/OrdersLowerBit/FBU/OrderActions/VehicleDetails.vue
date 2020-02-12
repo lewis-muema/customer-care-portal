@@ -256,6 +256,8 @@ export default {
             log_book_no: '',
             insurance_no: this.insurance,
             registration_no: this.query,
+            kwartos_code: this.kwartos,
+            trailer_no: this.trailer,
             log_book:
               'https://sendy-partner-docs.s3-eu-west-1.amazonaws.com/photo/default_pic.jpg',
             vehicle:
