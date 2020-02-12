@@ -44,6 +44,15 @@
             </a>
           </li>
 
+          <li class="treeview">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/biz"
+              @click="showModal('biz', $event)"
+              ><i class="fa fa-users"></i> <span> Biz </span>
+            </a>
+          </li>
+
           <li class="treeview" v-if="permissions.invoice_generation">
             <a
               class="fancybox fancybox.iframe fancyboxy"
@@ -51,15 +60,6 @@
               @click="showModal('invoice', $event)"
               ><i class="fa fa-file"></i>
               <span> Generate Invoice Numbers </span>
-            </a>
-          </li>
-
-          <li class="treeview">
-            <a
-              class="fancybox fancybox.iframe fancyboxy"
-              href="/biz"
-              @click="showModal('biz', $event)"
-              ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
 
