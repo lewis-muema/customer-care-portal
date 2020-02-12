@@ -42,7 +42,9 @@
       </div>
       <div class="upload-container col-md-6">
         <div class="scan-container" :id="`scanned_images_${orderNo}`">
-          <button class="btn btn-default">Scan Images</button>
+          <button @click="scanToJpg" class="btn btn-default">
+            Scan Images
+          </button>
         </div>
       </div>
       <div
@@ -53,9 +55,6 @@
       </div>
     </div>
     <div class="form-group col-md-12">
-      <button type="button" @click="scanToJpg">Scan</button>
-
-      <div id="images"></div>
       <button class="btn btn-primary action-button">
         Complete Order
         <span v-if="loading">
@@ -89,13 +88,7 @@ export default {
       reason: '',
       submitted: false,
       loading: false,
-      images: [
-        {
-          path:
-            'https://s3-us-west-1.amazonaws.com/powr/defaults/image-slider2.jpg',
-          caption: 'Elephant',
-        },
-      ],
+      images: [],
       uploadText: 'Upload Image(s)',
       browseText: 'browse',
       markIsPrimary: 'test image',
@@ -108,6 +101,20 @@ export default {
           name: 'Delivery Note',
         },
       ],
+      scanRequest: {
+        use_asprise_dialog: true, // Whether to use Asprise Scanning Dialog
+        show_scanner_ui: false, // Whether scanner UI should be shown
+        twain_cap_setting: {
+          // Optional scanning settings
+          ICAP_PIXELTYPE: 'TWPT_RGB', // Color
+        },
+        output_settings: [
+          {
+            type: 'return-base64',
+            format: 'jpg',
+          },
+        ],
+      },
     };
   },
   validations: {
@@ -132,7 +139,7 @@ export default {
     }),
     async completeOrder() {
       const notification = [];
-      // let actionClass = '';
+      let actionClass = '';
 
       this.submitted = true;
       this.$v.$touch();
@@ -157,30 +164,70 @@ export default {
             sim_card_sn: this.order.rider_details.serial_no,
           },
         };
-        console.log('payload', payload);
-        // try {
-        //   const data = await this.perform_order_action(payload);
-        //   notification.push(data.reason);
-        //   actionClass = this.display_order_action_notification(data.status);
-        // } catch (error) {
-        //   notification.push(
-        //     'Failed to complete order. Try again or contact Tech Support',
-        //   );
-        //   actionClass = 'danger';
-        // }
-        // this.updateClass(actionClass);
-        // this.updateErrors(notification);
+        // console.log('payload', payload);
+        try {
+          const data = await this.perform_order_action(payload);
+          notification.push(data.reason);
+          actionClass = this.display_order_action_notification(data.status);
+        } catch (error) {
+          notification.push(
+            'Failed to complete order. Try again or contact Tech Support',
+          );
+          actionClass = 'danger';
+        }
+        this.updateClass(actionClass);
+        this.updateErrors(notification);
       }
     },
     scanToJpg() {
-      scanner.scan(displayImagesOnPage, {
-        output_settings: [
-          {
-            type: 'return-base64',
-            format: 'jpg',
+      scanner.scan(this.displayImagesOnPage, this.scanRequest);
+    },
+    // scanToJpg() {
+    //   scanner.scan(displayImagesOnPage, {
+    //     output_settings: [
+    //       {
+    //         type: 'return-base64',
+    //         format: 'jpg',
+    //       },
+    //     ],
+    //   });
+    // },
+    /** Processes the scan result */
+    displayImagesOnPage(successful, mesg, response) {
+      if (!successful) {
+        // On error
+        console.error(`Failed: ${mesg}`);
+        return;
+      }
+      if (
+        successful &&
+        mesg != null &&
+        mesg.toLowerCase().indexOf('user cancel') >= 0
+      ) {
+        // User cancelled.
+        console.info('User cancelled');
+        return;
+      }
+      const scannedImages = scanner.getScannedImages(response, true, false); // returns an array of ScannedImage
+      for (
+        let i = 0;
+        // eslint-disable-next-line no-unmodified-loop-condition
+        scannedImages instanceof Array && i < scannedImages.length;
+        i++
+      ) {
+        const scannedImage = scannedImages[i];
+        const elementImg = scanner.createDomElementFromModel({
+          name: 'img',
+          attributes: {
+            class: 'scanned',
+            src: scannedImage.src,
           },
-        ],
-      });
+        });
+        (document.getElementById('images')
+          ? document.getElementById('images')
+          : document.body
+        ).appendChild(elementImg);
+      }
     },
     async notifyOrdersApp() {
       const notification = [];
@@ -240,21 +287,14 @@ export default {
       });
     },
     beforeRemove(index, done, fileList) {
-      console.log('index', index, fileList);
-      // eslint-disable-next-line no-restricted-globals
-      const r = confirm('remove image');
-      if (r === true) {
-        done();
-        // eslint-disable-next-line no-empty
-      } else {
-      }
+      done();
     },
     editImage(formData, index, fileList) {
-      console.log('edit data', formData, index, fileList);
+      return formData;
     },
 
     dataChange(data) {
-      console.log('changed', data);
+      return data;
     },
   },
 };
