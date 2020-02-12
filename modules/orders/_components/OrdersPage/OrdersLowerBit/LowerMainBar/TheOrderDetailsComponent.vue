@@ -111,6 +111,17 @@
           >Delivery Details</a
         >
       </li>
+      <li class="nav-item" v-if="moreData.delivery_status === 3">
+        <a
+          class="nav-link"
+          :id="`billingdata_${orderNo}`"
+          data-toggle="tab"
+          role="tab"
+          aria-selected="false"
+          @click="viewTab('billingdata', orderNo)"
+          >Billing Data</a
+        >
+      </li>
       <li
         class="nav-item"
         v-if="
@@ -253,6 +264,14 @@
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
+          :id="`billingdata_${orderNo}`"
+          role="tabpanel"
+          v-if="showTab === `billingdata_${orderNo}`"
+        >
+          <BillingDataComponent :order="orderDetails" />
+        </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
           :id="`dnotes_${orderNo}`"
           role="tabpanel"
           v-if="showTab === `dnotes_${orderNo}`"
@@ -288,6 +307,7 @@ export default {
     TheDispatchComponent: () => import('./OrderTabs/TheDispatchListComponent'),
     TheDNotesComponent: () => import('./OrderTabs/TheDNotesComponent'),
     TheQuotesComponent: () => import('./OrderTabs/TheQuotesComponent'),
+    BillingDataComponent: () => import('./OrderTabs/BillingDataComponent'),
 
     TheDeliveryDetailsComponent: () =>
       import('./OrderTabs/TheDeliveryDetailsComponent'),
