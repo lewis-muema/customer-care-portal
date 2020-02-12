@@ -173,7 +173,13 @@ export default {
     },
     async submitConfigs() {
       this.trackPricingSubmit();
-      const configParams = this.createPayload(this.tableData);
+      const pricingTableData = this.tableData;
+      for (let i = 0; i < pricingTableData.length; i += 1) {
+        const perHourFee = pricingTableData[i].waiting_time_cost_per_min;
+        const perMinuteFee = (perHourFee / 60).toFixed(2);
+        pricingTableData[i].waiting_time_cost_per_min = perMinuteFee;
+      }
+      const configParams = this.createPayload(pricingTableData);
       const notification = [];
       let actionClass = '';
       const payload = {
