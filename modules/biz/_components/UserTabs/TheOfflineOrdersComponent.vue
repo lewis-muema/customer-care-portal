@@ -222,7 +222,6 @@ export default {
   border: none ;
 }
 .el-table__expanded-cell {
-  /* padding: 0% 0% 0% 7% !important; */
   background-color: white ;
 }
 .el-table__expanded-cell:hover {
