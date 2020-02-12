@@ -198,6 +198,8 @@ export default {
         owner_id: this.owner.owner_id,
         closed: 1,
         insurance_no: this.vehicle.insurance_no,
+        trailer_no: this.vehicle.trailer,
+        kwartos_code: this.vehicle.kwartos,
         new_vehicle: true,
       };
       return payload;
