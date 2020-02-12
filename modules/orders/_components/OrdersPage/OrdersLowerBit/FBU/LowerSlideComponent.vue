@@ -29,6 +29,7 @@
                   Assign Order
                 </button>
                 <button
+                  v-if="!completeStatus()"
                   class="freight-order-actions-buttons"
                   :class="ActiveTab === 'gps' ? 'active-tab' : 'inactive-tab'"
                   @click="ActiveTab = 'gps'"
@@ -37,6 +38,7 @@
                   GPS
                 </button>
                 <button
+                  v-if="!completeStatus()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'finances' ? 'active-tab' : 'inactive-tab'
@@ -47,6 +49,7 @@
                   Finances
                 </button>
                 <button
+                  v-if="!completeStatus()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'status' ? 'active-tab' : 'inactive-tab'
@@ -57,6 +60,10 @@
                   Order Status
                 </button>
                 <button
+                  v-if="
+                    !completeStatus() &&
+                      order.order_details.confirm_status === 0
+                  "
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'cancel' ? 'active-tab' : 'inactive-tab'
@@ -66,20 +73,41 @@
                   <span class="fa fa-fw fa-thumbs-down"></span>
                   Cancel
                 </button>
+                <button
+                  v-if="completeStatus()"
+                  class="freight-order-actions-buttons"
+                  :class="
+                    ActiveTab === 'ticket' ? 'active-tab' : 'inactive-tab'
+                  "
+                  @click="ActiveTab = 'ticket'"
+                >
+                  <span class="fa fa-fw fa-thumbs-down"></span>
+                  Ticket
+                </button>
               </div>
               <div class="freight-order-actions-tabs">
                 <TheTrackerComponent
-                  v-if="ActiveTab === 'gps'"
+                  v-if="ActiveTab === 'gps' && !completeStatus()"
                   :order="order"
                 />
                 <AuxilliaryServices
-                  v-if="ActiveTab === 'finances'"
+                  v-if="ActiveTab === 'finances' && !completeStatus()"
                   :order="order"
                 />
-                <AssignRider v-if="ActiveTab === 'assign'" :order="order" />
-                <OrderStatuses v-if="ActiveTab === 'status'" :order="order" />
+                <AssignRider
+                  v-if="ActiveTab === 'assign' && !completeStatus()"
+                  :order="order"
+                />
+                <OrderStatuses
+                  v-if="ActiveTab === 'status' && !completeStatus()"
+                  :order="order"
+                />
                 <TheCancelComponent
-                  v-if="ActiveTab === 'cancel'"
+                  v-if="ActiveTab === 'cancel' && !completeStatus()"
+                  :order="order"
+                />
+                <TheTicketComponent
+                  v-if="ActiveTab === 'ticket' && completeStatus()"
                   :order="order"
                 />
               </div>
@@ -102,6 +130,7 @@ import TheMainComponent from '../LowerMainBar/TheMainComponent';
 import TheTrackerComponent from './OrderActions/TrackerComponent';
 import AuxilliaryServices from './OrderActions/AuxilliaryServices';
 import TheCancelComponent from '../LowerMainBar/OrderActions/TheCancelComponent';
+import TheTicketComponent from '../LowerMainBar/OrderActions/TheTicketComponent';
 import AssignRider from './OrderActions/AssignRider';
 import OrderStatuses from './OrderActions/OrderStatuses';
 import TheNotificationsComponent from '~/components/UI/TheNotificationsComponent';
@@ -116,6 +145,7 @@ export default {
     OrderStatuses,
     TheNotificationsComponent,
     TheCancelComponent,
+    TheTicketComponent,
     AuxilliaryServices,
   },
   props: {
@@ -155,6 +185,12 @@ export default {
       } else {
         this.ActiveTab = 'gps';
       }
+    },
+    completeStatus() {
+      if (this.order.order_details.delivery_status === 3) {
+        return true;
+      }
+      return false;
     },
   },
 };
