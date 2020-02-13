@@ -7,7 +7,7 @@
         :id="owner.owner_id"
         :ownername="owner.name"
       />
-      <DriverDetails @driverDetails="driverData" />
+      <DriverDetails @driverDetails="driverData" :order="order" />
       <button
         class="assign-order-button"
         :class="readyStatus ? 'inactive-assign-button' : ''"
@@ -57,6 +57,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['actionErrors', 'actionClass', 'userData']),
     readyStatus() {
       if (this.owner.owner_id > 0 && this.riderCheck && this.vehicleCheck) {
         return false;
@@ -266,15 +267,17 @@ export default {
     async allocateOrder(rider) {
       const payload = {
         app: 'ORDERS_APP',
-        endpoint: 'rider_app_confirm/',
+        endpoint: 'v1/freight/assign',
         params: {
+          _user_email: this.userData.payload.data.email,
+          _user_id: this.userData.payload.data.admin_id,
+          action_user: this.userData.payload.data.name,
+          channel: 'operations',
+          data_set: 'cc_actions',
+          driver_rate: this.driver.rate,
           sim_card_sn: rider.rider_serial_number,
           rider_phone: rider.rider_phone_no,
           order_no: this.order.order_details.order_no,
-          destination: { lat: -1.23, lng: 38.45 },
-          distance: 9,
-          polyline: 'encoded_string',
-          version_code: 10000,
         },
       };
       try {
