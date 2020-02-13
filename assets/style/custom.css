@@ -1041,6 +1041,7 @@ table {
   margin-right: 5px;
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-left: auto;
 }
 .assign-owner-find {
   background: #1a7fc3 !important;
@@ -1134,6 +1135,12 @@ table {
 }
 .auxilliary-inputs, .finances-tab, .save-truck-button, .driver-assign-inputs {
   width: max-content;
+}
+.finances-tab {
+  border: 1px solid #bdbdbd;
+  margin-top: -1px;
+  padding: 20px;
+  width: 90%;
 }
 .save-truck-button {
   font-weight: 600;
