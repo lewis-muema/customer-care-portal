@@ -80,10 +80,12 @@
       type="number"
       class="freight-assign-rider-buttons"
       placeholder="Driver rate"
-      max="100"
       v-model.number="rate"
       @input="
-        rate = rate > 100 ? 100 : rate;
+        rate =
+          rate > order.payment_details.order_amount
+            ? order.payment_details.order_amount
+            : rate;
         passNewDriver();
       "
     />
@@ -102,6 +104,12 @@ export default {
     VueTelInput,
   },
   extends: VueTypeahead,
+  props: {
+    order: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       riderDetails: '',
