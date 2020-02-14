@@ -18,7 +18,7 @@
         Order Completion Reason is required
       </div>
     </div>
-    <div class="form-group col-md-12">
+    <div class="form-group col-md-12" :id="`delivery_container_${orderNo}`">
       <label class="col-md-12 uploads">Submit Delivery Notes</label>
       <div
         class="upload-container col-md-6"
@@ -32,6 +32,9 @@
           @before-remove="beforeRemove"
           @edit-image="editImage"
           @data-change="dataChange"
+          :id-upload="idUpload"
+          :id-edit="idEdit"
+          :multiple="multiple"
           :data-images="images"
           :drag-text="uploadText"
           :browse-text="browseText"
@@ -39,6 +42,19 @@
           :primary-text="empty"
           :show-primary="showPrimary"
         ></vue-upload-multiple-image>
+
+        <input
+          type="file"
+          ref="file"
+          multiple="multiple"
+          @change="onFileChange"
+        />
+        <p>List of files</p>
+        <ul>
+          <li v-for="image in images" :key="image.index">
+            {{ image.name }}
+          </li>
+        </ul>
       </div>
       <div class="upload-container col-md-6">
         <div class="scan-container" :id="`scanned_images_${orderNo}`">
@@ -88,11 +104,16 @@ export default {
       reason: '',
       submitted: false,
       loading: false,
+      multiple: true,
+      imageList: [],
       images: [],
+      formData: null,
       uploadText: 'Upload Image(s)',
       browseText: 'browse',
       markIsPrimary: 'test image',
       empty: '',
+      idUpload: `image-upload-${this.order.order_details.order_no}`,
+      idEdit: `image-upload-${this.order.order_details.order_no}`,
       showPrimary: false,
       dnotes: [
         {
@@ -137,9 +158,50 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
+    onFileChange(e) {
+      const data = new FormData();
+      const files = e.target.files || e.dataTransfer.files;
+      this.images.push(files);
+      const orderNo = this.orderNo;
+      for (let i = 0; i < files.length; i++) {
+        const ext = files[i].type.split('/').pop();
+        const filename = `${orderNo}1-delivery_note-${i}.${ext}`;
+        data.append(`files`, files[i], filename);
+      }
+      this.formData = data;
+    },
+
+    // eslint-disable-next-line require-await
+    async uploadToS3() {
+      // upload images
+      const orderNo = this.orderNo;
+      const formData = this.formData;
+      const s3Details = {
+        bucket: 'sendy-delivery-signatures',
+        path: 'rider_delivery_image',
+      };
+      const s3String = JSON.stringify(s3Details);
+      const url = `${this.config.ADONIS_API}s3/upload?s3=${s3String}`;
+      const jwtToken = localStorage.getItem('jwtToken');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: jwtToken,
+        },
+      };
+      // Upload image api
+      try {
+        await axios.post(url, { files: formData }, config).then(response => {
+          console.log('response images', response);
+        });
+      } catch (erro) {
+        console.log('error', error);
+      }
+    },
+    // eslint-disable-next-line require-await
     async completeOrder() {
       const notification = [];
-      let actionClass = '';
+      // let actionClass = '';
 
       this.submitted = true;
       this.$v.$touch();
@@ -147,37 +209,50 @@ export default {
         return;
       }
       this.loading = true;
-      // Notify orders app of uploaded dnotes
-      const notify = await this.notifyOrdersApp();
-      console.log('typeof notify', typeof notify);
-      console.log('notify.status', notify.status);
+      console.log('imageLs', this.imageList);
+      // Upload image api
+      // const uploadDnotes = await this.uploadToS3();
 
-      if (typeof notify !== 'undefined' && notify.status) {
-        // complete/deliver the order.
-        const payload = {
-          app: 'ORDERS_APP',
-          endpoint: 'rider_app_deliver',
-          apiKey: true,
-          params: {
-            order_no: this.orderNo,
-            rider_phone: this.order.rider_details.phone_no,
-            sim_card_sn: this.order.rider_details.serial_no,
-          },
-        };
-        // console.log('payload', payload);
-        try {
-          const data = await this.perform_order_action(payload);
-          notification.push(data.reason);
-          actionClass = this.display_order_action_notification(data.status);
-        } catch (error) {
-          notification.push(
-            'Failed to complete order. Try again or contact Tech Support',
-          );
-          actionClass = 'danger';
-        }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
-      }
+      // const orderNo = this.orderNo;
+      // for (let i = 0; i < files.length; i++) {
+      //   console.log('files[i].type', files[i].type);
+      //   const ext = files[i].type.split('/').pop();
+      //   const filename = `${orderNo}1-delivery_note-${i}.${ext}`;
+      //   console.log('dddddd', filename);
+      //   // data.append(`files`, files[i], filename);
+      // }
+
+      // Notify orders app of uploaded dnotes
+      // const notify = await this.notifyOrdersApp();
+      // console.log('typeof notify', typeof notify);
+      // console.log('notify.status', notify.status);
+
+      // if (typeof notify !== 'undefined' && notify.status) {
+      //   // complete/deliver the order.
+      //   const payload = {
+      //     app: 'ORDERS_APP',
+      //     endpoint: 'rider_app_deliver',
+      //     apiKey: true,
+      //     params: {
+      //       order_no: orderNo,
+      //       rider_phone: this.order.rider_details.phone_no,
+      //       sim_card_sn: this.order.rider_details.serial_no,
+      //     },
+      //   };
+      //   // console.log('payload', payload);
+      //   try {
+      //     const data = await this.perform_order_action(payload);
+      //     notification.push(data.reason);
+      //     actionClass = this.display_order_action_notification(data.status);
+      //   } catch (error) {
+      //     notification.push(
+      //       'Failed to complete order. Try again or contact Tech Support',
+      //     );
+      //     actionClass = 'danger';
+      //   }
+      //   this.updateClass(actionClass);
+      //   this.updateErrors(notification);
+      // }
     },
     scanToJpg() {
       scanner.scan(this.displayImagesOnPage, this.scanRequest);
@@ -269,22 +344,26 @@ export default {
     },
     uploadImageSuccess(formData, index, fileList) {
       const fd = new FormData();
-      fd.append('file', fileList);
-      console.log('fd', fd);
-      console.log('data', formData, index, fileList);
-      const url = `${this.config.ADONIS_API}orders/${this.orderNo}/upload`;
-      console.log('config', this.config.ADONIS_API);
-      const jwtToken = localStorage.getItem('jwtToken');
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: jwtToken,
-        },
-      };
-      // Upload image api
-      axios.post(url, { data: fd }, config).then(response => {
-        console.log('response images', response);
-      });
+      this.imageList = fileList;
+      // fd.append('file', fileList);
+      console.log('fileList', fileList);
+
+      // console.log('fd', fd);
+      // console.log('data', formData, index, fileList);
+
+      // const url = `${this.config.ADONIS_API}orders/${this.orderNo}/upload`;
+      // console.log('config', this.config.ADONIS_API);
+      // const jwtToken = localStorage.getItem('jwtToken');
+      // const config = {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: jwtToken,
+      //   },
+      // };
+      // // Upload image api
+      // axios.post(url, { data: fd }, config).then(response => {
+      //   console.log('response images', response);
+      // });
     },
     beforeRemove(index, done, fileList) {
       done();
@@ -294,6 +373,7 @@ export default {
     },
 
     dataChange(data) {
+      console.log('here', data);
       return data;
     },
   },
