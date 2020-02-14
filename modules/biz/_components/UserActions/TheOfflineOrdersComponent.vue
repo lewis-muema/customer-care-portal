@@ -54,7 +54,9 @@
       </div>
 
       <div class="row col-md-12">
-        <div class="form-group col-md-3 bill-check input-margin">
+        <div
+          class="form-group col-md-3 bill-check bill-partners-align input-margin"
+        >
           <input
             value="1"
             name="charge_biz_commission"
@@ -65,7 +67,7 @@
             v-model="checked"
             checked
           />
-          <label class="charge_commission--label"> Bill Partners </label>
+          <label class="charge_commission--label"> Pay Partners </label>
         </div>
       </div>
       <div class="col-md-12 input-margin" v-if="checked">
@@ -247,7 +249,6 @@
               id="charge_vat"
               type="checkbox"
               class="bill-partners-check"
-              @click="check($event)"
               v-model="charge_vat"
               checked
             />
@@ -259,7 +260,10 @@
       </div>
 
       <div class="form-group  col-md-12 config-submit offline-orders-submit">
-        <button class="btn btn-primary action-button">
+        <button
+          class="btn btn-primary action-button"
+          :disabled="checkSubmitStatus()"
+        >
           Submit
         </button>
       </div>
@@ -325,6 +329,7 @@ export default {
       submit_status: false,
       response_status: true,
       error_msg: '',
+      submit_status: false,
     };
   },
 
@@ -504,6 +509,12 @@ export default {
         }
       }
       if (Object.keys(payload).length > 0) {
+        this.submit_status = true;
+
+        setTimeout(() => {
+          this.submit_status = false;
+        }, 5000);
+
         try {
           const data = await this.perform_user_action(payload);
           if (data.status) {
@@ -527,13 +538,16 @@ export default {
         }
       }
     },
+    checkSubmitStatus() {
+      return this.submit_status;
+    },
   },
 };
 </script>
 
 <style scoped>
 .form-inline .form-control {
-  width: 100%;
+  width: 100% !important;
   border-radius: 0.25rem;
 }
 .form-inline .custom-select,
@@ -725,5 +739,8 @@ export default {
 }
 .commision-rate {
   width: 82% !important;
+}
+.bill-partners-align {
+  padding-bottom: 2%;
 }
 </style>
