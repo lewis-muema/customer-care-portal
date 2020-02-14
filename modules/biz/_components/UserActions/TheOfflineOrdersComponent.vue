@@ -514,7 +514,7 @@ export default {
             if (Object.prototype.hasOwnProperty.call(data, 'message')) {
               msg = data.message;
             } else {
-              msg = 'Something went wrong. Try again or contact Tech Support';
+              msg = data.reason;
             }
             this.UpdateMessaging(true, 'fail', msg);
           }
