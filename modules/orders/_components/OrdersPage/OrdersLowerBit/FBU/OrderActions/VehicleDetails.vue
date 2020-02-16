@@ -86,12 +86,15 @@
       :class="existingStatus ? 'inactive-assign-input' : ''"
       :readonly="existingStatus"
     />
-    <span
-      v-if="!hasItems && editStatus && query"
-      class="save-truck-button"
-      @click="addVehicle()"
-      >Save truck details</span
-    >
+    <span v-if="!hasItems && editStatus && query"
+      ><span
+        @click="addVehicle()"
+        :class="saveLoading ? 'save-truck-text-inactive' : 'save-truck-button'"
+      >
+        Save truck details
+      </span>
+      <i class="fa fa-spinner fa-spin save-spinner" v-if="saveLoading"></i
+    ></span>
   </div>
 </template>
 
@@ -135,6 +138,7 @@ export default {
       trailer: '',
       kwartos: '',
       insurance: '',
+      saveLoading: false,
     };
   },
   computed: {
@@ -265,11 +269,13 @@ export default {
             owner_id: this.id,
           },
         };
+        this.saveLoading = true;
         this.add_owner_vehicle(payload).then(response => {
+          this.saveLoading = false;
           if (!response.status) {
             this.error = `${response.msg}`;
           } else {
-            this.setSuccess('(Awesome! Truck details have been saved!)', 3000);
+            this.setSuccess('(Awesome! Truck details have been saved!)', 5000);
             this.requestsingleVehicle(response.vehicle_id);
           }
         });
@@ -315,7 +321,7 @@ export default {
         ]);
         setTimeout(() => {
           this.updateErrors([]);
-        }, 2000);
+        }, 5000);
       }
     },
   },
@@ -336,5 +342,16 @@ export default {
 }
 .single-suggestion {
   padding-left: 20px;
+}
+.save-spinner {
+  margin: 5px;
+  font-size: 17px;
+  color: #1a7fc3;
+  font-weight: 600;
+}
+.save-truck-text-inactive {
+  color: gray;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 </style>

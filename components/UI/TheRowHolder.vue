@@ -201,9 +201,13 @@ export default {
       const deliveryStatus = this.moreData.delivery_status;
       const confirmStatus = this.moreData.confirm_status;
       const orderStatus = this.moreData.order_status;
-      const dnotesStatus = this.images.delivery_images
+      const deliveredNotesState = this.images.delivery_images
         ? this.images.delivery_images[0].physical_delivery_note_status
-        : [];
+        : 'Pending Approval';
+      const dnotesStatus = this.moreData.delivery_verification
+        .physical_delivery_note_status
+        ? deliveredNotesState
+        : this.moreData.delivery_verification.physical_delivery_note_status;
 
       let status = orderStatus;
       if (deliveryStatus === 3 && confirmStatus === 1) {

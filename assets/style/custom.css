@@ -1035,7 +1035,7 @@ table {
   color: white;
   background: #1a7fc3;
   border: 1px solid #1B7FC3;
-  width: 100px;
+  width: 120px;
   height: 40px;
   border-radius: 5px;
   float: right;
@@ -1148,6 +1148,7 @@ table {
   margin-left: 20px;
   text-decoration: underline;
   color: #1a7fc3;
+  cursor: pointer;
 }
 .freight-order-assign {
   width: 60%;
