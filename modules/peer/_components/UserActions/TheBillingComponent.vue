@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="form-group col-md-4 bill-div user-input">
-        <label>Base Amount</label>
+        <label>Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ currency }}</span>
@@ -33,7 +33,7 @@
               type="number"
               v-model="amount"
               name="amount"
-              placeholder="Amount without VAT"
+              placeholder="Amount"
               class="form-control"
               :max="max_amount"
               :disabled="billingStatus()"
@@ -122,6 +122,21 @@
       <div class="col-md-4 user-search user-input" v-if="isTransferOrder">
         <label>Account Details to Transfer</label>
         <TheSearchUserComponent @userID="searchedUser" :user="userType" />
+      </div>
+      <div class="col-md-12 vat-check">
+        <div class="form-group col-md-3 bill-check">
+          <input
+            value="1"
+            name="charge_biz_vat"
+            id="charge_biz_vat"
+            type="checkbox"
+            class=""
+            @click="check($event)"
+            v-model="isVAT"
+            checked
+          />
+          <label for="" class="charge_vat--label">Charge VAT</label>
+        </div>
       </div>
       <div class="form-group  col-md-12 bill-peer">
         <button
@@ -331,6 +346,7 @@ export default {
             transaction_id: this.transactionID,
             is_peer,
             creditor_id: creditor_details,
+            is_VAT: this.isVAT,
           },
           request_id: this.requestID,
           action_user: this.actionUser,
@@ -470,5 +486,11 @@ export default {
 }
 .info-alert {
   color: #dd4b39 !important;
+}
+.charge_vat--label {
+  margin: 0 4px 0;
+}
+.vat-check {
+  padding-left: 0;
 }
 </style>

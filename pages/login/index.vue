@@ -62,11 +62,6 @@ export default {
         'Sorry, your details could not match.<br /> Please make sure you are using your Sendy email.',
       );
     },
-    setLogoutTimer(duration) {
-      setTimeout(() => {
-        this.clearToken();
-      }, duration);
-    },
   },
 };
 </script>

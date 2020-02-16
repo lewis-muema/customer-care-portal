@@ -3,6 +3,8 @@ import moment from 'moment';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import config from '~/config/configs';
 
+const momentTimezone = require('moment-timezone');
+
 Vue.mixin({
   data() {
     return {
@@ -71,6 +73,9 @@ Vue.mixin({
     userData() {
       return this.session.payload.data;
     },
+    timezone() {
+      return momentTimezone.tz.guess();
+    },
   },
   methods: {
     ...mapMutations({
@@ -127,8 +132,25 @@ Vue.mixin({
       const dt = moment(date).format(requiredFormat);
       return dt;
     },
+    convertToUTC(date) {
+      const utcDate = moment.utc(date);
+      return utcDate;
+    },
+    convertToLocalTime(UTCDate) {
+      const localTime = moment(UTCDate)
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss');
+      return localTime;
+    },
     getFormattedDate(date, requiredFormat) {
-      const dt1 = moment(date, 'YYYY-MM-DD HH:mm:ss');
+      const UTCDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(UTCDate);
+      const dt = moment(dt1).format(requiredFormat);
+      return dt;
+    },
+    formatInvoiceTime(date, requiredFormat) {
+      const utcDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(utcDate);
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
@@ -182,6 +204,7 @@ Vue.mixin({
       fixed_cost,
       customer_min_amount,
       confirm_status,
+      order,
     ) {
       // eslint-disable-next-line prettier/prettier
       const computedAmount = this.determineOrderAmounts(
@@ -190,14 +213,27 @@ Vue.mixin({
         fixed_cost,
         customer_min_amount,
         confirm_status,
+        order,
       );
       currency = currency || '';
       amount = this.numberWithCommas(computedAmount);
       let amountString = `${currency} ${amount}`;
-      if (vendor_type_id === 25 && confirm_status < 1) {
+      if (
+        vendor_type_id === 25 &&
+        order.order_details.order_no === order.order_details.parent_order_no &&
+        confirm_status < 1
+      ) {
         amountString = '-';
       }
       return amountString;
+    },
+    freightLabel(order) {
+      if (
+        order.order_details.order_no !== order.order_details.parent_order_no &&
+        order.rider_details.vendor_type_id === 25
+      ) {
+        return '-C';
+      }
     },
     // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(
@@ -206,9 +242,14 @@ Vue.mixin({
       fixedCost,
       customerMinAmount,
       confirmStatus,
+      order,
     ) {
       const freightArray = [20, 25];
-      if (freightArray.includes(vendorTypeID) && !fixedCost) {
+      if (
+        freightArray.includes(vendorTypeID) &&
+        !fixedCost &&
+        order.order_details.order_no === order.order_details.parent_order_no
+      ) {
         if (confirmStatus < 1) {
           amount = customerMinAmount;
         }

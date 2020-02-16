@@ -271,7 +271,7 @@ export default {
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
         this.trackNewLocationConfig();
-      }
+      } else return;
     },
     goBack() {
       this.updateSection(this.section - 1);
@@ -291,7 +291,7 @@ export default {
             this.distancePricingTableData[i].status === 'Active'
           ) {
             this.distancePricingStatus = 'Active';
-          }
+          } else return;
         }
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.pricingModel = 'Location Pricing';
@@ -308,7 +308,7 @@ export default {
         typeof this.locationPricingTableData[0] === 'undefined'
       ) {
         this.existingConfigs = false;
-      }
+      } else return;
     },
     viewConfigDetails() {
       this.trackViewPricingDetails();
@@ -320,7 +320,7 @@ export default {
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.viewLocation = true;
         this.setTableData(this.locationPricingTableData);
-      }
+      } else return;
     },
     onSectionUpdate(value) {
       this.newLocationPricing = value;
