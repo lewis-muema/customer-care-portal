@@ -10,11 +10,15 @@
       <DriverDetails @driverDetails="driverData" :order="order" />
       <button
         class="assign-order-button"
-        :class="readyStatus ? 'inactive-assign-button' : ''"
+        :class="[
+          readyStatus ? 'inactive-assign-button' : '',
+          loading ? 'sending-status-button' : '',
+        ]"
         :disabled="readyStatus"
         @click="createPayload()"
       >
         Assign Order
+        <i class="fa fa-spinner fa-spin loading-spinner" v-if="loading"></i>
       </button>
     </div>
   </div>
@@ -54,6 +58,7 @@ export default {
       },
       response: '',
       payload: '',
+      loading: false,
     };
   },
   computed: {
@@ -242,6 +247,7 @@ export default {
       updateErrors: 'setErrors',
     }),
     async partnerReallocation(orderPayload) {
+      this.loading = true;
       const payload = {
         app: 'NODE_PARTNER_API',
         endpoint: 'management/partner_reallocation/',
@@ -252,12 +258,13 @@ export default {
         if (data.data.status) {
           this.allocateOrder(data.data);
         } else {
+          this.loading = false;
           this.updateErrors([
             `Failed to reallocate rider, ${data.data.message}`,
           ]);
           setTimeout(() => {
             this.updateErrors([]);
-          }, 3000);
+          }, 5000);
         }
         return (this.response = data);
       } catch (error) {
@@ -282,11 +289,12 @@ export default {
       };
       try {
         const data = await this.allocate_order(payload);
+        this.loading = false;
         if (!data.data.status) {
           this.updateErrors([`Failed to allocate order, ${data.data.reason}`]);
           setTimeout(() => {
             this.updateErrors([]);
-          }, 2000);
+          }, 5000);
         }
         return (this.response = data);
       } catch (error) {
@@ -297,4 +305,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.loading-spinner {
+  color: white;
+}
+.sending-status-button {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  background: #bdbdbd !important;
+  border-color: #bdbdbd !important;
+}
+</style>

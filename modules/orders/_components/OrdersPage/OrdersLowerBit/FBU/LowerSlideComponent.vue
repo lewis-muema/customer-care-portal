@@ -18,7 +18,9 @@
             <div class="col-md-12 freight-actions">
               <div class="freight-order-actions">
                 <button
-                  v-if="order.order_details.confirm_status === 0"
+                  v-if="
+                    order.order_details.confirm_status === 0 && !cancelStatus()
+                  "
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'assign' ? 'active-tab' : 'inactive-tab'
@@ -29,7 +31,7 @@
                   Assign Order
                 </button>
                 <button
-                  v-if="!completeStatus()"
+                  v-if="!completeStatus() && !cancelStatus()"
                   class="freight-order-actions-buttons"
                   :class="ActiveTab === 'gps' ? 'active-tab' : 'inactive-tab'"
                   @click="ActiveTab = 'gps'"
@@ -38,7 +40,7 @@
                   GPS
                 </button>
                 <button
-                  v-if="!completeStatus()"
+                  v-if="!completeStatus() && !cancelStatus()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'finances' ? 'active-tab' : 'inactive-tab'
@@ -49,7 +51,7 @@
                   Finances
                 </button>
                 <button
-                  v-if="!completeStatus()"
+                  v-if="!completeStatus() && !cancelStatus()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'status' ? 'active-tab' : 'inactive-tab'
@@ -60,7 +62,22 @@
                   Order Status
                 </button>
                 <button
-                  v-if="!completeStatus()"
+                  v-if="
+                    order.order_details.confirm_status !== 0 &&
+                      !completeStatus() &&
+                      !cancelStatus()
+                  "
+                  class="freight-order-actions-buttons"
+                  :class="
+                    ActiveTab === 'reallocate' ? 'active-tab' : 'inactive-tab'
+                  "
+                  @click="ActiveTab = 'reallocate'"
+                >
+                  <span class="fa fa-fw fa-arrow-circle-o-up"></span>
+                  Reallocate
+                </button>
+                <button
+                  v-if="!completeStatus() && !cancelStatus()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'cancel' ? 'active-tab' : 'inactive-tab'
@@ -71,40 +88,67 @@
                   Cancel
                 </button>
                 <button
-                  v-if="completeStatus()"
+                  v-if="completeStatus() || cancelStatus()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'ticket' ? 'active-tab' : 'inactive-tab'
                   "
                   @click="ActiveTab = 'ticket'"
                 >
-                  <span class="fa fa-fw fa-thumbs-down"></span>
+                  <span class="fa fa-fw fa-envelope"></span>
                   Ticket
                 </button>
               </div>
               <div class="freight-order-actions-tabs">
                 <TheTrackerComponent
-                  v-if="ActiveTab === 'gps' && !completeStatus()"
+                  v-if="
+                    ActiveTab === 'gps' &&
+                      (!completeStatus() && !cancelStatus())
+                  "
                   :order="order"
                 />
                 <AuxilliaryServices
-                  v-if="ActiveTab === 'finances' && !completeStatus()"
+                  v-if="
+                    ActiveTab === 'finances' &&
+                      (!completeStatus() && !cancelStatus())
+                  "
                   :order="order"
                 />
                 <AssignRider
-                  v-if="ActiveTab === 'assign' && !completeStatus()"
+                  v-if="
+                    ActiveTab === 'assign' &&
+                      (!completeStatus() && !cancelStatus())
+                  "
                   :order="order"
                 />
                 <OrderStatuses
-                  v-if="ActiveTab === 'status' && !completeStatus()"
+                  v-if="
+                    ActiveTab === 'status' &&
+                      (!completeStatus() && !cancelStatus())
+                  "
+                  :order="order"
+                />
+                <TheReallocateComponent
+                  v-if="
+                    ActiveTab === 'reallocate' &&
+                      (order.order_details.confirm_status !== 0 &&
+                        !completeStatus() &&
+                        !cancelStatus())
+                  "
                   :order="order"
                 />
                 <TheCancelComponent
-                  v-if="ActiveTab === 'cancel' && !completeStatus()"
+                  v-if="
+                    ActiveTab === 'cancel' &&
+                      (!completeStatus() && !cancelStatus())
+                  "
                   :order="order"
                 />
                 <TheTicketComponent
-                  v-if="ActiveTab === 'ticket' && completeStatus()"
+                  v-if="
+                    ActiveTab === 'ticket' &&
+                      (completeStatus() || cancelStatus())
+                  "
                   :order="order"
                 />
               </div>
@@ -128,6 +172,7 @@ import TheTrackerComponent from './OrderActions/TrackerComponent';
 import AuxilliaryServices from './OrderActions/AuxilliaryServices';
 import TheCancelComponent from '../LowerMainBar/OrderActions/TheCancelComponent';
 import TheTicketComponent from '../LowerMainBar/OrderActions/TheTicketComponent';
+import TheReallocateComponent from '../LowerMainBar/OrderActions/TheReallocateComponent';
 import AssignRider from './OrderActions/AssignRider';
 import OrderStatuses from './OrderActions/OrderStatuses';
 import TheNotificationsComponent from '~/components/UI/TheNotificationsComponent';
@@ -140,6 +185,7 @@ export default {
     TheTrackerComponent,
     AssignRider,
     OrderStatuses,
+    TheReallocateComponent,
     TheNotificationsComponent,
     TheCancelComponent,
     TheTicketComponent,
@@ -185,6 +231,12 @@ export default {
     },
     completeStatus() {
       if (this.order.order_details.delivery_status === 3) {
+        return true;
+      }
+      return false;
+    },
+    cancelStatus() {
+      if (this.order.order_details.order_status === 'cancelled') {
         return true;
       }
       return false;
