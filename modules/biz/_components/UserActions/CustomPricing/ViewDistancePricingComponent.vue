@@ -107,7 +107,6 @@ export default {
       updateClass: 'setActionClass',
       updateSuccess: 'setUserActionSuccess',
       updateSection: 'setSectionView',
-      updateTableData: 'setTableData',
     }),
     ...mapActions({
       deactivate_distance_pricing_configs:
