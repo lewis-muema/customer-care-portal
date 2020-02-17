@@ -176,11 +176,7 @@ export default {
       const pricingTableData = this.tableData;
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee = pricingTableData[i].waiting_time_cost_per_min;
-<<<<<<< HEAD
         const perMinuteFee = perHourFee / 60;
-=======
-        const perMinuteFee = (perHourFee / 60).toFixed(2);
->>>>>>> f3fafaf774f2603b18544695e389a99f79584c34
         pricingTableData[i].waiting_time_cost_per_min = perMinuteFee;
       }
       const configParams = this.createPayload(pricingTableData);
