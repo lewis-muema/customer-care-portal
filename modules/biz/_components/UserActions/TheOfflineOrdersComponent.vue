@@ -88,7 +88,8 @@
                     :category="category"
                     v-model="element.rider_id"
                     :arr="array"
-                    @riderID="searchedRider"
+                    @riderData="searchedRider"
+                    :rider-key="key"
                   />
                 </td>
                 <td>
@@ -411,10 +412,11 @@ export default {
     dispatchbillingAmount() {
       this.handleTotalAmount();
     },
-    searchedRider(riderID) {
-      const i = this.elements.length;
+    searchedRider(riderData) {
+      const index = riderData.riderKey;
+      const riderID = riderData.riderID;
 
-      return (this.elements[i - 1].rider_id = riderID);
+      return (this.elements[index].rider_id = riderID);
     },
     addElement() {
       this.elements.push({ value: '', amount: '' });
