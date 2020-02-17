@@ -329,7 +329,7 @@ export default {
       submit_status: false,
       response_status: true,
       error_msg: '',
-      submit_status: false,
+      submit_state: false,
     };
   },
 
@@ -509,10 +509,10 @@ export default {
         }
       }
       if (Object.keys(payload).length > 0) {
-        this.submit_status = true;
+        this.submit_state = true;
 
         setTimeout(() => {
-          this.submit_status = false;
+          this.submit_state = false;
         }, 5000);
 
         try {
@@ -539,7 +539,7 @@ export default {
       }
     },
     checkSubmitStatus() {
-      return this.submit_status;
+      return this.submit_state;
     },
   },
 };
