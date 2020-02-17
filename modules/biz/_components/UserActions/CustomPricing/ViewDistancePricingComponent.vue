@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column
         prop="waiting_time_cost_per_min"
-        label="Waiting fee per min"
+        label="Waiting fee per hour"
         width="150"
       >
       </el-table-column>
@@ -107,6 +107,7 @@ export default {
       updateClass: 'setActionClass',
       updateSuccess: 'setUserActionSuccess',
       updateSection: 'setSectionView',
+      updateTableData: 'setTableData',
     }),
     ...mapActions({
       deactivate_distance_pricing_configs:
@@ -163,12 +164,13 @@ export default {
             currency: pricingApprovalData[i].currency,
             admin_id: pricingApprovalData[i].admin_id,
             distance_pricing: pricingApprovalData[i].distance_pricing,
-            rejection_message: this.rejectionReason,
           },
         };
-        distancePricingObject.custom_pricing_details.distance_pricing.status =
-          'Deactivated';
-        distancePricingArray.push(distancePricingObject);
+        if (typeof distancePricingObject.vendor_id !== 'undefined') {
+          distancePricingObject.custom_pricing_details.distance_pricing.status =
+            'Deactivated';
+          distancePricingArray.push(distancePricingObject);
+        }
       }
       return distancePricingArray;
     },

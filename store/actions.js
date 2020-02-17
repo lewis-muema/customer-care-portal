@@ -531,7 +531,15 @@ export default {
             locationPricing = customPricingDetails[i].location_pricing;
           } else {
             approverId = customPricingDetails[i].admin_id;
-            distancePricing.push(customPricingDetails[i].distance_pricing);
+            const pricingTableData = customPricingDetails[i].distance_pricing;
+            for (let j = 0; j < pricingTableData.length; j += 1) {
+              const perMinuteFee =
+                pricingTableData[i].waiting_time_cost_per_min;
+              const perHourFee = perMinuteFee * 60;
+              pricingTableData[i].waiting_time_cost_per_min = perHourFee;
+            }
+            distancePricing.push(pricingTableData);
+            console.log('gete', distancePricing);
           }
         }
         commit('updateLocationPricing', locationPricing);
