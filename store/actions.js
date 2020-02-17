@@ -343,27 +343,6 @@ export default {
       });
     }
   },
-  async explorer({ state }, payload) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.ADONIS_API}explorer?phone=${payload}`;
-    try {
-      const response = await axios.get(url, param);
-      return response.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
   async request_single_user({ state, dispatch }, payload) {
     const config = state.config;
     const userType = payload.userType;
@@ -389,14 +368,6 @@ export default {
       return error.response;
     }
   },
-  async request_owner_statement({ dispatch }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      return error.response;
-    }
-  },
   async request_single_rider({ state }, payload) {
     const config = state.config;
     const riderID = payload.riderID;
@@ -415,56 +386,6 @@ export default {
       const response = await axios.get(url, param);
       const rider_details = response.data;
       return rider_details;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-  async request_single_vehicle({ state }, payload) {
-    const config = state.config;
-    const vehicleID = payload.vehicleID;
-
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-
-    const url = `${config.ADONIS_API}vehicles/${vehicleID}`;
-    try {
-      const response = await axios.get(url, param);
-      const vehicle_details = response.data;
-      return vehicle_details;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-  async request_single_owner({ state }, payload) {
-    const config = state.config;
-    const ownerID = payload.ownerID;
-
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-
-    const url = `${config.ADONIS_API}owners/${ownerID}`;
-    try {
-      const response = await axios.get(url, param);
-      const owner_details = response.data;
-      return owner_details;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
@@ -505,53 +426,6 @@ export default {
       return res.data;
     } catch (error) {
       return error.response;
-    }
-  },
-  async add_owner_vehicle({ state, dispatch }, payload) {
-    const config = state.config;
-    const url = `${config.AUTH}${payload.app}`;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    try {
-      const response = await axios.post(url, payload.payload, param);
-      const data = await response;
-      const orderDetails = data.data;
-      return orderDetails;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.message;
-    }
-  },
-  async allocate_rider_vehicle({ dispatch }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
-    } catch (error) {
-      return error;
-    }
-  },
-  async allocate_order({ dispatch }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
-    } catch (error) {
-      return error;
-    }
-  },
-  async change_order_status({ state, dispatch }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
-    } catch (error) {
-      return error;
     }
   },
   // eslint-disable-next-line require-await
@@ -608,26 +482,6 @@ export default {
       return error.response;
     }
   },
-  async getCity({ state, dispatch }, payload) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.ADONIS_API}cities/${payload}`;
-    try {
-      const response = await axios.get(url, param);
-      return response.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
   async submit_custom_pricing({ dispatch }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -639,7 +493,7 @@ export default {
   async request_pending_distance_pricing_data({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
-      const pendingDistancePricing = [];
+      let pendingDistancePricing = [];
       let pendingLocationPricing = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
@@ -647,9 +501,17 @@ export default {
           if (pendingPricingDetails[i].location_pricing) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
           } else {
-            pendingDistancePricing.push(
-              pendingPricingDetails[i].distance_pricing,
-            );
+            const pricingTableData = [];
+            pricingTableData.push(pendingPricingDetails[i].distance_pricing);
+            for (let j = 0; j < pricingTableData.length; j += 1) {
+              const perMinuteFee =
+                pricingTableData[i].waiting_time_cost_per_min;
+              const perHourFee = perMinuteFee * 60;
+              pricingTableData[
+                i
+              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
+            }
+            pendingDistancePricing = pricingTableData;
           }
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
@@ -667,7 +529,7 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let approverId = 0;
-      const distancePricing = [];
+      let distancePricing = [];
       let locationPricing = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
@@ -677,15 +539,17 @@ export default {
             locationPricing = customPricingDetails[i].location_pricing;
           } else {
             approverId = customPricingDetails[i].admin_id;
-            const pricingTableData = customPricingDetails[i].distance_pricing;
+            const pricingTableData = [];
+            pricingTableData.push(customPricingDetails[i].distance_pricing);
             for (let j = 0; j < pricingTableData.length; j += 1) {
               const perMinuteFee =
                 pricingTableData[i].waiting_time_cost_per_min;
               const perHourFee = perMinuteFee * 60;
-              pricingTableData[i].waiting_time_cost_per_min = perHourFee;
+              pricingTableData[
+                i
+              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
             }
-            distancePricing.push(pricingTableData);
-            console.log('gete', distancePricing);
+            distancePricing = pricingTableData;
           }
         }
         commit('updateLocationPricing', locationPricing);
@@ -750,13 +614,9 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
       return error.response;
     }
   },
-
   async request_tax_rates({ state }) {
     const config = state.config;
 
@@ -782,11 +642,6 @@ export default {
   },
 
   async request_invoice_logs({ dispatch }, payload) {
-    const res = await dispatch('requestAxiosPost', payload, { root: true });
-    return res;
-  },
-
-  async request_invoice_data({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
   },
