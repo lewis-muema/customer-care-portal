@@ -82,6 +82,25 @@ export default {
       }, 5000);
     },
 
+    getRiderAmount(
+      riderCost,
+      insurance,
+      servicefee,
+      orderAmount,
+      vat_amount,
+      partner_amount,
+      orderStatus,
+    ) {
+      const riderAmount =
+        orderAmount + riderCost - (vat_amount + insurance + servicefee);
+      if (partner_amount) {
+        return orderStatus == 'price request' || orderStatus == 'pending'
+          ? riderAmount
+          : partner_amount;
+      }
+
+      return riderAmount;
+    },
     /**
      * This is the callback that works on the messages/pushes received from the subscription to
      * the exchange. It then runs a check for the status of the order and if it exists on pouchdb then either storing or
@@ -95,7 +114,12 @@ export default {
       const insurance = this.order_push.insurance_amount;
       const servicefee = this.order_push.sendy_fee;
       const orderAmount = this.order_push.amount;
-      this.determineOrderStatus(this.order_push);
+      const partner_amount = this.order_push.partner_amount;
+      const orderCountryCode = this.order_push.country_codes;
+      const vat_amount = this.order_push.rider_details.rider_vat_compliant
+        ? this.order_push.vat_amount
+        : 0;
+      const orderStatus = this.determineOrderStatus(this.order_push);
       this.determinePaymentMethod(this.cashStatus);
       this.deteremineOrderType(this.priceType);
       const pushobj = new Object();
@@ -109,17 +133,21 @@ export default {
       pushobj.order_status = this.determineOrderStatus(this.order_push);
       pushobj.pay_cash_on_delivery = this.order_push.cash_status;
       pushobj.price_type = this.order_push.order_details.values.price_type;
-      pushobj.rider_amount = this.determineRiderAmount(
-        orderAmount,
+      pushobj.rider_amount = this.getRiderAmount(
         riderCost,
         insurance,
         servicefee,
+        orderAmount,
+        vat_amount,
+        partner_amount,
+        orderStatus,
       );
       pushobj.rider_name = this.order_push.rider_name;
       pushobj.time_of_delivery = this.order_push.date_time;
       pushobj.time_placed = this.order_push.date_time;
       pushobj.to_name = this.order_push.path[1].name;
       pushobj.vendor_type_id = this.order_push.vendor_type;
+      pushobj.orderCountryCode = this.order_push.country_codes;
       pushobj.push_order = true;
 
       this.pushes.push(pushobj);

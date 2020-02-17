@@ -23,11 +23,11 @@
         <td colspan="10">Search to view Rider details.</td>
       </tr>
       <template v-else>
-        <tr v-if="riderDetails === null">
+        <tr v-if="loading">
           <i class="fa fa-spinner fa-spin loader"></i>
         </tr>
         <tr
-          v-else
+          v-else-if="riderDetails !== null"
           @click="toggle('rider')"
           :class="{ opened: opened.includes('rider') }"
         >
@@ -124,14 +124,16 @@ export default {
       riderDetails: null,
       opened: [],
       riderTable: 0,
+      loading: false,
     };
   },
   computed: {
     ...mapGetters(['getRider', 'getUserActionSuccess']),
   },
   watch: {
-    async getRider(user) {
-      await this.requestsingleRdier(user, 'rider');
+    getRider(user) {
+      this.loading = true;
+      this.requestsingleRdier(user, 'rider');
       return (this.riderID = user);
     },
     async getUserActionSuccess(status) {
@@ -161,6 +163,7 @@ export default {
       const payload = { riderID: user };
       try {
         const data = await this.request_single_rider(payload);
+        this.loading = false;
         return (this.riderDetails = data);
       } catch {
         this.errors.push(

@@ -83,31 +83,17 @@ Vue.mixin({
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    deliveryStatus(order) {
+    deliveryStatus(order, notesStatus) {
       const details = order.order_details;
       // eslint-disable-next-line prettier/prettier
       const verification = typeof details.values === 'undefined' ? details.delivery_verification : details.values.delivery_verification;
 
-      const notesStatus = verification.physical_delivery_note_status;
       let status = 'delivered';
-      if (notesStatus) {
-        // eslint-disable-next-line prettier/prettier
-        const imgStatus = Object.prototype.hasOwnProperty.call(
-          order.delivery_details,
-          'rider_delivery_image',
-        );
-
-        // eslint-disable-next-line prettier/prettier
-        if (
-          imgStatus &&
-          order.delivery_details.rider_delivery_image !== null &&
-          order.delivery_details.rider_delivery_image[0]
-            .physical_delivery_note_status === 2
-        ) {
-          status = 'delivered';
-        } else {
-          status = 'Dnotes';
-        }
+      if (notesStatus === 'Approved' || !notesStatus) {
+        status = 'delivered';
+        status = 'delivered';
+      } else {
+        status = 'Dnotes';
       }
 
       return status;
@@ -150,7 +136,11 @@ Vue.mixin({
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     numberWithCommas(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      if (x !== null) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      } else {
+        return x;
+      }
     },
     compareDates(date) {
       let currentDate = new Date();
@@ -245,6 +235,11 @@ Vue.mixin({
         clientCurrency,
         currencyConversions,
       );
+      const riderConversionArray = this.getSpecificCurrencyConversion(
+        orderCurrency,
+        riderCurrency,
+        currencyConversions,
+      );
       const clientAmount = this.calculateConvertedAmount(
         clientConversionArray,
         amount,
@@ -252,7 +247,7 @@ Vue.mixin({
         clientCurrency,
       );
       const riderAmount = this.calculateConvertedAmount(
-        clientConversionArray,
+        riderConversionArray,
         amount,
         orderCurrency,
         riderCurrency,
@@ -271,7 +266,7 @@ Vue.mixin({
         conversion.from_currency.includes(fromCurrency),
       );
 
-      const newArray = res.filter(arr => arr.to_currency === 'UGX');
+      const newArray = res.filter(arr => arr.to_currency === toCurrency);
 
       return newArray;
     },

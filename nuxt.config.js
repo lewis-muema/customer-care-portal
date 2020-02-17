@@ -1,4 +1,4 @@
-import 'isomorphic-fetch';
+require('isomorphic-fetch');
 
 const bodyParser = require('body-parser');
 
@@ -8,7 +8,7 @@ if (process.env.APP_ENV !== 'production' || process.env.APP_ENV !== 'staging') {
 }
 process.env.DEBUG = 'nuxt:*';
 
-export default {
+module.exports = {
   mode: 'universal',
   server: {
     port: 8080, // default: 3000
@@ -59,7 +59,7 @@ export default {
       },
       {
         src:
-          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry',
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry,places',
         type: 'text/javascript',
       },
       {
@@ -76,6 +76,18 @@ export default {
       },
       {
         src: 'js/bloodhound.js',
+        type: 'text/javascript',
+      },
+      {
+        src: 'js/hotjar.js',
+        type: 'text/javascript',
+      },
+      {
+        src: 'js/mixpanel.js',
+        type: 'text/javascript',
+      },
+      {
+        src: 'js/mixpanel_people.js',
         type: 'text/javascript',
       },
       {
@@ -110,6 +122,10 @@ export default {
         href:
           'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic',
       },
+      {
+        rel: 'stylesheet',
+        href: 'https://unpkg.com/element-ui/lib/theme-chalk/index.css',
+      },
     ],
   },
   /*
@@ -123,6 +139,7 @@ export default {
     '@assets/style/custom.css',
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
+    '@assets/style/pricing-config.css',
     'aos/dist/aos.css',
     'vue-select/dist/vue-select.css',
   ],
@@ -132,8 +149,10 @@ export default {
   plugins: [
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
+    { src: '~plugins/apm.js', mode: 'client', ssr: false },
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
+    { src: '~plugins/element-ui', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',
@@ -152,6 +171,7 @@ export default {
       {
         keys: [
           'GOOGL_API_KEY',
+          'HEROKU_GOOGLE_API_KEY',
           'GOOGLE_CLIENT_ID',
           'BACKEND_KEY',
           'SOLR_JWT',

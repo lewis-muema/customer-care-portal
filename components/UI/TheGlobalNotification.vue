@@ -1,51 +1,21 @@
-<template>
-  <div class="box box-info">
-    <div class="box-body">
-      <div class="error-page">
-        <div class="global-notification" v-if="getTokenExpiryStatus">
-          <h3>An error was Encountered!</h3>
-          <h6 class="text-danger">
-            <strong>Error: </strong> Your token has expired. You will be logged
-            out and redirected to login shortly.
-            {{ redirect() }}
-          </h6>
-          <h6 class="text-danger">
-            <small>
-              (incase you are not logged out automatically, kindly logout and
-              login again)
-            </small>
-          </h6>
-          <h6><strong>Error Code: </strong> 403</h6>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
+<template> </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheGlobalNotification',
-  computed: {
-    ...mapGetters(['getBusinessUnits', 'getTokenExpiryStatus']),
+  async mounted() {
+    this.setLoginErrors(
+      'Sorry, your session has expired.<br /> Please Login again.',
+    );
+    await this.clearCache();
+    await this.$router.push('/login');
   },
   methods: {
     ...mapMutations({
-      setTokenExpiryStatus: 'setTokenExpiryStatus',
+      setLoginErrors: 'setLoginErrors',
     }),
-    ...mapActions(['logout']),
-
-    redirect() {
-      setTimeout(() => {
-        this.onLogout();
-      }, 1000);
-    },
-    async onLogout() {
-      await this.logout();
-      localStorage.clear();
-      this.setTokenExpiryStatus(false);
-      this.$router.push('/login');
-    },
+    ...mapActions(['clearCache']),
   },
 };
 </script>

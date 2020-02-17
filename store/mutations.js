@@ -76,4 +76,49 @@ export default {
   setHelpScoutToken(state, val) {
     state.helpScoutToken = val;
   },
+  setSectionView(state, val) {
+    state.section = val;
+  },
+  updatePricing(state, val) {
+    state.addPricing = val;
+  },
+  setFirstPricing(state, val) {
+    state.firstPricing = val;
+  },
+  updateEditStatus(state, val) {
+    state.editStatus = val;
+  },
+  updateViewStatus(state, val) {
+    state.viewDetails = val;
+  },
+  updateSummaryStatus(state, val) {
+    state.viewSummary = val;
+  },
+  updateDistancePricing(state, val) {
+    state.distancePricingData = val;
+  },
+  updateLocationPricing(state, val) {
+    state.locationPricingData = val;
+  },
+  updatePendingDistancePricing(state, val) {
+    state.pendingPricingData = val;
+  },
+  updatePendingLocationPricing(state, val) {
+    state.pendingLocationData = val;
+  },
+  updateApproveStatus(state, val) {
+    state.approveStatus = val;
+  },
+  updateApproverId(state, val) {
+    state.approverId = val;
+  },
+  setTableData(state, val) {
+    state.tableData = val;
+  },
+  setCustomPricingDetails(state, val) {
+    state.customPricingDetails = val;
+  },
+  setLoginErrors(state, val) {
+    state.loginErrors = val;
+  },
 };

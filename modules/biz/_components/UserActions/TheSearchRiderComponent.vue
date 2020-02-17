@@ -24,7 +24,7 @@
           :class="activeClass($item)"
           @mousedown="hit"
           @mousemove="setActive($item)"
-          :key="item.index"
+          :key="item.rider_id"
         >
           <span class="tt-suggestion">
             <p>
@@ -49,6 +49,10 @@ export default {
   props: {
     category: {
       type: String,
+      required: true,
+    },
+    arr: {
+      type: Object,
       required: true,
     },
   },
@@ -76,7 +80,8 @@ export default {
 
     query_string() {
       localStorage.setItem('query', this.query);
-      return this.query;
+      const q = this.query;
+      return q.replace(/\s/g, '');
     },
     solarBase() {
       const solrArray = this.solr;
@@ -101,12 +106,7 @@ export default {
     },
     prepareResponseData(data) {
       const results = data.response.docs;
-      const arr = {
-        rider_name: 'Sendy Bill',
-        phone_no: '',
-        rider_id: 0,
-      };
-      results.splice(0, 0, arr);
+      results.splice(0, 0, this.arr);
 
       return results;
     },

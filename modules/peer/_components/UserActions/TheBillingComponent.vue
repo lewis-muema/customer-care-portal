@@ -1,118 +1,138 @@
 <template>
-  <form
-    id="reallocate-form"
-    @submit.prevent="bill"
-    class="form-inline col-md-12"
-  >
-    <div :class="`col-md-4 user-search user-input`" v-if="!isTransferOrder">
-      <label>Account to Pay</label>
-      <TheSearchRiderComponent @riderID="searchedRider" :category="category" />
-      <div :class="`${emptyClass} ${hid}`">
-        Account to pay is required
-      </div>
+  <div class="">
+    <div v-if="display_billing_info" style="margin-left: 2%;">
+      <p class="info">
+        <i class="fa fa-exclamation-circle info-loader"></i>
+        {{ billingInfo() }}
+      </p>
     </div>
-    <div class="form-group col-md-4 bill-div user-input">
-      <label>Amount</label>
-      <div class="input-group">
-        <div class="input-group-icon">
-          <span> {{ currency }}</span>
-        </div>
-        <div class="input-group-area">
-          <input
-            type="text"
-            v-model="amount"
-            name="amount"
-            placeholder="Amount"
-            class="form-control"
-          />
-        </div>
-        <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
-          Amount is required
-        </div>
-      </div>
-    </div>
-    <div class="form-group col-md-4 user-input">
-      <label class="bill">Other Notes</label>
-
-      <input
-        type="text"
-        v-model="narrative"
-        name="narrative"
-        placeholder="Narrative"
-        class="form-control bill-input"
-        :class="{
-          'is-invalid': submitted && $v.narrative.$error,
-        }"
-      />
-      <div v-if="submitted && !$v.narrative.required" class="invalid-feedback">
-        Billing Narrative is required
-      </div>
-    </div>
-    <div class="form-group col-md-4 user-input">
-      <label class="bill">Billing Type</label>
-      <v-select
-        :options="billingTypes"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
-        placeholder="Select Billing Type"
-        class="form-control select user-billing"
-        :id="`billing_types`"
-        v-model="billingType"
-        :class="{
-          'is-invalid': submitted && $v.billingType.$error,
-        }"
-      >
-      </v-select>
-      <div
-        v-if="submitted && !$v.billingType.required"
-        class="invalid-feedback"
-      >
-        Billing type is required
-      </div>
-    </div>
-    <div
-      class="form-group  col-md-4 user-input"
-      v-if="!noTransactiodIDTypes.includes(billingType)"
+    <form
+      id="reallocate-form"
+      @submit.prevent="bill"
+      class="form-inline col-md-12"
     >
-      <label class="bill">Order Number / Transaction ID</label>
-
-      <input
-        type="text"
-        v-model="refNo"
-        name="refNo"
-        placeholder="Reference No"
-        class="form-control bill-input"
-        :class="`form-control bill-input ${hide}`"
-      />
-      <div class="invalid-feedback">
-        Reference No is required
+      <div :class="`col-md-4 user-search user-input`" v-if="!isTransferOrder">
+        <label>Account to Pay</label>
+        <TheSearchRiderComponent
+          @riderID="searchedRider"
+          :category="category"
+          :arr="array"
+        />
+        <div :class="`${emptyClass} ${hid}`">
+          Account to pay is required
+        </div>
       </div>
-    </div>
-    <div class="form-group col-md-4 user-input" v-if="isTransferOrder">
-      <label class="bill">Account Type to Transfer</label>
-      <v-select
-        :options="accountTypes"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
-        placeholder="Select account type to transfer"
-        class="form-control select user-billing"
-        :id="`accountTypes`"
-        v-model="accountType"
+      <div class="form-group col-md-4 bill-div user-input">
+        <label>Base Amount</label>
+        <div class="input-group">
+          <div class="input-group-icon">
+            <span> {{ currency }}</span>
+          </div>
+          <div class="input-group-area">
+            <input
+              type="number"
+              v-model="amount"
+              name="amount"
+              placeholder="Amount without VAT"
+              class="form-control"
+              :max="max_amount"
+              :disabled="billingStatus()"
+            />
+          </div>
+          <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
+            Base Amount is required
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-4 user-input">
+        <label class="bill">Other Notes</label>
+
+        <input
+          type="text"
+          v-model="narrative"
+          name="narrative"
+          placeholder="Narrative"
+          class="form-control bill-input"
+          :class="{
+            'is-invalid': submitted && $v.narrative.$error,
+          }"
+        />
+        <div
+          v-if="submitted && !$v.narrative.required"
+          class="invalid-feedback"
+        >
+          Billing Narrative is required
+        </div>
+      </div>
+      <div class="form-group col-md-4 user-input">
+        <label class="bill">Billing Type</label>
+        <v-select
+          :options="billingTypes"
+          :reduce="name => name.value"
+          name="name"
+          label="name"
+          placeholder="Select Billing Type"
+          class="form-control select user-billing"
+          :id="`billing_types`"
+          v-model="billingType"
+          :class="{
+            'is-invalid': submitted && $v.billingType.$error,
+          }"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.billingType.required"
+          class="invalid-feedback"
+        >
+          Billing type is required
+        </div>
+      </div>
+      <div
+        class="form-group  col-md-4 user-input"
+        v-if="!noTransactiodIDTypes.includes(billingType)"
       >
-      </v-select>
-    </div>
-    <div class="col-md-4 user-search user-input" v-if="isTransferOrder">
-      <label>Account Details to Transfer</label>
-      <TheSearchUserComponent @userID="searchedUser" :user="userType" />
-    </div>
-    <div class="form-group  col-md-12 bill-peer">
-      <button class="btn btn-primary action-button">
-        Bill Account
-      </button>
-    </div>
-  </form>
+        <label class="bill">Order Number / Transaction ID</label>
+
+        <input
+          type="text"
+          v-model="refNo"
+          name="refNo"
+          placeholder="Reference No"
+          class="form-control bill-input"
+          :class="`form-control bill-input ${hide}`"
+        />
+        <div class="invalid-feedback">
+          Reference No is required
+        </div>
+      </div>
+      <div class="form-group col-md-4 user-input" v-if="isTransferOrder">
+        <label class="bill">Account Type to Transfer</label>
+        <v-select
+          :options="accountTypes"
+          :reduce="name => name.value"
+          name="name"
+          label="name"
+          placeholder="Select account type to transfer"
+          class="form-control select user-billing"
+          :id="`accountTypes`"
+          v-model="accountType"
+        >
+        </v-select>
+      </div>
+      <div class="col-md-4 user-search user-input" v-if="isTransferOrder">
+        <label>Account Details to Transfer</label>
+        <TheSearchUserComponent @userID="searchedUser" :user="userType" />
+      </div>
+      <div class="form-group  col-md-12 bill-peer">
+        <button
+          class="btn btn-primary action-button"
+          :disabled="checkSubmitStatus()"
+        >
+          Bill Account
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
@@ -179,6 +199,17 @@ export default {
         { value: 100, name: 'Other', transactionID: 100 },
       ],
       noTransactiodIDTypes: [6, 9, 14],
+      display_billing_info: true,
+      userRb: '0',
+      paymentOption: '',
+      max_amount: '0',
+      array: {
+        rider_name: 'Sendy Bill',
+        phone_no: '',
+        rider_id: 0,
+      },
+      isVAT: true,
+      submit_status: false,
     };
   },
   validations: {
@@ -229,6 +260,9 @@ export default {
     requestID() {
       return 1622;
     },
+  },
+  created() {
+    this.handleUserData();
   },
   methods: {
     ...mapMutations({
@@ -302,6 +336,13 @@ export default {
           action_user: this.actionUser,
         },
       };
+
+      this.submit_status = true;
+
+      setTimeout(() => {
+        this.submit_status = false;
+      }, 5000);
+
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
@@ -317,6 +358,39 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    checkSubmitStatus() {
+      return this.submit_status;
+    },
+    handleUserData() {
+      if (this.user.payments.length > 0) {
+        const amount = this.user.payments[0].rb.toString().replace('-', '');
+        this.max_amount = parseInt(amount, 10);
+        this.userRb = this.formatNumber(this.user.payments[0].rb);
+      }
+    },
+    formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    },
+    billingInfo() {
+      const user_currency = this.user.user_details.default_currency;
+      if (this.userRb === '0') {
+        return `Billing amount disabled as user has a balance of  ${user_currency} ${this.userRb} `;
+      } else if (this.userRb > '0') {
+        return `Billing amount disabled as user owes ${user_currency} ${this.userRb}`;
+      } else {
+        return `Billing amount should be less or equal to ${user_currency} ${this.userRb.replace(
+          '-',
+          '',
+        )} `;
+      }
+    },
+    billingStatus() {
+      let disabled = false;
+      if (this.userRb === '0' || this.userRb > '0') {
+        disabled = true;
+      }
+      return disabled;
     },
   },
 };
@@ -381,5 +455,20 @@ export default {
 }
 .user-search {
   padding: 0;
+}
+.info {
+  color: #00a65a;
+  width: 500px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.info-loader {
+  color: #00a65a;
+  font-weight: 700;
+  font-size: 19px;
+  padding-right: 2%;
+}
+.info-alert {
+  color: #dd4b39 !important;
 }
 </style>

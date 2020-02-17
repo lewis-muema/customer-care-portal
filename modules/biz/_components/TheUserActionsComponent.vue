@@ -14,7 +14,7 @@
             Edit
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_payment">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -26,7 +26,7 @@
             Payment
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="setBillingPriviledge()">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -50,16 +50,58 @@
             Rider
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item invoice-item">
           <a
-            class="nav-link action-list"
+            class="nav-link action-list invoice-action"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('invoice', copID)"
             :id="`invoice_${copID}`"
           >
-            <span class="fa fa-fw fa-usd"></span>
-            Invoice
+            <span class="fa fa-fw fa-users"></span>
+            Invoice Receiver
+          </a>
+        </li>
+        <li
+          class="nav-item custom-padding"
+          v-if="permissions.approve_custom_invoice"
+        >
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('custom_invoice', copID)"
+            :id="`custom_invoice_${copID}`"
+          >
+            <span class="fa fa-fw fa-file "></span>
+            New Invoice
+          </a>
+        </li>
+        <li
+          class="nav-item custom-padding"
+          v-if="permissions.approve_custom_invoice"
+        >
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reverse_invoice', copID)"
+            :id="`reverse_invoice_${copID}`"
+          >
+            <span class="fa fa-fw fa-history "></span>
+            Reverse Invoice
+          </a>
+        </li>
+        <li class="nav-item" v-if="permissions.approve_vat_configs">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('vat_config', copID)"
+            :id="`vat_config_${copID}`"
+          >
+            <span class="fa  fa-cogs"></span>
+            VAT Config
           </a>
         </li>
         <li class="nav-item">
@@ -72,6 +114,30 @@
           >
             <span class="fa fa-fw fa-envelope"></span>
             Ticket
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('pricing', copID)"
+            :id="`pricing_${copID}`"
+          >
+            <span class="fa fa-fw fa-gbp"></span>
+            Pricing
+          </a>
+        </li>
+        <li v-if="approvingAdmin" class="nav-item">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('approval', copID)"
+            :id="`approval_${copID}`"
+          >
+            <span class="fa fa-fw fa-check"></span>
+            Approvals
           </a>
         </li>
       </ul>
@@ -149,6 +215,75 @@
               :ticket="ticketData"
             />
           </div>
+
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`pricing_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `pricing_${copID}`"
+          >
+            <TheAddNewPricingComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="
+              showTab === `approval_${copID}` &&
+                this.approvalModel === 'Distance'
+            "
+          >
+            <DistancePricingApprovalComponent
+              :user="user"
+              :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`approval_${copID}`"
+            role="tabpanel"
+            v-if="
+              showTab === `approval_${copID}` &&
+                this.approvalModel === 'Location'
+            "
+          >
+            <LocationPricingApprovalComponent
+              :user="user"
+              :session="userData"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`vat_config_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `vat_config_${copID}`"
+          >
+            <TheVATConfigComponent :user="user" :session="userData" />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`custom_invoice_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `custom_invoice_${copID}`"
+          >
+            <TheCustomInvoiceComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reverse_invoice_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `reverse_invoice_${copID}`"
+          >
+            <TheReverseInvoiceComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -156,6 +291,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
   name: 'TheUserActionsComponent',
@@ -166,7 +302,19 @@ export default {
     TheRiderComponent: () => import('./UserActions/TheRiderComponent'),
     TheInvoiceComponent: () => import('./UserActions/TheInvoiceComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    TheAddNewPricingComponent: () =>
+      import('./UserActions/TheAddNewPricingComponent'),
+    DistancePricingApprovalComponent: () =>
+      import('./UserActions/PricingApproval/DistancePricingApprovalComponent'),
+    LocationPricingApprovalComponent: () =>
+      import('./UserActions/PricingApproval/LocationPricingApprovalComponent'),
+    TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
+    TheCustomInvoiceComponent: () =>
+      import('./UserActions/TheCustomInvoiceComponent'),
+    TheReverseInvoiceComponent: () =>
+      import('./UserActions/TheReverseInvoiceComponent'),
   },
+  mixins: [PricingConfigsMxn],
   props: {
     user: {
       type: Object,
@@ -181,12 +329,22 @@ export default {
       active: false,
       cop_type_list: [],
       admin_list: [],
+      configData: [],
+      testAdmin: false,
       category: 'biz',
+      approvalModel: '',
+      distancePricingTableData: [],
+      locationPricingTableData: [],
     };
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
-    ...mapGetters(['getCopTypes', 'getAdmins']),
+    ...mapGetters([
+      'getCopTypes',
+      'getAdmins',
+      'getApproverId',
+      'getConfiguredLocationPricing',
+    ]),
 
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -197,16 +355,21 @@ export default {
         : 'KES';
       return currency;
     },
+    approvingAdmin() {
+      return (
+        parseInt(this.session.payload.data.admin_id, 10) === this.getApproverId
+      );
+    },
     ticketData() {
-      const userName = this.user.user_details.cop_name.split(' ');
+      const userName = this.user.user_details.cop_name;
       const id = this.user.user_details.cop_id;
 
       const data = {
         id,
         title: `SENDY${id} ( Cop User)`,
         customer: {
-          firstName: userName[0],
-          lastName: userName.length > 1 ? userName[1] : '. ',
+          firstName: userName,
+          lastName: '.',
           email: this.user.user_details.cop_email,
           phone: this.user.user_details.cop_phone,
         },
@@ -221,11 +384,16 @@ export default {
     getAdmins(admins) {
       return (this.admin_list = admins);
     },
+    approvalModel(model) {
+      this.approvalModel = model;
+    },
   },
   async mounted() {
     this.copID = this.user.user_details.cop_id;
     await this.setCopTypes();
     await this.setAdmins();
+    await this.fetchCustomDistancePricingData();
+    this.setApprovalModel();
   },
   methods: {
     ...mapMutations({
@@ -240,13 +408,32 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-
+    setApprovalModel() {
+      if (this.distancePricingTableData.length !== 0) {
+        this.approvalModel = 'Distance';
+      } else if (this.locationPricingTableData.length !== 0) {
+        this.approvalModel = 'Location';
+      }
+    },
     viewTab(tab, copID) {
       this.clearErrorMessages();
-
       this.showTab = `${tab}_${copID}`;
       this.active = 'active';
       this.show = 'show';
+    },
+    setBillingPriviledge() {
+      const user = this.user.user_details;
+      let approve_billing = false;
+      if (user.payment_option === '2') {
+        if (this.permissions.approve_postpay_billing) {
+          approve_billing = true;
+        }
+      } else {
+        if (this.permissions.approve_prepay_billing) {
+          approve_billing = true;
+        }
+      }
+      return approve_billing;
     },
   },
 };
@@ -285,5 +472,17 @@ export default {
 }
 .user-search {
   padding: 0;
+}
+.invoice-item {
+  width: 18%;
+}
+.invoice-action {
+  width: 98% !important;
+}
+.custom-padding {
+  padding-right: 3px !important;
+}
+.custom-width {
+  width: 100% !important;
 }
 </style>

@@ -64,4 +64,49 @@ export default {
   getHelpScoutToken(state) {
     return state.helpScoutToken;
   },
+  getSectionView(state) {
+    return state.section;
+  },
+  getAddPricingState(state) {
+    return state.addPricing;
+  },
+  getFirstPricingState(state) {
+    return state.firstPricing;
+  },
+  getEditStatus(state) {
+    return state.editStatus;
+  },
+  getViewStatus(state) {
+    return state.viewDetails;
+  },
+  getSummaryStatus(state) {
+    return state.viewSummary;
+  },
+  getConfiguredDistancePricing(state) {
+    return state.distancePricingData;
+  },
+  getConfiguredLocationPricing(state) {
+    return state.locationPricingData;
+  },
+  getPendingDistancePricing(state) {
+    return state.pendingPricingData;
+  },
+  getPendingLocationPricing(state) {
+    return state.pendingLocationData;
+  },
+  getApproveStatus(state) {
+    return state.approveStatus;
+  },
+  getApproverId(state) {
+    return state.approverId;
+  },
+  getTableData(state) {
+    return state.tableData;
+  },
+  getCustomPricingDetails(state) {
+    return state.customPricingDetails;
+  },
+  getloginErrors(state) {
+    return state.loginErrors;
+  },
 };
