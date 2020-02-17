@@ -96,6 +96,7 @@ export default {
       previewing: true,
       tableData: this.configs,
       copId: this.user.user_details.cop_id,
+      copName: this.user.user_details.cop_name,
       customPricingDetails: this.customdata,
     };
   },
@@ -176,6 +177,7 @@ export default {
       for (let i = 0; i < data.length; i += 1) {
         const locationPricingObject = {
           cop_id: this.copId,
+          cop_name: this.copName,
           custom_pricing_details: {
             id: data[i].id,
             name: data[i].name,
@@ -191,7 +193,7 @@ export default {
           cop_name: data[i].cop_name,
           currency: this.currency,
           admin_id: this.approver,
-          service_fee: data[i].service_fee,
+          service_fee: parseInt(data[i].service_fee, 10),
           from: data[i].from,
           from_location: {
             type: data[i].from_location.type,
@@ -204,8 +206,8 @@ export default {
           to: data[i].to,
           status: 'Pending',
           city: data[i].city,
-          order_amount: data[i].order_amount,
-          rider_amount: data[i].rider_amount,
+          order_amount: parseInt(data[i].order_amount, 10),
+          rider_amount: parseInt(data[i].rider_amount, 10),
         };
 
         locationPricingObject.custom_pricing_details.location_pricing.push(

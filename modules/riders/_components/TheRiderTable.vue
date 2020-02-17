@@ -27,7 +27,7 @@
           <i class="fa fa-spinner fa-spin loader"></i>
         </tr>
         <tr
-          v-else
+          v-else-if="riderDetails !== null"
           @click="toggle('rider')"
           :class="{ opened: opened.includes('rider') }"
         >

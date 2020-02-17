@@ -11,6 +11,9 @@ const PricingConfigsMxn = {
     return {
       copId: '',
       adminId: '',
+      pacInput: '',
+      pacInput1: '',
+      pacInput2: '',
       defaultCurrency: '',
       vendorTypes: [],
       tableData: [],
@@ -125,6 +128,7 @@ const PricingConfigsMxn = {
     },
     addRow(model) {
       if (model === 'Distance') {
+        this.pacInput = '';
         const distancePricingRow = {
           city: '',
           name: '',
@@ -141,6 +145,8 @@ const PricingConfigsMxn = {
         };
         this.tableData.push(distancePricingRow);
       } else if (model === 'Location') {
+        this.pacInput1 = '';
+        this.pacInput2 = '';
         const locationPricingRow = {
           id: 1,
           name: '',

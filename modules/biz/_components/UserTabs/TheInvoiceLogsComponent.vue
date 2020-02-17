@@ -37,7 +37,7 @@
             <td>{{ invoice.invoice_number }}</td>
             <td>
               {{
-                getFormattedDate(invoice.invoice_date, 'DD/MM/YYYY hh.mm a ')
+                formatInvoiceTime(invoice.invoice_date, 'DD/MM/YYYY hh.mm a ')
               }}
             </td>
             <td>{{ currency }} {{ invoice.invoice_amount }}</td>
@@ -102,8 +102,10 @@ export default {
 
         if (!res.data.length > 0) {
           this.fetch_invoice_logs = 'no_data';
+        } else {
+          this.fetch_invoice_logs = false;
         }
-        this.fetch_invoice_logs = false;
+
         return (this.invoice = res.data);
       } catch (error) {
         this.fetch_invoice_logs = 'fail';

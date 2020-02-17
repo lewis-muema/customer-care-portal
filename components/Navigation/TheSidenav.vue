@@ -52,6 +52,24 @@
               ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
+          <li class="treeview" v-if="permissions.create_orders">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/createorder"
+              @click="showModal('createorder', $event)"
+              ><i class="fa fa-plus-circle"></i> <span> Create Order </span>
+            </a>
+          </li>
+
+          <li class="treeview" v-if="permissions.invoice_generation">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/invoice"
+              @click="showModal('invoice', $event)"
+              ><i class="fa fa-file"></i>
+              <span> Generate Invoice Numbers </span>
+            </a>
+          </li>
 
           <!-- <li class="treeview" v-if="permissions.create_orders">
             <a
@@ -82,7 +100,7 @@
   </span>
 </template>
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheSidenav',
@@ -101,6 +119,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['getSession']),
+
     photo() {
       const image = this.user.payload.data.pic;
       return `${this.userImage}${image}`;

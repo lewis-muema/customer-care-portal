@@ -28,8 +28,15 @@
           </el-table-column>
           <el-table-column prop="from" label="Pick up location" width="335">
             <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.from"
+                size="small"
+                class="table--col-text"
+                placeholder="Search location"
+                v-model="scope.row.from"
+              ></el-input>
               <el-autocomplete
-                v-if="!scope.row.from"
+                v-else
                 size="small"
                 class="inline-input"
                 v-model="pacInput1"
@@ -40,19 +47,19 @@
                 @select="handleSelectFrom($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
-              <el-input
-                v-if="scope.row.from"
-                size="small"
-                class="table--col-text"
-                placeholder="Search location"
-                v-model="scope.row.from"
-              ></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="to" label="Drop off location" width="335">
             <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.to"
+                size="small"
+                class="table--col-text"
+                placeholder="Search location"
+                v-model="scope.row.to"
+              ></el-input>
               <el-autocomplete
-                v-if="!scope.row.to"
+                v-else
                 size="small"
                 class="inline-input"
                 v-model="pacInput2"
@@ -63,13 +70,6 @@
                 @select="handleSelectTo($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
-              <el-input
-                v-if="scope.row.to"
-                size="small"
-                class="table--col-text"
-                placeholder="Search location"
-                v-model="scope.row.to"
-              ></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
@@ -94,9 +94,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.order_amount"
+                v-model="scope.row.order_amount"
               >
                 <template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -112,9 +113,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.rider_amount"
+                v-model="scope.row.rider_amount"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -125,9 +127,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
                 class="table--col-text"
-                v-model.number="scope.row.service_fee"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="scope.row.service_fee"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -144,7 +147,7 @@
         <el-button
           class="pricing-save-btn btn-primary"
           @click="previewConfig"
-          :disabled="containsNull"
+          :disabled="validNewStep"
           >Save & Preview
         </el-button>
       </template>
@@ -209,11 +212,6 @@ export default {
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
     },
-    containsNull() {
-      return this.tableData.every(
-        item => item.name === '' || item.from === '' || item.to === '',
-      );
-    },
     vendor() {
       return this.vendorTypes.find(op => {
         return op.name === this.vendorName;
@@ -223,6 +221,17 @@ export default {
       return this.suggestions.find(op => {
         return op.place_id === this.fromPlaceId;
       });
+    },
+    validNewStep() {
+      let from = '';
+      let to = '';
+      let vendor = '';
+      for (let i = 0; i < this.tableData.length; i += 1) {
+        from = this.tableData[i].from;
+        to = this.tableData[i].to;
+        vendor = this.tableData[i].name;
+      }
+      return from === '' || to === '' || vendor === '';
     },
   },
   watch: {
@@ -359,5 +368,9 @@ tr:hover {
 }
 .table--width {
   width: 1000px !important;
+}
+.el-table--scrollable-x .el-table__body-wrapper {
+  overflow-x: auto;
+  padding-bottom: 25px !important;
 }
 </style>
