@@ -639,7 +639,7 @@ export default {
   async request_pending_distance_pricing_data({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
-      const pendingDistancePricing = [];
+      let pendingDistancePricing = [];
       let pendingLocationPricing = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
@@ -647,9 +647,17 @@ export default {
           if (pendingPricingDetails[i].location_pricing) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
           } else {
-            pendingDistancePricing.push(
-              pendingPricingDetails[i].distance_pricing,
-            );
+            const pricingTableData = [];
+            pricingTableData.push(pendingPricingDetails[i].distance_pricing);
+            for (let j = 0; j < pricingTableData.length; j += 1) {
+              const perMinuteFee =
+                pricingTableData[i].waiting_time_cost_per_min;
+              const perHourFee = perMinuteFee * 60;
+              pricingTableData[
+                i
+              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
+            }
+            pendingDistancePricing = pricingTableData;
           }
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
@@ -667,7 +675,7 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let approverId = 0;
-      const distancePricing = [];
+      let distancePricing = [];
       let locationPricing = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
@@ -677,7 +685,17 @@ export default {
             locationPricing = customPricingDetails[i].location_pricing;
           } else {
             approverId = customPricingDetails[i].admin_id;
-            distancePricing.push(customPricingDetails[i].distance_pricing);
+            const pricingTableData = [];
+            pricingTableData.push(customPricingDetails[i].distance_pricing);
+            for (let j = 0; j < pricingTableData.length; j += 1) {
+              const perMinuteFee =
+                pricingTableData[i].waiting_time_cost_per_min;
+              const perHourFee = perMinuteFee * 60;
+              pricingTableData[
+                i
+              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
+            }
+            distancePricing = pricingTableData;
           }
         }
         commit('updateLocationPricing', locationPricing);

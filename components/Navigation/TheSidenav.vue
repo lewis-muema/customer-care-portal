@@ -71,6 +71,15 @@
             </a>
           </li>
 
+          <!-- <li class="treeview" v-if="permissions.create_orders">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/createorder"
+              @click="showModal('createorder', $event)"
+              ><i class="fa fa-plus-circle"></i> <span> Create Order </span>
+            </a>
+          </li> -->
+
           <li id="offline_2" class="hidden">
             <a href="#"
               ><i class="fa fa-circle-o text-red"></i> <span>Offline</span></a
