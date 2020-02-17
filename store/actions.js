@@ -760,9 +760,13 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
       return error.response;
     }
   },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 
@@ -791,6 +795,7 @@ export default {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
   },
+
   async request_invoice_data({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
