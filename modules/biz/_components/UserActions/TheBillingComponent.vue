@@ -10,9 +10,10 @@
       <div :class="`col-md-6 user-search user-input`" v-if="!isTransferOrder">
         <label>Account to Pay</label>
         <TheSearchRiderComponent
-          @riderID="searchedRider"
+          @riderData="searchedRider"
           :category="category"
           :arr="array"
+          :rider-key="0"
         />
         <div :class="`${emptyClass} ${hid}`">
           Account to pay is required
@@ -314,8 +315,8 @@ export default {
         return (this.checked = e.target.value);
       }
     },
-    searchedRider(riderID) {
-      return (this.rider = riderID);
+    searchedRider(riderData) {
+      return (this.rider = riderData.riderID);
     },
     searchedUser(userID) {
       return (this.accountID = userID);

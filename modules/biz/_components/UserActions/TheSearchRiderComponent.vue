@@ -55,6 +55,10 @@ export default {
       type: Object,
       required: true,
     },
+    riderKey: {
+      type: Number,
+      required: true,
+    },
   },
 
   data() {
@@ -114,7 +118,10 @@ export default {
       this.hide = 'hide';
       this.hideInput = '';
       this.riderDisplay = `${item.rider_name} | ${item.phone_no}`;
-      this.$emit('riderID', item.rider_id);
+      this.$emit('riderData', {
+        riderID: item.rider_id,
+        riderKey: this.riderKey,
+      });
       return (this.rider = item.rider_id);
     },
   },
