@@ -317,11 +317,7 @@ export default {
         },
       ],
       category: 'Select partner account',
-      array: {
-        rider_name: 'Sendy Bill',
-        phone_no: '',
-        rider_id: 0,
-      },
+      array: {},
       commission_rate: '20',
       calculatedAmount: 0,
       sendyTakeHome: 0,
