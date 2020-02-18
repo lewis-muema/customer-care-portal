@@ -14,7 +14,7 @@
           label="name"
           class="form-control select user-billing"
           :id="`vat_compliance`"
-          :disabled="checkPaymentMethod('2')"
+          :disabled="checkPaymentMethod(true)"
           v-model="vatCompliance"
           :class="{
             'is-invalid': submitted && $v.vatCompliance.$error,
@@ -137,7 +137,7 @@ export default {
     checkPaymentMethod(value) {
       let disabled = false;
       const user_data = this.user.user_details;
-      if (user_data.payment_option === value) {
+      if (this.vatCompliance === value && user_data === '2') {
         disabled = true;
       }
       return disabled;
