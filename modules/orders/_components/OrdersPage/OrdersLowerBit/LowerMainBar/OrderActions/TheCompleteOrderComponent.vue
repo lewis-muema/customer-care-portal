@@ -1,5 +1,10 @@
 <template>
-  <form @submit.prevent="completeOrder" class="form-inline">
+  <form
+    class="form-inline"
+    @submit.prevent="completeOrder"
+    ref="form"
+    enctype="multipart/form-data"
+  >
     <div class="form-group col-md-12">
       <label class="reason">Reason</label>
       <textarea
@@ -20,55 +25,51 @@
     </div>
     <div class="form-group col-md-12" :id="`delivery_container_${orderNo}`">
       <label class="col-md-12 uploads">Submit Delivery Notes</label>
-      <div
-        class="upload-container col-md-6"
-        :id="`delivery_images_${orderNo}`"
-        :class="{
-          'dnotes-is-invalid': submitted && dnotes.length === 0,
-        }"
-      >
-        <vue-upload-multiple-image
-          @upload-success="uploadImageSuccess"
-          @before-remove="beforeRemove"
-          @edit-image="editImage"
-          @data-change="dataChange"
-          :id-upload="idUpload"
-          :id-edit="idEdit"
-          :multiple="multiple"
-          :data-images="images"
-          :drag-text="uploadText"
-          :browse-text="browseText"
-          :mark-is-primary-text="empty"
-          :primary-text="empty"
-          :show-primary="showPrimary"
-        ></vue-upload-multiple-image>
-
-        <input
-          type="file"
-          ref="file"
-          multiple="multiple"
-          @change="onFileChange"
-        />
-        <p>List of files</p>
-        <ul>
-          <li v-for="image in images" :key="image.index">
-            {{ image.name }}
-          </li>
-        </ul>
-      </div>
-      <div class="upload-container col-md-6">
-        <div class="scan-container" :id="`scanned_images_${orderNo}`">
-          <button @click="scanToJpg" class="btn btn-default">
-            Scan Images
-          </button>
+      <div class="upload-container col-md-6" :id="`delivery_images_${orderNo}`">
+        <div
+          class="scan-container"
+          :class="{
+            'dnotes-is-invalid': submitted && images.length === 0,
+          }"
+        >
+          <label class="fileContainer">
+            <button class="btn btn-default">
+              Upload Image(s)
+            </button>
+            <input multiple type="file" name="files[]" @change="upload" />
+          </label>
         </div>
       </div>
+      <div class="upload-container col-md-6">
+        <client-only>
+          <div
+            class="scan-container"
+            :class="{
+              'dnotes-is-invalid': submitted && images.length === 0,
+            }"
+            :id="`scanned_images_${orderNo}`"
+          >
+            <button class="btn btn-default">
+              Scan Images
+            </button>
+          </div>
+        </client-only>
+      </div>
       <div
-        v-if="submitted && dnotes.length === 0"
+        v-if="submitted && images.length === 0"
         class="dnotes-invalid-feedback"
       >
         Order Delivery Notes are required
       </div>
+    </div>
+    <div class="border form-group col-md-12 uploads">
+      <template v-if="images.length">
+        <ul>
+          <li v-for="(item, index) in images" :key="index">
+            {{ item }}
+          </li>
+        </ul>
+      </template>
     </div>
     <div class="form-group col-md-12">
       <button class="btn btn-primary action-button">
@@ -81,17 +82,11 @@
   </form>
 </template>
 <script>
-import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
-
-import VueUploadMultipleImage from 'vue-upload-multiple-image';
-import { required } from 'vuelidate/lib/validators';
 import axios from 'axios';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
-  name: 'app',
-  components: {
-    VueUploadMultipleImage,
-  },
   props: {
     order: {
       type: Object,
@@ -100,21 +95,13 @@ export default {
   },
   data() {
     return {
+      formData: null,
       orderNo: this.order.order_details.order_no,
       reason: '',
       submitted: false,
       loading: false,
-      multiple: true,
-      imageList: [],
+      isScannerLoaded: false,
       images: [],
-      formData: null,
-      uploadText: 'Upload Image(s)',
-      browseText: 'browse',
-      markIsPrimary: 'test image',
-      empty: '',
-      idUpload: `image-upload-${this.order.order_details.order_no}`,
-      idEdit: `image-upload-${this.order.order_details.order_no}`,
-      showPrimary: false,
       dnotes: [
         {
           document_tag: 'delivery_note',
@@ -122,20 +109,6 @@ export default {
           name: 'Delivery Note',
         },
       ],
-      scanRequest: {
-        use_asprise_dialog: true, // Whether to use Asprise Scanning Dialog
-        show_scanner_ui: false, // Whether scanner UI should be shown
-        twain_cap_setting: {
-          // Optional scanning settings
-          ICAP_PIXELTYPE: 'TWPT_RGB', // Color
-        },
-        output_settings: [
-          {
-            type: 'return-base64',
-            format: 'jpg',
-          },
-        ],
-      },
     };
   },
   validations: {
@@ -158,45 +131,53 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    onFileChange(e) {
-      const data = new FormData();
-      const files = e.target.files || e.dataTransfer.files;
-      this.images.push(files);
-      const orderNo = this.orderNo;
-      for (let i = 0; i < files.length; i++) {
-        const ext = files[i].type.split('/').pop();
-        const filename = `${orderNo}1-delivery_note-${i}.${ext}`;
-        data.append(`files`, files[i], filename);
+    upload(event) {
+      if (this.formData === null) {
+        this.formData = new FormData(this.$refs.form);
       }
-      this.formData = data;
-    },
+      for (const key in event.target.files) {
+        // eslint-disable-next-line no-restricted-globals
+        if (!isNaN(key)) {
+          const file = event.target.files[key];
+          this.images.push(file.name);
+          const ext = file.type.split('/').pop();
+          const filename = `${this.orderNo}1-delivery_note-${key}.${ext}`;
+          this.formData.append(`files`, file, filename);
+        }
+      }
 
+      // axios.post(url, this.formData, config);
+    },
     // eslint-disable-next-line require-await
     async uploadToS3() {
-      // upload images
+      const notification = [];
+      let actionClass = '';
       const orderNo = this.orderNo;
       const formData = this.formData;
-      const s3Details = {
+
+      const s3Details = JSON.stringify({
         bucket: 'sendy-delivery-signatures',
         path: 'rider_delivery_image',
-      };
-      const s3String = JSON.stringify(s3Details);
-      const url = `${this.config.ADONIS_API}s3/upload?s3=${s3String}`;
+      });
+
+      const url = `${this.config.ADONIS_API}s3/upload?s3=${s3Details}`;
       const jwtToken = localStorage.getItem('jwtToken');
       const config = {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: jwtToken,
         },
       };
-      // Upload image api
       try {
-        await axios.post(url, { files: formData }, config).then(response => {
+        await axios.post(url, formData, config).then(response => {
           console.log('response images', response);
         });
-      } catch (erro) {
-        console.log('error', error);
+      } catch (error) {
+        console.log('error', error.message);
+        notification.push('Failed to upload dnotes');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     // eslint-disable-next-line require-await
     async completeOrder() {
@@ -209,19 +190,7 @@ export default {
         return;
       }
       this.loading = true;
-      console.log('imageLs', this.imageList);
-      // Upload image api
-      // const uploadDnotes = await this.uploadToS3();
-
-      // const orderNo = this.orderNo;
-      // for (let i = 0; i < files.length; i++) {
-      //   console.log('files[i].type', files[i].type);
-      //   const ext = files[i].type.split('/').pop();
-      //   const filename = `${orderNo}1-delivery_note-${i}.${ext}`;
-      //   console.log('dddddd', filename);
-      //   // data.append(`files`, files[i], filename);
-      // }
-
+      const uploadDnotes = await this.uploadToS3();
       // Notify orders app of uploaded dnotes
       // const notify = await this.notifyOrdersApp();
       // console.log('typeof notify', typeof notify);
@@ -253,56 +222,6 @@ export default {
       //   this.updateClass(actionClass);
       //   this.updateErrors(notification);
       // }
-    },
-    scanToJpg() {
-      scanner.scan(this.displayImagesOnPage, this.scanRequest);
-    },
-    // scanToJpg() {
-    //   scanner.scan(displayImagesOnPage, {
-    //     output_settings: [
-    //       {
-    //         type: 'return-base64',
-    //         format: 'jpg',
-    //       },
-    //     ],
-    //   });
-    // },
-    /** Processes the scan result */
-    displayImagesOnPage(successful, mesg, response) {
-      if (!successful) {
-        // On error
-        console.error(`Failed: ${mesg}`);
-        return;
-      }
-      if (
-        successful &&
-        mesg != null &&
-        mesg.toLowerCase().indexOf('user cancel') >= 0
-      ) {
-        // User cancelled.
-        console.info('User cancelled');
-        return;
-      }
-      const scannedImages = scanner.getScannedImages(response, true, false); // returns an array of ScannedImage
-      for (
-        let i = 0;
-        // eslint-disable-next-line no-unmodified-loop-condition
-        scannedImages instanceof Array && i < scannedImages.length;
-        i++
-      ) {
-        const scannedImage = scannedImages[i];
-        const elementImg = scanner.createDomElementFromModel({
-          name: 'img',
-          attributes: {
-            class: 'scanned',
-            src: scannedImage.src,
-          },
-        });
-        (document.getElementById('images')
-          ? document.getElementById('images')
-          : document.body
-        ).appendChild(elementImg);
-      }
     },
     async notifyOrdersApp() {
       const notification = [];
@@ -342,40 +261,6 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    uploadImageSuccess(formData, index, fileList) {
-      const fd = new FormData();
-      this.imageList = fileList;
-      // fd.append('file', fileList);
-      console.log('fileList', fileList);
-
-      // console.log('fd', fd);
-      // console.log('data', formData, index, fileList);
-
-      // const url = `${this.config.ADONIS_API}orders/${this.orderNo}/upload`;
-      // console.log('config', this.config.ADONIS_API);
-      // const jwtToken = localStorage.getItem('jwtToken');
-      // const config = {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: jwtToken,
-      //   },
-      // };
-      // // Upload image api
-      // axios.post(url, { data: fd }, config).then(response => {
-      //   console.log('response images', response);
-      // });
-    },
-    beforeRemove(index, done, fileList) {
-      done();
-    },
-    editImage(formData, index, fileList) {
-      return formData;
-    },
-
-    dataChange(data) {
-      console.log('here', data);
-      return data;
-    },
   },
 };
 </script>
@@ -396,11 +281,11 @@ export default {
 .btn-default {
   cursor: pointer;
   margin-right: 6em;
-  width: 8em;
+  width: 10em;
   border-radius: 5px;
   border: 1px dashed #d6d6d6;
   float: none;
-  margin: 36% auto;
+  margin: 24% auto;
 }
 .upload-container {
   display: flex;
@@ -413,7 +298,7 @@ export default {
 }
 .scan-container {
   width: 190px;
-  height: 180px;
+  height: 130px;
   border: 1px dashed #d6d6d6;
   border-radius: 4px;
   background-color: #fff;
@@ -448,5 +333,26 @@ li {
 
 a {
   color: #42b983;
+}
+.fileContainer {
+  overflow: hidden;
+  position: relative;
+}
+
+.fileContainer [type='file'] {
+  cursor: pointer;
+  display: block;
+  font-size: 999px;
+  filter: alpha(opacity=0);
+  min-height: 100%;
+  min-width: 100%;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 0;
+}
+.preview {
+  width: 30%;
 }
 </style>
