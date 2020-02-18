@@ -137,7 +137,10 @@ export default {
     checkPaymentMethod(value) {
       let disabled = false;
       const user_data = this.user.user_details;
-      if (this.vatCompliance === value && user_data === '2') {
+      if (
+        user_data.vat_compliant === value &&
+        user_data.payment_option === '2'
+      ) {
         disabled = true;
       }
       return disabled;
