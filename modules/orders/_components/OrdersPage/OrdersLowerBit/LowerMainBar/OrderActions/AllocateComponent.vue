@@ -27,9 +27,10 @@
       </div>
       <div :class="`col-md-12 user-search`">
         <TheSearchRiderComponent
-          @riderID="searchedRider"
+          @riderData="searchedRider"
           :category="placehoder"
           :arr="array"
+          :rider-key="0"
         />
         <div :class="`invalid ${hide}`">
           Please select a rider
@@ -98,8 +99,8 @@ export default {
       assign_order: '$_orders/assign_order',
       requestAppVersion: 'requestAppVersion',
     }),
-    searchedRider(riderID) {
-      return (this.rider = riderID);
+    searchedRider(riderData) {
+      return (this.rider = riderData.riderID);
     },
     async requestsingleRdier(user) {
       const notification = [];
