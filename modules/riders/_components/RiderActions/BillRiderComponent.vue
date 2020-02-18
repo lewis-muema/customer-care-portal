@@ -6,7 +6,7 @@
       class="form-inline"
     >
       <div class="form-group col-md-6 bill-div user-input">
-        <label>Amount</label>
+        <label>Base Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ user.default_currency }}</span>
@@ -16,12 +16,12 @@
               type="text"
               v-model="amount"
               name="amount"
-              placeholder="Amount"
+              placeholder="Amount without VAT"
               class="form-control"
             />
           </div>
           <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
-            Amount is required
+            Base Amount is required
           </div>
         </div>
       </div>
@@ -108,7 +108,10 @@
           Client No is required
         </div>
       </div>
-      <button class="btn btn-primary action-button">
+      <button
+        class="btn btn-primary action-button"
+        :disabled="checkSubmitStatus()"
+      >
         Pay
       </button>
     </form>
@@ -154,6 +157,7 @@ export default {
         { value: 100, name: 'Other', transactionID: 100 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
+      submit_status: false,
     };
   },
   validations: {
@@ -250,6 +254,12 @@ export default {
         },
       };
 
+      this.submit_status = true;
+
+      setTimeout(() => {
+        this.submit_status = false;
+      }, 5000);
+
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
@@ -265,6 +275,9 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    checkSubmitStatus() {
+      return this.submit_status;
     },
   },
 };

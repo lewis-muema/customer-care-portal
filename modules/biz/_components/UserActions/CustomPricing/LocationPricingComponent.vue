@@ -12,7 +12,7 @@
         <el-table
           :data="tableData"
           row-class-name="no-hover"
-          style="width: 1000px"
+          class="table--width"
           max-height="300"
         >
           <el-table-column class="delete-col" width="40" fixed="left">
@@ -28,61 +28,48 @@
           </el-table-column>
           <el-table-column prop="from" label="Pick up location" width="335">
             <template slot-scope="scope">
-              <el-autocomplete
-                v-if="!scope.row.from"
-                size="small"
-                class="inline-input"
-                v-model="pacInput1"
-                :value="handleSelect"
-                :fetch-suggestions="querySearch"
-                placeholder="Search location"
-                :trigger-on-focus="false"
-                @select="handleSelect($event, scope.$index, scope.row)"
-              >
-              </el-autocomplete>
               <el-input
                 v-if="scope.row.from"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 placeholder="Search location"
                 v-model="scope.row.from"
               ></el-input>
+              <el-autocomplete
+                v-else
+                size="small"
+                class="inline-input"
+                v-model="pacInput1"
+                :value="handleSelectFrom"
+                :fetch-suggestions="querySearch"
+                placeholder="Search location"
+                :trigger-on-focus="false"
+                @select="handleSelectFrom($event, scope.$index, scope.row)"
+              >
+              </el-autocomplete>
             </template>
           </el-table-column>
           <el-table-column prop="to" label="Drop off location" width="335">
             <template slot-scope="scope">
-              <el-autocomplete
-                v-if="!scope.row.to"
-                size="small"
-                class="inline-input"
-                v-model="pacInput2"
-                :value="handleSelect"
-                :fetch-suggestions="querySearch"
-                placeholder="Search location"
-                :trigger-on-focus="false"
-                @select="handleSelect($event, scope.$index, scope.row)"
-              >
-              </el-autocomplete>
               <el-input
                 v-if="scope.row.to"
                 size="small"
-                style="text-align:center"
+                class="table--col-text"
                 placeholder="Search location"
                 v-model="scope.row.to"
               ></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="proximity" label="Proximity" width="200">
-            <template slot-scope="scope">
-              <el-input
+              <el-autocomplete
+                v-else
                 size="small"
-                type="number"
-                style="text-align:center"
-                v-model.number="scope.row.proximity"
-                ><template class="pricing-prepend" slot="append"
-                  >KM
-                </template></el-input
+                class="inline-input"
+                v-model="pacInput2"
+                :value="handleSelectTo"
+                :fetch-suggestions="querySearch"
+                placeholder="Search location"
+                :trigger-on-focus="false"
+                @select="handleSelectTo($event, scope.$index, scope.row)"
               >
+              </el-autocomplete>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
@@ -107,9 +94,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
-                style="text-align:center"
-                v-model.number="scope.row.order_amount"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="table--col-text"
+                v-model="scope.row.order_amount"
               >
                 <template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -125,9 +113,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
-                style="text-align:center"
-                v-model.number="scope.row.rider_amount"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="table--col-text"
+                v-model="scope.row.rider_amount"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -138,9 +127,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
-                style="text-align:center"
-                v-model.number="scope.row.service_fee"
+                type="text"
+                class="table--col-text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="scope.row.service_fee"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -154,7 +144,10 @@
         <button @click="goBack()" class="pricing-back-text">
           Previous page
         </button>
-        <el-button class="pricing-save-btn btn-primary" @click="previewConfig"
+        <el-button
+          class="pricing-save-btn btn-primary"
+          @click="previewConfig"
+          :disabled="validNewStep"
           >Save & Preview
         </el-button>
       </template>
@@ -196,7 +189,7 @@ export default {
           currency: 'KES',
           admin_id: 1,
           service_fee: 1200,
-          from: 'Muchai Drive',
+          from: '',
           from_location: {
             type: 'Point',
             coordinates: [36.799157, -1.299287],
@@ -205,7 +198,7 @@ export default {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
-          to: 'Mombasa Plastics, Mombasa',
+          to: '',
           status: 'Active',
           city: 'Mombasa County',
           order_amount: 23000,
@@ -216,17 +209,36 @@ export default {
     };
   },
   computed: {
+    herokuKey() {
+      return this.$env.HEROKU_GOOGLE_API_KEY;
+    },
     vendor() {
       return this.vendorTypes.find(op => {
         return op.name === this.vendorName;
       });
+    },
+    fromLocation() {
+      return this.suggestions.find(op => {
+        return op.place_id === this.fromPlaceId;
+      });
+    },
+    validNewStep() {
+      let from = '';
+      let to = '';
+      let vendor = '';
+      for (let i = 0; i < this.tableData.length; i += 1) {
+        from = this.tableData[i].from;
+        to = this.tableData[i].to;
+        vendor = this.tableData[i].name;
+      }
+      return from === '' || to === '' || vendor === '';
     },
   },
   watch: {
     pacInput1(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
@@ -235,7 +247,7 @@ export default {
     pacInput2(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
@@ -246,6 +258,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     this.fetchVendorTypes(countryCode);
+    this.trackAddPricingDataPage();
   },
   methods: {
     ...mapMutations({
@@ -262,8 +275,43 @@ export default {
       }
       cb(this.suggestions);
     },
-    handleSelect(item, index, rows) {
-      this.tableData[index].city = item.value;
+    handleSelectFrom(item, index, rows) {
+      this.tableData[index].from = item.value;
+      const fromPlaceId = item.place_id;
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          const fromLatLong = response.data.result.geometry.location;
+          const coordinatesArray = Object.keys(fromLatLong).map(
+            key => fromLatLong[key],
+          );
+          [coordinatesArray[0], coordinatesArray[1]] = [
+            parseFloat(coordinatesArray[1].toFixed(6)),
+            parseFloat(coordinatesArray[0].toFixed(6)),
+          ];
+          this.tableData[index].from_location.coordinates = coordinatesArray;
+        });
+    },
+    handleSelectTo(item, index, rows) {
+      this.tableData[index].to = item.value;
+      const toPlaceId = item.place_id;
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          const toLatLong = response.data.result.geometry.location;
+          const coordinatesArray = Object.keys(toLatLong).map(
+            key => toLatLong[key],
+          );
+          [coordinatesArray[0], coordinatesArray[1]] = [
+            parseFloat(coordinatesArray[1].toFixed(6)),
+            parseFloat(coordinatesArray[0].toFixed(6)),
+          ];
+          this.tableData[index].to_location.coordinates = coordinatesArray;
+        });
     },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
@@ -274,9 +322,20 @@ export default {
     },
     previewConfig() {
       this.previewLocationPricing = true;
+      this.trackSaveAndPreview();
     },
     onSectionUpdate(value) {
       this.previewLocationPricing = value;
+    },
+    trackAddPricingDataPage() {
+      mixpanel.track('Add Location Pricing data Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackSaveAndPreview() {
+      mixpanel.track('Save and Preview Location Pricing button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };
@@ -303,5 +362,15 @@ tr:hover {
 }
 .table td {
   padding: 5px !important;
+}
+.table--col-text {
+  text-align: center !important;
+}
+.table--width {
+  width: 1000px !important;
+}
+.el-table--scrollable-x .el-table__body-wrapper {
+  overflow-x: auto;
+  padding-bottom: 25px !important;
 }
 </style>

@@ -531,6 +531,16 @@
 .request_ind {
   background-color: blueviolet !important;
 }
+.disputed_ind {
+    background-color: black !important;
+  }
+  .resolved_ind {
+    background-color: grey !important;
+  }
+  .appealed_ind {
+    background-color:grey !important;
+  }
+  
 .badge {
   display: inline-block;
   min-width: 10px;
@@ -816,4 +826,9 @@ table {
 }
 .select {
   border: none;
+}
+.bg-info {
+  font-size: 8px;
+  background: #00c0ef !important;
+  margin-left: 1px;
 }

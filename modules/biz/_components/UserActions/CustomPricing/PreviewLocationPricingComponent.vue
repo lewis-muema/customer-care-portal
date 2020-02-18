@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="previewing">
     <div class="approver-select" v-if="approverSelect">
       <template>
         <div class="pricing-approver-select">
@@ -9,6 +9,7 @@
           <el-select
             v-model="approver"
             size="small"
+            class="el-input--small"
             filterable
             placeholder="Select manager"
           >
@@ -43,8 +44,6 @@
         <el-table-column prop="from" label="Pick up location" width="200">
         </el-table-column>
         <el-table-column prop="to" label="Drop off location" width="200">
-        </el-table-column>
-        <el-table-column prop="proximity" label="Proximity" width="130">
         </el-table-column>
         <el-table-column prop="name" label="Vendor type" width="130">
         </el-table-column>
@@ -89,13 +88,15 @@ export default {
     return {
       pricingData: [],
       admin_list: [],
-      approver: '',
+      approver: 0,
       approverMail: '',
       currency: '',
       isHidden: false,
       approverSelect: false,
+      previewing: true,
       tableData: this.configs,
       copId: this.user.user_details.cop_id,
+      copName: this.user.user_details.cop_name,
       customPricingDetails: this.customdata,
     };
   },
@@ -118,6 +119,7 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
+    this.trackPricingSubmitPage();
   },
   methods: {
     ...mapMutations({}),
@@ -135,36 +137,120 @@ export default {
       this.approverSelect = false;
     },
     async submitConfigs() {
+      this.trackPricingSubmit();
       const configParams = this.createPayload(this.tableData);
       const notification = [];
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/add_custom_distance_details',
+        endpoint: 'pricing/price_config/add_custom_distance_details',
         apiKey: false,
         params: configParams,
       };
       try {
         const data = await this.submit_custom_pricing(payload);
         if (data.status) {
-          notification.push(
-            'You have successfully created the custom pricing config!',
-          );
+          notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
-          this.updateSuccess(false);
-          this.sendEmailNotification();
+          this.previewing = false;
+          this.sendEmailNotification(this.admin.email, this.admin.name);
+          this.trackPassedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
         } else {
+          this.trackFailedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
       this.trackMixpanelPeople();
     },
-    createPayload(data) {},
+    createPayload(data) {
+      const locationPricingArray = [];
+      for (let i = 0; i < data.length; i += 1) {
+        const locationPricingObject = {
+          cop_id: this.copId,
+          cop_name: this.copName,
+          custom_pricing_details: {
+            id: data[i].id,
+            name: data[i].name,
+            currency: this.currency,
+            admin_id: this.approver,
+            location_pricing: [],
+          },
+        };
+        const locationData = {
+          id: data[i].id,
+          name: data[i].name,
+          cop_id: this.copId,
+          cop_name: data[i].cop_name,
+          currency: this.currency,
+          admin_id: this.approver,
+          service_fee: parseInt(data[i].service_fee, 10),
+          from: data[i].from,
+          from_location: {
+            type: data[i].from_location.type,
+            coordinates: data[i].from_location.coordinates,
+          },
+          to_location: {
+            type: data[i].to_location.type,
+            coordinates: data[i].to_location.coordinates,
+          },
+          to: data[i].to,
+          status: 'Pending',
+          city: data[i].city,
+          order_amount: parseInt(data[i].order_amount, 10),
+          rider_amount: parseInt(data[i].rider_amount, 10),
+        };
+
+        locationPricingObject.custom_pricing_details.location_pricing.push(
+          locationData,
+        );
+        locationPricingArray.push(locationPricingObject);
+      }
+      return locationPricingArray;
+    },
+    trackPricingSubmitPage() {
+      mixpanel.track('Submit location pricing for approval Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackPricingSubmit() {
+      mixpanel.track('"Submit Request" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPassedSubmission() {
+      mixpanel.track('Location pricing saved - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedSubmission() {
+      mixpanel.track('Location pricing not saved - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('CRM', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'CRM',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
+    },
   },
 };
 </script>
@@ -184,5 +270,9 @@ export default {
 }
 table td {
   padding: 5px !important;
+}
+.el-input--small {
+  border: 1px solid#e4e7ed !important;
+  border-radius: 5px !important;
 }
 </style>

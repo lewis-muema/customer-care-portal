@@ -74,7 +74,8 @@ export default {
         { code: 2, type: 'Suspend' },
         { code: 0, type: 'Deactivate' },
       ],
-      dedication: [{ code: 0, type: 'Open' }, { code: 1, type: 'Dedicated' }],
+      // eslint-disable-next-line prettier/prettier
+       dedication: [{ code: 0, type: 'Open' }, { code: 1, type: 'Dedicated' }],
     };
   },
   validations: {

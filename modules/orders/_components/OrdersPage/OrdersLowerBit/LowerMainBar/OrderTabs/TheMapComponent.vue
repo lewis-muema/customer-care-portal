@@ -62,7 +62,8 @@ import { mapState, mapActions } from 'vuex';
 import mqtt from 'mqtt';
 
 export default {
-  name: 'TheMapHolderComponent',
+  name: 'TheMapComponent',
+  props: ['order', 'eta'],
   props: {
     order: {
       type: Object,

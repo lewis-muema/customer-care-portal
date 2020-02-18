@@ -85,8 +85,14 @@ export default {
   getConfiguredDistancePricing(state) {
     return state.distancePricingData;
   },
+  getConfiguredLocationPricing(state) {
+    return state.locationPricingData;
+  },
   getPendingDistancePricing(state) {
     return state.pendingPricingData;
+  },
+  getPendingLocationPricing(state) {
+    return state.pendingLocationData;
   },
   getApproveStatus(state) {
     return state.approveStatus;
@@ -99,5 +105,8 @@ export default {
   },
   getCustomPricingDetails(state) {
     return state.customPricingDetails;
+  },
+  getloginErrors(state) {
+    return state.loginErrors;
   },
 };

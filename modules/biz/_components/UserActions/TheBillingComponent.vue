@@ -20,7 +20,7 @@
       </div>
 
       <div class="form-group col-md-6 bill-div user-input">
-        <label>Amount</label>
+        <label>Base Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ currency }}</span>
@@ -39,14 +39,14 @@
               type="number"
               v-model="amount"
               name="amount"
-              placeholder="Amount"
+              placeholder="Amount without VAT"
               class="form-control"
               :max="max_amount"
               :disabled="billingStatus()"
             />
           </div>
           <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
-            Amount is required
+            Base Amount is required
           </div>
         </div>
       </div>
@@ -144,7 +144,10 @@
         />
         <label for="" class="charge_commission--label">Charge Commission</label>
       </div>
-      <button class="btn btn-primary action-button">
+      <button
+        class="btn btn-primary action-button"
+        :disabled="checkSubmitStatus()"
+      >
         Process
       </button>
     </form>
@@ -224,7 +227,8 @@ export default {
       display_billing_info: true,
       userRb: '0',
       paymentOption: '',
-      max_amount: '0',
+      isVAT: true,
+      submit_status: false,
     };
   },
   validations: {
@@ -353,6 +357,13 @@ export default {
           action_user: this.actionUser,
         },
       };
+
+      this.submit_status = true;
+
+      setTimeout(() => {
+        this.submit_status = false;
+      }, 5000);
+
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
@@ -369,6 +380,10 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
+    checkSubmitStatus() {
+      return this.submit_status;
+    },
+
     handleUserData() {
       this.paymentOption = this.user.user_details.payment_option;
       if (this.paymentOption === '2') {

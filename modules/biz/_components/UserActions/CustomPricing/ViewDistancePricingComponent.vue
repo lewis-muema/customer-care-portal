@@ -14,7 +14,11 @@
       <el-table-column prop="city" label="City" width="160"> </el-table-column>
       <el-table-column prop="name" label="Vendor Type" width="160">
       </el-table-column>
-      <el-table-column prop="base_cost" label="Base Fee" width="120">
+      <el-table-column prop="base_cost" label="Partner Amount" width="150">
+      </el-table-column>
+      <el-table-column prop="service_fee" label="Service Fee" width="120">
+      </el-table-column>
+      <el-table-column prop="insurance" label="Insurance" width="120">
       </el-table-column>
       <el-table-column prop="base_km" label="Base Distance" width="120">
       </el-table-column>
@@ -37,8 +41,6 @@
       >
       </el-table-column>
       <el-table-column prop="base_km" label="Loading Fee" width="120">
-      </el-table-column>
-      <el-table-column prop="service_fee" label="Service Charge" width="120">
       </el-table-column>
       <el-table-column
         prop="cancellation_fee"
@@ -64,17 +66,9 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'TheViewDetailsComponent',
+  name: 'ViewDistancePricingComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
-    customdata: {
-      type: Array,
-      required: true,
-    },
-    configs: {
-      type: Array,
-      required: true,
-    },
     user: {
       type: Object,
       required: true,
@@ -103,7 +97,7 @@ export default {
     this.tableData = this.getTableData;
     this.customPricingDetails = this.getCustomPricingDetails;
     this.copId = this.user.user_details.cop_id;
-    this.trackMixpanelPage();
+    this.trackViewDetailsPage();
   },
   methods: {
     ...mapMutations({
@@ -118,15 +112,12 @@ export default {
       deactivate_distance_pricing_configs:
         'deactivate_distance_pricing_configs',
     }),
-    deleteRow(index, rows) {
-      this.tableData.splice(index, 1);
-    },
     viewSummary() {
       this.updateSummaryStatus(true);
       this.updateViewStatus(false);
     },
     async resetCustomPricing() {
-      this.trackMixpanelDeactivateConfigs();
+      this.trackResetConfigs();
       const approvalParams = this.createPayload(this.customPricingDetails);
       const notification = [];
       let actionClass = '';
@@ -139,51 +130,82 @@ export default {
       try {
         const data = await this.deactivate_distance_pricing_configs(payload);
         if (data.status) {
+          this.trackResetConfigsSuccess();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateViewStatus(false);
         } else {
+          this.trackResetConfigsFail();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
       } catch (error) {
-        this.status = false;
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
       }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     createPayload(pricingApprovalData) {
+      const distancePricingArray = [];
       for (let i = 0; i < pricingApprovalData.length; i += 1) {
-        pricingApprovalData[i].cop_id = this.copId;
-        pricingApprovalData[i].custom_pricing_details = {};
-        pricingApprovalData[i].custom_pricing_details.admin_id =
-          pricingApprovalData[i].admin_id;
-        pricingApprovalData[i].custom_pricing_details.currency =
-          pricingApprovalData[i].currency;
-        pricingApprovalData[i].custom_pricing_details.distance_pricing =
-          pricingApprovalData[i].distance_pricing;
-        pricingApprovalData[i].custom_pricing_details.distance_pricing.status =
-          'Deactivated';
-        pricingApprovalData[i].vendor_id = pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details.id =
-          pricingApprovalData[i].id;
-        pricingApprovalData[i].custom_pricing_details.name =
-          pricingApprovalData[i].name;
-
-        delete pricingApprovalData[i].admin_id;
-        delete pricingApprovalData[i].currency;
-        delete pricingApprovalData[i].distance_pricing;
-        delete pricingApprovalData[i].id;
-        delete pricingApprovalData[i].name;
+        const distancePricingObject = {
+          cop_id: this.copId,
+          vendor_id: pricingApprovalData[i].id,
+          custom_pricing_details: {
+            id: pricingApprovalData[i].id,
+            name: pricingApprovalData[i].name,
+            currency: pricingApprovalData[i].currency,
+            admin_id: pricingApprovalData[i].admin_id,
+            distance_pricing: pricingApprovalData[i].distance_pricing,
+          },
+        };
+        if (typeof distancePricingObject.vendor_id !== 'undefined') {
+          distancePricingObject.custom_pricing_details.distance_pricing.status =
+            'Deactivated';
+          distancePricingArray.push(distancePricingObject);
+        }
       }
-      return pricingApprovalData;
+      return distancePricingArray;
     },
-    trackMixpanelPage() {
-      mixpanel.track('Pricing Config Summary View Page');
+    trackViewDetailsPage() {
+      mixpanel.track('View Details Link - PageView', {
+        type: 'PageView',
+      });
     },
-    trackMixpanelDeactivateConfigs() {
-      mixpanel.track('Pricing Config Deactivate Configs');
+    trackResetConfigs() {
+      mixpanel.track('"Reset Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackResetConfigsSuccess() {
+      mixpanel.track('Reset successful - Success', {
+        type: 'Success',
+      });
+    },
+    trackResetConfigsFail() {
+      mixpanel.track('Reset failed - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('Approver', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Approver',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
     },
   },
 };

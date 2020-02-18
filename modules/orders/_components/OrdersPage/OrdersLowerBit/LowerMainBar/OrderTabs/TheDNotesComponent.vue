@@ -1,76 +1,82 @@
 <template>
   <span>
-    <p class="status-paragraph">
-      Status: <span :class="`color-${status.color}`">{{ status.status }}</span>
-    </p>
-    <button
-      @click="toggle('dnote')"
-      v-if="status.state"
-      :class="({ opened: opened.includes('dnote') }, button)"
-    >
-      Update
-    </button>
-    <div v-if="opened.includes('dnote')">
-      <div
-        v-if="errors.length > 0"
-        :class="`alert alert-${actionClass}`"
-        :id="`dnote_response_${orderNo}`"
+    <div v-if="!DeliverImg || DeliverImg.length === 0">
+      No DNotes found for this delivery
+    </div>
+    <div v-else>
+      <p class="status-paragraph">
+        Status:
+        <span :class="`color-${status.color}`">{{ status.status }}</span>
+      </p>
+      <button
+        @click="toggle('dnote')"
+        v-if="status.state"
+        :class="({ opened: opened.includes('dnote') }, button)"
       >
-        <ul>
-          <li v-for="error in errors" :key="error.index">
-            <b>{{ error }}</b>
-          </li>
-        </ul>
-      </div>
-      <form id="cancel-form" @submit.prevent="submitDnote">
-        <div class="update-docs">
-          <table class="table dnote-table">
-            <tr>
-              <td>
-                <VueCtkDateTimePicker
-                  class="pick-delivery-docs-date form-control"
-                  v-model="deliveryDate"
-                  formatted="DD-MM-YYYY HH:mm:00"
-                  format="DD-MM-YYYY HH:mm:00 "
-                  output-format="DD-MM-YYYY HH:mm:00"
-                  label="Delivery Date"
-                  hint=""
-                  :no-header="true"
-                  input-size="sm"
-                  :class="{
-                    'is-invalid': submitted && $v.deliveryDate.$error,
-                  }"
-                />
-                <div
-                  v-if="submitted && !$v.deliveryDate.required"
-                  class="invalid-feedback"
-                >
-                  Delivery Date is required
-                </div>
-              </td>
-              <td>
-                <input
-                  id=""
-                  v-model="comment"
-                  class="delivery-doc-comment form-control"
-                  type="text"
-                  placeholder="Comment (optional)"
-                />
-              </td>
-
-              <td colspan="3">
-                <button class="submit-doc-approval">
-                  Submit
-                </button>
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
-          </table>
-
-          <p class="update-docs__notification"></p>
+        Update
+      </button>
+      <div v-if="opened.includes('dnote')">
+        <div
+          v-if="errors.length > 0"
+          :class="`alert alert-${actionClass}`"
+          :id="`dnote_response_${orderNo}`"
+        >
+          <ul>
+            <li v-for="error in errors" :key="error.index">
+              <b>{{ error }}</b>
+            </li>
+          </ul>
         </div>
-      </form>
+        <form id="cancel-form" @submit.prevent="submitDnote">
+          <div class="update-docs">
+            <table class="table dnote-table">
+              <tr>
+                <td>
+                  <VueCtkDateTimePicker
+                    class="pick-delivery-docs-date form-control"
+                    v-model="deliveryDate"
+                    formatted="DD-MM-YYYY HH:mm:00"
+                    format="DD-MM-YYYY HH:mm:00 "
+                    output-format="DD-MM-YYYY HH:mm:00"
+                    label="Delivery Date"
+                    hint=""
+                    :no-header="true"
+                    input-size="sm"
+                    :class="{
+                      'is-invalid': submitted && $v.deliveryDate.$error,
+                    }"
+                  />
+                  <div
+                    v-if="submitted && !$v.deliveryDate.required"
+                    class="invalid-feedback"
+                  >
+                    Delivery Date is required
+                  </div>
+                </td>
+                <td>
+                  <input
+                    id=""
+                    v-model="comment"
+                    class="delivery-doc-comment form-control"
+                    type="text"
+                    placeholder="Comment (optional)"
+                  />
+                </td>
+
+                <td colspan="3">
+                  <button class="submit-doc-approval">
+                    Submit
+                  </button>
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+            <p class="update-docs__notification"></p>
+          </div>
+        </form>
+      </div>
     </div>
   </span>
 </template>
@@ -94,6 +100,7 @@ export default {
       submitted: false,
       errors: [],
       actionClass: '',
+      DeliverImg: this.order.delivery_details.delivery_images,
     };
   },
   validations: {
@@ -107,20 +114,13 @@ export default {
       return 'tab-pane__update-button';
     },
     status() {
-      let status = 'Not Delivered';
-      let color = 'red';
+      const status = this.DeliverImg[0].physical_delivery_note_status;
+      let color = '';
       let state = true;
       const arr = {};
-      const imgStatus = Object.prototype.hasOwnProperty.call(
-        this.order.delivery_details,
-        'rider_delivery_image',
-      );
-      if (
-        imgStatus &&
-        this.order.delivery_details.rider_delivery_image[0]
-          .physical_delivery_note_status === 2
-      ) {
-        status = 'Delivered';
+      if (status === 'Pending Approval') {
+        color = 'red';
+      } else if (status === 'Approved') {
         color = 'green';
         state = false;
       }

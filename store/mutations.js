@@ -97,8 +97,14 @@ export default {
   updateDistancePricing(state, val) {
     state.distancePricingData = val;
   },
+  updateLocationPricing(state, val) {
+    state.locationPricingData = val;
+  },
   updatePendingDistancePricing(state, val) {
     state.pendingPricingData = val;
+  },
+  updatePendingLocationPricing(state, val) {
+    state.pendingLocationData = val;
   },
   updateApproveStatus(state, val) {
     state.approveStatus = val;
@@ -111,5 +117,8 @@ export default {
   },
   setCustomPricingDetails(state, val) {
     state.customPricingDetails = val;
+  },
+  setLoginErrors(state, val) {
+    state.loginErrors = val;
   },
 };

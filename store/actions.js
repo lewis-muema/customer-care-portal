@@ -235,9 +235,17 @@ export default {
     }
   },
   async requestAxiosPost({ state, commit, dispatch }, payload) {
-    const customConfig = state.config;
-    const url = customConfig[payload.app];
     let endpoint = payload.endpoint;
+    const app = payload.app;
+
+    // Capture custom HTTP request actions via managed transactions.
+    this._vm.$apm
+      .startTransaction(`${endpoint}`, 'custom', { managed: true })
+      .addLabels({ app });
+
+    const customConfig = state.config;
+    const url = customConfig[app];
+
     let backendKey = null;
     const jwtToken = localStorage.getItem('jwtToken');
     const config = {
@@ -423,8 +431,9 @@ export default {
   // eslint-disable-next-line require-await
   async perform_user_action({ rootState, dispatch, commit }, payload) {
     const userData = rootState.userData;
-    payload.params._user_email = userData.payload.data.email;
-    payload.params._user_id = userData.payload.data.admin_id;
+    payload.params.action_data._user_email = userData.payload.data.email;
+    payload.params.action_data._user_id = userData.payload.data.admin_id;
+    payload.params.action_data.action_user = userData.payload.data.name;
 
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -485,14 +494,23 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       const pendingDistancePricing = [];
+      let pendingLocationPricing = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < pendingPricingDetails.length; i += 1) {
-          pendingDistancePricing.push(
-            pendingPricingDetails[i].distance_pricing,
-          );
+          if (pendingPricingDetails[i].location_pricing) {
+            pendingLocationPricing = pendingPricingDetails[i].location_pricing;
+          } else {
+            pendingDistancePricing.push(
+              pendingPricingDetails[i].distance_pricing,
+            );
+          }
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
+        commit('updatePendingLocationPricing', pendingLocationPricing);
+      } else {
+        commit('updatePendingDistancePricing', pendingDistancePricing);
+        commit('updatePendingLocationPricing', pendingLocationPricing);
       }
       return res.data;
     } catch (error) {
@@ -504,12 +522,19 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let approverId = 0;
       const distancePricing = [];
+      let locationPricing = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < customPricingDetails.length; i += 1) {
-          approverId = customPricingDetails[i].admin_id;
-          distancePricing.push(customPricingDetails[i].distance_pricing);
+          if (customPricingDetails[i].location_pricing) {
+            approverId = customPricingDetails[i].location_pricing[0].admin_id;
+            locationPricing = customPricingDetails[i].location_pricing;
+          } else {
+            approverId = customPricingDetails[i].admin_id;
+            distancePricing.push(customPricingDetails[i].distance_pricing);
+          }
         }
+        commit('updateLocationPricing', locationPricing);
         commit('updateDistancePricing', distancePricing);
         commit('updateApproverId', approverId);
       }
@@ -519,6 +544,14 @@ export default {
     }
   },
   async approve_distance_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async approve_location_pricing_configs({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
@@ -542,6 +575,14 @@ export default {
       return error.response;
     }
   },
+  async deactivate_location_pricing({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
   async send_mail_to_admin({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -549,5 +590,41 @@ export default {
     } catch (error) {
       return error.response;
     }
+  },
+  async update_vat_config({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async request_tax_rates({ state }) {
+    const config = state.config;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vat-rates`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async request_invoice_logs({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res;
   },
 };

@@ -44,20 +44,8 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'ThePriceTiersComponent',
-  props: {
-    order: {
-      type: Object,
-      required: true,
-    },
-    rates: {
-      type: Array,
-      required: true,
-    },
-    eta: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: ['order', 'eta', 'rates'],
+
   data() {
     return {
       orderDetails: this.order,
