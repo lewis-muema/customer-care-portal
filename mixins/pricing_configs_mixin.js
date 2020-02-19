@@ -208,7 +208,7 @@ const PricingConfigsMxn = {
       };
       try {
         const data = await this.send_mail_to_admin(payload);
-        if (data.result.status) {
+        if (data.status) {
           notification.push('Custom price configs created successfully.');
           actionClass = this.display_order_action_notification(data.status);
         } else {
