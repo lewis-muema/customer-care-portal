@@ -90,7 +90,11 @@
           </span>
         </td>
         <td v-html="smartify_display(order.from_name, 30)"></td>
-        <td v-html="smartify_display(order.to_name, 30)"></td>
+        <td
+          v-if="freightLabel(order) === '-C'"
+          v-html="smartify_display(container_destination(order), 30)"
+        ></td>
+        <td v-else v-html="smartify_display(order.to_name, 30)"></td>
         <td>
           {{
             displayAmount(
@@ -372,6 +376,12 @@ export default {
       ) {
         return '-C';
       }
+    },
+    container_destination(order) {
+      if (order.path[1].road) {
+        return `${order.path[1].name} ${order.path[1].road}`;
+      }
+      return order.path[1].name;
     },
     forceRerender() {
       this.rowComponentKey += 1;
