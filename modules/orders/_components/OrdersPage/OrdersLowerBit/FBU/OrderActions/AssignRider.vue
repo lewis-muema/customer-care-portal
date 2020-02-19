@@ -192,6 +192,7 @@ export default {
     existingVehiclePayload() {
       const payload = {
         new_vehicle: false,
+        owner_id: this.owner.owner_id,
         vehicle_id: this.vehicle.vehicle_id,
       };
       return payload;
