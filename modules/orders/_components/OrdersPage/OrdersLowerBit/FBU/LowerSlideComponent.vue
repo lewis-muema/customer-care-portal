@@ -100,6 +100,17 @@
                 </button>
               </div>
               <div class="freight-order-actions-tabs">
+                <div
+                  v-if="actionErrors.length > 0"
+                  :class="`alert alert-${actionClass}`"
+                  :id="`error_holder_${order.order_details.order_no}`"
+                >
+                  <ul>
+                    <li v-for="error in actionErrors" :key="error.index">
+                      <b>{{ error }}</b>
+                    </li>
+                  </ul>
+                </div>
                 <TheTrackerComponent
                   v-if="
                     ActiveTab === 'gps' &&
@@ -164,7 +175,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 import TheSideComponent from '../LowerSideBar/TheSideComponent';
 import TheMainComponent from '../LowerMainBar/TheMainComponent';
@@ -205,6 +216,9 @@ export default {
       Assign: false,
       ActiveTab: 'assign',
     };
+  },
+  computed: {
+    ...mapState(['actionErrors', 'actionClass', 'userData']),
   },
   mounted() {
     const notification = [];

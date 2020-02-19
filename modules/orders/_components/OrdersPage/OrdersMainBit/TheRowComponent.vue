@@ -367,10 +367,12 @@ export default {
       }
     },
     container_destination(order) {
-      if (order.path[1].road) {
-        return `${order.path[1].name} ${order.path[1].road}`;
+      if (Object.prototype.hasOwnProperty.call(order, 'path')) {
+        return `${order.path[1].name}${order.path[1].road ? ',' : ''} ${
+          order.path[1].road
+        }`;
       }
-      return order.path[1].name;
+      return order.to_name;
     },
     forceRerender() {
       this.rowComponentKey += 1;
