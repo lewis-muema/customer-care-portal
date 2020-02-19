@@ -1,2 +1,122 @@
 //Add UI to link order to partner and update order amount, commission, service
 //fee and insurance on CC portal
+<template>
+  <div class="col-md-12">
+    <div class="box box-primary user-main">
+      <form style="padding:30px;">
+        <div class="form-group col-md-6">
+          <label for="orderamount">Order Amount</label>
+          <input
+            type="text"
+            class="form-control"
+            id="orderamount"
+            placeholder="orderamount"
+            v-model="orderamount"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="partneramount">Partner Amount</label>
+          <input
+            type="text"
+            class="form-control"
+            id="partneramount"
+            placeholder="partneramount"
+            v-model="partneramount"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="partnerphone">Partner Phone Number</label>
+          <input
+            type="text"
+            class="form-control"
+            id="partnerphone"
+            placeholder="partnerphone"
+            v-model="partnerphone"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="sendycomission">Sendy Commission</label>
+          <input
+            type="text"
+            class="form-control"
+            id="sendycomission"
+            placeholder="sendycomission"
+            v-model="sendycomission"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="insuranceamount">Insurance Amount</label>
+          <input
+            type="text"
+            class="form-control"
+            id="insuranceamount"
+            placeholder="insuranceamount"
+            v-model="insuranceamount"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="vatamount">VAT Amount</label>
+          <input
+            type="text"
+            class="form-control"
+            id="vatamount"
+            placeholder="vatamount"
+            v-model="vatamount"
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="
+    margin: 0px 0px 30px 15px;"
+        >
+          Update Partner Info
+        </button>
+      </form>
+    </div>
+  </div>
+</template>
+<script>
+// import CreateOfflineOrderComponent from '~/modules/offlineOrders/_components/CreateOfflineOrderComponent';
+// import ConfirmOfflineOrderComponent from '~/modules/offlineOrders/_components/ConfirmOfflineOrderComponent';
+// import PickOfflineOrderComponent from '~/modules/offlineOrders/_components/PickOfflineOrderComponent';
+// import CompleteOfflineOrderComponent from '~/modules/offlineOrders/_components/CompleteOfflineOrderComponent';
+// import UpdatePartnerInfoComponent from '~/modules/offlineOrders/_components/UpdatePartnerInfoComponent';
+
+import axios from 'axios';
+
+export default {
+  name: 'OfflineOrders',
+  data() {
+    return {
+      orderamount: '',
+      partneramount: '',
+      partnerphone: '',
+      sendycomission: '',
+      insuranceamount: '',
+      vatamount: '',
+    };
+  },
+  // components: {
+  //   CreateOfflineOrderComponent,
+  //   ConfirmOfflineOrderComponent,
+  //   PickOfflineOrderComponent,
+  //   CompleteOfflineOrderComponent,
+  //   UpdatePartnerInfoComponent,
+  // },
+  mounted() {
+    this.clearErrorMessages();
+  },
+};
+</script>
+<style>
+.user-main {
+  border-top: 3px solid #3c8dbc;
+}
+.form-inline .input-group {
+  width: 100%;
+}
+.input-group-icon {
+  padding: 8px 12px;
+}
+</style>
