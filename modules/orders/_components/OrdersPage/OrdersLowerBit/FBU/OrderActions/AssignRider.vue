@@ -9,6 +9,7 @@
       />
       <DriverDetails @driverDetails="driverData" :order="order" />
       <button
+        v-if="!assigned"
         class="assign-order-button"
         :class="[
           readyStatus ? 'inactive-assign-button' : '',
@@ -59,6 +60,7 @@ export default {
       response: '',
       payload: '',
       loading: false,
+      assigned: false,
     };
   },
   computed: {
@@ -245,7 +247,8 @@ export default {
       allocate_rider_vehicle: 'allocate_rider_vehicle',
     }),
     ...mapMutations({
-      updateErrors: 'setErrors',
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
     }),
     async partnerReallocation(orderPayload) {
       this.loading = true;
@@ -297,6 +300,9 @@ export default {
             this.updateErrors([]);
           }, 5000);
         }
+        this.updateClass('success');
+        this.updateErrors(['Order has been assigned']);
+        this.assigned = true;
         return (this.response = data);
       } catch (error) {
         handleError(error);
