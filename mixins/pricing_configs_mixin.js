@@ -188,18 +188,20 @@ const PricingConfigsMxn = {
         this.tableData.push(locationPricingRow);
       }
     },
-    async sendEmailNotification(mail, name) {
+    async sendEmailNotification(email, name) {
       const notification = [];
       let actionClass = '';
       const crmName = this.getSessionData.payload.data.name;
       const copName = this.user.user_details.cop_name;
+      const copId = this.user.user_details.cop_id;
       const payload = {
-        app: 'AUTH',
-        endpoint: 'v1/send_email',
+        app: 'PRICING_SERVICE',
+        endpoint: 'pricing/price_config/send_email ',
         apiKey: false,
         params: {
           name,
-          email: mail,
+          email,
+          cop_id: copId,
           message: `${crmName} has created a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
           subject: `Requires approval - Custom pricing for ${copName}`,
         },

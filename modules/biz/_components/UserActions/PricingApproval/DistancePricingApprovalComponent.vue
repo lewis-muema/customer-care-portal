@@ -166,11 +166,16 @@ export default {
     }),
     async rejectDistancePricingConfigs() {
       this.trackRejectConfigs();
-      const pricingApprovalData = this.customPricingDetails;
-      this.approvalParams = this.createPayload(
-        pricingApprovalData,
-        'deactivated',
-      );
+      const pricingTableData = this.customPricingDetails;
+      for (let i = 0; i < pricingTableData.length; i += 1) {
+        const perHourFee =
+          pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
+        const perMinuteFee = perHourFee / 60;
+        pricingTableData[
+          i
+        ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
+      }
+      this.approvalParams = this.createPayload(pricingTableData, 'deactivated');
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -214,8 +219,16 @@ export default {
     },
     async approveDistancePricingConfigs() {
       this.trackApproveConfig();
-      const pricingApprovalData = this.customPricingDetails;
-      this.approvalParams = this.createPayload(pricingApprovalData, 'Active');
+      const pricingTableData = this.customPricingDetails;
+      for (let i = 0; i < pricingTableData.length; i += 1) {
+        const perHourFee =
+          pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
+        const perMinuteFee = perHourFee / 60;
+        pricingTableData[
+          i
+        ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
+      }
+      this.approvalParams = this.createPayload(pricingTableData, 'Active');
       const notification = [];
       let actionClass = '';
       const payload = {
