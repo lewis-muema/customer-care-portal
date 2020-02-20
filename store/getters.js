@@ -109,4 +109,10 @@ export default {
   getloginErrors(state) {
     return state.loginErrors;
   },
+  getActionErrors(state) {
+    return state.actionErrors;
+  },
+  getActionClass(state) {
+    return state.actionClass;
+  },
 };
