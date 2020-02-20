@@ -199,7 +199,14 @@
           Mark in Transit
         </a>
       </li>
-      <li class="nav-item">
+
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.order_status === 'in transit' &&
+            permissions.complete_order
+        "
+      >
         <a
           class="force_blue"
           data-toggle="tab"

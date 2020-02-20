@@ -40,21 +40,6 @@
           </label>
         </div>
       </div>
-      <div class="upload-container col-md-6">
-        <client-only>
-          <div
-            class="scan-container"
-            :class="{
-              'dnotes-is-invalid': submitted && images.length === 0,
-            }"
-            :id="`scanned_images_${orderNo}`"
-          >
-            <button class="btn btn-default">
-              Scan Images
-            </button>
-          </div>
-        </client-only>
-      </div>
       <div
         v-if="submitted && images.length === 0"
         class="dnotes-invalid-feedback"
@@ -102,13 +87,8 @@ export default {
       loading: false,
       isScannerLoaded: false,
       images: [],
-      dnotes: [
-        {
-          document_tag: 'delivery_note',
-          images: ['BT443Q591-CAZ1-delivery_note-1.jpg'],
-          name: 'Delivery Note',
-        },
-      ],
+      uploadedImages: [],
+      dnotes: [],
     };
   },
   validations: {
@@ -139,20 +119,37 @@ export default {
         // eslint-disable-next-line no-restricted-globals
         if (!isNaN(key)) {
           const file = event.target.files[key];
+          this.uploadedImages.push(file);
           this.images.push(file.name);
+        }
+      }
+    },
+    createFormData() {
+      const imagesName = [];
+      for (const key in this.uploadedImages) {
+        // eslint-disable-next-line no-restricted-globals
+        if (!isNaN(key)) {
+          const file = this.uploadedImages[key];
           const ext = file.type.split('/').pop();
           const filename = `${this.orderNo}1-delivery_note-${key}.${ext}`;
           this.formData.append(`files`, file, filename);
+          imagesName.push(filename);
         }
       }
-
-      // axios.post(url, this.formData, config);
+      const imageObject = {
+        document_tag: 'delivery_note',
+        images: imagesName,
+        name: 'Delivery Note',
+      };
+      this.dnotes.push(imageObject);
     },
     // eslint-disable-next-line require-await
     async uploadToS3() {
       const notification = [];
       let actionClass = '';
+      let status = false;
       const orderNo = this.orderNo;
+      const createData = await this.createFormData();
       const formData = this.formData;
 
       const s3Details = JSON.stringify({
@@ -170,6 +167,12 @@ export default {
       try {
         await axios.post(url, formData, config).then(response => {
           console.log('response images', response);
+          if (response.status !== 204) {
+            notification.push('Failed to upload dnotes');
+            actionClass = 'danger';
+          } else {
+            status = true;
+          }
         });
       } catch (error) {
         console.log('error', error.message);
@@ -178,12 +181,13 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      return status;
     },
     // eslint-disable-next-line require-await
     async completeOrder() {
       const notification = [];
-      // let actionClass = '';
-
+      let actionClass = '';
+      const orderNo = this.orderNo;
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -191,38 +195,40 @@ export default {
       }
       this.loading = true;
       const uploadDnotes = await this.uploadToS3();
-      // Notify orders app of uploaded dnotes
-      // const notify = await this.notifyOrdersApp();
-      // console.log('typeof notify', typeof notify);
-      // console.log('notify.status', notify.status);
+      if (!uploadDnotes) {
+        return;
+      }
+      const notify = await this.notifyOrdersApp();
+      if (!notify) {
+        return;
+      }
 
-      // if (typeof notify !== 'undefined' && notify.status) {
-      //   // complete/deliver the order.
-      //   const payload = {
-      //     app: 'ORDERS_APP',
-      //     endpoint: 'rider_app_deliver',
-      //     apiKey: true,
-      //     params: {
-      //       order_no: orderNo,
-      //       rider_phone: this.order.rider_details.phone_no,
-      //       sim_card_sn: this.order.rider_details.serial_no,
-      //     },
-      //   };
-      //   // console.log('payload', payload);
-      //   try {
-      //     const data = await this.perform_order_action(payload);
-      //     notification.push(data.reason);
-      //     actionClass = this.display_order_action_notification(data.status);
-      //   } catch (error) {
-      //     notification.push(
-      //       'Failed to complete order. Try again or contact Tech Support',
-      //     );
-      //     actionClass = 'danger';
-      //   }
-      //   this.updateClass(actionClass);
-      //   this.updateErrors(notification);
-      // }
+      if (typeof notify !== 'undefined' && notify.status) {
+        const payload = {
+          app: 'ORDERS_APP',
+          endpoint: 'rider_app_deliver',
+          apiKey: true,
+          params: {
+            order_no: orderNo,
+            rider_phone: this.order.rider_details.phone_no,
+            sim_card_sn: this.order.rider_details.serial_no,
+          },
+        };
+        try {
+          const data = await this.perform_order_action(payload);
+          notification.push(data.reason);
+          actionClass = this.display_order_action_notification(data.status);
+        } catch (error) {
+          notification.push(
+            'Failed to complete order. Try again or contact Tech Support',
+          );
+          actionClass = 'danger';
+        }
+        this.updateClass(actionClass);
+        this.updateErrors(notification);
+      }
     },
+
     async notifyOrdersApp() {
       const notification = [];
       let actionClass = '';
@@ -245,7 +251,6 @@ export default {
       };
       try {
         const data = await this.perform_order_action(payload);
-        // console.log('response', data);
         if (data.status) {
           return data;
         } else {

@@ -45,7 +45,7 @@
               :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
               :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
+                  `${s3Path}${image}`,              
               "
             />
           </div>
@@ -118,9 +118,6 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    isSendyStaff(name) {
-      return name.includes('Sendy Staff -');
-    },
     triggerDnotesModal(image, e) {
       this.modalImage = image;
       $(`#${this.orderNo}`).modal('show');
