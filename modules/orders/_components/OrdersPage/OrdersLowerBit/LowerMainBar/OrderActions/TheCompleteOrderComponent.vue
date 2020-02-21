@@ -1,77 +1,95 @@
 <template>
-  <form
-    class="form-inline"
-    @submit.prevent="completeOrder"
-    ref="form"
-    enctype="multipart/form-data"
-  >
-    <div class="form-group col-md-12">
-      <label class="reason">Reason</label>
-      <textarea
-        type="text"
-        v-model="reason"
-        :id="`completion_reason_${orderNo}`"
-        name="reason"
-        class="form-control"
-        placeholder="Order completion order"
-        :class="{
-          'is-invalid': submitted && $v.reason.$error,
-        }"
-      >
-      </textarea>
-      <div v-if="submitted && !$v.reason.required" class="invalid-feedback">
-        Order Completion Reason is required
-      </div>
-    </div>
-    <div class="form-group col-md-12" :id="`delivery_container_${orderNo}`">
-      <label class="col-md-12 uploads">Submit Delivery Notes</label>
-      <div class="upload-container col-md-6" :id="`delivery_images_${orderNo}`">
-        <div
-          class="scan-container"
+  <span>
+    <form
+      class="form-inline"
+      @submit.prevent="completeOrder"
+      ref="form"
+      enctype="multipart/form-data"
+    >
+      <div class="form-group col-md-12">
+        <label class="reason">Reason</label>
+        <textarea
+          type="text"
+          v-model="reason"
+          :id="`completion_reason_${orderNo}`"
+          name="reason"
+          class="form-control"
+          placeholder="Order completion order"
           :class="{
-            'dnotes-is-invalid': submitted && images.length === 0,
+            'is-invalid': submitted && $v.reason.$error,
           }"
         >
-          <label class="fileContainer">
-            <button class="btn btn-default">
-              Upload Image(s)
-            </button>
-            <input multiple type="file" name="files[]" @change="upload" />
-          </label>
+        </textarea>
+        <div v-if="submitted && !$v.reason.required" class="invalid-feedback">
+          Order Completion Reason is required
         </div>
       </div>
-      <div
-        v-if="submitted && images.length === 0"
-        class="dnotes-invalid-feedback"
-      >
-        Order Delivery Notes are required
+      <div class="form-group col-md-12" :id="`delivery_container_${orderNo}`">
+        <label class="col-md-12 uploads">Submit Delivery Notes</label>
+        <div
+          class="upload-container col-md-6"
+          :id="`delivery_images_${orderNo}`"
+        >
+          <div
+            class="scan-container"
+            :class="{
+              'dnotes-is-invalid': submitted && images.length === 0,
+            }"
+          >
+            <label class="fileContainer">
+              <button class="btn btn-default">
+                Upload Image(s)
+              </button>
+              <input multiple type="file" name="files[]" @change="upload" />
+            </label>
+          </div>
+        </div>
+        <div
+          v-if="submitted && images.length === 0"
+          class="dnotes-invalid-feedback"
+        >
+          Order Delivery Notes are required
+        </div>
       </div>
-    </div>
-    <div class="border form-group col-md-12 uploads">
-      <template v-if="images.length">
-        <ul>
-          <li v-for="(item, index) in images" :key="index">
-            {{ item }}
-          </li>
-        </ul>
-      </template>
-    </div>
-    <div class="form-group col-md-12">
-      <button class="btn btn-primary action-button">
-        Complete Order
-        <span v-if="loading">
-          <i class="fa fa-spinner fa-spin loader"></i
-        ></span>
-      </button>
-    </div>
-  </form>
+      <div class="border form-group col-md-12 uploads">
+        <template v-if="images.length">
+          <div
+            v-for="(item, index) in images"
+            :key="index"
+            class="col-md-3 fileContainer"
+          >
+            <!-- <img :src="item" alt="image" class="preview" /> -->
+            <img
+              class="signature-img-notes preview"
+              :id="`${item}`"
+              @click="triggerDnotesModal(item, $event)"
+              :src="item"
+            />
+          </div>
+        </template>
+      </div>
+      <div class="form-group col-md-12">
+        <button class="btn btn-primary action-button">
+          Complete Order
+          <span v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i
+          ></span>
+        </button>
+      </div>
+    </form>
+    <TheUploadDnotesModal :order="orderNo" :image="modalImage" />
+  </span>
 </template>
 <script>
 import axios from 'axios';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
-
+//
 export default {
+  name: 'TheCompleteOrderComponent',
+  components: {
+    TheUploadDnotesModal: () => import('./TheUploadDnotesModal'),
+  },
   props: {
     order: {
       type: Object,
@@ -89,6 +107,8 @@ export default {
       images: [],
       uploadedImages: [],
       dnotes: [],
+      url: null,
+      modalImage: '',
     };
   },
   validations: {
@@ -111,16 +131,23 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
+    triggerDnotesModal(image, e) {
+      this.modalImage = image;
+      $(`#${this.orderNo}`).modal('show');
+      e.preventDefault();
+    },
     upload(event) {
       if (this.formData === null) {
         this.formData = new FormData(this.$refs.form);
       }
+      let url = null;
       for (const key in event.target.files) {
         // eslint-disable-next-line no-restricted-globals
         if (!isNaN(key)) {
           const file = event.target.files[key];
           this.uploadedImages.push(file);
-          this.images.push(file.name);
+          url = URL.createObjectURL(file);
+          this.images.push(url);
         }
       }
     },
@@ -358,6 +385,6 @@ a {
   top: 0;
 }
 .preview {
-  width: 30%;
+  max-height: 110px;
 }
 </style>

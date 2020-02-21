@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">{{ name }}</h5>
+          <h5 class="modal-title">mm</h5>
           <button
             type="button"
             class="close"
@@ -25,7 +25,7 @@
 <script>
 export default {
   name: 'TheUploadDnotesModal',
-  props: ['image', 'name', 'order'],
+  props: ['image', 'order'],
 };
 </script>
 <style scoped>
