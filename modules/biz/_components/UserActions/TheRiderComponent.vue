@@ -9,7 +9,6 @@
         <TheSearchRiderComponent
           @riderID="searchedRider"
           :category="placehoder"
-          :arr="array"
         />
         <div :class="`invalid ${hide}`">
           Please select a rider
@@ -44,7 +43,6 @@ export default {
       rider: null,
       submitted: false,
       hide: 'hide',
-      array: {},
     };
   },
   validations: {
