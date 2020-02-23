@@ -181,7 +181,6 @@ export default {
   components: {
     TheLowerSlideComponent,
     rabbitMQcomponent,
-    // LowerSlideComponent,
     DashboardComponent,
   },
   data() {
@@ -355,9 +354,6 @@ export default {
     initialOrderRequest() {
       this.setOrders();
     },
-    // checkFBUorders() {
-
-    // },
     freightLabel(order) {
       if (
         order.order_no !== order.parent_order_no &&
@@ -410,7 +406,6 @@ export default {
     determineOrderColor(date, push_order) {
       const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
       const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
-      // .pull_attention
       let colorClass = 'tetst';
       if (orderDate < currentDate) {
         colorClass = 'pull_attention';
