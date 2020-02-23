@@ -14,6 +14,7 @@
           label="name"
           class="form-control select user-billing"
           :id="`vat_compliance`"
+          :disabled="checkPaymentMethod(true)"
           v-model="vatCompliance"
           :class="{
             'is-invalid': submitted && $v.vatCompliance.$error,
@@ -133,11 +134,22 @@ export default {
     ...mapActions({
       update_vat_config: 'update_vat_config',
     }),
+    checkPaymentMethod(value) {
+      let disabled = false;
+      const user_data = this.user.user_details;
+      if (
+        user_data.vat_compliant === value &&
+        user_data.payment_option === '2'
+      ) {
+        disabled = true;
+      }
+      return disabled;
+    },
     UpdateBizDefaultConfig() {
       const user_data = this.user.user_details;
-      this.invoicing_cycle = user_data.invoice_circle;
       this.vatCompliance = user_data.vat_compliant;
       this.tax_authority_pin = user_data.tax_authority_pin;
+      this.invoicing_cycle = user_data.invoice_circle;
     },
     // eslint-disable-next-line require-await
     async update_biz_configs() {
