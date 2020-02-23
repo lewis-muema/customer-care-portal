@@ -224,10 +224,17 @@ export default {
           },
         ];
       }
-
+      if (Object.prototype.hasOwnProperty.call(order, 'freight_details')) {
+        const locations = [];
+        order.freight_details.containers.container_details[0].path[0].forEach(
+          row => {
+            locations.push(row);
+          },
+        );
+        myPath = locations;
+      }
       const polyline = order.order_details.polyline[0];
       const myPathArray = [];
-
       for (let mp = 0; mp < myPath.length; mp += 1) {
         if (myPath.length) {
           const cordinate = myPath[mp].coordinates.split(',');

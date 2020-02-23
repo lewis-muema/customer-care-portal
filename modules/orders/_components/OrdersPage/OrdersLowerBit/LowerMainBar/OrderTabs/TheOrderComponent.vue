@@ -92,7 +92,26 @@
 
         <tr>
           <td>Delivery Locations</td>
-          <td>{{ moreData.way_points }}</td>
+          <td>
+            <span class="active-text">{{
+              freightOrder
+                ? `(${orderDetails.order_details.way_points}) Destination: `
+                : ''
+            }}</span>
+            <span>{{
+              freightOrder
+                ? orderDetails.paths[this.orderDetails.paths.length - 2].name
+                : orderDetails.order_details.way_points
+            }}</span>
+            <span class="active-text">{{
+              freightOrder ? '; EC return: ' : ''
+            }}</span>
+            <span>{{
+              freightOrder
+                ? orderDetails.paths[this.orderDetails.paths.length - 1].name
+                : ''
+            }}</span>
+          </td>
         </tr>
         <tr>
           <td>Rider amount</td>
@@ -225,6 +244,12 @@ export default {
       const loaders = this.order.order_details.no_of_loaders;
       return Number(loaders) === 0 ? '-' : loaders;
     },
+    freightOrder() {
+      if (this.freightLabel(this.orderDetails) === '-C') {
+        return true;
+      }
+      return false;
+    },
   },
   mounted() {
     this.riderDetails = this.orderDetails.rider_details;
@@ -238,6 +263,7 @@ export default {
       this.paymentDetails.fixed_cost,
       this.paymentDetails.customer_min_amount,
       this.moreData.confirm_status,
+      this.orderDetails,
     );
   },
   methods: {
@@ -270,3 +296,8 @@ export default {
   },
 };
 </script>
+<style>
+.active-text {
+  color: #1b7fc3;
+}
+</style>

@@ -31,7 +31,6 @@ export default {
   },
   data() {
     return {
-      orderNo: this.orderno,
       deliveryLogs: this.order.deliveryLogs,
     };
   },
