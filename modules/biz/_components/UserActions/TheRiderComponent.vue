@@ -68,8 +68,8 @@ export default {
     ...mapActions({
       perform_user_action: 'perform_user_action',
     }),
-    searchedRider(riderID) {
-      return (this.rider = riderID);
+    searchedRider(riderData) {
+      return (this.rider = riderData.riderID);
     },
     async allocateRider() {
       if (this.rider === null) {

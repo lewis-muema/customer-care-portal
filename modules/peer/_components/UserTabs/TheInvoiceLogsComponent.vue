@@ -37,7 +37,7 @@
             <td>{{ invoice.invoice_number }}</td>
             <td>
               {{
-                getFormattedDate(invoice.invoice_date, 'DD/MM/YYYY hh.mm a ')
+                formatInvoiceTime(invoice.invoice_date, 'DD/MM/YYYY hh.mm a ')
               }}
             </td>
             <td>{{ currency }} {{ invoice.invoice_amount }}</td>
@@ -92,7 +92,7 @@ export default {
         endpoint: 'sendy/invoice_logs',
         apiKey: true,
         params: {
-          individualType: 'cop',
+          individualType: 'peer',
           individualId: this.user,
         },
       };
@@ -106,7 +106,6 @@ export default {
           this.fetch_invoice_logs = false;
         }
 
-        this.fetch_invoice_logs = false;
         return (this.invoice = res.data);
       } catch (error) {
         this.fetch_invoice_logs = 'fail';
