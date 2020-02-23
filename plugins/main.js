@@ -3,8 +3,6 @@ import moment from 'moment';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import config from '~/config/configs';
 
-const momentTimezone = require('moment-timezone');
-
 Vue.mixin({
   data() {
     return {
@@ -73,9 +71,6 @@ Vue.mixin({
     userData() {
       return this.session.payload.data;
     },
-    timezone() {
-      return momentTimezone.tz.guess();
-    },
   },
   methods: {
     ...mapMutations({
@@ -132,19 +127,8 @@ Vue.mixin({
       const dt = moment(date).format(requiredFormat);
       return dt;
     },
-    convertToUTC(date) {
-      const utcDate = moment.utc(date);
-      return utcDate;
-    },
-    convertToLocalTime(UTCDate) {
-      const localTime = moment(UTCDate)
-        .local()
-        .format('YYYY-MM-DD HH:mm:ss');
-      return localTime;
-    },
     getFormattedDate(date, requiredFormat) {
-      const UTCDate = this.convertToUTC(date);
-      const dt1 = this.convertToLocalTime(UTCDate);
+      const dt1 = moment(date, 'YYYY-MM-DD HH:mm:ss');
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
