@@ -143,13 +143,16 @@ export default {
         orderStatus,
       );
       pushobj.rider_name = this.order_push.rider_name;
-      pushobj.time_of_delivery = this.order_push.date_time;
-      pushobj.time_placed = this.order_push.date_time;
+      pushobj.time_of_delivery = this.order_push.date_time.includes('.')
+        ? this.order_push.date_time.split('.')[0]
+        : this.order_push.date_time;
+      pushobj.time_placed = this.order_push.date_time.includes('.')
+        ? this.order_push.date_time.split('.')[0]
+        : this.order_push.date_time;
       pushobj.to_name = this.order_push.path[1].name;
       pushobj.vendor_type_id = this.order_push.vendor_type;
       pushobj.orderCountryCode = this.order_push.country_codes;
       pushobj.push_order = true;
-
       this.pushes.push(pushobj);
       this.handlePush(pushobj);
     },
