@@ -7,9 +7,10 @@
     >
       <div :class="`col-md-12 user-search`">
         <TheSearchRiderComponent
-          @riderID="searchedRider"
+          @riderData="searchedRider"
           :category="placehoder"
           :arr="array"
+          :rider-key="0"
         />
         <div :class="`invalid ${hide}`">
           Please select a rider
