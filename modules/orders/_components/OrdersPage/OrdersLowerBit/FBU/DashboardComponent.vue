@@ -39,7 +39,6 @@
       /></span>
     </div>
     <div v-else>
-      <!-- <span class="badge badge-pill badge-primary rounded">Primary</span> -->
       <span class=""
         ><TheLowerSlideComponent :orderno="orderno" :rates="conversionRates"
       /></span>
@@ -68,7 +67,6 @@ export default {
       order: null,
       errors: [],
       conversionRates: [],
-      // showTab: `total_${order.order_details.order_no}`,
       show: false,
       active: false,
       activetab: null,
