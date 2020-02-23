@@ -263,6 +263,7 @@ export default {
           this.allocateOrder(data.data);
         } else {
           this.loading = false;
+          this.updateClass('danger');
           this.updateErrors([
             `Failed to reallocate rider, ${data.data.message}`,
           ]);
@@ -295,6 +296,7 @@ export default {
         const data = await this.allocate_order(payload);
         this.loading = false;
         if (!data.data.status) {
+          this.updateClass('danger');
           this.updateErrors([`Failed to allocate order, ${data.data.reason}`]);
           setTimeout(() => {
             this.updateErrors([]);
