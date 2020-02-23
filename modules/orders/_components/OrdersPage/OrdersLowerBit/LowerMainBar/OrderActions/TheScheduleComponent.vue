@@ -102,7 +102,7 @@ export default {
         params: {
           order_no: this.orderNo,
           action_id: 6,
-          date_time: this.convertToUTC(this.time),
+          date_time: this.time,
         },
       };
       try {
