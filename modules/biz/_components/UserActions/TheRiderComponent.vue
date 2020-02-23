@@ -45,7 +45,6 @@ export default {
       rider: null,
       submitted: false,
       hide: 'hide',
-      array: {},
     };
   },
   validations: {

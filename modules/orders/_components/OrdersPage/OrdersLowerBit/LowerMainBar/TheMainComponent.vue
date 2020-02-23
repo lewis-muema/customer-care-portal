@@ -1,5 +1,8 @@
 <template>
-  <span>
+  <span v-if="freightContainer">
+    <TheOrderDetailsComponent :order="order" :rates="conversionRates" />
+  </span>
+  <span v-else>
     <TheOrderActionsComponent :order="order" :rates="conversionRates" />
     <TheOrderDetailsComponent :order="order" :rates="conversionRates" />
   </span>
@@ -32,6 +35,16 @@ export default {
     ...mapGetters({
       getExchangeRates: 'getExchangeRates',
     }),
+    freightContainer() {
+      if (
+        Object.prototype.hasOwnProperty.call(this.order, 'freight_details') &&
+        this.order.order_details.parent_order_no !==
+          this.order.order_details.order_no
+      ) {
+        return true;
+      }
+      return false;
+    },
   },
   watch: {
     getExchangeRates(value) {
