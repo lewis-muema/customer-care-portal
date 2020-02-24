@@ -1,8 +1,5 @@
 <template>
   <ul class="timeline timeline-inverse" style="margin-top:35px;">
-    {{
-      status
-    }}
     <li v-for="deliveryLog in order.delivery_logs" :key="deliveryLog.index">
       <i
         :class="
