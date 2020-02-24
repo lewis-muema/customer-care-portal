@@ -23,6 +23,17 @@
           >Statement</a
         >
       </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          :id="`invoice_${userID}`"
+          data-toggle="tab"
+          role="tab"
+          aria-selected="false"
+          @click="viewTab('invoice', userID)"
+          >Invoice</a
+        >
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
@@ -46,6 +57,14 @@
             :currency="currency"
           />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`invoice_${userID}`"
+          role="tabpanel"
+          v-if="showTab === `invoice_${userID}`"
+        >
+          <TheInvoiceLogsComponent :user="userID" :currency="currency" />
+        </div>
       </div>
     </div>
   </div>
@@ -56,6 +75,7 @@ export default {
   components: {
     TheDeliveriesComponent: () => import('./UserTabs/TheDeliveriesComponent'),
     TheStatementComponent: () => import('./UserTabs/TheStatementComponent'),
+    TheInvoiceLogsComponent: () => import('./UserTabs/TheInvoiceLogsComponent'),
   },
   props: {
     user: {

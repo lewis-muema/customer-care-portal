@@ -1,5 +1,8 @@
 <template>
   <ul class="timeline timeline-inverse" style="margin-top:35px;">
+    {{
+      status
+    }}
     <li v-for="deliveryLog in order.delivery_logs" :key="deliveryLog.index">
       <i
         :class="
@@ -16,9 +19,7 @@
         <h3 class="timeline-header no-border">
           {{ deliveryLog.description }}
           <span v-if="deliveryLog.log_type === 4 && isSendyStaff(signedBy)"
-            ><strong
-              >( Completion done from CC portal by {{ signedBy }})</strong
-            ></span
+            >( Completion done from CC portal by )</span
           >
         </h3>
       </div>

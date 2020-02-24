@@ -22,6 +22,7 @@ export default {
       pushes: [],
       orderNo: null,
       destination: null,
+      cityname: '',
     };
     /**
      * Function for debugging rabbitMQ
@@ -45,6 +46,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      getcitydetails: 'getCity',
+    }),
     /**
      * This the callback called after the websocket connection to rabbitMQ has been established
      * which then subscribes to the exchange for order pushes.
@@ -106,7 +110,7 @@ export default {
      * the exchange. It then runs a check for the status of the order and if it exists on pouchdb then either storing or
      * updating it on the database
      */
-    onmessage() {
+    async onmessage() {
       this.order_push = this.order_body.result[0];
       this.orderNo = this.order_push.order_no;
       const ordernumber = this.order_push.order_no;
@@ -122,8 +126,8 @@ export default {
       const orderStatus = this.determineOrderStatus(this.order_push);
       this.determinePaymentMethod(this.cashStatus);
       this.deteremineOrderType(this.priceType);
+      await this.getCity(this.order_push.order_details.values.city_id);
       const pushobj = new Object();
-      pushobj.city = this.order_push.order_details.values.city_id;
       pushobj.client_name = this.order_push.user_name;
       pushobj.distance_read = this.order_push.order_details.values.distance_read;
       pushobj.from_name = this.order_push.path[0].name;
@@ -143,19 +147,35 @@ export default {
         orderStatus,
       );
       pushobj.rider_name = this.order_push.rider_name;
-      pushobj.time_of_delivery = this.order_push.date_time;
-      pushobj.time_placed = this.order_push.date_time;
+      pushobj.time_of_delivery = this.order_push.date_time.includes('.')
+        ? this.order_push.date_time.split('.')[0]
+        : this.order_push.date_time;
+      pushobj.time_placed = this.order_push.date_time.includes('.')
+        ? this.order_push.date_time.split('.')[0]
+        : this.order_push.date_time;
       pushobj.to_name = this.order_push.path[1].name;
       pushobj.vendor_type_id = this.order_push.vendor_type;
       pushobj.orderCountryCode = this.order_push.country_codes;
       pushobj.push_order = true;
-
-      this.pushes.push(pushobj);
+      pushobj.city_name = this.cityname;
       this.handlePush(pushobj);
     },
 
     handlePush(pushobj) {
       this.$emit('pushedSomething', pushobj);
+    },
+    async getCity(city_id) {
+      if (this.cityname.length <= 1) {
+        try {
+          const res = await this.getcitydetails(city_id);
+          this.cityname = res.city_name;
+          return this.cityname;
+        } catch (error) {
+          error;
+        }
+      } else {
+        return this.cityname;
+      }
     },
 
     deteremineOrderType(priceType) {

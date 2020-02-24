@@ -14,16 +14,17 @@
       <div :class="`col-md-4 user-search user-input`" v-if="!isTransferOrder">
         <label>Account to Pay</label>
         <TheSearchRiderComponent
-          @riderID="searchedRider"
+          @riderData="searchedRider"
           :category="category"
           :arr="array"
+          :rider-key="0"
         />
         <div :class="`${emptyClass} ${hid}`">
           Account to pay is required
         </div>
       </div>
       <div class="form-group col-md-4 bill-div user-input">
-        <label>Base Amount</label>
+        <label>Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ currency }}</span>
@@ -33,7 +34,7 @@
               type="number"
               v-model="amount"
               name="amount"
-              placeholder="Amount without VAT"
+              placeholder="Amount"
               class="form-control"
               :max="max_amount"
               :disabled="billingStatus()"
@@ -123,8 +124,26 @@
         <label>Account Details to Transfer</label>
         <TheSearchUserComponent @userID="searchedUser" :user="userType" />
       </div>
+      <div class="col-md-12 vat-check">
+        <div class="form-group col-md-3 bill-check">
+          <input
+            value="1"
+            name="charge_biz_vat"
+            id="charge_biz_vat"
+            type="checkbox"
+            class=""
+            @click="check($event)"
+            v-model="isVAT"
+            checked
+          />
+          <label for="" class="charge_vat--label">Charge VAT</label>
+        </div>
+      </div>
       <div class="form-group  col-md-12 bill-peer">
-        <button class="btn btn-primary action-button">
+        <button
+          class="btn btn-primary action-button"
+          :disabled="checkSubmitStatus()"
+        >
           Bill Account
         </button>
       </div>
@@ -205,6 +224,8 @@ export default {
         phone_no: '',
         rider_id: 0,
       },
+      isVAT: true,
+      submit_status: false,
     };
   },
   validations: {
@@ -273,8 +294,8 @@ export default {
         return (this.checked = e.target.value);
       }
     },
-    searchedRider(riderID) {
-      return (this.rider = riderID);
+    searchedRider(riderData) {
+      return (this.rider = riderData.riderID);
     },
     searchedUser(userID) {
       return (this.accountID = userID);
@@ -326,11 +347,19 @@ export default {
             transaction_id: this.transactionID,
             is_peer,
             creditor_id: creditor_details,
+            is_VAT: this.isVAT,
           },
           request_id: this.requestID,
           action_user: this.actionUser,
         },
       };
+
+      this.submit_status = true;
+
+      setTimeout(() => {
+        this.submit_status = false;
+      }, 5000);
+
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
@@ -346,6 +375,9 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    checkSubmitStatus() {
+      return this.submit_status;
     },
     handleUserData() {
       if (this.user.payments.length > 0) {
@@ -455,5 +487,11 @@ export default {
 }
 .info-alert {
   color: #dd4b39 !important;
+}
+.charge_vat--label {
+  margin: 0 4px 0;
+}
+.vat-check {
+  padding-left: 0;
 }
 </style>

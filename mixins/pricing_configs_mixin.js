@@ -11,6 +11,9 @@ const PricingConfigsMxn = {
     return {
       copId: '',
       adminId: '',
+      pacInput: '',
+      pacInput1: '',
+      pacInput2: '',
       defaultCurrency: '',
       vendorTypes: [],
       tableData: [],
@@ -125,30 +128,33 @@ const PricingConfigsMxn = {
     },
     addRow(model) {
       if (model === 'Distance') {
+        this.pacInput = '';
         const distancePricingRow = {
           city: '',
           name: '',
-          base_cost: '280',
-          base_km: '20',
-          cost_per_km_above_base_km: '2160',
-          additional_location_cost: '10800',
-          waiting_time_cost_per_min: '18000',
-          loader_cost: '18000',
-          service_fee: '20',
-          insurance: '20',
-          client_fee: '2000',
-          cancellation_fee: '40000',
+          base_cost: '',
+          base_km: '',
+          cost_per_km_above_base_km: '',
+          additional_location_cost: '',
+          waiting_time_cost_per_min: '',
+          loader_cost: '',
+          service_fee: '',
+          insurance: '',
+          client_fee: '',
+          cancellation_fee: '',
         };
         this.tableData.push(distancePricingRow);
       } else if (model === 'Location') {
+        this.pacInput1 = '';
+        this.pacInput2 = '';
         const locationPricingRow = {
-          id: 10,
+          id: 1,
           name: '',
           cop_id: 1,
-          cop_name: 'Safaricom',
+          cop_name: '',
           currency: 'KES',
           admin_id: 1,
-          service_fee: 1200,
+          service_fee: 0,
           from: '',
           from_location: {
             type: 'Point',
@@ -159,10 +165,10 @@ const PricingConfigsMxn = {
             coordinates: [39.671947, -4.056442],
           },
           to: '',
-          status: 'Active',
+          status: '',
           city: '',
-          order_amount: 23000,
-          rider_amount: 21400,
+          order_amount: 0,
+          rider_amount: 0,
         };
         this.tableData.push(locationPricingRow);
       }

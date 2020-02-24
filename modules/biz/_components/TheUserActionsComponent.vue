@@ -140,6 +140,21 @@
             Approvals
           </a>
         </li>
+        <li
+          v-if="permissions.approve_offline_orders"
+          class="nav-item invoice-item"
+        >
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('offline_orders', copID)"
+            :id="`offline_orders_${copID}`"
+          >
+            <span class="fa fa-fw fa-toggle-off"></span>
+            Offline Orders
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -284,6 +299,18 @@
               :currency="currency"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`offline_orders_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `offline_orders_${copID}`"
+          >
+            <TheOfflineOrdersComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -313,6 +340,8 @@ export default {
       import('./UserActions/TheCustomInvoiceComponent'),
     TheReverseInvoiceComponent: () =>
       import('./UserActions/TheReverseInvoiceComponent'),
+    TheOfflineOrdersComponent: () =>
+      import('./UserActions/TheOfflineOrdersComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
