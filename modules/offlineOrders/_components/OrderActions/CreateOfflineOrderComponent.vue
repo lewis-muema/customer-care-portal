@@ -1,6 +1,6 @@
 <template>
   <div class="col-md-12">
-    <div class="box box-primary user-main">
+    <div class="box box-primary user-main offline--container">
       <form style="padding:30px;">
         <div class="form-group col-md-6">
           <label for="destination">Destination</label>
