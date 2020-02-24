@@ -14,12 +14,18 @@
         <div class="col-md-6">
           <h5>Signature</h5>
           <div class="signature-image">
-            <img
-              class="signature-img"
-              :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`,              
-              "
-            />
+            <span v-if="isSendyStaff(img.name)" class="signature-text">
+              <br />
+              <h5>Order completed from cc portal</h5>
+            </span>
+            <span v-else>
+              <img
+                class="signature-img"
+                :src="
+                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`
+                "
+              />
+            </span>
           </div>
         </div>
         <div class="col-md-4">
@@ -39,7 +45,7 @@
               :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
               :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`,              
+                  `${s3Path}${image}`,              
               "
             />
           </div>
@@ -142,5 +148,13 @@ export default {
 .holder {
   background: #f8f8f8;
   padding: 7px;
+}
+.signature-text {
+  text-align: center;
+}
+.signature-text h5 {
+  margin-top: 34px;
+  font-size: 13px;
+  font-weight: 700;
 }
 </style>
