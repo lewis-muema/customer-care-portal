@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div data-v-abab5b8c="" class="form-group col-md-6 bill-check">
+      <div class="form-group col-md-6 bill-check">
         <input
           type="radio"
           v-model="dnotesRequired"
@@ -37,7 +37,7 @@
             'is-invalid': submitted && $v.dnotesRequired.$error,
           }"
         />
-        <label data-v-abab5b8c="" for="" class="charge_commission--label">
+        <label class="charge_commission--label">
           &nbsp; Requires Deivery Notes</label
         >
         <div
@@ -47,10 +47,10 @@
           Delivery Notes option is required
         </div>
       </div>
-      <div data-v-abab5b8c="" class="form-group col-md-6 bill-check">
+      <div class="form-group col-md-6 bill-check">
         <input type="radio" v-model="dnotesRequired" value="no" />
-        <label data-v-abab5b8c="" for="" class="charge_commission--label">
-          &nbsp;Does not require Deivery Notes</label
+        <label class="charge_commission--label">
+          &nbsp;Does not require Delivery Notes</label
         >
       </div>
       <div v-if="submitted && dnotesRequired === null" class="invalid-feedback">
