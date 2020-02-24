@@ -38,6 +38,7 @@ export default {
     freightContainer() {
       if (
         Object.prototype.hasOwnProperty.call(this.order, 'freight_details') &&
+        this.order.freight_details &&
         this.order.order_details.parent_order_no !==
           this.order.order_details.order_no
       ) {
