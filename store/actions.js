@@ -111,6 +111,38 @@ export default {
     }
   },
   // eslint-disable-next-line require-await
+  async log_cc_action({ rootState, dispatch, commit, state }, payload) {
+    const customConfig = state.config;
+    const userData = state.userData;
+
+    const url = `${customConfig.ORDERS_APP}log_cc_action`;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const params = {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    payload.channel = 'customer_support_peer_biz';
+    payload.data_set = 'cc_actions';
+    payload.action_id = 23;
+    payload._user_email = userData.payload.data.email;
+    payload._user_id = userData.payload.data.admin_id;
+    payload.action_user = userData.payload.data.name;
+
+    const values = JSON.stringify(payload);
+
+    try {
+      const response = await axios.post(`${url}`, values, params);
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      return error.response;
+    }
+  },
+  // eslint-disable-next-line require-await
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
     const apiKey = this.$env.HELP_SCOUT_API_KEY;

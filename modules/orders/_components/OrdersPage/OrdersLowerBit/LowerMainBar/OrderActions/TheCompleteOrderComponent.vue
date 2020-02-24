@@ -24,7 +24,43 @@
           Order Completion Reason is required
         </div>
       </div>
-      <div class="form-group col-md-12" :id="`delivery_container_${orderNo}`">
+
+      <div data-v-abab5b8c="" class="form-group col-md-6 bill-check">
+        <input
+          type="radio"
+          v-model="dnotesRequired"
+          :id="`dnotesRequired_true_${orderNo}`"
+          name="dnotesRequired"
+          class=" radio form-control"
+          value="yes"
+          :class="{
+            'is-invalid': submitted && $v.dnotesRequired.$error,
+          }"
+        />
+        <label data-v-abab5b8c="" for="" class="charge_commission--label">
+          &nbsp; Requires Deivery Notes</label
+        >
+        <div
+          v-if="submitted && !$v.dnotesRequired.required"
+          class="invalid-feedback"
+        >
+          Delivery Notes option is required
+        </div>
+      </div>
+      <div data-v-abab5b8c="" class="form-group col-md-6 bill-check">
+        <input type="radio" v-model="dnotesRequired" value="no" />
+        <label data-v-abab5b8c="" for="" class="charge_commission--label">
+          &nbsp;Does not require Deivery Notes</label
+        >
+      </div>
+      <div v-if="submitted && dnotesRequired === null" class="invalid-feedback">
+        dnotesRequired required
+      </div>
+      <div
+        class="form-group col-md-12"
+        :id="`delivery_container_${orderNo}`"
+        v-if="dnotesRequired === 'yes'"
+      >
         <label class="col-md-12 uploads">Submit Delivery Notes</label>
         <div
           class="upload-container col-md-6"
@@ -33,7 +69,8 @@
           <div
             class="scan-container"
             :class="{
-              'dnotes-is-invalid': submitted && images.length === 0,
+              'dnotes-is-invalid':
+                submitted && dnotesRequired === 'yes' && images.length === 0,
             }"
           >
             <label class="fileContainer">
@@ -58,7 +95,6 @@
             :key="index"
             class="col-md-3 fileContainer"
           >
-            <!-- <img :src="item" alt="image" class="preview" /> -->
             <img
               class="signature-img-notes preview"
               :id="`${item}`"
@@ -84,7 +120,7 @@
 import axios from 'axios';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
-//
+
 export default {
   name: 'TheCompleteOrderComponent',
   components: {
@@ -109,10 +145,12 @@ export default {
       dnotes: [],
       url: null,
       modalImage: '',
+      dnotesRequired: null,
     };
   },
   validations: {
     reason: { required },
+    dnotesRequired: { required },
   },
   computed: {
     ...mapState(['userData', 'config']),
@@ -130,6 +168,7 @@ export default {
     }),
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
+      log_cc_action: 'log_cc_action',
     }),
     triggerDnotesModal(image, e) {
       this.modalImage = image;
@@ -193,7 +232,6 @@ export default {
       };
       try {
         await axios.post(url, formData, config).then(response => {
-          console.log('response images', response);
           if (response.status !== 204) {
             notification.push('Failed to upload dnotes');
             actionClass = 'danger';
@@ -202,7 +240,6 @@ export default {
           }
         });
       } catch (error) {
-        console.log('error', error.message);
         notification.push('Failed to upload dnotes');
         actionClass = 'danger';
       }
@@ -221,7 +258,8 @@ export default {
         return;
       }
       this.loading = true;
-      const uploadDnotes = await this.uploadToS3();
+      const uploadDnotes =
+        this.dnotesRequired === 'yes' ? await this.uploadToS3() : true;
       if (!uploadDnotes) {
         return;
       }
@@ -229,7 +267,6 @@ export default {
       if (!notify) {
         return;
       }
-
       if (typeof notify !== 'undefined' && notify.status) {
         const payload = {
           app: 'ORDERS_APP',
@@ -243,6 +280,9 @@ export default {
         };
         try {
           const data = await this.perform_order_action(payload);
+          if (data.status) {
+            const log = await this.logAction();
+          }
           notification.push(data.reason);
           actionClass = this.display_order_action_notification(data.status);
         } catch (error) {
@@ -255,7 +295,14 @@ export default {
         this.updateErrors(notification);
       }
     },
-
+    async logAction() {
+      const logspayload = {
+        order_no: this.orderNo,
+        reason: this.reason,
+      };
+      const data = await this.log_cc_action(logspayload);
+      return data.status;
+    },
     async notifyOrdersApp() {
       const notification = [];
       let actionClass = '';
@@ -292,6 +339,9 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    setDnoteRequirements(status) {
+      this.dnotesRequired = status;
     },
   },
 };
@@ -386,5 +436,11 @@ a {
 }
 .preview {
   max-height: 110px;
+}
+.form-inline .radio {
+  width: 4%;
+}
+.radio:focus {
+  border: 2px solid red;
 }
 </style>

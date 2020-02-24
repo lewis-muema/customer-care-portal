@@ -15,12 +15,19 @@
         </span>
         <h3 class="timeline-header no-border">
           {{ deliveryLog.description }}
+          <span v-if="deliveryLog.log_type === 4 && isSendyStaff(signedBy)"
+            ><strong
+              >( Completion done from CC portal by {{ signedBy }})</strong
+            ></span
+          >
         </h3>
       </div>
     </li>
   </ul>
 </template>
 <script>
+import { mapGetters, mapState } from 'vuex';
+
 export default {
   name: 'TheLogsComponent',
   props: {
@@ -32,8 +39,22 @@ export default {
   data() {
     return {
       orderNo: this.orderno,
-      deliveryLogs: this.order.deliveryLogs,
+      deliveryLogs: this.order.delivery_logs,
+      status: this.order.order_details.order_status,
     };
+  },
+  computed: {
+    ...mapState(['userData']),
+    signedBy() {
+      const deliveryArray =
+        this.status === 'delivered'
+          ? this.order.delivery_details.delivery_images
+          : null;
+      // eslint-disable-next-line prettier/prettier
+      const lastArray = deliveryArray !== null ?deliveryArray.slice(-1)[0] : null;
+
+      return lastArray !== null ? lastArray.name : null;
+    },
   },
 };
 </script>
