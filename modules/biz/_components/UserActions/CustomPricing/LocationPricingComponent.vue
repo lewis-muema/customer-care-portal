@@ -157,6 +157,7 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
+import _ from 'lodash';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import PreviewLocationPricingComponent from './PreviewLocationPricingComponent.vue';
 
@@ -236,13 +237,9 @@ export default {
   },
   watch: {
     pacInput1(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+      if (val && val.length > 2) {
+        this.search(val);
+      }
     },
     pacInput2(val) {
       axios
@@ -337,6 +334,16 @@ export default {
         type: 'Click',
       });
     },
+    // eslint-disable-next-line func-names
+    search: _.throttle(function(val) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.suggestions = response.data.predictions;
+        });
+    }, 2000),
   },
 };
 </script>
