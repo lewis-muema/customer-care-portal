@@ -59,7 +59,7 @@ module.exports = {
       },
       {
         src:
-          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry,places',
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyAB963lJdUXP05F3DtURdwAZpuwpjOoS6w&libraries=geometry,places',
         type: 'text/javascript',
       },
       {
