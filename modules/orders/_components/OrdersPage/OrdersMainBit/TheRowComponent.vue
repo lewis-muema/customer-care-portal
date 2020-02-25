@@ -126,7 +126,18 @@
           >
             <i class="fa fa-info"></i>
           </span>
-          <span title="showCity(order.city)" class="badge bg-aqua showCity">
+          <span
+            v-if="order.push_order"
+            title="showCity(order.city)"
+            class="badge bg-aqua showCity"
+          >
+            {{ order.city_name }}
+          </span>
+          <span
+            v-else
+            title="showCity(order.city)"
+            class="badge bg-aqua showCity"
+          >
             {{ order.city.name }}
           </span>
           <span class="showCity"> &nbsp; </span>
