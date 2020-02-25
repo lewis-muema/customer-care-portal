@@ -1,274 +1,343 @@
 <template>
   <div class="row">
-    <form
-      id="reallocate-form"
-      @submit.prevent="offline_orders"
-      class="form-inline custom-biz-inline col-md-12 form-outer-online"
-    >
-      <div class="response-section" v-if="submit_status">
-        <p class="response-text" v-if="response_status === 'success'">
-          <i
-            class="fa fa-check-circle invoice-loader--align submit-success"
-          ></i>
-          Data submitted successfully
-        </p>
-        <p class="response-text" v-else>
-          <i
-            class="fa fa-exclamation-circle invoice-loader--align submit-error"
-          ></i>
-          {{ error_msg }}
-        </p>
-      </div>
-      <div class="form-group col-md-6 user-input">
-        <label class="config"> From </label>
-
-        <date-picker
-          v-model="start_date"
-          class="date-input"
-          :input-props="{
-            placeholder: 'Select start date',
-            readonly: true,
-            class: 'form-control config-input ',
-          }"
-        />
-        <div class="invoice_valid" v-if="submitted && !$v.start_date.required">
-          Start Date is required
+    <div v-if="loading_tax_rates" class="tax_loader">
+      <p>
+        Fetching VAT Tax Rates ...
+        <i class="fa fa-spinner fa-spin loader"></i>
+      </p>
+    </div>
+    <div v-else>
+      <form
+        id="reallocate-form"
+        @submit.prevent="offline_orders"
+        class="form-inline custom-biz-inline col-md-12 form-outer-online"
+      >
+        <div class="response-section" v-if="submit_status">
+          <p class="response-text" v-if="response_status === 'success'">
+            <i
+              class="fa fa-check-circle invoice-loader--align submit-success"
+            ></i>
+            Data submitted successfully
+          </p>
+          <p class="response-text" v-else>
+            <i
+              class="fa fa-exclamation-circle invoice-loader--align submit-error"
+            ></i>
+            {{ error_msg }}
+          </p>
         </div>
-      </div>
+        <div class="form-group col-md-6 user-input start-date--align">
+          <label class="config"> From </label>
 
-      <div class="form-group col-md-6 user-input">
-        <label class="config"> To</label>
-
-        <date-picker
-          v-model="end_date"
-          class="date-input"
-          :input-props="{
-            placeholder: 'Select End date',
-            readonly: true,
-            class: 'form-control config-input ',
-          }"
-        />
-        <div class="invoice_valid" v-if="submitted && !$v.end_date.required">
-          End Date is required
-        </div>
-      </div>
-
-      <div class="row col-md-12">
-        <div
-          class="form-group col-md-3 bill-check bill-partners-align input-margin"
-        >
-          <input
-            value="1"
-            name="charge_biz_commission"
-            id="charge_biz_commission>"
-            type="checkbox"
-            class="bill-partners-check"
-            @click="check($event)"
-            v-model="checked"
-            checked
+          <date-picker
+            v-model="start_date"
+            class="date-input"
+            :input-props="{
+              placeholder: 'Select start date',
+              readonly: true,
+              class: 'form-control config-input ',
+            }"
           />
-          <label class="charge_commission--label"> Pay Partners </label>
-        </div>
-      </div>
-      <div class="col-md-12 input-margin" v-if="checked">
-        <div class="body-box col-md-12 table-content rider-data-inline">
-          <table class="table table-bordered table-background">
-            <thead>
-              <tr class="table-header">
-                <td>Partner Account</td>
-                <td>Total Amount Earned</td>
-                <td class="table-resize">No.of days worked</td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(element, key) in elements" :key="key">
-                <td class="search-rider-input">
-                  <TheSearchRiderComponent
-                    :category="category"
-                    v-model="element.rider_id"
-                    :arr="array"
-                    @riderData="searchedRider"
-                    :rider-key="key"
-                  />
-                </td>
-                <td>
-                  <div class="input-group">
-                    <div class="input-group-icon">
-                      <span> {{ currency }}</span>
-                    </div>
-                    <div class="amount-input">
-                      <input
-                        type="number"
-                        v-model="element.amount"
-                        name="amount"
-                        placeholder="Amount"
-                        class="form-control"
-                      />
-                    </div>
-                  </div>
-                </td>
-
-                <td>
-                  <input
-                    v-model="element.days"
-                    class="form-control"
-                    type="number"
-                    name="days"
-                    placeholder="Days"
-                  />
-                </td>
-                <td>
-                  <div class="" v-if="key > 0" @click="removeNewRow(key)">
-                    x
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="row col-md-12 extra-content">
           <div
-            class="form-group col-md-3 bill-check add-element-align"
-            @click="addElement"
+            class="invoice_valid"
+            v-if="submitted && !$v.start_date.required"
           >
-            + &nbsp;Add a new row
-          </div>
-
-          <div class=" row col-md-9 checkbox-align">
-            <div class="form-group col-md-4 bill-check bill-check--padding">
-              <input
-                value="1"
-                name="charge_comission"
-                id="charge_commision"
-                type="checkbox"
-                class="bill-partners-check"
-                @click="check($event)"
-                v-model="charge_commission"
-                checked
-              />
-              <label for="" class="charge_vat--label">Charge Commission</label>
-            </div>
-
-            <div
-              class="form-group col-md-4  charge-commision-input"
-              v-if="charge_commission"
-            >
-              <input
-                class="form-control commision-rate"
-                type="number"
-                name="commission_rate"
-                placeholder="Rate"
-                v-model="commission_rate"
-                min="1"
-                max="100"
-              />
-              <label for="" class="charge_rate--label">%</label>
-            </div>
+            Start Date is required
           </div>
         </div>
-      </div>
 
-      <div class="row col-md-12 lower-section">
-        <div class="col-md-6">
-          <label class="config notes-padding"> Notes </label>
-          <input
-            class="form-control notes-input"
-            type="text"
-            name="notes"
-            placeholder="Notes"
-            v-model="notes"
+        <div class="form-group col-md-6 user-input">
+          <label class="config"> To</label>
+
+          <date-picker
+            v-model="end_date"
+            class="date-input"
+            :input-props="{
+              placeholder: 'Select End date',
+              readonly: true,
+              class: 'form-control config-input ',
+            }"
           />
-          <div class="invoice_valid" v-if="submitted && !$v.notes.required">
-            Notes is required
+          <div class="invoice_valid" v-if="submitted && !$v.end_date.required">
+            End Date is required
           </div>
         </div>
-        <div class="col-md-6 amount-calculator">
-          <div class="">
-            <table
-              class="table table-bordered table-background amount-calculator-header"
-            >
+
+        <div class="row col-md-12 pay-partner--checkbox">
+          <div
+            class="form-group col-md-3 bill-check bill-partners-align input-margin"
+          >
+            <input
+              value="1"
+              name="charge_biz_commission"
+              id="charge_biz_commission>"
+              type="checkbox"
+              class="bill-partners-check"
+              @click="check($event)"
+              v-model="checked"
+              checked
+            />
+            <label class="charge_commission--label"> Pay Partners </label>
+          </div>
+        </div>
+        <div class="col-md-12 input-margin" v-if="checked">
+          <div class="body-box col-md-12 table-content rider-data-inline">
+            <table class="table table-bordered table-background">
               <thead>
-                <tr>
-                  <td>Total partner cost</td>
-                  <td>Sendy take amount</td>
+                <tr class="table-header">
+                  <td class="partner-header">Partner Account</td>
+                  <td class="amount-header">Total Amount Earned</td>
+                  <td class="days-header">No.of days worked</td>
+                  <td class="table-resize">Tonnage</td>
+                  <td class="table-resize">No.of orders</td>
+                  <td></td>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="input-amount">
-                    {{ currency }}
-                    <number
-                      ref="number1"
-                      :from="0"
-                      :to="calculatedAmount"
-                      :duration="1"
-                      :delay="1"
-                      easing="Power1.easeOut"
+                <tr v-for="(element, key) in elements" :key="key">
+                  <td class="search-rider-input">
+                    <TheSearchRiderComponent
+                      :category="category"
+                      v-model="element.rider_id"
+                      :arr="array"
+                      @riderData="searchedRider"
+                      :rider-key="key"
                     />
                   </td>
-                  <td class="input-amount">
-                    {{ currency }}
-                    <number
-                      ref="number1"
-                      :from="0"
-                      :to="sendyTakeHome"
-                      :duration="1"
-                      :delay="1"
-                      easing="Power1.easeOut"
+                  <td>
+                    <div class="input-group">
+                      <div class="input-group-icon">
+                        <span> {{ currency }}</span>
+                      </div>
+                      <div class="amount-input">
+                        <input
+                          type="number"
+                          v-model="element.amount"
+                          name="amount"
+                          placeholder="Amount"
+                          class="form-control"
+                        />
+                      </div>
+                    </div>
+                  </td>
+
+                  <td>
+                    <input
+                      v-model="element.days"
+                      class="form-control"
+                      type="number"
+                      name="days"
+                      placeholder="Days"
                     />
+                  </td>
+                  <td>
+                    <input
+                      v-model="element.tonnage"
+                      class="form-control"
+                      type="number"
+                      name="tonnage"
+                      placeholder="Tonnage"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      v-model="element.orders"
+                      class="form-control"
+                      type="number"
+                      name="orders"
+                      placeholder="Orders"
+                    />
+                  </td>
+                  <td>
+                    <div class="" v-if="key > 0" @click="removeNewRow(key)">
+                      x
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-
-          <div class="offline-billing-amount">
-            <label class="config offline-billing-label">
-              Amount to bill the customer
-            </label>
-            <input
-              class="form-control offline-billing-input"
-              type="text"
-              name="amount"
-              placeholder="Enter Amount"
-              v-model="billingAmount"
-              @keyup="dispatchbillingAmount"
-            />
+          <div class="row col-md-12 extra-content">
             <div
-              class="invoice_valid"
-              v-if="submitted && !$v.billingAmount.required"
+              class="form-group col-md-3 bill-check add-element-align"
+              @click="addElement"
             >
-              Billing Amount is required
+              + &nbsp;Add a new row
+            </div>
+
+            <div class=" row col-md-9 checkbox-align">
+              <div class="form-group col-md-4 bill-check bill-check--padding">
+                <input
+                  value="1"
+                  name="charge_comission"
+                  id="charge_commision"
+                  type="checkbox"
+                  class="bill-partners-check"
+                  @click="check($event)"
+                  v-model="charge_commission"
+                  checked
+                />
+                <label for="" class="charge_vat--label"
+                  >Charge Commission</label
+                >
+              </div>
+
+              <div
+                class="form-group col-md-4  charge-commision-input"
+                v-if="charge_commission"
+              >
+                <input
+                  class="form-control commision-rate"
+                  type="number"
+                  name="commission_rate"
+                  placeholder="Rate"
+                  v-model="commission_rate"
+                  min="1"
+                  max="100"
+                />
+                <label for="" class="charge_rate--label">%</label>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="form-group col-md-12 bill-check offline-charge-vat">
+        <div class="row col-md-12 lower-section">
+          <div class="col-md-6">
+            <label class="config notes-padding"> Notes </label>
             <input
-              value="1"
-              name="charge_vat"
-              id="charge_vat"
-              type="checkbox"
-              class="bill-partners-check"
-              v-model="charge_vat"
-              checked
+              class="form-control notes-input"
+              type="text"
+              name="notes"
+              placeholder="Notes"
+              v-model="notes"
             />
-            <label for="" class="charge_vat--label"
-              >Charge VAT on amount billed to customer</label
-            >
+            <div class="invoice_valid" v-if="submitted && !$v.notes.required">
+              Notes is required
+            </div>
+          </div>
+          <div class="col-md-6 amount-calculator">
+            <div class="">
+              <table
+                class="table table-bordered table-background amount-calculator-header"
+              >
+                <thead>
+                  <tr>
+                    <td>Total partner cost</td>
+                    <td>Sendy take amount</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="input-amount">
+                      {{ currency }}
+                      <number
+                        ref="number1"
+                        :from="0"
+                        :to="calculatedAmount"
+                        :duration="1"
+                        :delay="1"
+                        easing="Power1.easeOut"
+                      />
+                    </td>
+                    <td class="input-amount">
+                      {{ currency }}
+                      <number
+                        ref="number1"
+                        :from="0"
+                        :to="sendyTakeHome"
+                        :duration="1"
+                        :delay="1"
+                        easing="Power1.easeOut"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="offline-billing-amount">
+              <label class="config offline-billing-label">
+                Amount to bill the customer
+              </label>
+              <input
+                class="form-control offline-billing-input"
+                type="text"
+                name="amount"
+                placeholder="Enter Amount"
+                v-model="billingAmount"
+                @keyup="dispatchbillingAmount"
+              />
+              <div
+                class="invoice_valid"
+                v-if="submitted && !$v.billingAmount.required"
+              >
+                Billing Amount is required
+              </div>
+            </div>
+
+            <div class="amount-layout">
+              <table
+                class="table table-bordered table-background amount-calculator-header"
+              >
+                <thead>
+                  <tr>
+                    <td>Base Amount</td>
+                    <td>VAT</td>
+                    <td>Total Charge</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="input-amount">
+                      {{ currency }}
+                      <number
+                        ref="number1"
+                        :from="0"
+                        :to="baseAmount"
+                        :duration="1"
+                        :delay="1"
+                        easing="Power1.easeOut"
+                      />
+                    </td>
+                    <td class="input-amount">
+                      {{ currency }}
+                      <number
+                        ref="number1"
+                        :from="0"
+                        :to="vatAmount"
+                        :duration="1"
+                        :delay="1"
+                        easing="Power1.easeOut"
+                      />
+                    </td>
+                    <td class="input-amount">
+                      {{ currency }}
+                      <number
+                        ref="number1"
+                        :from="0"
+                        :to="totalAmount"
+                        :duration="1"
+                        :delay="1"
+                        easing="Power1.easeOut"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="form-group  col-md-12 config-submit offline-orders-submit">
-        <button
-          class="btn btn-primary action-button"
-          :disabled="checkSubmitStatus()"
-        >
-          Submit
-        </button>
-      </div>
-    </form>
+        <div class="form-group  col-md-12 config-submit offline-orders-submit">
+          <button
+            class="btn btn-primary action-button"
+            :disabled="checkSubmitStatus()"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -308,12 +377,14 @@ export default {
       start_date: '',
       checked: true,
       charge_commission: false,
-      charge_vat: false,
+      charge_vat: true,
       elements: [
         {
           rider_id: '',
           amount: '',
-          days: '',
+          days: '0',
+          tonnage: '0',
+          orders: '0',
         },
       ],
       category: 'Select partner account',
@@ -327,6 +398,11 @@ export default {
       response_status: true,
       error_msg: '',
       submit_state: false,
+      baseAmount: 0,
+      vatAmount: 0,
+      totalAmount: 0,
+      loading_tax_rates: true,
+      vat_rate: 0,
     };
   },
 
@@ -361,7 +437,9 @@ export default {
       deep: true,
     },
   },
-  mounted() {},
+  mounted() {
+    this.fetchTaxRates();
+  },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -370,6 +448,7 @@ export default {
     }),
     ...mapActions({
       perform_user_action: 'perform_user_action',
+      request_tax_rates: 'request_tax_rates',
     }),
 
     /* global event, fdescribe */
@@ -387,6 +466,13 @@ export default {
         }
 
         const Total = my_elements.reduce((prev, cur) => prev + cur.amount, 0);
+
+        this.totalAmount = this.billingAmount;
+
+        const vat_rate = this.vat_rate;
+
+        this.vatAmount = vat_rate * this.billingAmount;
+        this.baseAmount = (1 - vat_rate) * this.billingAmount;
 
         if (this.charge_commission) {
           const rate = parseInt(this.commission_rate, 10) / 100;
@@ -415,7 +501,13 @@ export default {
       return (this.elements[index].rider_id = riderID);
     },
     addElement() {
-      this.elements.push({ value: '', amount: '' });
+      this.elements.push({
+        value: '',
+        amount: '',
+        days: '0',
+        tonnage: '0',
+        orders: '0',
+      });
     },
     removeNewRow(index) {
       this.elements.splice(index, 1);
@@ -454,7 +546,9 @@ export default {
           this.checked &&
           (this.elements[i].rider_id === '' ||
             this.elements[i].amount === '' ||
-            this.elements[i].days === '')
+            this.elements[i].days === '' ||
+            this.elements[i].tonnage === '' ||
+            this.elements[i].order === '')
         ) {
           this.UpdateMessaging(true, 'fail', 'Please fill all entries');
         } else if (hasDuplicate) {
@@ -538,6 +632,31 @@ export default {
     },
     checkSubmitStatus() {
       return this.submit_state;
+    },
+    async fetchTaxRates() {
+      const notification = [];
+      let actionClass = '';
+      try {
+        const data = await this.request_tax_rates();
+        actionClass = this.display_order_action_notification(data.status);
+        if (data.status) {
+          const countryCode = this.user.user_details.country_code;
+          const vat_data = data.vat_rates.find(
+            position => position.country_code === countryCode,
+          );
+          if (vat_data !== undefined) {
+            this.vat_rate = vat_data.rate;
+            this.loading_tax_rates = false;
+          }
+        }
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
@@ -661,9 +780,10 @@ export default {
   margin-left: -2%;
 }
 .rider-data-inline {
-  margin-left: -2%;
+  margin-left: -8%;
   padding-right: 0;
-  max-width: 95.8% !important;
+  max-width: 126.8% !important;
+  width: 109% !important;
 }
 .table-resize {
   width: 14% !important;
@@ -672,10 +792,10 @@ export default {
   background: rgba(213, 208, 208, 0.12);
 }
 .search-rider-input {
-  width: 43%;
+  width: 38% !important;
 }
 .amount-input {
-  width: 75%;
+  width: 56% !important;
 }
 .extra-content {
   padding-right: 0;
@@ -740,5 +860,27 @@ export default {
 }
 .bill-partners-align {
   padding-bottom: 2%;
+}
+.input-amount {
+  font-size: 17px !important;
+  line-height: 17px !important;
+}
+.start-date--align {
+  margin-left: -1%;
+}
+.pay-partner--checkbox {
+  margin-left: -3%;
+}
+.partner-header {
+  width: 34% !important;
+}
+.amount-header {
+  width: 23% !important;
+}
+.days-header {
+  width: 13% !important;
+}
+.amount-layout {
+  margin-top: 7%;
 }
 </style>
