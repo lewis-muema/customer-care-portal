@@ -173,6 +173,10 @@ export default {
       const payload = {
         vehicle_details: '',
         rider_details: '',
+        user: {
+          admin_id: this.userData.payload.data.admin_id,
+          name: this.userData.payload.data.name,
+        },
       };
       if (!this.newVehicle) {
         payload.vehicle_details = this.existingVehiclePayload();
