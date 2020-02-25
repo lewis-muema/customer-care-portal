@@ -141,10 +141,10 @@
                   </td>
                   <td>
                     <input
-                      v-model="element.order"
+                      v-model="element.orders"
                       class="form-control"
                       type="number"
-                      name="order"
+                      name="orders"
                       placeholder="Orders"
                     />
                   </td>
@@ -382,9 +382,9 @@ export default {
         {
           rider_id: '',
           amount: '',
-          days: '',
-          tonnage: '',
-          order: '',
+          days: '0',
+          tonnage: '0',
+          orders: '0',
         },
       ],
       category: 'Select partner account',
@@ -501,7 +501,13 @@ export default {
       return (this.elements[index].rider_id = riderID);
     },
     addElement() {
-      this.elements.push({ value: '', amount: '' });
+      this.elements.push({
+        value: '',
+        amount: '',
+        days: '0',
+        tonnage: '0',
+        orders: '0',
+      });
     },
     removeNewRow(index) {
       this.elements.splice(index, 1);
