@@ -4,23 +4,25 @@
       <form style="padding:30px;">
         <div class="form-group col-md-6">
           <label for="destination">Destination</label>
-          <input
-            type="text"
-            class="form-control"
-            id="destination"
-            placeholder="Destination"
-            v-model="tocoordinates"
-          />
+          <vue-google-autocomplete
+            ref="destination"
+            id="map"
+            classname="form-control"
+            placeholder="Search location"
+            @placechanged="getDestinationAddressData"
+          >
+          </vue-google-autocomplete>
         </div>
         <div class="form-group col-md-6">
           <label for="pickup">Pick Up</label>
-          <input
-            type="text"
-            class="form-control"
-            id="pickup"
-            placeholder="Pick Up"
-            v-model="fromcoordinates"
-          />
+          <vue-google-autocomplete
+            ref="pickup"
+            id="map1"
+            classname="form-control"
+            placeholder="Search location"
+            @placechanged="getPickupAddressData"
+          >
+          </vue-google-autocomplete>
         </div>
         <div class="form-group col-md-6">
           <label for="vendorselect">Vendor select</label>
@@ -63,16 +65,35 @@
 // import UpdatePartnerInfoComponent from '~/modules/offlineOrders/_components/UpdatePartnerInfoComponent';
 
 import axios from 'axios';
+import VueGoogleAutocomplete from 'vue-google-autocomplete';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
   name: 'CreateOfflineOrderComponent',
+  components: { VueGoogleAutocomplete },
+  mixins: [PricingConfigsMxn],
   data() {
     return {
+      vendorid: 1,
+      destination: '',
+      pickup: '',
+      clientemail: '',
       fromcoordinates: '',
       tocoordinates: '',
-      vendorid: 1,
-      clientemail: '',
+      vendorTypes: [],
+      vendorName: '',
     };
+  },
+  computed: {
+    ...mapGetters({
+      getSessionData: 'getSession',
+    }),
+    vendor() {
+      return this.vendorTypes.find(op => {
+        return op.name === this.vendorName;
+      });
+    },
   },
   // components: {
   //   CreateOfflineOrderComponent,
@@ -82,7 +103,23 @@ export default {
   //   UpdatePartnerInfoComponent,
   // },
   mounted() {
-    this.clearErrorMessages();
+    console.log('here', this.getSessionData);
+    // const countryCode = this.user.user_details.country_code;
+    // this.fetchVendorTypes(countryCode);
+  },
+  methods: {
+    getDestinationAddressData(addressData, placeResultData, id) {
+      const latitude = addressData.latitude;
+      const longitude = addressData.longitude;
+      this.destination = [latitude, longitude];
+      console.log(this.destination);
+    },
+    getPickupAddressData(addressData, placeResultData, id) {
+      const latitude = addressData.latitude;
+      const longitude = addressData.longitude;
+      this.pickup = [latitude, longitude];
+      console.log(this.pickup);
+    },
   },
 };
 </script>
@@ -95,5 +132,9 @@ export default {
 }
 .input-group-icon {
   padding: 8px 12px;
+}
+::placeholder {
+  color: #c0c4cc;
+  font-size: 0.8em;
 }
 </style>

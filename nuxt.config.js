@@ -59,7 +59,7 @@ module.exports = {
       },
       {
         src:
-          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMADIJhz5ckM28Zt0eWKbZfQyzsHXYCI&libraries=geometry,places',
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyAB963lJdUXP05F3DtURdwAZpuwpjOoS6w&libraries=geometry,places',
         type: 'text/javascript',
       },
       {
@@ -153,6 +153,7 @@ module.exports = {
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
     { src: '~plugins/element-ui', ssr: false },
+    { src: '~plugins/map-places', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',
