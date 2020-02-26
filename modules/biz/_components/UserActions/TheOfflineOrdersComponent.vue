@@ -277,18 +277,18 @@
 
             <div class="amount-layout">
               <table
-                class="table table-bordered table-background amount-calculator-header"
+                class="table table-bordered table-background amount-calculator-header breakdown-header"
               >
                 <thead>
                   <tr>
                     <td>Base Amount</td>
-                    <td>VAT</td>
+                    <td>{{ determineVAT() }}</td>
                     <td>Total Charge</td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="input-amount">
+                    <td class="input-amount amount-breakdown">
                       {{ currency }}
                       <number
                         ref="number1"
@@ -299,7 +299,7 @@
                         easing="Power1.easeOut"
                       />
                     </td>
-                    <td class="input-amount">
+                    <td class="input-amount amount-breakdown">
                       {{ currency }}
                       <number
                         ref="number1"
@@ -310,7 +310,7 @@
                         easing="Power1.easeOut"
                       />
                     </td>
-                    <td class="input-amount">
+                    <td class="input-amount amount-breakdown">
                       {{ currency }}
                       <number
                         ref="number1"
@@ -450,6 +450,14 @@ export default {
       perform_user_action: 'perform_user_action',
       request_tax_rates: 'request_tax_rates',
     }),
+
+    determineVAT() {
+      let text = 'TAX';
+      if (this.currency === 'KES') {
+        text = 'VAT';
+      }
+      return text;
+    },
 
     /* global event, fdescribe */
     /* eslint no-restricted-globals: ["error", "event", "fdescribe"] */
@@ -864,8 +872,8 @@ export default {
   padding-bottom: 2%;
 }
 .input-amount {
-  font-size: 17px !important;
-  line-height: 17px !important;
+  font-size: 17px;
+  line-height: 17px;
 }
 .start-date--align {
   margin-left: -1%;
@@ -884,5 +892,15 @@ export default {
 }
 .amount-layout {
   margin-top: 7%;
+}
+.amount-breakdown {
+  font-size: 13px !important;
+  line-height: 3px !important;
+  font-weight: 500;
+}
+.breakdown-header {
+  background: none;
+  font-style: italic;
+  color: #3c8dbc;
 }
 </style>
