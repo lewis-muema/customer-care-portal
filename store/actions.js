@@ -777,4 +777,14 @@ export default {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
   },
+
+  async request_invoice_data({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res;
+  },
+
+  async create_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
 };
