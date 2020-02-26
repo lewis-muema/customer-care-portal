@@ -39,13 +39,8 @@ export default {
   data() {
     return {
       orderNumber: '',
-      // pickOrder: true,
-      // completeOrder: false,
-
-      // test
-
-      pickOrder: false,
-      completeOrder: true,
+      pickOrder: true,
+      completeOrder: false,
     };
   },
   computed: {
