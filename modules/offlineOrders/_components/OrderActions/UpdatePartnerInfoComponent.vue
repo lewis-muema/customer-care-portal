@@ -100,12 +100,8 @@ export default {
       insuranceAmount: 0,
       currency: '',
       vatAmount: 0,
-      // pairOrder: true,
-      // pickOrder: false,
-
-      // test
-      pairOrder: false,
-      pickOrder: true,
+      pairOrder: true,
+      pickOrder: false,
     };
   },
   computed: {

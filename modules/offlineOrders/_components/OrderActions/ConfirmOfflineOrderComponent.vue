@@ -63,12 +63,8 @@ export default {
       dropoff: '',
       currency: '',
       pricingId: '',
-      // pickOrder: false,
-      // confirmOrder: true,
-
-      // test
-      pairOrder: true,
-      confirmOrder: false,
+      pickOrder: false,
+      confirmOrder: true,
     };
   },
   computed: {
