@@ -723,7 +723,7 @@ export default {
                 customPricingDetails[i].container_pricing,
               );
             } else {
-              // locationPricing = customPricingDetails[i].container_pricing;
+              locationPricing = customPricingDetails[i].container_pricing;
             }
           }
           if (customPricingDetails[i].distance_pricing) {
