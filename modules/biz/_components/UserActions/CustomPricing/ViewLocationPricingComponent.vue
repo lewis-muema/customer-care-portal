@@ -15,6 +15,12 @@
       </el-table-column>
       <el-table-column prop="to" label="Drop off location" width="255">
       </el-table-column>
+      <el-table-column
+        prop="empty_return"
+        label="Empty return location (Freight)"
+        width="255"
+      >
+      </el-table-column>
       <el-table-column prop="name" label="Vendor type" width="130">
       </el-table-column>
       <el-table-column prop="order_amount" label="Client fee" width="130">
