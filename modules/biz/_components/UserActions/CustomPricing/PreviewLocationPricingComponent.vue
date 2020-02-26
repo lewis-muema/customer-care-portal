@@ -45,6 +45,24 @@
         </el-table-column>
         <el-table-column prop="to" label="Drop off location" width="200">
         </el-table-column>
+        <el-table-column
+          prop="empty_container_destination"
+          label="Empty container return"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="container_weight_tonnes"
+          label="Cargo Type"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="container_size_feet"
+          label="Container Size"
+          width="200"
+        >
+        </el-table-column>
         <el-table-column prop="name" label="Vendor type" width="130">
         </el-table-column>
         <el-table-column prop="order_amount" label="Client fee" width="130">
@@ -184,6 +202,7 @@ export default {
             currency: this.currency,
             admin_id: this.approver,
             location_pricing: [],
+            container_pricing: [],
           },
         };
         const locationData = {
@@ -210,9 +229,20 @@ export default {
           rider_amount: parseInt(data[i].rider_amount, 10),
         };
 
-        locationPricingObject.custom_pricing_details.location_pricing.push(
-          locationData,
-        );
+        if (data[i].empty_container_destination) {
+          locationData.empty_return_location = data[i].empty_return_location;
+          // eslint-disable-next-line prettier/prettier
+          locationData.container_weight_tonnes = data[i].container_weight_tonnes;
+          locationData.container_size_feet = data[i].container_size_feet;
+          locationData.container_errand_type = data[i].container_errand_type;
+          locationPricingObject.custom_pricing_details.container_pricing.push(
+            locationData,
+          );
+        } else {
+          locationPricingObject.custom_pricing_details.location_pricing.push(
+            locationData,
+          );
+        }
         locationPricingArray.push(locationPricingObject);
       }
       return locationPricingArray;
