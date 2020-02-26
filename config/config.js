@@ -21,6 +21,8 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricingtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
@@ -60,6 +62,8 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricingtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
@@ -99,6 +103,8 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricingtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
@@ -137,6 +143,8 @@ const config = {
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
     AUTH: 'https://auth.staging.sendyit.com/',
@@ -170,6 +178,8 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/owner/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
