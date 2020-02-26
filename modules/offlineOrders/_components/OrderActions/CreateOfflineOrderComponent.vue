@@ -112,6 +112,9 @@ export default {
       updateOrderAmount: 'setOrderAmount',
       updatePickUp: 'setPickUp',
       updateDropoff: 'setDropoff',
+      updateCurrency: 'setCurrency',
+      updatePricingId: 'setPricingId',
+      updateVat: 'setVat',
     }),
     ...mapActions({
       request_vendor_types: 'request_vendor_types',
@@ -178,11 +181,19 @@ export default {
         if (data.status) {
           const pickup = data.values.from_name;
           const dropoff = data.values.to_name;
+          const currency = data.values.currency;
+          const pricingId =
+            data.values.economy_price_tiers[0].price_tiers[0].id;
           const orderAmount =
             data.values.economy_price_tiers[0].price_tiers[0].cost;
+          const vatAmount =
+            data.values.economy_price_tiers[0].price_tiers[0].vat_amount;
           this.updateOrderAmount(orderAmount);
           this.updatePickUp(pickup);
           this.updateDropoff(dropoff);
+          this.updateCurrency(currency);
+          this.updatePricingId(pricingId);
+          this.updateVat(vatAmount);
           this.createOrder = false;
           this.confirmOrder = true;
         }

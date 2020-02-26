@@ -140,6 +140,7 @@ module.exports = {
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
     '@assets/style/pricing-config.css',
+    '@assets/style/style.css',
     'aos/dist/aos.css',
     'vue-select/dist/vue-select.css',
   ],

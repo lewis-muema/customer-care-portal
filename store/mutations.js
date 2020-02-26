@@ -130,4 +130,13 @@ export default {
   setDropoff(state, val) {
     state.dropoff = val;
   },
+  setCurrency(state, val) {
+    state.offlineOrderCurrency = val;
+  },
+  setPricingId(state, val) {
+    state.pricingId = val;
+  },
+  setVat(state, val) {
+    state.vatAmount = val;
+  },
 };

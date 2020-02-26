@@ -805,4 +805,24 @@ export default {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
+
+  async confirm_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
+
+  async pair_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
+
+  async pick_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
+
+  async complete_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
 };

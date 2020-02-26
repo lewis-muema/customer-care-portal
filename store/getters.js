@@ -117,4 +117,25 @@ export default {
   getloginErrors(state) {
     return state.loginErrors;
   },
+  getOrderAmount(state) {
+    return state.orderAmount;
+  },
+  getPickup(state) {
+    return state.pickup;
+  },
+  getDropoff(state) {
+    return state.dropoff;
+  },
+  getOrderCurrency(state) {
+    return state.offlineOrderCurrency;
+  },
+  getPricingId(state) {
+    return state.pricingId;
+  },
+  getVat(state) {
+    return state.vatAmount;
+  },
+  getOrderNumber(state) {
+    return state.orderNumber;
+  },
 };

@@ -1,50 +1,93 @@
-//Add UI to link order to partner and update order amount, commission, service
-//fee and insurance on CC portal
 <template>
   <div class="col-md-12">
-    <div class="box box-primary user-main">
+    <div v-if="pickOrder" class="box box-primary user-main">
       <form style="padding:30px;">
         <div class="form-group col-md-6">
           <label for="ordernumber">Order Number</label>
-          <input type="text" class="form-control" id="ordernumber" disabled />
+          <input
+            type="text"
+            class="form-control"
+            id="orderNumber"
+            v-model="orderNumber"
+            disabled
+          />
         </div>
         <button
-          type="submit"
-          class="btn btn-primary"
-          style="
-    margin: 0px 0px 30px 15px;"
+          type="button"
+          @click="pickOfflineOrder"
+          class="btn btn-primary offline-order--btn"
         >
           Pick-Up Order
         </button>
       </form>
     </div>
+    <div v-if="completeOrder">
+      <CompleteOfflineOrderComponent />
+    </div>
   </div>
 </template>
 <script>
-// import CreateOfflineOrderComponent from '~/modules/offlineOrders/_components/CreateOfflineOrderComponent';
-// import ConfirmOfflineOrderComponent from '~/modules/offlineOrders/_components/ConfirmOfflineOrderComponent';
-// import PickOfflineOrderComponent from '~/modules/offlineOrders/_components/PickOfflineOrderComponent';
-// import CompleteOfflineOrderComponent from '~/modules/offlineOrders/_components/CompleteOfflineOrderComponent';
-// import UpdatePartnerInfoComponent from '~/modules/offlineOrders/_components/UpdatePartnerInfoComponent';
-
 import axios from 'axios';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
+import CompleteOfflineOrderComponent from './CompleteOfflineOrderComponent';
 
 export default {
-  name: 'OfflineOrders',
+  name: 'PickOfflineOrderComponent',
+  components: {
+    CompleteOfflineOrderComponent,
+  },
   data() {
     return {
-      ordernumber: '',
+      orderNumber: '',
+      // pickOrder: true,
+      // completeOrder: false,
+
+      // test
+
+      pickOrder: false,
+      completeOrder: true,
     };
   },
-  // components: {
-  //   CreateOfflineOrderComponent,
-  //   ConfirmOfflineOrderComponent,
-  //   PickOfflineOrderComponent,
-  //   CompleteOfflineOrderComponent,
-  //   UpdatePartnerInfoComponent,
-  // },
+  computed: {
+    ...mapGetters({
+      getOrderNumber: 'getOrderNumber',
+    }),
+  },
   mounted() {
-    this.clearErrorMessages();
+    this.orderNumber = this.getOrderNumber;
+  },
+  methods: {
+    ...mapActions({
+      pick_offline_order: 'pick_offline_order',
+    }),
+    async pickOfflineOrder() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'OFFLINE_ORDERS',
+        endpoint: 'rider_app_pick_up',
+        apiKey: false,
+        params: {
+          order_no: 'CF65GL345-FGF',
+          sim_card_sn: '256700728472',
+          rider_phone: '+256700728472',
+          batch_no: '',
+        },
+      };
+      try {
+        const data = await this.pick_offline_order(payload);
+        console.log('data-ddd', data);
+        if (data.status) {
+          this.completeOrder = true;
+          this.pickOrder = false;
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
   },
 };
 </script>
