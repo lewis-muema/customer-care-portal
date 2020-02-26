@@ -21,9 +21,7 @@ export default {
     // CompleteOfflineOrderComponent,
     // UpdatePartnerInfoComponent,
   },
-  mounted() {
-    this.clearErrorMessages();
-  },
+  mounted() {},
 };
 </script>
 <style>

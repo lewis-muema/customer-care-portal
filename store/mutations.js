@@ -121,4 +121,13 @@ export default {
   setLoginErrors(state, val) {
     state.loginErrors = val;
   },
+  setOrderAmount(state, val) {
+    state.orderAmount = val;
+  },
+  setPickUp(state, val) {
+    state.pickup = val;
+  },
+  setDropoff(state, val) {
+    state.dropoff = val;
+  },
 };

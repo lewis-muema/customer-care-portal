@@ -1,10 +1,14 @@
 <template>
   <div class="col-md-12">
-    <div class="box box-primary user-main offline--container">
+    <div
+      v-if="createOrder"
+      class="box box-primary user-main offline--container"
+    >
       <form style="padding:30px;">
         <div class="form-group col-md-6">
           <label for="destination">Destination</label>
           <vue-google-autocomplete
+            types=""
             ref="destination"
             id="map"
             classname="form-control"
@@ -16,6 +20,7 @@
         <div class="form-group col-md-6">
           <label for="pickup">Pick Up</label>
           <vue-google-autocomplete
+            types=""
             ref="pickup"
             id="map1"
             classname="form-control"
@@ -26,106 +31,177 @@
         </div>
         <div class="form-group col-md-6">
           <label for="vendorselect">Vendor select</label>
-          <select class="form-control" id="vendorselect" v-model="vendorid">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
+          <select class="form-control" id="vendorselect" v-model="vendorId">
+            <option>Choose vendor</option>
+            <option
+              v-for="vendor in vendorTypes"
+              :key="vendor.id"
+              :value="vendor.id"
+              >{{ vendor.name }}</option
+            >
           </select>
         </div>
 
         <div class="form-group col-md-6">
-          <label for="clientemail">Email address</label>
+          <label for="clientEmail">Email address</label>
           <input
             type="email"
             class="form-control"
-            id="clientemail"
+            id="clientEmail"
             placeholder="name@example.com"
-            v-model="clientemail"
+            v-model="clientEmail"
           />
         </div>
         <button
-          type="submit"
-          class="btn btn-primary"
-          style="
-    margin: 0px 0px 30px 15px;"
+          type="button"
+          class="btn btn-primary create-order--btn"
+          @click="createOfflineOrder"
         >
           Create Order
         </button>
       </form>
     </div>
+    <div v-if="confirmOrder">
+      <ConfirmOfflineOrderComponent />
+    </div>
   </div>
 </template>
 <script>
-// import CreateOfflineOrderComponent from '~/modules/offlineOrders/_components/CreateOfflineOrderComponent';
-// import ConfirmOfflineOrderComponent from '~/modules/offlineOrders/_components/ConfirmOfflineOrderComponent';
-// import PickOfflineOrderComponent from '~/modules/offlineOrders/_components/PickOfflineOrderComponent';
-// import CompleteOfflineOrderComponent from '~/modules/offlineOrders/_components/CompleteOfflineOrderComponent';
-// import UpdatePartnerInfoComponent from '~/modules/offlineOrders/_components/UpdatePartnerInfoComponent';
-
 import axios from 'axios';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
-import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
+import ConfirmOfflineOrderComponent from './ConfirmOfflineOrderComponent';
 
 export default {
   name: 'CreateOfflineOrderComponent',
-  components: { VueGoogleAutocomplete },
-  mixins: [PricingConfigsMxn],
+  components: { VueGoogleAutocomplete, ConfirmOfflineOrderComponent },
   data() {
     return {
-      vendorid: 1,
+      vendorId: 1,
       destination: '',
       pickup: '',
-      clientemail: '',
-      fromcoordinates: '',
-      tocoordinates: '',
+      clientEmail: '',
+      fromCoordinates: '',
+      toCoordinates: '',
       vendorTypes: [],
       vendorName: '',
+      pickupCountryCode: '',
+      DestinationCountryCode: '',
+      createOrder: true,
+      confirmOrder: false,
     };
   },
   computed: {
     ...mapGetters({
       getSessionData: 'getSession',
     }),
-    vendor() {
-      return this.vendorTypes.find(op => {
-        return op.name === this.vendorName;
-      });
+    countryCodes() {
+      return (
+        this.DestinationCountryCode !== '' && this.pickupCountryCode !== ''
+      );
     },
   },
-  // components: {
-  //   CreateOfflineOrderComponent,
-  //   ConfirmOfflineOrderComponent,
-  //   PickOfflineOrderComponent,
-  //   CompleteOfflineOrderComponent,
-  //   UpdatePartnerInfoComponent,
-  // },
-  mounted() {
-    console.log('here', this.getSessionData);
-    // const countryCode = this.user.user_details.country_code;
-    // this.fetchVendorTypes(countryCode);
+  watch: {
+    countryCodes(val) {
+      this.fetchVendorTypes();
+    },
   },
+  mounted() {},
   methods: {
+    ...mapMutations({
+      updateOrderAmount: 'setOrderAmount',
+      updatePickUp: 'setPickUp',
+      updateDropoff: 'setDropoff',
+    }),
+    ...mapActions({
+      request_vendor_types: 'request_vendor_types',
+      create_offline_order: 'create_offline_order',
+    }),
     getDestinationAddressData(addressData, placeResultData, id) {
       const latitude = addressData.latitude;
       const longitude = addressData.longitude;
-      this.destination = [latitude, longitude];
-      console.log(this.destination);
+      const countryName = addressData.country;
+      this.toCoordinates = `${latitude}, ${longitude}`;
+      // eslint-disable-next-line
+      const { getCode } = require('country-list');
+      this.DestinationCountryCode = getCode(countryName);
     },
     getPickupAddressData(addressData, placeResultData, id) {
       const latitude = addressData.latitude;
       const longitude = addressData.longitude;
-      this.pickup = [latitude, longitude];
-      console.log(this.pickup);
+      const countryName = addressData.country;
+      this.fromCoordinates = `${latitude}, ${longitude}`;
+      // eslint-disable-next-line
+      const { getCode } = require('country-list');
+      this.pickupCountryCode = getCode(countryName);
+    },
+
+    async fetchVendorTypes() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'vendors/types',
+        apiKey: false,
+        params: {
+          pickup_country_code: this.pickupCountryCode,
+          dropoff_country_code: this.DestinationCountryCode,
+        },
+      };
+      try {
+        const data = await this.request_vendor_types(payload);
+        return (this.vendorTypes = data.vendor_types);
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+
+    async createOfflineOrder() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'OFFLINE_PRICING',
+        endpoint: 'offline_request',
+        apiKey: false,
+        params: {
+          pick_up_coordinates: '-1.2987826,36.76318070000002',
+          drop_off_coordinates: '-1.3001097,36.7706334',
+          vendor_id: this.vendorId,
+          client_email: this.clientEmail,
+        },
+      };
+      try {
+        const data = await this.create_offline_order(payload);
+        if (data.status) {
+          const pickup = data.values.from_name;
+          const dropoff = data.values.to_name;
+          const orderAmount =
+            data.values.economy_price_tiers[0].price_tiers[0].cost;
+          this.updateOrderAmount(orderAmount);
+          this.updatePickUp(pickup);
+          this.updateDropoff(dropoff);
+          this.createOrder = false;
+          this.confirmOrder = true;
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
 </script>
-<style>
+<style scoped>
 .user-main {
   border-top: 3px solid #3c8dbc;
+}
+.create-order--btn {
+  margin: 0px 0px 30px 15px;
 }
 .form-inline .input-group {
   width: 100%;
