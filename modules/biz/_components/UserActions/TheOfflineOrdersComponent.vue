@@ -467,12 +467,12 @@ export default {
 
         const Total = my_elements.reduce((prev, cur) => prev + cur.amount, 0);
 
-        this.totalAmount = this.billingAmount;
+        this.baseAmount = this.billingAmount;
 
         const vat_rate = this.vat_rate;
 
         this.vatAmount = vat_rate * this.billingAmount;
-        this.baseAmount = (1 - vat_rate) * this.billingAmount;
+        this.totalAmount = (1 + vat_rate) * this.billingAmount;
 
         if (this.charge_commission) {
           const rate = parseInt(this.commission_rate, 10) / 100;
