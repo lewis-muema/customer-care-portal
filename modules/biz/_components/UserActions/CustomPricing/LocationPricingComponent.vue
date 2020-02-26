@@ -72,6 +72,73 @@
               </el-autocomplete>
             </template>
           </el-table-column>
+          <el-table-column
+            prop="empty_container_destination"
+            label="Empty container return"
+            width="335"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.empty_container_destination"
+                size="small"
+                class="table--col-text"
+                placeholder="Search container destination"
+                v-model="scope.row.empty_container_destination"
+              ></el-input>
+              <el-autocomplete
+                v-else
+                size="small"
+                class="inline-input"
+                v-model="pacInput3"
+                :value="handleSelectContainerDestination"
+                :fetch-suggestions="querySearch"
+                placeholder="Search container destination"
+                :trigger-on-focus="false"
+                @select="
+                  handleSelectContainerDestination(
+                    $event,
+                    scope.$index,
+                    scope.row,
+                  )
+                "
+              >
+              </el-autocomplete>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_weight_tonnes"
+            label="Cargo Type"
+            width="200"
+            v-if="tableData[0].empty_container_destination"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_weight_tonnes"
+                placeholder="Select cargo type"
+                size="small"
+              >
+                <el-option label="Empty container" value="0"> </el-option>
+                <el-option label="Full container" value="28"> </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_size_feet"
+            label="Container Size"
+            width="200"
+            v-if="tableData[0].empty_container_destination"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_size_feet"
+                placeholder="Select container size"
+                size="small"
+              >
+                <el-option label="20 Feet" value="20"> </el-option>
+                <el-option label="40 Feet" value="40"> </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
             <template slot-scope="scope">
               <el-select
@@ -157,6 +224,7 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
+import _ from 'lodash';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import PreviewLocationPricingComponent from './PreviewLocationPricingComponent.vue';
 
@@ -176,6 +244,7 @@ export default {
     return {
       pacInput1: '',
       pacInput2: '',
+      pacInput3: '',
       currency: '',
       vendorName: '',
       suggestions: [],
@@ -198,11 +267,19 @@ export default {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
+          empty_return_location: {
+            type: 'Point',
+            coordinates: [37.671947, -4.056444],
+          },
           to: '',
+          empty_container_destination: '',
           status: '',
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          container_weight_tonnes: '',
+          container_size_feet: '',
+          container_errand_type: 'drop_off',
         },
       ],
       previewLocationPricing: false,
@@ -236,22 +313,19 @@ export default {
   },
   watch: {
     pacInput1(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+      if (val && val.length > 2) {
+        this.search(val);
+      }
     },
     pacInput2(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+      if (val && val.length > 2) {
+        this.search(val);
+      }
+    },
+    pacInput3(val) {
+      if (val && val.length > 2) {
+        this.search(val);
+      }
     },
   },
   mounted() {
@@ -313,6 +387,27 @@ export default {
           this.tableData[index].to_location.coordinates = coordinatesArray;
         });
     },
+    handleSelectContainerDestination(item, index, rows) {
+      this.tableData[index].empty_container_destination = item.value;
+      const toPlaceId = item.place_id;
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          const toLatLong = response.data.result.geometry.location;
+          const coordinatesArray = Object.keys(toLatLong).map(
+            key => toLatLong[key],
+          );
+          [coordinatesArray[0], coordinatesArray[1]] = [
+            parseFloat(coordinatesArray[1].toFixed(6)),
+            parseFloat(coordinatesArray[0].toFixed(6)),
+          ];
+          // eslint-disable-next-line prettier/prettier
+          this.tableData[index].empty_return_location.coordinates = coordinatesArray;
+          this.tableData[index].container_errand_type = 'empty_return';
+        });
+    },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
     },
@@ -337,6 +432,16 @@ export default {
         type: 'Click',
       });
     },
+    // eslint-disable-next-line func-names
+    search: _.throttle(function(val) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.suggestions = response.data.predictions;
+        });
+    }, 2000),
   },
 };
 </script>

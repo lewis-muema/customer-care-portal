@@ -715,7 +715,18 @@ export default {
           if (customPricingDetails[i].location_pricing) {
             approverId = customPricingDetails[i].location_pricing[0].admin_id;
             locationPricing = customPricingDetails[i].location_pricing;
-          } else {
+          }
+          if (customPricingDetails[i].container_pricing) {
+            approverId = customPricingDetails[i].container_pricing[0].admin_id;
+            if (locationPricing.length > 0) {
+              locationPricing = locationPricing.concat(
+                customPricingDetails[i].container_pricing,
+              );
+            } else {
+              // locationPricing = customPricingDetails[i].container_pricing;
+            }
+          }
+          if (customPricingDetails[i].distance_pricing) {
             approverId = customPricingDetails[i].admin_id;
             const pricingTableData = [];
             pricingTableData.push(customPricingDetails[i].distance_pricing);
