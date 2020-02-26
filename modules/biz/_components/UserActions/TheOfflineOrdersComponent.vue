@@ -646,8 +646,10 @@ export default {
           );
           if (vat_data !== undefined) {
             this.vat_rate = vat_data.rate;
-            this.loading_tax_rates = false;
+          } else {
+            this.vat_rate = 0;
           }
+          this.loading_tax_rates = false;
         }
       } catch (error) {
         notification.push(
