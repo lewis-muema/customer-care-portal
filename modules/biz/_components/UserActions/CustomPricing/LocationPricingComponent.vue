@@ -74,7 +74,7 @@
           </el-table-column>
           <el-table-column
             prop="empty_container_destination"
-            label="Empty container return"
+            label="Empty container return (Freight)"
             width="335"
           >
             <template slot-scope="scope">
@@ -109,13 +109,13 @@
             prop="container_weight_tonnes"
             label="Cargo Type"
             width="200"
-            v-if="tableData[0].empty_container_destination"
           >
             <template slot-scope="scope">
               <el-select
                 v-model="scope.row.container_weight_tonnes"
                 placeholder="Select cargo type"
                 size="small"
+                v-if="scope.row.empty_container_destination"
               >
                 <el-option label="Empty container" value="0"> </el-option>
                 <el-option label="Full container" value="28"> </el-option>
@@ -126,13 +126,13 @@
             prop="container_size_feet"
             label="Container Size"
             width="200"
-            v-if="tableData[0].empty_container_destination"
           >
             <template slot-scope="scope">
               <el-select
                 v-model="scope.row.container_size_feet"
                 placeholder="Select container size"
                 size="small"
+                v-if="scope.row.empty_container_destination"
               >
                 <el-option label="20 Feet" value="20"> </el-option>
                 <el-option label="40 Feet" value="40"> </el-option>
@@ -145,6 +145,7 @@
                 v-model="scope.row.name"
                 placeholder="Select Vendor"
                 size="small"
+                v-if="!scope.row.empty_container_destination"
                 @change="onChange($event, scope.$index, scope.row)"
               >
                 <el-option
@@ -153,6 +154,16 @@
                   :label="vendor.name"
                   :value="vendor.name"
                 >
+                </el-option>
+              </el-select>
+              <el-select
+                v-model="scope.row.name"
+                placeholder="Select Vendor"
+                size="small"
+                @change="onChange($event, scope.$index, scope.row)"
+                v-else
+              >
+                <el-option :key="25" label="Freight" value="Freight">
                 </el-option>
               </el-select>
             </template>
