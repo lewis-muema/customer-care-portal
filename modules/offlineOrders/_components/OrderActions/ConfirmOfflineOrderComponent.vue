@@ -37,17 +37,18 @@
           @click="confirmOfflineOrder"
           class="btn btn-primary offline-order--btn"
         >
-          Confirm Order
+          {{ this.buttonText }}
         </button>
       </form>
     </div>
-    <div v-if="pairOrder">
+    <div v-if="pickOrder">
       <UpdatePartnerInfoComponent />
     </div>
   </div>
 </template>
 <script>
 import axios from 'axios';
+import moment from 'moment';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import UpdatePartnerInfoComponent from './UpdatePartnerInfoComponent';
 
@@ -65,6 +66,7 @@ export default {
       pricingId: '',
       pickOrder: false,
       confirmOrder: true,
+      pending: false,
     };
   },
   computed: {
@@ -78,6 +80,13 @@ export default {
       getPickup: 'getPickup',
       getDropoff: 'getDropoff',
     }),
+    buttonText() {
+      if (this.pending) {
+        return 'Confirming...';
+      } else {
+        return 'Confirm Order';
+      }
+    },
   },
   mounted() {
     this.currency = this.getOrderCurrency;
@@ -90,9 +99,14 @@ export default {
     ...mapActions({
       confirm_offline_order: 'confirm_offline_order',
     }),
+    ...mapMutations({
+      updateOrderNumber: 'setOrderNumber',
+    }),
     async confirmOfflineOrder() {
+      this.pending = true;
       const notification = [];
       let actionClass = '';
+      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
       const payload = {
         app: 'OFFLINE_ORDERS',
         endpoint: 'v2/deliveryconfirm',
@@ -109,7 +123,7 @@ export default {
           carrier_type: 2,
           cash_status: false,
           customer_token: '',
-          date_time: '{{timestampBody}}',
+          date_time: currentTime,
           delivery_points: 1,
           destination_paid_status: false,
           insurance_amount: 10,
@@ -144,8 +158,15 @@ export default {
       };
       try {
         const data = await this.confirm_offline_order(payload);
-        console.log('data-ddd', data);
+        if (data.status) {
+          this.pending = false;
+          const orderNumber = data.order_no;
+          this.updateOrderNumber(orderNumber);
+          this.pickOrder = true;
+          this.confirmOrder = false;
+        }
       } catch (error) {
+        this.pending = false;
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }

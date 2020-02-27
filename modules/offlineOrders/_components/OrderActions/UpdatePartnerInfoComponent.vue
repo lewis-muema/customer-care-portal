@@ -4,75 +4,108 @@
       <form style="padding:30px;">
         <div class="form-group col-md-6">
           <label for="orderamount">Order Amount</label>
-          <input
-            type="text"
-            class="form-control"
-            id="orderamount"
-            placeholder="order amount"
-            v-model="amount"
-            disabled
-          />
+          <div class="input-group-btn">
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{ this.currency }}</span>
+              <input
+                type="text"
+                class="form-control"
+                id="orderamount"
+                placeholder="order amount"
+                v-model="orderAmount"
+              />
+            </div>
+          </div>
         </div>
         <div class="form-group col-md-6">
           <label for="partneramount">Partner Amount</label>
-          <input
-            type="text"
-            class="form-control"
-            id="partneramount"
-            placeholder="partner amount"
-            v-model="partnerAmount"
-            disabled
-          />
+          <div class="input-group-btn">
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{ this.currency }}</span>
+              <input
+                type="text"
+                class="form-control"
+                id="partneramount"
+                placeholder="partner amount"
+                v-model="partnerAmount"
+              />
+            </div>
+          </div>
         </div>
         <div class="form-group col-md-6">
           <label for="partnerphone">Partner Phone Number</label>
-          <input
-            type="text"
-            class="form-control"
-            id="partnerphone"
-            placeholder="+25471000000"
+          <vue-tel-input
             v-model="partnerPhone"
+            class="form-control"
+            :preferred-countries="['ke', 'ug', 'tz']"
           />
         </div>
         <div class="form-group col-md-6">
           <label for="sendycomission">Sendy Commission</label>
-          <input
-            type="text"
-            class="form-control"
-            id="sendycomission"
-            placeholder="sendy comission"
-            v-model="commission"
-            disabled
-          />
+          <div class="input-group-btn">
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{ this.currency }}</span>
+              <input
+                type="text"
+                class="form-control"
+                id="sendycomission"
+                placeholder="sendy comission"
+                v-model="sendyComission"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="sendycomission">Service Fee</label>
+          <div class="input-group-btn">
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{ this.currency }}</span>
+              <input
+                type="text"
+                class="form-control"
+                id="serviceFee"
+                placeholder="service fee"
+                v-model="serviceFee"
+              />
+            </div>
+          </div>
         </div>
         <div class="form-group col-md-6">
           <label for="insuranceamount">Insurance Amount</label>
-          <input
-            type="text"
-            class="form-control"
-            id="insuranceamount"
-            placeholder="insurance amount"
-            v-model="insurance"
-            disabled
-          />
+          <div class="input-group-btn">
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{ this.currency }}</span>
+              <input
+                type="text"
+                class="form-control"
+                id="insuranceamount"
+                placeholder="insurance amount"
+                v-model="insuranceAmount"
+              />
+            </div>
+          </div>
         </div>
         <div class="form-group col-md-6">
           <label for="vatamount">VAT Amount</label>
-          <input
-            type="text"
-            class="form-control"
-            id="vatamount"
-            placeholder="vat amount"
-            v-model="vat"
-            disabled
-          />
+          <div class="input-group-btn">
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{ this.currency }}</span>
+              <input
+                type="text"
+                class="form-control"
+                id="vatamount"
+                placeholder="vat amount"
+                v-model="vatAmount"
+              />
+            </div>
+          </div>
         </div>
         <button
           type="button"
           @click="pairOfflineOrder"
           class="btn btn-primary offline-order--btn"
         >
-          Pair Order
+          {{ this.buttonText }}
         </button>
       </form>
     </div>
@@ -84,51 +117,54 @@
 <script>
 import axios from 'axios';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
+import VueTelInput from 'vue-tel-input';
+import 'vue-tel-input/dist/vue-tel-input.css';
 import PickOfflineOrderComponent from './PickOfflineOrderComponent';
 
 export default {
   name: 'UpdatePartnerInfoComponent',
   components: {
+    'vue-tel-input': VueTelInput,
     PickOfflineOrderComponent,
   },
   data() {
     return {
       orderAmount: 0,
-      partnerTakehome: 0,
+      partnerAmount: 0,
       partnerPhone: '',
       sendyComission: 0,
+      serviceFee: 0,
       insuranceAmount: 0,
       currency: '',
       vatAmount: 0,
+      orderNumber: '',
       pairOrder: true,
       pickOrder: false,
+      pending: false,
     };
   },
   computed: {
-    amount() {
-      return `${this.currency} ${this.orderAmount}`;
-    },
-    vat() {
-      return `${this.currency} ${this.vatAmount}`;
-    },
-    partnerAmount() {
-      return `${this.currency} ${this.partnerTakehome}`;
-    },
-    insurance() {
-      return `${this.currency} ${this.insuranceAmount}`;
-    },
-    commission() {
-      return `${this.currency} ${this.sendyComission}`;
-    },
     ...mapGetters({
       getOrderAmount: 'getOrderAmount',
+      getOrderNumber: 'getOrderNumber',
       getVat: 'getVat',
       getOrderCurrency: 'getOrderCurrency',
     }),
+    buttonText() {
+      if (this.pending) {
+        return 'Pairing...';
+      } else {
+        return 'Pair Order';
+      }
+    },
+    simCardSn() {
+      return this.partnerPhone.replace(/\D/g, '');
+    },
   },
   mounted() {
     this.currency = this.getOrderCurrency;
     this.orderAmount = this.getOrderAmount;
+    this.orderNumber = this.getOrderNumber;
     this.vatAmount = this.getVat;
   },
   methods: {
@@ -136,6 +172,7 @@ export default {
       pair_offline_order: 'pair_offline_order',
     }),
     async pairOfflineOrder() {
+      this.pending = true;
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -143,26 +180,28 @@ export default {
         endpoint: 'back_dated_order_confirm',
         apiKey: false,
         params: {
-          order_no: 'CF64CV399-UA5',
-          sim_card_sn: '256772509474',
-          rider_phone: '+256772509474',
+          order_no: this.orderNumber,
+          sim_card_sn: this.simCardSn,
+          rider_phone: this.partnerPhone.replace(/\s/g, ''),
           version_code: 684,
-          order_amount: 5485543,
-          rider_amount: 4583333,
-          vat_amount: 836778,
-          service_fee: 55432,
-          sendy_commission: 4,
-          insurance: 10000,
+          order_amount: parseInt(this.orderAmount, 10),
+          rider_amount: parseInt(this.partnerAmount, 10),
+          vat_amount: parseInt(this.vatAmount, 10),
+          service_fee: parseInt(this.serviceFee, 10),
+          sendy_commission: parseInt(this.sendyComission, 10),
+          insurance: parseInt(this.insuranceAmount, 10),
         },
       };
       try {
         const data = await this.pair_offline_order(payload);
         console.log('data-ddd', data);
         if (data.status) {
+          this.pending = false;
           this.pairOrder = false;
           this.pickOrder = true;
         }
       } catch (error) {
+        this.pending = false;
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }
