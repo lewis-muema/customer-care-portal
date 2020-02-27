@@ -4,7 +4,7 @@
       v-if="createOrder"
       class="box box-primary user-main offline--container"
     >
-      <form style="padding:30px;">
+      <form class="form-style">
         <div class="form-group col-md-6">
           <label for="destination">Destination</label>
           <vue-google-autocomplete
