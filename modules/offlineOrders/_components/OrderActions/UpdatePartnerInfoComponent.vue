@@ -165,7 +165,7 @@ export default {
     }),
     buttonText() {
       if (this.pending) {
-        return 'Pairing...';
+        return 'Pairing Order...';
       } else {
         return 'Pair Order';
       }
