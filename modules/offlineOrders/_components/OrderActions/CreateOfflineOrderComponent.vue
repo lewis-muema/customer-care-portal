@@ -5,6 +5,22 @@
       class="box box-primary user-main offline--container"
     >
       <form class="form-style">
+        <div
+          v-show="isVisible"
+          class="alert alert-warning alert-dismissible fade show"
+          role="alert"
+        >
+          <slot>{{ message }}</slot>
+          <button
+            @click="isVisible = false"
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-group col-md-6">
           <label for="destination">Destination</label>
           <vue-google-autocomplete
@@ -90,6 +106,8 @@ export default {
       DestinationCountryCode: '',
       createOrder: true,
       confirmOrder: false,
+      isVisible: false,
+      message: '',
     };
   },
   computed: {
@@ -175,8 +193,6 @@ export default {
     async createOfflineOrder() {
       this.trackCreateOrderButton();
       this.pending = true;
-      const notification = [];
-      let actionClass = '';
       const payload = {
         app: 'OFFLINE_PRICING',
         endpoint: 'offline_request',
@@ -209,14 +225,16 @@ export default {
           this.updateVat(vatAmount);
           this.createOrder = false;
           this.confirmOrder = true;
+        } else {
+          this.pending = false;
+          this.isVisible = true;
+          this.message = data.values.msg;
         }
       } catch (error) {
         this.pending = false;
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
+        this.isVisible = true;
+        this.message = 'Something went wrong. Please try again.';
       }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     trackCreateOrderPage() {
       mixpanel.track('Create order Page - PageView', {

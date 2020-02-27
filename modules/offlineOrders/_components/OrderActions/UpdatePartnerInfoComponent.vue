@@ -2,6 +2,22 @@
   <div class="col-md-12">
     <div v-if="pairOrder" class="box box-primary user-main">
       <form class="form-style">
+        <div
+          v-show="isVisible"
+          class="alert alert-warning alert-dismissible fade show"
+          role="alert"
+        >
+          <slot>{{ message }}</slot>
+          <button
+            @click="isVisible = false"
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-group col-md-6">
           <label for="orderamount">Order Amount</label>
           <div class="input-group-btn">
@@ -167,6 +183,8 @@ export default {
       pairOrder: true,
       pickOrder: false,
       pending: false,
+      isVisible: false,
+      message: '',
     };
   },
   computed: {
@@ -202,8 +220,6 @@ export default {
     async pairOfflineOrder() {
       this.trackPairOrderButton();
       this.pending = true;
-      const notification = [];
-      let actionClass = '';
       const payload = {
         app: 'OFFLINE_ORDERS',
         endpoint: 'back_dated_order_confirm',
@@ -229,14 +245,16 @@ export default {
           this.pickOrder = true;
           this.updatePartnerSn(this.simCardSn);
           this.updatePartnerPhone(this.partnerPhone.replace(/\s/g, ''));
+        } else {
+          this.pending = false;
+          this.isVisible = true;
+          this.message = data.message;
         }
       } catch (error) {
         this.pending = false;
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
+        this.isVisible = true;
+        this.message = 'Something went wrong. Please try again.';
       }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     trackPairOrderPage() {
       mixpanel.track('Pair order Page - PageView', {
