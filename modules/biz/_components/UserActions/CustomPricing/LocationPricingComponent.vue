@@ -28,8 +28,15 @@
           </el-table-column>
           <el-table-column prop="from" label="Pick up location" width="335">
             <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.from"
+                size="small"
+                class="table--col-text"
+                placeholder="Search location"
+                v-model="scope.row.from"
+              ></el-input>
               <el-autocomplete
-                v-if="!scope.row.from"
+                v-else
                 size="small"
                 class="inline-input"
                 v-model="pacInput1"
@@ -40,19 +47,19 @@
                 @select="handleSelectFrom($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
-              <el-input
-                v-if="scope.row.from"
-                size="small"
-                class="table--col-text"
-                placeholder="Search location"
-                v-model="scope.row.from"
-              ></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="to" label="Drop off location" width="335">
             <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.to"
+                size="small"
+                class="table--col-text"
+                placeholder="Search location"
+                v-model="scope.row.to"
+              ></el-input>
               <el-autocomplete
-                v-if="!scope.row.to"
+                v-else
                 size="small"
                 class="inline-input"
                 v-model="pacInput2"
@@ -63,13 +70,73 @@
                 @select="handleSelectTo($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="empty_container_destination"
+            label="Empty container return (Freight)"
+            width="335"
+          >
+            <template slot-scope="scope">
               <el-input
-                v-if="scope.row.to"
+                v-if="scope.row.empty_container_destination"
                 size="small"
                 class="table--col-text"
-                placeholder="Search location"
-                v-model="scope.row.to"
+                placeholder="Search container destination"
+                v-model="scope.row.empty_container_destination"
               ></el-input>
+              <el-autocomplete
+                v-else
+                size="small"
+                class="inline-input"
+                v-model="pacInput3"
+                :value="handleSelectContainerDestination"
+                :fetch-suggestions="querySearch"
+                placeholder="Search container destination"
+                :trigger-on-focus="false"
+                @select="
+                  handleSelectContainerDestination(
+                    $event,
+                    scope.$index,
+                    scope.row,
+                  )
+                "
+              >
+              </el-autocomplete>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_weight_tonnes"
+            label="Cargo Type"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_weight_tonnes"
+                placeholder="Select cargo type"
+                size="small"
+                v-if="scope.row.empty_container_destination"
+              >
+                <el-option label="Empty container" value="0"> </el-option>
+                <el-option label="Full container" value="28"> </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_size_feet"
+            label="Container Size"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_size_feet"
+                placeholder="Select container size"
+                size="small"
+                v-if="scope.row.empty_container_destination"
+              >
+                <el-option label="20 Feet" value="20"> </el-option>
+                <el-option label="40 Feet" value="40"> </el-option>
+              </el-select>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
@@ -78,6 +145,7 @@
                 v-model="scope.row.name"
                 placeholder="Select Vendor"
                 size="small"
+                v-if="!scope.row.empty_container_destination"
                 @change="onChange($event, scope.$index, scope.row)"
               >
                 <el-option
@@ -88,15 +156,26 @@
                 >
                 </el-option>
               </el-select>
+              <el-select
+                v-model="scope.row.name"
+                placeholder="Select Vendor"
+                size="small"
+                @change="onChange($event, scope.$index, scope.row)"
+                v-else
+              >
+                <el-option :key="25" label="Freight" value="Freight">
+                </el-option>
+              </el-select>
             </template>
           </el-table-column>
           <el-table-column prop="order_amount" label="Client fee" width="200">
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.order_amount"
+                v-model="scope.row.order_amount"
               >
                 <template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -112,9 +191,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.rider_amount"
+                v-model="scope.row.rider_amount"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -125,9 +205,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
                 class="table--col-text"
-                v-model.number="scope.row.service_fee"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="scope.row.service_fee"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -144,7 +225,7 @@
         <el-button
           class="pricing-save-btn btn-primary"
           @click="previewConfig"
-          :disabled="containsNull"
+          :disabled="validNewStep"
           >Save & Preview
         </el-button>
       </template>
@@ -154,6 +235,7 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
+import _ from 'lodash';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import PreviewLocationPricingComponent from './PreviewLocationPricingComponent.vue';
 
@@ -173,19 +255,20 @@ export default {
     return {
       pacInput1: '',
       pacInput2: '',
+      pacInput3: '',
       currency: '',
       vendorName: '',
       suggestions: [],
       vendorTypes: [],
       tableData: [
         {
-          id: 10,
+          id: 1,
           name: '',
           cop_id: 1,
-          cop_name: 'Safaricom',
+          cop_name: '',
           currency: 'KES',
           admin_id: 1,
-          service_fee: 1200,
+          service_fee: 0,
           from: '',
           from_location: {
             type: 'Point',
@@ -195,11 +278,19 @@ export default {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
+          empty_return_location: {
+            type: 'Point',
+            coordinates: [37.671947, -4.056444],
+          },
           to: '',
-          status: 'Active',
-          city: 'Mombasa County',
-          order_amount: 23000,
-          rider_amount: 21400,
+          empty_container_destination: '',
+          status: '',
+          city: '',
+          order_amount: 0,
+          rider_amount: 0,
+          container_weight_tonnes: '',
+          container_size_feet: '',
+          container_errand_type: 'drop_off',
         },
       ],
       previewLocationPricing: false,
@@ -208,11 +299,6 @@ export default {
   computed: {
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
-    },
-    containsNull() {
-      return this.tableData.every(
-        item => item.name === '' || item.from === '' || item.to === '',
-      );
     },
     vendor() {
       return this.vendorTypes.find(op => {
@@ -224,25 +310,33 @@ export default {
         return op.place_id === this.fromPlaceId;
       });
     },
+    validNewStep() {
+      let from = '';
+      let to = '';
+      let vendor = '';
+      for (let i = 0; i < this.tableData.length; i += 1) {
+        from = this.tableData[i].from;
+        to = this.tableData[i].to;
+        vendor = this.tableData[i].name;
+      }
+      return from === '' || to === '' || vendor === '';
+    },
   },
   watch: {
     pacInput1(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+      if (val && val.length > 2) {
+        this.search(val);
+      }
     },
     pacInput2(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+      if (val && val.length > 2) {
+        this.search(val);
+      }
+    },
+    pacInput3(val) {
+      if (val && val.length > 2) {
+        this.search(val);
+      }
     },
   },
   mounted() {
@@ -304,6 +398,27 @@ export default {
           this.tableData[index].to_location.coordinates = coordinatesArray;
         });
     },
+    handleSelectContainerDestination(item, index, rows) {
+      this.tableData[index].empty_container_destination = item.value;
+      const toPlaceId = item.place_id;
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          const toLatLong = response.data.result.geometry.location;
+          const coordinatesArray = Object.keys(toLatLong).map(
+            key => toLatLong[key],
+          );
+          [coordinatesArray[0], coordinatesArray[1]] = [
+            parseFloat(coordinatesArray[1].toFixed(6)),
+            parseFloat(coordinatesArray[0].toFixed(6)),
+          ];
+          // eslint-disable-next-line prettier/prettier
+          this.tableData[index].empty_return_location.coordinates = coordinatesArray;
+          this.tableData[index].container_errand_type = 'empty_return';
+        });
+    },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
     },
@@ -328,6 +443,16 @@ export default {
         type: 'Click',
       });
     },
+    // eslint-disable-next-line func-names
+    search: _.throttle(function(val) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.suggestions = response.data.predictions;
+        });
+    }, 2000),
   },
 };
 </script>
@@ -359,5 +484,9 @@ tr:hover {
 }
 .table--width {
   width: 1000px !important;
+}
+.el-table--scrollable-x .el-table__body-wrapper {
+  overflow-x: auto;
+  padding-bottom: 25px !important;
 }
 </style>

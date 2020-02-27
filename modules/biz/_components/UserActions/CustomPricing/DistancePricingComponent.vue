@@ -28,8 +28,15 @@
           </el-table-column>
           <el-table-column prop="city" label="City" width="335">
             <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.city"
+                size="small"
+                class="table--col-text"
+                placeholder="Search city"
+                v-model="scope.row.city"
+              ></el-input>
               <el-autocomplete
-                v-if="!scope.row.city"
+                v-else
                 size="small"
                 class="inline-input"
                 v-model="pacInput"
@@ -40,13 +47,6 @@
                 @select="handleSelect($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
-              <el-input
-                v-if="scope.row.city"
-                size="small"
-                class="table--col-text"
-                placeholder="Search city"
-                v-model="scope.row.city"
-              ></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Vendor Type" width="200">
@@ -71,9 +71,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.base_cost"
+                v-model="scope.row.base_cost"
                 @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -85,9 +86,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                type="text"
                 class="table--col-text"
-                v-model.number="scope.row.service_fee"
+                v-model="scope.row.service_fee"
                 @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -99,9 +101,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.insurance"
+                v-model="scope.row.insurance"
                 @change="calculateClientFee(scope.$index, scope.row)"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -114,9 +117,10 @@
               <el-input
                 :disabled="true"
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.client_fee"
+                v-model="scope.row.client_fee"
               >
                 <template class="pricing-prepend" slot="prepend"
                   >{{ currency }}
@@ -128,9 +132,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.base_km"
+                v-model="scope.row.base_km"
               >
                 <template class="pricing-prepend" slot="prepend">
                   KM
@@ -145,10 +150,11 @@
           >
             <template slot-scope="scope">
               <el-input
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 size="small"
                 class="table--col-text"
-                v-model.number="scope.row.cost_per_km_above_base_km"
+                v-model="scope.row.cost_per_km_above_base_km"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -163,9 +169,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.additional_location_cost"
+                v-model="scope.row.additional_location_cost"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -174,15 +181,16 @@
           </el-table-column>
           <el-table-column
             prop="waiting_time_cost_per_min"
-            label="Waiting fee per minute"
+            label="Waiting fee per hour"
             width="200"
           >
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.waiting_time_cost_per_min"
+                v-model="scope.row.waiting_time_cost_per_min"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -197,9 +205,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.loader_cost"
+                v-model="scope.row.loader_cost"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -214,9 +223,10 @@
             <template slot-scope="scope">
               <el-input
                 size="small"
-                type="number"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
-                v-model.number="scope.row.cancellation_fee"
+                v-model="scope.row.cancellation_fee"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -224,7 +234,6 @@
             </template>
           </el-table-column>
         </el-table>
-
         <p class="pricing-add-row" @click="addRow('Distance')">
           <i class="fa fa-plus"></i> Add a new row
         </p>
@@ -234,7 +243,7 @@
         <el-button
           class="pricing-save-btn btn-primary"
           @click="previewConfig"
-          :disabled="containsNull"
+          :disabled="validNewStep"
           >Save & Preview
         </el-button>
       </template>
@@ -264,16 +273,16 @@ export default {
         {
           city: '',
           name: '',
-          base_cost: '280',
-          base_km: '20',
-          cost_per_km_above_base_km: '2160',
-          additional_location_cost: '108',
-          waiting_time_cost_per_min: '18',
-          loader_cost: '100',
-          service_fee: '40',
-          insurance: '20',
-          client_fee: '500',
-          cancellation_fee: '40',
+          base_cost: '',
+          base_km: '',
+          cost_per_km_above_base_km: '',
+          additional_location_cost: '',
+          waiting_time_cost_per_min: '',
+          loader_cost: '',
+          service_fee: '',
+          insurance: '',
+          client_fee: '',
+          cancellation_fee: '',
         },
       ],
       previewDistancePricing: false,
@@ -289,8 +298,14 @@ export default {
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
     },
-    containsNull() {
-      return this.tableData.every(item => item.city === '' || item.name === '');
+    validNewStep() {
+      let city = '';
+      let vendor = '';
+      for (let i = 0; i < this.tableData.length; i += 1) {
+        city = this.tableData[i].city;
+        vendor = this.tableData[i].name;
+      }
+      return city === '' || vendor === '';
     },
   },
   watch: {
@@ -341,7 +356,7 @@ export default {
       }
       cb(this.suggestions);
     },
-    handleSelect(item, index, rows) {
+    handleSelect(item, index, row) {
       this.tableData[index].city = item.value;
     },
     deleteRow(index, rows) {
@@ -369,5 +384,9 @@ export default {
 }
 .table--width {
   width: 1000px !important;
+}
+.el-table--scrollable-x .el-table__body-wrapper {
+  overflow-x: auto;
+  padding-bottom: 15px !important;
 }
 </style>
