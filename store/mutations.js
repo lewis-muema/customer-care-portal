@@ -142,4 +142,10 @@ export default {
   setOrderNumber(state, val) {
     state.orderNumber = val;
   },
+  setPartnerPhone(state, val) {
+    state.partnerPhone = val;
+  },
+  setPartnerSn(state, val) {
+    state.snNumber = val;
+  },
 };

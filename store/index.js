@@ -55,6 +55,8 @@ export default {
       pricingId: '',
       vatAmount: 0,
       orderNumber: '',
+      partnerPhone: '',
+      snNumber: '',
       searchedUser: '',
       userData: {},
       baseUrl,

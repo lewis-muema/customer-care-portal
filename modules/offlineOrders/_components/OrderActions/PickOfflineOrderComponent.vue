@@ -39,6 +39,8 @@ export default {
   data() {
     return {
       orderNumber: '',
+      snNumber: '',
+      partnerNumber: '',
       pickOrder: true,
       completeOrder: false,
       pending: false,
@@ -47,6 +49,8 @@ export default {
   computed: {
     ...mapGetters({
       getOrderNumber: 'getOrderNumber',
+      getPartnerNumber: 'getPartnerNumber',
+      getSnNumber: 'getSnNumber',
     }),
     buttonText() {
       if (this.pending) {
@@ -58,6 +62,8 @@ export default {
   },
   mounted() {
     this.orderNumber = this.getOrderNumber;
+    this.snNumber = this.getSnNumber;
+    this.partnerNumber = this.getPartnerNumber;
   },
   methods: {
     ...mapActions({
@@ -72,15 +78,14 @@ export default {
         endpoint: 'rider_app_pick_up',
         apiKey: false,
         params: {
-          order_no: 'CF65GL345-FGF',
-          sim_card_sn: '256700728472',
-          rider_phone: '+256700728472',
+          order_no: this.orderNumber,
+          sim_card_sn: '254716163362',
+          rider_phone: '+254716163362',
           batch_no: '',
         },
       };
       try {
         const data = await this.pick_offline_order(payload);
-        console.log('data-ddd', data);
         if (data.status) {
           this.pending = false;
           this.completeOrder = true;
