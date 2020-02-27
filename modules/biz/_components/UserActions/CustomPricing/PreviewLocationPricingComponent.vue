@@ -158,12 +158,6 @@ export default {
       this.trackPricingSubmit();
       const containerPayload = [];
       const locationPayload = [];
-      const payload = {
-        app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/add_custom_distance_details',
-        apiKey: false,
-        params: '',
-      };
       this.tableData.forEach(row => {
         if (row.empty_container_destination) {
           containerPayload.push(row);
@@ -173,12 +167,22 @@ export default {
       });
       if (containerPayload.length > 0) {
         const configParams = this.createContainerPayload(containerPayload);
-        payload.params = configParams;
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'pricing/price_config/add_custom_distance_details',
+          apiKey: false,
+          params: configParams,
+        };
         this.submitPayload(payload);
       }
       if (locationPayload.length > 0) {
         const configParams = this.createLocationPayload(locationPayload);
-        payload.params = configParams;
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'pricing/price_config/add_custom_distance_details',
+          apiKey: false,
+          params: configParams,
+        };
         this.submitPayload(payload);
       }
     },
@@ -222,7 +226,6 @@ export default {
             currency: this.currency,
             admin_id: this.approver,
             location_pricing: [],
-            container_pricing: [],
           },
         };
         const locationData = {
@@ -268,7 +271,7 @@ export default {
           currency: this.currency,
         };
         const containerData = {
-          status: 'Active',
+          status: 'Pending',
           name: data[i].name,
           cop_id: this.copId,
           cop_name: this.copName,
