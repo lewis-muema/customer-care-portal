@@ -138,4 +138,10 @@ export default {
   getOrderNumber(state) {
     return state.orderNumber;
   },
+  getPartnerNumber(state) {
+    return state.partnerPhone;
+  },
+  getSnNumber(state) {
+    return state.snNumber;
+  },
 };

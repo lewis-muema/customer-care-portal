@@ -41,6 +41,18 @@
           />
         </div>
         <div class="form-group col-md-6">
+          <label for="snNumber">Sim Card Serial Number</label>
+          <div class="input-group-btn">
+            <input
+              type="text"
+              class="form-control"
+              id="snNumber"
+              placeholder="serial number"
+              v-model="simCardSn"
+            />
+          </div>
+        </div>
+        <div class="form-group col-md-6">
           <label for="sendycomission">Sendy Commission</label>
           <div class="input-group-btn">
             <div class="input-group-prepend">
@@ -138,6 +150,7 @@ export default {
       currency: '',
       vatAmount: 0,
       orderNumber: '',
+      simCardSn: '',
       pairOrder: true,
       pickOrder: false,
       pending: false,
@@ -157,9 +170,6 @@ export default {
         return 'Pair Order';
       }
     },
-    simCardSn() {
-      return this.partnerPhone.replace(/\D/g, '');
-    },
   },
   mounted() {
     this.currency = this.getOrderCurrency;
@@ -170,6 +180,10 @@ export default {
   methods: {
     ...mapActions({
       pair_offline_order: 'pair_offline_order',
+    }),
+    ...mapMutations({
+      updatePartnerPhone: 'setPartnerPhone',
+      updatePartnerSn: 'setPartnerSn',
     }),
     async pairOfflineOrder() {
       this.pending = true;
@@ -194,11 +208,12 @@ export default {
       };
       try {
         const data = await this.pair_offline_order(payload);
-        console.log('data-ddd', data);
         if (data.status) {
           this.pending = false;
           this.pairOrder = false;
           this.pickOrder = true;
+          this.updatePartnerSn(this.simCardSn);
+          this.updatePartnerPhone(this.partnerPhone.replace(/\s/g, ''));
         }
       } catch (error) {
         this.pending = false;
