@@ -235,4 +235,7 @@ export default {
   color: #c0c4cc;
   font-size: 0.8em;
 }
+.form-style {
+  padding: 30px !important;
+}
 </style>
