@@ -85,6 +85,7 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
+    // eslint-disable-next-line require-await
     async rescheduleOrder() {
       this.submitted = true;
       this.$v.$touch();
@@ -94,7 +95,6 @@ export default {
 
       const notification = [];
       let actionClass = '';
-
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'reschedule_order_cc',
@@ -102,7 +102,9 @@ export default {
         params: {
           order_no: this.orderNo,
           action_id: 6,
-          date_time: this.convertToUTC(this.time).format('YYYY-MM-DD HH:mm:ss'),
+          date_time: this.convertGMTToUTC(this.time).format(
+            'YYYY-MM-DD HH:mm:ss',
+          ),
         },
       };
       try {
