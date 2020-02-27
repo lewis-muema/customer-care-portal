@@ -54,7 +54,7 @@ export default {
     }),
     buttonText() {
       if (this.pending) {
-        return 'Picking...';
+        return 'Picking Order...';
       } else {
         return 'Pick Order';
       }

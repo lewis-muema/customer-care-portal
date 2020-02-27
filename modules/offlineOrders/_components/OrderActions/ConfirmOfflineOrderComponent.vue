@@ -82,7 +82,7 @@ export default {
     }),
     buttonText() {
       if (this.pending) {
-        return 'Confirming...';
+        return 'Confirming Order...';
       } else {
         return 'Confirm Order';
       }

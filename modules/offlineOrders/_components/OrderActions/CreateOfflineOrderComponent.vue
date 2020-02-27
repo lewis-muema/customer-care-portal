@@ -103,7 +103,7 @@ export default {
     },
     buttonText() {
       if (this.pending) {
-        return 'Creating...';
+        return 'Creating Order...';
       } else {
         return 'Create Order';
       }
