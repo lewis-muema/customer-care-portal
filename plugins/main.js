@@ -151,6 +151,15 @@ Vue.mixin({
         .format('YYYY-MM-DD HH:mm:ss');
       return localTime;
     },
+    convertGMTToUTC(date) {
+      const userTZ = moment.tz.guess();
+      const gmtDate = moment
+        .tz(date, userTZ)
+        .tz('GMT')
+        .format('YYYY-MM-DD HH:mm ZZ');
+      const UTCDate = moment.utc(gmtDate);
+      return UTCDate;
+    },
     getFormattedDate(date, requiredFormat) {
       const UTCDate = this.convertToUTC(date);
       const dt1 = this.convertToLocalTime(UTCDate);
