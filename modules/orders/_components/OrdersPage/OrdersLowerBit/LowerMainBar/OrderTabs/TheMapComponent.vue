@@ -224,7 +224,10 @@ export default {
           },
         ];
       }
-      if (Object.prototype.hasOwnProperty.call(order, 'freight_details')) {
+      if (
+        Object.prototype.hasOwnProperty.call(order, 'freight_details') &&
+        order.freight_details
+      ) {
         const locations = [];
         order.freight_details.containers.container_details[0].path[0].forEach(
           row => {

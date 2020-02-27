@@ -15,6 +15,12 @@
       </el-table-column>
       <el-table-column prop="to" label="Drop off location" width="255">
       </el-table-column>
+      <el-table-column
+        prop="empty_return"
+        label="Empty return location (Freight)"
+        width="255"
+      >
+      </el-table-column>
       <el-table-column prop="name" label="Vendor type" width="130">
       </el-table-column>
       <el-table-column prop="order_amount" label="Client fee" width="130">
@@ -99,17 +105,43 @@ export default {
       this.updateSummaryStatus(true);
       this.$emit('viewUpdate', false);
     },
-    async resetCustomPricing() {
+    resetCustomPricing() {
       this.trackResetConfigs();
-      const configParams = this.createPayload(this.tableData);
+      const containerPayload = [];
+      const locationPayload = [];
+      this.tableData.forEach(row => {
+        if (
+          Object.prototype.hasOwnProperty.call(row, 'empty_return_location')
+        ) {
+          containerPayload.push(row);
+        } else {
+          locationPayload.push(row);
+        }
+      });
+      if (containerPayload.length > 0) {
+        const configParams = this.createContainerPayload(containerPayload);
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'pricing/price_config/update_custom_distance_details',
+          apiKey: false,
+          params: configParams,
+        };
+        this.submitPayload(payload);
+      }
+      if (locationPayload.length > 0) {
+        const configParams = this.createLocationPayload(locationPayload);
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'pricing/price_config/update_custom_distance_details',
+          apiKey: false,
+          params: configParams,
+        };
+        this.submitPayload(payload);
+      }
+    },
+    async submitPayload(payload) {
       const notification = [];
       let actionClass = '';
-      const payload = {
-        app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/update_custom_distance_details',
-        apiKey: false,
-        params: configParams,
-      };
       try {
         const data = await this.deactivate_location_pricing(payload);
         if (data.status) {
@@ -133,7 +165,7 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    createPayload(data) {
+    createLocationPayload(data) {
       const locationPricingArray = [];
       for (let i = 0; i < data.length; i += 1) {
         const locationPricingObject = {
@@ -192,6 +224,72 @@ export default {
         locationPricingArray.push(locationPricingObject);
       }
       return locationPricingArray;
+    },
+    createContainerPayload(data) {
+      const containerPricingArray = [];
+      for (let i = 0; i < data.length; i += 1) {
+        const containerPricingObject = {
+          cop_id: this.copId,
+          vendor_id: data[i].id,
+          from_coordinates: data[i].from_location.coordinates,
+          to_coordinates: data[i].to_location.coordinates,
+          custom_pricing_details: {
+            container_pricing: [],
+          },
+        };
+        const containerData = {
+          id: data[i].id,
+          name: data[i].name,
+          cop_id: this.copId,
+          cop_name: data[i].cop_name,
+          currency: this.currency,
+          admin_id: parseInt(this.adminId, 10),
+          waiting_time_cost_per_min: data[i].waiting_time_cost_per_min,
+          sendy_commission: data[i].sendy_commission,
+          order_confirmation_time_delay: data[i].order_confirmation_time_delay,
+          waiting_time_base: data[i].waiting_time_base,
+          fixed_status: data[i].fixed_status,
+          cancellation_fee: data[i].cancellation_fee,
+          min_cancellation_fee: data[i].min_cancellation_fee,
+          extra_distance_base_km: data[i].extra_distance_base_km,
+          order_pickup_time_delay: data[i].order_pickup_time_delay,
+          percentage_cancellation_fee: data[i].percentage_cancellation_fee,
+          max_cancellation_fee: data[i].max_cancellation_fee,
+          time: data[i].time,
+          fixed_cost: data[i].fixed_cost,
+          base_cost: data[i].base_cost,
+          base_km: data[i].base_km,
+          cost_per_km_above_base_km: data[i].cost_per_km_above_base_km,
+          additional_location_cost: data[i].additional_location_cost,
+          service_fee: data[i].service_fee,
+          from: data[i].from,
+          from_location: {
+            type: data[i].from_location.type,
+            coordinates: data[i].from_location.coordinates,
+          },
+          to_location: {
+            type: data[i].to_location.type,
+            coordinates: data[i].to_location.coordinates,
+          },
+          empty_return_location: {
+            type: data[i].empty_return_location.type,
+            coordinates: data[i].empty_return_location.coordinates,
+          },
+          to: data[i].to,
+          empty_return: data[i].empty_return,
+          status: 'Deactivated',
+          order_amount: data[i].order_amount,
+          rider_amount: data[i].rider_amount,
+          container_size_feet: parseInt(data[i].container_size_feet, 10),
+          container_errand_type: data[i].container_errand_type,
+          city: data[i].city,
+        };
+        containerPricingObject.custom_pricing_details.container_pricing.push(
+          containerData,
+        );
+        containerPricingArray.push(containerPricingObject);
+      }
+      return containerPricingArray;
     },
     trackViewDetailsPage() {
       mixpanel.track('View Details Link - PageView', {

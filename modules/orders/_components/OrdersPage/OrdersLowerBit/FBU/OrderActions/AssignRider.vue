@@ -9,6 +9,7 @@
       />
       <DriverDetails @driverDetails="driverData" :order="order" />
       <button
+        v-if="!assigned"
         class="assign-order-button"
         :class="[
           readyStatus ? 'inactive-assign-button' : '',
@@ -59,6 +60,7 @@ export default {
       response: '',
       payload: '',
       loading: false,
+      assigned: false,
     };
   },
   computed: {
@@ -171,6 +173,10 @@ export default {
       const payload = {
         vehicle_details: '',
         rider_details: '',
+        user: {
+          admin_id: this.userData.payload.data.admin_id,
+          name: this.userData.payload.data.name,
+        },
       };
       if (!this.newVehicle) {
         payload.vehicle_details = this.existingVehiclePayload();
@@ -192,6 +198,7 @@ export default {
     existingVehiclePayload() {
       const payload = {
         new_vehicle: false,
+        owner_id: this.owner.owner_id,
         vehicle_id: this.vehicle.vehicle_id,
       };
       return payload;
@@ -244,7 +251,8 @@ export default {
       allocate_rider_vehicle: 'allocate_rider_vehicle',
     }),
     ...mapMutations({
-      updateErrors: 'setErrors',
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
     }),
     async partnerReallocation(orderPayload) {
       this.loading = true;
@@ -259,6 +267,7 @@ export default {
           this.allocateOrder(data.data);
         } else {
           this.loading = false;
+          this.updateClass('danger');
           this.updateErrors([
             `Failed to reallocate rider, ${data.data.message}`,
           ]);
@@ -291,11 +300,15 @@ export default {
         const data = await this.allocate_order(payload);
         this.loading = false;
         if (!data.data.status) {
+          this.updateClass('danger');
           this.updateErrors([`Failed to allocate order, ${data.data.reason}`]);
           setTimeout(() => {
             this.updateErrors([]);
           }, 5000);
         }
+        this.updateClass('success');
+        this.updateErrors(['Order has been assigned']);
+        this.assigned = true;
         return (this.response = data);
       } catch (error) {
         handleError(error);
