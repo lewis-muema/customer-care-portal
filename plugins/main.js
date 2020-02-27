@@ -10,6 +10,8 @@ Vue.mixin({
     return {
       userImage: config.USER_IMAGE,
       riderDeliveryImg: config.RIDER_DELIVERY_IMG,
+      s3Path:
+        'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//',
       orderColumns: [
         'Status',
         'Client',
@@ -82,6 +84,13 @@ Vue.mixin({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
     }),
+    isSendyStaff(name) {
+      const isStaff = name.includes('Sendy Staff -');
+      this.s3Path = isStaff
+        ? 'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image/'
+        : this.s3Path;
+      return isStaff;
+    },
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
@@ -141,6 +150,15 @@ Vue.mixin({
         .local()
         .format('YYYY-MM-DD HH:mm:ss');
       return localTime;
+    },
+    convertGMTToUTC(date) {
+      const userTZ = moment.tz.guess();
+      const gmtDate = moment
+        .tz(date, userTZ)
+        .tz('GMT')
+        .format('YYYY-MM-DD HH:mm ZZ');
+      const UTCDate = moment.utc(gmtDate);
+      return UTCDate;
     },
     getFormattedDate(date, requiredFormat) {
       const UTCDate = this.convertToUTC(date);
