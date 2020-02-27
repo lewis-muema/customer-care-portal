@@ -114,7 +114,9 @@ export default {
       this.fetchVendorTypes();
     },
   },
-  mounted() {},
+  mounted() {
+    this.trackCreateOrderPage();
+  },
   methods: {
     ...mapMutations({
       updateOrderAmount: 'setOrderAmount',
@@ -171,6 +173,7 @@ export default {
     },
 
     async createOfflineOrder() {
+      this.trackCreateOrderButton();
       this.pending = true;
       const notification = [];
       let actionClass = '';
@@ -214,6 +217,16 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    trackCreateOrderPage() {
+      mixpanel.track('Create order Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackCreateOrderButton() {
+      mixpanel.track('Create order button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };

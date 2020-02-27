@@ -189,6 +189,7 @@ export default {
     this.orderAmount = this.getOrderAmount;
     this.orderNumber = this.getOrderNumber;
     this.vatAmount = this.getVat;
+    this.trackPairOrderPage();
   },
   methods: {
     ...mapActions({
@@ -199,6 +200,7 @@ export default {
       updatePartnerSn: 'setPartnerSn',
     }),
     async pairOfflineOrder() {
+      this.trackPairOrderButton();
       this.pending = true;
       const notification = [];
       let actionClass = '';
@@ -235,6 +237,16 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    trackPairOrderPage() {
+      mixpanel.track('Pair order Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackPairOrderButton() {
+      mixpanel.track('Pair order button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };
