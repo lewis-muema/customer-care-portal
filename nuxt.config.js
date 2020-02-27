@@ -140,6 +140,7 @@ module.exports = {
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
     '@assets/style/pricing-config.css',
+    '@assets/style/style.css',
     'aos/dist/aos.css',
     'vue-select/dist/vue-select.css',
   ],
@@ -153,6 +154,7 @@ module.exports = {
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
     { src: '~plugins/element-ui', ssr: false },
+    { src: '~plugins/vue-google-autocomplete', mode: 'client', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',
@@ -210,6 +212,7 @@ module.exports = {
      */
 
     extend(config, ctx) {},
+    transpile: ['vue-google-autocomplete'],
   },
 
   serverMiddleware: [bodyParser.json(), '~/api'],
