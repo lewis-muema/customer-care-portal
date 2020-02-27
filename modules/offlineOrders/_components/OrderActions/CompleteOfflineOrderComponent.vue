@@ -1,7 +1,7 @@
 <template>
   <div class="col-md-12">
     <div v-if="completeOrder" class="box box-primary user-main">
-      <form style="padding:30px;">
+      <form class="form-style">
         <div class="form-group col-md-6">
           <label for="ordernumber">Order Number</label>
           <input
