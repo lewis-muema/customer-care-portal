@@ -85,7 +85,6 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
-    // eslint-disable-next-line require-await
     async rescheduleOrder() {
       this.submitted = true;
       this.$v.$touch();
