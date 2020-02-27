@@ -57,7 +57,7 @@
           class="btn btn-primary create-order--btn"
           @click="createOfflineOrder"
         >
-          Create Order
+          {{ this.buttonText }}
         </button>
       </form>
     </div>
@@ -83,6 +83,7 @@ export default {
       clientEmail: '',
       fromCoordinates: '',
       toCoordinates: '',
+      pending: false,
       vendorTypes: [],
       vendorName: '',
       pickupCountryCode: '',
@@ -99,6 +100,13 @@ export default {
       return (
         this.DestinationCountryCode !== '' && this.pickupCountryCode !== ''
       );
+    },
+    buttonText() {
+      if (this.pending) {
+        return 'Creating...';
+      } else {
+        return 'Create Order';
+      }
     },
   },
   watch: {
@@ -124,7 +132,7 @@ export default {
       const latitude = addressData.latitude;
       const longitude = addressData.longitude;
       const countryName = addressData.country;
-      this.toCoordinates = `${latitude}, ${longitude}`;
+      this.toCoordinates = `${latitude},${longitude}`;
       // eslint-disable-next-line
       const { getCode } = require('country-list');
       this.DestinationCountryCode = getCode(countryName);
@@ -133,7 +141,7 @@ export default {
       const latitude = addressData.latitude;
       const longitude = addressData.longitude;
       const countryName = addressData.country;
-      this.fromCoordinates = `${latitude}, ${longitude}`;
+      this.fromCoordinates = `${latitude},${longitude}`;
       // eslint-disable-next-line
       const { getCode } = require('country-list');
       this.pickupCountryCode = getCode(countryName);
@@ -163,6 +171,7 @@ export default {
     },
 
     async createOfflineOrder() {
+      this.pending = true;
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -170,8 +179,8 @@ export default {
         endpoint: 'offline_request',
         apiKey: false,
         params: {
-          pick_up_coordinates: '-1.2987826,36.76318070000002',
-          drop_off_coordinates: '-1.3001097,36.7706334',
+          pick_up_coordinates: this.fromCoordinates,
+          drop_off_coordinates: this.toCoordinates,
           vendor_id: this.vendorId,
           client_email: this.clientEmail,
         },
@@ -179,6 +188,7 @@ export default {
       try {
         const data = await this.create_offline_order(payload);
         if (data.status) {
+          this.pending = false;
           const pickup = data.values.from_name;
           const dropoff = data.values.to_name;
           const currency = data.values.currency;
@@ -198,6 +208,7 @@ export default {
           this.confirmOrder = true;
         }
       } catch (error) {
+        this.pending = false;
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }

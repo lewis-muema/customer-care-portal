@@ -17,7 +17,7 @@
           @click="pickOfflineOrder"
           class="btn btn-primary offline-order--btn"
         >
-          Pick-Up Order
+          {{ this.buttonText }}
         </button>
       </form>
     </div>
@@ -41,12 +41,20 @@ export default {
       orderNumber: '',
       pickOrder: true,
       completeOrder: false,
+      pending: false,
     };
   },
   computed: {
     ...mapGetters({
       getOrderNumber: 'getOrderNumber',
     }),
+    buttonText() {
+      if (this.pending) {
+        return 'Picking...';
+      } else {
+        return 'Pick Order';
+      }
+    },
   },
   mounted() {
     this.orderNumber = this.getOrderNumber;
@@ -56,6 +64,7 @@ export default {
       pick_offline_order: 'pick_offline_order',
     }),
     async pickOfflineOrder() {
+      this.pending = true;
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -73,10 +82,12 @@ export default {
         const data = await this.pick_offline_order(payload);
         console.log('data-ddd', data);
         if (data.status) {
+          this.pending = false;
           this.completeOrder = true;
           this.pickOrder = false;
         }
       } catch (error) {
+        this.pending = false;
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }

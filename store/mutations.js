@@ -139,4 +139,7 @@ export default {
   setVat(state, val) {
     state.vatAmount = val;
   },
+  setOrderNumber(state, val) {
+    state.orderNumber = val;
+  },
 };
