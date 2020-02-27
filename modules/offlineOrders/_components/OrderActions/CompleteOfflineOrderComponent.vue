@@ -86,12 +86,14 @@ export default {
     this.dropoff = this.getDropoff;
     this.snNumber = this.getSnNumber;
     this.partnerNumber = this.getPartnerNumber;
+    this.trackCompleteOrderPage();
   },
   methods: {
     ...mapActions({
       complete_offline_order: 'complete_offline_order',
     }),
     async completeOfflineOrder() {
+      this.trackCompleteOrderButton();
       this.pending = true;
       const notification = [];
       let actionClass = '';
@@ -119,6 +121,16 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    trackCompleteOrderPage() {
+      mixpanel.track('Complete order Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackCompleteOrderButton() {
+      mixpanel.track('Complete order button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };

@@ -87,6 +87,10 @@ module.exports = {
         type: 'text/javascript',
       },
       {
+        src: 'js/tugendeonlinetracking.js',
+        type: 'text/javascript',
+      },
+      {
         src: 'js/mixpanel_people.js',
         type: 'text/javascript',
       },

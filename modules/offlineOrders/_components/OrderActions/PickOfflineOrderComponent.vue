@@ -64,12 +64,14 @@ export default {
     this.orderNumber = this.getOrderNumber;
     this.snNumber = this.getSnNumber;
     this.partnerNumber = this.getPartnerNumber;
+    this.trackPickOrderPage();
   },
   methods: {
     ...mapActions({
       pick_offline_order: 'pick_offline_order',
     }),
     async pickOfflineOrder() {
+      this.trackPickOrderButton();
       this.pending = true;
       const notification = [];
       let actionClass = '';
@@ -98,6 +100,16 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    trackPickOrderPage() {
+      mixpanel.track('Pick order Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackPickOrderButton() {
+      mixpanel.track('Pick order button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };

@@ -94,6 +94,7 @@ export default {
     this.pricingId = this.getPricingId;
     this.pickup = this.getPickup;
     this.dropoff = this.getDropoff;
+    this.trackConfirmOrderPage();
   },
   methods: {
     ...mapActions({
@@ -103,6 +104,7 @@ export default {
       updateOrderNumber: 'setOrderNumber',
     }),
     async confirmOfflineOrder() {
+      this.trackConfirmOrderButton();
       this.pending = true;
       const notification = [];
       let actionClass = '';
@@ -172,6 +174,16 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    trackConfirmOrderPage() {
+      mixpanel.track('Confirm order Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackConfirmOrderButton() {
+      mixpanel.track('Confirm order button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };
