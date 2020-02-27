@@ -141,4 +141,7 @@ export default {
   font-weight: 600;
   padding: 4rem;
 }
+.form-style {
+  padding: 30px !important;
+}
 </style>

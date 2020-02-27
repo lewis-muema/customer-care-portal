@@ -249,4 +249,7 @@ export default {
 .input-group-icon {
   padding: 8px 12px;
 }
+.form-style {
+  padding: 30px !important;
+}
 </style>
