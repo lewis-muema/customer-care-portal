@@ -2,6 +2,22 @@
   <div class="col-md-12">
     <div v-if="confirmOrder" class="box box-primary user-main">
       <form class="form-style">
+        <div
+          v-show="isVisible"
+          class="alert alert-warning alert-dismissible fade show"
+          role="alert"
+        >
+          <slot>{{ message }}</slot>
+          <button
+            @click="isVisible = false"
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-group col-md-6">
           <label for="orderamount">Order Amount</label>
           <input
@@ -67,6 +83,8 @@ export default {
       pickOrder: false,
       confirmOrder: true,
       pending: false,
+      isVisible: false,
+      message: '',
     };
   },
   computed: {
@@ -106,8 +124,6 @@ export default {
     async confirmOfflineOrder() {
       this.trackConfirmOrderButton();
       this.pending = true;
-      const notification = [];
-      let actionClass = '';
       const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
       const payload = {
         app: 'OFFLINE_ORDERS',
@@ -166,14 +182,16 @@ export default {
           this.updateOrderNumber(orderNumber);
           this.pickOrder = true;
           this.confirmOrder = false;
+        } else {
+          this.pending = false;
+          this.isVisible = true;
+          this.message = data.reason;
         }
       } catch (error) {
         this.pending = false;
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
+        this.isVisible = true;
+        this.message = 'Something went wrong. Please try again.';
       }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     trackConfirmOrderPage() {
       mixpanel.track('Confirm order Page - PageView', {

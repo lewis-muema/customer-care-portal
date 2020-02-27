@@ -2,6 +2,22 @@
   <div class="col-md-12">
     <div v-if="pickOrder" class="box box-primary user-main">
       <form class="form-style">
+        <div
+          v-show="isVisible"
+          class="alert alert-warning alert-dismissible fade show"
+          role="alert"
+        >
+          <slot>{{ message }}</slot>
+          <button
+            @click="isVisible = false"
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-group col-md-6">
           <label for="ordernumber">Order Number</label>
           <input
@@ -44,6 +60,8 @@ export default {
       pickOrder: true,
       completeOrder: false,
       pending: false,
+      isVisible: false,
+      message: '',
     };
   },
   computed: {
@@ -73,8 +91,6 @@ export default {
     async pickOfflineOrder() {
       this.trackPickOrderButton();
       this.pending = true;
-      const notification = [];
-      let actionClass = '';
       const payload = {
         app: 'OFFLINE_ORDERS',
         endpoint: 'rider_app_pick_up',
@@ -92,14 +108,16 @@ export default {
           this.pending = false;
           this.completeOrder = true;
           this.pickOrder = false;
+        } else {
+          this.pending = false;
+          this.isVisible = true;
+          this.message = data.reason;
         }
       } catch (error) {
         this.pending = false;
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
+        this.isVisible = true;
+        this.message = 'Something went wrong. Please try again.';
       }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     trackPickOrderPage() {
       mixpanel.track('Pick order Page - PageView', {
