@@ -79,8 +79,8 @@ export default {
         apiKey: false,
         params: {
           order_no: this.orderNumber,
-          sim_card_sn: '254716163362',
-          rider_phone: '+254716163362',
+          sim_card_sn: this.snNumber,
+          rider_phone: this.partnerNumber,
           batch_no: '',
         },
       };

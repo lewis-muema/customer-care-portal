@@ -53,6 +53,18 @@
           </div>
         </div>
         <div class="form-group col-md-6">
+          <label for="snNumber">Version Code</label>
+          <div class="input-group-btn">
+            <input
+              type="text"
+              class="form-control"
+              id="versionCode"
+              placeholder="version code"
+              v-model="versionCode"
+            />
+          </div>
+        </div>
+        <div class="form-group col-md-6">
           <label for="sendycomission">Sendy Commission</label>
           <div class="input-group-btn">
             <div class="input-group-prepend">
@@ -147,6 +159,7 @@ export default {
       sendyComission: 0,
       serviceFee: 0,
       insuranceAmount: 0,
+      versionCode: 0,
       currency: '',
       vatAmount: 0,
       orderNumber: '',
@@ -197,7 +210,7 @@ export default {
           order_no: this.orderNumber,
           sim_card_sn: this.simCardSn,
           rider_phone: this.partnerPhone.replace(/\s/g, ''),
-          version_code: 684,
+          version_code: parseInt(this.versionCode, 10),
           order_amount: parseInt(this.orderAmount, 10),
           rider_amount: parseInt(this.partnerAmount, 10),
           vat_amount: parseInt(this.vatAmount, 10),
