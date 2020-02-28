@@ -25,12 +25,7 @@
           </div>
           <div class="modal-body">
             <div class="modalimages" :id="`${image}`">
-              <img
-                class="modalimages"
-                :src="
-                  `https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//${image}`
-                "
-              />
+              <img class="modalimages" :src="`${path}${image}`" />
             </div>
           </div>
           <div class="modal-footer">
@@ -59,6 +54,10 @@ export default {
       required: true,
     },
     order: {
+      type: String,
+      required: true,
+    },
+    path: {
       type: String,
       required: true,
     },
