@@ -52,7 +52,11 @@
         </div>
       </div>
     </div>
-    <DeliveryDetailsModals :image="modalImage" :order="orderNo" />
+    <DeliveryDetailsModals
+      :image="modalImage"
+      :order="orderNo"
+      :path="s3Path"
+    />
     <DeliveryDetailsForm :order="order" />
   </span>
 </template>
