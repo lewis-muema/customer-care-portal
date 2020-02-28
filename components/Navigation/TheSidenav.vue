@@ -52,6 +52,7 @@
               ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
+
           <li class="treeview" v-if="permissions.create_orders">
             <nuxt-link to="/offlineOrders"
               ><i class="fa fa-plus-circle"></i>
@@ -117,6 +118,9 @@ export default {
     },
     post() {
       return this.user.payload.data.post;
+    },
+    permissions() {
+      return JSON.parse(this.user.payload.data.privilege);
     },
   },
   methods: {
