@@ -56,6 +56,17 @@
           >Invoice</a
         >
       </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          :id="`offline_orders_${copID}`"
+          data-toggle="tab"
+          role="tab"
+          aria-selected="false"
+          @click="viewTab('offline_orders', copID)"
+          >Offline Orders</a
+        >
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
@@ -111,6 +122,14 @@
         >
           <TheInvoiceLogsComponent :user="copID" :currency="currency" />
         </div>
+        <div
+          :class="`tab-pane fade ${show} ${active}`"
+          :id="`offline_orders_${copID}`"
+          role="tabpanel"
+          v-if="showTab === `offline_orders_${copID}`"
+        >
+          <TheOfflineOrdersComponent :user="copID" :currency="currency" />
+        </div>
       </div>
     </div>
   </div>
@@ -124,6 +143,8 @@ export default {
     TheRidersComponent: () => import('./UserTabs/TheRidersComponent'),
     TheInvoiceComponent: () => import('./UserTabs/TheInvoiceComponent'),
     TheInvoiceLogsComponent: () => import('./UserTabs/TheInvoiceLogsComponent'),
+    TheOfflineOrdersComponent: () =>
+      import('./UserTabs/TheOfflineOrdersComponent'),
   },
   props: {
     user: {

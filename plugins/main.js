@@ -3,6 +3,8 @@ import moment from 'moment';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import config from '~/config/configs';
 
+const momentTimezone = require('moment-timezone');
+
 Vue.mixin({
   data() {
     return {
@@ -73,6 +75,9 @@ Vue.mixin({
     userData() {
       return this.session.payload.data;
     },
+    timezone() {
+      return momentTimezone.tz.guess();
+    },
   },
   methods: {
     ...mapMutations({
@@ -92,31 +97,17 @@ Vue.mixin({
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    deliveryStatus(order) {
+    deliveryStatus(order, notesStatus) {
       const details = order.order_details;
       // eslint-disable-next-line prettier/prettier
       const verification = typeof details.values === 'undefined' ? details.delivery_verification : details.values.delivery_verification;
 
-      const notesStatus = verification.physical_delivery_note_status;
       let status = 'delivered';
-      if (notesStatus) {
-        // eslint-disable-next-line prettier/prettier
-        const imgStatus = Object.prototype.hasOwnProperty.call(
-          order.delivery_details,
-          'rider_delivery_image',
-        );
-
-        // eslint-disable-next-line prettier/prettier
-        if (
-          imgStatus &&
-          order.delivery_details.rider_delivery_image !== null &&
-          order.delivery_details.rider_delivery_image[0]
-            .physical_delivery_note_status === 2
-        ) {
-          status = 'delivered';
-        } else {
-          status = 'Dnotes';
-        }
+      if (notesStatus === 'Approved' || !notesStatus) {
+        status = 'delivered';
+        status = 'delivered';
+      } else {
+        status = 'Dnotes';
       }
 
       return status;
@@ -150,8 +141,28 @@ Vue.mixin({
       const dt = moment(date).format(requiredFormat);
       return dt;
     },
+    convertToUTC(date) {
+      const utcDate = moment.utc(date);
+      return utcDate;
+    },
+    convertToLocalTime(UTCDate) {
+      const localTime = moment(UTCDate)
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss');
+      return localTime;
+    },
+    convertGMTToUTC(date) {
+      const userTZ = moment.tz.guess();
+      const gmtDate = moment
+        .tz(date, userTZ)
+        .tz('GMT')
+        .format('YYYY-MM-DD HH:mm ZZ');
+      const UTCDate = moment.utc(gmtDate);
+      return UTCDate;
+    },
     getFormattedDate(date, requiredFormat) {
-      const dt1 = moment(date, 'YYYY-MM-DD HH:mm:ss');
+      const UTCDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(UTCDate);
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
@@ -205,6 +216,7 @@ Vue.mixin({
       fixed_cost,
       customer_min_amount,
       confirm_status,
+      order,
     ) {
       // eslint-disable-next-line prettier/prettier
       const computedAmount = this.determineOrderAmounts(
@@ -213,14 +225,27 @@ Vue.mixin({
         fixed_cost,
         customer_min_amount,
         confirm_status,
+        order,
       );
       currency = currency || '';
       amount = this.numberWithCommas(computedAmount);
       let amountString = `${currency} ${amount}`;
-      if (vendor_type_id === 25 && confirm_status < 1) {
+      if (
+        vendor_type_id === 25 &&
+        order.order_details.order_no === order.order_details.parent_order_no &&
+        confirm_status < 1
+      ) {
         amountString = '-';
       }
       return amountString;
+    },
+    freightLabel(order) {
+      if (
+        order.order_details.order_no !== order.order_details.parent_order_no &&
+        order.rider_details.vendor_type_id === 25
+      ) {
+        return '-C';
+      }
     },
     // eslint-disable-next-line prettier/prettier
     determineOrderAmounts(
@@ -229,9 +254,14 @@ Vue.mixin({
       fixedCost,
       customerMinAmount,
       confirmStatus,
+      order,
     ) {
       const freightArray = [20, 25];
-      if (freightArray.includes(vendorTypeID) && !fixedCost) {
+      if (
+        freightArray.includes(vendorTypeID) &&
+        !fixedCost &&
+        order.order_details.order_no === order.order_details.parent_order_no
+      ) {
         if (confirmStatus < 1) {
           amount = customerMinAmount;
         }

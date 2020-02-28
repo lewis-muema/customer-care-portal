@@ -281,9 +281,15 @@ export default {
         this.pricingModel = 'Distance Based Pricing';
         this.existingConfigs = true;
         for (let i = 0; i < this.distancePricingTableData.length; i += 1) {
-          if (this.distancePricingTableData[i].status === 'Pending') {
+          if (
+            typeof this.distancePricingTableData[i] !== 'undefined' &&
+            this.distancePricingTableData[i].status === 'Pending'
+          ) {
             this.distancePricingStatus = 'Pending';
-          } else {
+          } else if (
+            typeof this.distancePricingTableData[i] !== 'undefined' &&
+            this.distancePricingTableData[i].status === 'Active'
+          ) {
             this.distancePricingStatus = 'Active';
           }
         }

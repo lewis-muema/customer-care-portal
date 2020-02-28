@@ -7,7 +7,7 @@
             <th>Type</th>
             <th>Payment Method</th>
             <th>Reference</th>
-            <th>Amount</th>
+            <th>Repayment Amount</th>
             <th>Balance</th>
             <th>Status</th>
             <th>Date</th>

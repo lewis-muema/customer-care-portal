@@ -7,8 +7,10 @@
     >
       <div :class="`col-md-12 user-search`">
         <TheSearchRiderComponent
-          @riderID="searchedRider"
+          @riderData="searchedRider"
           :category="placehoder"
+          :arr="array"
+          :rider-key="0"
         />
         <div :class="`invalid ${hide}`">
           Please select a rider
@@ -65,8 +67,8 @@ export default {
     ...mapActions({
       perform_user_action: 'perform_user_action',
     }),
-    searchedRider(riderID) {
-      return (this.rider = riderID);
+    searchedRider(riderData) {
+      return (this.rider = riderData.riderID);
     },
     async allocateRider() {
       if (this.rider === null) {

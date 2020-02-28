@@ -57,10 +57,7 @@
       </li>
       <li
         class="nav-item"
-        v-if="
-          order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'cancelled'
-        "
+        v-if="order.order_details.order_status === 'pending'"
       >
         <a
           class="force_blue"

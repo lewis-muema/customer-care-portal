@@ -94,7 +94,6 @@ export default {
 
       const notification = [];
       let actionClass = '';
-
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'reschedule_order_cc',
@@ -102,7 +101,9 @@ export default {
         params: {
           order_no: this.orderNo,
           action_id: 6,
-          date_time: this.time,
+          date_time: this.convertGMTToUTC(this.time).format(
+            'YYYY-MM-DD HH:mm:ss',
+          ),
         },
       };
       try {
