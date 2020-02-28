@@ -39,11 +39,12 @@
                 v-else
                 size="small"
                 class="inline-input"
-                v-model="pacInput1"
+                v-model="pacInput1[scope.$index].name"
                 :value="handleSelectFrom"
                 :fetch-suggestions="querySearch"
                 placeholder="Search location"
                 :trigger-on-focus="false"
+                @focus="rowIndex = scope.$index"
                 @select="handleSelectFrom($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
@@ -62,11 +63,12 @@
                 v-else
                 size="small"
                 class="inline-input"
-                v-model="pacInput2"
+                v-model="pacInput2[scope.$index].name"
                 :value="handleSelectTo"
                 :fetch-suggestions="querySearch"
                 placeholder="Search location"
                 :trigger-on-focus="false"
+                @focus="rowIndex = scope.$index"
                 @select="handleSelectTo($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
@@ -89,11 +91,12 @@
                 v-else
                 size="small"
                 class="inline-input"
-                v-model="pacInput3"
+                v-model="pacInput3[scope.$index].name"
                 :value="handleSelectContainerDestination"
                 :fetch-suggestions="querySearch"
                 placeholder="Search container destination"
                 :trigger-on-focus="false"
+                @focus="rowIndex = scope.$index"
                 @select="
                   handleSelectContainerDestination(
                     $event,
@@ -253,9 +256,22 @@ export default {
   },
   data() {
     return {
-      pacInput1: '',
-      pacInput2: '',
-      pacInput3: '',
+      rowIndex: 0,
+      pacInput1: [
+        {
+          name: '',
+        },
+      ],
+      pacInput2: [
+        {
+          name: '',
+        },
+      ],
+      pacInput3: [
+        {
+          name: '',
+        },
+      ],
       currency: '',
       vendorName: '',
       suggestions: [],
@@ -323,20 +339,32 @@ export default {
     },
   },
   watch: {
-    pacInput1(val) {
-      if (val && val.length > 2) {
-        this.search(val);
-      }
+    pacInput1: {
+      handler(val) {
+        val = val[this.rowIndex].name;
+        if (val && val.length > 2) {
+          this.search(val);
+        }
+      },
+      deep: true,
     },
-    pacInput2(val) {
-      if (val && val.length > 2) {
-        this.search(val);
-      }
+    pacInput2: {
+      handler(val) {
+        val = val[this.rowIndex].name;
+        if (val && val.length > 2) {
+          this.search(val);
+        }
+      },
+      deep: true,
     },
-    pacInput3(val) {
-      if (val && val.length > 2) {
-        this.search(val);
-      }
+    pacInput3: {
+      handler(val) {
+        val = val[this.rowIndex].name;
+        if (val && val.length > 2) {
+          this.search(val);
+        }
+      },
+      deep: true,
     },
   },
   mounted() {
@@ -362,6 +390,7 @@ export default {
     },
     handleSelectFrom(item, index, rows) {
       this.tableData[index].from = item.value;
+      this.pacInput1[index].name = '';
       const fromPlaceId = item.place_id;
       axios
         .get(
@@ -381,6 +410,7 @@ export default {
     },
     handleSelectTo(item, index, rows) {
       this.tableData[index].to = item.value;
+      this.pacInput2[index].name = '';
       const toPlaceId = item.place_id;
       axios
         .get(
@@ -400,6 +430,7 @@ export default {
     },
     handleSelectContainerDestination(item, index, rows) {
       this.tableData[index].empty_container_destination = item.value;
+      this.pacInput3[index].name = '';
       const toPlaceId = item.place_id;
       axios
         .get(
@@ -421,6 +452,9 @@ export default {
     },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
+      this.pacInput1.splice(index, 1);
+      this.pacInput2.splice(index, 1);
+      this.pacInput3.splice(index, 1);
     },
     onChange(event, index, row) {
       this.vendorName = row.name;
