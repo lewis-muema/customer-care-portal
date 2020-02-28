@@ -2,6 +2,22 @@
   <div class="col-md-12">
     <div v-if="completeOrder" class="box box-primary user-main">
       <form class="form-style">
+        <div
+          v-show="isVisible"
+          class="alert alert-warning alert-dismissible fade show"
+          role="alert"
+        >
+          <slot>{{ message }}</slot>
+          <button
+            @click="isVisible = false"
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-group col-md-6">
           <label for="ordernumber">Order Number</label>
           <input
@@ -62,6 +78,8 @@ export default {
       response: false,
       completeOrder: true,
       pending: false,
+      isVisible: false,
+      message: '',
     };
   },
   computed: {
@@ -86,15 +104,15 @@ export default {
     this.dropoff = this.getDropoff;
     this.snNumber = this.getSnNumber;
     this.partnerNumber = this.getPartnerNumber;
+    this.trackCompleteOrderPage();
   },
   methods: {
     ...mapActions({
       complete_offline_order: 'complete_offline_order',
     }),
     async completeOfflineOrder() {
+      this.trackCompleteOrderButton();
       this.pending = true;
-      const notification = [];
-      let actionClass = '';
       const payload = {
         app: 'OFFLINE_ORDERS',
         endpoint: 'rider_app_deliver',
@@ -112,13 +130,26 @@ export default {
           this.pending = false;
           this.completeOrder = false;
           this.response = true;
+        } else {
+          this.pending = false;
+          this.isVisible = true;
+          this.message = data.reason;
         }
       } catch (error) {
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
+        this.pending = false;
+        this.isVisible = true;
+        this.message = 'Something went wrong. Please try again.';
       }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
+    },
+    trackCompleteOrderPage() {
+      mixpanel.track('Complete order Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackCompleteOrderButton() {
+      mixpanel.track('Complete order button - ButtonClick', {
+        type: 'Click',
+      });
     },
   },
 };
