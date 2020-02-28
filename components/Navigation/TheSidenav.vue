@@ -60,16 +60,6 @@
             >
           </li>
 
-          <li class="treeview" v-if="permissions.invoice_generation">
-            <a
-              class="fancybox fancybox.iframe fancyboxy"
-              href="/invoice"
-              @click="showModal('invoice', $event)"
-              ><i class="fa fa-file"></i>
-              <span> Generate Invoice Numbers </span>
-            </a>
-          </li>
-
           <li id="offline_2" class="hidden">
             <a href="#"
               ><i class="fa fa-circle-o text-red"></i> <span>Offline</span></a
