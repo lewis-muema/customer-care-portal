@@ -145,9 +145,15 @@ const PricingConfigsMxn = {
         };
         this.tableData.push(distancePricingRow);
       } else if (model === 'Location') {
-        this.pacInput1 = '';
-        this.pacInput2 = '';
-        this.pacInput3 = '';
+        this.pacInput1.push({
+          name: '',
+        });
+        this.pacInput2.push({
+          name: '',
+        });
+        this.pacInput3.push({
+          name: '',
+        });
         const locationPricingRow = {
           id: 1,
           name: '',

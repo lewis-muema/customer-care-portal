@@ -271,7 +271,7 @@ export default {
           currency: this.currency,
         };
         const containerData = {
-          status: 'Pending',
+          status: 'Active',
           name: data[i].name,
           cop_id: this.copId,
           cop_name: this.copName,

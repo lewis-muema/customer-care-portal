@@ -21,6 +21,18 @@
         width="255"
       >
       </el-table-column>
+      <el-table-column
+        prop="container_size_feet"
+        label="Container Size (Freight)"
+        width="255"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="container_weight_tonnes"
+        label="Container Weight in tonnes (Freight)"
+        width="255"
+      >
+      </el-table-column>
       <el-table-column prop="name" label="Vendor type" width="130">
       </el-table-column>
       <el-table-column prop="order_amount" label="Client fee" width="130">
