@@ -97,7 +97,6 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://auth.sendyit.com/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
     OFFLINE_PRICING:
