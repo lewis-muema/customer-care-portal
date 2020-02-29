@@ -284,7 +284,7 @@ export default {
           cop_name: 'Safaricom',
           currency: 'KES',
           admin_id: 1,
-          service_fee: 1200,
+          service_fee: 0,
           from: '',
           from_location: {
             type: 'Point',
