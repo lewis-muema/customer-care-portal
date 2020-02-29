@@ -19,7 +19,9 @@
               <div class="freight-order-actions">
                 <button
                   v-if="
-                    order.order_details.confirm_status === 0 && !cancelStatus()
+                    order.order_details.confirm_status === 0 &&
+                      !cancelStatus() &&
+                      hasFreightPermissions()
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -40,7 +42,11 @@
                   GPS
                 </button>
                 <button
-                  v-if="!completeStatus() && !cancelStatus()"
+                  v-if="
+                    !completeStatus() &&
+                      !cancelStatus() &&
+                      hasFreightPermissions()
+                  "
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'finances' ? 'active-tab' : 'inactive-tab'
@@ -51,7 +57,11 @@
                   Finances
                 </button>
                 <button
-                  v-if="!completeStatus() && !cancelStatus()"
+                  v-if="
+                    !completeStatus() &&
+                      !cancelStatus() &&
+                      hasFreightPermissions()
+                  "
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'status' ? 'active-tab' : 'inactive-tab'
@@ -65,7 +75,8 @@
                   v-if="
                     order.order_details.confirm_status !== 0 &&
                       !completeStatus() &&
-                      !cancelStatus()
+                      !cancelStatus() &&
+                      canReallocate()
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -77,7 +88,7 @@
                   Reallocate
                 </button>
                 <button
-                  v-if="!completeStatus() && !cancelStatus()"
+                  v-if="!completeStatus() && !cancelStatus() && canCancel()"
                   class="freight-order-actions-buttons"
                   :class="
                     ActiveTab === 'cancel' ? 'active-tab' : 'inactive-tab'
@@ -121,21 +132,27 @@
                 <AuxilliaryServices
                   v-if="
                     ActiveTab === 'finances' &&
-                      (!completeStatus() && !cancelStatus())
+                      (!completeStatus() &&
+                        !cancelStatus() &&
+                        hasFreightPermissions())
                   "
                   :order="order"
                 />
                 <AssignRider
                   v-if="
                     ActiveTab === 'assign' &&
-                      (!completeStatus() && !cancelStatus())
+                      (!completeStatus() &&
+                        !cancelStatus() &&
+                        hasFreightPermissions())
                   "
                   :order="order"
                 />
                 <OrderStatuses
                   v-if="
                     ActiveTab === 'status' &&
-                      (!completeStatus() && !cancelStatus())
+                      (!completeStatus() &&
+                        !cancelStatus() &&
+                        hasFreightPermissions())
                   "
                   :order="order"
                 />
@@ -144,14 +161,15 @@
                     ActiveTab === 'reallocate' &&
                       (order.order_details.confirm_status !== 0 &&
                         !completeStatus() &&
-                        !cancelStatus())
+                        !cancelStatus() &&
+                        canReallocate())
                   "
                   :order="order"
                 />
                 <TheCancelComponent
                   v-if="
                     ActiveTab === 'cancel' &&
-                      (!completeStatus() && !cancelStatus())
+                      (!completeStatus() && !cancelStatus() && canCancel())
                   "
                   :order="order"
                 />
@@ -251,6 +269,33 @@ export default {
     },
     cancelStatus() {
       if (this.order.order_details.order_status === 'cancelled') {
+        return true;
+      }
+      return false;
+    },
+    hasFreightPermissions() {
+      const privileges = JSON.parse(this.userData.payload.data.privilege);
+      if (
+        Object.prototype.hasOwnProperty.call(privileges, 'freight_actions') &&
+        privileges.freight_actions
+      ) {
+        return true;
+      }
+      return false;
+    },
+    canReallocate() {
+      const privileges = JSON.parse(this.userData.payload.data.privilege);
+      if (
+        Object.prototype.hasOwnProperty.call(privileges, 'reassign_orders') &&
+        privileges.reassign_orders
+      ) {
+        return true;
+      }
+      return false;
+    },
+    canCancel() {
+      const adminType = this.userData.payload.data.admin_type;
+      if (adminType !== 1) {
         return true;
       }
       return false;

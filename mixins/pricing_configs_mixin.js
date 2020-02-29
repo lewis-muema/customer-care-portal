@@ -145,8 +145,15 @@ const PricingConfigsMxn = {
         };
         this.tableData.push(distancePricingRow);
       } else if (model === 'Location') {
-        this.pacInput1 = '';
-        this.pacInput2 = '';
+        this.pacInput1.push({
+          name: '',
+        });
+        this.pacInput2.push({
+          name: '',
+        });
+        this.pacInput3.push({
+          name: '',
+        });
         const locationPricingRow = {
           id: 10,
           name: '',
@@ -154,7 +161,7 @@ const PricingConfigsMxn = {
           cop_name: 'Safaricom',
           currency: 'KES',
           admin_id: 1,
-          service_fee: 1200,
+          service_fee: 0,
           from: '',
           from_location: {
             type: 'Point',
@@ -164,11 +171,19 @@ const PricingConfigsMxn = {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
+          empty_return_location: {
+            type: 'Point',
+            coordinates: [37.671947, -4.056444],
+          },
           to: '',
-          status: 'Active',
+          empty_container_destination: '',
+          status: '',
           city: '',
-          order_amount: 23000,
-          rider_amount: 21400,
+          order_amount: 0,
+          rider_amount: 0,
+          container_weight_tonnes: '',
+          container_size_feet: '',
+          container_errand_type: 'drop_off',
         };
         this.tableData.push(locationPricingRow);
       }
