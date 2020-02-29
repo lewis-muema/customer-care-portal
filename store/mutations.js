@@ -121,4 +121,31 @@ export default {
   setLoginErrors(state, val) {
     state.loginErrors = val;
   },
+  setOrderAmount(state, val) {
+    state.orderAmount = val;
+  },
+  setPickUp(state, val) {
+    state.pickup = val;
+  },
+  setDropoff(state, val) {
+    state.dropoff = val;
+  },
+  setCurrency(state, val) {
+    state.offlineOrderCurrency = val;
+  },
+  setPricingId(state, val) {
+    state.pricingId = val;
+  },
+  setVat(state, val) {
+    state.vatAmount = val;
+  },
+  setOrderNumber(state, val) {
+    state.orderNumber = val;
+  },
+  setPartnerPhone(state, val) {
+    state.partnerPhone = val;
+  },
+  setPartnerSn(state, val) {
+    state.snNumber = val;
+  },
 };
