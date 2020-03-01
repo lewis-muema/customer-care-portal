@@ -14,7 +14,7 @@
           :id="`completion_reason_${orderNo}`"
           name="reason"
           class="form-control"
-          placeholder="Order completion order"
+          placeholder="Order completion reason"
           :class="{
             'is-invalid': submitted && $v.reason.$error,
           }"
