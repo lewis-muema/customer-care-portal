@@ -671,7 +671,7 @@ export default {
   async request_pending_distance_pricing_data({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
-      let pendingDistancePricing = [];
+      const pendingDistancePricing = [];
       let pendingLocationPricing = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
@@ -679,17 +679,12 @@ export default {
           if (pendingPricingDetails[i].location_pricing) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
           } else {
-            const pricingTableData = [];
-            pricingTableData.push(pendingPricingDetails[i].distance_pricing);
-            for (let j = 0; j < pricingTableData.length; j += 1) {
-              const perMinuteFee =
-                pricingTableData[i].waiting_time_cost_per_min;
-              const perHourFee = perMinuteFee * 60;
-              pricingTableData[
-                i
-              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
-            }
-            pendingDistancePricing = pricingTableData;
+            pendingPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min *= 60;
+            pendingDistancePricing.push(
+              pendingPricingDetails[i].distance_pricing,
+            );
           }
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
@@ -707,7 +702,7 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let approverId = 0;
-      let distancePricing = [];
+      const distancePricing = [];
       let locationPricing = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
@@ -715,8 +710,7 @@ export default {
           if (customPricingDetails[i].location_pricing) {
             approverId = customPricingDetails[i].location_pricing[0].admin_id;
             locationPricing = customPricingDetails[i].location_pricing;
-          }
-          if (customPricingDetails[i].container_pricing) {
+          } else if (customPricingDetails[i].container_pricing) {
             approverId = customPricingDetails[i].container_pricing[0].admin_id;
             if (locationPricing.length > 0) {
               locationPricing = locationPricing.concat(
@@ -725,20 +719,12 @@ export default {
             } else {
               locationPricing = customPricingDetails[i].container_pricing;
             }
-          }
-          if (customPricingDetails[i].distance_pricing) {
+          } else if (customPricingDetails[i].distance_pricing) {
             approverId = customPricingDetails[i].admin_id;
-            const pricingTableData = [];
-            pricingTableData.push(customPricingDetails[i].distance_pricing);
-            for (let j = 0; j < pricingTableData.length; j += 1) {
-              const perMinuteFee =
-                pricingTableData[i].waiting_time_cost_per_min;
-              const perHourFee = perMinuteFee * 60;
-              pricingTableData[
-                i
-              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
-            }
-            distancePricing = pricingTableData;
+            customPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min *= 60;
+            distancePricing.push(customPricingDetails[i].distance_pricing);
           }
         }
         commit('updateLocationPricing', locationPricing);

@@ -33,6 +33,7 @@ const PricingConfigsMxn = {
       configuredLocationPricing: 'getConfiguredLocationPricing',
       getSessionData: 'getSession',
       pendingLocationPricing: 'getPendingLocationPricing',
+      pendingDistancePricing: 'getPendingDistancePricing',
     }),
   },
   methods: {
