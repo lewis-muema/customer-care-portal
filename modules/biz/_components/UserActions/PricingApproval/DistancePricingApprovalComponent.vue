@@ -40,7 +40,7 @@
           </el-table-column>
           <el-table-column
             prop="waiting_time_cost_per_min"
-            label="Waiting fee per min"
+            label="Waiting fee per hour"
             width="150"
           >
           </el-table-column>
