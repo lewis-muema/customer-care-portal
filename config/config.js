@@ -133,9 +133,9 @@ const config = {
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
     OFFLINE_ORDERS:
-      'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
+      'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/orders/',
     OFFLINE_PRICING:
-      'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
+      'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
