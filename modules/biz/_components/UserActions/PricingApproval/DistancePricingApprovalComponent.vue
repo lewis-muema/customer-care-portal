@@ -12,7 +12,6 @@
           :data="distancePricingTableData"
           border
           class="pricing-table-styling"
-          style="width: 1000px"
         >
           <el-table-column prop="city" label="City" width="170">
           </el-table-column>
@@ -143,13 +142,14 @@ export default {
     },
   },
   mounted() {
+    console.log('user', this.user);
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
     this.getDistancePricingConfigs();
-    this.trackApprovalHomePage();
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -165,7 +165,7 @@ export default {
       reject_distance_pricing_configs: 'reject_distance_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
-      this.trackRejectConfigs();
+      // this.trackRejectConfigs();
       const pricingTableData = this.customPricingDetails;
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee =
@@ -187,9 +187,9 @@ export default {
       try {
         const data = await this.reject_distance_pricing_configs(payload);
         if (data.status) {
-          this.trackPassedReject();
-          this.trackMixpanelIdentify();
-          this.trackMixpanelPeople();
+          // this.trackPassedReject();
+          // this.trackMixpanelIdentify();
+          // this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
@@ -197,9 +197,9 @@ export default {
           this.updateSuccess(false);
           this.getDistancePricingConfigs();
         } else {
-          this.trackFailedReject();
-          this.trackMixpanelIdentify();
-          this.trackMixpanelPeople();
+          // this.trackFailedReject();
+          // this.trackMixpanelIdentify();
+          // this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -212,13 +212,13 @@ export default {
     },
     provideReason() {
       this.rejectWithReason = true;
-      this.trackRejectConfigsPage();
+      // this.trackRejectConfigsPage();
     },
     goBack() {
       this.rejectWithReason = false;
     },
     async approveDistancePricingConfigs() {
-      this.trackApproveConfig();
+      // this.trackApproveConfig();
       const pricingTableData = this.customPricingDetails;
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee =
@@ -240,17 +240,17 @@ export default {
       try {
         const data = await this.approve_distance_pricing_configs(payload);
         if (data.status) {
-          this.trackPassedApproval();
-          this.trackMixpanelIdentify();
-          this.trackMixpanelPeople();
+          // this.trackPassedApproval();
+          // this.trackMixpanelIdentify();
+          // this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateApproveStatus(false);
         } else {
-          this.trackMixpanelIdentify();
-          this.trackFailedApproval();
-          this.trackMixpanelPeople();
+          // this.trackMixpanelIdentify();
+          // this.trackFailedApproval();
+          // this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -348,6 +348,9 @@ export default {
   background-image: none;
   background-color: #3c8dbc !important;
   border-color: #ebeef5;
+}
+.main-section-holder {
+  height: 710px !important;
 }
 .table td {
   padding: 5px !important;
