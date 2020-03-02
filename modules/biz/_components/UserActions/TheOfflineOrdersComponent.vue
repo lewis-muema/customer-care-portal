@@ -88,7 +88,7 @@
                   <td class="partner-header">Partner Account</td>
                   <td class="amount-header">Total Amount Earned</td>
                   <td class="days-header">No.of days worked</td>
-                  <td class="table-resize">Tonnage</td>
+                  <td class="table-resize">Tonnes</td>
                   <td class="table-resize">No.of orders</td>
                   <td></td>
                 </tr>
@@ -136,7 +136,7 @@
                       class="form-control"
                       type="number"
                       name="tonnage"
-                      placeholder="Tonnage"
+                      placeholder="Tonnes"
                     />
                   </td>
                   <td>
@@ -674,7 +674,7 @@ export default {
 
 <style scoped>
 .form-inline .form-control {
-  width: 100% !important;
+  width: 100%;
   border-radius: 0.25rem;
 }
 .form-inline .custom-select,
@@ -863,10 +863,10 @@ export default {
   margin-bottom: 3%;
 }
 .charge_rate--label {
-  margin-left: 2%;
+  margin-left: 6%;
 }
 .commision-rate {
-  width: 82% !important;
+  width: 81% !important;
 }
 .bill-partners-align {
   padding-bottom: 2%;
