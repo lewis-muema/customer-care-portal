@@ -148,7 +148,7 @@ export default {
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
     this.getDistancePricingConfigs();
-    // this.trackApprovalHomePage();
+    this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -164,7 +164,7 @@ export default {
       reject_distance_pricing_configs: 'reject_distance_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
-      // this.trackRejectConfigs();
+      this.trackRejectConfigs();
       const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
       const pricingTableData = clone;
       for (let i = 0; i < pricingTableData.length; i += 1) {
@@ -187,9 +187,9 @@ export default {
       try {
         const data = await this.reject_distance_pricing_configs(payload);
         if (data.status) {
-          // this.trackPassedReject();
-          // this.trackMixpanelIdentify();
-          // this.trackMixpanelPeople();
+          this.trackPassedReject();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
@@ -197,9 +197,9 @@ export default {
           this.updateSuccess(false);
           this.getDistancePricingConfigs();
         } else {
-          // this.trackFailedReject();
-          // this.trackMixpanelIdentify();
-          // this.trackMixpanelPeople();
+          this.trackFailedReject();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -212,13 +212,13 @@ export default {
     },
     provideReason() {
       this.rejectWithReason = true;
-      // this.trackRejectConfigsPage();
+      this.trackRejectConfigsPage();
     },
     goBack() {
       this.rejectWithReason = false;
     },
     async approveDistancePricingConfigs() {
-      // this.trackApproveConfig();
+      this.trackApproveConfig();
       const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
       const pricingTableData = clone;
       for (let i = 0; i < pricingTableData.length; i += 1) {
@@ -241,17 +241,17 @@ export default {
       try {
         const data = await this.approve_distance_pricing_configs(payload);
         if (data.status) {
-          // this.trackPassedApproval();
-          // this.trackMixpanelIdentify();
-          // this.trackMixpanelPeople();
+          this.trackPassedApproval();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateApproveStatus(false);
         } else {
-          // this.trackMixpanelIdentify();
-          // this.trackFailedApproval();
-          // this.trackMixpanelPeople();
+          this.trackMixpanelIdentify();
+          this.trackFailedApproval();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }

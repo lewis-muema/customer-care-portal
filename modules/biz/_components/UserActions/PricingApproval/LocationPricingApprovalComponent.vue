@@ -132,7 +132,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    // this.trackApprovalHomePage();
+    this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -146,7 +146,7 @@ export default {
       reject_location_pricing_configs: 'reject_location_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
-      // this.trackRejectConfigs();
+      this.trackRejectConfigs();
       const clone = JSON.parse(JSON.stringify(this.locationPricingTableData));
       const pricingTableData = clone;
       this.approvalParams = this.createPayload(pricingTableData, 'deactivated');
@@ -161,8 +161,8 @@ export default {
       try {
         const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
-          // this.trackMixpanelIdentify();
-          // this.trackMixpanelPeople();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
@@ -170,8 +170,8 @@ export default {
           this.updateSuccess(false);
           this.pendingRequests = false;
         } else {
-          // this.trackMixpanelIdentify();
-          // this.trackMixpanelPeople();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -184,13 +184,13 @@ export default {
     },
     provideReason() {
       this.rejectWithReason = true;
-      // this.trackRejectConfigsPage();
+      this.trackRejectConfigsPage();
     },
     goBack() {
       this.rejectWithReason = false;
     },
     async approveLocationPricingConfigs() {
-      // this.trackApproveConfig();
+      this.trackApproveConfig();
       this.approvalParams = this.createPayload(
         this.locationPricingTableData,
         'Active',
@@ -206,17 +206,17 @@ export default {
       try {
         const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
-          // this.trackPassedApproval();
-          // this.trackMixpanelIdentify();
-          // this.trackMixpanelPeople();
+          this.trackPassedApproval();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.pendingRequests = false;
         } else {
-          // this.trackFailedApproval();
-          // this.trackMixpanelIdentify();
-          // this.trackMixpanelPeople();
+          this.trackFailedApproval();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
