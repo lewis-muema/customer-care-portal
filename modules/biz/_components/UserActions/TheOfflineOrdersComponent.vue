@@ -552,6 +552,7 @@ export default {
         .sort((a, b) => {
           if (a === b) hasDuplicate = true;
         });
+      const riderAmountCheck = this.elements.find(o => o.amount === 0);
 
       for (let i = 0, iLen = this.elements.length; i < iLen; i += 1) {
         if (
@@ -568,6 +569,12 @@ export default {
             true,
             'fail',
             'Duplicate riders detected . Kindly remove one duplicate account',
+          );
+        } else if (Object.keys(riderAmountCheck).length > 0) {
+          this.UpdateMessaging(
+            true,
+            'fail',
+            'Rider Total Amount Earned should be greater than 0',
           );
         } else if (
           this.checked &&
