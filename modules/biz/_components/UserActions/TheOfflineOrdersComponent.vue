@@ -475,7 +475,11 @@ export default {
 
         const Total = my_elements.reduce((prev, cur) => prev + cur.amount, 0);
 
-        this.baseAmount = this.billingAmount;
+        if (this.billingAmount === '') {
+          this.baseAmount = 0;
+        } else {
+          this.baseAmount = this.billingAmount;
+        }
 
         const vat_rate = this.vat_rate;
 
