@@ -3,6 +3,27 @@
     <form id="cancel-form" @submit.prevent="cancelOrder">
       <div class="form-group">
         <v-select
+          v-if="
+            order.order_details.order_no !==
+              order.order_details.parent_order_no &&
+              Object.prototype.hasOwnProperty.call(order, 'freight_details') &&
+              order.freight_details
+          "
+          :options="freightOptions"
+          :reduce="reason => reason.code"
+          name="reason"
+          label="reason"
+          placeholder="Select cancellation reason .."
+          class="form-control proximity-point"
+          :id="`cancel_reason_${orderNo}`"
+          v-model="reason"
+          :class="{
+            'is-invalid': submitted && $v.reason.$error,
+          }"
+        >
+        </v-select>
+        <v-select
+          v-else
           :options="options"
           :reduce="reason => reason.code"
           name="reason"
@@ -67,6 +88,10 @@ export default {
         { code: '1', reason: 'No partner' },
         { code: '2', reason: 'Delay' },
         { code: '3', reason: 'Customer error' },
+      ],
+      freightOptions: [
+        { code: '9', reason: 'Customs hold' },
+        { code: '10', reason: `Partner won't meet ETA` },
       ],
       reason: '',
       description: '',
