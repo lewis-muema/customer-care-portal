@@ -92,7 +92,7 @@
     </div>
     <div v-else>
       <div class="approval-no-requests-text">
-        You do not have any pending requests.
+        Response successfully submitted! You do not have any pending requests.
       </div>
     </div>
   </div>
