@@ -28,6 +28,7 @@ export default {
       locationPricing: false,
       distancePricing: false,
       defaultCurrency: '',
+      message: '',
       user: {},
     };
   },
@@ -45,7 +46,7 @@ export default {
         this.defaultCurrency = data.user_details.default_currency;
         this.user = data;
       } catch (error) {
-        console.log(error);
+        this.message = 'Something went wrong. Please try again.';
       }
     },
     async fetchCustomDistancePricingData() {
@@ -67,7 +68,7 @@ export default {
           this.locationPricing = true;
         }
       } catch (error) {
-        console.log(error);
+        this.message = 'Something went wrong. Please try again.';
       }
     },
   },
