@@ -12,7 +12,6 @@
           :data="distancePricingTableData"
           border
           class="pricing-table-styling"
-          style="width: 1000px"
         >
           <el-table-column prop="city" label="City" width="170">
           </el-table-column>
@@ -40,7 +39,7 @@
           </el-table-column>
           <el-table-column
             prop="waiting_time_cost_per_min"
-            label="Waiting fee per min"
+            label="Waiting fee per hour"
             width="150"
           >
           </el-table-column>
@@ -93,7 +92,7 @@
     </div>
     <div v-else>
       <div class="approval-no-requests-text">
-        You do not have any pending requests.
+        Response successfully submitted! You do not have any pending requests.
       </div>
     </div>
   </div>
@@ -149,7 +148,7 @@ export default {
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
     this.getDistancePricingConfigs();
-    this.trackApprovalHomePage();
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -166,11 +165,17 @@ export default {
     }),
     async rejectDistancePricingConfigs() {
       this.trackRejectConfigs();
-      const pricingApprovalData = this.customPricingDetails;
-      this.approvalParams = this.createPayload(
-        pricingApprovalData,
-        'deactivated',
-      );
+      const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
+      const pricingTableData = clone;
+      for (let i = 0; i < pricingTableData.length; i += 1) {
+        const perHourFee =
+          pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
+        const perMinuteFee = perHourFee / 60;
+        pricingTableData[
+          i
+        ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
+      }
+      this.approvalParams = this.createPayload(pricingTableData, 'deactivated');
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -214,8 +219,17 @@ export default {
     },
     async approveDistancePricingConfigs() {
       this.trackApproveConfig();
-      const pricingApprovalData = this.customPricingDetails;
-      this.approvalParams = this.createPayload(pricingApprovalData, 'Active');
+      const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
+      const pricingTableData = clone;
+      for (let i = 0; i < pricingTableData.length; i += 1) {
+        const perHourFee =
+          pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
+        const perMinuteFee = perHourFee / 60;
+        pricingTableData[
+          i
+        ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
+      }
+      this.approvalParams = this.createPayload(pricingTableData, 'Active');
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -335,6 +349,9 @@ export default {
   background-image: none;
   background-color: #3c8dbc !important;
   border-color: #ebeef5;
+}
+.main-section-holder {
+  height: 710px !important;
 }
 .table td {
   padding: 5px !important;

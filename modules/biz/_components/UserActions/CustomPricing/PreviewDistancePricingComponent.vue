@@ -69,7 +69,7 @@
         </el-table-column>
         <el-table-column
           prop="waiting_time_cost_per_min"
-          label="Waiting fee per minute"
+          label="Waiting fee per hour"
           width="170"
         >
         </el-table-column>
@@ -173,7 +173,13 @@ export default {
     },
     async submitConfigs() {
       this.trackPricingSubmit();
-      const configParams = this.createPayload(this.tableData);
+      const pricingTableData = this.tableData;
+      for (let i = 0; i < pricingTableData.length; i += 1) {
+        const perHourFee = pricingTableData[i].waiting_time_cost_per_min;
+        const perMinuteFee = perHourFee / 60;
+        pricingTableData[i].waiting_time_cost_per_min = perMinuteFee;
+      }
+      const configParams = this.createPayload(pricingTableData);
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -242,7 +248,7 @@ export default {
                 10,
               ),
               service_fee: parseInt(pricingConfigData[i].service_fee, 10),
-              waiting_time_cost_per_min: parseInt(
+              waiting_time_cost_per_min: parseFloat(
                 pricingConfigData[i].waiting_time_cost_per_min,
                 10,
               ),

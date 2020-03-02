@@ -679,6 +679,9 @@ export default {
           if (pendingPricingDetails[i].location_pricing) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
           } else {
+            pendingPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min *= 60;
             pendingDistancePricing.push(
               pendingPricingDetails[i].distance_pricing,
             );
@@ -707,8 +710,7 @@ export default {
           if (customPricingDetails[i].location_pricing) {
             approverId = customPricingDetails[i].location_pricing[0].admin_id;
             locationPricing = customPricingDetails[i].location_pricing;
-          }
-          if (customPricingDetails[i].container_pricing) {
+          } else if (customPricingDetails[i].container_pricing) {
             approverId = customPricingDetails[i].container_pricing[0].admin_id;
             if (locationPricing.length > 0) {
               locationPricing = locationPricing.concat(
@@ -717,9 +719,11 @@ export default {
             } else {
               locationPricing = customPricingDetails[i].container_pricing;
             }
-          }
-          if (customPricingDetails[i].distance_pricing) {
+          } else if (customPricingDetails[i].distance_pricing) {
             approverId = customPricingDetails[i].admin_id;
+            customPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min *= 60;
             distancePricing.push(customPricingDetails[i].distance_pricing);
           }
         }

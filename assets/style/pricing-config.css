@@ -120,12 +120,13 @@
   border-color: white !important;
 }
 .reject-config-text {
-  margin-top: 3%;
+  margin-top: 1.5%;
   color: #e53935;
-  margin-bottom: -4%;
+  background: transparent;
+  margin-bottom: 4%;
   cursor: pointer;
-  margin-left: 62%;
-  border-color: white !important;
+  margin-left: 80%;
+  border: transparent;
 }
 .pricing-save-btn .approve-config-btn .reject-config-text:focus {
   outline: none;
@@ -140,6 +141,7 @@
   color: #bdbdbd;
   display: inline-block;
   font-size: 16px;
+  margin-top: 2rem;
 }
 .pricing-pagination {
   color: #757575;
@@ -320,11 +322,14 @@ h4 {
   display: inline-block;
   color: #155d8d;
   float: right;
+  margin-top: 2rem;
 }
 .approval-no-requests-text {
   color: #212529;
-  text-align: left;
+  text-align: center;
+  margin-top: 3rem;
   padding: 1rem;
+  margin-bottom: 3rem;
 }
 .submit-approval-btn {
   margin-top: 5% !important;
@@ -377,12 +382,14 @@ h4 {
 }
 .reject-textarea {
   width: 495px !important;
-  margin-left: 12% !important;
-  margin-top: 3% !important;
-  margin-bottom: 3% !important;
+  margin: auto !important;
+  margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
 }
 .reject-text-btn {
   margin-left: -62% !important;
+  background: transparent;
+  border: transparent;
 }
 .city-selector {
   border: none !important;
