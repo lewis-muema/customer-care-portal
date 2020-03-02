@@ -142,7 +142,6 @@ export default {
     },
   },
   mounted() {
-    console.log('user', this.user);
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
@@ -166,7 +165,8 @@ export default {
     }),
     async rejectDistancePricingConfigs() {
       // this.trackRejectConfigs();
-      const pricingTableData = this.customPricingDetails;
+      const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
+      const pricingTableData = clone;
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee =
           pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
@@ -219,7 +219,8 @@ export default {
     },
     async approveDistancePricingConfigs() {
       // this.trackApproveConfig();
-      const pricingTableData = this.customPricingDetails;
+      const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
+      const pricingTableData = clone;
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee =
           pricingTableData[i].distance_pricing.waiting_time_cost_per_min;

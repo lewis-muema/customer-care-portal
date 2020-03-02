@@ -147,10 +147,9 @@ export default {
     }),
     async rejectDistancePricingConfigs() {
       // this.trackRejectConfigs();
-      this.approvalParams = this.createPayload(
-        this.locationPricingTableData,
-        'deactivated',
-      );
+      const clone = JSON.parse(JSON.stringify(this.locationPricingTableData));
+      const pricingTableData = clone;
+      this.approvalParams = this.createPayload(pricingTableData, 'deactivated');
       const notification = [];
       let actionClass = '';
       const payload = {
