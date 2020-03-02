@@ -189,6 +189,7 @@ export default {
         'peer|rider': 'rider',
         'peer|owner|rider': 'rider',
         'owner|rider': 'rider',
+        'peer|owner': 'peer',
         rider: 'riders',
         cop: 'biz',
         peer: 'peer',
@@ -233,7 +234,8 @@ export default {
     if (this.phone !== null) {
       await this.retrieve_user();
       if (this.user !== null) {
-        if (this.user.latest_order.order_no !== null) {
+        const latestOrder = this.user.latest_order.order_no;
+        if (latestOrder !== null && latestOrder !== 'WIP') {
           const orderNo = this.user.latest_order.order_no;
           await this.singleOrderRequest(orderNo);
         }

@@ -39,11 +39,12 @@
                 v-else
                 size="small"
                 class="inline-input"
-                v-model="pacInput1"
+                v-model="pacInput1[scope.$index].name"
                 :value="handleSelectFrom"
                 :fetch-suggestions="querySearch"
                 placeholder="Search location"
                 :trigger-on-focus="false"
+                @focus="rowIndex = scope.$index"
                 @select="handleSelectFrom($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
@@ -62,14 +63,83 @@
                 v-else
                 size="small"
                 class="inline-input"
-                v-model="pacInput2"
+                v-model="pacInput2[scope.$index].name"
                 :value="handleSelectTo"
                 :fetch-suggestions="querySearch"
                 placeholder="Search location"
                 :trigger-on-focus="false"
+                @focus="rowIndex = scope.$index"
                 @select="handleSelectTo($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="empty_container_destination"
+            label="Empty container return (Freight)"
+            width="335"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.empty_container_destination"
+                size="small"
+                class="table--col-text"
+                placeholder="Search container destination"
+                v-model="scope.row.empty_container_destination"
+              ></el-input>
+              <el-autocomplete
+                v-else
+                size="small"
+                class="inline-input"
+                v-model="pacInput3[scope.$index].name"
+                :value="handleSelectContainerDestination"
+                :fetch-suggestions="querySearch"
+                placeholder="Search container destination"
+                :trigger-on-focus="false"
+                @focus="rowIndex = scope.$index"
+                @select="
+                  handleSelectContainerDestination(
+                    $event,
+                    scope.$index,
+                    scope.row,
+                  )
+                "
+              >
+              </el-autocomplete>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_weight_tonnes"
+            label="Cargo Type"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_weight_tonnes"
+                placeholder="Select cargo type"
+                size="small"
+                v-if="scope.row.empty_container_destination"
+              >
+                <el-option label="Empty container" value="0"> </el-option>
+                <el-option label="Full container" value="28"> </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_size_feet"
+            label="Container Size"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_size_feet"
+                placeholder="Select container size"
+                size="small"
+                v-if="scope.row.empty_container_destination"
+              >
+                <el-option label="20 Feet" value="20"> </el-option>
+                <el-option label="40 Feet" value="40"> </el-option>
+              </el-select>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
@@ -78,6 +148,7 @@
                 v-model="scope.row.name"
                 placeholder="Select Vendor"
                 size="small"
+                v-if="!scope.row.empty_container_destination"
                 @change="onChange($event, scope.$index, scope.row)"
               >
                 <el-option
@@ -86,6 +157,16 @@
                   :label="vendor.name"
                   :value="vendor.name"
                 >
+                </el-option>
+              </el-select>
+              <el-select
+                v-model="scope.row.name"
+                placeholder="Select Vendor"
+                size="small"
+                @change="onChange($event, scope.$index, scope.row)"
+                v-else
+              >
+                <el-option :key="25" label="Freight" value="Freight">
                 </el-option>
               </el-select>
             </template>
@@ -157,6 +238,7 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
+import _ from 'lodash';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import PreviewLocationPricingComponent from './PreviewLocationPricingComponent.vue';
 
@@ -174,21 +256,35 @@ export default {
   },
   data() {
     return {
-      pacInput1: '',
-      pacInput2: '',
+      rowIndex: 0,
+      pacInput1: [
+        {
+          name: '',
+        },
+      ],
+      pacInput2: [
+        {
+          name: '',
+        },
+      ],
+      pacInput3: [
+        {
+          name: '',
+        },
+      ],
       currency: '',
       vendorName: '',
       suggestions: [],
       vendorTypes: [],
       tableData: [
         {
-          id: 10,
+          id: 1,
           name: '',
           cop_id: 1,
-          cop_name: 'Safaricom',
-          currency: 'KES',
+          cop_name: '',
+          currency: '',
           admin_id: 1,
-          service_fee: 1200,
+          service_fee: 0,
           from: '',
           from_location: {
             type: 'Point',
@@ -198,11 +294,19 @@ export default {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
+          empty_return_location: {
+            type: 'Point',
+            coordinates: [37.671947, -4.056444],
+          },
           to: '',
-          status: 'Active',
-          city: 'Mombasa County',
-          order_amount: 23000,
-          rider_amount: 21400,
+          empty_container_destination: '',
+          status: '',
+          city: '',
+          order_amount: 0,
+          rider_amount: 0,
+          container_weight_tonnes: '',
+          container_size_feet: '',
+          container_errand_type: 'drop_off',
         },
       ],
       previewLocationPricing: false,
@@ -235,23 +339,32 @@ export default {
     },
   },
   watch: {
-    pacInput1(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+    pacInput1: {
+      handler(val) {
+        val = val[this.rowIndex].name;
+        if (val && val.length > 2) {
+          this.search(val);
+        }
+      },
+      deep: true,
     },
-    pacInput2(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+    pacInput2: {
+      handler(val) {
+        val = val[this.rowIndex].name;
+        if (val && val.length > 2) {
+          this.search(val);
+        }
+      },
+      deep: true,
+    },
+    pacInput3: {
+      handler(val) {
+        val = val[this.rowIndex].name;
+        if (val && val.length > 2) {
+          this.search(val);
+        }
+      },
+      deep: true,
     },
   },
   mounted() {
@@ -277,6 +390,7 @@ export default {
     },
     handleSelectFrom(item, index, rows) {
       this.tableData[index].from = item.value;
+      this.pacInput1[index].name = '';
       const fromPlaceId = item.place_id;
       axios
         .get(
@@ -296,6 +410,7 @@ export default {
     },
     handleSelectTo(item, index, rows) {
       this.tableData[index].to = item.value;
+      this.pacInput2[index].name = '';
       const toPlaceId = item.place_id;
       axios
         .get(
@@ -313,8 +428,33 @@ export default {
           this.tableData[index].to_location.coordinates = coordinatesArray;
         });
     },
+    handleSelectContainerDestination(item, index, rows) {
+      this.tableData[index].empty_container_destination = item.value;
+      this.pacInput3[index].name = '';
+      const toPlaceId = item.place_id;
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          const toLatLong = response.data.result.geometry.location;
+          const coordinatesArray = Object.keys(toLatLong).map(
+            key => toLatLong[key],
+          );
+          [coordinatesArray[0], coordinatesArray[1]] = [
+            parseFloat(coordinatesArray[1].toFixed(6)),
+            parseFloat(coordinatesArray[0].toFixed(6)),
+          ];
+          // eslint-disable-next-line prettier/prettier
+          this.tableData[index].empty_return_location.coordinates = coordinatesArray;
+          this.tableData[index].container_errand_type = 'empty_return';
+        });
+    },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
+      this.pacInput1.splice(index, 1);
+      this.pacInput2.splice(index, 1);
+      this.pacInput3.splice(index, 1);
     },
     onChange(event, index, row) {
       this.vendorName = row.name;
@@ -337,6 +477,16 @@ export default {
         type: 'Click',
       });
     },
+    // eslint-disable-next-line func-names
+    search: _.throttle(function(val) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.suggestions = response.data.predictions;
+        });
+    }, 2000),
   },
 };
 </script>
