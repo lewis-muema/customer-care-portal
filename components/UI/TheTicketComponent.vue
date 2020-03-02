@@ -2,6 +2,28 @@
   <form @submit.prevent="submitTicket" class="form-inline">
     <div class="form-group col-md-6">
       <v-select
+        v-if="
+          order.order_details !== undefined &&
+            order.order_details.order_no !==
+              order.order_details.parent_order_no &&
+            Object.prototype.hasOwnProperty.call(order, 'freight_details') &&
+            order.freight_details
+        "
+        :options="freightReallocationInfo"
+        :reduce="reason => reason.code"
+        name="point"
+        label="reason"
+        placeholder="Select ticket reason .."
+        class="form-control proximity-point"
+        :id="`reason_${idParam}`"
+        v-model="params.reason"
+        :class="{
+          'is-invalid': submitted && $v.params.reason.$error,
+        }"
+      >
+      </v-select>
+      <v-select
+        v-else
         :options="customerInfo"
         :reduce="reason => reason.code"
         name="point"

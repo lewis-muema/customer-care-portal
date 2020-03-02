@@ -5,6 +5,7 @@
         :configs="tableData"
         :user="user"
         @sectionUpdate="onSectionUpdate"
+        @configSubmitted="configSubmitted"
       ></preview-distance-pricing-component>
     </div>
     <div v-else>
@@ -364,6 +365,10 @@ export default {
     },
     onSectionUpdate(value) {
       this.previewDistancePricing = value;
+    },
+    configSubmitted() {
+      this.previewLocationPricing = false;
+      this.$emit('destroyDistanceComponent');
     },
     trackAddPricingDataPage() {
       mixpanel.track('Add Distance Pricing data Page - PageView', {
