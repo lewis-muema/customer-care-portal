@@ -148,7 +148,7 @@ export default {
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
     this.getDistancePricingConfigs();
-    this.trackApprovalHomePage();
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({

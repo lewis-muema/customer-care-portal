@@ -132,7 +132,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.trackApprovalHomePage();
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
