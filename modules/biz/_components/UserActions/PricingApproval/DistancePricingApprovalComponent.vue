@@ -90,7 +90,6 @@
         </template>
       </div>
     </div>
-    <div v-if="isMixpanelLoaded">yeeeee</div>
     <div v-else>
       <div class="approval-no-requests-text">
         Response successfully submitted! You do not have any pending requests.
@@ -126,7 +125,6 @@ export default {
       crmName: '',
       copName: '',
       rejectWithReason: false,
-      isMixpanelLoaded: false,
       pricingTitle: 'Distance Pricing Table',
       approvalText: 'Requires your approval',
     };
