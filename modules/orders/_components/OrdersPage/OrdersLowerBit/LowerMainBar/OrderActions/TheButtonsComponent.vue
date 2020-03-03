@@ -57,7 +57,10 @@
       </li>
       <li
         class="nav-item"
-        v-if="order.order_details.order_status === 'pending'"
+        v-if="
+          order.order_details.order_status === 'pending' ||
+            order.order_details.order_status === 'confirmed'
+        "
       >
         <a
           class="force_blue"
