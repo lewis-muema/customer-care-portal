@@ -632,6 +632,27 @@ export default {
       });
     }
   },
+
+  async fetchCities({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cities`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async request_vendor_types({ dispatch }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
