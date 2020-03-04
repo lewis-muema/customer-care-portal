@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     link() {
-      return `sendyit.com/track/${this.orderNo}`;
+      return `sendyit.com/external/tracking/${this.orderNo}`;
     },
   },
   methods: {
