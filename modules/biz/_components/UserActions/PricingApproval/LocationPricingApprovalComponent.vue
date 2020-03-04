@@ -70,7 +70,7 @@
     </div>
     <div v-else>
       <div class="approval-no-requests-text">
-        You do not have any pending requests.
+        Response successfully submitted! You do not have any pending requests.
       </div>
     </div>
   </div>
@@ -132,7 +132,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.trackApprovalHomePage();
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -147,10 +147,9 @@ export default {
     }),
     async rejectDistancePricingConfigs() {
       this.trackRejectConfigs();
-      this.approvalParams = this.createPayload(
-        this.locationPricingTableData,
-        'deactivated',
-      );
+      const clone = JSON.parse(JSON.stringify(this.locationPricingTableData));
+      const pricingTableData = clone;
+      this.approvalParams = this.createPayload(pricingTableData, 'deactivated');
       const notification = [];
       let actionClass = '';
       const payload = {
