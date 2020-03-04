@@ -187,8 +187,6 @@ import LowerSlideComponent from '../OrdersLowerBit/FBU/LowerSlideComponent';
 import rabbitMQcomponent from '../../../../rabbitMQ/rabbitMQComponent';
 import DashboardComponent from '../OrdersLowerBit/FBU/DashboardComponent';
 
-const _ = require('lodash');
-
 export default {
   name: 'TheRowComponent',
   components: {
@@ -215,7 +213,6 @@ export default {
       msg: '',
       returned: false,
       companyUnits: [],
-      citiesData: [],
     };
   },
   computed: {
@@ -340,8 +337,6 @@ export default {
     },
   },
   created() {
-    this.fetchCities();
-
     if (process.client) {
       window.addEventListener('scroll', () => {
         this.bottom = this.bottomVisible();
@@ -366,10 +361,7 @@ export default {
       updateReorganizeStatus: 'setReorganizeStatus',
       updateOrderCount: 'setOrderCount',
     }),
-    ...mapActions({
-      setOrders: 'setOrders',
-      getCities: 'fetchCities',
-    }),
+    ...mapActions(['setOrders']),
     initialOrderRequest() {
       this.setOrders();
     },
@@ -460,11 +452,6 @@ export default {
       this.show = orderNo;
     },
     handlePushInParent(pushobj) {
-      const cityID = pushobj.city_id;
-      const cities = this.citiesData;
-      const checkCity = cities.length !== 0 ? cities : this.fetchCities();
-      const result = _.find(checkCity, ['city_id', cityID]);
-      pushobj.city_name = result.city_name;
       const orderCountryCodes = pushobj.orderCountryCode;
       const isCountryAdmin = orderCountryCodes.some(r =>
         this.countryCode.includes(r),
@@ -530,19 +517,6 @@ export default {
     },
     getVendorClass(vendorTypeID) {
       return vendorTypeID === 2 ? 'pickupClass' : 'vendorClass';
-    },
-
-    async fetchCities() {
-      const payload = {
-        app: 'ADONIS_API',
-        endpoint: 'cities',
-        apiKey: true,
-      };
-      try {
-        this.citiesData = await this.getCities(payload);
-      } catch (error) {
-        return error;
-      }
     },
   },
 };
