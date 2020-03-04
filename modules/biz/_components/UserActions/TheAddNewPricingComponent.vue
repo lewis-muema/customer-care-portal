@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="configured">
+    <div>
       <div v-show="this.summaryStatus">
         <div class="row">
           <div class="col-md-12">
@@ -66,13 +66,16 @@
         ></view-location-pricing-component>
       </div>
     </div>
-    <div v-else>
+    <div>
       <div v-show="this.section === 0">
         <div>
           Custom Pricing
         </div>
-        <p class="pricing-p">
+        <p class="pricing-p" v-if="!configured">
           {{ this.copName }} has no custom pricing set up at the moment.
+        </p>
+        <p class="pricing-p" v-else>
+          Add a new custom pricing.
         </p>
         <button
           @click="
@@ -127,12 +130,14 @@
           <location-pricing-component
             :user="user"
             @sectionUpdate="onSectionUpdate"
+            @destroyLocationComponent="resetSection"
           ></location-pricing-component>
         </div>
         <div class="pricing-table-styling" v-if="this.newDistancePricing">
           <distance-pricing-component
             :user="user"
             @sectionUpdate="onSectionUpdate"
+            @destroyDistanceComponent="resetSection"
           ></distance-pricing-component>
         </div>
         <div v-show="this.section === -1"></div>
@@ -271,7 +276,7 @@ export default {
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
         this.trackNewLocationConfig();
-      }
+      } else return;
     },
     goBack() {
       this.updateSection(this.section - 1);
@@ -291,7 +296,7 @@ export default {
             this.distancePricingTableData[i].status === 'Active'
           ) {
             this.distancePricingStatus = 'Active';
-          }
+          } else return;
         }
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.pricingModel = 'Location Pricing';
@@ -308,7 +313,7 @@ export default {
         typeof this.locationPricingTableData[0] === 'undefined'
       ) {
         this.existingConfigs = false;
-      }
+      } else return;
     },
     viewConfigDetails() {
       this.trackViewPricingDetails();
@@ -320,11 +325,22 @@ export default {
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.viewLocation = true;
         this.setTableData(this.locationPricingTableData);
-      }
+      } else return;
     },
     onSectionUpdate(value) {
       this.newLocationPricing = value;
       this.newDistancePricing = value;
+    },
+    async resetSection() {
+      this.copName = this.user.user_details.cop_name;
+      this.copId = this.user.user_details.cop_id;
+      this.currency = this.user.user_details.default_currency;
+      this.countryCode = this.user.user_details.country_code;
+      this.checkedPricingModel = 0;
+      await this.fetchCustomDistancePricingData();
+      this.fetchVendorTypes(this.countryCode);
+      this.setConfigStatus();
+      this.updateSection(0);
     },
     onViewUpdate(value) {
       this.viewLocation = value;

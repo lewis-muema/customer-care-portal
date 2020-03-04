@@ -194,6 +194,7 @@ export default {
           this.trackPassedSubmission();
           this.trackMixpanelIdentify();
           this.trackMixpanelPeople();
+          this.submitNotification();
           notification.push(
             'You have successfully created the custom pricing config!',
           );
@@ -214,7 +215,13 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
       this.trackMixpanelPeople();
+    },
+    submitNotification() {
+      this.$emit('configSubmitted');
     },
     createPayload(pricingConfigData) {
       const distancePricingArray = [];
@@ -250,7 +257,6 @@ export default {
               service_fee: parseInt(pricingConfigData[i].service_fee, 10),
               waiting_time_cost_per_min: parseFloat(
                 pricingConfigData[i].waiting_time_cost_per_min,
-                10,
               ),
             },
           },

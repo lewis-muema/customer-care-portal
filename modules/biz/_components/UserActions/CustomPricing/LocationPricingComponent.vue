@@ -5,6 +5,7 @@
         :configs="tableData"
         :user="user"
         @sectionUpdate="onSectionUpdate"
+        @configSubmitted="configSubmitted"
       ></preview-location-pricing-component>
     </div>
     <div v-else>
@@ -282,7 +283,7 @@ export default {
           name: '',
           cop_id: 1,
           cop_name: '',
-          currency: '',
+          currency: 'KES',
           admin_id: 1,
           service_fee: 0,
           from: '',
@@ -466,6 +467,10 @@ export default {
     },
     onSectionUpdate(value) {
       this.previewLocationPricing = value;
+    },
+    configSubmitted() {
+      this.previewLocationPricing = false;
+      this.$emit('destroyLocationComponent');
     },
     trackAddPricingDataPage() {
       mixpanel.track('Add Location Pricing data Page - PageView', {

@@ -160,7 +160,7 @@ const PricingConfigsMxn = {
           name: '',
           cop_id: 1,
           cop_name: '',
-          currency: '',
+          currency: 'KES',
           admin_id: 1,
           service_fee: 0,
           from: '',

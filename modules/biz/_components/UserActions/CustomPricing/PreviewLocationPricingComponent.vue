@@ -195,6 +195,7 @@ export default {
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.previewing = false;
+          this.submitNotification();
           this.sendEmailNotification(this.admin.email, this.admin.name);
           this.trackPassedSubmission();
           this.trackMixpanelIdentify();
@@ -212,7 +213,13 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
       this.trackMixpanelPeople();
+    },
+    submitNotification() {
+      this.$emit('configSubmitted');
     },
     createLocationPayload(data) {
       const locationPricingArray = [];

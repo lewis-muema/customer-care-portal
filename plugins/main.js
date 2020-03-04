@@ -64,6 +64,20 @@ Vue.mixin({
         { code: '3', reason: 'Customer not reachable' },
         { code: '4', reason: 'Customer feedback' },
       ],
+      freightReallocationInfo: [
+        { code: '14', reason: `Partner won't meet ETA` },
+        { code: '15', reason: 'Truck will fulfil transit order' },
+        { code: '16', reason: 'Truck will fulfil local order' },
+        {
+          code: '17',
+          reason: `Container Weight can't match truck load exceeds weight`,
+        },
+        { code: '18', reason: 'Weight is under' },
+        {
+          code: '19',
+          reason: 'Mismatch between container positioning and truck type',
+        },
+      ],
       departments: [
         { code: '1', department: 'Operations' },
         { code: '2', department: 'Customer Support' },
@@ -163,6 +177,12 @@ Vue.mixin({
     getFormattedDate(date, requiredFormat) {
       const UTCDate = this.convertToUTC(date);
       const dt1 = this.convertToLocalTime(UTCDate);
+      const dt = moment(dt1).format(requiredFormat);
+      return dt;
+    },
+    formatInvoiceTime(date, requiredFormat) {
+      const utcDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(utcDate);
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
