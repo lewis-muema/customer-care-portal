@@ -469,6 +469,42 @@ export default {
       this.previewLocationPricing = value;
     },
     configSubmitted() {
+      this.pacInput1[0].name = '';
+      this.pacInput2[0].name = '';
+      this.pacInput3[0].name = '';
+      this.tableData = [
+        {
+          id: 1,
+          name: '',
+          cop_id: 1,
+          cop_name: '',
+          currency: 'KES',
+          admin_id: 1,
+          service_fee: 0,
+          from: '',
+          from_location: {
+            type: 'Point',
+            coordinates: [36.799157, -1.299287],
+          },
+          to_location: {
+            type: 'Point',
+            coordinates: [39.671947, -4.056442],
+          },
+          empty_return_location: {
+            type: 'Point',
+            coordinates: [37.671947, -4.056444],
+          },
+          to: '',
+          empty_container_destination: '',
+          status: '',
+          city: '',
+          order_amount: 0,
+          rider_amount: 0,
+          container_weight_tonnes: '',
+          container_size_feet: '',
+          container_errand_type: 'drop_off',
+        },
+      ];
       this.previewLocationPricing = false;
       this.$emit('destroyLocationComponent');
     },

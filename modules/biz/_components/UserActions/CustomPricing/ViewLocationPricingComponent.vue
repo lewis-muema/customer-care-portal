@@ -185,6 +185,7 @@ export default {
           vendor_id: data[i].id,
           from_coordinates: data[i].from_location.coordinates,
           to_coordinates: data[i].to_location.coordinates,
+          object_id: data[i].object_id,
           custom_pricing_details: {
             location_pricing: [],
           },
@@ -243,6 +244,7 @@ export default {
         const containerPricingObject = {
           cop_id: this.copId,
           vendor_id: data[i].id,
+          object_id: data[i].object_id,
           from_coordinates: data[i].from_location.coordinates,
           to_coordinates: data[i].to_location.coordinates,
           custom_pricing_details: {
