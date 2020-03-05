@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-if="configured">
       <div v-show="this.summaryStatus">
         <div class="row">
           <div class="col-md-12">
