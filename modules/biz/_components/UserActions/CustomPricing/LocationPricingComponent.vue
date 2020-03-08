@@ -279,11 +279,11 @@ export default {
       vendorTypes: [],
       tableData: [
         {
-          id: 10,
+          id: 1,
           name: '',
           cop_id: 1,
-          cop_name: 'Safaricom',
-          currency: 'KES',
+          cop_name: '',
+          currency: '',
           admin_id: 1,
           service_fee: 0,
           from: '',

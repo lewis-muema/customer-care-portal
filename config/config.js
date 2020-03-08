@@ -21,6 +21,10 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
+    OFFLINE_PRICING:
+      'https://cors-anywhere.herokuapp.com/https://pricingtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API: 'https://authtest.sendyit.com/rider/admin_partner_api/v5/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
@@ -93,6 +97,10 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
+    OFFLINE_PRICING:
+      'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
     AUTH: 'https://auth.staging.sendyit.com/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
@@ -124,6 +132,10 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/owner/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/orders/',
+    OFFLINE_PRICING:
+      'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',

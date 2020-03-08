@@ -14,7 +14,7 @@
           :id="`completion_reason_${orderNo}`"
           name="reason"
           class="form-control"
-          placeholder="Order completion order"
+          placeholder="Order completion reason"
           :class="{
             'is-invalid': submitted && $v.reason.$error,
           }"
@@ -38,7 +38,7 @@
           }"
         />
         <label class="charge_commission--label">
-          &nbsp; Requires Deivery Notes</label
+          &nbsp; Requires Delivery Notes</label
         >
         <div
           v-if="submitted && !$v.dnotesRequired.required"

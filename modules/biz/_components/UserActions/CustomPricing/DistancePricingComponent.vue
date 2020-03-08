@@ -182,7 +182,7 @@
           </el-table-column>
           <el-table-column
             prop="waiting_time_cost_per_min"
-            label="Waiting fee per minute"
+            label="Waiting fee per hour"
             width="200"
           >
             <template slot-scope="scope">
@@ -274,16 +274,16 @@ export default {
         {
           city: '',
           name: '',
-          base_cost: '280',
-          base_km: '20',
-          cost_per_km_above_base_km: '2160',
-          additional_location_cost: '108',
-          waiting_time_cost_per_min: '18',
-          loader_cost: '100',
-          service_fee: '40',
-          insurance: '20',
-          client_fee: '340',
-          cancellation_fee: '40',
+          base_cost: '',
+          base_km: '',
+          cost_per_km_above_base_km: '',
+          additional_location_cost: '',
+          waiting_time_cost_per_min: '',
+          loader_cost: '',
+          service_fee: '',
+          insurance: '',
+          client_fee: '',
+          cancellation_fee: '',
         },
       ],
       previewDistancePricing: false,

@@ -679,6 +679,9 @@ export default {
           if (pendingPricingDetails[i].location_pricing) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
           } else {
+            pendingPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min *= 60;
             pendingDistancePricing.push(
               pendingPricingDetails[i].distance_pricing,
             );
@@ -707,8 +710,7 @@ export default {
           if (customPricingDetails[i].location_pricing) {
             approverId = customPricingDetails[i].location_pricing[0].admin_id;
             locationPricing = customPricingDetails[i].location_pricing;
-          }
-          if (customPricingDetails[i].container_pricing) {
+          } else if (customPricingDetails[i].container_pricing) {
             approverId = customPricingDetails[i].container_pricing[0].admin_id;
             if (locationPricing.length > 0) {
               locationPricing = locationPricing.concat(
@@ -717,9 +719,11 @@ export default {
             } else {
               locationPricing = customPricingDetails[i].container_pricing;
             }
-          }
-          if (customPricingDetails[i].distance_pricing) {
+          } else if (customPricingDetails[i].distance_pricing) {
             approverId = customPricingDetails[i].admin_id;
+            customPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min *= 60;
             distancePricing.push(customPricingDetails[i].distance_pricing);
           }
         }
@@ -819,5 +823,35 @@ export default {
   async request_invoice_logs({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
+  },
+
+  async request_invoice_data({ dispatch }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res;
+  },
+
+  async create_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
+
+  async confirm_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
+
+  async pair_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
+
+  async pick_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
+  },
+
+  async complete_offline_order({ dispatch, commit }, payload) {
+    const res = await dispatch('requestAxiosPost', payload, { root: true });
+    return res.data;
   },
 };
