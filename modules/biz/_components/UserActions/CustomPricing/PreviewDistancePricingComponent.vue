@@ -194,6 +194,7 @@ export default {
           this.trackPassedSubmission();
           this.trackMixpanelIdentify();
           this.trackMixpanelPeople();
+          this.submitNotification();
           notification.push(
             'You have successfully created the custom pricing config!',
           );
@@ -214,7 +215,13 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
       this.trackMixpanelPeople();
+    },
+    submitNotification() {
+      this.$emit('configSubmitted');
     },
     createPayload(pricingConfigData) {
       const distancePricingArray = [];
