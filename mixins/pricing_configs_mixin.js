@@ -86,6 +86,7 @@ const PricingConfigsMxn = {
           cop_id: this.copId,
           currency: this.defaultCurrency,
           status: ['Pending', 'Active'],
+          get_object_id: true,
         },
       };
       try {
