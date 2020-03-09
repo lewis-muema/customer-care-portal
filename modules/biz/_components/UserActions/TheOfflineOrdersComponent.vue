@@ -570,12 +570,14 @@ export default {
             'fail',
             'Duplicate riders detected . Kindly remove one duplicate account',
           );
-        } else if (Object.keys(riderAmountCheck).length > 0) {
-          this.UpdateMessaging(
-            true,
-            'fail',
-            'Rider Total Amount Earned should be greater than 0',
-          );
+        } else if (riderAmountCheck !== undefined) {
+          if (Object.keys(riderAmountCheck).length > 0) {
+            this.UpdateMessaging(
+              true,
+              'fail',
+              'Rider Total Amount Earned should be greater than 0',
+            );
+          }
         } else if (
           this.checked &&
           this.billingAmount <= this.calculatedAmount
