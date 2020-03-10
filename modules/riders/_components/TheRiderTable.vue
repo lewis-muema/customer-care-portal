@@ -1,3 +1,6 @@
+/* eslint-disable no-shadow */ /* eslint-disable vue/valid-v-bind */ /*
+eslint-disable no-shadow */ /* eslint-disable no-shadow */ /* eslint-disable
+no-shadow */
 <template>
   <table
     id="rider_list"
@@ -15,12 +18,13 @@
         <th>Loan</th>
         <th>Savings</th>
         <th>Status</th>
-        <th>Suspension Status</th>
+        <th>Online Status</th>
+        <th>Order Status</th>
       </tr>
     </thead>
     <tbody>
       <tr v-if="riderID === null">
-        <td colspan="10">Search to view Rider details.</td>
+        <td colspan="11">Search to view Rider details.</td>
       </tr>
       <template v-else>
         <tr v-if="loading">
@@ -73,14 +77,30 @@
                 : '0'
             }}
           </td>
-          <td>{{ get_account_status(riderDetails.status) }}</td>
           <td>
-            {{ get_suspension_status(riderDetails.rider_stat) }}
+            <span :class="`label label-${showClass}`">
+              {{ get_account_status(riderDetails.status) }}
+            </span>
+          </td>
+          <td>
+            <span :class="`label label-${showClass1}`">
+              {{ get_online_status(riderDetails.rider_stat) }}
+            </span>
+          </td>
+          <td>
+            <span :class="`label label-${showClass}`">
+              {{
+                getOrderServiceStatus(
+                  riderDetails.delivery_detail,
+                  riderDetails.status,
+                )
+              }}
+            </span>
           </td>
         </tr>
 
         <tr v-if="opened.includes('rider')">
-          <td colspan="10" class="user-details">
+          <td colspan="11" class="user-details">
             <div class="lower_slide_bit" style="" :id="`bumba_${riderID}`">
               <div class="row">
                 <SideComponent :details="riderDetails" />
@@ -102,7 +122,8 @@
         <th>Loan</th>
         <th>Savings</th>
         <th>Status</th>
-        <th>Suspension Status</th>
+        <th>Online Status</th>
+        <th>Order Status</th>
       </tr>
     </tfoot>
   </table>
@@ -122,9 +143,12 @@ export default {
       user: null,
       riderInfo: null,
       riderDetails: null,
+      orderDetails: '',
       opened: [],
       riderTable: 0,
       loading: false,
+      showClass: '',
+      showClass1: '',
     };
   },
   computed: {
@@ -192,23 +216,70 @@ export default {
       }
     },
 
-    get_suspension_status(suspension) {
+    get_online_status(suspension) {
+      let showClass1 = 'warning';
       if (suspension === 0) {
-        return 'Inactive';
+        suspension = 'offline';
+        showClass1 = 'warning';
+        this.showClass1 = showClass1;
+        return (this.suspension = suspension);
       }
       if (suspension === 1) {
-        return 'Active';
+        suspension = 'online';
+        showClass1 = 'success';
+        this.showClass1 = showClass1;
+        return (this.suspension = suspension);
       }
       if (suspension === 2) {
-        return 'Suspended';
+        suspension = 'suspended';
+        showClass1 = 'danger';
+        this.showClass1 = showClass1;
+        return (this.suspension = suspension);
       }
     },
-
-    get_account_status(status) {
-      if (status === 1) {
-        return 'Active';
+    getOrderServiceStatus(orders, status) {
+      // eslint-disable-next-line func-names
+      let printMe = orders.find(function(item) {
+        if (item.order_status === 'confirmed') {
+          return true;
+        }
+        if (item.order_status === 'in transit') {
+          return true;
+        }
+        if (item.order_status === 'delivered') {
+          return false;
+        }
+      });
+      if (printMe) {
+        printMe = printMe.order_status;
+      } else {
+        printMe = 'delivered';
       }
-      return 'Deactivated';
+      if (printMe === 'confirmed' || printMe === 'in transit') {
+        return 'Busy';
+      }
+      if (printMe === 'delivered') {
+        if (status === 1) {
+          return 'available';
+        } else {
+          return 'unreachable';
+        }
+      }
+    },
+    get_account_status(status) {
+      let showClass = 'warning';
+      if (status === 1) {
+        status = 'active';
+        showClass = 'success';
+        this.showClass = showClass;
+        return (this.status = status);
+      }
+      if (status === 0) {
+        status = 'Deactivated';
+        showClass = 'danger';
+        this.showClass = showClass;
+        return (this.status = status);
+      }
     },
     toggle(id) {
       const index = this.opened.indexOf(id);
