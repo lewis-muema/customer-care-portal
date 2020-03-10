@@ -52,13 +52,6 @@
               ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
-          <li class="treeview" v-if="permissions.create_orders">
-            <nuxt-link to="/offlineOrders"
-              ><i class="fa fa-plus-circle"></i>
-              <span> Create Order </span></nuxt-link
-            >
-          </li>
-
           <li class="treeview" v-if="permissions.invoice_generation">
             <a
               class="fancybox fancybox.iframe fancyboxy"
