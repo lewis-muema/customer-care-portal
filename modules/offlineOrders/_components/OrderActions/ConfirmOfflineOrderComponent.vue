@@ -124,7 +124,9 @@ export default {
     async confirmOfflineOrder() {
       this.trackConfirmOrderButton();
       this.pending = true;
-      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+      const currentTime = moment()
+        .utc()
+        .format('YYYY-MM-DD HH:mm:ss');
       const payload = {
         app: 'OFFLINE_ORDERS',
         endpoint: 'v2/deliveryconfirm',
