@@ -84,7 +84,7 @@
             <p class="searched-single-column-head">Customer amount</p>
             <span>
               <div class="currency-data">
-                KES
+                {{ orderData.payment_details.order_currency }}
               </div>
               <input
                 v-model="customerAmount"
@@ -98,7 +98,7 @@
             <p class="searched-single-column-head">Partner amount</p>
             <span>
               <div class="currency-data">
-                KES
+                {{ orderData.payment_details.order_currency }}
               </div>
               <input
                 v-model="partnerAmount"
@@ -127,6 +127,7 @@
             rows="4"
             cols="50"
             type="text"
+            v-model="notes"
             class="searched-single-column-data notes-inputs"
             placeholder="Notes"
           ></textarea>
@@ -141,8 +142,16 @@
           @click="sendTonnagePaymentDetails()"
         >
           Submit
+          <i class="fa fa-spinner fa-spin submit-icon" v-if="searching"></i>
         </button>
       </div>
+    </div>
+    <div v-else>
+      <img
+        src="https://images.sendyit.com/CCredesign/searchIllustatration.png"
+        alt="search-img"
+        class="search-illustration"
+      />
     </div>
   </div>
 </template>
@@ -168,6 +177,8 @@ export default {
       customerAmount: '',
       partnerAmount: '',
       tonnes: '',
+      notes: '',
+      searching: false,
     };
   },
   computed: {
@@ -178,7 +189,7 @@ export default {
       return this.query.trim();
     },
     activeButton() {
-      if (this.customerAmount && this.partnerAmount && this.tonnes) {
+      if (this.customerAmount && this.partnerAmount && !this.searching) {
         return true;
       }
       return false;
@@ -203,15 +214,21 @@ export default {
     ...mapMutations({
       updateSearchedOrder: 'setSearchedOrder',
       updateSearchState: 'setSearchState',
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
     }),
     ...mapActions({
       request_single_order: 'request_single_order',
+      custom_deliver: 'custom_deliver',
       log_action: 'log_action',
       back_date_order_confirm: 'back_date_order_confirm',
     }),
     async byPassSolrSearch() {
+      this.isActive = false;
       const orderNo = localStorage.query;
-      await this.singleOrderRequest(orderNo);
+      const orderData = await this.singleOrderRequest(orderNo);
+      this.orderData = orderData;
     },
     async onHit(item) {
       this.isActive = false;
@@ -227,9 +244,11 @@ export default {
         const data = await this.request_single_order(orderNo);
         return (this.order = data);
       } catch {
-        this.errors.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
+        this.updateClass('danger');
+        this.updateErrors(['Could not find the order']);
+        setTimeout(() => {
+          this.updateErrors([]);
+        }, 5000);
       }
     },
     prepareResponseData(data) {
@@ -243,33 +262,87 @@ export default {
         app: 'ORDERS_APP',
         endpoint: 'back_dated_order_confirm',
         params: {
-          order_no: 'BZ244F977-WX2',
-          sim_card_sn: '256754016798',
-          Rider_phone: '+256754016798',
-          version_code: 684,
-          order_amount: 2787009,
-          rider_amount: 2340426,
-          vat_amount: 425137,
-          service_fee: 11447,
-          sendy_commission: 6,
-          insurance: 10000,
+          order_no: this.orderData.order_details.order_no,
+          sim_card_sn: this.orderData.rider_details.serial_no,
+          rider_phone: this.orderData.rider_details.phone_no,
+          version_code: 1250,
+          order_amount: this.customerAmount,
+          rider_amount: this.partnerAmount,
+          vat_amount: 0,
+          service_fee: 0,
+          sendy_commission: 0,
+          insurance: 0,
         },
       };
       try {
+        this.searching = true;
         const data = await this.back_date_order_confirm(payload);
-        console.log(data);
+        if (data.status) {
+          this.updateClass('success');
+          this.customDeliver();
+          const tonnesString =
+            this.tonnes !== '' ? `, Tonnes delivered ${this.tonnes}` : '';
+          const notesString = this.notes !== '' ? `, Notes: ${this.notes}` : '';
+          this.logAction(
+            `Adjust order amounts for order ${this.orderData.order_details.order_no} with customer amount ${this.orderData.payment_details.order_currency} ${this.customerAmount} and partner amount ${this.orderData.payment_details.order_currency} ${this.partnerAmount} for account SENDY${this.orderData.client_details.client_id} ${tonnesString} ${notesString}`,
+            33,
+          );
+        } else {
+          this.updateClass('danger');
+          this.searching = false;
+        }
+        this.updateErrors([data.message]);
+        setTimeout(() => {
+          this.updateErrors([]);
+        }, 5000);
       } catch (err) {
-        console.log(err);
+        this.updateClass('danger');
+        this.updateErrors([err.message]);
+        setTimeout(() => {
+          this.updateErrors([]);
+        }, 5000);
       }
     },
-    async logAction(action) {
+    async customDeliver() {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'CUSTOM_DELIVER',
+        params: {
+          order_no: this.orderData.order_details.order_no,
+        },
+      };
+      try {
+        const data = await this.custom_deliver(payload);
+        if (data.status) {
+          this.updateClass('success');
+          this.logAction(
+            `Debit the client SENDY${this.orderData.client_details.client_id} and credit the partner ${this.orderData.rider_details.name} ${this.orderData.rider_details.phone_no} with the correct order ammount for order ${this.orderData.order_details.order_no}`,
+            34,
+          );
+        } else {
+          this.updateClass('danger');
+        }
+        this.searching = false;
+        this.updateErrors([data.reason]);
+        setTimeout(() => {
+          this.updateErrors([]);
+        }, 5000);
+      } catch (err) {
+        this.updateClass('danger');
+        this.updateErrors([err.message]);
+        setTimeout(() => {
+          this.updateErrors([]);
+        }, 5000);
+      }
+    },
+    async logAction(action, actionId) {
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'log_cc_action',
         params: {
-          channel: 'customer_support_peer_biz',
+          channel: 'customer_support',
           data_set: 'cc_actions',
-          action_id: 23,
+          action_id: actionId,
           _user_email: this.userData.payload.data.email,
           _user_id: this.userData.payload.data.admin_id,
           action_user: this.userData.payload.data.name,
@@ -449,5 +522,15 @@ span {
 }
 .active-submit-button {
   background: #3c8dbc;
+}
+.search-illustration {
+  margin: auto;
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.submit-icon {
+  top: 4px;
+  right: 25%;
 }
 </style>
