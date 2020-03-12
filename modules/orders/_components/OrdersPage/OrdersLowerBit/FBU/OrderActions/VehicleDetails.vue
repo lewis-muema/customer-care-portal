@@ -187,6 +187,18 @@ export default {
         this.triggerSearch();
       }
     },
+    query() {
+      this.query = this.query.toUpperCase();
+    },
+    insurance() {
+      this.insurance = this.insurance.toUpperCase().replace(/\s/g, '');
+    },
+    trailer() {
+      this.trailer = this.trailer.toUpperCase().replace(/\s/g, '');
+    },
+    kwartos() {
+      this.kwartos = this.kwartos.toUpperCase().replace(/\s/g, '');
+    },
   },
   methods: {
     setError(error) {
