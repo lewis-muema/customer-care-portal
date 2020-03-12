@@ -158,6 +158,18 @@
             Offline Orders
           </a>
         </li>
+        <li class="nav-item invoice-item">
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('millers_tonnage', copID)"
+            :id="`millers_tonnage_${copID}`"
+          >
+            <span class="fa fa-fw fa-clipboard"></span>
+            Millers tonnage
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -286,6 +298,18 @@
               :currency="currency"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`millers_tonnage_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `millers_tonnage_${copID}`"
+          >
+            <TheMillersTonnageComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -313,6 +337,8 @@ export default {
       import('./UserActions/TheReverseInvoiceComponent'),
     TheOfflineOrdersComponent: () =>
       import('./UserActions/TheOfflineOrdersComponent'),
+    TheMillersTonnageComponent: () =>
+      import('./UserActions/TheMillersTonnageComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {

@@ -527,6 +527,30 @@ export default {
       return error.message;
     }
   },
+  async custom_deliver({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async log_action({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async back_date_order_confirm({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
   async request_dispatch_list({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;

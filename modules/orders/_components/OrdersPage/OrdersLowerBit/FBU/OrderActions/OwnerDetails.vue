@@ -142,6 +142,9 @@ export default {
         this.triggerSearch();
       }
     },
+    query() {
+      this.query = this.query.replace(/[^0-9+]/g, '');
+    },
   },
   methods: {
     trigger() {
