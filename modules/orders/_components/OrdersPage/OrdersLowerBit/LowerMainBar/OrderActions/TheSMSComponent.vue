@@ -69,12 +69,9 @@ export default {
       perform_order_action: '$_orders/perform_order_action',
     }),
     checkappRoute() {
-      let app = 'app';
-      if (
-        window.location.hostname === 'localhost' ||
-        window.location.hostname === 'ccredesigntest'
-      ) {
-        app = 'webapptest';
+      let app = 'webapptest';
+      if (window.location.hostname === 'ccredesign.sendyit.com') {
+        app = 'app';
       }
       this.app_route = app;
     },
