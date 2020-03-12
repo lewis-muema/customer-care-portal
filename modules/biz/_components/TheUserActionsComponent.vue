@@ -128,16 +128,19 @@
             Pricing
           </a>
         </li>
-        <li v-if="approvingAdmin" class="nav-item">
+        <li
+          v-if="permissions.approve_offline_orders"
+          class="nav-item invoice-item"
+        >
           <a
-            class="nav-link action-list"
+            class="nav-link action-list invoice-action"
             data-toggle="tab"
             aria-expanded="false"
-            @click="viewTab('approval', copID)"
-            :id="`approval_${copID}`"
+            @click="viewTab('offline_orders', copID)"
+            :id="`offline_orders_${copID}`"
           >
-            <span class="fa fa-fw fa-check"></span>
-            Approvals
+            <span class="fa fa-fw fa-toggle-off"></span>
+            Offline Orders
           </a>
         </li>
         <li
@@ -253,34 +256,6 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
-            :id="`approval_${copID}`"
-            role="tabpanel"
-            v-if="
-              showTab === `approval_${copID}` &&
-                this.approvalModel === 'Distance'
-            "
-          >
-            <DistancePricingApprovalComponent
-              :user="user"
-              :session="userData"
-            />
-          </div>
-          <div
-            :class="`tab-pane fade ${show} ${active}`"
-            :id="`approval_${copID}`"
-            role="tabpanel"
-            v-if="
-              showTab === `approval_${copID}` &&
-                this.approvalModel === 'Location'
-            "
-          >
-            <LocationPricingApprovalComponent
-              :user="user"
-              :session="userData"
-            />
-          </div>
-          <div
-            :class="`tab-pane fade ${show} ${active}`"
             :id="`vat_config_${copID}`"
             role="tabpanel"
             v-if="showTab === `vat_config_${copID}`"
@@ -355,10 +330,6 @@ export default {
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TheAddNewPricingComponent: () =>
       import('./UserActions/TheAddNewPricingComponent'),
-    DistancePricingApprovalComponent: () =>
-      import('./UserActions/PricingApproval/DistancePricingApprovalComponent'),
-    LocationPricingApprovalComponent: () =>
-      import('./UserActions/PricingApproval/LocationPricingApprovalComponent'),
     TheVATConfigComponent: () => import('./UserActions/TheVATConfigComponent'),
     TheCustomInvoiceComponent: () =>
       import('./UserActions/TheCustomInvoiceComponent'),
@@ -387,19 +358,13 @@ export default {
       configData: [],
       testAdmin: false,
       category: 'biz',
-      approvalModel: '',
       distancePricingTableData: [],
       locationPricingTableData: [],
     };
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
-    ...mapGetters([
-      'getCopTypes',
-      'getAdmins',
-      'getApproverId',
-      'getConfiguredLocationPricing',
-    ]),
+    ...mapGetters(['getCopTypes', 'getAdmins']),
 
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -409,11 +374,6 @@ export default {
         ? this.user.user_details.default_currency
         : 'KES';
       return currency;
-    },
-    approvingAdmin() {
-      return (
-        parseInt(this.session.payload.data.admin_id, 10) === this.getApproverId
-      );
     },
     ticketData() {
       const userName = this.user.user_details.cop_name;
@@ -439,16 +399,11 @@ export default {
     getAdmins(admins) {
       return (this.admin_list = admins);
     },
-    approvalModel(model) {
-      this.approvalModel = model;
-    },
   },
   async mounted() {
     this.copID = this.user.user_details.cop_id;
     await this.setCopTypes();
     await this.setAdmins();
-    await this.fetchCustomDistancePricingData();
-    this.setApprovalModel();
   },
   methods: {
     ...mapMutations({
@@ -462,13 +417,6 @@ export default {
       const actionClass = '';
       this.updateClass(actionClass);
       this.updateErrors(notification);
-    },
-    setApprovalModel() {
-      if (this.distancePricingTableData.length !== 0) {
-        this.approvalModel = 'Distance';
-      } else if (this.locationPricingTableData.length !== 0) {
-        this.approvalModel = 'Location';
-      }
     },
     viewTab(tab, copID) {
       this.clearErrorMessages();

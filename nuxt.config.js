@@ -128,7 +128,8 @@ module.exports = {
       },
       {
         rel: 'stylesheet',
-        href: 'https://unpkg.com/element-ui/lib/theme-chalk/index.css',
+        href:
+          'https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.13.0/theme-chalk/index.css',
       },
     ],
   },

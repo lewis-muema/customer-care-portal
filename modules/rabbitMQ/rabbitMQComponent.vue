@@ -23,6 +23,7 @@ export default {
       orderNo: null,
       destination: null,
       cityname: '',
+      citiesData: [],
     };
     /**
      * Function for debugging rabbitMQ
@@ -34,6 +35,7 @@ export default {
 
   computed: {
     ...mapState(['config']),
+
     url() {
       return this.config.RABBITMQ_URL;
     },
@@ -45,10 +47,8 @@ export default {
       return params;
     },
   },
+
   methods: {
-    ...mapActions({
-      getcitydetails: 'getCity',
-    }),
     /**
      * This the callback called after the websocket connection to rabbitMQ has been established
      * which then subscribes to the exchange for order pushes.
@@ -110,7 +110,7 @@ export default {
      * the exchange. It then runs a check for the status of the order and if it exists on pouchdb then either storing or
      * updating it on the database
      */
-    async onmessage() {
+    onmessage() {
       this.order_push = this.order_body.result[0];
       this.orderNo = this.order_push.order_no;
       const ordernumber = this.order_push.order_no;
@@ -126,7 +126,7 @@ export default {
       const orderStatus = this.determineOrderStatus(this.order_push);
       this.determinePaymentMethod(this.cashStatus);
       this.deteremineOrderType(this.priceType);
-      await this.getCity(this.order_push.order_details.values.city_id);
+      const city_id = this.order_push.order_details.values.city_id;
       const pushobj = new Object();
       pushobj.client_name = this.order_push.user_name;
       pushobj.distance_read = this.order_push.order_details.values.distance_read;
@@ -163,25 +163,13 @@ export default {
       pushobj.vendor_type_id = this.order_push.vendor_type;
       pushobj.orderCountryCode = this.order_push.country_codes;
       pushobj.push_order = true;
-      pushobj.city_name = this.cityname;
+      pushobj.city_id = city_id;
+      this.pushes.push(pushobj);
       this.handlePush(pushobj);
     },
 
     handlePush(pushobj) {
       this.$emit('pushedSomething', pushobj);
-    },
-    async getCity(city_id) {
-      if (this.cityname.length <= 1) {
-        try {
-          const res = await this.getcitydetails(city_id);
-          this.cityname = res.city_name;
-          return this.cityname;
-        } catch (error) {
-          error;
-        }
-      } else {
-        return this.cityname;
-      }
     },
 
     deteremineOrderType(priceType) {

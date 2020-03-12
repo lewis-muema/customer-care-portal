@@ -94,7 +94,6 @@ export default {
 
       const notification = [];
       let actionClass = '';
-
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'reschedule_order_cc',

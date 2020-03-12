@@ -118,7 +118,17 @@ export default {
     },
     async resetCustomPricing() {
       this.trackResetConfigs();
-      const approvalParams = this.createPayload(this.customPricingDetails);
+      const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
+      const pricingTableData = clone;
+      for (let i = 0; i < pricingTableData.length; i += 1) {
+        const perHourFee =
+          pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
+        const perMinuteFee = perHourFee / 60;
+        pricingTableData[
+          i
+        ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
+      }
+      const approvalParams = this.createPayload(pricingTableData);
       const notification = [];
       let actionClass = '';
       const payload = {
