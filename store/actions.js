@@ -527,6 +527,14 @@ export default {
       return error.message;
     }
   },
+  async custom_deliver({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
   async log_action({ dispatch }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
