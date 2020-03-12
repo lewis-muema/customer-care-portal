@@ -70,7 +70,7 @@ export default {
     }),
     checkappRoute() {
       let app = 'webapptest';
-      if (window.location.hostname === 'ccredesign.sendyit.com') {
+      if (this.$env.APP_ENV === 'production') {
         app = 'app';
       }
       this.app_route = app;
