@@ -158,7 +158,10 @@
             Offline Orders
           </a>
         </li>
-        <li class="nav-item invoice-item">
+        <li
+          v-if="permissions.approve_tonnage_billing"
+          class="nav-item invoice-item"
+        >
           <a
             class="nav-link action-list invoice-action"
             data-toggle="tab"
