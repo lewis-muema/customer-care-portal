@@ -1087,8 +1087,7 @@ table {
 .freight-assign-new-rider-buttons {
   border: 1px solid #c0c2c3 !important;
 }
-.assign-order-button,
-.auxillary-save-button {
+.assign-order-button, .auxillary-save-button__active {
   color: white;
   background: #1a7fc3;
   border: 1px solid #1b7fc3;
@@ -1100,6 +1099,20 @@ table {
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: auto;
+}
+.auxillary-save-button__inactive {
+  color: white;
+  background: #BDBDBD;
+  border: 1px solid #BDBDBD;
+  width: 120px;
+  height: 40px;
+  border-radius: 5px;
+  float: right;
+  margin-right: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: auto;
+  pointer-events: none;
 }
 .assign-owner-find {
   background: #1a7fc3 !important;
@@ -1202,7 +1215,6 @@ table {
   border: 1px solid #bdbdbd;
   margin-top: -1px;
   padding: 20px;
-  width: 90%;
 }
 .save-truck-button {
   font-weight: 600;
