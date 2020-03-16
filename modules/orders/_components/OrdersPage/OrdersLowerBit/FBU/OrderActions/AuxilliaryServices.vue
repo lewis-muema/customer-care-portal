@@ -11,15 +11,6 @@
       >
         Fuel Advance
       </p>
-      <p
-        class="advance-tabs"
-        :class="
-          tab === 'tyre' ? 'active-services-tab' : 'inactive-services-tab'
-        "
-        @click="switchTab('tyre')"
-      >
-        Tyre Advance
-      </p>
     </div>
     <div class="finances-tab" v-if="tab === 'fuel'">
       <div class="auxilliary-inputs">
