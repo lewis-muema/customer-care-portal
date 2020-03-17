@@ -188,16 +188,24 @@ export default {
       }
     },
     query() {
-      this.query = this.query.toUpperCase();
+      if (this.query) {
+        this.query = this.query.toUpperCase();
+      }
     },
     insurance() {
-      this.insurance = this.insurance.toUpperCase().replace(/\s/g, '');
+      if (this.insurance) {
+        this.insurance = this.insurance.toUpperCase().replace(/\s/g, '');
+      }
     },
     trailer() {
-      this.trailer = this.trailer.toUpperCase().replace(/\s/g, '');
+      if (this.trailer) {
+        this.trailer = this.trailer.toUpperCase().replace(/\s/g, '');
+      }
     },
     kwartos() {
-      this.kwartos = this.kwartos.toUpperCase().replace(/\s/g, '');
+      if (this.kwartos) {
+        this.kwartos = this.kwartos.toUpperCase().replace(/\s/g, '');
+      }
     },
   },
   methods: {

@@ -186,13 +186,19 @@ export default {
   },
   watch: {
     name(data) {
-      this.name = this.name.toUpperCase();
+      if (this.name) {
+        this.name = this.name.toUpperCase();
+      }
     },
     query(data) {
-      this.query = this.query.replace(/\s/g, '').replace(/[^0-9+]/g, '');
+      if (this.query) {
+        this.query = this.query.replace(/\s/g, '').replace(/[^0-9+]/g, '');
+      }
     },
     license(data) {
-      this.license = this.license.toUpperCase();
+      if (this.license) {
+        this.license = this.license.toUpperCase();
+      }
     },
   },
   methods: {
