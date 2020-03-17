@@ -143,7 +143,9 @@ export default {
       }
     },
     query() {
-      this.query = this.query.replace(/[^0-9+]/g, '');
+      if (this.query) {
+        this.query = this.query.replace(/[^0-9+]/g, '');
+      }
     },
   },
   methods: {
