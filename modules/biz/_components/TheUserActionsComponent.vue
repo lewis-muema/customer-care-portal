@@ -173,6 +173,18 @@
             Millers tonnage
           </a>
         </li>
+        <li v-if="permissions.freight_actions" class="nav-item invoice-item">
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('financing', copID)"
+            :id="`financing_${copID}`"
+          >
+            <span class="fa fa-fw fa-clipboard"></span>
+            Financing
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -313,6 +325,18 @@
               :currency="currency"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`financing_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `financing_${copID}`"
+          >
+            <TheFinancingComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -342,6 +366,7 @@ export default {
       import('./UserActions/TheOfflineOrdersComponent'),
     TheMillersTonnageComponent: () =>
       import('./UserActions/TheMillersTonnageComponent'),
+    TheFinancingComponent: () => import('./UserActions/AuxilliaryServices'),
   },
   mixins: [PricingConfigsMxn],
   props: {
