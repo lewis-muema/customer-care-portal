@@ -187,6 +187,7 @@ export default {
           this.trackMixpanelIdentify();
           this.trackMixpanelPeople();
           this.updateOrderNumber(orderNumber);
+          this.trackCreateOrder();
           this.pickOrder = true;
           this.confirmOrder = false;
         } else {
@@ -210,13 +211,14 @@ export default {
         type: 'Click',
       });
     },
-    trackConfirmOrderButton() {
-      mixpanel.track(`Created order - ${this.orderNo}`, {
+    trackCreateOrder() {
+      mixpanel.track('Create order', {
         type: 'Order Creation',
+        'Order Number': this.orderNo,
       });
     },
     trackMixpanelIdentify() {
-      mixpanel.identify('Order Creator', {
+      mixpanel.identify({
         email: this.getSessionData.payload.data.email,
         admin_id: this.getSessionData.payload.data.admin_id,
       });
