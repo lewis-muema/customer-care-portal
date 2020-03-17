@@ -20,7 +20,7 @@
             <select
               id="stations"
               name="fuel-stations"
-              class="freight-assign-rider-buttons assign_inputs"
+              class="freight-assign-rider-buttons assign-inputs"
               v-model="selectedStation"
             >
               <option value="0">Select petrol station</option>
@@ -37,11 +37,11 @@
             <select
               name="fuel-stations"
               id=""
-              class="freight-assign-rider-buttons assign_inputs currency-input"
+              class="freight-assign-rider-buttons assign-inputs currency-input"
               v-model="currency"
             >
-              <option :value="order.payment_details.order_currency">{{
-                order.payment_details.order_currency
+              <option :value="user.user_details.default_currency">{{
+                user.user_details.default_currency
               }}</option>
             </select>
           </span>
@@ -50,7 +50,7 @@
             <input
               v-model="pumpRate"
               type="text"
-              class="freight-assign-rider-buttons assign_inputs"
+              class="freight-assign-rider-buttons assign-inputs"
               placeholder="Amount/litre"
             />
           </span>
@@ -59,7 +59,7 @@
             <input
               v-model="sendyRate"
               type="text"
-              class="freight-assign-rider-buttons assign_inputs"
+              class="freight-assign-rider-buttons assign-inputs"
               placeholder="Amount/litre"
             />
           </span>
@@ -68,7 +68,7 @@
             <input
               v-model="litres"
               type="text"
-              class="freight-assign-rider-buttons assign_inputs"
+              class="freight-assign-rider-buttons assign-inputs"
               placeholder="Litres"
             />
           </span>
@@ -120,12 +120,8 @@
               </td>
               <td>{{ row.litres }}</td>
               <td>{{ timeStamp(row.timestamp) }}</td>
-              <td>
-                {{ order.payment_details.order_currency }} {{ row.pump_price }}
-              </td>
-              <td>
-                {{ order.payment_details.order_currency }} {{ row.sendy_price }}
-              </td>
+              <td>{{ currency }} {{ row.pump_price }}</td>
+              <td>{{ currency }} {{ row.sendy_price }}</td>
               <td>
                 {{ historyCurrency(row.fuel_station_name) }}
                 {{ row.sendy_take }} {{ historyPoints(row.fuel_station_name) }}
@@ -146,7 +142,7 @@ import moment from 'moment';
 
 export default {
   props: {
-    order: {
+    user: {
       type: Object,
       required: true,
     },
@@ -156,7 +152,7 @@ export default {
       tab: 'fuel',
       stations: [],
       selectedStation: 0,
-      currency: this.order.payment_details.order_currency,
+      currency: this.user.user_details.default_currency,
       litres: '',
       pumpRate: '',
       sendyRate: '',
@@ -229,7 +225,7 @@ export default {
     ...mapActions({
       fuel_stations: 'fuel_stations',
       submit_fuel_advance: 'submit_fuel_advance',
-      fuel_history_order: 'fuel_history_order',
+      fuel_history_cop: 'fuel_history_cop',
     }),
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -280,8 +276,8 @@ export default {
           action_user: this.userData.payload.data.name,
           channel: 'aux',
           data_set: 'cc_actions',
-          order_no: this.order.order_details.order_no,
-          cop_id: 0,
+          order_no: '',
+          cop_id: this.user.user_details.cop_id,
           fuel_station_id: this.selectedStation,
           pump_rate: this.pumpRate,
           sendy_rate: this.sendyRate,
@@ -310,9 +306,9 @@ export default {
     },
     async getFuelHistory() {
       const payload = {
-        order_no: this.order.order_details.order_no,
+        cop_id: this.user.user_details.cop_id,
       };
-      const data = await this.fuel_history_order(payload);
+      const data = await this.fuel_history_cop(payload);
       this.history = data;
     },
   },
@@ -380,7 +376,11 @@ export default {
   font-size: 12px;
   line-height: 14px;
 }
-.assign_inputs {
-  width: auto;
+.assign-inputs {
+  width: 115px;
+}
+.history-head-col,
+.history-head-col {
+  height: 40px;
 }
 </style>

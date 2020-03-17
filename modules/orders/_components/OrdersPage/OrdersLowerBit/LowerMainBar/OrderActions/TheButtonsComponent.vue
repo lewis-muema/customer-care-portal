@@ -216,6 +216,25 @@
           Complete Order
         </a>
       </li>
+      <li
+        class="nav-item"
+        v-if="
+          (order.order_details.order_status === 'in transit' ||
+            order.order_details.order_status === 'confirmed') &&
+            permissions.freight_actions
+        "
+      >
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('auxilliary_services', orderNo)"
+          :id="`auxilliary_services_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-check-square"></span>
+          Finances
+        </a>
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="body-box">
@@ -327,6 +346,14 @@
       >
         <TheCompleteOrderComponent :order="order" />
       </div>
+      <div
+        :class="`tab-pane fade ${show} ${active}`"
+        :id="`auxilliary_services_${orderNo}`"
+        role="tabpanel"
+        v-if="showTab === `auxilliary_services_${orderNo}`"
+      >
+        <AuxilliaryServices :order="order" />
+      </div>
     </div>
   </div>
 </template>
@@ -348,6 +375,8 @@ export default {
     TrackerComponent: () => import('./TrackerComponent'),
     TheMarkInTransitComponent: () => import('./TheMarkInTransitComponent'),
     TheCompleteOrderComponent: () => import('./TheCompleteOrderComponent'),
+    AuxilliaryServices: () =>
+      import('../../FBU/OrderActions/AuxilliaryServices'),
   },
   props: {
     order: {

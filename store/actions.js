@@ -559,7 +559,7 @@ export default {
       return error.response;
     }
   },
-  async fuel_history({ state }, payload) {
+  async fuel_history_order({ state }, payload) {
     const config = state.config;
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -571,7 +571,29 @@ export default {
       },
     };
 
-    const url = `${config.ADONIS_API}fuel_history/${payload.order_no}`;
+    const url = `${config.ADONIS_API}fuel_history/order/${payload.order_no}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async fuel_history_cop({ state }, payload) {
+    const config = state.config;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}fuel_history/cop/${payload.cop_id}`;
     try {
       const response = await axios.get(url, param);
       return response.data;
