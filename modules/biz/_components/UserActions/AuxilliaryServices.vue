@@ -347,7 +347,7 @@ export default {
   margin-left: 5px !important;
 }
 .currency-input {
-  width: 130px;
+  width: 130px !important;
 }
 .calculations {
   width: 50%;
