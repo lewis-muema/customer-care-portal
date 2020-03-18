@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="assign-header no-margin">Auxilliary Services</p>
+    <p class="assign-header no-margin">Auxiliary Services</p>
     <div class="auxilliary-tabs">
       <p
         class="advance-tabs"
@@ -20,10 +20,9 @@
             <select
               id="stations"
               name="fuel-stations"
-              class="freight-assign-rider-buttons assign-inputs"
+              class="freight-assign-rider-buttons assign-inputs currency-input"
               v-model="selectedStation"
             >
-              <option value="0">Select petrol station</option>
               <option
                 :value="station.id"
                 v-for="(station, index) in stations"
@@ -76,17 +75,21 @@
         <div class="calculations">
           <div class="calculations-tab">
             <p class="no-margin">Pump Total</p>
-            <p>{{ currency }} {{ pumpRateAmount }}</p>
+            <p class="calculations-values">
+              {{ currency }} {{ pumpRateAmount }}
+            </p>
           </div>
           <div class="divider"></div>
           <div class="calculations-tab">
             <p class="no-margin">Sendy Total</p>
-            <p>{{ currency }} {{ sendyTotalAmount }}</p>
+            <p class="calculations-values">
+              {{ currency }} {{ sendyTotalAmount }}
+            </p>
           </div>
           <div class="divider"></div>
           <div class="calculations-tab">
             <p class="no-margin">Sendy Take</p>
-            <p>
+            <p class="calculations-values">
               {{ sendyTakeCurrency }} {{ sendyTakeAmount }}
               {{ points }}
             </p>
@@ -103,9 +106,9 @@
           Save
         </button>
         <div v-if="history.length > 0">
-          <p>History</p>
+          <p class="history-header">History</p>
           <table class="history-row">
-            <tr class="history-head-col">
+            <tr class="history-head-col history-head-row">
               <td>Station</td>
               <td>Litres</td>
               <td>Date/Time</td>
@@ -151,7 +154,7 @@ export default {
     return {
       tab: 'fuel',
       stations: [],
-      selectedStation: 0,
+      selectedStation: 1,
       currency: this.user.user_details.default_currency,
       litres: '',
       pumpRate: '',
@@ -350,10 +353,10 @@ export default {
   width: 130px !important;
 }
 .calculations {
-  width: 50%;
+  width: 60%;
   display: flex;
   margin-left: auto;
-  margin-top: 10px;
+  margin-top: 75px;
   margin-bottom: 10px;
   margin-right: 10px;
   border-radius: 5px;
@@ -382,5 +385,20 @@ export default {
 .history-head-col,
 .history-head-col {
   height: 40px;
+}
+.history-header {
+  color: #1b7fc3;
+  font-weight: 600;
+  font-size: 18px;
+}
+.history-head-row {
+  color: #1b7fc3;
+  font-weight: 500;
+  font-size: 14px;
+}
+.calculations-values {
+  color: #266299;
+  font-weight: 600;
+  font-size: 20px;
 }
 </style>
