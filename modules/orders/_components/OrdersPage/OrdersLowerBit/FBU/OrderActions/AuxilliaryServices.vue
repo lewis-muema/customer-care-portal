@@ -14,97 +14,110 @@
     </div>
     <div class="finances-tab" v-if="tab === 'fuel'">
       <div class="auxilliary-inputs">
-        <span>
-          <span class="labeled-inputs">
-            <p class="no-margin fuel-input-labels">Fueling Stations</p>
-            <select
-              id="stations"
-              name="fuel-stations"
-              class="freight-assign-rider-buttons assign_inputs currency-input"
-              v-model="selectedStation"
-            >
-              <option
-                :value="station.id"
-                v-for="(station, index) in stations"
-                :key="index"
-                >{{ station.name }}</option
+        <div class="inputs-container">
+          <span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Fueling Stations</p>
+              <select
+                id="stations"
+                name="fuel-stations"
+                class="freight-assign-rider-buttons assign_inputs currency-input"
+                v-model="selectedStation"
               >
-            </select>
+                <option
+                  :value="station.id"
+                  v-for="(station, index) in stations"
+                  :key="index"
+                  >{{ station.name }}</option
+                >
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Currency</p>
+              <select
+                name="fuel-stations"
+                id=""
+                class="freight-assign-rider-buttons assign_inputs currency-input"
+                v-model="currency"
+              >
+                <option :value="order.payment_details.order_currency">{{
+                  order.payment_details.order_currency
+                }}</option>
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Notes</p>
+              <input
+                v-model="Notes"
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                placeholder="Type here"
+              />
+            </span>
           </span>
-          <span class="labeled-inputs">
-            <p class="no-margin fuel-input-labels">Currency</p>
-            <select
-              name="fuel-stations"
-              id=""
-              class="freight-assign-rider-buttons assign_inputs currency-input"
-              v-model="currency"
-            >
-              <option :value="order.payment_details.order_currency">{{
-                order.payment_details.order_currency
-              }}</option>
-            </select>
+          <span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Pump Rate</p>
+              <input
+                v-model="pumpRate"
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                placeholder="Amount/litre"
+              />
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Sendy Rate</p>
+              <input
+                v-model="sendyRate"
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                placeholder="Amount/litre"
+              />
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Total Litres</p>
+              <input
+                v-model="litres"
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                placeholder="Litres"
+              />
+            </span>
           </span>
-          <span class="labeled-inputs">
-            <p class="no-margin fuel-input-labels">Pump Rate</p>
-            <input
-              v-model="pumpRate"
-              type="text"
-              class="freight-assign-rider-buttons assign_inputs"
-              placeholder="Amount/litre"
-            />
-          </span>
-          <span class="labeled-inputs">
-            <p class="no-margin fuel-input-labels">Sendy Rate</p>
-            <input
-              v-model="sendyRate"
-              type="text"
-              class="freight-assign-rider-buttons assign_inputs"
-              placeholder="Amount/litre"
-            />
-          </span>
-          <span class="labeled-inputs">
-            <p class="no-margin fuel-input-labels">Total Litres</p>
-            <input
-              v-model="litres"
-              type="text"
-              class="freight-assign-rider-buttons assign_inputs"
-              placeholder="Litres"
-            />
-          </span>
-        </span>
-        <div class="calculations">
-          <div class="calculations-tab">
-            <p class="no-margin">Pump Total</p>
-            <p class="calculations-values">
-              {{ currency }} {{ pumpRateAmount }}
-            </p>
+          <div class="calculations">
+            <div class="calculations-tab">
+              <p class="no-margin">Pump Total</p>
+              <p class="calculations-values">
+                {{ currency }} {{ pumpRateAmount }}
+              </p>
+            </div>
+            <div class="divider"></div>
+            <div class="calculations-tab">
+              <p class="no-margin">Sendy Total</p>
+              <p class="calculations-values">
+                {{ currency }} {{ sendyTotalAmount }}
+              </p>
+            </div>
+            <div class="divider"></div>
+            <div class="calculations-tab">
+              <p class="no-margin">Sendy Take</p>
+              <p class="calculations-values">
+                {{ sendyTakeCurrency }} {{ sendyTakeAmount }}
+                {{ points }}
+              </p>
+            </div>
           </div>
-          <div class="divider"></div>
-          <div class="calculations-tab">
-            <p class="no-margin">Sendy Total</p>
-            <p class="calculations-values">
-              {{ currency }} {{ sendyTotalAmount }}
-            </p>
-          </div>
-          <div class="divider"></div>
-          <div class="calculations-tab">
-            <p class="no-margin">Sendy Take</p>
-            <p class="calculations-values">
-              {{ sendyTakeCurrency }} {{ sendyTakeAmount }}
-              {{ points }}
-            </p>
-          </div>
+          <button
+            :class="
+              activeButtonStatus
+                ? 'auxillary-save-button__active'
+                : 'auxillary-save-button__inactive'
+            "
+            @click="submitFuelAdvance(true)"
+          >
+            Save
+          </button>
         </div>
-        <button
-          :class="
-            activeButtonStatus
-              ? 'auxillary-save-button__active'
-              : 'auxillary-save-button__inactive'
-          "
-          @click="submitFuelAdvance(true)"
-        >
-          Save
-        </button>
         <div v-if="history.length > 0">
           <p class="history-header">History</p>
           <table class="history-row">
@@ -115,6 +128,7 @@
               <td>Pump price</td>
               <td>Sendy Price</td>
               <td>Sendy Take</td>
+              <td>Notes</td>
               <td>Invoice Number</td>
             </tr>
             <tr class="history-head-col" v-for="(row, i) in history" :key="i">
@@ -133,6 +147,7 @@
                 {{ historyCurrency(row.fuel_station_name) }}
                 {{ row.sendy_take }} {{ historyPoints(row.fuel_station_name) }}
               </td>
+              <td></td>
               <td class="invoice">Click here to add</td>
             </tr>
           </table>
@@ -167,6 +182,7 @@ export default {
       sendyTotalAmount: 0,
       sendyTakeAmount: 0,
       history: [],
+      Notes: '',
     };
   },
   computed: {
@@ -289,6 +305,7 @@ export default {
           pump_rate: this.pumpRate,
           sendy_rate: this.sendyRate,
           total_litres: this.litres,
+          notes: this.Notes,
           save: status,
         },
       };
@@ -332,6 +349,7 @@ export default {
 }
 .auxilliary-inputs {
   display: grid;
+  width: auto;
 }
 .auxilliary-tabs {
   display: flex;
@@ -349,12 +367,12 @@ export default {
 }
 .labeled-inputs {
   display: inline-grid;
+  width: 33%;
 }
 .fuel-input-labels {
   margin-left: 5px !important;
 }
 .currency-input {
-  width: 130px !important;
   background: white;
 }
 .calculations {
@@ -401,5 +419,8 @@ export default {
   color: #1b7fc3;
   font-weight: 500;
   font-size: 14px;
+}
+.inputs-container {
+  padding-right: 10%;
 }
 </style>
