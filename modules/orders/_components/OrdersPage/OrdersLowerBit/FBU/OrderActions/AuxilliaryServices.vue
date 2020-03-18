@@ -46,7 +46,7 @@
               </select>
             </span>
             <span class="labeled-inputs">
-              <p class="no-margin fuel-input-labels">Notes</p>
+              <p class="no-margin fuel-input-labels">Notes (Optional)</p>
               <input
                 v-model="Notes"
                 type="text"
