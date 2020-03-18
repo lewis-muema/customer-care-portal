@@ -1202,16 +1202,14 @@ table {
 .assign-details-tab {
   margin-top: 15px;
 }
-.auxilliary-inputs,
-.finances-tab,
-.save-truck-button,
-.driver-assign-inputs {
+.save-truck-button, .driver-assign-inputs {
   width: max-content;
 }
 .finances-tab {
   border: 1px solid #bdbdbd;
   margin-top: -1px;
   padding: 20px;
+  width: 100%;
 }
 .save-truck-button {
   font-weight: 600;
