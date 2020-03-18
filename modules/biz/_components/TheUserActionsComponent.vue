@@ -173,7 +173,10 @@
             Millers tonnage
           </a>
         </li>
-        <li v-if="permissions.freight_actions" class="nav-item invoice-item">
+        <li
+          v-if="permissions.freight_actions && activeStatus"
+          class="nav-item invoice-item"
+        >
           <a
             class="nav-link action-list invoice-action"
             data-toggle="tab"
@@ -329,7 +332,7 @@
             :class="`tab-pane fade ${show} ${active}`"
             :id="`financing_${copID}`"
             role="tabpanel"
-            v-if="showTab === `financing_${copID}`"
+            v-if="showTab === `financing_${copID}` && activeStatus"
           >
             <TheFinancingComponent
               :user="user"
@@ -388,6 +391,7 @@ export default {
       category: 'biz',
       distancePricingTableData: [],
       locationPricingTableData: [],
+      activeStatus: false,
     };
   },
   computed: {
