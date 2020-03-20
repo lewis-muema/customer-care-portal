@@ -144,4 +144,28 @@ export default {
   getSnNumber(state) {
     return state.snNumber;
   },
+  getNPSRequest(state) {
+    return state.npsRequest;
+  },
+  getNPSActiveGroup(state) {
+    return state.activeGroup;
+  },
+  getNPSCommentStatus(state) {
+    return state.commentStatus;
+  },
+  getActiveCountries(state) {
+    return state.activeCountries;
+  },
+  getActiveAccountTypes(state) {
+    return state.activeAccountTypes;
+  },
+  getActiveBusinessUnits(state) {
+    return state.activeBusinessUnits;
+  },
+  getCurrentNPSPage(state) {
+    return state.currentNPSPage;
+  },
+  getLastNPSPage(state) {
+    return state.lastNPSPage;
+  },
 };

@@ -22,6 +22,8 @@ const apix = new Apix({
     { name: 'cities', url: `cities` },
     { name: 'copTypes', url: `cop-types` },
     { name: 'admins', url: `admins` },
+    { name: 'surveys', url: `nps/surveys` },
+    { name: 'countries', url: `countries` },
   ],
 });
 const baseUrl = process.env.baseUrl;
@@ -83,6 +85,14 @@ export default {
       tableData: [],
       customPricingDetails: [],
       approverId: 0,
+      npsRequest: false,
+      activeGroup: null,
+      commentStatus: null,
+      activeCountries: null,
+      activeAccountTypes: null,
+      activeBusinessUnits: null,
+      currentNPSPage: null,
+      lastNPSPage: null,
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',
         500: 'Page not found',

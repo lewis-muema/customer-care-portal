@@ -1,0 +1,483 @@
+<template>
+  <span class="survey-info-holder" :key="surveyComponentKey">
+    <div class="col-md-12 main-holder">
+      <div class="row date-info">
+        <div class="col-md-6 pull-right">&nbsp;</div>
+        <div class="datepicker col-md-6">
+          <span class="date-label">This Month</span>
+          <span class="date-label">Feb 01 - Feb 29</span>
+          <span class="date-label"
+            ><i class="fa fa-times-circle-o" aria-hidden="true"></i
+          ></span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-secondary">
+            <span v-if="!returned">Loading...</span>
+            <span v-else>{{ metaInfo.total }} Responses</span>
+          </button>
+          <button
+            v-for="(data, index) in commentsData"
+            :key="index"
+            type="button"
+            class="btn btn-default"
+            :class="{ active: index === activeItem }"
+            @click="toggleComments(index, data.value)"
+          >
+            {{ data.title }}
+          </button>
+        </div>
+      </div>
+      <div class="row survey">
+        <div v-if="!returned" class="survey-info">
+          <div class="text-center">
+            <i class="fa fa-spinner fa-spin loader"></i>
+          </div>
+        </div>
+        <div v-if="returned && surveyData.length === 0" class="survey-info">
+          <div class="alert alert-info text-center">
+            <strong> {{ noDataMsg }}</strong>
+          </div>
+        </div>
+
+        <div
+          v-for="(survey, index) in surveyData"
+          :key="index"
+          class="survey-info"
+          v-else
+        >
+          <div :class="`row group-border border_${survey.respondent_group} `">
+            <div :class="`col-md-1 score-display`">
+              <div :class="`score ${survey.respondent_group}`">
+                {{ survey.score }}
+              </div>
+            </div>
+            <div class="col-md-10">
+              <div class="survey-top">
+                <span
+                  class="survey-header"
+                  @click="
+                    view_user(survey.respondent_id, survey.respondent_type)
+                  "
+                >
+                  <nuxt-link class="survey-header" to="/orders">{{
+                    survey.respondent_name
+                  }}</nuxt-link></span
+                >
+                <span class="survey-period pull-right">
+                  {{ getTimeFromNow(survey.surveyed_on) }}
+                </span>
+              </div>
+
+              <div class="survey-body">{{ survey.comments }}</div>
+            </div>
+          </div>
+          <div class="tag-holder row">
+            Add tag
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" v-if="returned && surveyData.length !== 0">
+      <div class="col-md-4 pull-right bottom-pages">
+        <div class="btn-group pagination" role="group">
+          <button type="button" class="btn btn-default pages-number">
+            <span class="pages-holder">
+              Page {{ currentNPSPage }} of {{ lastNPSPage }}
+            </span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-default page"
+            @click="previous()"
+            :disabled="isPreviousDisabled"
+          >
+            <span class="accordion-item-trigger-icon previous"></span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-default page"
+            @click="next()"
+            :disabled="isNextDisabled"
+          >
+            <span class="accordion-item-trigger-icon next"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </span>
+</template>
+<script>
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+
+export default {
+  name: 'TheMainDisplay',
+  props: {
+    surveys: {
+      type: Array,
+      required: true,
+    },
+    metaData: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      activeItem: 0,
+      isActive: false,
+      commentsStatus: null,
+      group: null,
+      countries: null,
+      totalSurveys: null,
+      surveyComponentKey: 0,
+      requestedSurveys: null,
+      requestedMetaData: null,
+      accountType: null,
+      businessUnits: null,
+      requestedPage: 1,
+      noDataMsg: 'There are no surveys matching this criteria',
+      filters: false,
+      returned: true,
+      totalDetractors: 10,
+      totalPassives: 10,
+      totalPromoters: 10,
+
+      commentsData: [
+        {
+          value: null,
+          title: 'All',
+          class: 'all active',
+        },
+        {
+          value: 1,
+          title: 'With Comments',
+          class: 'comments',
+        },
+        {
+          value: 0,
+          title: 'Without Comments',
+          class: 'no-comments',
+        },
+      ],
+    };
+  },
+  computed: {
+    ...mapGetters([
+      'getSurveys',
+      'getNPSActiveGroup',
+      'getNPSCommentStatus',
+      'getActiveCountries',
+      'getActiveAccountTypes',
+      'getActiveBusinessUnits',
+      'getCurrentNPSPage',
+      'getLastNPSPage',
+    ]),
+    ...mapState(['currentNPSPage', 'lastNPSPage']),
+
+    isNextDisabled() {
+      return this.requestedPage === this.lastNPSPage;
+    },
+    isPreviousDisabled() {
+      return this.requestedPage === 1;
+    },
+    metaInfo() {
+      return this.filters ? this.requestedMetaData : this.metaData;
+    },
+    surveyData() {
+      return this.filters ? this.requestedSurveys : this.surveys;
+    },
+    params() {
+      const respondent_group = this.group;
+      const comments = this.commentsStatus;
+      const country_code = this.countries;
+      const respondent_type = this.accountType;
+      const business_unit_abbr = this.businessUnits;
+      const dismissed = 0;
+
+      const params = {
+        dismissed,
+        respondent_group,
+        comments,
+        country_code,
+        respondent_type,
+        business_unit_abbr,
+      };
+      for (const param in params) {
+        if (params[param] === null || params[param] === undefined) {
+          delete params[param];
+        }
+      }
+      return params;
+    },
+  },
+  watch: {
+    getSurveys(surveyData) {
+      this.requestedSurveys = surveyData.data;
+      const metaData = surveyData.pagination;
+      this.requestedMetaData = metaData;
+
+      this.setCurrentNPSPage(metaData.page);
+      this.setLastNPSPage(metaData.lastPage);
+      this.returned = true;
+    },
+    getActiveBusinessUnits(units) {
+      this.requestedSurveys = [];
+      this.filters = true;
+      this.businessUnits = units;
+      this.sendRequest(this.params);
+    },
+    getNPSCommentStatus(status) {
+      this.requestedSurveys = [];
+      this.filters = true;
+      this.sendRequest(this.params);
+    },
+    getNPSActiveGroup(group) {
+      this.requestedSurveys = [];
+      this.filters = true;
+      this.group = group;
+      this.sendRequest(this.params);
+    },
+    getActiveAccountTypes(accounts) {
+      this.requestedSurveys = [];
+      this.filters = true;
+      this.accountType = accounts;
+      this.sendRequest(this.params);
+    },
+    getActiveCountries(countries) {
+      this.requestedSurveys = [];
+      this.countries = countries;
+      this.filters = true;
+      this.sendRequest(this.params);
+    },
+  },
+
+  methods: {
+    ...mapMutations([
+      'setNPSCommentStatus',
+      'setSurveys',
+      'setCurrentNPSPage',
+      'setLastNPSPage',
+    ]),
+    ...mapActions(['setSurveys']),
+    sendRequest(payload) {
+      this.returned = false;
+      const params = this.isEmpty(payload) ? '' : payload;
+      if (this.requestedPage === null) {
+        this.returned = true;
+        this.noDataMsg = 'There are no more surveys matching these criteria';
+      } else {
+        this.setSurveys({
+          page: this.requestedPage,
+          params,
+        });
+      }
+      this.forceRerender();
+    },
+    next() {
+      const currentPage = this.currentNPSPage;
+      const lastPage = this.lastNPSPage;
+      this.requestedPage = currentPage < lastPage ? currentPage + 1 : null;
+      this.requestedSurveys = [];
+      this.filters = true;
+      this.sendRequest(this.params);
+    },
+    previous() {
+      const currentPage = this.currentNPSPage;
+      const lastPage = this.lastNPSPage;
+      this.requestedPage = currentPage > 1 ? currentPage - 1 : null;
+      this.requestedSurveys = [];
+      this.filters = true;
+      this.sendRequest(this.params);
+    },
+    forceRerender() {
+      this.surveyComponentKey += 1;
+      this.paginationComponentKey += 1;
+    },
+    isEmpty(obj) {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return false;
+        }
+      }
+      return true;
+    },
+    toggleComments(index, group) {
+      const arr = [];
+      this.isActive = !this.isActive;
+      this.activeItem = index;
+      this.commentsStatus = group;
+      this.setNPSCommentStatus(group);
+    },
+    view_user(userID, userType) {
+      console.log('usertype');
+    },
+  },
+};
+</script>
+<style scoped>
+.survey-info-holder {
+  width: 100%;
+}
+.datepicker {
+  background: #f5f7fa;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 34px;
+  color: #000000;
+  text-align: right;
+}
+.date-label {
+  margin-left: 35px;
+}
+.date-info {
+  padding-left: 7em;
+  margin-bottom: 20px;
+}
+.fa-times-circle-o {
+  color: #6b8399;
+  font-size: 18px;
+}
+.btn-warning {
+  background: #f7974a;
+  border-radius: 5px;
+  color: #ffffff;
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+  padding: 0;
+}
+
+.btn {
+  border: none;
+  font-weight: 600;
+}
+.btn-group {
+  width: 100%;
+}
+.btn-secondary {
+  background: #ffffff;
+  border-radius: 5px;
+  color: #000000;
+  text-align: right;
+  line-height: 140%;
+  font-size: 16px;
+}
+.comments {
+  border-radius: 5px 0px 0px 5px !important;
+  border: 0 1px 0 0 solid red !important;
+}
+.no-comments {
+  border-radius: 0px 5px 5px 0px;
+}
+.btn-default {
+  background: #f5f7fa;
+  color: #000000;
+  line-height: 28px;
+  border-right: 2px solid #bfd1e3;
+}
+.active {
+  background: #093359;
+  color: #ffffff;
+}
+.survey {
+  margin-top: 20px;
+  margin-top: 20px;
+  height: 500px;
+  overflow-y: auto;
+  padding-top: 23px;
+}
+.survey-info {
+  width: 97%;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  margin-left: 18px;
+  box-shadow: 0 0 1em #e6e7e8;
+}
+.bottom-pages {
+  margin-left: 75%;
+  flex: none;
+  width: auto;
+}
+.score {
+  padding-top: 2px;
+  width: 37px;
+  border-radius: 100px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 21px;
+  height: 37px;
+  text-align: center;
+}
+.passive {
+  background: #6b8399;
+}
+.promoter {
+  background: #21a642;
+}
+.detractor {
+  background: #d9372b;
+}
+.score-display {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.group-border {
+  overflow-y: auto;
+  width: 100%;
+  border: 1px solid #ebf1f7;
+  margin-right: 0;
+  margin-left: 0;
+}
+.tag-holder {
+  padding: 9px 10px;
+  border: none;
+  width: 100%;
+  color: #000000;
+  margin-right: 0;
+  margin-left: 0;
+  background: #ecf0f5;
+}
+.survey-top {
+  padding: 5px 0;
+}
+.survey-body {
+  margin-bottom: 23px;
+}
+.survey-header {
+  font-size: 17px;
+  color: #f57f20;
+  font-weight: 600;
+  cursor: pointer;
+}
+.survey-period {
+  color: #000000;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+}
+.previous {
+  -webkit-transform: translateY(-2px) rotate(130deg);
+}
+.next {
+  -webkit-transform: translateY(-2px) rotate(315deg);
+}
+.page {
+  background: #ffffff;
+  border: 1px solid #bfd1e3;
+  margin-right: 16px;
+  width: 37px;
+  height: 37px;
+  border-radius: 100%;
+  border-top-right-radius: 100% !important;
+  border-bottom-right-radius: 100% !important;
+  border-top-left-radius: 100% !important;
+  border-bottom-left-radius: 100% !important;
+  padding-top: 10px;
+}
+.pages-number {
+  background: #ffffff;
+  border-right: none;
+}
+</style>
