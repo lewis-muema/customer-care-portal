@@ -369,7 +369,6 @@ export default {
     },
   },
   async mounted() {
-    console.log(this.$env);
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     await this.fetchVendorTypes(countryCode);

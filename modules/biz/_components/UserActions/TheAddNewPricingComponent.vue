@@ -250,11 +250,11 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.countryCode = this.user.user_details.country_code;
     await this.fetchCustomDistancePricingData();
-    // await this.fetchVendorTypes(this.countryCode);
+    await this.fetchVendorTypes(this.countryCode);
     // this.setConfigStatus();
-    // this.updateSummaryStatus(true);
-    // this.updateSection(0);
-    // this.trackPricingHomePage();
+    this.updateSummaryStatus(true);
+    this.updateSection(0);
+    this.trackPricingHomePage();
   },
   methods: {
     ...mapMutations({
