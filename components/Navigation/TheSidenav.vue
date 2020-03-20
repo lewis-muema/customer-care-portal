@@ -68,6 +68,11 @@
               <span> Create Order </span></nuxt-link
             >
           </li>
+          <li class="treeview >">
+            <nuxt-link to="/nps/dashboard"
+              ><i class="fa fa-bars"></i> <span> Nps </span></nuxt-link
+            >
+          </li>
 
           <li id="offline_2" class="hidden">
             <a href="#"

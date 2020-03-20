@@ -189,6 +189,12 @@ Vue.mixin({
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },
+    getTimeFromNow(date) {
+      const UTCDate = this.convertToUTC(date);
+      const dt1 = this.convertToLocalTime(UTCDate);
+      const formattedDate = moment(dt1, 'YYYY.MM.DD').fromNow();
+      return formattedDate;
+    },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
