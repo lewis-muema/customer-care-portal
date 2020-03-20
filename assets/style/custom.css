@@ -1395,3 +1395,43 @@ table {
   margin-left: 20px;
   margin-right: 20px;
 }
+.plain {
+  padding-top: 0;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  min-height: 0px;
+  padding-bottom: 0px;
+}
+.main-plain {
+  position: relative;
+  min-height: 1px;
+  padding-right: 0;
+  padding-left: 0;
+  width: 100%;
+}
+.nps-holder {
+  padding-top: 30px !important;
+}
+.nps-side {
+  margin-right: 70px;
+  margin-left: 8px;
+}
+.accordion-item-trigger-icon {
+  display: block;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #363636;
+  border-bottom: 2px solid #363636;
+  -webkit-transform: translateY(-2px) rotate(45deg);
+  transform: translateY(-2px) rotate(45deg);
+  -webkit-transition: -webkit-transform 0.2s ease;
+  transition: -webkit-transform 0.2s ease;
+  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, -webkit-transform 0.2s ease;
+}
