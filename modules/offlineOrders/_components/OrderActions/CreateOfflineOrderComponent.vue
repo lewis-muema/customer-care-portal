@@ -129,7 +129,7 @@ export default {
   },
   watch: {
     countryCodes(val) {
-      this.fetchVendorTypesData();
+      this.fetchVendorTypes();
     },
   },
   mounted() {
@@ -167,7 +167,7 @@ export default {
       this.pickupCountryCode = getCode(countryName);
     },
 
-    async fetchVendorTypesData() {
+    async fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -181,7 +181,8 @@ export default {
       };
       try {
         const data = await this.request_vendor_types(payload);
-        return (this.vendorTypes = data.vendor_types);
+        this.vendorTypes = data.vendor_types;
+        return data.vendor_types;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
