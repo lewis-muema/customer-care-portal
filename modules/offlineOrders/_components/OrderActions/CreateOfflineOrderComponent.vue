@@ -129,7 +129,7 @@ export default {
   },
   watch: {
     countryCodes(val) {
-      this.fetchVendorTypes();
+      this.fetchVendorTypesData();
     },
   },
   mounted() {
@@ -167,7 +167,7 @@ export default {
       this.pickupCountryCode = getCode(countryName);
     },
 
-    async fetchVendorTypes() {
+    async fetchVendorTypesData() {
       const notification = [];
       let actionClass = '';
       const payload = {

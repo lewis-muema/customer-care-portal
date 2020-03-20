@@ -251,10 +251,10 @@ export default {
     this.countryCode = this.user.user_details.country_code;
     await this.fetchCustomDistancePricingData();
     await this.fetchVendorTypes(this.countryCode);
-    // this.setConfigStatus();
-    // this.updateSummaryStatus(true);
-    // this.updateSection(0);
-    // this.trackPricingHomePage();
+    this.setConfigStatus();
+    this.updateSummaryStatus(true);
+    this.updateSection(0);
+    this.trackPricingHomePage();
   },
   methods: {
     ...mapMutations({
