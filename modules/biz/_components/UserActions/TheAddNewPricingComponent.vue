@@ -276,8 +276,6 @@ export default {
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
         this.trackNewLocationConfig();
-      } else {
-        return;
       }
     },
     goBack() {
@@ -298,8 +296,6 @@ export default {
             this.distancePricingTableData[i].status === 'Active'
           ) {
             this.distancePricingStatus = 'Active';
-          } else {
-            return;
           }
         }
       } else if (typeof this.locationPricingTableData[0] === 'object') {
@@ -308,8 +304,6 @@ export default {
         for (let i = 0; i < this.locationPricingTableData.length; i += 1) {
           if (this.locationPricingTableData[i].status === 'Pending') {
             this.locationPricingStatus = 'Pending';
-          } else {
-            this.locationPricingStatus = 'Active';
           }
         }
       } else if (
@@ -317,8 +311,6 @@ export default {
         typeof this.locationPricingTableData[0] === 'undefined'
       ) {
         this.existingConfigs = false;
-      } else {
-        return;
       }
     },
     viewConfigDetails() {
@@ -331,8 +323,6 @@ export default {
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.viewLocation = true;
         this.setTableData(this.locationPricingTableData);
-      } else {
-        return;
       }
     },
     onSectionUpdate(value) {
