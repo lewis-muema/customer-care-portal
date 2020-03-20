@@ -368,10 +368,10 @@ export default {
       deep: true,
     },
   },
-  mounted() {
+  async mounted() {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
-    this.fetchVendorTypes(countryCode);
+    await this.fetchVendorTypes(countryCode);
     this.trackAddPricingDataPage();
   },
   methods: {
