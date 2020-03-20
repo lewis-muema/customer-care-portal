@@ -251,7 +251,7 @@ export default {
     this.countryCode = this.user.user_details.country_code;
     await this.fetchCustomDistancePricingData();
     await this.fetchVendorTypes(this.countryCode);
-    // this.setConfigStatus();
+    this.setConfigStatus();
     this.updateSummaryStatus(true);
     this.updateSection(0);
     this.trackPricingHomePage();
@@ -276,6 +276,8 @@ export default {
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
         this.trackNewLocationConfig();
+      } else {
+        return;
       }
     },
     goBack() {
@@ -296,6 +298,8 @@ export default {
             this.distancePricingTableData[i].status === 'Active'
           ) {
             this.distancePricingStatus = 'Active';
+          } else {
+            return;
           }
         }
       } else if (typeof this.locationPricingTableData[0] === 'object') {
@@ -313,6 +317,8 @@ export default {
         typeof this.locationPricingTableData[0] === 'undefined'
       ) {
         this.existingConfigs = false;
+      } else {
+        return;
       }
     },
     viewConfigDetails() {
@@ -325,6 +331,8 @@ export default {
       } else if (typeof this.locationPricingTableData[0] === 'object') {
         this.viewLocation = true;
         this.setTableData(this.locationPricingTableData);
+      } else {
+        return;
       }
     },
     onSectionUpdate(value) {
