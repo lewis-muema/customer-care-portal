@@ -250,11 +250,11 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.countryCode = this.user.user_details.country_code;
     await this.fetchCustomDistancePricingData();
-    // this.fetchVendorTypes(this.countryCode);
-    // this.setConfigStatus();
-    // this.updateSummaryStatus(true);
-    // this.updateSection(0);
-    // this.trackPricingHomePage();
+    await this.fetchVendorTypes(this.countryCode);
+    this.setConfigStatus();
+    this.updateSummaryStatus(true);
+    this.updateSection(0);
+    this.trackPricingHomePage();
   },
   methods: {
     ...mapMutations({
@@ -338,7 +338,7 @@ export default {
       this.countryCode = this.user.user_details.country_code;
       this.checkedPricingModel = 0;
       await this.fetchCustomDistancePricingData();
-      this.fetchVendorTypes(this.countryCode);
+      await this.fetchVendorTypes(this.countryCode);
       this.setConfigStatus();
       this.updateSection(0);
     },
