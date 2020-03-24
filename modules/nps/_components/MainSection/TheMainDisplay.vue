@@ -339,7 +339,6 @@ export default {
 .datepicker {
   background: #f5f7fa;
   border-radius: 5px;
-  /* padding: 10px; */
   margin-top: 34px;
   color: #000000;
   text-align: right;
