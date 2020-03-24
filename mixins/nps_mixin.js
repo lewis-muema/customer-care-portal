@@ -55,6 +55,19 @@ const NPSMxn = {
   computed: {
     ...mapGetters(['getBusinessUnits']),
 
+    firstDayOfCurrentMonth() {
+      const startOfMonth = moment()
+        .startOf('month')
+        .format('YYYY-MM-DD 00:00:00');
+      return this.convertToUTC(startOfMonth);
+    },
+    lastDayOfCurrentMonth() {
+      const endOfMonth = moment()
+        .endOf('month')
+        .format('YYYY-MM-DD 00:00:00');
+      return this.convertToUTC(endOfMonth);
+    },
+
     npsDateRange() {
       // eslint-disable-next-line prettier/prettier
         const startOfMonth = moment().startOf('month').format('MMM DD');
@@ -68,6 +81,9 @@ const NPSMxn = {
   },
   methods: {
     ...mapActions(['requestBusinessUnits']),
+    convertToUTC(date) {
+      return moment.utc(date).format();
+    },
 
     async requestUnits() {
       const allCategory = {

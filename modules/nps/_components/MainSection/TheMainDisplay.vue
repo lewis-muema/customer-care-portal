@@ -1,17 +1,13 @@
 <template>
-  <span class="survey-info-holder" :key="surveyComponentKey">
+  <span class="survey-info-holder">
     <div class="col-md-12 main-holder">
       <div class="row date-info">
         <div class="col-md-6 pull-right">&nbsp;</div>
         <div class="datepicker col-md-6">
-          <span class="date-label">This Month</span>
-          <span class="date-label">Feb 01 - Feb 29</span>
-          <span class="date-label"
-            ><i class="fa fa-times-circle-o" aria-hidden="true"></i
-          ></span>
+          <TheDatePickerComponent />
         </div>
       </div>
-      <div class="row">
+      <div class="row" :key="surveyTotalsComponentKey">
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-secondary">
             <span v-if="!returned">Loading...</span>
@@ -29,7 +25,7 @@
           </button>
         </div>
       </div>
-      <div class="row survey">
+      <div class="row survey" :key="surveyComponentKey">
         <div v-if="!returned" class="survey-info">
           <div class="text-center">
             <i class="fa fa-spinner fa-spin loader"></i>
@@ -61,7 +57,7 @@
                     view_user(survey.respondent_id, survey.respondent_type)
                   "
                 >
-                  <nuxt-link class="survey-header" to="/orders">{{
+                  <nuxt-link class="survey-header" to="/nps/user">{{
                     survey.respondent_name
                   }}</nuxt-link></span
                 >
@@ -113,6 +109,10 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   name: 'TheMainDisplay',
+  components: {
+    TheDatePickerComponent: () =>
+      import('~/modules/nps/_components/TheDatePicker'),
+  },
   props: {
     surveys: {
       type: Array,
@@ -132,6 +132,7 @@ export default {
       countries: null,
       totalSurveys: null,
       surveyComponentKey: 0,
+      surveyTotalsComponentKey: 1,
       requestedSurveys: null,
       requestedMetaData: null,
       accountType: null,
@@ -143,7 +144,8 @@ export default {
       totalDetractors: 10,
       totalPassives: 10,
       totalPromoters: 10,
-
+      startDate: null,
+      enddate: null,
       commentsData: [
         {
           value: null,
@@ -173,6 +175,7 @@ export default {
       'getActiveBusinessUnits',
       'getCurrentNPSPage',
       'getLastNPSPage',
+      'getNPSDateRange',
     ]),
     ...mapState(['currentNPSPage', 'lastNPSPage']),
 
@@ -194,6 +197,9 @@ export default {
       const country_code = this.countries;
       const respondent_type = this.accountType;
       const business_unit_abbr = this.businessUnits;
+      const date_from = this.startDate;
+      const date_to = this.endDate;
+
       const dismissed = 0;
 
       const params = {
@@ -203,6 +209,8 @@ export default {
         country_code,
         respondent_type,
         business_unit_abbr,
+        date_from,
+        date_to,
       };
       for (const param in params) {
         if (params[param] === null || params[param] === undefined) {
@@ -251,6 +259,13 @@ export default {
       this.filters = true;
       this.sendRequest(this.params);
     },
+    getNPSDateRange(dateRange) {
+      this.requestedSurveys = [];
+      this.startDate = dateRange.startDate;
+      this.endDate = dateRange.endDate;
+      this.filters = true;
+      this.sendRequest(this.params);
+    },
   },
 
   methods: {
@@ -294,6 +309,7 @@ export default {
     forceRerender() {
       this.surveyComponentKey += 1;
       this.paginationComponentKey += 1;
+      this.surveyComponentKey += 1;
     },
     isEmpty(obj) {
       for (const key in obj) {
@@ -323,7 +339,6 @@ export default {
 .datepicker {
   background: #f5f7fa;
   border-radius: 5px;
-  padding: 10px;
   margin-top: 34px;
   color: #000000;
   text-align: right;

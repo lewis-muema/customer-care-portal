@@ -21,6 +21,7 @@ import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
 import TheTopSection from './_components/TheTopSection';
 import TheMainSection from './_components/TheMainSection';
+import NPSMxn from '@/mixins/nps_mixin';
 
 export default {
   name: 'TheNpsDashboardComponent',
@@ -28,6 +29,7 @@ export default {
     TheTopSection,
     TheMainSection,
   },
+  mixins: [NPSMxn],
   data() {
     return {
       metaData: null,
@@ -59,6 +61,8 @@ export default {
         page: 1,
         params: {
           dismissed: 0,
+          date_from: this.firstDayOfCurrentMonth,
+          date_to: this.lastDayOfCurrentMonth,
         },
       });
     }

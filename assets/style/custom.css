@@ -1427,3 +1427,49 @@ table {
   transition: transform 0.2s ease;
   transition: transform 0.2s ease, -webkit-transform 0.2s ease;
 }
+#nps-input {
+  background: #f5f7fa !important;
+  border: none !important;
+}
+.nps-back-header {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 140%;
+  color: #f57f20;
+}
+.date-info {
+  padding-left: 7em;
+  margin-bottom: 20px;
+}
+.back-icon {
+  position: absolute;
+  -webkit-transform: translateY(-2px) rotate(130deg);
+  transform: translateY(-2px) rotate(130deg);
+  width: 13px;
+  height: 13px;
+  top: 4px;
+  border-right: 2px solid #f57f20;
+  border-bottom: 2px solid #f57f20;
+}
+.back-text {
+  margin-left: 21px;
+}
+.metrics-header {
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 140%;
+  color: #126aa6;
+  margin-top: 20px;
+  margin-bottom: 0;
+  margin-right: 29px;
+}
+.metrics-date {
+  text-align: right;
+  margin-left: 63%;
+  max-width: 33%;
+}
+#nps-input::placeholder {
+  /* text-align: center; */
+  color: #000000;
+  /* margin-left: 2em; */
+}

@@ -2,7 +2,11 @@
   <div class="row">
     <div class="col-md-3 col-sm-6 col-xs-12 nps-side">
       <div class="nps-sidebar">
-        <div class="nps-header">View Metrics</div>
+        <div class="nps-header">
+          <nuxt-link class="nps-header" to="/nps/metrics">
+            View Metrics
+          </nuxt-link>
+        </div>
         <span class="vertical-header"><h5>Filters</h5></span>
         <div class="vertical-menu">
           <ul class="menu-list">

@@ -168,4 +168,7 @@ export default {
   getLastNPSPage(state) {
     return state.lastNPSPage;
   },
+  getNPSDateRange(state) {
+    return state.npsDateRange;
+  },
 };
