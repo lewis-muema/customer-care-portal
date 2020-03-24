@@ -27,9 +27,6 @@ export default {
       const users = ['peer', 'cop', 'partner', 'owner'];
       return users;
     },
-    // userCount() {
-
-    // }
   },
 };
 </script>
