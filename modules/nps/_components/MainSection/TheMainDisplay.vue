@@ -4,11 +4,7 @@
       <div class="row date-info">
         <div class="col-md-6 pull-right">&nbsp;</div>
         <div class="datepicker col-md-6">
-          <span class="date-label">This Month</span>
-          <span class="date-label">Feb 01 - Feb 29</span>
-          <span class="date-label"
-            ><i class="fa fa-times-circle-o" aria-hidden="true"></i
-          ></span>
+          <TheDatePickerComponent />
         </div>
       </div>
       <div class="row">
@@ -61,7 +57,7 @@
                     view_user(survey.respondent_id, survey.respondent_type)
                   "
                 >
-                  <nuxt-link class="survey-header" to="/orders">{{
+                  <nuxt-link class="survey-header" to="/nps/user">{{
                     survey.respondent_name
                   }}</nuxt-link></span
                 >
@@ -113,6 +109,10 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   name: 'TheMainDisplay',
+  components: {
+    TheDatePickerComponent: () =>
+      import('~/modules/nps/_components/TheDatePicker'),
+  },
   props: {
     surveys: {
       type: Array,
@@ -143,7 +143,8 @@ export default {
       totalDetractors: 10,
       totalPassives: 10,
       totalPromoters: 10,
-
+      startDate: null,
+      enddate: null,
       commentsData: [
         {
           value: null,
@@ -173,6 +174,9 @@ export default {
       'getActiveBusinessUnits',
       'getCurrentNPSPage',
       'getLastNPSPage',
+      'getNPSStartDate',
+      'getNPSEndDate',
+      'getNPSDateRange',
     ]),
     ...mapState(['currentNPSPage', 'lastNPSPage']),
 
@@ -194,6 +198,9 @@ export default {
       const country_code = this.countries;
       const respondent_type = this.accountType;
       const business_unit_abbr = this.businessUnits;
+      const date_from = this.startDate;
+      const date_to = this.endDate;
+
       const dismissed = 0;
 
       const params = {
@@ -203,6 +210,8 @@ export default {
         country_code,
         respondent_type,
         business_unit_abbr,
+        date_from,
+        date_to,
       };
       for (const param in params) {
         if (params[param] === null || params[param] === undefined) {
@@ -250,6 +259,24 @@ export default {
       this.countries = countries;
       this.filters = true;
       this.sendRequest(this.params);
+    },
+    getNPSStartDate(date) {
+      console.log('start date', date);
+      this.requestedSurveys = [];
+      this.startDate = date;
+      this.filters = true;
+      this.sendRequest(this.params);
+    },
+    getNPSEndDate(date) {
+      console.log('end date', date);
+
+      this.requestedSurveys = [];
+      this.endDate = date;
+      this.filters = true;
+      this.sendRequest(this.params);
+    },
+    getNPSDateRange(dateRange) {
+      console.log('getNPSDateRange', dateRange);
     },
   },
 
@@ -323,7 +350,7 @@ export default {
 .datepicker {
   background: #f5f7fa;
   border-radius: 5px;
-  padding: 10px;
+  /* padding: 10px; */
   margin-top: 34px;
   color: #000000;
   text-align: right;

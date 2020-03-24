@@ -172,4 +172,13 @@ export default {
   setLastNPSPage(state, val) {
     state.lastNPSPage = val;
   },
+  setNPSStartDate(state, val) {
+    state.npsStartDate = val;
+  },
+  setNPSEndDate(state, val) {
+    state.npsEndDate = val;
+  },
+  setnpsDateRange(state, val) {
+    state.npsDateRange = val;
+  },
 };

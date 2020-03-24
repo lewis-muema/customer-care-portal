@@ -170,4 +170,13 @@ export default {
   getLastNPSPage(state) {
     return state.lastNPSPage;
   },
+  getNPSStartDate(state) {
+    return state.npsStartDate;
+  },
+  getNPSEndDate(state) {
+    return state.npsEndDate;
+  },
+  getNPSDateRange(state) {
+    return state.npsDateRange;
+  },
 };
