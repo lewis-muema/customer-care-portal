@@ -1,5 +1,5 @@
 <template>
-  <span class="survey-info-holder" :key="surveyComponentKey">
+  <span class="survey-info-holder">
     <div class="col-md-12 main-holder">
       <div class="row date-info">
         <div class="col-md-6 pull-right">&nbsp;</div>
@@ -7,7 +7,7 @@
           <TheDatePickerComponent />
         </div>
       </div>
-      <div class="row">
+      <div class="row" :key="surveyTotalsComponentKey">
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-secondary">
             <span v-if="!returned">Loading...</span>
@@ -25,7 +25,7 @@
           </button>
         </div>
       </div>
-      <div class="row survey">
+      <div class="row survey" :key="surveyComponentKey">
         <div v-if="!returned" class="survey-info">
           <div class="text-center">
             <i class="fa fa-spinner fa-spin loader"></i>
@@ -132,6 +132,7 @@ export default {
       countries: null,
       totalSurveys: null,
       surveyComponentKey: 0,
+      surveyTotalsComponentKey: 1,
       requestedSurveys: null,
       requestedMetaData: null,
       accountType: null,
@@ -174,8 +175,6 @@ export default {
       'getActiveBusinessUnits',
       'getCurrentNPSPage',
       'getLastNPSPage',
-      'getNPSStartDate',
-      'getNPSEndDate',
       'getNPSDateRange',
     ]),
     ...mapState(['currentNPSPage', 'lastNPSPage']),
@@ -260,23 +259,12 @@ export default {
       this.filters = true;
       this.sendRequest(this.params);
     },
-    getNPSStartDate(date) {
-      console.log('start date', date);
-      this.requestedSurveys = [];
-      this.startDate = date;
-      this.filters = true;
-      this.sendRequest(this.params);
-    },
-    getNPSEndDate(date) {
-      console.log('end date', date);
-
-      this.requestedSurveys = [];
-      this.endDate = date;
-      this.filters = true;
-      this.sendRequest(this.params);
-    },
     getNPSDateRange(dateRange) {
-      console.log('getNPSDateRange', dateRange);
+      this.requestedSurveys = [];
+      this.startDate = dateRange.startDate;
+      this.endDate = dateRange.endDate;
+      this.filters = true;
+      this.sendRequest(this.params);
     },
   },
 
@@ -321,6 +309,7 @@ export default {
     forceRerender() {
       this.surveyComponentKey += 1;
       this.paginationComponentKey += 1;
+      this.surveyComponentKey += 1;
     },
     isEmpty(obj) {
       for (const key in obj) {

@@ -93,8 +93,6 @@ export default {
       activeBusinessUnits: null,
       currentNPSPage: null,
       lastNPSPage: null,
-      npsStartDate: null,
-      npsEndDate: null,
       npsDateRange: null,
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',

@@ -24,6 +24,7 @@ export default {
     return {
       selectedDate: '',
       hide: 'true',
+      dateArray: null,
     };
   },
   computed: {
@@ -32,19 +33,16 @@ export default {
     },
   },
   watch: {
-    selectedDate() {
+    async selectedDate() {
       const seleceted = this.selectedDate;
-      const startDate = this.convertToUTC(this.selectedDate.start);
-      const endDate = this.convertToUTC(this.selectedDate.end);
+      const startDate = await this.convertToUTC(this.selectedDate.start);
+      const endDate = await this.convertToUTC(this.selectedDate.end);
       const dateArray = { startDate, endDate };
-
-      console.log();
-      this.setnpsDateRange(dateArray);
-      // this.setNPSEndDate(endDate);
+      await this.setnpsDateRange(dateArray);
     },
   },
   methods: {
-    ...mapMutations(['setNPSEndDate', 'setNPSStartDate', 'setnpsDateRange']),
+    ...mapMutations(['setnpsDateRange']),
   },
 };
 </script>
