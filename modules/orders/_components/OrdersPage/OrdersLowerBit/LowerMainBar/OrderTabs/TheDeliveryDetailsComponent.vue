@@ -30,10 +30,12 @@
         </div>
         <div class="col-md-4">
           <strong> Order Signed By: </strong>
-          <span class="">{{ img.name }}</span
+          <span class="">{{ img.name !== '' ? img.name : 'Not Set' }}</span
           ><br />
           <strong> Phone Number:</strong>
-          <span class="">{{ img.phone_no }}</span>
+          <span class="">{{
+            img.phone_no !== '' ? img.phone_no : 'Not Set'
+          }}</span>
         </div>
         <div class="col-md-12">
           <h5>Delivery Notes</h5>
