@@ -316,7 +316,7 @@ export default {
         if (data.status) {
           this.updateClass('success');
           this.logAction(
-            `Debit the client SENDY${this.orderData.client_details.client_id} and credit the partner ${this.orderData.rider_details.name} ${this.orderData.rider_details.phone_no} with the correct order ammount for order ${this.orderData.order_details.order_no}`,
+            `Debit the client SENDY${this.orderData.client_details.client_id} with amount ${this.orderData.payment_details.order_currency} ${data.amount} and credit the partner ${this.orderData.rider_details.name} ${this.orderData.rider_details.phone_no} with ${this.orderData.payment_details.order_currency} ${this.partnerAmount} for order ${this.orderData.order_details.order_no}`,
             34,
           );
         } else {
