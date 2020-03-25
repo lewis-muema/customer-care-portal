@@ -52,33 +52,10 @@
           <label for="partnerphone">Partner Phone Number</label>
           <vue-tel-input
             v-model="partnerPhone"
-            class="form-control"
+            :id="[validphone ? 'validnumber' : 'invalidnumber']"
             :preferred-countries="['ke', 'ug', 'tz']"
+            @keyup="validateRiderPhone()"
           />
-        </div>
-        <div class="form-group col-md-6">
-          <label for="snNumber">Sim Card Serial Number</label>
-          <div class="input-group-btn">
-            <input
-              type="text"
-              class="form-control"
-              id="snNumber"
-              placeholder="serial number"
-              v-model="simCardSn"
-            />
-          </div>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="snNumber">Version Code</label>
-          <div class="input-group-btn">
-            <input
-              type="text"
-              class="form-control"
-              id="versionCode"
-              placeholder="version code"
-              v-model="versionCode"
-            />
-          </div>
         </div>
         <div class="form-group col-md-6">
           <label for="sendycomission">Sendy Commission</label>
@@ -185,6 +162,8 @@ export default {
       pending: false,
       isVisible: false,
       message: '',
+      error_message: '',
+      validphone: null,
     };
   },
   computed: {
@@ -199,6 +178,15 @@ export default {
         return 'Pairing Order...';
       } else {
         return 'Pair Order';
+      }
+    },
+  },
+  watch: {
+    partnerPhone(newValue, oldValue) {
+      if (newValue.length >= 12) {
+        this.validateRiderPhone();
+      } else {
+        this.validphone = null;
       }
     },
   },
@@ -217,7 +205,33 @@ export default {
       updatePartnerPhone: 'setPartnerPhone',
       updatePartnerSn: 'setPartnerSn',
     }),
+    validateRiderPhone() {
+      let typingTimer;
+      const doneTypingInterval = 50;
+
+      clearTimeout(typingTimer);
+      this.typingTimer = setTimeout(this.getRiderDetails(), doneTypingInterval);
+    },
+    getRiderDetails() {
+      const riderPhone = { phone_no: this.partnerPhone };
+      axios
+        .post(
+          `https://partnerapitest.sendyit.com/v1/management/get_rider_details`,
+          riderPhone,
+        )
+        .then(res => {
+          this.partnerPhone = res.data.message.phone_no;
+          this.versionCode = res.data.message.minimum_version_code;
+          this.simCardSn = res.data.message.sim_card_serial;
+          this.validphone = true;
+        })
+        .catch(error => {
+          this.validphone = false;
+          console.log(error);
+        });
+    },
     async pairOfflineOrder() {
+      this.getRiderDetails();
       this.trackPairOrderButton();
       this.pending = true;
       const payload = {
@@ -270,6 +284,12 @@ export default {
 };
 </script>
 <style>
+#validnumber {
+  border: 2px solid #2d8c0eba;
+}
+#invalidnumber {
+  border: 2px solid #b70d0d;
+}
 .user-main {
   border-top: 3px solid #3c8dbc;
 }
