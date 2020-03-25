@@ -7,7 +7,6 @@
     :range="true"
     :no-label="true"
     :label="placeholder"
-    hint="bbbbb"
     id="nps"
   />
 </template>

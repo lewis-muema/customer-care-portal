@@ -5,6 +5,8 @@ const NPSMxn = {
   data() {
     return {
       businessUnits: [],
+      surveyComponentKey: 0,
+      surveyTotalsComponentKey: 1,
       countries: [],
       requiredCountries: ['KE', 'UG'],
       allCategory: {
@@ -84,7 +86,16 @@ const NPSMxn = {
     convertToUTC(date) {
       return moment.utc(date).format();
     },
-
+    convertToLocalTime(date, format) {
+      return moment(date)
+        .local()
+        .format(format);
+    },
+    forceRerender() {
+      this.surveyComponentKey += 1;
+      this.paginationComponentKey += 1;
+      this.surveyComponentKey += 1;
+    },
     async requestUnits() {
       const allCategory = {
         code: 'allaccounts',
