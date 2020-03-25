@@ -147,7 +147,7 @@
                 {{ historyCurrency(row.fuel_station_name) }}
                 {{ row.sendy_take }} {{ historyPoints(row.fuel_station_name) }}
               </td>
-              <td></td>
+              <td>{{ row.notes }}</td>
               <td class="invoice">Click here to add</td>
             </tr>
           </table>
@@ -414,6 +414,10 @@ export default {
   color: #1b7fc3;
   font-weight: 600;
   font-size: 18px;
+}
+.history-head-row,
+.history-head-col {
+  height: 40px;
 }
 .history-head-row {
   color: #1b7fc3;
