@@ -11,7 +11,10 @@
       @submit.prevent="bill"
       class="form-inline col-md-12"
     >
-      <div :class="`col-md-4 user-search user-input`" v-if="!isTransferOrder">
+      <div
+        :class="`col-md-4 user-search user-input`"
+        v-if="!isInputFieldsValid"
+      >
         <label>Account to Pay</label>
         <TheSearchRiderComponent
           @riderData="searchedRider"
@@ -23,7 +26,10 @@
           Account to pay is required
         </div>
       </div>
-      <div class="form-group col-md-4 bill-div user-input">
+      <div
+        class="form-group col-md-4 bill-div user-input"
+        v-if="!isReverseTransaction"
+      >
         <label>Amount</label>
         <div class="input-group">
           <div class="input-group-icon">
@@ -45,6 +51,26 @@
           </div>
         </div>
       </div>
+
+      <div
+        class="form-group  col-md-4 user-input"
+        v-if="!noTransactiodIDTypes.includes(billingType)"
+      >
+        <label class="bill">Order Number / Transaction ID</label>
+
+        <input
+          type="text"
+          v-model="refNo"
+          name="refNo"
+          placeholder="Reference No"
+          class="form-control bill-input"
+          :class="`form-control bill-input ${hide}`"
+        />
+        <div class="invalid-feedback">
+          Reference No is required
+        </div>
+      </div>
+
       <div class="form-group col-md-4 user-input">
         <label class="bill">Other Notes</label>
 
@@ -88,24 +114,7 @@
           Billing type is required
         </div>
       </div>
-      <div
-        class="form-group  col-md-4 user-input"
-        v-if="!noTransactiodIDTypes.includes(billingType)"
-      >
-        <label class="bill">Order Number / Transaction ID</label>
 
-        <input
-          type="text"
-          v-model="refNo"
-          name="refNo"
-          placeholder="Reference No"
-          class="form-control bill-input"
-          :class="`form-control bill-input ${hide}`"
-        />
-        <div class="invalid-feedback">
-          Reference No is required
-        </div>
-      </div>
       <div class="form-group col-md-4 user-input" v-if="isTransferOrder">
         <label class="bill">Account Type to Transfer</label>
         <v-select
@@ -124,7 +133,7 @@
         <label>Account Details to Transfer</label>
         <TheSearchUserComponent @userID="searchedUser" :user="userType" />
       </div>
-      <div class="col-md-12 vat-check">
+      <div class="col-md-12 vat-check" v-if="!isReverseTransaction">
         <div class="form-group col-md-3 bill-check">
           <input
             value="1"
@@ -206,13 +215,12 @@ export default {
         { value: 2, name: 'Waiting Time', transactionID: 14 },
         { value: 4, name: 'Return Trip', transactionID: 1 },
         { value: 5, name: 'Extra Stops', transactionID: 1 },
-        { value: 6, name: 'Offline Orders', transactionID: 1 },
         { value: 8, name: 'Cancellation Fee', transactionID: 1 },
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
         { value: 12, name: 'Cash Order', transactionID: 1 },
         { value: 14, name: 'Customer Coupon', transactionID: 1 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
-        { value: 100, name: 'Other', transactionID: 100 },
+        { value: 99, name: 'Reversal', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 9, 14],
       display_billing_info: true,
@@ -265,6 +273,12 @@ export default {
     },
     isTransferOrder() {
       return this.billingType === 15;
+    },
+    isReverseTransaction() {
+      return this.billingType === 99;
+    },
+    isInputFieldsValid() {
+      return this.billingType === 99 || this.billingType === 15;
     },
     user_id() {
       return this.user.user_details.user_id;
@@ -325,7 +339,31 @@ export default {
       const isPeer = !(this.accountType > 1);
       const is_peer = this.billingType === 15 ? isPeer : '';
       const rider_id = this.rider > 0 ? Number(this.rider) : '';
-      const action_id = this.billingType === 15 ? 21 : this.actionID;
+      let action_id = this.billingType === 15 ? 21 : this.actionID;
+
+      let action_payload = {
+        amount: this.amount,
+        cop_id,
+        user_id: this.user_id,
+        rider_id,
+        narrative: this.narrative,
+        currency: this.currency,
+        billing_type: this.billingType,
+        order_number: this.refNo,
+        transaction_id: this.transactionID,
+        is_peer,
+        creditor_id: creditor_details,
+        is_VAT: this.isVAT,
+      };
+
+      if (this.billingType === 99) {
+        action_id = 22;
+        action_payload = {
+          cop_id,
+          user_id: this.user_id,
+          pay_reference: this.refNo,
+        };
+      }
 
       const payload = {
         app: 'CUSTOMERS_APP',
@@ -335,20 +373,7 @@ export default {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
           action_id,
-          action_data: {
-            amount: this.amount,
-            cop_id,
-            user_id: this.user_id,
-            rider_id,
-            narrative: this.narrative,
-            currency: this.currency,
-            billing_type: this.billingType,
-            order_number: this.refNo,
-            transaction_id: this.transactionID,
-            is_peer,
-            creditor_id: creditor_details,
-            is_VAT: this.isVAT,
-          },
+          action_data: action_payload,
           request_id: this.requestID,
           action_user: this.actionUser,
         },
@@ -356,18 +381,16 @@ export default {
 
       this.submit_status = true;
 
-      setTimeout(() => {
-        this.submit_status = false;
-      }, 5000);
-
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
+        this.submit_status = false;
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.submit_status = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );
