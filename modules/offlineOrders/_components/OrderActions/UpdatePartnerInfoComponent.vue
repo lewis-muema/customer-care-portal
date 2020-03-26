@@ -52,7 +52,8 @@
           <label for="partnerphone">Partner Phone Number</label>
           <vue-tel-input
             v-model="partnerPhone"
-            :id="[validphone ? 'validnumber' : 'invalidnumber']"
+            class="form-control"
+            :class="[validphone ? 'validnumber' : 'invalidnumber']"
             :preferred-countries="['ke', 'ug', 'tz']"
             @keyup="validateRiderPhone()"
           />
@@ -133,7 +134,7 @@
 </template>
 <script>
 import axios from 'axios';
-import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapGetters, mapActions, mapState } from 'vuex';
 import VueTelInput from 'vue-tel-input';
 import 'vue-tel-input/dist/vue-tel-input.css';
 import PickOfflineOrderComponent from './PickOfflineOrderComponent';
@@ -164,14 +165,22 @@ export default {
       message: '',
       error_message: '',
       validphone: null,
+      configs: {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: this.getauthtoken,
+        },
+      },
     };
   },
   computed: {
+    ...mapState(['config']),
     ...mapGetters({
       getOrderAmount: 'getOrderAmount',
       getOrderNumber: 'getOrderNumber',
       getVat: 'getVat',
       getOrderCurrency: 'getOrderCurrency',
+      getauthtoken: ['getAuthenticationToken'],
     }),
     buttonText() {
       if (this.pending) {
@@ -214,10 +223,18 @@ export default {
     },
     getRiderDetails() {
       const riderPhone = { phone_no: this.partnerPhone };
+      const header = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: this.getauthtoken,
+        },
+      };
+
       axios
         .post(
-          `https://partnerapitest.sendyit.com/v1/management/get_rider_details`,
+          `${this.config.NODE_PARTNER_API}management/get_rider_details`,
           riderPhone,
+          header,
         )
         .then(res => {
           this.partnerPhone = res.data.message.phone_no;
@@ -284,11 +301,11 @@ export default {
 };
 </script>
 <style>
-#validnumber {
-  border: 2px solid #2d8c0eba;
+.validnumber {
+  border: 2px solid #2d8c0eba !important;
 }
-#invalidnumber {
-  border: 2px solid #b70d0d;
+.invalidnumber {
+  border: 2px solid #b70d0d !important;
 }
 .user-main {
   border-top: 3px solid #3c8dbc;
