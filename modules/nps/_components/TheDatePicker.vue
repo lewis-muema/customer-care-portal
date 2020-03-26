@@ -34,8 +34,14 @@ export default {
   watch: {
     async selectedDate() {
       const seleceted = this.selectedDate;
-      const startDate = await this.convertToUTC(this.selectedDate.start);
-      const endDate = await this.convertToUTC(this.selectedDate.end);
+      const startDate =
+        this.selectedDate !== null
+          ? await this.convertToUTC(this.selectedDate.start)
+          : this.firstDayOfCurrentMonth;
+      const endDate =
+        this.selectedDate !== null
+          ? await this.convertToUTC(this.selectedDate.end)
+          : this.lastDayOfCurrentMonth;
       const dateArray = { startDate, endDate };
       await this.setnpsDateRange(dateArray);
     },

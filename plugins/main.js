@@ -167,8 +167,7 @@ Vue.mixin({
       return dt;
     },
     getTimeFromNow(date) {
-      const UTCDate = this.convertToUTC(date);
-      const dt1 = this.convertToLocalTime(UTCDate);
+      const dt1 = this.convertToLocalTime(date);
       const formattedDate = moment(dt1, 'YYYY.MM.DD').fromNow();
       return formattedDate;
     },

@@ -7,6 +7,7 @@ const NPSMxn = {
       businessUnits: [],
       surveyComponentKey: 0,
       surveyTotalsComponentKey: 1,
+      metricsComponent: 2,
       countries: [],
       requiredCountries: ['KE', 'UG'],
       allCategory: {
@@ -83,6 +84,14 @@ const NPSMxn = {
   },
   methods: {
     ...mapActions(['requestBusinessUnits']),
+    isEmpty(obj) {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return false;
+        }
+      }
+      return true;
+    },
     convertToUTC(date) {
       return moment.utc(date).format();
     },
@@ -91,10 +100,16 @@ const NPSMxn = {
         .local()
         .format(format);
     },
+    getDateFromNow(date) {
+      const dt1 = this.convertToLocalTime(date, 'YYYY.MM.DD HH:mm:ss');
+      const formattedDate = moment(dt1).fromNow();
+      return formattedDate;
+    },
     forceRerender() {
       this.surveyComponentKey += 1;
       this.paginationComponentKey += 1;
       this.surveyComponentKey += 1;
+      this.metricsComponent += 1;
     },
     async requestUnits() {
       const allCategory = {

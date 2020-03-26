@@ -1,13 +1,7 @@
 <template>
   <div class="box box-info">
     <div class="box-body nps-holder">
-      <span v-if="surveys === null">
-        <div class="text-center">
-          Loading NPS Metrics ....
-          <i class="fa fa-spinner fa-spin loader"></i>
-        </div>
-      </span>
-      <span v-else>
+      <div class="nps-user-holder" v-if="returned">
         <div class="nps-back-header">
           <nuxt-link class="nps-back-header row" to="/nps/dashboard">
             <div class="col-md-5">
@@ -24,15 +18,18 @@
             <TheDatePickerComponent />
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-3">
-            <TheMetricsSidebarComponent :surveys="surveys" />
+        <span>
+          <div v-if="!returned" class="nps-user-holder">
+            <div class="text-center">
+              Loading NPS Metrics ....
+              <i class="fa fa-spinner fa-spin loader"></i>
+            </div>
           </div>
-          <div class="col-md-9">
+          <div class="row" v-else>
             <TheMetricsMainComponent />
           </div>
-        </div>
-      </span>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -43,11 +40,8 @@ import NPSMxn from '@/mixins/nps_mixin';
 export default {
   name: 'TheMetricsView',
   components: {
-    TheMetricsSidebarComponent: () =>
-      import('~/modules/nps/_components/MetricsSection/TheMetricsSidebar'),
     TheDatePickerComponent: () =>
       import('~/modules/nps/_components/TheDatePicker'),
-
     TheMetricsMainComponent: () =>
       import('~/modules/nps/_components/MetricsSection/TheMetricsMainSection'),
   },
@@ -55,41 +49,31 @@ export default {
 
   data() {
     return {
-      metaData: null,
-      surveys: null,
+      returned: false,
     };
   },
-  computed: {
-    ...mapGetters(['getSurveys']),
-  },
-  watch: {
-    getSurveys(surveyData) {
-      return (this.surveys = surveyData.data);
-    },
-  },
+
   mounted() {
     if (process.client) {
-      this.setSurveys({
-        page: 1,
-        params: {
-          date_from: this.firstDayOfCurrentMonth,
-          date_to: this.lastDayOfCurrentMonth,
-        },
-      });
+      this.returned = true;
     }
-  },
-  methods: {
-    ...mapActions(['setSurveys']),
   },
 };
 </script>
 <style scoped>
+.nps-user-holder {
+  padding-left: 15px;
+}
 .metrics-header {
   margin-bottom: 29px;
+  margin-left: 0;
 }
 .metrics-date {
   text-align: right;
   margin-left: 6em;
   width: 32%;
+}
+.metrics-main {
+  margin-left: 0;
 }
 </style>
