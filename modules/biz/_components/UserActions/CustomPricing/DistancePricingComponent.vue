@@ -311,13 +311,7 @@ export default {
   },
   watch: {
     pacInput(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+      this.search(val);
     },
     calculateClientFee(val) {},
   },
@@ -380,6 +374,16 @@ export default {
         type: 'Click',
       });
     },
+    // eslint-disable-next-line func-names
+    search: _.throttle(function(val) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.suggestions = response.data.predictions;
+        });
+    }, 2000),
   },
 };
 </script>
