@@ -395,7 +395,7 @@ export default {
   font-size: 12px;
   line-height: 14px;
 }
-.history-head-col,
+.history-head-row,
 .history-head-col {
   height: 40px;
 }

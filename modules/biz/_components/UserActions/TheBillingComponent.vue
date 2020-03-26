@@ -7,50 +7,77 @@
       </p>
     </div>
     <form id="reallocate-form" @submit.prevent="bill" class="form-inline">
-      <div :class="`col-md-6 user-search user-input`" v-if="!isTransferOrder">
-        <label>Account to Pay</label>
-        <TheSearchRiderComponent
-          @riderData="searchedRider"
-          :category="category"
-          :arr="array"
-          :rider-key="0"
+      <div class="col-md-12 row" v-if="!isReverseTransaction">
+        <div
+          :class="`col-md-6 user-search user-input user-acc`"
+          v-if="!isTransferOrder || !isReverseTransaction"
+        >
+          <label>Account to Pay</label>
+          <TheSearchRiderComponent
+            @riderData="searchedRider"
+            :category="category"
+            :arr="array"
+            :rider-key="0"
+          />
+          <div :class="`${emptyClass} ${hid}`">
+            Account to pay is required
+          </div>
+        </div>
+
+        <div class="form-group col-md-6 bill-div user-input">
+          <label class="amount-align">Amount</label>
+          <div class="input-group amount-align">
+            <div class="input-group-icon">
+              <span> {{ currency }}</span>
+            </div>
+            <div class="input-group-area" v-if="paymentOption === '2'">
+              <input
+                type="number"
+                v-model="amount"
+                name="amount"
+                placeholder="Amount"
+                class="form-control"
+              />
+            </div>
+            <div class="input-group-area" v-else>
+              <input
+                type="number"
+                v-model="amount"
+                name="amount"
+                placeholder="Amount"
+                class="form-control"
+                :max="max_amount"
+                :disabled="billingStatus()"
+              />
+            </div>
+            <div
+              v-if="submitted && !$v.amount.required"
+              class="invalid-feedback"
+            >
+              Base Amount is required
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="form-group  col-md-6 user-input"
+        v-if="!noTransactiodIDTypes.includes(billingType)"
+      >
+        <label class="bill">Order Number / Transaction ID</label>
+
+        <input
+          type="text"
+          v-model="refNo"
+          name="refNo"
+          placeholder="Reference No"
+          class="form-control bill-input"
+          :class="`form-control bill-input ${hide}`"
         />
-        <div :class="`${emptyClass} ${hid}`">
-          Account to pay is required
+        <div class="invalid-feedback">
+          Reference No is required
         </div>
       </div>
 
-      <div class="form-group col-md-6 bill-div user-input">
-        <label>Amount</label>
-        <div class="input-group">
-          <div class="input-group-icon">
-            <span> {{ currency }}</span>
-          </div>
-          <div class="input-group-area" v-if="paymentOption === '2'">
-            <input
-              type="number"
-              v-model="amount"
-              name="amount"
-              placeholder="Amount"
-              class="form-control"
-            />
-          </div>
-          <div class="input-group-area" v-else>
-            <input
-              type="number"
-              v-model="amount"
-              name="amount"
-              placeholder="Amount"
-              class="form-control"
-              :max="max_amount"
-              :disabled="billingStatus()"
-            />
-          </div>
-          <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
-            Base Amount is required
-          </div>
-        </div>
-      </div>
       <div class="form-group col-md-6 user-input">
         <label class="bill">Other Notes</label>
 
@@ -71,6 +98,7 @@
           Billing Narrative is required
         </div>
       </div>
+
       <div class="form-group col-md-6 user-input">
         <label class="bill">Billing Type</label>
         <v-select
@@ -95,24 +123,6 @@
         </div>
       </div>
 
-      <div
-        class="form-group  col-md-6 user-input"
-        v-if="!noTransactiodIDTypes.includes(billingType)"
-      >
-        <label class="bill">Order Number / Transaction ID</label>
-
-        <input
-          type="text"
-          v-model="refNo"
-          name="refNo"
-          placeholder="Reference No"
-          class="form-control bill-input"
-          :class="`form-control bill-input ${hide}`"
-        />
-        <div class="invalid-feedback">
-          Reference No is required
-        </div>
-      </div>
       <div class="form-group col-md-6 user-input" v-if="isTransferOrder">
         <label class="bill">Account Type to Transfer</label>
         <v-select
@@ -129,9 +139,13 @@
       </div>
       <div class="col-md-6 user-search user-input" v-if="isTransferOrder">
         <label>Account Details to Transfer</label>
-        <TheSearchUserComponent @userID="searchedUser" :user="userType" />
+        <TheSearchUserComponent
+          :class="rider_search"
+          @userID="searchedUser"
+          :user="userType"
+        />
       </div>
-      <div class="row col-md-12">
+      <div class="row col-md-12" v-if="!isReverseTransaction">
         <div class="form-group col-md-3 bill-check" v-if="!isTransferOrder">
           <input
             value="1"
@@ -225,15 +239,13 @@ export default {
         { value: 2, name: 'Waiting Time', transactionID: 1 },
         { value: 4, name: 'Return Trip', transactionID: 1 },
         { value: 5, name: 'Extra Stops', transactionID: 1 },
-        { value: 6, name: 'Offline Orders', transactionID: 1 },
-        { value: 7, name: 'Dedicated Driver', transactionID: 1 },
         { value: 8, name: 'Cancellation Fee', transactionID: 1 },
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
         { value: 11, name: 'Top Up', transactionID: 1 },
         { value: 12, name: 'Cash Order', transactionID: 1 },
         { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
-        { value: 100, name: 'Other', transactionID: 100 },
+        { value: 99, name: 'Reversal', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
       array: {
@@ -287,7 +299,9 @@ export default {
     isTransferOrder() {
       return this.billingType === 15;
     },
-
+    isReverseTransaction() {
+      return this.billingType === 99;
+    },
     copID() {
       return this.user.user_details.cop_id;
     },
@@ -347,7 +361,32 @@ export default {
       const creditor_details = this.billingType === 15 ? this.accountID : '';
       const isPeer = !(this.accountType > 1);
       const is_peer = this.billingType === 15 ? isPeer : '';
-      const action_id = this.billingType === 15 ? 21 : this.actionID;
+      let action_id = this.billingType === 15 ? 21 : this.actionID;
+
+      let action_payload = {
+        amount: this.amount,
+        cop_id: this.copID,
+        user_id,
+        rider_id,
+        narrative: this.narrative,
+        currency: this.currency,
+        billing_type: this.billingType,
+        order_number: this.refNo,
+        deduct_commission: this.checked,
+        transaction_id: this.transactionID,
+        is_peer,
+        creditor_id: creditor_details,
+        is_VAT: this.isVAT,
+      };
+
+      if (this.billingType === 99) {
+        action_id = 22;
+        action_payload = {
+          cop_id: this.copID,
+          user_id,
+          pay_reference: this.refNo,
+        };
+      }
 
       const payload = {
         app: 'CUSTOMERS_APP',
@@ -357,21 +396,7 @@ export default {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
           action_id,
-          action_data: {
-            amount: this.amount,
-            cop_id: this.copID,
-            user_id,
-            rider_id,
-            narrative: this.narrative,
-            currency: this.currency,
-            billing_type: this.billingType,
-            order_number: this.refNo,
-            deduct_commission: this.checked,
-            transaction_id: this.transactionID,
-            is_peer,
-            creditor_id: creditor_details,
-            is_VAT: this.isVAT,
-          },
+          action_data: action_payload,
           request_id: this.requestID,
           action_user: this.actionUser,
         },
@@ -379,18 +404,16 @@ export default {
 
       this.submit_status = true;
 
-      setTimeout(() => {
-        this.submit_status = false;
-      }, 5000);
-
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
+        this.submit_status = false;
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.submit_status = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );
@@ -442,7 +465,7 @@ export default {
 </script>
 <style scoped>
 .form-inline .form-control {
-  width: 100%;
+  width: 95%;
   border-radius: 0.25rem;
 }
 .form-inline .custom-select,
@@ -464,7 +487,7 @@ export default {
   padding-left: 0;
 }
 .input-group-area {
-  width: 80%;
+  width: 84%;
   border-radius: 0 0.25rem 0.25rem 0;
 }
 .form-inline label {
@@ -511,5 +534,11 @@ export default {
 }
 .charge_vat--label {
   margin: 0 4px 0;
+}
+.user-acc {
+  margin-bottom: 0 !important;
+}
+.amount-align {
+  margin-left: 5%;
 }
 </style>
