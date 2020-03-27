@@ -983,4 +983,28 @@ export default {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
+  async update_nps_tags({ state, dispatch }, payload) {
+    const endpoint = payload.endpoint;
+    const app = payload.app;
+    const customConfig = state.config;
+    const url = customConfig[app];
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const values = JSON.stringify(payload.params);
+    try {
+      const response = await axios.patch(`${url}${endpoint}`, values, config);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
 };
