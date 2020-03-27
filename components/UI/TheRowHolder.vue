@@ -202,7 +202,7 @@ export default {
       const confirmStatus = this.moreData.confirm_status;
       const orderStatus = this.moreData.order_status;
       const deliveredNotesState =
-        this.images.delivery_images &&
+        this.images.delivery_images.length > 0 &&
         this.images.delivery_images[0].physical_delivery_note_status
           ? this.images.delivery_images[0].physical_delivery_note_status
           : 'Pending Approval';
