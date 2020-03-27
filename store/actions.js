@@ -738,8 +738,18 @@ export default {
     }
   },
   async request_vendor_types({ dispatch }, payload) {
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      const res = await dispatch('requestAxiosPost', payload, param, {
+        root: true,
+      });
       return res.data;
     } catch (error) {
       return error.response;
@@ -972,5 +982,29 @@ export default {
   async complete_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
+  },
+  async update_nps_tags({ state, dispatch }, payload) {
+    const endpoint = payload.endpoint;
+    const app = payload.app;
+    const customConfig = state.config;
+    const url = customConfig[app];
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const values = JSON.stringify(payload.params);
+    try {
+      const response = await axios.patch(`${url}${endpoint}`, values, config);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
 };

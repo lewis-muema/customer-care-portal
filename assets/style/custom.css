@@ -1469,7 +1469,56 @@ table {
   max-width: 33%;
 }
 #nps-input::placeholder {
-  /* text-align: center; */
   color: #000000;
-  /* margin-left: 2em; */
+}
+.ti-input {
+  border: none !important;
+  background: #f5f7fa !important;
+}
+.ti-tags {
+background: #f5f7fa;
+border-radius: 0;
+font-size: 16px;
+line-height: 28px;
+color: #000000;
+}
+.ti-tag {
+  background-color: #ebf1f7 !important;
+  border-radius: 50px !important;
+  color: #000000 !important;
+  font-size: 16px !important;
+  padding: 7px 27px !important;
+}
+.ti-new-tag-input-wrapper input {
+  background: #F5F7FA;
+  cursor: pointer
+}
+.ti-new-tag-input-wrapper::placeholder {
+  color: #000000;
+  font-size: 16px;
+  line-height: 28px;
+}
+.ti-new-tag-input::placeholder {
+  color: #000000;
+  opacity: 1; 
+  font-size: 16px;
+  line-height: 28px;
+}
+.ti-new-tag-input::-ms-input-placeholder {
+  color: #000000;
+  font-size: 16px;
+  line-height: 28px;
+
+}
+.ti-new-tag-input.ti-new-tag-input::-ms-input-placeholder {
+  color: #000000;
+  font-size: 16px;
+  line-height: 28px;
+
+}
+.ti-icon-close {
+  color: #FF3D00;
+  font-size: 14px;
+  margin-left: 5px;
+  margin-top: 4px;
 }
