@@ -221,7 +221,7 @@ export default {
       this.trackPairOrderButton();
       this.pending = true;
       const payload = {
-        app: 'OFFLINE_ORDERS',
+        app: 'ORDERS_APP',
         endpoint: 'back_dated_order_confirm',
         apiKey: false,
         params: {
