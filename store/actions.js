@@ -738,8 +738,18 @@ export default {
     }
   },
   async request_vendor_types({ dispatch }, payload) {
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      const res = await dispatch('requestAxiosPost', payload, param, {
+        root: true,
+      });
       return res.data;
     } catch (error) {
       return error.response;

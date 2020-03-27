@@ -114,7 +114,7 @@ export default {
       this.trackCompleteOrderButton();
       this.pending = true;
       const payload = {
-        app: 'OFFLINE_ORDERS',
+        app: 'ORDERS_APP',
         endpoint: 'rider_app_deliver',
         apiKey: false,
         params: {
