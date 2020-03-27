@@ -36,7 +36,7 @@
                 ></span
               >
               <span class="survey-period pull-right">
-                {{ getTimeFromNow(survey.surveyed_on) }}
+                {{ getDateFromNow(survey.surveyed_on) }}
               </span>
             </div>
 

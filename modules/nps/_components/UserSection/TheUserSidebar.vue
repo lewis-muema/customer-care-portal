@@ -17,7 +17,7 @@
 import NPSMxn from '@/mixins/nps_mixin';
 
 export default {
-  name: 'TheMetricsSidebar',
+  name: 'TheUserSidebar',
   mixins: [NPSMxn],
   props: {
     meta: {
