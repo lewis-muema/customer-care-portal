@@ -44,7 +44,10 @@
           </div>
         </div>
         <div class="tag-holder row">
-          Add tag
+          <TheTagsComponent
+            :saved-tags="survey.tags"
+            :survey="survey.nps_survey_id"
+          />
         </div>
       </div>
     </div>
@@ -56,6 +59,10 @@ import NPSMxn from '@/mixins/nps_mixin';
 
 export default {
   name: 'TheSurveyComponent',
+  components: {
+    TheTagsComponent: () =>
+      import('~/modules/nps/_components/MainSection/TheTagsComponent'),
+  },
   mixins: [NPSMxn],
 
   props: {
@@ -135,7 +142,7 @@ export default {
   color: #000000;
   margin-right: 0;
   margin-left: 0;
-  background: #ecf0f5;
+  background: #f5f7fa;
 }
 .survey-top {
   padding: 5px 0;
