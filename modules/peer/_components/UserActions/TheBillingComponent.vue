@@ -319,10 +319,12 @@ export default {
         this.emptyClass = 'search-invalid';
         this.hid = '';
       }
-      this.submitted = true;
-      this.$v.$touch();
-      if (this.$v.$invalid) {
-        return;
+      if (this.billingType !== 99) {
+        this.submitted = true;
+        this.$v.$touch();
+        if (this.$v.$invalid) {
+          return;
+        }
       }
       if (
         !this.noTransactiodIDTypes.includes(this.billingType) &&
