@@ -88,7 +88,7 @@
               </div>
               <input
                 v-model="customerAmount"
-                type="number"
+                type="text"
                 class="searched-single-column-data amount-data"
                 placeholder="0"
                 min="0"
@@ -102,7 +102,7 @@
               </div>
               <input
                 v-model="partnerAmount"
-                type="number"
+                type="text"
                 class="searched-single-column-data amount-data"
                 placeholder="0"
                 min="0"
@@ -111,13 +111,16 @@
           <div>
             <p class="searched-single-column-head">Sendy Take amount</p>
             <p class="take-home-amount">KES {{ takeHome }}</p>
+            <p v-if="takeHome < 0" class="amount-error">
+              (Amount should not be negative)
+            </p>
           </div>
         </span>
         <span class="searched-single-column-right">
           <p class="searched-single-column-head">Tonnes Delivered</p>
           <input
             v-model="tonnes"
-            type="number"
+            type="text"
             class="searched-single-column-data tonnage-inputs"
             placeholder="Tonnes Delivered"
             min="0"
@@ -134,16 +137,24 @@
         </span>
       </div>
       <div class="searched-columns">
-        <button
-          class="submit-button"
-          :class="
-            activeButton ? 'active-submit-button' : 'inactive-submit-button'
-          "
-          @click="sendTonnagePaymentDetails()"
-        >
-          Submit
-          <i class="fa fa-spinner fa-spin submit-icon" v-if="searching"></i>
-        </button>
+        <div class="submit-container">
+          <p
+            v-if="orderData.order_details.delivery_status !== 3"
+            class="amount-error"
+          >
+            (The order needs to be completed first)
+          </p>
+          <button
+            class="submit-button"
+            :class="
+              activeButton ? 'active-submit-button' : 'inactive-submit-button'
+            "
+            @click="sendTonnagePaymentDetails()"
+          >
+            Submit
+            <i class="fa fa-spinner fa-spin submit-icon" v-if="searching"></i>
+          </button>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -189,7 +200,13 @@ export default {
       return this.query.trim();
     },
     activeButton() {
-      if (this.customerAmount && this.partnerAmount && !this.searching) {
+      if (
+        this.customerAmount &&
+        this.partnerAmount &&
+        !this.searching &&
+        this.takeHome > -1 &&
+        this.orderData.order_details.delivery_status === 3
+      ) {
         return true;
       }
       return false;
@@ -208,6 +225,19 @@ export default {
     },
     src() {
       return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
+    },
+  },
+  watch: {
+    customerAmount() {
+      this.customerAmount = this.customerAmount
+        .toString()
+        .replace(/[^0-9]/g, '');
+    },
+    partnerAmount() {
+      this.partnerAmount = this.partnerAmount.toString().replace(/[^0-9]/g, '');
+    },
+    tonnes() {
+      this.tonnes = this.tonnes.toString().replace(/[^0-9]/g, '');
     },
   },
   methods: {
@@ -508,7 +538,7 @@ span {
   font-size: 23px;
 }
 .submit-button {
-  margin: 15px;
+  margin-top: 5px;
   width: 30%;
   height: 45px;
   font-size: 17px;
@@ -519,6 +549,7 @@ span {
 }
 .inactive-submit-button {
   background: #c7c7c7;
+  pointer-events: none;
 }
 .active-submit-button {
   background: #3c8dbc;
@@ -532,5 +563,14 @@ span {
 .submit-icon {
   top: 4px;
   right: 25%;
+}
+.amount-error {
+  color: red;
+  font-style: italic;
+  margin: 0;
+}
+.submit-container {
+  width: 100%;
+  padding-left: 15px;
 }
 </style>
