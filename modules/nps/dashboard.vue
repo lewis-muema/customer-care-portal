@@ -8,7 +8,7 @@
         </div>
       </span>
       <span v-else>
-        <TheTopSection :surveys="surveys" />
+        <TheTopSection :surveys="surveys" :meta-data="totals" />
         <TheMainSection :surveys="surveys" :meta-data="metaData" />
       </span>
     </div>
@@ -35,20 +35,33 @@ export default {
       metaData: null,
       npsRequestStatus: false,
       surveys: null,
+      totals: null,
     };
   },
   computed: {
-    ...mapGetters(['getNPSRequest', 'getSurveys', 'getCurrentNPSPage']),
+    ...mapGetters([
+      'getNPSRequest',
+      'getSurveys',
+      'getCurrentNPSPage',
+      ' getNPSMetaData',
+    ]),
   },
   watch: {
-    getNPSRequest(status) {
-      this.npsRequestStatus = status;
+    getNPSMetaData(value) {
+      this.totals = value;
+    },
+    totals(value) {
+      this.totals = value;
+      this.setNPSMetaData(value);
     },
     getSurveys(surveyData) {
       const metaData = surveyData.pagination;
+      const totals = surveyData.meta;
       this.setCurrentNPSPage(metaData.page);
       this.setLastNPSPage(metaData.lastPage);
       this.metaData = metaData;
+      this.totals = totals;
+      this.setNPSMetaData(totals);
       return (this.surveys = surveyData.data);
     },
   },
@@ -68,7 +81,12 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setNPSRequest', 'setCurrentNPSPage', 'setLastNPSPage']),
+    ...mapMutations([
+      'setNPSRequest',
+      'setCurrentNPSPage',
+      'setLastNPSPage',
+      'setNPSMetaData',
+    ]),
     ...mapActions(['setSurveys']),
 
     registerOrdersStore() {

@@ -171,4 +171,7 @@ export default {
   getNPSDateRange(state) {
     return state.npsDateRange;
   },
+  getNPSMetaData(state) {
+    return state.npsMetaData;
+  },
 };

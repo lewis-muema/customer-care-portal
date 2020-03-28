@@ -45,7 +45,7 @@
         </div>
         <div class="tag-holder row">
           <TheTagsComponent
-            :saved-tags="survey.tags"
+            :saved-tags="setTags(survey.tags)"
             :survey="survey.nps_survey_id"
           />
         </div>
@@ -80,6 +80,22 @@ export default {
       noDataMsg: 'There are no surveys matching this criteria',
       filters: false,
     };
+  },
+  methods: {
+    setTags(tags) {
+      let savedTags = [];
+      if (tags !== null) {
+        const result = JSON.parse(tags);
+        savedTags =
+          result.length !== 0
+            ? result.map(item => ({
+                text: item,
+                tiClasses: ['ti-valid'],
+              }))
+            : result;
+      }
+      return savedTags;
+    },
   },
 };
 </script>
