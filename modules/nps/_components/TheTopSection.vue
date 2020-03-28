@@ -96,7 +96,7 @@ export default {
         responses !== 0 ? promoters / responses - detractors / responses : 0;
 
       // eslint-disable-next-line no-restricted-globals
-      return isNaN(score) ? 0 : score;
+      return isNaN(score) ? 0 : score.toFixed(2);
     },
   },
   watch: {
@@ -127,7 +127,7 @@ export default {
       const responses = this.metaInfo.responded;
       const score = responses !== 0 ? grouptotal / responses : 0;
       // eslint-disable-next-line no-restricted-globals
-      return isNaN(score) ? 0 : `${score}%`;
+      return isNaN(score) ? 0 : `${score.toFixed(2)}%`;
     },
     showResponses(group) {
       const grouptotal = this.metaInfo[`${group}`];
