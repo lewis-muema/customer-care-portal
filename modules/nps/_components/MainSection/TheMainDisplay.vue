@@ -184,6 +184,7 @@ export default {
 
       this.setCurrentNPSPage(metaData.page);
       this.setLastNPSPage(metaData.lastPage);
+      this.setNPSMetaData(surveyData.meta);
       this.returned = true;
     },
     getActiveBusinessUnits(units) {
@@ -230,6 +231,7 @@ export default {
       'setSurveys',
       'setCurrentNPSPage',
       'setLastNPSPage',
+      'setNPSMetaData',
     ]),
     ...mapActions(['setSurveys']),
     sendRequest(payload) {

@@ -94,6 +94,7 @@ export default {
       currentNPSPage: null,
       lastNPSPage: null,
       npsDateRange: null,
+      npsMetaData: null,
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',
         500: 'Page not found',

@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       tag: '',
-      tags: [],
+      tags: this.savedTags,
       posted: false,
       success: false,
       fail: false,
@@ -48,16 +48,6 @@ export default {
     },
   },
   mounted() {
-    const result =
-      this.savedTags !== null ? JSON.parse(this.savedTags) : this.savedTags;
-    const saved =
-      result !== null
-        ? result.map(item => ({
-            text: item,
-            tiClasses: ['ti-valid'],
-          }))
-        : [];
-    this.tags = saved;
     this.mounted = true;
   },
   methods: {

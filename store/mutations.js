@@ -181,4 +181,7 @@ export default {
   setnpsDateRange(state, val) {
     state.npsDateRange = val;
   },
+  setNPSMetaData(state, val) {
+    state.npsMetaData = val;
+  },
 };
