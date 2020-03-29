@@ -53,32 +53,10 @@
           <vue-tel-input
             v-model="partnerPhone"
             class="form-control"
+            :class="[validphone ? 'validnumber' : 'invalidnumber']"
             :preferred-countries="['ke', 'ug', 'tz']"
+            @keyup="validateRiderPhone()"
           />
-        </div>
-        <div class="form-group col-md-6">
-          <label for="snNumber">Sim Card Serial Number</label>
-          <div class="input-group-btn">
-            <input
-              type="text"
-              class="form-control"
-              id="snNumber"
-              placeholder="serial number"
-              v-model="simCardSn"
-            />
-          </div>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="snNumber">Version Code</label>
-          <div class="input-group-btn">
-            <input
-              type="text"
-              class="form-control"
-              id="versionCode"
-              placeholder="version code"
-              v-model="versionCode"
-            />
-          </div>
         </div>
         <div class="form-group col-md-6">
           <label for="sendycomission">Sendy Commission</label>
@@ -156,7 +134,7 @@
 </template>
 <script>
 import axios from 'axios';
-import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapGetters, mapActions, mapState } from 'vuex';
 import VueTelInput from 'vue-tel-input';
 import 'vue-tel-input/dist/vue-tel-input.css';
 import PickOfflineOrderComponent from './PickOfflineOrderComponent';
@@ -185,20 +163,31 @@ export default {
       pending: false,
       isVisible: false,
       message: '',
+      error_message: '',
+      validphone: null,
     };
   },
   computed: {
+    ...mapState(['config']),
     ...mapGetters({
       getOrderAmount: 'getOrderAmount',
       getOrderNumber: 'getOrderNumber',
       getVat: 'getVat',
       getOrderCurrency: 'getOrderCurrency',
+      getauthtoken: ['getAuthenticationToken'],
     }),
     buttonText() {
       if (this.pending) {
         return 'Pairing Order...';
       } else {
         return 'Pair Order';
+      }
+    },
+  },
+  watch: {
+    partnerPhone(newValue, oldValue) {
+      if (newValue.length >= 12) {
+        this.validateRiderPhone();
       }
     },
   },
@@ -217,7 +206,38 @@ export default {
       updatePartnerPhone: 'setPartnerPhone',
       updatePartnerSn: 'setPartnerSn',
     }),
+    validateRiderPhone() {
+      let typingTimer;
+      const doneTypingInterval = 50;
+
+      clearTimeout(typingTimer);
+      this.typingTimer = setTimeout(this.getRiderDetails(), doneTypingInterval);
+    },
+    async getRiderDetails() {
+      const payload = {
+        app: 'NODE_PARTNER_API',
+        endpoint: 'management/get_rider_details',
+        apiKey: false,
+        params: {
+          phone_no: this.partnerPhone,
+        },
+      };
+      try {
+        const data = await this.pair_offline_order(payload);
+        if (data.status) {
+          this.partnerPhone = data.message.phone_no;
+          this.versionCode = data.message.minimum_version_code;
+          this.simCardSn = data.message.sim_card_serial;
+          this.validphone = true;
+        } else {
+          this.validphone = false;
+        }
+      } catch (error) {
+        this.message = 'Something went wrong. Please try again.';
+      }
+    },
     async pairOfflineOrder() {
+      this.getRiderDetails();
       this.trackPairOrderButton();
       this.pending = true;
       const payload = {
@@ -270,6 +290,12 @@ export default {
 };
 </script>
 <style>
+.validnumber {
+  border: 2px solid #2d8c0eba !important;
+}
+.invalidnumber {
+  border: 2px solid #b70d0d !important;
+}
 .user-main {
   border-top: 3px solid #3c8dbc;
 }

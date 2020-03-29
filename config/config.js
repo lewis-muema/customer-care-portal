@@ -93,7 +93,7 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://auth.sendyit.com/',
+    PRICING_SERVICE: 'https://auth.sendyit.com/pricing/',
     VENDORS: 'https://auth.sendyit.com/vendors/',
     AUTH: 'https://auth.staging.sendyit.com/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
