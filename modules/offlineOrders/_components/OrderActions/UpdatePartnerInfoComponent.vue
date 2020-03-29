@@ -165,12 +165,6 @@ export default {
       message: '',
       error_message: '',
       validphone: null,
-      configs: {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this.getauthtoken,
-        },
-      },
     };
   },
   computed: {
@@ -194,8 +188,6 @@ export default {
     partnerPhone(newValue, oldValue) {
       if (newValue.length >= 12) {
         this.validateRiderPhone();
-      } else {
-        this.validphone = null;
       }
     },
   },
@@ -221,31 +213,28 @@ export default {
       clearTimeout(typingTimer);
       this.typingTimer = setTimeout(this.getRiderDetails(), doneTypingInterval);
     },
-    getRiderDetails() {
-      const riderPhone = { phone_no: this.partnerPhone };
-      const header = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this.getauthtoken,
+    async getRiderDetails() {
+      const payload = {
+        app: 'NODE_PARTNER_API',
+        endpoint: 'management/get_rider_details',
+        apiKey: false,
+        params: {
+          phone_no: this.partnerPhone,
         },
       };
-
-      axios
-        .post(
-          `${this.config.NODE_PARTNER_API}management/get_rider_details`,
-          riderPhone,
-          header,
-        )
-        .then(res => {
-          this.partnerPhone = res.data.message.phone_no;
-          this.versionCode = res.data.message.minimum_version_code;
-          this.simCardSn = res.data.message.sim_card_serial;
+      try {
+        const data = await this.pair_offline_order(payload);
+        if (data.status) {
+          this.partnerPhone = data.message.phone_no;
+          this.versionCode = data.message.minimum_version_code;
+          this.simCardSn = data.message.sim_card_serial;
           this.validphone = true;
-        })
-        .catch(error => {
+        } else {
           this.validphone = false;
-          console.log(error);
-        });
+        }
+      } catch (error) {
+        this.message = 'Something went wrong. Please try again.';
+      }
     },
     async pairOfflineOrder() {
       this.getRiderDetails();
