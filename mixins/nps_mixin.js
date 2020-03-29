@@ -70,7 +70,6 @@ const NPSMxn = {
         .format('YYYY-MM-DD 00:00:00');
       return this.convertToUTC(endOfMonth);
     },
-
     npsDateRange() {
       // eslint-disable-next-line prettier/prettier
         const startOfMonth = moment().startOf('month').format('MMM DD');
@@ -84,6 +83,10 @@ const NPSMxn = {
   },
   methods: {
     ...mapActions(['requestBusinessUnits']),
+
+    formatDate(date, format) {
+      return moment(date).format(format);
+    },
     isEmpty(obj) {
       for (const key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {

@@ -3,8 +3,8 @@
     <div class="col-md-3 col-sm-6 col-xs-12 nps-side">
       <div class="info-box blue-box">
         <div class="row nps-avg">
-          <div class="nps-score">NPS: 40</div>
-          <div class="nps-range">{{ npsDateRange }}</div>
+          <div class="nps-score">NPS: {{ npsScore }}</div>
+          <div class="nps-range">{{ npsActiveDates }}</div>
         </div>
       </div>
     </div>
@@ -34,8 +34,12 @@
             <div class="group-text">{{ svg.title }}</div>
           </div>
           <div v-if="index === activeItem" class="percentage-holder col-md-3">
-            <div class="percentage-score">40%</div>
-            <div class="percentage-responses">20 responses</div>
+            <div class="percentage-score">
+              {{ calculatePercentage(svg.name) }}
+            </div>
+            <div class="percentage-responses">
+              {{ showResponses(svg.name) }}
+            </div>
           </div>
         </div>
       </div>
@@ -56,6 +60,10 @@ export default {
       type: Array,
       required: true,
     },
+    metaData: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -66,7 +74,43 @@ export default {
       totalDetractors: 10,
       totalPassives: 10,
       totalPromoters: 10,
+      filters: false,
+      requestedMetaData: null,
+      activeDates: null,
     };
+  },
+  computed: {
+    ...mapGetters(['getNPSMetaData', 'getNPSDateRange']),
+    metaInfo() {
+      return this.filters ? this.requestedMetaData : this.metaData;
+    },
+    npsActiveDates() {
+      return this.activeDates !== null ? this.activeDates : this.npsDateRange;
+    },
+    npsScore() {
+      const meta = this.metaInfo;
+      const promoters = meta.promoter;
+      const detractors = meta.detractor;
+      const responses = meta.responded;
+      const score =
+        responses !== 0 ? promoters / responses - detractors / responses : 0;
+
+      // eslint-disable-next-line no-restricted-globals
+      return isNaN(score) ? 0 : score.toFixed(2);
+    },
+  },
+  watch: {
+    getNPSMetaData(totals) {
+      this.filters = true;
+      this.requestedMetaData = totals;
+    },
+    getNPSDateRange(dateRange) {
+      const startDate = dateRange.startDate;
+      const endDate = dateRange.endDate;
+      const rangeStart = this.formatDate(startDate, 'MMM DD');
+      const rangeEnd = this.formatDate(endDate, 'MMM DD');
+      this.activeDates = `${rangeStart} - ${rangeEnd}`;
+    },
   },
   methods: {
     ...mapMutations(['setNPSActiveGroup']),
@@ -76,6 +120,18 @@ export default {
       this.activeItem = index;
       this.activeGroup = group;
       this.setNPSActiveGroup(group);
+    },
+
+    calculatePercentage(group) {
+      const grouptotal = this.metaInfo[`${group}`];
+      const responses = this.metaInfo.responded;
+      const score = responses !== 0 ? grouptotal / responses : 0;
+      // eslint-disable-next-line no-restricted-globals
+      return isNaN(score) ? 0 : `${score.toFixed(2)}%`;
+    },
+    showResponses(group) {
+      const grouptotal = this.metaInfo[`${group}`];
+      return `${grouptotal} responses`;
     },
   },
 };
