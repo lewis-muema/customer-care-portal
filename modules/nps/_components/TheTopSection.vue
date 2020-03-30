@@ -125,9 +125,9 @@ export default {
     calculatePercentage(group) {
       const grouptotal = this.metaInfo[`${group}`];
       const responses = this.metaInfo.responded;
-      const score = responses !== 0 ? grouptotal / responses : 0;
+      const score = responses !== 0 ? (grouptotal / responses) * 100 : 0;
       // eslint-disable-next-line no-restricted-globals
-      return isNaN(score) ? 0 : `${score.toFixed(2)}%`;
+      return isNaN(score) ? 0 : `${score.toFixed(0)}%`;
     },
     showResponses(group) {
       const grouptotal = this.metaInfo[`${group}`];

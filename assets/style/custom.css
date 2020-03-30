@@ -1522,3 +1522,7 @@ color: #000000;
   margin-left: 5px;
   margin-top: 4px;
 }
+.datetimepicker .datepicker{
+  position: relative !important; 
+  min-width: 378px !important;
+}

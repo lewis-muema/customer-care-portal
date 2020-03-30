@@ -1,12 +1,13 @@
 <template>
   <VueCtkDateTimePicker
     class="pick-delivery-docs-date form-control"
-    formatted="YYYY-MM-DD HH:mm:00"
-    output-format="YYYY-MM-DD HH:mm:00"
+    formatted="MMM DD YYYY"
+    output-format="MMM DD YYYY"
     v-model="selectedDate"
     :range="true"
     :no-label="true"
     :label="placeholder"
+    :right="right"
     id="nps"
   />
 </template>
@@ -24,6 +25,7 @@ export default {
       selectedDate: '',
       hide: 'true',
       dateArray: null,
+      right: true,
     };
   },
   computed: {
