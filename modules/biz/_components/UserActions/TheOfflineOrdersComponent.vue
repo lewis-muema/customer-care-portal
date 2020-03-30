@@ -63,6 +63,30 @@
           </div>
         </div>
 
+        <div class="form-group col-md-6 user-input business-unit-select">
+          <label class="bill">Business Units</label>
+          <v-select
+            :options="businessUnits"
+            :reduce="name => name.value"
+            name="name"
+            label="name"
+            placeholder="Select Business Unit"
+            class="form-control select "
+            :id="`business-units`"
+            v-model="businessUnit"
+            :class="{
+              'is-invalid': submitted && $v.businessUnit.$error,
+            }"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.businessUnit.required"
+            class="invalid-feedback"
+          >
+            Business Unit is required
+          </div>
+        </div>
+
         <div class="row col-md-12 pay-partner--checkbox">
           <div
             class="form-group col-md-3 bill-check bill-partners-align input-margin"
@@ -403,6 +427,12 @@ export default {
       totalAmount: 0,
       loading_tax_rates: true,
       vat_rate: 0,
+      businessUnits: [
+        { value: 1, name: 'Merchant Business Units - MBU' },
+        { value: 2, name: 'Enterprise Business Units - EBU' },
+        { value: 3, name: 'Freight Business Units - FBU' },
+      ],
+      businessUnit: '',
     };
   },
 
@@ -411,6 +441,7 @@ export default {
     start_date: { required },
     billingAmount: { required },
     notes: { required },
+    businessUnit: { required },
   },
   computed: {
     actionUser() {
@@ -604,6 +635,7 @@ export default {
                 bill_amount: this.billingAmount,
                 charge_vat: this.charge_vat,
                 currency: this.currency,
+                business_unit: parseInt(this.businessUnit, 10),
               },
               request_id: '1611',
               action_user: this.actionUser,
@@ -915,5 +947,9 @@ export default {
   background: none;
   font-style: italic;
   color: #3c8dbc;
+}
+.business-unit-select {
+  margin-left: -8px;
+  width: 44%;
 }
 </style>

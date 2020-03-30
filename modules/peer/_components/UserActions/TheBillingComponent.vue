@@ -51,6 +51,29 @@
           </div>
         </div>
       </div>
+      <div class="form-group col-md-4 user-input">
+        <label class="bill">Business Units</label>
+        <v-select
+          :options="businessUnits"
+          :reduce="name => name.value"
+          name="name"
+          label="name"
+          placeholder="Select Business Unit"
+          class="form-control select user-billing"
+          :id="`business-units`"
+          v-model="businessUnit"
+          :class="{
+            'is-invalid': submitted && $v.businessUnit.$error,
+          }"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.businessUnit.required"
+          class="invalid-feedback"
+        >
+          Business Unit is required
+        </div>
+      </div>
 
       <div
         class="form-group  col-md-4 user-input"
@@ -234,12 +257,19 @@ export default {
       },
       isVAT: true,
       submit_status: false,
+      businessUnits: [
+        { value: 1, name: 'Merchant Business Units - MBU' },
+        { value: 2, name: 'Enterprise Business Units - EBU' },
+        { value: 3, name: 'Freight Business Units - FBU' },
+      ],
+      businessUnit: '',
     };
   },
   validations: {
     amount: { required },
     narrative: { required },
     billingType: { required },
+    businessUnit: { required },
   },
   computed: {
     ...mapState(['config']),
@@ -343,61 +373,69 @@ export default {
       const rider_id = this.rider > 0 ? Number(this.rider) : '';
       let action_id = this.billingType === 15 ? 21 : this.actionID;
 
-      let action_payload = {
-        amount: this.amount,
-        cop_id,
-        user_id: this.user_id,
-        rider_id,
-        narrative: this.narrative,
-        currency: this.currency,
-        billing_type: this.billingType,
-        order_number: this.refNo,
-        transaction_id: this.transactionID,
-        is_peer,
-        creditor_id: creditor_details,
-        is_VAT: this.isVAT,
-      };
-
-      if (this.billingType === 99) {
-        action_id = 22;
-        action_payload = {
+      if (this.businessUnit === '') {
+        notification.push('Business Unit is required !!!');
+        actionClass = 'danger';
+      } else {
+        let action_payload = {
+          amount: this.amount,
           cop_id,
           user_id: this.user_id,
-          pay_reference: this.refNo,
+          rider_id,
+          narrative: this.narrative,
+          currency: this.currency,
+          billing_type: this.billingType,
+          order_number: this.refNo,
+          transaction_id: this.transactionID,
+          is_peer,
+          creditor_id: creditor_details,
+          is_VAT: this.isVAT,
+          business_unit: parseInt(this.businessUnit, 10),
         };
-      }
 
-      const payload = {
-        app: 'CUSTOMERS_APP',
-        endpoint: 'sendy/cc_actions',
-        apiKey: true,
-        params: {
-          channel: 'customer_support_peer_biz',
-          data_set: 'cc_actions',
-          action_id,
-          action_data: action_payload,
-          request_id: this.requestID,
-          action_user: this.actionUser,
-        },
-      };
-
-      this.submit_status = true;
-
-      try {
-        const data = await this.perform_user_action(payload);
-        notification.push(data.reason);
-        actionClass = this.display_order_action_notification(data.status);
-        this.submit_status = false;
-        if (data.status) {
-          this.updateSuccess(true);
+        if (this.billingType === 99) {
+          action_id = 22;
+          action_payload = {
+            cop_id,
+            user_id: this.user_id,
+            pay_reference: this.refNo,
+            business_unit: parseInt(this.businessUnit, 10),
+          };
         }
-      } catch (error) {
-        this.submit_status = false;
-        notification.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-        actionClass = 'danger';
+
+        const payload = {
+          app: 'CUSTOMERS_APP',
+          endpoint: 'sendy/cc_actions',
+          apiKey: true,
+          params: {
+            channel: 'customer_support_peer_biz',
+            data_set: 'cc_actions',
+            action_id,
+            action_data: action_payload,
+            request_id: this.requestID,
+            action_user: this.actionUser,
+          },
+        };
+
+        this.submit_status = true;
+
+        try {
+          const data = await this.perform_user_action(payload);
+          notification.push(data.reason);
+          actionClass = this.display_order_action_notification(data.status);
+          this.submit_status = false;
+          if (data.status) {
+            this.updateSuccess(true);
+          }
+        } catch (error) {
+          this.submit_status = false;
+          notification.push(
+            'Something went wrong. Try again or contact Tech Support',
+          );
+          actionClass = 'danger';
+        }
       }
+
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
