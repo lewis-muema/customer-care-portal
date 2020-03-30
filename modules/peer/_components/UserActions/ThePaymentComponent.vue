@@ -70,6 +70,32 @@
           </td>
         </tr>
         <tr>
+          <td class="biz-units-outer">
+            <div class="form-group actions">
+              <label>Business Units</label>
+              <v-select
+                :options="businessUnits"
+                :reduce="name => name.value"
+                name="name"
+                label="name"
+                placeholder="Select Business Unit"
+                class="form-control select"
+                :id="`business-units`"
+                v-model="businessUnit"
+                :class="{
+                  'is-invalid': submitted && $v.businessUnit.$error,
+                }"
+              >
+              </v-select>
+              <div
+                v-if="submitted && !$v.businessUnit.required"
+                class="invalid-feedback"
+              >
+                Business Unit is required
+              </div>
+            </div>
+          </td>
+
           <td>
             <div class="form-group">
               <label>Other Notes</label>
@@ -139,12 +165,19 @@ export default {
       submitted: false,
       hide: '',
       refNoMethods: [1, 4],
+      businessUnits: [
+        { value: 1, name: 'Merchant Business Units - MBU' },
+        { value: 2, name: 'Enterprise Business Units - EBU' },
+        { value: 3, name: 'Freight Business Units - FBU' },
+      ],
+      businessUnit: '',
     };
   },
   validations: {
     paymentMethod: { required },
     amount: { required },
     narrative: { required },
+    businessUnit: { required },
   },
   computed: {
     currency() {
@@ -244,6 +277,7 @@ export default {
             user_id: userID,
             reason: this.narrative,
             currency: this.currency,
+            business_unit: parseInt(this.businessUnit, 10),
           },
           request_id: `11222`,
           action_user: this.actionUser,
@@ -271,5 +305,8 @@ export default {
 <style scoped>
 .input-group-area {
   width: 85%;
+}
+.biz-units-outer {
+  width: 50%;
 }
 </style>
