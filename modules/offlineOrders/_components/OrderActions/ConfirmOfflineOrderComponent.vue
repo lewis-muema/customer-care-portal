@@ -85,6 +85,7 @@ export default {
       pending: false,
       isVisible: false,
       message: '',
+      orderNo: '',
     };
   },
   computed: {
@@ -97,6 +98,7 @@ export default {
       getPricingId: 'getPricingId',
       getPickup: 'getPickup',
       getDropoff: 'getDropoff',
+      getSessionData: 'getSession',
     }),
     buttonText() {
       if (this.pending) {
@@ -122,9 +124,10 @@ export default {
       updateOrderNumber: 'setOrderNumber',
     }),
     async confirmOfflineOrder() {
-      this.trackConfirmOrderButton();
       this.pending = true;
-      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+      const currentTime = moment()
+        .utc()
+        .format('YYYY-MM-DD HH:mm:ss');
       const payload = {
         app: 'OFFLINE_ORDERS',
         endpoint: 'v2/deliveryconfirm',
@@ -179,7 +182,12 @@ export default {
         if (data.status) {
           this.pending = false;
           const orderNumber = data.order_no;
+          this.orderNo = orderNumber;
+          this.trackConfirmOrderButton();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
           this.updateOrderNumber(orderNumber);
+          this.trackCreateOrder();
           this.pickOrder = true;
           this.confirmOrder = false;
         } else {
@@ -201,6 +209,26 @@ export default {
     trackConfirmOrderButton() {
       mixpanel.track('Confirm order button - ButtonClick', {
         type: 'Click',
+      });
+    },
+    trackCreateOrder() {
+      mixpanel.track('Create order', {
+        type: 'Order Creation',
+        'Order Number': this.orderNo,
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify({
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Order Creator',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
       });
     },
   },
