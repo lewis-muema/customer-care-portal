@@ -3,8 +3,13 @@
     <div class="col-md-12 main-holder">
       <div class="row date-info">
         <div class="col-md-6 pull-right">&nbsp;</div>
-        <div class="datepicker col-md-6">
-          <TheDatePickerComponent />
+        <div class="row datepicker col-md-6">
+          <div class="col-md-9 main-date">
+            <TheDatePickerComponent />
+          </div>
+          <div v-if="!dateFilters" class="col-md-3 date-icon">
+            <i class="fa fa-times-circle-o"></i>
+          </div>
         </div>
       </div>
       <div class="row" :key="surveyTotalsComponentKey">
@@ -102,6 +107,7 @@ export default {
       totalPromoters: 10,
       startDate: null,
       enddate: null,
+      dateFilters: false,
       commentsData: [
         {
           value: null,
@@ -222,6 +228,7 @@ export default {
       this.endDate = dateRange.endDate;
       this.filters = true;
       this.sendRequest(this.params);
+      this.dateFilters = true;
     },
   },
 
@@ -300,6 +307,9 @@ export default {
   margin-top: 34px;
   color: #000000;
   text-align: right;
+  max-width: 50%;
+  margin-left: 0%;
+  padding-right: 20px;
 }
 .date-label {
   margin-left: 35px;
@@ -352,6 +362,7 @@ export default {
 .active {
   background: #093359;
   color: #ffffff;
+  box-shadow: none;
 }
 .previous {
   -webkit-transform: translateY(-2px) rotate(130deg);
@@ -380,5 +391,14 @@ export default {
   margin-left: 75%;
   flex: none;
   width: auto;
+}
+.main-date {
+  padding-right: 0px;
+}
+.date-icon {
+  text-align: left;
+  padding-top: 10px;
+  font-size: 18px;
+  padding-left: 0;
 }
 </style>
