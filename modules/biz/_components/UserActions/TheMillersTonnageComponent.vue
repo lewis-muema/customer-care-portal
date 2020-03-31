@@ -43,7 +43,10 @@
         </li>
       </ul>
     </div>
-    <div class="searched-row" v-if="orderData.order_details.order_no">
+    <div
+      class="searched-row"
+      v-if="orderData.order_details.order_no && orderCheck && !cashStatusCheck"
+    >
       <div class="searched-columns">
         <span class="searched-single-column">
           <p class="searched-single-column-head">Pickup</p>
@@ -138,11 +141,8 @@
       </div>
       <div class="searched-columns">
         <div class="submit-container">
-          <p
-            v-if="orderData.order_details.delivery_status !== 3"
-            class="amount-error"
-          >
-            (The order needs to be completed first)
+          <p class="amount-error">
+            {{ errorStatus }}
           </p>
           <button
             class="submit-button"
@@ -157,11 +157,28 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div>
+      <div class="order-error">
+        <p
+          class="amount-error"
+          v-if="orderData.order_details.order_no && !orderCheck"
+        >
+          (This is not a miller order)
+        </p>
+        <p
+          class="amount-error"
+          v-else-if="orderData.order_details.order_no && cashStatusCheck"
+        >
+          (This is a cash order thus cannot be billed)
+        </p>
+      </div>
       <img
         src="https://images.sendyit.com/CCredesign/searchIllustatration.png"
         alt="search-img"
         class="search-illustration"
+        v-if="
+          !orderData.order_details.order_no || !orderCheck || cashStatusCheck
+        "
       />
     </div>
   </div>
@@ -205,8 +222,41 @@ export default {
         this.partnerAmount &&
         !this.searching &&
         this.takeHome > -1 &&
-        this.orderData.order_details.delivery_status === 3
+        this.orderData.order_details.delivery_status === 3 &&
+        this.orderData.payment_details.cost -
+          (this.orderData.payment_details.insurance_amount +
+            this.orderData.payment_details.vat_amount) ===
+          0
       ) {
+        return true;
+      }
+      return false;
+    },
+    errorStatus() {
+      if (
+        this.orderData.payment_details.cost -
+          (this.orderData.payment_details.insurance_amount +
+            this.orderData.payment_details.vat_amount) !==
+        0
+      ) {
+        return '(This order has already been priced)';
+      } else if (this.orderData.order_details.delivery_status !== 3) {
+        return '(The order needs to be completed first)';
+      }
+      return '';
+    },
+    orderCheck() {
+      if (
+        this.orderData.price_tiers[0].cost ===
+          this.orderData.price_tiers[0].return_cost &&
+        this.orderData.rider_details.vendor_type_id === 20
+      ) {
+        return true;
+      }
+      return false;
+    },
+    cashStatusCheck() {
+      if (this.orderData.payment_details.cash_status === 1) {
         return true;
       }
       return false;
@@ -345,6 +395,9 @@ export default {
         const data = await this.custom_deliver(payload);
         if (data.status) {
           this.updateClass('success');
+          this.orderData = await this.singleOrderRequest(
+            this.orderData.order_details.order_no,
+          );
           this.logAction(
             `Debit the client SENDY${this.orderData.client_details.client_id} with amount ${this.orderData.payment_details.order_currency} ${data.amount} and credit the partner ${this.orderData.rider_details.name} ${this.orderData.rider_details.phone_no} with ${this.orderData.payment_details.order_currency} ${this.partnerAmount} for order ${this.orderData.order_details.order_no}`,
             34,
@@ -572,5 +625,9 @@ span {
 .submit-container {
   width: 100%;
   padding-left: 15px;
+}
+.order-error {
+  text-align: center;
+  padding: 13px;
 }
 </style>
