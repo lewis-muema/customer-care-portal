@@ -52,6 +52,11 @@
               ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
+          <li class="treeview >">
+            <nuxt-link to="/nps/dashboard"
+              ><i class="fa fa-bars"></i> <span> Nps </span></nuxt-link
+            >
+          </li>
 
           <li class="treeview" v-if="permissions.create_orders">
             <nuxt-link to="/offlineOrders"
