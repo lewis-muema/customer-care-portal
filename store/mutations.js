@@ -148,4 +148,40 @@ export default {
   setPartnerSn(state, val) {
     state.snNumber = val;
   },
+  setNPSRequest(state, val) {
+    state.npsRequest = val;
+  },
+  setNPSActiveGroup(state, val) {
+    state.activeGroup = val;
+  },
+  setNPSCommentStatus(state, val) {
+    state.commentStatus = val;
+  },
+  setActiveCountries(state, val) {
+    state.activeCountries = val;
+  },
+  setActiveAccountTypes(state, val) {
+    state.activeAccountTypes = val;
+  },
+  setActiveBusinessUnits(state, val) {
+    state.activeBusinessUnits = val;
+  },
+  setCurrentNPSPage(state, val) {
+    state.currentNPSPage = val;
+  },
+  setLastNPSPage(state, val) {
+    state.lastNPSPage = val;
+  },
+  setNPSStartDate(state, val) {
+    state.npsStartDate = val;
+  },
+  setNPSEndDate(state, val) {
+    state.npsEndDate = val;
+  },
+  setnpsDateRange(state, val) {
+    state.npsDateRange = val;
+  },
+  setNPSMetaData(state, val) {
+    state.npsMetaData = val;
+  },
 };

@@ -184,6 +184,23 @@ export default {
       return searchString;
     },
   },
+  watch: {
+    name(data) {
+      if (this.name) {
+        this.name = this.name.toUpperCase();
+      }
+    },
+    query(data) {
+      if (this.query) {
+        this.query = this.query.replace(/\s/g, '').replace(/[^0-9+]/g, '');
+      }
+    },
+    license(data) {
+      if (this.license) {
+        this.license = this.license.toUpperCase();
+      }
+    },
+  },
   methods: {
     /* eslint-disable */
     Valid: function({ number, isValid, country }) {
