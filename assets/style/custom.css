@@ -1395,3 +1395,142 @@ table {
   margin-left: 20px;
   margin-right: 20px;
 }
+.plain {
+  padding-top: 0;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  min-height: 0px;
+  padding-bottom: 0px;
+}
+.main-plain {
+  position: relative;
+  min-height: 1px;
+  padding-right: 0;
+  padding-left: 0;
+  width: 100%;
+}
+.nps-holder {
+  padding-top: 30px !important;
+}
+.nps-side {
+  margin-right: 70px;
+  margin-left: 8px;
+}
+.accordion-item-trigger-icon {
+  display: block;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #363636;
+  border-bottom: 2px solid #363636;
+  -webkit-transform: translateY(-2px) rotate(45deg);
+  transform: translateY(-2px) rotate(45deg);
+  -webkit-transition: -webkit-transform 0.2s ease;
+  transition: -webkit-transform 0.2s ease;
+  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, -webkit-transform 0.2s ease;
+}
+#nps-input {
+  background: #f5f7fa !important;
+  border: none !important;
+}
+.nps-back-header {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 140%;
+  color: #f57f20;
+}
+.date-info {
+  padding-left: 7em;
+  margin-bottom: 20px;
+}
+.back-icon {
+  position: absolute;
+  -webkit-transform: translateY(-2px) rotate(130deg);
+  transform: translateY(-2px) rotate(130deg);
+  width: 13px;
+  height: 13px;
+  top: 4px;
+  border-right: 2px solid #f57f20;
+  border-bottom: 2px solid #f57f20;
+}
+.back-text {
+  margin-left: 21px;
+}
+.metrics-header {
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 140%;
+  color: #126aa6;
+  margin-top: 20px;
+  margin-bottom: 0;
+  margin-right: 29px;
+}
+.metrics-date {
+  text-align: right;
+  margin-left: 63%;
+  max-width: 33%;
+}
+#nps-input::placeholder {
+  color: #000000;
+}
+.ti-input {
+  border: none !important;
+  background: #f5f7fa !important;
+}
+.ti-tags {
+background: #f5f7fa;
+border-radius: 0;
+font-size: 16px;
+line-height: 28px;
+color: #000000;
+}
+.ti-tag {
+  background-color: #ebf1f7 !important;
+  border-radius: 50px !important;
+  color: #000000 !important;
+  font-size: 16px !important;
+  padding: 7px 27px !important;
+}
+.ti-new-tag-input-wrapper input {
+  background: #F5F7FA;
+  cursor: pointer
+}
+.ti-new-tag-input-wrapper::placeholder {
+  color: #000000;
+  font-size: 16px;
+  line-height: 28px;
+}
+.ti-new-tag-input::placeholder {
+  color: #000000;
+  opacity: 1; 
+  font-size: 16px;
+  line-height: 28px;
+}
+.ti-new-tag-input::-ms-input-placeholder {
+  color: #000000;
+  font-size: 16px;
+  line-height: 28px;
+
+}
+.ti-new-tag-input.ti-new-tag-input::-ms-input-placeholder {
+  color: #000000;
+  font-size: 16px;
+  line-height: 28px;
+
+}
+.ti-icon-close {
+  color: #FF3D00;
+  font-size: 14px;
+  margin-left: 5px;
+  margin-top: 4px;
+}
+.datetimepicker .datepicker{
+  position: relative !important; 
+  min-width: 378px !important;
+}
