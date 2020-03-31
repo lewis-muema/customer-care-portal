@@ -87,6 +87,18 @@
             Ticket
           </a>
         </li>
+        <li class="nav-item" v-if="permissions.approve_rider_transaction">
+          <a
+            class="nav-link action-list"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('top_up', riderID)"
+            :id="`top_up_${riderID}`"
+          >
+            <span class="fa fa-fw fa-money"></span>
+            Top Up
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -161,6 +173,14 @@
               :ticket="ticketData"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`top_up_${riderID}`"
+            role="tabpanel"
+            v-if="showTab === `top_up_${riderID}`"
+          >
+            <TopUpComponent :user="user" :session="userData" />
+          </div>
         </div>
       </div>
     </div>
@@ -179,6 +199,7 @@ export default {
     NewLoanComponent: () => import('./RiderActions/NewLoanComponent'),
     EditComponent: () => import('./RiderActions/EditComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
+    TopUpComponent: () => import('./RiderActions/TopUpComponent'),
   },
   props: {
     user: {

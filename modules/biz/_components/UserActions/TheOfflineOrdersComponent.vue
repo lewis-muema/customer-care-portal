@@ -298,6 +298,19 @@
                 Billing Amount is required
               </div>
             </div>
+            <div class="form-group entity-checkbox">
+              <input
+                value="1"
+                type="checkbox"
+                class="bill-partners-check"
+                @click="check($event)"
+                v-model="isChargeEntity"
+                checked
+              />
+              <label for="" class="charge_vat--label">
+                Bill Sendy Entity
+              </label>
+            </div>
 
             <div class="amount-layout">
               <table
@@ -433,6 +446,7 @@ export default {
         { value: 3, name: 'Freight Business Units - FBU' },
       ],
       businessUnit: '',
+      isChargeEntity: false,
     };
   },
 
@@ -636,6 +650,7 @@ export default {
                 charge_vat: this.charge_vat,
                 currency: this.currency,
                 business_unit: parseInt(this.businessUnit, 10),
+                pay_from_sendy_entity: this.isChargeEntity,
               },
               request_id: '1611',
               action_user: this.actionUser,
@@ -650,6 +665,10 @@ export default {
             payload.params.action_data.partners = this.elements;
             payload.params.action_data.charge_commission = this.charge_commission;
             payload.params.action_data.commission_rate = this.commission_rate;
+          }
+
+          if (this.isChargeEntity) {
+            payload.params.action_data.entity_id = 1;
           }
         }
       }
@@ -951,5 +970,8 @@ export default {
 .business-unit-select {
   margin-left: -8px;
   width: 44%;
+}
+.entity-checkbox {
+  margin-top: 2%;
 }
 </style>
