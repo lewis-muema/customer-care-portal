@@ -100,6 +100,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
+import mixpanel from 'mixpanel-browser';
 import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
@@ -148,7 +149,8 @@ export default {
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
     this.getDistancePricingConfigs();
-    // this.trackApprovalHomePage();
+    mixpanel.init('d0554ae8b8905e4984de170b62b2c9c6');
+    this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({

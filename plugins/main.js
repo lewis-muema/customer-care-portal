@@ -64,6 +64,20 @@ Vue.mixin({
         { code: '3', reason: 'Customer not reachable' },
         { code: '4', reason: 'Customer feedback' },
       ],
+      freightReallocationInfo: [
+        { code: '14', reason: `Partner won't meet ETA` },
+        { code: '15', reason: 'Truck will fulfil transit order' },
+        { code: '16', reason: 'Truck will fulfil local order' },
+        {
+          code: '17',
+          reason: `Container Weight can't match truck load exceeds weight`,
+        },
+        { code: '18', reason: 'Weight is under' },
+        {
+          code: '19',
+          reason: 'Mismatch between container positioning and truck type',
+        },
+      ],
       departments: [
         { code: '1', department: 'Operations' },
         { code: '2', department: 'Customer Support' },
@@ -85,7 +99,12 @@ Vue.mixin({
       updateClass: 'setActionClass',
     }),
     isSendyStaff(name) {
-      const isStaff = name.includes('Sendy Staff -');
+      let isStaff;
+      if (name === null || name === '') {
+        isStaff = false;
+      } else {
+        isStaff = name.includes('Sendy Staff -');
+      }
       this.s3Path = isStaff
         ? 'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image/'
         : this.s3Path;

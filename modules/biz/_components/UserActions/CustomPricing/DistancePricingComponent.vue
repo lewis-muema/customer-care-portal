@@ -5,6 +5,7 @@
         :configs="tableData"
         :user="user"
         @sectionUpdate="onSectionUpdate"
+        @configSubmitted="configSubmitted"
       ></preview-distance-pricing-component>
     </div>
     <div v-else>
@@ -320,10 +321,10 @@ export default {
     },
     calculateClientFee(val) {},
   },
-  mounted() {
+  async mounted() {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
-    this.fetchVendorTypes(countryCode);
+    await this.fetchVendorTypes(countryCode);
     this.trackAddPricingDataPage();
   },
   methods: {
@@ -364,6 +365,10 @@ export default {
     },
     onSectionUpdate(value) {
       this.previewDistancePricing = value;
+    },
+    configSubmitted() {
+      this.previewLocationPricing = false;
+      this.$emit('destroyDistanceComponent');
     },
     trackAddPricingDataPage() {
       mixpanel.track('Add Distance Pricing data Page - PageView', {
