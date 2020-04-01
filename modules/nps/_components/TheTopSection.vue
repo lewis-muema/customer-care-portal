@@ -92,11 +92,14 @@ export default {
       const promoters = meta.promoter;
       const detractors = meta.detractor;
       const responses = meta.responded;
+
       const score =
-        responses !== 0 ? promoters / responses - detractors / responses : 0;
+        responses !== 0
+          ? (promoters / responses) * 100 - (detractors / responses) * 100
+          : 0;
 
       // eslint-disable-next-line no-restricted-globals
-      return isNaN(score) ? 0 : score.toFixed(2);
+      return isNaN(score) ? 0 : score.toFixed(0);
     },
   },
   watch: {
