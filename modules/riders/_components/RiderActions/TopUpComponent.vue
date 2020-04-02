@@ -26,28 +26,41 @@
         </div>
       </div>
       <div class="form-group col-md-6 user-input">
-        <label class="bill">Business Units</label>
+        <label class="bill">Billing Type</label>
         <v-select
-          :options="businessUnits"
+          :options="billingTypes"
           :reduce="name => name.value"
           name="name"
           label="name"
-          placeholder="Select Business Unit"
+          placeholder="Select Billing Type"
           class="form-control select user-billing"
           :id="`billing_types`"
-          v-model="businessUnit"
+          v-model="billingType"
           :class="{
-            'is-invalid': submitted && $v.businessUnit.$error,
+            'is-invalid': submitted && $v.billingType.$error,
           }"
         >
         </v-select>
         <div
-          v-if="submitted && !$v.businessUnit.required"
+          v-if="submitted && !$v.billingType.required"
           class="invalid-feedback"
         >
-          Business Unit is required
+          Billing type is required
         </div>
       </div>
+
+      <div class="form-group col-md-6">
+        <label class="bill">Reference Number</label>
+        <input
+          type="text"
+          v-model="refNo"
+          :id="ref_no"
+          name="refNo"
+          placeholder="Transaction ID"
+          class="form-control bill-input"
+        />
+      </div>
+
       <div class="form-group col-md-6">
         <label class="bill">Other Notes</label>
         <input
@@ -113,24 +126,30 @@ export default {
       account: '',
       ischecked: false,
       clientNo: '',
-      businessUnit: '',
       refNo: '',
       peer: null,
       hide: '',
-      businessUnits: [
-        { value: 1, name: 'Merchant Business Units - MBU' },
-        { value: 2, name: 'Enterprise Business Units - EBU' },
-        { value: 3, name: 'Freight Business Units - FBU' },
-      ],
       sendyEntities: [{ value: 1, name: 'Sendy Entity' }],
       sendyEntity: 1,
       submit_status: false,
+      billingTypes: [
+        { value: 1, name: 'Extra Miles', transactionID: 1 },
+        { value: 2, name: 'Waiting Time', transactionID: 14 },
+        { value: 4, name: 'Return Trip', transactionID: 1 },
+        { value: 5, name: 'Extra Stops', transactionID: 1 },
+        { value: 8, name: 'Cancellation Fee', transactionID: 1 },
+        { value: 9, name: 'Offloading Charges', transactionID: 1 },
+        { value: 12, name: 'Cash Order', transactionID: 1 },
+        { value: 15, name: 'Transfer Orders', transactionID: 1 },
+      ],
+      billingType: '',
+      refNo: '',
     };
   },
   validations: {
     amount: { required },
     narrative: { required },
-    businessUnit: { required },
+    billingType: { required },
   },
 
   computed: {
@@ -194,14 +213,16 @@ export default {
         params: {
           channel: 'rider_team',
           data_set: 'rt_actions',
-          action_id: 10,
+          action_id: 1,
           action_data: {
+            payment_type: 10,
             rider_id: riderID,
             entity_id: 1,
-            business_unit: this.businessUnit,
             amount: this.amount,
+            ref_no: this.refNo,
             narrative: this.narrative,
             currency: riderCurrency,
+            billing_type: this.billingType,
             action_user: this.actionUser,
           },
           request_id: 202,
