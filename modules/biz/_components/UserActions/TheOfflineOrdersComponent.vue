@@ -197,7 +197,7 @@
                   id="charge_commision"
                   type="checkbox"
                   class="bill-partners-check"
-                  @click="check($event)"
+                  @click="checkCommission($event)"
                   v-model="charge_commission"
                   checked
                 />
@@ -303,9 +303,8 @@
                 value="1"
                 type="checkbox"
                 class="bill-partners-check"
-                @click="check($event)"
+                @click="checkEntity($event)"
                 v-model="isChargeEntity"
-                checked
               />
               <label for="" class="charge_vat--label">
                 Bill Sendy Entity
@@ -579,6 +578,16 @@ export default {
       this.response_status = code;
       this.error_msg = msg;
     },
+    checkEntity(e) {
+      if (e.target.checked) {
+        return (this.isChargeEntity = e.target.value);
+      }
+    },
+    checkCommission(e) {
+      if (e.target.checked) {
+        return (this.charge_commission = e.target.value);
+      }
+    },
     // eslint-disable-next-line require-await
     async offline_orders() {
       const notification = [];
@@ -615,7 +624,7 @@ export default {
             'fail',
             'Duplicate riders detected . Kindly remove one duplicate account',
           );
-        } else if (riderAmountCheck !== undefined) {
+        } else if (riderAmountCheck !== undefined && this.checked) {
           if (Object.keys(riderAmountCheck).length > 0) {
             this.UpdateMessaging(
               true,
