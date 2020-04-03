@@ -180,8 +180,7 @@
       <li
         class="nav-item"
         v-if="
-          isTruck &&
-            order.order_details.order_status !== 'delivered' &&
+          order.order_details.order_status !== 'delivered' &&
             order.order_details.order_status !== 'cancelled' &&
             order.order_details.order_status !== 'pending' &&
             mm === 0 &&
