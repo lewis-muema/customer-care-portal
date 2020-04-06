@@ -49,7 +49,7 @@ const PricingConfigsMxn = {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/get_custom_distance_details',
+        endpoint: 'price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
@@ -80,7 +80,7 @@ const PricingConfigsMxn = {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/get_custom_distance_details',
+        endpoint: 'price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
@@ -199,7 +199,7 @@ const PricingConfigsMxn = {
       const copId = this.user.user_details.cop_id;
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/send_email ',
+        endpoint: 'price_config/send_email ',
         apiKey: false,
         params: {
           name,
