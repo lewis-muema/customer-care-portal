@@ -480,6 +480,14 @@ export default {
       },
       deep: true,
     },
+    isChargeEntity: {
+      handler(after, before) {
+        if (this.isChargeEntity) {
+          this.checked = true;
+        }
+      },
+      deep: true,
+    },
   },
   mounted() {
     this.fetchTaxRates();
