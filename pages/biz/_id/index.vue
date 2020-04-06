@@ -52,7 +52,7 @@ export default {
     async fetchCustomDistancePricingData() {
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/get_custom_distance_details',
+        endpoint: 'price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,

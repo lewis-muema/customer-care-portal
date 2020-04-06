@@ -134,7 +134,7 @@ export default {
         const configParams = this.createContainerPayload(containerPayload);
         const payload = {
           app: 'PRICING_SERVICE',
-          endpoint: 'pricing/price_config/update_custom_distance_details',
+          endpoint: 'price_config/update_custom_distance_details',
           apiKey: false,
           params: configParams,
         };
@@ -144,7 +144,7 @@ export default {
         const configParams = this.createLocationPayload(locationPayload);
         const payload = {
           app: 'PRICING_SERVICE',
-          endpoint: 'pricing/price_config/update_custom_distance_details',
+          endpoint: 'price_config/update_custom_distance_details',
           apiKey: false,
           params: configParams,
         };
