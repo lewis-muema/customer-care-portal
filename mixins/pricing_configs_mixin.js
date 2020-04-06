@@ -110,8 +110,8 @@ const PricingConfigsMxn = {
       const notification = [];
       let actionClass = '';
       const payload = {
-        app: 'PRICING_SERVICE',
-        endpoint: 'vendors/types',
+        app: 'VENDORS',
+        endpoint: 'types',
         apiKey: false,
         params: {
           pickup_country_code: countryCode,
