@@ -63,6 +63,30 @@
           </div>
         </div>
 
+        <div class="form-group col-md-6 user-input business-unit-select">
+          <label class="bill">Business Units</label>
+          <v-select
+            :options="businessUnits"
+            :reduce="name => name.value"
+            name="name"
+            label="name"
+            placeholder="Select Business Unit"
+            class="form-control select "
+            :id="`business-units`"
+            v-model="businessUnit"
+            :class="{
+              'is-invalid': submitted && $v.businessUnit.$error,
+            }"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.businessUnit.required"
+            class="invalid-feedback"
+          >
+            Business Unit is required
+          </div>
+        </div>
+
         <div class="row col-md-12 pay-partner--checkbox">
           <div
             class="form-group col-md-3 bill-check bill-partners-align input-margin"
@@ -173,7 +197,7 @@
                   id="charge_commision"
                   type="checkbox"
                   class="bill-partners-check"
-                  @click="check($event)"
+                  @click="checkCommission($event)"
                   v-model="charge_commission"
                   checked
                 />
@@ -273,6 +297,18 @@
               >
                 Billing Amount is required
               </div>
+            </div>
+            <div class="form-group entity-checkbox">
+              <input
+                value="1"
+                type="checkbox"
+                class="bill-partners-check"
+                @click="checkEntity($event)"
+                v-model="isChargeEntity"
+              />
+              <label for="" class="charge_vat--label">
+                Bill Sendy Entity
+              </label>
             </div>
 
             <div class="amount-layout">
@@ -403,6 +439,13 @@ export default {
       totalAmount: 0,
       loading_tax_rates: true,
       vat_rate: 0,
+      businessUnits: [
+        { value: 1, name: 'Merchant Business Units - MBU' },
+        { value: 2, name: 'Enterprise Business Units - EBU' },
+        { value: 3, name: 'Freight Business Units - FBU' },
+      ],
+      businessUnit: '',
+      isChargeEntity: false,
     };
   },
 
@@ -411,6 +454,7 @@ export default {
     start_date: { required },
     billingAmount: { required },
     notes: { required },
+    businessUnit: { required },
   },
   computed: {
     actionUser() {
@@ -433,6 +477,22 @@ export default {
     commission_rate: {
       handler(after, before) {
         this.handleTotalAmount();
+      },
+      deep: true,
+    },
+    isChargeEntity: {
+      handler(after, before) {
+        if (this.isChargeEntity) {
+          this.checked = true;
+        }
+      },
+      deep: true,
+    },
+    checked: {
+      handler(after, before) {
+        if (!this.checked) {
+          this.isChargeEntity = false;
+        }
       },
       deep: true,
     },
@@ -534,6 +594,16 @@ export default {
       this.response_status = code;
       this.error_msg = msg;
     },
+    checkEntity(e) {
+      if (e.target.checked) {
+        return (this.isChargeEntity = e.target.value);
+      }
+    },
+    checkCommission(e) {
+      if (e.target.checked) {
+        return (this.charge_commission = e.target.value);
+      }
+    },
     // eslint-disable-next-line require-await
     async offline_orders() {
       const notification = [];
@@ -570,7 +640,7 @@ export default {
             'fail',
             'Duplicate riders detected . Kindly remove one duplicate account',
           );
-        } else if (riderAmountCheck !== undefined) {
+        } else if (riderAmountCheck !== undefined && this.checked) {
           if (Object.keys(riderAmountCheck).length > 0) {
             this.UpdateMessaging(
               true,
@@ -604,6 +674,8 @@ export default {
                 bill_amount: this.billingAmount,
                 charge_vat: this.charge_vat,
                 currency: this.currency,
+                business_unit: parseInt(this.businessUnit, 10),
+                pay_from_sendy_entity: this.isChargeEntity,
               },
               request_id: '1611',
               action_user: this.actionUser,
@@ -618,6 +690,10 @@ export default {
             payload.params.action_data.partners = this.elements;
             payload.params.action_data.charge_commission = this.charge_commission;
             payload.params.action_data.commission_rate = this.commission_rate;
+          }
+
+          if (this.isChargeEntity) {
+            payload.params.action_data.entity_id = 1;
           }
         }
       }
@@ -915,5 +991,12 @@ export default {
   background: none;
   font-style: italic;
   color: #3c8dbc;
+}
+.business-unit-select {
+  margin-left: -8px;
+  width: 44%;
+}
+.entity-checkbox {
+  margin-top: 2%;
 }
 </style>

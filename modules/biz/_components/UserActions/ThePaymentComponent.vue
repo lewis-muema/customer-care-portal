@@ -14,7 +14,7 @@
     >
       <table class="table user-table">
         <tr>
-          <td width="50%">
+          <td width="50%" v-if="!isChargeEntity">
             <div class="form-group actions">
               <label>Payment Method</label>
               <v-select
@@ -47,7 +47,7 @@
                 <div class="input-group-icon">
                   <span> {{ currency }}</span>
                 </div>
-                <div class="input-group-area">
+                <div class="input-group-area amount-input">
                   <input
                     type="text"
                     v-model="amount"
@@ -71,6 +71,32 @@
           </td>
         </tr>
         <tr>
+          <td class="biz-units-outer">
+            <div class="form-group actions">
+              <label>Business Units</label>
+              <v-select
+                :options="businessUnits"
+                :reduce="name => name.value"
+                name="name"
+                label="name"
+                placeholder="Select Business Unit"
+                class="form-control select"
+                :id="`business-units`"
+                v-model="businessUnit"
+                :class="{
+                  'is-invalid': submitted && $v.businessUnit.$error,
+                }"
+              >
+              </v-select>
+              <div
+                v-if="submitted && !$v.businessUnit.required"
+                class="invalid-feedback"
+              >
+                Business Unit is required
+              </div>
+            </div>
+          </td>
+
           <td>
             <div class="form-group">
               <label>Other Notes</label>
@@ -93,6 +119,8 @@
               </div>
             </div>
           </td>
+        </tr>
+        <tr v-if="!isChargeEntity">
           <td v-if="refNoMethods.includes(paymentMethod)">
             <div class="form-group">
               <label>Payment ID</label>
@@ -111,6 +139,18 @@
           </td>
         </tr>
       </table>
+
+      <div class="form-group col-md-3 bill-check">
+        <input
+          value="1"
+          type="checkbox"
+          class=""
+          @click="check($event)"
+          v-model="isChargeEntity"
+          checked
+        />
+        <label for="" class="charge_vat--label"> Bill Sendy Entity </label>
+      </div>
 
       <button class="btn btn-primary action-button">
         Pay
@@ -140,12 +180,20 @@ export default {
       narrative: '',
       submitted: false,
       refNoMethods: [1, 4],
+      businessUnits: [
+        { value: 1, name: 'Merchant Business Units - MBU' },
+        { value: 2, name: 'Enterprise Business Units - EBU' },
+        { value: 3, name: 'Freight Business Units - FBU' },
+      ],
+      businessUnit: '',
+      isChargeEntity: false,
     };
   },
   validations: {
     paymentMethod: { required },
     amount: { required },
     narrative: { required },
+    businessUnit: { required },
   },
   computed: {
     currency() {
@@ -225,6 +273,34 @@ export default {
         this.hide = 'is-invalid';
         return;
       }
+      const action_id = this.isChargeEntity ? 27 : 7;
+
+      let action_payload = {
+        reverse,
+        amount: this.amount,
+        ref_no: this.refNoMethods.includes(this.paymentMethod)
+          ? this.refNo
+          : '',
+        pay_method: this.paymentMethod,
+        cop_id: copID,
+        user_id: userID,
+        reason: this.narrative,
+        currency: this.currency,
+        business_unit: parseInt(this.businessUnit, 10),
+      };
+
+      if (this.isChargeEntity) {
+        action_payload = {
+          amount: this.amount,
+          cop_id: copID,
+          user_id: userID,
+          narrative: this.narrative,
+          currency: this.currency,
+          entity_id: 1,
+          business_unit: parseInt(this.businessUnit, 10),
+        };
+      }
+
       const payload = {
         app: 'CUSTOMERS_APP',
         endpoint: 'sendy/cc_actions',
@@ -232,19 +308,8 @@ export default {
         params: {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
-          action_id: 7,
-          action_data: {
-            reverse,
-            amount: this.amount,
-            ref_no: this.refNoMethods.includes(this.paymentMethod)
-              ? this.refNo
-              : '',
-            pay_method: this.paymentMethod,
-            cop_id: copID,
-            user_id: userID,
-            reason: this.narrative,
-            currency: this.currency,
-          },
+          action_id,
+          action_data: action_payload,
           request_id: `11211`,
           action_user: this.actionUser,
         },
@@ -266,6 +331,26 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
+    check(e) {
+      this.checkHandler(e.target.checked);
+      if (e.target.checked) {
+        return (this.checked = e.target.value);
+      }
+    },
+    checkHandler(state) {
+      this.paymentMethod = '';
+      if (state) {
+        this.paymentMethod = 9;
+      }
+    },
   },
 };
 </script>
+<style scoped>
+.biz-units-outer {
+  width: 50%;
+}
+.amount-input {
+  width: 83% !important;
+}
+</style>
