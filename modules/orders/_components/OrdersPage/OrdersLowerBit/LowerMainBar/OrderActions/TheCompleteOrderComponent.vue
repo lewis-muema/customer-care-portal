@@ -6,6 +6,9 @@
       ref="form"
       enctype="multipart/form-data"
     >
+      <div class="col-md-12 uploads text-primary">
+        Maximum Dnote size is 10mb. Resize the Dnote if this limit is exceeded.
+      </div>
       <div class="form-group col-md-12">
         <label class="reason">Reason</label>
         <textarea
@@ -62,6 +65,10 @@
         v-if="dnotesRequired === 'yes'"
       >
         <label class="col-md-12 uploads">Submit Delivery Notes</label>
+        <div v-if="largeImageUploading" class="col-md-12 uploads text-primary">
+          {{ largeImage }} is bigger that 10mb. Compressing file
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
         <div
           class="upload-container col-md-6"
           :id="`delivery_images_${orderNo}`"
@@ -142,6 +149,8 @@ export default {
       isScannerLoaded: false,
       images: [],
       uploadedImages: [],
+      largeImageUploading: false,
+      largeImage: '',
       dnotes: [],
       url: null,
       modalImage: '',
@@ -184,11 +193,83 @@ export default {
         // eslint-disable-next-line no-restricted-globals
         if (!isNaN(key)) {
           const file = event.target.files[key];
-          this.uploadedImages.push(file);
+          const fileSize = file.size / 1000000;
+          if (fileSize > 10) {
+            this.handleFiles(file);
+          } else {
+            this.uploadedImages.push(file);
+          }
           url = URL.createObjectURL(file);
           this.images.push(url);
         }
       }
+    },
+    handleFiles(file) {
+      const ext = file.type.split('/').pop();
+      const filename = file.name;
+      const lastModified = file.lastModified;
+      const type = file.type;
+      this.largeImage = filename;
+      this.largeImageUploading = true;
+
+      const img = document.createElement('img');
+      const reader = new FileReader();
+      reader.onload = e => {
+        img.src = e.target.result;
+        if (img !== null || img !== '') {
+          img.onload = n => {
+            const canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            const MAX_WIDTH = 400;
+            const MAX_HEIGHT = 300;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const dataurl = canvas.toDataURL('image/png');
+            const bytes =
+              dataurl.split(',')[0].indexOf('base64') >= 0
+                ? atob(dataurl.split(',')[1])
+                : '';
+
+            const mime = dataurl
+              .split(',')[0]
+              .split(':')[1]
+              .split(';')[0];
+            const max = bytes.length;
+            const ia = new Uint8Array(max);
+            for (let i = 0; i < max; i++) {
+              ia[i] = bytes.charCodeAt(i);
+            }
+
+            const newImageFileFromCanvas = new File([ia], filename, {
+              type: mime,
+              lastModified,
+            });
+
+            this.uploadedImages.push(newImageFileFromCanvas);
+            this.largeImageUploading = false;
+          };
+        }
+      };
+      reader.readAsDataURL(file);
     },
     createFormData() {
       const imagesName = [];
@@ -218,6 +299,9 @@ export default {
       const createData = await this.createFormData();
       const formData = this.formData;
 
+      for (const [name, value] of formData) {
+        formData.delete('files[]');
+      }
       const s3Details = JSON.stringify({
         bucket: 'sendy-delivery-signatures',
         path: 'rider_delivery_image',
@@ -442,5 +526,8 @@ a {
 }
 .radio:focus {
   border: 2px solid red;
+}
+.text-primary {
+  color: #3c8dbc !important;
 }
 </style>
