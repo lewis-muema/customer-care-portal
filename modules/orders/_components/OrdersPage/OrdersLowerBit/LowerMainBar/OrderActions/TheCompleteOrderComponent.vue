@@ -6,6 +6,7 @@
       ref="form"
       enctype="multipart/form-data"
     >
+      {{ loading }}
       <div class="col-md-12 uploads text-primary">
         Maximum Dnote size is 10mb. Resize the Dnote if this limit is exceeded.
       </div>
@@ -345,10 +346,12 @@ export default {
       const uploadDnotes =
         this.dnotesRequired === 'yes' ? await this.uploadToS3() : true;
       if (!uploadDnotes) {
+        this.loading = false;
         return;
       }
       const notify = await this.notifyOrdersApp();
       if (!notify) {
+        this.loading = false;
         return;
       }
       if (typeof notify !== 'undefined' && notify.status) {
@@ -375,8 +378,9 @@ export default {
           );
           actionClass = 'danger';
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
+        await this.updateClass(actionClass);
+        await this.updateErrors(notification);
+        this.loading = false;
       }
     },
     async logAction() {
@@ -420,6 +424,7 @@ export default {
           'Something went wrong. Try again or contact Tech Support',
         );
         actionClass = 'danger';
+        this.loading = false;
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
