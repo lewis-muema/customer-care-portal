@@ -6,7 +6,6 @@
       ref="form"
       enctype="multipart/form-data"
     >
-      {{ loading }}
       <div class="col-md-12 uploads text-primary">
         Maximum Dnote size is 10mb. Resize the Dnote if this limit is exceeded.
       </div>
