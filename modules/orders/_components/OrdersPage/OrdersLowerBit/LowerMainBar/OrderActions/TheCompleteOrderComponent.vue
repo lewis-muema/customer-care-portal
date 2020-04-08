@@ -345,10 +345,12 @@ export default {
       const uploadDnotes =
         this.dnotesRequired === 'yes' ? await this.uploadToS3() : true;
       if (!uploadDnotes) {
+        this.loading = false;
         return;
       }
       const notify = await this.notifyOrdersApp();
       if (!notify) {
+        this.loading = false;
         return;
       }
       if (typeof notify !== 'undefined' && notify.status) {
@@ -374,9 +376,11 @@ export default {
             'Failed to complete order. Try again or contact Tech Support',
           );
           actionClass = 'danger';
+          this.loading = false;
         }
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
+        await this.updateClass(actionClass);
+        await this.updateErrors(notification);
+        this.loading = false;
       }
     },
     async logAction() {
@@ -420,6 +424,7 @@ export default {
           'Something went wrong. Try again or contact Tech Support',
         );
         actionClass = 'danger';
+        this.loading = false;
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
