@@ -33,7 +33,11 @@
                   Assign Order
                 </button>
                 <button
-                  v-if="!completeStatus() && !cancelStatus()"
+                  v-if="
+                    order.order_details.confirm_status !== 0 &&
+                      !completeStatus() &&
+                      !cancelStatus()
+                  "
                   class="freight-order-actions-buttons"
                   :class="ActiveTab === 'gps' ? 'active-tab' : 'inactive-tab'"
                   @click="ActiveTab = 'gps'"
@@ -43,7 +47,8 @@
                 </button>
                 <button
                   v-if="
-                    !completeStatus() &&
+                    order.order_details.confirm_status !== 0 &&
+                      !completeStatus() &&
                       !cancelStatus() &&
                       hasFreightPermissions()
                   "
