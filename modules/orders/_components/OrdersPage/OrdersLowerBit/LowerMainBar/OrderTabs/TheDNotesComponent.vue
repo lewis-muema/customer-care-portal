@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div v-if="!DeliverImg || DeliverImg.length === 0">
+    <div v-if="DeliverImg.length === 0">
       No DNotes found for this delivery
     </div>
     <div v-else>
@@ -135,6 +135,8 @@ export default {
     const arr = [];
     this.updateErrors(arr);
     this.updateClass('');
+    console.log('this is the delivery images length', this.DeliverImg.length);
+    console.log('this is the delivery images', this.DeliverImg);
   },
   methods: {
     ...mapMutations({
