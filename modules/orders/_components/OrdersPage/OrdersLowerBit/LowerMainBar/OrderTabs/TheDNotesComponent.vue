@@ -135,8 +135,6 @@ export default {
     const arr = [];
     this.updateErrors(arr);
     this.updateClass('');
-    console.log('this is the delivery images length', this.DeliverImg.length);
-    console.log('this is the delivery images', this.DeliverImg);
   },
   methods: {
     ...mapMutations({
