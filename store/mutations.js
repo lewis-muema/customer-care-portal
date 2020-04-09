@@ -184,4 +184,7 @@ export default {
   setNPSMetaData(state, val) {
     state.npsMetaData = val;
   },
+  setNPSFilters(state, val) {
+    state.npsFilters = val;
+  },
 };
