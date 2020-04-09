@@ -315,6 +315,14 @@ export default {
           this.updateClass('success');
           this.updateErrors([`${data.reason}`]);
           this.getFuelHistory();
+          this.selectedStation = 1;
+          this.litres = '';
+          this.pumpRate = '';
+          this.sendyRate = '';
+          this.pumpRateAmount = 0;
+          this.sendyTotalAmount = 0;
+          this.sendyTakeAmount = 0;
+          this.Notes = '';
         } else {
           this.updateClass('danger');
           this.updateErrors(['Something went wrong. Please try again']);
