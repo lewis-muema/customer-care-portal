@@ -106,7 +106,9 @@ export default {
   getCustomPricingDetails(state) {
     return state.customPricingDetails;
   },
-
+  getloginErrors(state) {
+    return state.loginErrors;
+  },
   getActionErrors(state) {
     return state.actionErrors;
   },
@@ -173,5 +175,8 @@ export default {
   },
   getNPSMetaData(state) {
     return state.npsMetaData;
+  },
+  getNPSFilters(state) {
+    return state.npsFilters;
   },
 };
