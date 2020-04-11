@@ -220,7 +220,9 @@
         v-if="
           order.order_details.order_status !== 'delivered' &&
             order.order_details.order_status !== 'cancelled' &&
-            permissions.freight_actions
+            permissions.freight_actions &&
+            (order.rider_details.vendor_type_id === 20 ||
+              order.rider_details.vendor_type_id === 25)
         "
       >
         <a
