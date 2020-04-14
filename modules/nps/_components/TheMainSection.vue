@@ -44,7 +44,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 import NPSMxn from '@/mixins/nps_mixin';
 
@@ -79,6 +79,8 @@ export default {
     };
   },
   computed: {
+    ...mapState(['activeGroup']),
+
     ...mapGetters(['getCountries']),
 
     sideMenu() {

@@ -1,5 +1,8 @@
 <template>
   <div class="row">
+    {{ getNPSActiveGroup }}
+    {{ opened }}
+    {{ groupArray }}
     <div class="col-md-3 col-sm-6 col-xs-12 nps-side">
       <div class="info-box blue-box">
         <div class="row nps-avg">
@@ -19,7 +22,7 @@
         :class="`info-box ${svg.color}-box col-md-4`"
         @click="toggleGroup(index, svg.name)"
       >
-        <div class="group-hld" :class="{ active: index === activeItem }">
+        <div class="group-hld" :class="{ active: opened.includes(svg.name) }">
           <div class="nps-group col-md-12">
             <div class="col-md-5 ">
               <div class="nps-emoji">
@@ -74,7 +77,7 @@ export default {
   },
   data() {
     return {
-      activeGroup: null,
+      // activeGroup: null,
       selectedClass: null,
       isActive: false,
       activeItem: null,
@@ -87,10 +90,19 @@ export default {
       activeFilters: {},
       npsScore: null,
       updated: null,
+      opened: [],
+      groupArray: [],
+      filtersUpdated: false,
     };
   },
   computed: {
-    ...mapGetters(['getNPSMetaData', 'getNPSDateRange', 'getNPSFilters']),
+    ...mapGetters([
+      'getNPSMetaData',
+      'getNPSDateRange',
+      'getNPSFilters',
+      'getNPSActiveGroup',
+    ]),
+    ...mapState(['activeGroup']),
 
     metaInfo() {
       return this.filters ? this.requestedMetaData : this.metaData;
@@ -100,6 +112,27 @@ export default {
     },
   },
   watch: {
+    filtersUpdated(status) {
+      if (status) {
+        console.log('this.opened', this.opened);
+        // await this.setNPSActiveGroup(this.opened);
+      }
+      console.log('filtersUpdated', status);
+    },
+    // eslint-disable-next-line require-await
+    async groupArray(group) {
+      const arr = [];
+      const selected = arr.concat(group);
+      // this.opened.concat(selected);
+      this.filtersUpdated = false;
+      console.log('updated', group);
+      console.log('updated2', typeof group);
+
+      // await this.setNPSActiveGroup(selected);
+    },
+    getNPSActiveGroup(group) {
+      this.opened = group;
+    },
     getNPSFilters(filters) {
       this.updated = false;
       this.activeFilters = filters;
@@ -124,6 +157,7 @@ export default {
   async mounted() {
     this.npsScore = await this.calculateNPSScore();
     this.updated = true;
+    // this.getNPSActiveGroup();
   },
   methods: {
     ...mapMutations(['setNPSActiveGroup']),
@@ -149,10 +183,20 @@ export default {
       return isNaN(score) ? 0 : score.toFixed(0);
     },
     toggleGroup(index, group) {
-      this.isActive = !this.isActive;
-      this.activeItem = index;
-      this.activeGroup = group;
-      this.setNPSActiveGroup(group);
+      this.filtersUpdated = true;
+      // this.isActive = !this.isActive;
+      // this.activeItem = index;
+      // this.activeGroup = group;
+      // console.log('activeGroup', this.activeGroup);
+      const ind = this.opened.indexOf(group);
+
+      if (ind > -1) {
+        this.opened.splice(ind, 1);
+        this.groupArray.splice(ind, 1);
+      } else {
+        this.opened.push(group);
+        this.groupArray.push(group);
+      }
     },
 
     calculatePercentage(group) {
