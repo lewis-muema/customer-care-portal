@@ -115,4 +115,65 @@ export default {
   getActionClass(state) {
     return state.actionClass;
   },
+
+  getloginErrors(state) {
+    return state.loginErrors;
+  },
+  getOrderAmount(state) {
+    return state.orderAmount;
+  },
+  getPickup(state) {
+    return state.pickup;
+  },
+  getDropoff(state) {
+    return state.dropoff;
+  },
+  getOrderCurrency(state) {
+    return state.offlineOrderCurrency;
+  },
+  getPricingId(state) {
+    return state.pricingId;
+  },
+  getVat(state) {
+    return state.vatAmount;
+  },
+  getOrderNumber(state) {
+    return state.orderNumber;
+  },
+  getPartnerNumber(state) {
+    return state.partnerPhone;
+  },
+  getSnNumber(state) {
+    return state.snNumber;
+  },
+  getNPSRequest(state) {
+    return state.npsRequest;
+  },
+  getNPSActiveGroup(state) {
+    return state.activeGroup;
+  },
+  getNPSCommentStatus(state) {
+    return state.commentStatus;
+  },
+  getActiveCountries(state) {
+    return state.activeCountries;
+  },
+  getActiveAccountTypes(state) {
+    return state.activeAccountTypes;
+  },
+  getActiveBusinessUnits(state) {
+    return state.activeBusinessUnits;
+  },
+  getCurrentNPSPage(state) {
+    return state.currentNPSPage;
+  },
+  getLastNPSPage(state) {
+    return state.lastNPSPage;
+  },
+  getNPSDateRange(state) {
+    return state.npsDateRange;
+  },
+  getNPSMetaData(state) {
+    return state.npsMetaData;
+  },
 };

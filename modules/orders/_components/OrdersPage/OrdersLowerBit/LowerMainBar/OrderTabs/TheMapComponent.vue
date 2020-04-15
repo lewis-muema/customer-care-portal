@@ -212,6 +212,7 @@ export default {
       this.display_rider_info(riderData, orderNo);
 
       let myPath = order.paths;
+
       if (myPath.length <= 2) {
         myPath = [
           {
@@ -224,7 +225,10 @@ export default {
           },
         ];
       }
-      if (Object.prototype.hasOwnProperty.call(order, 'freight_details')) {
+      if (
+        Object.prototype.hasOwnProperty.call(order, 'freight_details') &&
+        order.freight_details
+      ) {
         const locations = [];
         order.freight_details.containers.container_details[0].path[0].forEach(
           row => {
@@ -244,6 +248,9 @@ export default {
             parseFloat(cordinate[1]),
             mp + 1,
             'url',
+            myPath[mp].waypoint_type
+              ? myPath[mp].waypoint_type.toLowerCase()
+              : '',
           ]);
         }
       }
@@ -291,13 +298,14 @@ export default {
         }
       }
       for (let i = 0; i < locations.length; i += 1) {
-        let imgIcon;
+        let imgIcon =
+          locations[i][5] === 'pickup'
+            ? 'https://images.sendyit.com/web_platform/orders/pickup_placeholder.png'
+            : 'https://images.sendyit.com/web_platform/orders/destination_placeholder.png';
+
         if (i === 0) {
           imgIcon =
             'https://images.sendyit.com/web_platform/orders/pickup_placeholder.png';
-        } else {
-          imgIcon =
-            'https://images.sendyit.com/web_platform/orders/destination_placeholder.png';
         }
 
         imgIcon = {

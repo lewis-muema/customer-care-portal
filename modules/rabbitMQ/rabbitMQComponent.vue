@@ -22,6 +22,8 @@ export default {
       pushes: [],
       orderNo: null,
       destination: null,
+      cityname: '',
+      citiesData: [],
     };
     /**
      * Function for debugging rabbitMQ
@@ -32,7 +34,8 @@ export default {
   },
 
   computed: {
-    ...mapState(['config']),
+    ...mapState(['config', 'cities']),
+
     url() {
       return this.config.RABBITMQ_URL;
     },
@@ -44,6 +47,7 @@ export default {
       return params;
     },
   },
+
   methods: {
     /**
      * This the callback called after the websocket connection to rabbitMQ has been established
@@ -122,11 +126,14 @@ export default {
       const orderStatus = this.determineOrderStatus(this.order_push);
       this.determinePaymentMethod(this.cashStatus);
       this.deteremineOrderType(this.priceType);
+      const city_id = this.order_push.order_details.values.city_id;
       const pushobj = new Object();
-      pushobj.city = this.order_push.order_details.values.city_id;
       pushobj.client_name = this.order_push.user_name;
       pushobj.distance_read = this.order_push.order_details.values.distance_read;
-      pushobj.from_name = this.order_push.path[0].name;
+      pushobj.from_name =
+        this.order_push.path.length > 1
+          ? this.order_push.path[0].name
+          : this.order_push.path[0][0].name;
       pushobj.order_amount = this.order_push.amount;
       pushobj.order_currency = this.order_push.price_details.currency;
       pushobj.order_no = this.order_push.order_no;
@@ -149,16 +156,27 @@ export default {
       pushobj.time_placed = this.order_push.date_time.includes('.')
         ? this.order_push.date_time.split('.')[0]
         : this.order_push.date_time;
-      pushobj.to_name = this.order_push.path[1].name;
+      pushobj.to_name =
+        this.order_push.path.length > 1
+          ? this.order_push.path[1].name
+          : this.order_push.path[0][1].name;
       pushobj.vendor_type_id = this.order_push.vendor_type;
       pushobj.orderCountryCode = this.order_push.country_codes;
       pushobj.push_order = true;
+      pushobj.city_name = this.fetchCity(city_id);
       this.pushes.push(pushobj);
       this.handlePush(pushobj);
     },
 
     handlePush(pushobj) {
       this.$emit('pushedSomething', pushobj);
+    },
+
+    fetchCity(cityID) {
+      this.citiesData = this.cities;
+      const result = _.find(this.citiesData, ['city_id', cityID]);
+
+      return result.city_name;
     },
 
     deteremineOrderType(priceType) {

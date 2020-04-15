@@ -4,6 +4,27 @@
     <form id="reallocate-form" @submit.prevent="checkTrackerStatus">
       <div class="form-group">
         <v-select
+          v-if="
+            order.order_details.order_no !==
+              order.order_details.parent_order_no &&
+              Object.prototype.hasOwnProperty.call(order, 'freight_details') &&
+              order.freight_details
+          "
+          :options="freightReallocationInfo"
+          :reduce="reason => reason.code"
+          name="reason"
+          label="reason"
+          placeholder="Select reallocation reason .."
+          class="form-control proximity-point"
+          :id="`reallocate_reason_${orderNo}`"
+          v-model="reason"
+          :class="{
+            'is-invalid': submitted && $v.reason.$error,
+          }"
+        >
+        </v-select>
+        <v-select
+          v-else
           :options="customerInfo"
           :reduce="reason => reason.code"
           name="reason"

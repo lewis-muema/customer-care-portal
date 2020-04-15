@@ -5,6 +5,7 @@
         :configs="tableData"
         :user="user"
         @sectionUpdate="onSectionUpdate"
+        @configSubmitted="configSubmitted"
       ></preview-distance-pricing-component>
     </div>
     <div v-else>
@@ -181,7 +182,7 @@
           </el-table-column>
           <el-table-column
             prop="waiting_time_cost_per_min"
-            label="Waiting fee per minute"
+            label="Waiting fee per hour"
             width="200"
           >
             <template slot-scope="scope">
@@ -273,16 +274,16 @@ export default {
         {
           city: '',
           name: '',
-          base_cost: '280',
-          base_km: '20',
-          cost_per_km_above_base_km: '2160',
-          additional_location_cost: '108',
-          waiting_time_cost_per_min: '18',
-          loader_cost: '100',
-          service_fee: '40',
-          insurance: '20',
-          client_fee: '340',
-          cancellation_fee: '40',
+          base_cost: '',
+          base_km: '',
+          cost_per_km_above_base_km: '',
+          additional_location_cost: '',
+          waiting_time_cost_per_min: '',
+          loader_cost: '',
+          service_fee: '',
+          insurance: '',
+          client_fee: '',
+          cancellation_fee: '',
         },
       ],
       previewDistancePricing: false,
@@ -310,20 +311,14 @@ export default {
   },
   watch: {
     pacInput(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-        });
+      this.search(val);
     },
     calculateClientFee(val) {},
   },
-  mounted() {
+  async mounted() {
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
-    this.fetchVendorTypes(countryCode);
+    await this.fetchVendorTypes(countryCode);
     this.trackAddPricingDataPage();
   },
   methods: {
@@ -365,6 +360,10 @@ export default {
     onSectionUpdate(value) {
       this.previewDistancePricing = value;
     },
+    configSubmitted() {
+      this.previewLocationPricing = false;
+      this.$emit('destroyDistanceComponent');
+    },
     trackAddPricingDataPage() {
       mixpanel.track('Add Distance Pricing data Page - PageView', {
         type: 'PageView',
@@ -375,6 +374,16 @@ export default {
         type: 'Click',
       });
     },
+    // eslint-disable-next-line func-names
+    search: _.throttle(function(val) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.suggestions = response.data.predictions;
+        });
+    }, 2000),
   },
 };
 </script>

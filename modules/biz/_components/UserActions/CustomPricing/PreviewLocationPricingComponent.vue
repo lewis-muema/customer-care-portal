@@ -45,6 +45,24 @@
         </el-table-column>
         <el-table-column prop="to" label="Drop off location" width="200">
         </el-table-column>
+        <el-table-column
+          prop="empty_container_destination"
+          label="Empty container return"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="container_weight_tonnes"
+          label="Cargo Type"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="container_size_feet"
+          label="Container Size"
+          width="200"
+        >
+        </el-table-column>
         <el-table-column prop="name" label="Vendor type" width="130">
         </el-table-column>
         <el-table-column prop="order_amount" label="Client fee" width="130">
@@ -136,23 +154,48 @@ export default {
     previewTable() {
       this.approverSelect = false;
     },
-    async submitConfigs() {
+    submitConfigs() {
       this.trackPricingSubmit();
-      const configParams = this.createPayload(this.tableData);
+      const containerPayload = [];
+      const locationPayload = [];
+      this.tableData.forEach(row => {
+        if (row.empty_container_destination) {
+          containerPayload.push(row);
+        } else {
+          locationPayload.push(row);
+        }
+      });
+      if (containerPayload.length > 0) {
+        const configParams = this.createContainerPayload(containerPayload);
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'pricing/price_config/add_custom_distance_details',
+          apiKey: false,
+          params: configParams,
+        };
+        this.submitPayload(payload);
+      }
+      if (locationPayload.length > 0) {
+        const configParams = this.createLocationPayload(locationPayload);
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'pricing/price_config/add_custom_distance_details',
+          apiKey: false,
+          params: configParams,
+        };
+        this.submitPayload(payload);
+      }
+    },
+    async submitPayload(payload) {
       const notification = [];
       let actionClass = '';
-      const payload = {
-        app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/add_custom_distance_details',
-        apiKey: false,
-        params: configParams,
-      };
       try {
         const data = await this.submit_custom_pricing(payload);
         if (data.status) {
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.previewing = false;
+          this.submitNotification();
           this.sendEmailNotification(this.admin.email, this.admin.name);
           this.trackPassedSubmission();
           this.trackMixpanelIdentify();
@@ -170,9 +213,15 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
       this.trackMixpanelPeople();
     },
-    createPayload(data) {
+    submitNotification() {
+      this.$emit('configSubmitted');
+    },
+    createLocationPayload(data) {
       const locationPricingArray = [];
       for (let i = 0; i < data.length; i += 1) {
         const locationPricingObject = {
@@ -209,13 +258,68 @@ export default {
           order_amount: parseInt(data[i].order_amount, 10),
           rider_amount: parseInt(data[i].rider_amount, 10),
         };
-
         locationPricingObject.custom_pricing_details.location_pricing.push(
           locationData,
         );
         locationPricingArray.push(locationPricingObject);
       }
       return locationPricingArray;
+    },
+    createContainerPayload(data) {
+      const containerPricingArray = [];
+      for (let i = 0; i < data.length; i += 1) {
+        const containerPricingObject = {
+          cop_id: this.copId,
+          custom_pricing_details: {
+            container_pricing: [],
+          },
+          cop_name: this.copName,
+          admin_id: this.approver,
+          currency: this.currency,
+        };
+        const containerData = {
+          status: 'Active',
+          name: data[i].name,
+          cop_id: this.copId,
+          cop_name: this.copName,
+          currency: this.currency,
+          admin_id: this.approver,
+          service_fee: parseInt(data[i].service_fee, 10),
+          from: data[i].from,
+          from_location: {
+            type: data[i].from_location.type,
+            coordinates: data[i].from_location.coordinates,
+          },
+          to_location: {
+            type: data[i].to_location.type,
+            coordinates: data[i].to_location.coordinates,
+          },
+          to: data[i].to,
+          city: data[i].city,
+          order_amount: parseInt(data[i].order_amount, 10),
+          rider_amount: parseInt(data[i].rider_amount, 10),
+          cost_per_km_above_base_km: 0,
+          waiting_time_cost_per_min: 3.33,
+          sendy_commission: 0,
+          extra_distance_base_km: 1,
+          loader_cost: 0,
+          min_cancellation_fee: 0,
+          max_cancellation_fee: 0,
+          percentage_cancellation_fee: 0,
+          order_pick_up_time_delay: 0,
+          order_confirmation_time_delay: 0,
+          container_size_feet: parseInt(data[i].container_size_feet, 10),
+          container_errand_type: data[i].container_errand_type,
+          id: data[i].id,
+          empty_return_location: data[i].empty_return_location,
+          empty_return: data[i].empty_container_destination,
+        };
+        containerPricingObject.custom_pricing_details.container_pricing.push(
+          containerData,
+        );
+        containerPricingArray.push(containerPricingObject);
+      }
+      return containerPricingArray;
     },
     trackPricingSubmitPage() {
       mixpanel.track('Submit location pricing for approval Page - PageView', {

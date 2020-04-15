@@ -10,6 +10,8 @@ Vue.mixin({
     return {
       userImage: config.USER_IMAGE,
       riderDeliveryImg: config.RIDER_DELIVERY_IMG,
+      s3Path:
+        'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//',
       orderColumns: [
         'Status',
         'Client',
@@ -62,6 +64,20 @@ Vue.mixin({
         { code: '3', reason: 'Customer not reachable' },
         { code: '4', reason: 'Customer feedback' },
       ],
+      freightReallocationInfo: [
+        { code: '14', reason: `Partner won't meet ETA` },
+        { code: '15', reason: 'Truck will fulfil transit order' },
+        { code: '16', reason: 'Truck will fulfil local order' },
+        {
+          code: '17',
+          reason: `Container Weight can't match truck load exceeds weight`,
+        },
+        { code: '18', reason: 'Weight is under' },
+        {
+          code: '19',
+          reason: 'Mismatch between container positioning and truck type',
+        },
+      ],
       departments: [
         { code: '1', department: 'Operations' },
         { code: '2', department: 'Customer Support' },
@@ -82,6 +98,18 @@ Vue.mixin({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
     }),
+    isSendyStaff(name) {
+      let isStaff;
+      if (name === null || name === '') {
+        isStaff = false;
+      } else {
+        isStaff = name.includes('Sendy Staff -');
+      }
+      this.s3Path = isStaff
+        ? 'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image/'
+        : this.s3Path;
+      return isStaff;
+    },
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
@@ -142,11 +170,25 @@ Vue.mixin({
         .format('YYYY-MM-DD HH:mm:ss');
       return localTime;
     },
+    convertGMTToUTC(date) {
+      const userTZ = moment.tz.guess();
+      const gmtDate = moment
+        .tz(date, userTZ)
+        .tz('GMT')
+        .format('YYYY-MM-DD HH:mm ZZ');
+      const UTCDate = moment.utc(gmtDate);
+      return UTCDate;
+    },
     getFormattedDate(date, requiredFormat) {
       const UTCDate = this.convertToUTC(date);
       const dt1 = this.convertToLocalTime(UTCDate);
       const dt = moment(dt1).format(requiredFormat);
       return dt;
+    },
+    getTimeFromNow(date) {
+      const dt1 = this.convertToLocalTime(date);
+      const formattedDate = moment(dt1, 'YYYY.MM.DD').fromNow();
+      return formattedDate;
     },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);

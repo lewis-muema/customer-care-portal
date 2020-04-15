@@ -33,6 +33,7 @@ const PricingConfigsMxn = {
       configuredLocationPricing: 'getConfiguredLocationPricing',
       getSessionData: 'getSession',
       pendingLocationPricing: 'getPendingLocationPricing',
+      pendingDistancePricing: 'getPendingDistancePricing',
     }),
   },
   methods: {
@@ -85,6 +86,7 @@ const PricingConfigsMxn = {
           cop_id: this.copId,
           currency: this.defaultCurrency,
           status: ['Pending', 'Active'],
+          get_object_id: true,
         },
       };
       try {
@@ -118,7 +120,8 @@ const PricingConfigsMxn = {
       };
       try {
         const data = await this.request_vendor_types(payload);
-        return (this.vendorTypes = data.vendor_types);
+        this.vendorTypes = data.vendor_types;
+        return data.vendor_types;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
@@ -132,29 +135,36 @@ const PricingConfigsMxn = {
         const distancePricingRow = {
           city: '',
           name: '',
-          base_cost: '280',
-          base_km: '20',
-          cost_per_km_above_base_km: '2160',
-          additional_location_cost: '10800',
-          waiting_time_cost_per_min: '18000',
-          loader_cost: '18000',
-          service_fee: '20',
-          insurance: '20',
-          client_fee: '340',
-          cancellation_fee: '40000',
+          base_cost: '',
+          base_km: '',
+          cost_per_km_above_base_km: '',
+          additional_location_cost: '',
+          waiting_time_cost_per_min: '',
+          loader_cost: '',
+          service_fee: '',
+          insurance: '',
+          client_fee: '',
+          cancellation_fee: '',
         };
         this.tableData.push(distancePricingRow);
       } else if (model === 'Location') {
-        this.pacInput1 = '';
-        this.pacInput2 = '';
+        this.pacInput1.push({
+          name: '',
+        });
+        this.pacInput2.push({
+          name: '',
+        });
+        this.pacInput3.push({
+          name: '',
+        });
         const locationPricingRow = {
-          id: 10,
+          id: 1,
           name: '',
           cop_id: 1,
-          cop_name: 'Safaricom',
-          currency: 'KES',
+          cop_name: '',
+          currency: '',
           admin_id: 1,
-          service_fee: 1200,
+          service_fee: 0,
           from: '',
           from_location: {
             type: 'Point',
@@ -164,34 +174,44 @@ const PricingConfigsMxn = {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
+          empty_return_location: {
+            type: 'Point',
+            coordinates: [37.671947, -4.056444],
+          },
           to: '',
-          status: 'Active',
+          empty_container_destination: '',
+          status: '',
           city: '',
-          order_amount: 23000,
-          rider_amount: 21400,
+          order_amount: 0,
+          rider_amount: 0,
+          container_weight_tonnes: '',
+          container_size_feet: '',
+          container_errand_type: 'drop_off',
         };
         this.tableData.push(locationPricingRow);
       }
     },
-    async sendEmailNotification(mail, name) {
+    async sendEmailNotification(email, name) {
       const notification = [];
       let actionClass = '';
       const crmName = this.getSessionData.payload.data.name;
       const copName = this.user.user_details.cop_name;
+      const copId = this.user.user_details.cop_id;
       const payload = {
-        app: 'AUTH',
-        endpoint: 'v1/send_email',
+        app: 'PRICING_SERVICE',
+        endpoint: 'pricing/price_config/send_email ',
         apiKey: false,
         params: {
           name,
-          email: mail,
+          email,
+          cop_id: copId,
           message: `${crmName} has created a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
           subject: `Requires approval - Custom pricing for ${copName}`,
         },
       };
       try {
         const data = await this.send_mail_to_admin(payload);
-        if (data.result.status) {
+        if (data.status) {
           notification.push('Custom price configs created successfully.');
           actionClass = this.display_order_action_notification(data.status);
         } else {

@@ -66,13 +66,16 @@
         ></view-location-pricing-component>
       </div>
     </div>
-    <div v-else>
+    <div>
       <div v-show="this.section === 0">
         <div>
           Custom Pricing
         </div>
-        <p class="pricing-p">
+        <p class="pricing-p" v-if="!configured">
           {{ this.copName }} has no custom pricing set up at the moment.
+        </p>
+        <p class="pricing-p" v-else>
+          Add a new custom pricing.
         </p>
         <button
           @click="
@@ -127,12 +130,14 @@
           <location-pricing-component
             :user="user"
             @sectionUpdate="onSectionUpdate"
+            @destroyLocationComponent="resetSection"
           ></location-pricing-component>
         </div>
         <div class="pricing-table-styling" v-if="this.newDistancePricing">
           <distance-pricing-component
             :user="user"
             @sectionUpdate="onSectionUpdate"
+            @destroyDistanceComponent="resetSection"
           ></distance-pricing-component>
         </div>
         <div v-show="this.section === -1"></div>
@@ -245,7 +250,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.countryCode = this.user.user_details.country_code;
     await this.fetchCustomDistancePricingData();
-    this.fetchVendorTypes(this.countryCode);
+    await this.fetchVendorTypes(this.countryCode);
     this.setConfigStatus();
     this.updateSummaryStatus(true);
     this.updateSection(0);
@@ -299,8 +304,6 @@ export default {
         for (let i = 0; i < this.locationPricingTableData.length; i += 1) {
           if (this.locationPricingTableData[i].status === 'Pending') {
             this.locationPricingStatus = 'Pending';
-          } else {
-            this.locationPricingStatus = 'Active';
           }
         }
       } else if (
@@ -325,6 +328,17 @@ export default {
     onSectionUpdate(value) {
       this.newLocationPricing = value;
       this.newDistancePricing = value;
+    },
+    async resetSection() {
+      this.copName = this.user.user_details.cop_name;
+      this.copId = this.user.user_details.cop_id;
+      this.currency = this.user.user_details.default_currency;
+      this.countryCode = this.user.user_details.country_code;
+      this.checkedPricingModel = 0;
+      await this.fetchCustomDistancePricingData();
+      await this.fetchVendorTypes(this.countryCode);
+      this.setConfigStatus();
+      this.updateSection(0);
     },
     onViewUpdate(value) {
       this.viewLocation = value;

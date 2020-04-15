@@ -162,14 +162,14 @@ export default {
       return this.$env.SOLR_JWT;
     },
     src() {
-      const searchString = `${this.solarBase}select?q=(registration_no:*${this.query_string}${this.query_mod}*+AND+vendor_type:*25*)&wt=json&indent=true&row=10&sort=id%20desc&jwt=${this.solarToken}`;
+      const searchString = `${this.solarBase}select?q=(registration_no:*${this.query_string}${this.query_mod}+AND+vendor_type:25)&wt=json&indent=true&row=10&sort=id%20desc&jwt=${this.solarToken}`;
       return searchString;
     },
     query_mod() {
       if (this.id > 0) {
-        return `*+AND+owner_id:*${this.id}`;
+        return `*+AND+owner_id:${this.id}`;
       }
-      return '';
+      return '*';
     },
     errorStatus() {
       if (this.id > 0) {
@@ -185,6 +185,26 @@ export default {
     id() {
       if (this.id === 0 && this.existingStatus) {
         this.triggerSearch();
+      }
+    },
+    query() {
+      if (this.query) {
+        this.query = this.query.toUpperCase();
+      }
+    },
+    insurance() {
+      if (this.insurance) {
+        this.insurance = this.insurance.toUpperCase().replace(/\s/g, '');
+      }
+    },
+    trailer() {
+      if (this.trailer) {
+        this.trailer = this.trailer.toUpperCase().replace(/\s/g, '');
+      }
+    },
+    kwartos() {
+      if (this.kwartos) {
+        this.kwartos = this.kwartos.toUpperCase().replace(/\s/g, '');
       }
     },
   },

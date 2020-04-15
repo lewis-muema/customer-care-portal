@@ -121,4 +121,67 @@ export default {
   setLoginErrors(state, val) {
     state.loginErrors = val;
   },
+  setOrderAmount(state, val) {
+    state.orderAmount = val;
+  },
+  setPickUp(state, val) {
+    state.pickup = val;
+  },
+  setDropoff(state, val) {
+    state.dropoff = val;
+  },
+  setCurrency(state, val) {
+    state.offlineOrderCurrency = val;
+  },
+  setPricingId(state, val) {
+    state.pricingId = val;
+  },
+  setVat(state, val) {
+    state.vatAmount = val;
+  },
+  setOrderNumber(state, val) {
+    state.orderNumber = val;
+  },
+  setPartnerPhone(state, val) {
+    state.partnerPhone = val;
+  },
+  setPartnerSn(state, val) {
+    state.snNumber = val;
+  },
+  setNPSRequest(state, val) {
+    state.npsRequest = val;
+  },
+  setNPSActiveGroup(state, val) {
+    state.activeGroup = val;
+  },
+  setNPSCommentStatus(state, val) {
+    state.commentStatus = val;
+  },
+  setActiveCountries(state, val) {
+    state.activeCountries = val;
+  },
+  setActiveAccountTypes(state, val) {
+    state.activeAccountTypes = val;
+  },
+  setActiveBusinessUnits(state, val) {
+    state.activeBusinessUnits = val;
+  },
+  setCurrentNPSPage(state, val) {
+    state.currentNPSPage = val;
+  },
+  setLastNPSPage(state, val) {
+    state.lastNPSPage = val;
+  },
+  setNPSStartDate(state, val) {
+    state.npsStartDate = val;
+  },
+  setNPSEndDate(state, val) {
+    state.npsEndDate = val;
+  },
+  setnpsDateRange(state, val) {
+    state.npsDateRange = val;
+  },
+  setNPSMetaData(state, val) {
+    state.npsMetaData = val;
+  },
 };

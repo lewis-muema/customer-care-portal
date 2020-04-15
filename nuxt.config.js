@@ -87,6 +87,10 @@ module.exports = {
         type: 'text/javascript',
       },
       {
+        src: 'js/tugendeonlinetracking.js',
+        type: 'text/javascript',
+      },
+      {
         src: 'js/mixpanel_people.js',
         type: 'text/javascript',
       },
@@ -124,7 +128,8 @@ module.exports = {
       },
       {
         rel: 'stylesheet',
-        href: 'https://unpkg.com/element-ui/lib/theme-chalk/index.css',
+        href:
+          'https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.13.0/theme-chalk/index.css',
       },
     ],
   },
@@ -140,6 +145,7 @@ module.exports = {
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
     '@assets/style/pricing-config.css',
+    '@assets/style/style.css',
     'aos/dist/aos.css',
     'vue-select/dist/vue-select.css',
   ],
@@ -153,6 +159,7 @@ module.exports = {
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
     { src: '~plugins/date-time-picker', mode: 'client', ssr: false },
     { src: '~plugins/element-ui', ssr: false },
+    { src: '~plugins/vue-google-autocomplete', mode: 'client', ssr: false },
     'plugins/main.js',
     'plugins/google-maps',
     'plugins/vue-select',
@@ -210,6 +217,7 @@ module.exports = {
      */
 
     extend(config, ctx) {},
+    transpile: ['vue-google-autocomplete'],
   },
 
   serverMiddleware: [bodyParser.json(), '~/api'],
