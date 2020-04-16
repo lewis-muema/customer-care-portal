@@ -1,12 +1,12 @@
 <template>
   <div>
     <div v-if="previewLocationPricing">
-      <preview-location-pricing-component
+      <preview-container-pricing-component
         :configs="tableData"
         :user="user"
         @sectionUpdate="onSectionUpdate"
         @configSubmitted="configSubmitted"
-      ></preview-location-pricing-component>
+      ></preview-container-pricing-component>
     </div>
     <div v-else>
       <template>
@@ -75,6 +75,72 @@
               </el-autocomplete>
             </template>
           </el-table-column>
+          <el-table-column
+            prop="empty_container_destination"
+            label="Empty container return (Freight)"
+            width="335"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="scope.row.empty_container_destination"
+                size="small"
+                class="table--col-text"
+                placeholder="Search container destination"
+                v-model="scope.row.empty_container_destination"
+              ></el-input>
+              <el-autocomplete
+                v-else
+                size="small"
+                class="inline-input"
+                v-model="pacInput3[scope.$index].name"
+                :value="handleSelectContainerDestination"
+                :fetch-suggestions="querySearch"
+                placeholder="Search container destination"
+                :trigger-on-focus="false"
+                @focus="rowIndex = scope.$index"
+                @select="
+                  handleSelectContainerDestination(
+                    $event,
+                    scope.$index,
+                    scope.row,
+                  )
+                "
+              >
+              </el-autocomplete>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_weight_tonnes"
+            label="Cargo Type"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_weight_tonnes"
+                placeholder="Select cargo type"
+                size="small"
+              >
+                <el-option label="Empty container" value="0"> </el-option>
+                <el-option label="Full container" value="28"> </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="container_size_feet"
+            label="Container Size"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.container_size_feet"
+                placeholder="Select container size"
+                size="small"
+              >
+                <el-option label="20 Feet" value="20"> </el-option>
+                <el-option label="40 Feet" value="40"> </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
             <template slot-scope="scope">
               <el-select
@@ -83,12 +149,7 @@
                 size="small"
                 @change="onChange($event, scope.$index, scope.row)"
               >
-                <el-option
-                  v-for="vendor in vendorTypes.slice(0, -1)"
-                  :key="vendor.id"
-                  :label="vendor.name"
-                  :value="vendor.name"
-                >
+                <el-option :key="25" label="Freight" value="Freight">
                 </el-option>
               </el-select>
             </template>
@@ -158,16 +219,18 @@
   </div>
 </template>
 <script>
+import Mixpanel from 'mixpanel';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
 import _ from 'lodash';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
-import PreviewLocationPricingComponent from './PreviewLocationPricingComponent.vue';
+import PreviewContainerPricingComponent from './PreviewContainerPricingComponent.vue';
 
+const mixpanel = Mixpanel.init('b36c8592008057290bf5e1186135ca2f');
 export default {
   name: 'LocationPricingComponent',
   components: {
-    'preview-location-pricing-component': PreviewLocationPricingComponent,
+    'preview-container-pricing-component': PreviewContainerPricingComponent,
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -251,13 +314,26 @@ export default {
     validNewStep() {
       let from = '';
       let to = '';
+      let empty_return = '';
       let vendor = '';
+      let size = '';
+      let weight = '';
       for (let i = 0; i < this.tableData.length; i += 1) {
         from = this.tableData[i].from;
         to = this.tableData[i].to;
+        empty_return = this.tableData[i].empty_container_destination;
         vendor = this.tableData[i].name;
+        size = this.tableData[i].container_size_feet;
+        weight = this.tableData[i].container_weight_tonnes;
       }
-      return from === '' || to === '' || vendor === '';
+      return (
+        from === '' ||
+        to === '' ||
+        empty_return === '' ||
+        vendor === '' ||
+        size === '' ||
+        weight === ''
+      );
     },
   },
   watch: {
@@ -427,18 +503,21 @@ export default {
         },
       ];
       this.previewLocationPricing = false;
-      this.$emit('destroyLocationComponent');
+      this.$emit('destroyContainerComponent');
       this.goBack();
     },
     trackAddPricingDataPage() {
-      mixpanel.track('Add Location Pricing data Page - PageView', {
+      mixpanel.track('Add Container Pricing data Page - PageView', {
         type: 'PageView',
       });
     },
     trackSaveAndPreview() {
-      mixpanel.track('Save and Preview Location Pricing button - ButtonClick', {
-        type: 'Click',
-      });
+      mixpanel.track(
+        'Save and Preview Container Pricing button - ButtonClick',
+        {
+          type: 'Click',
+        },
+      );
     },
     // eslint-disable-next-line func-names
     search: _.throttle(function(val) {
