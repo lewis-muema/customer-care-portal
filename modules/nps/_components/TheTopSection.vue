@@ -74,7 +74,6 @@ export default {
   },
   data() {
     return {
-      // activeGroup: null,
       selectedClass: null,
       isActive: false,
       activeItem: null,
