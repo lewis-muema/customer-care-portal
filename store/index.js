@@ -86,7 +86,7 @@ export default {
       customPricingDetails: [],
       approverId: 0,
       npsRequest: false,
-      activeGroup: null,
+      activeGroup: [],
       commentStatus: null,
       activeCountries: null,
       activeAccountTypes: null,

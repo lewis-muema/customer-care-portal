@@ -19,7 +19,7 @@
         :class="`info-box ${svg.color}-box col-md-4`"
         @click="toggleGroup(index, svg.name)"
       >
-        <div class="group-hld" :class="{ active: index === activeItem }">
+        <div class="group-hld" :class="{ active: opened.includes(svg.name) }">
           <div class="nps-group col-md-12">
             <div class="col-md-5 ">
               <div class="nps-emoji">
@@ -74,7 +74,6 @@ export default {
   },
   data() {
     return {
-      activeGroup: null,
       selectedClass: null,
       isActive: false,
       activeItem: null,
@@ -87,10 +86,20 @@ export default {
       activeFilters: {},
       npsScore: null,
       updated: null,
+      opened: [],
+      groupArray: [],
+      filtersUpdated: false,
+      displayGroups: [],
     };
   },
   computed: {
-    ...mapGetters(['getNPSMetaData', 'getNPSDateRange', 'getNPSFilters']),
+    ...mapGetters([
+      'getNPSMetaData',
+      'getNPSDateRange',
+      'getNPSFilters',
+      'getNPSActiveGroup',
+    ]),
+    ...mapState(['activeGroup']),
 
     metaInfo() {
       return this.filters ? this.requestedMetaData : this.metaData;
@@ -100,6 +109,17 @@ export default {
     },
   },
   watch: {
+    // eslint-disable-next-line require-await
+    async groupArray(group) {
+      const arr = [];
+      const selected = await arr.concat(group);
+      await this.setNPSActiveGroup(selected);
+    },
+    async getNPSActiveGroup(group) {
+      const arr = [];
+      const selected = await arr.concat(group);
+      this.opened = selected;
+    },
     getNPSFilters(filters) {
       this.updated = false;
       this.activeFilters = filters;
@@ -148,11 +168,20 @@ export default {
       // eslint-disable-next-line no-restricted-globals
       return isNaN(score) ? 0 : score.toFixed(0);
     },
-    toggleGroup(index, group) {
-      this.isActive = !this.isActive;
-      this.activeItem = index;
-      this.activeGroup = group;
-      this.setNPSActiveGroup(group);
+    async toggleGroup(index, group) {
+      this.filtersUpdated = true;
+      const arr = [];
+      const savedGroup = arr.concat(this.activeGroup);
+      const ind = savedGroup.indexOf(group);
+
+      if (ind > -1) {
+        await savedGroup.splice(ind, 1);
+        this.groupArray = savedGroup;
+      } else {
+        const holder = [];
+        holder.push(group);
+        this.groupArray = holder.concat(savedGroup);
+      }
     },
 
     calculatePercentage(group) {
