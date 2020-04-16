@@ -791,9 +791,19 @@ export default {
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < pendingPricingDetails.length; i += 1) {
-          if (pendingPricingDetails[i].location_pricing) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              pendingPricingDetails[i],
+              'location_pricing',
+            )
+          ) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
-          } else {
+          } else if (
+            Object.prototype.hasOwnProperty.call(
+              pendingPricingDetails[i],
+              'distance_pricing',
+            )
+          ) {
             const pricingTableData = [];
             pricingTableData.push(pendingPricingDetails[i].distance_pricing);
             for (let j = 0; j < pricingTableData.length; j += 1) {
@@ -824,14 +834,25 @@ export default {
       let approverId = 0;
       let distancePricing = [];
       let locationPricing = [];
+      const pricingTableData = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < customPricingDetails.length; i += 1) {
-          if (customPricingDetails[i].location_pricing) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              customPricingDetails[i],
+              'location_pricing',
+            )
+          ) {
             approverId = customPricingDetails[i].location_pricing[0].admin_id;
             locationPricing = customPricingDetails[i].location_pricing;
           }
-          if (customPricingDetails[i].container_pricing) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              customPricingDetails[i],
+              'container_pricing',
+            )
+          ) {
             approverId = customPricingDetails[i].container_pricing[0].admin_id;
             if (locationPricing.length > 0) {
               locationPricing = locationPricing.concat(
@@ -841,17 +862,21 @@ export default {
               locationPricing = customPricingDetails[i].container_pricing;
             }
           }
-          if (customPricingDetails[i].distance_pricing) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              customPricingDetails[i],
+              'distance_pricing',
+            )
+          ) {
             approverId = customPricingDetails[i].admin_id;
-            const pricingTableData = [];
             pricingTableData.push(customPricingDetails[i].distance_pricing);
             for (let j = 0; j < pricingTableData.length; j += 1) {
               const perMinuteFee =
-                pricingTableData[i].waiting_time_cost_per_min;
+                pricingTableData[0].waiting_time_cost_per_min;
               const perHourFee = perMinuteFee * 60;
-              pricingTableData[
-                i
-              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
+              pricingTableData[0].waiting_time_cost_per_min = perHourFee.toFixed(
+                0,
+              );
             }
             distancePricing = pricingTableData;
           }
@@ -898,6 +923,14 @@ export default {
     }
   },
   async deactivate_location_pricing({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async deactivate_container_pricing({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
