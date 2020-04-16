@@ -1,8 +1,5 @@
 <template>
   <div class="row">
-    {{ getNPSActiveGroup }}
-    {{ opened }}
-    {{ groupArray }}
     <div class="col-md-3 col-sm-6 col-xs-12 nps-side">
       <div class="info-box blue-box">
         <div class="row nps-avg">
@@ -93,6 +90,7 @@ export default {
       opened: [],
       groupArray: [],
       filtersUpdated: false,
+      displayGroups: [],
     };
   },
   computed: {
@@ -112,26 +110,16 @@ export default {
     },
   },
   watch: {
-    filtersUpdated(status) {
-      if (status) {
-        console.log('this.opened', this.opened);
-        // await this.setNPSActiveGroup(this.opened);
-      }
-      console.log('filtersUpdated', status);
-    },
     // eslint-disable-next-line require-await
     async groupArray(group) {
       const arr = [];
-      const selected = arr.concat(group);
-      // this.opened.concat(selected);
-      this.filtersUpdated = false;
-      console.log('updated', group);
-      console.log('updated2', typeof group);
-
-      // await this.setNPSActiveGroup(selected);
+      const selected = await arr.concat(group);
+      await this.setNPSActiveGroup(selected);
     },
-    getNPSActiveGroup(group) {
-      this.opened = group;
+    async getNPSActiveGroup(group) {
+      const arr = [];
+      const selected = await arr.concat(group);
+      this.opened = selected;
     },
     getNPSFilters(filters) {
       this.updated = false;
@@ -157,7 +145,6 @@ export default {
   async mounted() {
     this.npsScore = await this.calculateNPSScore();
     this.updated = true;
-    // this.getNPSActiveGroup();
   },
   methods: {
     ...mapMutations(['setNPSActiveGroup']),
@@ -182,20 +169,19 @@ export default {
       // eslint-disable-next-line no-restricted-globals
       return isNaN(score) ? 0 : score.toFixed(0);
     },
-    toggleGroup(index, group) {
+    async toggleGroup(index, group) {
       this.filtersUpdated = true;
-      // this.isActive = !this.isActive;
-      // this.activeItem = index;
-      // this.activeGroup = group;
-      // console.log('activeGroup', this.activeGroup);
-      const ind = this.opened.indexOf(group);
+      const arr = [];
+      const savedGroup = arr.concat(this.activeGroup);
+      const ind = savedGroup.indexOf(group);
 
       if (ind > -1) {
-        this.opened.splice(ind, 1);
-        this.groupArray.splice(ind, 1);
+        await savedGroup.splice(ind, 1);
+        this.groupArray = savedGroup;
       } else {
-        this.opened.push(group);
-        this.groupArray.push(group);
+        const holder = [];
+        holder.push(group);
+        this.groupArray = holder.concat(savedGroup);
       }
     },
 
