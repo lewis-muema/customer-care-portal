@@ -1,62 +1,65 @@
 <template>
   <div>
     <div v-if="configured">
-      <div v-show="this.summaryStatus">
-        <div class="row">
-          <div class="col-md-12">
-            <h4>Custom Pricing</h4>
-          </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Custom Pricing</h4>
         </div>
-        <div class="row">
-          <div class="col-md-6 activeconfig">
-            <table class="card-table" width="100%">
-              <tr>
-                <td>
-                  <p class="clientnameandcurrency">
-                    {{ this.copName }} - {{ currency }}
-                  </p>
-                </td>
-                <td>
-                  <p
-                    v-if="active"
-                    class="active-status-tag pricing-status-button"
-                  >
-                    Active
-                  </p>
-                  <p v-else class="waiting-status-tag pricing-status-button">
-                    Awaiting approval
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <p class="pricingmodelname">{{ pricingModel }}</p>
-                </td>
-              </tr>
-              <br />
-              <tr>
-                <td>
-                  <p class="lastmodified">Last Modified: 28th October 2019</p>
-                </td>
-                <td>
-                  <button
-                    @click="viewConfigDetails"
-                    class="pricing-details-link"
-                  >
-                    See pricing details
-                  </button>
-                </td>
-              </tr>
-            </table>
+      </div>
+      <div v-for="card in cards" :key="card.pricingModel">
+        <div v-show="summaryStatus">
+          <div class="row">
+            <div class="col-md-6 activeconfig">
+              <table class="card-table" width="100%">
+                <tr>
+                  <td>
+                    <p class="clientnameandcurrency">
+                      {{ copName }} - {{ currency }}
+                    </p>
+                  </td>
+                  <td>
+                    <p
+                      v-if="card.status === 'Active'"
+                      class="active-status-tag pricing-status-button"
+                    >
+                      Active
+                    </p>
+                    <p v-else class="waiting-status-tag pricing-status-button">
+                      Awaiting approval
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="pricingmodelname">{{ card.pricingModel }}</p>
+                  </td>
+                </tr>
+                <br />
+                <tr>
+                  <td>
+                    <p class="lastmodified">Last Modified: 28th October 2019</p>
+                  </td>
+                  <td>
+                    <button
+                      @click="viewConfigDetails(card.pricingModel)"
+                      class="pricing-details-link"
+                    >
+                      See pricing details
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12"></div>
+          <div class="row">
+            <div class="col-md-12"></div>
+          </div>
         </div>
       </div>
       <div v-if="this.viewStatus">
         <view-distance-pricing-component
           :user="user"
+          @viewUpdate="onViewUpdate"
         ></view-distance-pricing-component>
       </div>
       <div v-if="this.viewLocation">
@@ -64,6 +67,12 @@
           :user="user"
           @viewUpdate="onViewUpdate"
         ></view-location-pricing-component>
+      </div>
+      <div v-if="this.viewContainer">
+        <view-container-pricing-component
+          :user="user"
+          @viewUpdate="onViewUpdate"
+        ></view-container-pricing-component>
       </div>
     </div>
     <div>
@@ -140,6 +149,13 @@
             @destroyDistanceComponent="resetSection"
           ></distance-pricing-component>
         </div>
+        <div class="pricing-table-styling" v-if="this.newContainerPricing">
+          <container-pricing-component
+            :user="user"
+            @sectionUpdate="onSectionUpdate"
+            @destroyContainerComponent="resetSection"
+          ></container-pricing-component>
+        </div>
         <div v-show="this.section === -1"></div>
       </div>
     </div>
@@ -149,24 +165,31 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
+import Mixpanel from 'mixpanel';
 import ViewDistancePricingComponent from './CustomPricing/ViewDistancePricingComponent.vue';
 import ViewLocationPricingComponent from './CustomPricing/ViewLocationPricingComponent.vue';
+import ViewContainerPricingComponent from './CustomPricing/ViewContainerPricingComponent.vue';
 import LocationPricingComponent from './CustomPricing/LocationPricingComponent.vue';
 import DistancePricingComponent from './CustomPricing/DistancePricingComponent.vue';
+import ContainerPricingComponent from './CustomPricing/ContainerPricingComponent.vue';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 const pricingModels = [
   { model_id: 1, pricing_model_name: 'Distance based pricing(Customised)' },
   { model_id: 2, pricing_model_name: 'Location pricing' },
   { model_id: 3, pricing_model_name: 'Tonnage pricing' },
+  { model_id: 4, pricing_model_name: 'Container pricing' },
 ];
+const mixpanel = Mixpanel.init('b36c8592008057290bf5e1186135ca2f');
 export default {
   name: 'TheAddNewPricingComponent',
   components: {
     'view-distance-pricing-component': ViewDistancePricingComponent,
     'view-location-pricing-component': ViewLocationPricingComponent,
+    'view-container-pricing-component': ViewContainerPricingComponent,
     'location-pricing-component': LocationPricingComponent,
     'distance-pricing-component': DistancePricingComponent,
+    'container-pricing-component': ContainerPricingComponent,
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -177,7 +200,7 @@ export default {
   },
   data() {
     return {
-      checkedPricingModel: 0,
+      checkedPricingModel: 1,
       copName: '',
       pacInput: '',
       copId: '',
@@ -186,6 +209,7 @@ export default {
       pricingModels,
       countryCode: '',
       pricingModel: '',
+      cards: [],
       checkedVendorTypes: [],
       pricingTitle: 'New Custom Pricing',
       tableData: [],
@@ -200,7 +224,9 @@ export default {
       pricingTable: 0,
       newLocationPricing: false,
       newDistancePricing: false,
+      newContainerPricing: false,
       viewLocation: false,
+      viewContainer: false,
       existingConfigs: false,
     };
   },
@@ -243,6 +269,14 @@ export default {
         this.setFirstPricing(false);
       }
     },
+    summaryStatus(val) {
+      if (val) {
+        this.viewLocation = false;
+        this.viewContainer = false;
+        this.updateViewStatus(false);
+        this.onSectionUpdate(false);
+      }
+    },
   },
   async mounted() {
     this.copName = this.user.user_details.cop_name;
@@ -276,65 +310,105 @@ export default {
       } else if (this.section === 2 && this.checkedPricingModel === 2) {
         this.newLocationPricing = true;
         this.trackNewLocationConfig();
+      } else if (this.section === 2 && this.checkedPricingModel === 4) {
+        this.newContainerPricing = true;
       }
     },
     goBack() {
       this.updateSection(this.section - 1);
     },
     setConfigStatus() {
-      if (typeof this.distancePricingTableData[0] === 'object') {
-        this.pricingModel = 'Distance Based Pricing';
+      this.cards = [];
+      if (this.distancePricingTableData.length > 0) {
         this.existingConfigs = true;
-        for (let i = 0; i < this.distancePricingTableData.length; i += 1) {
-          if (
-            typeof this.distancePricingTableData[i] !== 'undefined' &&
-            this.distancePricingTableData[i].status === 'Pending'
-          ) {
-            this.distancePricingStatus = 'Pending';
-          } else if (
-            typeof this.distancePricingTableData[i] !== 'undefined' &&
-            this.distancePricingTableData[i].status === 'Active'
-          ) {
-            this.distancePricingStatus = 'Active';
+        let modelStatus = 'Active';
+        this.distancePricingTableData.forEach(row1 => {
+          if (row1.status === 'Pending') {
+            modelStatus = row1.status;
           }
-        }
-      } else if (typeof this.locationPricingTableData[0] === 'object') {
-        this.pricingModel = 'Location Pricing';
+        });
+        this.cards.push({
+          pricingModel: 'Distance Based Pricing',
+          status: modelStatus,
+        });
+      }
+      if (this.locationPricingTableData.length > 0) {
         this.existingConfigs = true;
-        for (let i = 0; i < this.locationPricingTableData.length; i += 1) {
-          if (this.locationPricingTableData[i].status === 'Pending') {
-            this.locationPricingStatus = 'Pending';
+        let containers = false;
+        let locations = false;
+        let locationStatus = 'Active';
+        let containerStatus = 'Active';
+        this.locationPricingTableData.forEach(row2 => {
+          if (Object.prototype.hasOwnProperty.call(row2, 'empty_return')) {
+            containers = true;
+            if (row2.status === 'Pending') {
+              containerStatus = row2.status;
+            }
+          } else {
+            locations = true;
+            if (row2.status === 'Pending') {
+              locationStatus = row2.status;
+            }
           }
+        });
+        if (locations) {
+          this.cards.push({
+            pricingModel: 'Location Pricing',
+            status: locationStatus,
+          });
         }
-      } else if (
-        typeof this.distancePricingTableData[0] === 'undefined' &&
-        typeof this.locationPricingTableData[0] === 'undefined'
+        if (containers) {
+          this.cards.push({
+            pricingModel: 'Container Pricing',
+            status: containerStatus,
+          });
+        }
+      }
+      if (
+        this.locationPricingTableData.length === 0 &&
+        this.distancePricingTableData.length === 0
       ) {
         this.existingConfigs = false;
       }
     },
-    viewConfigDetails() {
+    viewConfigDetails(model) {
       this.trackViewPricingDetails();
       this.updateSummaryStatus(false);
       this.setCustomPricingDetails(this.customPricingDetails);
-      if (typeof this.distancePricingTableData[0] === 'object') {
+      if (model === 'Distance Based Pricing') {
         this.updateViewStatus(true);
         this.setTableData(this.distancePricingTableData);
-      } else if (typeof this.locationPricingTableData[0] === 'object') {
+      } else if (model === 'Location Pricing') {
         this.viewLocation = true;
-        this.setTableData(this.locationPricingTableData);
+        const data = [];
+        this.locationPricingTableData.forEach(row3 => {
+          if (!Object.prototype.hasOwnProperty.call(row3, 'empty_return')) {
+            data.push(row3);
+          }
+        });
+        this.setTableData(data);
+      } else if (model === 'Container Pricing') {
+        this.viewContainer = true;
+        const data = [];
+        this.locationPricingTableData.forEach(row3 => {
+          if (Object.prototype.hasOwnProperty.call(row3, 'empty_return')) {
+            data.push(row3);
+          }
+        });
+        this.setTableData(data);
       }
     },
     onSectionUpdate(value) {
       this.newLocationPricing = value;
       this.newDistancePricing = value;
+      this.newContainerPricing = value;
     },
     async resetSection() {
       this.copName = this.user.user_details.cop_name;
       this.copId = this.user.user_details.cop_id;
       this.currency = this.user.user_details.default_currency;
       this.countryCode = this.user.user_details.country_code;
-      this.checkedPricingModel = 0;
+      this.checkedPricingModel = 1;
       await this.fetchCustomDistancePricingData();
       await this.fetchVendorTypes(this.countryCode);
       this.setConfigStatus();
@@ -342,6 +416,7 @@ export default {
     },
     onViewUpdate(value) {
       this.viewLocation = value;
+      this.resetSection();
     },
     trackPricingHomePage() {
       mixpanel.track('Open custom pricing Page - PageView', {

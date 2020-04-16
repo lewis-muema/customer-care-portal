@@ -363,6 +363,7 @@ export default {
     configSubmitted() {
       this.previewLocationPricing = false;
       this.$emit('destroyDistanceComponent');
+      this.goBack();
     },
     trackAddPricingDataPage() {
       mixpanel.track('Add Distance Pricing data Page - PageView', {

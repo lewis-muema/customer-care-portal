@@ -115,6 +115,7 @@ export default {
     viewSummary() {
       this.updateSummaryStatus(true);
       this.updateViewStatus(false);
+      this.$emit('viewUpdate', false);
     },
     async resetCustomPricing() {
       this.trackResetConfigs();
@@ -147,6 +148,7 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateViewStatus(false);
+          this.viewSummary();
         } else {
           this.trackResetConfigsFail();
           this.trackMixpanelIdentify();
