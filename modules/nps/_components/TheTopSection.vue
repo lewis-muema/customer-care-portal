@@ -3,7 +3,11 @@
     <div class="col-md-3 col-sm-6 col-xs-12 nps-side">
       <div class="info-box blue-box">
         <div class="row nps-avg">
-          <div class="nps-score">NPS: {{ npsScore }}</div>
+          <div class="nps-score" v-if="updated">NPS: {{ npsScore }}</div>
+          <div class="nps-score" v-if="!updated">
+            NPS: <i class="fa fa-spinner fa-spin loading"></i>
+          </div>
+
           <div class="nps-range">{{ npsActiveDates }}</div>
         </div>
       </div>
@@ -15,30 +19,33 @@
         :class="`info-box ${svg.color}-box col-md-4`"
         @click="toggleGroup(index, svg.name)"
       >
-        <div class="row group-hld" :class="{ active: index === activeItem }">
-          <div class="nps-group col-md-8">
-            <div class="nps-emoji">
-              <span class="emoji-trigger">
-                <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-                  <g clip-path="url(#clip0)">
-                    <path :d="`${svg.path}`" fill="white" />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0">
-                      <rect width="40" height="40" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              </span>
+        <div class="group-hld" :class="{ active: opened.includes(svg.name) }">
+          <div class="nps-group col-md-12">
+            <div class="col-md-5 ">
+              <div class="nps-emoji">
+                <span class="emoji-trigger">
+                  <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                    <g clip-path="url(#clip0)">
+                      <path :d="`${svg.path}`" fill="white" />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0">
+                        <rect width="40" height="40" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </span>
+              </div>
             </div>
-            <div class="group-text">{{ svg.title }}</div>
-          </div>
-          <div v-if="index === activeItem" class="percentage-holder col-md-3">
-            <div class="percentage-score">
-              {{ calculatePercentage(svg.name) }}
-            </div>
-            <div class="percentage-responses">
-              {{ showResponses(svg.name) }}
+            <div class="col-md-6 percentage-holder">
+              <div class="percentage-score" v-if="updated">
+                {{ calculatePercentage(svg.name) }}
+              </div>
+              <div class="percentage-score" v-if="!updated">
+                <i class="fa fa-spinner fa-spin loading"></i>
+              </div>
+
+              <div class="group-text">{{ svg.title }}</div>
             </div>
           </div>
         </div>
@@ -67,7 +74,6 @@ export default {
   },
   data() {
     return {
-      activeGroup: null,
       selectedClass: null,
       isActive: false,
       activeItem: null,
@@ -77,35 +83,55 @@ export default {
       filters: false,
       requestedMetaData: null,
       activeDates: null,
+      activeFilters: {},
+      npsScore: null,
+      updated: null,
+      opened: [],
+      groupArray: [],
+      filtersUpdated: false,
+      displayGroups: [],
     };
   },
   computed: {
-    ...mapGetters(['getNPSMetaData', 'getNPSDateRange']),
+    ...mapGetters([
+      'getNPSMetaData',
+      'getNPSDateRange',
+      'getNPSFilters',
+      'getNPSActiveGroup',
+    ]),
+    ...mapState(['activeGroup']),
+
     metaInfo() {
       return this.filters ? this.requestedMetaData : this.metaData;
     },
     npsActiveDates() {
       return this.activeDates !== null ? this.activeDates : this.npsDateRange;
     },
-    npsScore() {
-      const meta = this.metaInfo;
-      const promoters = meta.promoter;
-      const detractors = meta.detractor;
-      const responses = meta.responded;
-
-      const score =
-        responses !== 0
-          ? (promoters / responses) * 100 - (detractors / responses) * 100
-          : 0;
-
-      // eslint-disable-next-line no-restricted-globals
-      return isNaN(score) ? 0 : score.toFixed(0);
-    },
   },
   watch: {
-    getNPSMetaData(totals) {
+    // eslint-disable-next-line require-await
+    async groupArray(group) {
+      const arr = [];
+      const selected = await arr.concat(group);
+      await this.setNPSActiveGroup(selected);
+    },
+    async getNPSActiveGroup(group) {
+      const arr = [];
+      const selected = await arr.concat(group);
+      this.opened = selected;
+    },
+    getNPSFilters(filters) {
+      this.updated = false;
+      this.activeFilters = filters;
+    },
+    async getNPSMetaData(totals) {
       this.filters = true;
       this.requestedMetaData = totals;
+      const updatescore = await this.calculateNPSScore();
+      this.npsScore = this.canUpdateNPSScore(this.activeFilters)
+        ? this.npsScore
+        : updatescore;
+      this.updated = true;
     },
     getNPSDateRange(dateRange) {
       const startDate = dateRange.startDate;
@@ -115,14 +141,47 @@ export default {
       this.activeDates = `${rangeStart} - ${rangeEnd}`;
     },
   },
+  async mounted() {
+    this.npsScore = await this.calculateNPSScore();
+    this.updated = true;
+  },
   methods: {
     ...mapMutations(['setNPSActiveGroup']),
 
-    toggleGroup(index, group) {
-      this.isActive = !this.isActive;
-      this.activeItem = index;
-      this.activeGroup = group;
-      this.setNPSActiveGroup(group);
+    canUpdateNPSScore(filters) {
+      return (
+        'respondent_group' in filters &&
+        typeof filters.respondent_group !== 'undefined' &&
+        filters.respondent_group.length !== 0
+      );
+    },
+    calculateNPSScore() {
+      const meta = this.metaInfo;
+      const promoters = meta.promoter;
+      const detractors = meta.detractor;
+      const responses = meta.responded;
+      const promoterPerc = (promoters / responses) * 100;
+      const detractorPerc = (detractors / responses) * 100;
+
+      const score = responses !== 0 ? promoterPerc - detractorPerc : 0;
+
+      // eslint-disable-next-line no-restricted-globals
+      return isNaN(score) ? 0 : score.toFixed(0);
+    },
+    async toggleGroup(index, group) {
+      this.filtersUpdated = true;
+      const arr = [];
+      const savedGroup = arr.concat(this.activeGroup);
+      const ind = savedGroup.indexOf(group);
+
+      if (ind > -1) {
+        await savedGroup.splice(ind, 1);
+        this.groupArray = savedGroup;
+      } else {
+        const holder = [];
+        holder.push(group);
+        this.groupArray = holder.concat(savedGroup);
+      }
     },
 
     calculatePercentage(group) {
@@ -150,12 +209,22 @@ export default {
   padding-right: 0;
   padding-left: 0;
 }
+.group-hld {
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
 .nps-score {
   width: 140px;
   height: 48px;
   font-weight: bold;
   font-size: 26px;
   line-height: 120%;
+}
+.loading {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 19px;
 }
 .nps-avg {
   padding-top: 17px;
@@ -177,27 +246,32 @@ export default {
   border-radius: 0 5px 5px 0;
 }
 .nps-group {
-  padding-top: 7px;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding-top: 1 px;
   text-align: right;
   cursor: pointer;
 }
 .active {
   background: #104270 !important;
+  height: 68px;
 }
 .group-text {
   line-height: 28px;
   margin-right: 2em;
+  font-weight: 600;
 }
 .nps-emoji {
-  margin-bottom: 5px;
-  margin-right: 3em;
+  margin-top: 23%;
+  margin-right: 1em;
 }
 .nps-range {
   margin-top: 10px;
 }
 .percentage-holder {
-  padding-right: 0;
-  padding-left: 0;
+  text-align: left;
+  padding-left: 2em;
 }
 .percentage-score {
   font-weight: 700;

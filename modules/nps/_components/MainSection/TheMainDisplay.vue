@@ -65,6 +65,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import NPSMxn from '@/mixins/nps_mixin';
 
 export default {
   name: 'TheMainDisplay',
@@ -74,6 +75,7 @@ export default {
     TheSurveyComponent: () =>
       import('~/modules/nps/_components/MainSection/TheSurveyComponent'),
   },
+  mixins: [NPSMxn],
   props: {
     surveys: {
       type: Array,
@@ -97,7 +99,7 @@ export default {
       requestedSurveys: null,
       requestedMetaData: null,
       accountType: null,
-      businessUnits: null,
+      activeBusinessUnits: null,
       requestedPage: 1,
       noDataMsg: 'There are no surveys matching this criteria',
       filters: false,
@@ -106,7 +108,7 @@ export default {
       totalPassives: 10,
       totalPromoters: 10,
       startDate: null,
-      enddate: null,
+      endDate: null,
       dateFilters: false,
       commentsData: [
         {
@@ -158,9 +160,12 @@ export default {
       const comments = this.commentsStatus;
       const country_code = this.countries;
       const respondent_type = this.accountType;
-      const business_unit_abbr = this.businessUnits;
-      const date_from = this.startDate;
-      const date_to = this.endDate;
+      const business_unit_abbr = this.activeBusinessUnits;
+
+      const date_from =
+        this.startDate === null ? this.firstDayOfCurrentMonth : this.startDate;
+      const date_to =
+        this.endDate === null ? this.lastDayOfCurrentMonth : this.endDate;
 
       const dismissed = 0;
 
@@ -190,15 +195,10 @@ export default {
 
       this.setCurrentNPSPage(metaData.page);
       this.setLastNPSPage(metaData.lastPage);
-      this.setNPSMetaData(surveyData.meta);
+      const updateMeta = this.setNPSMetaData(surveyData.meta);
       this.returned = true;
     },
-    getActiveBusinessUnits(units) {
-      this.requestedSurveys = [];
-      this.filters = true;
-      this.businessUnits = units;
-      this.sendRequest(this.params);
-    },
+
     getNPSCommentStatus(status) {
       this.requestedSurveys = [];
       this.filters = true;
@@ -214,7 +214,12 @@ export default {
       this.requestedSurveys = [];
       this.filters = true;
       this.accountType = accounts;
-      this.sendRequest(this.params);
+      const recentAccount = accounts.slice(-1).pop();
+      if (accounts.length !== 0 && accounts.slice(-1).pop() === 'partner') {
+        return;
+      } else {
+        this.sendRequest(this.params);
+      }
     },
     getActiveCountries(countries) {
       this.requestedSurveys = [];
@@ -230,6 +235,12 @@ export default {
       this.sendRequest(this.params);
       this.dateFilters = true;
     },
+    getActiveBusinessUnits(units) {
+      this.requestedSurveys = [];
+      this.filters = true;
+      this.activeBusinessUnits = units;
+      this.sendRequest(this.params);
+    },
   },
 
   methods: {
@@ -239,11 +250,13 @@ export default {
       'setCurrentNPSPage',
       'setLastNPSPage',
       'setNPSMetaData',
+      'setNPSFilters',
     ]),
     ...mapActions(['setSurveys']),
     sendRequest(payload) {
       this.returned = false;
       const params = this.isEmpty(payload) ? '' : payload;
+      this.setNPSFilters(params);
       if (this.requestedPage === null) {
         this.returned = true;
         this.noDataMsg = 'There are no more surveys matching these criteria';
@@ -290,9 +303,6 @@ export default {
       this.activeItem = index;
       this.commentsStatus = group;
       this.setNPSCommentStatus(group);
-    },
-    view_user(userID, userType) {
-      console.log('usertype');
     },
   },
 };
