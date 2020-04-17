@@ -15,24 +15,6 @@
       </el-table-column>
       <el-table-column prop="to" label="Drop off location" width="255">
       </el-table-column>
-      <el-table-column
-        prop="empty_return"
-        label="Empty return location (Freight)"
-        width="255"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="container_size_feet"
-        label="Container Size (Freight)"
-        width="255"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="container_weight_tonnes"
-        label="Container Weight in tonnes (Freight)"
-        width="255"
-      >
-      </el-table-column>
       <el-table-column prop="name" label="Vendor type" width="130">
       </el-table-column>
       <el-table-column prop="order_amount" label="Client fee" width="130">
@@ -103,7 +85,7 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
-    this.tableData = this.getTableData;
+    this.tableData = this.filterData(this.getTableData);
     this.adminId = this.getSessionData.payload.data.admin_id;
     this.trackViewDetailsPage();
   },
@@ -118,6 +100,21 @@ export default {
     viewSummary() {
       this.updateSummaryStatus(true);
       this.$emit('viewUpdate', false);
+    },
+    filterData(data) {
+      const pendingCollection = [];
+      const activeCollection = [];
+      data.forEach(row => {
+        if (row.status === 'Pending') {
+          pendingCollection.push(row);
+        } else if (row.status === 'Active') {
+          activeCollection.push(row);
+        }
+      });
+      if (pendingCollection.length > 0) {
+        return pendingCollection;
+      }
+      return activeCollection;
     },
     resetCustomPricing() {
       this.trackResetConfigs();

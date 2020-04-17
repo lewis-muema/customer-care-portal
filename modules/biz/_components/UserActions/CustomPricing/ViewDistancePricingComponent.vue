@@ -94,7 +94,7 @@ export default {
     }),
   },
   mounted() {
-    this.tableData = this.getTableData;
+    this.tableData = this.filterData(this.getTableData);
     this.customPricingDetails = this.getCustomPricingDetails;
     this.copId = this.user.user_details.cop_id;
     this.trackViewDetailsPage();
@@ -116,6 +116,21 @@ export default {
       this.updateSummaryStatus(true);
       this.updateViewStatus(false);
       this.$emit('viewUpdate', false);
+    },
+    filterData(data) {
+      const pendingCollection = [];
+      const activeCollection = [];
+      data.forEach(row => {
+        if (row.status === 'Pending') {
+          pendingCollection.push(row);
+        } else if (row.status === 'Active') {
+          activeCollection.push(row);
+        }
+      });
+      if (pendingCollection.length > 0) {
+        return pendingCollection;
+      }
+      return activeCollection;
     },
     async resetCustomPricing() {
       this.trackResetConfigs();
