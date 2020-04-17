@@ -788,6 +788,7 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let pendingDistancePricing = [];
       let pendingLocationPricing = [];
+      const pricingTableData = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < pendingPricingDetails.length; i += 1) {
@@ -798,13 +799,13 @@ export default {
             )
           ) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
-          } else if (
+          }
+          if (
             Object.prototype.hasOwnProperty.call(
               pendingPricingDetails[i],
               'distance_pricing',
             )
           ) {
-            const pricingTableData = [];
             pricingTableData.push(pendingPricingDetails[i].distance_pricing);
             for (let j = 0; j < pricingTableData.length; j += 1) {
               const perMinuteFee =
@@ -872,11 +873,11 @@ export default {
             pricingTableData.push(customPricingDetails[i].distance_pricing);
             for (let j = 0; j < pricingTableData.length; j += 1) {
               const perMinuteFee =
-                pricingTableData[0].waiting_time_cost_per_min;
+                pricingTableData[i].waiting_time_cost_per_min;
               const perHourFee = perMinuteFee * 60;
-              pricingTableData[0].waiting_time_cost_per_min = perHourFee.toFixed(
-                0,
-              );
+              pricingTableData[
+                i
+              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
             }
             distancePricing = pricingTableData;
           }

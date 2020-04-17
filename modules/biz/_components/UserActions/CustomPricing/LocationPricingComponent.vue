@@ -441,7 +441,7 @@ export default {
       });
     },
     // eslint-disable-next-line func-names
-    search: _.throttle(function(val) {
+    search: _.debounce(function(val) {
       axios
         .get(
           `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
@@ -449,7 +449,7 @@ export default {
         .then(response => {
           this.suggestions = response.data.predictions;
         });
-    }, 2000),
+    }, 500),
   },
 };
 </script>

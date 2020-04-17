@@ -103,7 +103,7 @@ export default {
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
-    this.tableData = this.getTableData;
+    this.tableData = this.filterData(this.getTableData);
     this.adminId = this.getSessionData.payload.data.admin_id;
     this.trackViewDetailsPage();
   },
@@ -118,6 +118,21 @@ export default {
     viewSummary() {
       this.updateSummaryStatus(true);
       this.$emit('viewUpdate', false);
+    },
+    filterData(data) {
+      const pendingCollection = [];
+      const activeCollection = [];
+      data.forEach(row => {
+        if (row.status === 'Pending') {
+          pendingCollection.push(row);
+        } else if (row.status === 'Active') {
+          activeCollection.push(row);
+        }
+      });
+      if (pendingCollection.length > 0) {
+        return pendingCollection;
+      }
+      return activeCollection;
     },
     resetCustomPricing() {
       this.trackResetConfigs();
