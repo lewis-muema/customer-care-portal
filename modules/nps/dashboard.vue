@@ -36,6 +36,7 @@ export default {
       npsRequestStatus: false,
       surveys: null,
       totals: null,
+      filters: {},
     };
   },
   computed: {
@@ -43,10 +44,14 @@ export default {
       'getNPSRequest',
       'getSurveys',
       'getCurrentNPSPage',
-      ' getNPSMetaData',
+      'getNPSMetaData',
+      'getNPSFilters',
     ]),
   },
   watch: {
+    getNPSFilters(filters) {
+      this.filters = filters;
+    },
     getNPSMetaData(value) {
       this.totals = value;
     },

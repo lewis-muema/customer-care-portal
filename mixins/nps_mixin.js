@@ -114,6 +114,13 @@ const NPSMxn = {
       this.surveyComponentKey += 1;
       this.metricsComponent += 1;
     },
+    removeElement(array, elem) {
+      const index = array.indexOf(elem);
+      if (index > -1) {
+        array.splice(index, 1);
+      }
+      return array;
+    },
     async requestUnits() {
       const allCategory = {
         code: 'allaccounts',
