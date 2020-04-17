@@ -195,9 +195,9 @@ export default {
     ]),
     activeButtonStatus() {
       if (
-        this.litres &&
-        this.pumpRate &&
-        this.sendyRate &&
+        this.litres > 0 &&
+        this.pumpRate > 0 &&
+        this.sendyRate > 0 &&
         this.selectedStation > 0 &&
         this.sendyTakeAmount > -1
       ) {
@@ -225,16 +225,25 @@ export default {
       }
     },
     litres(data) {
+      if (this.sendyTakeAmount === '--' || this.sendyTakeAmount < 0) {
+        this.resetVals();
+      }
       if (this.activeButtonStatus) {
         this.trigger();
       }
     },
     sendyRate(data) {
+      if (this.sendyTakeAmount === '--' || this.sendyTakeAmount < 0) {
+        this.resetVals();
+      }
       if (this.activeButtonStatus) {
         this.trigger();
       }
     },
     pumpRate(data) {
+      if (this.sendyTakeAmount === '--' || this.sendyTakeAmount < 0) {
+        this.resetVals();
+      }
       if (this.activeButtonStatus) {
         this.trigger();
       }
@@ -331,10 +340,26 @@ export default {
           this.updateErrors([]);
         }, 5000);
       } else {
-        this.pumpRateAmount = data.pump_total;
-        this.sendyTotalAmount = data.sendy_total;
-        this.sendyTakeAmount = data.sendy_take;
+        if (data.status) {
+          this.pumpRateAmount = data.pump_total;
+          this.sendyTotalAmount = data.sendy_total;
+          this.sendyTakeAmount = data.sendy_take;
+        } else {
+          this.pumpRateAmount = '--';
+          this.sendyTotalAmount = '--';
+          this.sendyTakeAmount = '--';
+          this.updateClass('danger');
+          this.updateErrors([data.reason]);
+          setTimeout(() => {
+            this.updateErrors([]);
+          }, 5000);
+        }
       }
+    },
+    resetVals() {
+      this.pumpRateAmount = 0;
+      this.sendyTotalAmount = 0;
+      this.sendyTakeAmount = 0;
     },
     async getFuelHistory() {
       const payload = {
