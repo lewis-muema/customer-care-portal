@@ -51,6 +51,12 @@
         </el-table-column>
         <el-table-column prop="rider_amount" label="Partner price" width="130">
         </el-table-column>
+        <el-table-column
+          prop="sendy_commission"
+          label="Sendy Commission (%)"
+          width="120"
+        >
+        </el-table-column>
         <el-table-column prop="service_fee" label="Sendy fee" width="130">
         </el-table-column>
       </el-table>
@@ -209,6 +215,7 @@ export default {
           cop_name: data[i].cop_name,
           currency: this.currency,
           admin_id: this.approver,
+          sendy_commission: parseInt(data[i].sendy_commission, 10),
           service_fee: parseInt(data[i].service_fee, 10),
           from: data[i].from,
           from_location: {

@@ -715,15 +715,13 @@ export default {
               'distance_pricing',
             )
           ) {
+            pendingPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min = (
+              pendingPricingDetails[i].distance_pricing
+                .waiting_time_cost_per_min * 60
+            ).toFixed(0);
             pricingTableData.push(pendingPricingDetails[i].distance_pricing);
-            for (let j = 0; j < pricingTableData.length; j += 1) {
-              const perMinuteFee =
-                pricingTableData[i].waiting_time_cost_per_min;
-              const perHourFee = perMinuteFee * 60;
-              pricingTableData[
-                i
-              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
-            }
             pendingDistancePricing = pricingTableData;
           }
         }
@@ -779,15 +777,13 @@ export default {
             )
           ) {
             approverId = customPricingDetails[i].admin_id;
+            customPricingDetails[
+              i
+            ].distance_pricing.waiting_time_cost_per_min = (
+              customPricingDetails[i].distance_pricing
+                .waiting_time_cost_per_min * 60
+            ).toFixed(0);
             pricingTableData.push(customPricingDetails[i].distance_pricing);
-            for (let j = 0; j < pricingTableData.length; j += 1) {
-              const perMinuteFee =
-                pricingTableData[i].waiting_time_cost_per_min;
-              const perHourFee = perMinuteFee * 60;
-              pricingTableData[
-                i
-              ].waiting_time_cost_per_min = perHourFee.toFixed(0);
-            }
             distancePricing = pricingTableData;
           }
         }

@@ -139,21 +139,21 @@
           <location-pricing-component
             :user="user"
             @sectionUpdate="onSectionUpdate"
-            @destroyLocationComponent="resetSection"
+            @destroyLocationComponent="resetSection(0)"
           ></location-pricing-component>
         </div>
         <div class="pricing-table-styling" v-if="this.newDistancePricing">
           <distance-pricing-component
             :user="user"
             @sectionUpdate="onSectionUpdate"
-            @destroyDistanceComponent="resetSection"
+            @destroyDistanceComponent="resetSection(0)"
           ></distance-pricing-component>
         </div>
         <div class="pricing-table-styling" v-if="this.newContainerPricing">
           <container-pricing-component
             :user="user"
             @sectionUpdate="onSectionUpdate"
-            @destroyContainerComponent="resetSection"
+            @destroyContainerComponent="resetSection(0)"
           ></container-pricing-component>
         </div>
         <div v-show="this.section === -1"></div>
@@ -274,7 +274,6 @@ export default {
         this.viewLocation = false;
         this.viewContainer = false;
         this.updateViewStatus(false);
-        this.onSectionUpdate(false);
       }
     },
   },
@@ -403,7 +402,7 @@ export default {
       this.newDistancePricing = value;
       this.newContainerPricing = value;
     },
-    async resetSection() {
+    async resetSection(section) {
       this.copName = this.user.user_details.cop_name;
       this.copId = this.user.user_details.cop_id;
       this.currency = this.user.user_details.default_currency;
@@ -412,11 +411,11 @@ export default {
       await this.fetchCustomDistancePricingData();
       await this.fetchVendorTypes(this.countryCode);
       this.setConfigStatus();
-      this.updateSection(0);
+      this.updateSection(section);
     },
     onViewUpdate(value) {
       this.viewLocation = value;
-      this.resetSection();
+      this.resetSection(this.section);
     },
     trackPricingHomePage() {
       mixpanel.track('Open custom pricing Page - PageView', {
