@@ -69,6 +69,12 @@
         </el-table-column>
         <el-table-column prop="rider_amount" label="Partner price" width="130">
         </el-table-column>
+        <el-table-column
+          prop="sendy_commission"
+          label="Sendy Commission (%)"
+          width="170"
+        >
+        </el-table-column>
         <el-table-column prop="service_fee" label="Sendy fee" width="130">
         </el-table-column>
       </el-table>
@@ -241,7 +247,7 @@ export default {
           rider_amount: parseInt(data[i].rider_amount, 10),
           cost_per_km_above_base_km: 0,
           waiting_time_cost_per_min: 3.33,
-          sendy_commission: 0,
+          sendy_commission: parseInt(data[i].sendy_commission, 10),
           extra_distance_base_km: 1,
           loader_cost: 0,
           min_cancellation_fee: 0,

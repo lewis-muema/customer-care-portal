@@ -27,17 +27,17 @@
         width="255"
       >
       </el-table-column>
-      <el-table-column
-        prop="container_weight_tonnes"
-        label="Container Weight in tonnes (Freight)"
-        width="255"
-      >
-      </el-table-column>
       <el-table-column prop="name" label="Vendor type" width="130">
       </el-table-column>
       <el-table-column prop="order_amount" label="Client fee" width="130">
       </el-table-column>
       <el-table-column prop="rider_amount" label="Partner price" width="130">
+      </el-table-column>
+      <el-table-column
+        prop="sendy_commission"
+        label="Sendy commission (%)"
+        width="170"
+      >
       </el-table-column>
       <el-table-column prop="service_fee" label="Sendy fee" width="130">
       </el-table-column>
