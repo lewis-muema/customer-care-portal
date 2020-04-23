@@ -83,6 +83,24 @@
               >
             </template>
           </el-table-column>
+          <el-table-column
+            prop="sendy_commission"
+            label="Sendy Commission (%)"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input
+                size="small"
+                type="text"
+                class="table--col-text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="scope.row.sendy_commission"
+                ><template class="pricing-prepend" slot="append">
+                  %
+                </template></el-input
+              >
+            </template>
+          </el-table-column>
           <el-table-column prop="service_fee" label="Service Fee" width="200">
             <template slot-scope="scope">
               <el-input
@@ -280,6 +298,7 @@ export default {
           additional_location_cost: '',
           waiting_time_cost_per_min: '',
           loader_cost: '',
+          sendy_commission: '',
           service_fee: '',
           insurance: '',
           client_fee: '',

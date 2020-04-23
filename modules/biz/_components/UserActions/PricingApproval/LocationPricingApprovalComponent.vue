@@ -27,6 +27,12 @@
             width="130"
           >
           </el-table-column>
+          <el-table-column
+            prop="sendy_commission"
+            label="Sendy commission (%)"
+            width="170"
+          >
+          </el-table-column>
           <el-table-column prop="service_fee" label="Sendy fee" width="130">
           </el-table-column>
         </el-table>
