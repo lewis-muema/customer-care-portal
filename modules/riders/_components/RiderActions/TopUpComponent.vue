@@ -13,7 +13,7 @@
           </div>
           <div class="input-group-area">
             <input
-              type="text"
+              type="number"
               v-model="amount"
               name="amount"
               placeholder="Amount"
@@ -21,7 +21,7 @@
             />
           </div>
           <div v-if="submitted && !$v.amount.required" class="invalid-feedback">
-            Base Amount is required
+            Amount is required
           </div>
         </div>
       </div>
@@ -48,6 +48,19 @@
           Billing type is required
         </div>
       </div>
+
+      <div class="form-group col-md-6">
+        <label class="bill">Reference Number</label>
+        <input
+          type="text"
+          v-model="refNo"
+          :id="ref_no"
+          name="refNo"
+          placeholder="Transaction ID"
+          class="form-control bill-input"
+        />
+      </div>
+
       <div class="form-group col-md-6">
         <label class="bill">Other Notes</label>
         <input
@@ -68,46 +81,22 @@
           Narrative is required
         </div>
       </div>
-      <div class="form-group  col-md-6 user-input">
-        <label class="bill">Order Number / Transaction ID</label>
 
-        <input
-          type="text"
-          v-model="refNo"
-          name="refNo"
-          placeholder="Reference No"
-          class="form-control bill-input"
-          :class="`form-control bill-input ${hide}`"
-        />
-        <div class="invalid-feedback">
-          Reference No is required
-        </div>
+      <div class="form-group col-md-6 user-input">
+        <label class="bill">Payment Method</label>
+        <v-select
+          :options="sendyEntities"
+          :reduce="name => name.value"
+          name="name"
+          label="name"
+          placeholder="Select Sendy Entity"
+          class="form-control select user-billing"
+          :id="`sendy_entities`"
+          v-model="sendyEntity"
+        >
+        </v-select>
       </div>
-      <div class="form-group col-md-12 bill-check">
-        <input
-          value="1"
-          id="checkbox>"
-          type="checkbox"
-          class=""
-          v-model="ischecked"
-        />
-        <label for="" class="charge_commission--label">Credit Client</label>
-      </div>
-      <div class="form-group  col-md-6 user-input" v-if="ischecked">
-        <label class="bill">Cop Account Name / User Phone Number </label>
 
-        <input
-          type="text"
-          v-model="clientNo"
-          name="clientNo"
-          placeholder="SENDY1083/0701234567"
-          class="form-control bill-input"
-          :class="`form-control bill-input ${hide}`"
-        />
-        <div class="invalid-feedback">
-          Client No is required
-        </div>
-      </div>
       <button
         class="btn btn-primary action-button"
         :disabled="checkSubmitStatus()"
@@ -122,7 +111,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 
 export default {
-  name: 'BillRiderComponent',
+  name: 'TopUpComponent',
   props: {
     user: {
       type: Object,
@@ -137,31 +126,30 @@ export default {
       account: '',
       ischecked: false,
       clientNo: '',
-      billingType: '',
       refNo: '',
       peer: null,
       hide: '',
+      sendyEntities: [{ value: 1, name: 'Sendy Entity' }],
+      sendyEntity: 1,
+      submit_status: false,
       billingTypes: [
         { value: 1, name: 'Extra Miles', transactionID: 1 },
-        { value: 2, name: 'Waiting Time', transactionID: 1 },
+        { value: 2, name: 'Waiting Time', transactionID: 14 },
         { value: 4, name: 'Return Trip', transactionID: 1 },
         { value: 5, name: 'Extra Stops', transactionID: 1 },
         { value: 8, name: 'Cancellation Fee', transactionID: 1 },
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
-        { value: 10, name: 'Loaders', transactionID: 1 },
-        { value: 11, name: 'Top Up', transactionID: 1 },
         { value: 12, name: 'Cash Order', transactionID: 1 },
-        { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
+        { value: 15, name: 'Transfer Orders', transactionID: 1 },
       ],
-      noTransactiodIDTypes: [6, 7, 14],
-      submit_status: false,
+      billingType: '',
+      refNo: '',
     };
   },
   validations: {
     amount: { required },
     narrative: { required },
     billingType: { required },
-    refNo: { required },
   },
 
   computed: {
@@ -217,8 +205,6 @@ export default {
       }
       const riderID = this.user.rider_id;
       const riderCurrency = this.user.default_currency;
-      const email = this.session.payload.data.email;
-      const adminID = this.session.payload.data.admin_id;
 
       const payload = {
         app: 'PARTNERS_APP',
@@ -229,22 +215,15 @@ export default {
           data_set: 'rt_actions',
           action_id: 1,
           action_data: {
-            pay_out: true,
-            pay_frommpesa: false,
+            payment_type: 10,
             rider_id: riderID,
-            loan_type: 1,
+            entity_id: 1,
             amount: this.amount,
+            ref_no: this.refNo,
             narrative: this.narrative,
-            payment_type: 2,
-            mpesa_ref: 'None',
             currency: riderCurrency,
-            action_user: this.actionUser,
-            pay_customer: this.ischecked,
-            account_no: this.clientNo,
             billing_type: this.billingType,
-            order_number: this.refNo,
-            transaction_id: this.transactionID,
-            is_peer: this.client,
+            action_user: this.actionUser,
           },
           request_id: 202,
           action_user: this.actionUser,
@@ -332,5 +311,8 @@ export default {
   margin-top: 0.25rem;
   font-size: 46%;
   color: #dc3545;
+}
+.invalid-feedback {
+  border: none;
 }
 </style>
