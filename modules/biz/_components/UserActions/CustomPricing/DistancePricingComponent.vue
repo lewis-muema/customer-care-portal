@@ -370,8 +370,9 @@ export default {
       cb(this.suggestions);
     },
     handleSelect(item, index, row) {
-      console.log(item);
-      // this.tableData[index].city = item.value;
+      if (item.value !== undefined) {
+        this.tableData[index].city = item.value;
+      }
     },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
