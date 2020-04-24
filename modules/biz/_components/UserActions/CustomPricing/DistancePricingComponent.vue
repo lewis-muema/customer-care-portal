@@ -373,7 +373,7 @@ export default {
       if (this.suggestions.length === 0) {
         this.suggestions.push({ value: '' });
       }
-      cb(this.suggestions);
+      // cb(this.suggestions);
     },
     handleSelect(item, index, row) {
       this.tableData[index].city = item.value;
