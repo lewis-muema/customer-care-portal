@@ -367,10 +367,13 @@ export default {
         this.suggestions[i].value = this.suggestions[i]['description'];
         delete this.suggestions[i].description;
       }
+      if (this.suggestions.length === 0) {
+        this.suggestions.push({ value: '' });
+      }
       cb(this.suggestions);
     },
     handleSelect(item, index, row) {
-      this.tableData[index].city = item.values;
+      this.tableData[index].city = item.value;
     },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
