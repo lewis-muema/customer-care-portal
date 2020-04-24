@@ -41,7 +41,6 @@
                 size="small"
                 class="inline-input"
                 v-model="pacInput"
-                :value="handleSelect"
                 :fetch-suggestions="querySearch"
                 placeholder="Search city"
                 :trigger-on-focus="false"
