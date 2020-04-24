@@ -44,6 +44,7 @@
                 :fetch-suggestions="querySearch"
                 placeholder="Search city"
                 :trigger-on-focus="false"
+                @select="handleSelect($event, scope.$index, scope.row)"
               >
               </el-autocomplete>
             </template>
@@ -369,7 +370,7 @@ export default {
       cb(this.suggestions);
     },
     handleSelect(item, index, row) {
-      this.tableData[index].city = item.value;
+      this.tableData[index].city = item.values;
     },
     deleteRow(index, rows) {
       this.tableData.splice(index, 1);
