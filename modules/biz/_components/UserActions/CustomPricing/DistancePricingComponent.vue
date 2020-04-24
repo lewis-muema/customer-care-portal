@@ -366,6 +366,9 @@ export default {
       for (let i = 0; i < this.suggestions.length; i += 1) {
         this.suggestions[i].value = this.suggestions[i]['description'];
         delete this.suggestions[i].description;
+        if (this.suggestions[i].value === undefined) {
+          this.suggestions[i].value = '';
+        }
       }
       if (this.suggestions.length === 0) {
         this.suggestions.push({ value: '' });
