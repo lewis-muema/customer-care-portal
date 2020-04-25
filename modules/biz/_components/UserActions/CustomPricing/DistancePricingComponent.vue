@@ -19,6 +19,7 @@
           <el-table-column class="delete-col" width="40" fixed="left">
             <template slot-scope="scope">
               <el-button
+                v-if="scope.$index > 0"
                 @click.native.prevent="deleteRow(scope.$index, scope.row)"
                 type="text"
                 size="small"
@@ -50,7 +51,7 @@
                   size="small"
                   class="table--col-text"
                   placeholder="Search city"
-                  v-model="pacInput"
+                  v-model="pacInput[scope.$index].name"
                   @focus="handleFocus(scope.$index)"
                 ></el-input>
               </el-popover>
@@ -302,7 +303,11 @@ export default {
   data() {
     return {
       visible: false,
-      pacInput: '',
+      pacInput: [
+        {
+          name: '',
+        },
+      ],
       currentIndex: 0,
       currency: '',
       vendorName: '',
@@ -349,10 +354,18 @@ export default {
     },
   },
   watch: {
-    pacInput(val) {
-      if (this.tableData[this.currentIndex].city !== val) {
-        this.search(val);
-      }
+    pacInput: {
+      handler(val) {
+        val = val[this.currentIndex].name;
+        if (
+          val &&
+          val.length > 2 &&
+          this.tableData[this.currentIndex].city !== val
+        ) {
+          this.search(val);
+        }
+      },
+      deep: true,
     },
     calculateClientFee(val) {},
   },
@@ -387,18 +400,20 @@ export default {
     },
     handleFocus(index) {
       this.currentIndex = index;
-      if (this.pacInput !== '') {
-        this.search(this.pacInput);
+      if (this.pacInput[index].name !== '') {
+        this.search(this.pacInput[index].name);
       }
     },
     handleSelect(index, item) {
-      this.pacInput = item;
+      this.pacInput[index].name = item;
       this.visible = false;
       this.tableData[index].city = item;
       this.suggestions = [];
     },
     deleteRow(index, rows) {
+      this.currentIndex = this.tableData.length - 2;
       this.tableData.splice(index, 1);
+      this.pacInput.splice(index, 1);
     },
     onSectionUpdate(value) {
       this.previewDistancePricing = value;

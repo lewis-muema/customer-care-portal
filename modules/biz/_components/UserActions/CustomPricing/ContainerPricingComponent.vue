@@ -19,6 +19,7 @@
           <el-table-column class="delete-col" width="40" fixed="left">
             <template slot-scope="scope">
               <el-button
+                v-if="scope.$index > 0"
                 @click.native.prevent="deleteRow(scope.$index, scope.row)"
                 type="text"
                 size="small"
@@ -519,7 +520,7 @@ export default {
         });
     },
     deleteRow(index, rows) {
-      this.rowIndex = this.rowIndex - 1;
+      this.rowIndex = this.tableData.length - 2;
       this.tableData.splice(index, 1);
       this.pacInput1.splice(index, 1);
       this.pacInput2.splice(index, 1);
