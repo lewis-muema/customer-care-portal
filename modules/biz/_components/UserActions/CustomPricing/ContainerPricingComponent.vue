@@ -29,50 +29,64 @@
           </el-table-column>
           <el-table-column prop="from" label="Pick up location" width="335">
             <template slot-scope="scope">
-              <el-input
-                v-if="scope.row.from"
-                size="small"
-                class="table--col-text"
-                placeholder="Search location"
-                v-model="scope.row.from"
-              ></el-input>
-              <el-autocomplete
-                v-else
-                size="small"
-                class="inline-input"
-                v-model="pacInput1[scope.$index].name"
-                :value="handleSelectFrom"
-                :fetch-suggestions="querySearch"
-                placeholder="Search location"
-                :trigger-on-focus="false"
-                @focus="rowIndex = scope.$index"
-                @select="handleSelectFrom($event, scope.$index, scope.row)"
+              <el-popover
+                placement="bottom"
+                width="Min width 150px"
+                v-model="visible1"
+                :disabled="scope.$index !== rowIndex"
               >
-              </el-autocomplete>
+                <div>
+                  <div
+                    class="single-suggestion"
+                    v-for="suggestion in suggestions"
+                    :key="suggestion.id"
+                    @click="
+                      handleSelectFrom(suggestion, scope.$index, scope.row)
+                    "
+                  >
+                    {{ suggestion.description }}
+                  </div>
+                </div>
+                <el-input
+                  slot="reference"
+                  size="small"
+                  class="table--col-text"
+                  placeholder="Search location"
+                  v-model="pacInput1[scope.$index].name"
+                  @focus="handleFocus(scope.$index, 1)"
+                  @blur="handleBlur()"
+                ></el-input>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column prop="to" label="Drop off location" width="335">
             <template slot-scope="scope">
-              <el-input
-                v-if="scope.row.to"
-                size="small"
-                class="table--col-text"
-                placeholder="Search location"
-                v-model="scope.row.to"
-              ></el-input>
-              <el-autocomplete
-                v-else
-                size="small"
-                class="inline-input"
-                v-model="pacInput2[scope.$index].name"
-                :value="handleSelectTo"
-                :fetch-suggestions="querySearch"
-                placeholder="Search location"
-                :trigger-on-focus="false"
-                @focus="rowIndex = scope.$index"
-                @select="handleSelectTo($event, scope.$index, scope.row)"
+              <el-popover
+                placement="bottom"
+                width="Min width 150px"
+                v-model="visible2"
+                :disabled="scope.$index !== rowIndex"
               >
-              </el-autocomplete>
+                <div>
+                  <div
+                    class="single-suggestion"
+                    v-for="suggestion in suggestions"
+                    :key="suggestion.id"
+                    @click="handleSelectTo(suggestion, scope.$index, scope.row)"
+                  >
+                    {{ suggestion.description }}
+                  </div>
+                </div>
+                <el-input
+                  slot="reference"
+                  size="small"
+                  class="table--col-text"
+                  placeholder="Search location"
+                  v-model="pacInput2[scope.$index].name"
+                  @focus="handleFocus(scope.$index, 2)"
+                  @blur="handleBlur()"
+                ></el-input>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column
@@ -81,32 +95,38 @@
             width="335"
           >
             <template slot-scope="scope">
-              <el-input
-                v-if="scope.row.empty_container_destination"
-                size="small"
-                class="table--col-text"
-                placeholder="Search container destination"
-                v-model="scope.row.empty_container_destination"
-              ></el-input>
-              <el-autocomplete
-                v-else
-                size="small"
-                class="inline-input"
-                v-model="pacInput3[scope.$index].name"
-                :value="handleSelectContainerDestination"
-                :fetch-suggestions="querySearch"
-                placeholder="Search container destination"
-                :trigger-on-focus="false"
-                @focus="rowIndex = scope.$index"
-                @select="
-                  handleSelectContainerDestination(
-                    $event,
-                    scope.$index,
-                    scope.row,
-                  )
-                "
+              <el-popover
+                placement="bottom"
+                width="Min width 150px"
+                v-model="visible3"
+                :disabled="scope.$index !== rowIndex"
               >
-              </el-autocomplete>
+                <div>
+                  <div
+                    class="single-suggestion"
+                    v-for="suggestion in suggestions"
+                    :key="suggestion.id"
+                    @click="
+                      handleSelectContainerDestination(
+                        suggestion,
+                        scope.$index,
+                        scope.row,
+                      )
+                    "
+                  >
+                    {{ suggestion.description }}
+                  </div>
+                </div>
+                <el-input
+                  slot="reference"
+                  size="small"
+                  class="table--col-text"
+                  placeholder="Search container destination"
+                  v-model="pacInput3[scope.$index].name"
+                  @focus="handleFocus(scope.$index, 3)"
+                  @blur="handleBlur()"
+                ></el-input>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column
@@ -275,6 +295,9 @@ export default {
           name: '',
         },
       ],
+      visible1: false,
+      visible2: false,
+      visible3: false,
       currency: '',
       vendorName: '',
       suggestions: [],
@@ -359,8 +382,12 @@ export default {
     pacInput1: {
       handler(val) {
         val = val[this.rowIndex].name;
-        if (val && val.length > 2) {
-          this.search(val);
+        if (
+          val &&
+          val.length > 2 &&
+          this.tableData[this.rowIndex].from !== val
+        ) {
+          this.search(val, 1);
         }
       },
       deep: true,
@@ -368,8 +395,8 @@ export default {
     pacInput2: {
       handler(val) {
         val = val[this.rowIndex].name;
-        if (val && val.length > 2) {
-          this.search(val);
+        if (val && val.length > 2 && this.tableData[this.rowIndex].to !== val) {
+          this.search(val, 2);
         }
       },
       deep: true,
@@ -377,8 +404,12 @@ export default {
     pacInput3: {
       handler(val) {
         val = val[this.rowIndex].name;
-        if (val && val.length > 2) {
-          this.search(val);
+        if (
+          val &&
+          val.length > 2 &&
+          this.tableData[this.rowIndex].empty_container_destination !== val
+        ) {
+          this.search(val, 3);
         }
       },
       deep: true,
@@ -398,16 +429,32 @@ export default {
       this.updateSection(1);
       this.$emit('sectionUpdate', false);
     },
-    querySearch(queryString, cb) {
-      for (let i = 0; i < this.suggestions.length; i += 1) {
-        this.suggestions[i].value = this.suggestions[i]['description'];
-        delete this.suggestions[i].description;
+    handleFocus(index, input) {
+      this.rowIndex = index;
+      if (input === 1) {
+        if (this.pacInput1[index].name !== '') {
+          this.search(this.pacInput1[index].name, input);
+        }
+      } else if (input === 2) {
+        if (this.pacInput2[index].name !== '') {
+          this.search(this.pacInput2[index].name, input);
+        }
+      } else if (input === 3) {
+        if (this.pacInput3[index].name !== '') {
+          this.search(this.pacInput3[index].name, input);
+        }
       }
-      cb(this.suggestions);
+    },
+    handleBlur() {
+      this.visible1 = false;
+      this.visible2 = false;
+      this.visible3 = false;
     },
     handleSelectFrom(item, index, rows) {
-      this.tableData[index].from = item.value;
-      this.pacInput1[index].name = '';
+      this.handleBlur();
+      this.suggestions = [];
+      this.tableData[index].from = item.description;
+      this.pacInput1[index].name = item.description;
       const fromPlaceId = item.place_id;
       axios
         .get(
@@ -426,8 +473,10 @@ export default {
         });
     },
     handleSelectTo(item, index, rows) {
-      this.tableData[index].to = item.value;
-      this.pacInput2[index].name = '';
+      this.handleBlur();
+      this.suggestions = [];
+      this.tableData[index].to = item.description;
+      this.pacInput2[index].name = item.description;
       const toPlaceId = item.place_id;
       axios
         .get(
@@ -446,8 +495,10 @@ export default {
         });
     },
     handleSelectContainerDestination(item, index, rows) {
-      this.tableData[index].empty_container_destination = item.value;
-      this.pacInput3[index].name = '';
+      this.handleBlur();
+      this.suggestions = [];
+      this.tableData[index].empty_container_destination = item.description;
+      this.pacInput3[index].name = item.description;
       const toPlaceId = item.place_id;
       axios
         .get(
@@ -468,6 +519,7 @@ export default {
         });
     },
     deleteRow(index, rows) {
+      this.rowIndex = this.rowIndex - 1;
       this.tableData.splice(index, 1);
       this.pacInput1.splice(index, 1);
       this.pacInput2.splice(index, 1);
@@ -540,13 +592,31 @@ export default {
       );
     },
     // eslint-disable-next-line func-names
-    search: _.debounce(function(val) {
+    search: _.debounce(function(val, input) {
       axios
         .get(
           `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
+          if (input === 1) {
+            this.visible1 = true;
+          } else if (input === 2) {
+            this.visible2 = true;
+          } else if (input === 3) {
+            this.visible3 = true;
+          }
+          setTimeout(() => {
+            document
+              .querySelectorAll('.el-popover')
+              .forEach((row, index, arr) => {
+                if (row.style.position === 'fixed') {
+                  if (index === arr.length - 2) {
+                    row.style.display = 'none';
+                  }
+                }
+              });
+          }, 50);
         });
     }, 500),
   },
@@ -584,5 +654,10 @@ tr:hover {
 .el-table--scrollable-x .el-table__body-wrapper {
   overflow-x: auto;
   padding-bottom: 25px !important;
+}
+.single-suggestion {
+  cursor: pointer;
+  height: 25px;
+  padding-right: 15px;
 }
 </style>
