@@ -131,7 +131,9 @@ const PricingConfigsMxn = {
     },
     addRow(model) {
       if (model === 'Distance') {
-        this.pacInput = '';
+        this.pacInput.push({
+          name: '',
+        });
         const distancePricingRow = {
           city: '',
           name: '',
