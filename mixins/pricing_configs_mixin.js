@@ -155,9 +155,6 @@ const PricingConfigsMxn = {
         this.pacInput2.push({
           name: '',
         });
-        this.pacInput3.push({
-          name: '',
-        });
         const locationPricingRow = {
           id: 1,
           name: '',
@@ -176,19 +173,11 @@ const PricingConfigsMxn = {
             type: 'Point',
             coordinates: [39.671947, -4.056442],
           },
-          empty_return_location: {
-            type: 'Point',
-            coordinates: [37.671947, -4.056444],
-          },
           to: '',
-          empty_container_destination: '',
           status: '',
           city: '',
           order_amount: 0,
           rider_amount: 0,
-          container_weight_tonnes: '',
-          container_size_feet: '',
-          container_errand_type: 'drop_off',
         };
         this.tableData.push(locationPricingRow);
       } else if (model === 'Container') {
