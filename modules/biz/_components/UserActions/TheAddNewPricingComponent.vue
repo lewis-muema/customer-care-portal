@@ -41,7 +41,7 @@
                   </td>
                   <td>
                     <button
-                      @click="viewConfigDetails(card.pricingModel)"
+                      @click="viewConfigDetails(card.pricingModel, card.status)"
                       class="pricing-details-link"
                     >
                       See pricing details
@@ -59,18 +59,21 @@
       <div v-if="this.viewStatus">
         <view-distance-pricing-component
           :user="user"
+          :status="cardStatus"
           @viewUpdate="onViewUpdate"
         ></view-distance-pricing-component>
       </div>
       <div v-if="this.viewLocation">
         <view-location-pricing-component
           :user="user"
+          :status="cardStatus"
           @viewUpdate="onViewUpdate"
         ></view-location-pricing-component>
       </div>
       <div v-if="this.viewContainer">
         <view-container-pricing-component
           :user="user"
+          :status="cardStatus"
           @viewUpdate="onViewUpdate"
         ></view-container-pricing-component>
       </div>
@@ -210,6 +213,7 @@ export default {
       countryCode: '',
       pricingModel: '',
       cards: [],
+      cardStatus: '',
       checkedVendorTypes: [],
       pricingTitle: 'New Custom Pricing',
       tableData: [],
@@ -370,7 +374,8 @@ export default {
         this.existingConfigs = false;
       }
     },
-    viewConfigDetails(model) {
+    viewConfigDetails(model, status) {
+      this.cardStatus = status;
       this.trackViewPricingDetails();
       this.updateSummaryStatus(false);
       this.setCustomPricingDetails(this.customPricingDetails);

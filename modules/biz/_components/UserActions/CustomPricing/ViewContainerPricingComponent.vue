@@ -11,6 +11,15 @@
       border
       class="pricing-table-styling preview-container"
     >
+      <el-table-column prop="" label="" width="50">
+        <template slot-scope="scope">
+          <i
+            class="fa fa-fw fa-trash-o"
+            id="delete-column"
+            @click="removeSinglePriceConfig(scope.row, scope.$index)"
+          ></i>
+        </template>
+      </el-table-column>
       <el-table-column prop="from" label="Pick up location" width="255">
       </el-table-column>
       <el-table-column prop="to" label="Drop off location" width="255">
@@ -46,7 +55,11 @@
       <button @click="viewSummary" class="back-to-summary-link">
         Back to summary
       </button>
-      <button @click="resetCustomPricing" class="pricing-remove">
+      <button
+        v-if="status === 'Active'"
+        @click="resetCustomPricing"
+        class="pricing-remove"
+      >
         Remove custom pricing
       </button>
     </div>
@@ -66,6 +79,10 @@ export default {
   props: {
     user: {
       type: Object,
+      required: true,
+    },
+    status: {
+      type: String,
       required: true,
     },
   },
@@ -151,6 +168,19 @@ export default {
         this.submitPayload(payload);
       }
     },
+    removeSinglePriceConfig(row, index) {
+      this.trackRemoveSingleConfigs();
+      const containerPayload = [];
+      containerPayload.push(row);
+      const configParams = this.createContainerPayload(containerPayload);
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/update_custom_distance_details',
+        apiKey: false,
+        params: configParams,
+      };
+      this.submitSingleRow(payload, index);
+    },
     async submitPayload(payload) {
       const notification = [];
       let actionClass = '';
@@ -164,6 +194,32 @@ export default {
           this.viewSummary();
         } else {
           this.trackResetConfigsFail();
+          this.trackMixpanelPeople();
+          notification.push(data.error);
+          actionClass = this.display_order_action_notification(data.status);
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    async submitSingleRow(payload, index) {
+      const notification = [];
+      let actionClass = '';
+      try {
+        const data = await this.deactivate_container_pricing(payload);
+        if (data.status) {
+          notification.push('Custom price configs deactivated successfully.');
+          actionClass = this.display_order_action_notification(data.status);
+          this.trackMixpanelPeople();
+          if (this.tableData.length > 1) {
+            this.tableData.splice(index, 1);
+          } else {
+            this.viewSummary();
+          }
+        } else {
           this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -252,6 +308,11 @@ export default {
         type: 'Click',
       });
     },
+    trackRemoveSingleConfigs() {
+      mixpanel.track('"Remove Single Pricing" Icon - ButtonClick', {
+        type: 'Click',
+      });
+    },
     trackResetConfigsSuccess() {
       mixpanel.track('Reset successful - Success', {
         type: 'Success',
@@ -289,5 +350,9 @@ export default {
 }
 table td {
   padding: 5px !important;
+}
+#delete-column {
+  cursor: pointer;
+  color: #d80303;
 }
 </style>
