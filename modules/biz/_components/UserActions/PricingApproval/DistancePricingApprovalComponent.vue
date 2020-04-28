@@ -183,7 +183,9 @@ export default {
           i
         ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
       }
-      this.approvalParams = this.createPayload(pricingTableData, 'deactivated');
+      this.approvalParams = JSON.parse(
+        JSON.stringify(this.createPayload(pricingTableData, 'deactivated')),
+      );
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -228,13 +230,15 @@ export default {
       const pricingTableData = clone;
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee =
-          pricingTableData[0].distance_pricing.waiting_time_cost_per_min;
+          pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
         const perMinuteFee = perHourFee / 60;
-        pricingTableData[0].distance_pricing.waiting_time_cost_per_min = parseFloat(
-          perMinuteFee,
-        );
+        pricingTableData[
+          i
+        ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
       }
-      this.approvalParams = this.createPayload(pricingTableData, 'Active');
+      this.approvalParams = JSON.parse(
+        JSON.stringify(this.createPayload(pricingTableData, 'Active')),
+      );
       const notification = [];
       let actionClass = '';
       const payload = {
