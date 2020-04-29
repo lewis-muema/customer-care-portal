@@ -44,7 +44,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 import NPSMxn from '@/mixins/nps_mixin';
 
@@ -79,7 +79,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getCountries']),
+    ...mapState(['activeGroup']),
+
+    ...mapGetters(['getCountries', 'getNPSActiveGroup']),
 
     sideMenu() {
       const menu = [
@@ -106,7 +108,24 @@ export default {
     async activeGroups(group) {
       const arr = [];
       const selected = arr.concat(group);
-      await this.setNPSActiveGroup(selected);
+      const uniqueGroups = await selected.filter(
+        (x, i, a) => a.indexOf(x) === i,
+      );
+      await this.setNPSActiveGroup(uniqueGroups);
+    },
+    async getNPSActiveGroup(group) {
+      let selectedItems = this.selected;
+      const npsGroups = ['passive', 'promoter', 'detractor'];
+      for (let i = 0; i < npsGroups.length; i += 1) {
+        selectedItems = this.removeElement(selectedItems, npsGroups[i]);
+      }
+
+      const selected = selectedItems.concat(group);
+      const uniqueGroups = await selected.filter(
+        (x, i, a) => a.indexOf(x) === i,
+      );
+
+      this.selected = uniqueGroups;
     },
     async activeCountries(countries) {
       const arr = [];
@@ -154,7 +173,6 @@ export default {
       'setActiveBusinessUnits',
     ]),
     ...mapActions(['setCountries']),
-
     toggle(id) {
       const index = this.opened.indexOf(id);
       if (index > -1) {
@@ -167,8 +185,13 @@ export default {
       switch (group) {
         case 'groups':
           // eslint-disable-next-line no-case-declarations
-          const indexCode = this.activeGroups.indexOf(code);
-          this.activeGroups.splice(indexCode, 1);
+          const arr = [];
+          // eslint-disable-next-line no-case-declarations
+          const savedGroup = arr.concat(this.activeGroup);
+          // eslint-disable-next-line no-case-declarations
+          const indexCode = savedGroup.indexOf(code);
+          savedGroup.splice(indexCode, 1);
+          this.activeGroups = savedGroup;
           break;
         case 'countries':
           // eslint-disable-next-line no-case-declarations
@@ -201,7 +224,9 @@ export default {
           if (code === 'allgroups') {
             this.activeGroups = [];
           } else {
-            this.activeGroups.push(code);
+            const arr = [];
+            arr.push(code);
+            this.activeGroups = arr.concat(this.activeGroup);
           }
           break;
         case 'countries':

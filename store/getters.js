@@ -176,4 +176,7 @@ export default {
   getNPSMetaData(state) {
     return state.npsMetaData;
   },
+  getNPSFilters(state) {
+    return state.npsFilters;
+  },
 };
