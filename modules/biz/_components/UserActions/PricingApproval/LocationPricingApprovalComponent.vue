@@ -1,10 +1,10 @@
 <template>
   <div>
+    <div class="approval-sub-title">
+      {{ pricingTitle }}
+    </div>
     <div v-if="pendingRequests">
       <div v-show="!rejectWithReason">
-        <div class="approval-sub-title">
-          {{ pricingTitle }}
-        </div>
         <div class="approval-text-title">
           {{ approvalText }}
         </div>
@@ -25,6 +25,12 @@
             prop="rider_amount"
             label="Partner price"
             width="130"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="sendy_commission"
+            label="Sendy commission (%)"
+            width="170"
           >
           </el-table-column>
           <el-table-column prop="service_fee" label="Sendy fee" width="130">
@@ -77,11 +83,12 @@
 </template>
 
 <script>
+import Mixpanel from 'mixpanel';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import mixpanel from 'mixpanel-browser';
 import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
+const mixpanel = Mixpanel.init('d0554ae8b8905e4984de170b62b2c9c6');
 export default {
   name: 'DistancePricingApprovalComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
@@ -163,7 +170,6 @@ export default {
       try {
         const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
-          this.trackMixpanelIdentify();
           this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
@@ -172,7 +178,6 @@ export default {
           this.updateSuccess(false);
           this.pendingRequests = false;
         } else {
-          this.trackMixpanelIdentify();
           this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -209,7 +214,6 @@ export default {
         const data = await this.approve_location_pricing_configs(payload);
         if (data.status) {
           this.trackPassedApproval();
-          this.trackMixpanelIdentify();
           this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
@@ -217,7 +221,6 @@ export default {
           this.pendingRequests = false;
         } else {
           this.trackFailedApproval();
-          this.trackMixpanelIdentify();
           this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
@@ -318,12 +321,6 @@ export default {
     trackRejectConfigsPage() {
       mixpanel.track('Request Rejected - PageView', {
         type: 'PageView',
-      });
-    },
-    trackMixpanelIdentify() {
-      mixpanel.identify('Approver', {
-        email: this.getSessionData.payload.data.email,
-        admin_id: this.getSessionData.payload.data.admin_id,
       });
     },
 

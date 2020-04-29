@@ -11,10 +11,25 @@
       border
       class="pricing-table-styling configs-view-table"
     >
+      <el-table-column prop="" label="" width="50">
+        <template slot-scope="scope">
+          <i
+            class="fa fa-fw fa-trash-o"
+            id="delete-column"
+            @click="removeSinglePriceConfig(scope.row, scope.$index)"
+          ></i>
+        </template>
+      </el-table-column>
       <el-table-column prop="city" label="City" width="160"> </el-table-column>
       <el-table-column prop="name" label="Vendor Type" width="160">
       </el-table-column>
       <el-table-column prop="base_cost" label="Partner Amount" width="150">
+      </el-table-column>
+      <el-table-column
+        prop="sendy_commission"
+        label="Sendy commission (%)"
+        width="170"
+      >
       </el-table-column>
       <el-table-column prop="service_fee" label="Service Fee" width="120">
       </el-table-column>
@@ -53,7 +68,11 @@
       <button @click="viewSummary" class="back-to-summary-link">
         Back to summary
       </button>
-      <button @click="resetCustomPricing" class="pricing-remove">
+      <button
+        v-if="status === 'Active'"
+        @click="resetCustomPricing"
+        class="pricing-remove"
+      >
         Remove custom pricing
       </button>
     </div>
@@ -71,6 +90,10 @@ export default {
   props: {
     user: {
       type: Object,
+      required: true,
+    },
+    status: {
+      type: String,
       required: true,
     },
   },
@@ -94,7 +117,7 @@ export default {
     }),
   },
   mounted() {
-    this.tableData = this.getTableData;
+    this.tableData = this.filterData(this.getTableData);
     this.customPricingDetails = this.getCustomPricingDetails;
     this.copId = this.user.user_details.cop_id;
     this.trackViewDetailsPage();
@@ -115,20 +138,100 @@ export default {
     viewSummary() {
       this.updateSummaryStatus(true);
       this.updateViewStatus(false);
+      this.$emit('viewUpdate', false);
+    },
+    filterData(data) {
+      const pendingCollection = [];
+      const activeCollection = [];
+      data.forEach(row => {
+        if (row.status === 'Pending') {
+          pendingCollection.push(row);
+        } else if (row.status === 'Active') {
+          activeCollection.push(row);
+        }
+      });
+      if (pendingCollection.length > 0) {
+        return pendingCollection;
+      }
+      return activeCollection;
+    },
+    async removeSinglePriceConfig(row, index) {
+      this.trackRemoveSingleConfigs();
+      const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
+      const pricingTableData = clone;
+      let distancePricingTable = [];
+      pricingTableData.forEach(row1 => {
+        if (
+          Object.prototype.hasOwnProperty.call(row1, 'distance_pricing') &&
+          row1.distance_pricing.status === this.status
+        ) {
+          const perHourFee = row1.distance_pricing.waiting_time_cost_per_min;
+          const perMinuteFee = perHourFee / 60;
+          row1.distance_pricing.waiting_time_cost_per_min = parseFloat(
+            perMinuteFee,
+          );
+          distancePricingTable.push(row1);
+        }
+      });
+      distancePricingTable = [distancePricingTable[index]];
+      const approvalParams = this.createPayload(distancePricingTable);
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/update_custom_distance_details',
+        apiKey: false,
+        params: approvalParams,
+      };
+      try {
+        const data = await this.deactivate_distance_pricing_configs(payload);
+        this.trackMixpanelIdentify();
+        this.trackMixpanelPeople();
+        if (data.status) {
+          this.trackResetConfigsSuccess();
+          notification.push('Custom price configs deactivated successfully.');
+          actionClass = this.display_order_action_notification(data.status);
+          if (this.tableData.length > 1) {
+            this.tableData.splice(index, 1);
+          } else {
+            this.viewSummary();
+          }
+        } else {
+          this.trackResetConfigsFail();
+          notification.push(data.error);
+          actionClass = this.display_order_action_notification(data.status);
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     async resetCustomPricing() {
       this.trackResetConfigs();
+      const newDistancePricingTable = [];
       const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
       const pricingTableData = clone;
       for (let i = 0; i < pricingTableData.length; i += 1) {
-        const perHourFee =
-          pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
-        const perMinuteFee = perHourFee / 60;
-        pricingTableData[
-          i
-        ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
+        if (
+          Object.prototype.hasOwnProperty.call(
+            pricingTableData[i],
+            'distance_pricing',
+          )
+        ) {
+          const perHourFee =
+            pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
+          const perMinuteFee = perHourFee / 60;
+          pricingTableData[
+            i
+          ].distance_pricing.waiting_time_cost_per_min = parseFloat(
+            perMinuteFee,
+          );
+          newDistancePricingTable.push(pricingTableData[i]);
+        }
       }
-      const approvalParams = this.createPayload(pricingTableData);
+      const approvalParams = this.createPayload(newDistancePricingTable);
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -139,18 +242,17 @@ export default {
       };
       try {
         const data = await this.deactivate_distance_pricing_configs(payload);
+        this.trackMixpanelIdentify();
+        this.trackMixpanelPeople();
         if (data.status) {
           this.trackResetConfigsSuccess();
-          this.trackMixpanelIdentify();
-          this.trackMixpanelPeople();
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.updateViewStatus(false);
+          this.viewSummary();
         } else {
           this.trackResetConfigsFail();
-          this.trackMixpanelIdentify();
-          this.trackMixpanelPeople();
           notification.push(data.error);
           actionClass = this.display_order_action_notification(data.status);
         }
@@ -193,6 +295,11 @@ export default {
         type: 'Click',
       });
     },
+    trackRemoveSingleConfigs() {
+      mixpanel.track('"Remove Single Pricing" Icon - ButtonClick', {
+        type: 'Click',
+      });
+    },
     trackResetConfigsSuccess() {
       mixpanel.track('Reset successful - Success', {
         type: 'Success',
@@ -227,5 +334,9 @@ export default {
 }
 .table td {
   padding: 5px !important;
+}
+#delete-column {
+  cursor: pointer;
+  color: #d80303;
 }
 </style>

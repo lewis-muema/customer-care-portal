@@ -24,6 +24,18 @@
       </el-table-column>
       <el-table-column prop="to" label="Drop off location" width="255">
       </el-table-column>
+      <el-table-column
+        prop="empty_return"
+        label="Empty return location (Freight)"
+        width="255"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="container_size_feet"
+        label="Container Size (Freight)"
+        width="255"
+      >
+      </el-table-column>
       <el-table-column prop="name" label="Vendor type" width="130">
       </el-table-column>
       <el-table-column prop="order_amount" label="Client fee" width="130">
@@ -80,7 +92,7 @@ export default {
       admin_list: [],
       adminId: 0,
       currency: '',
-      tableTitle: 'Location Pricing Table',
+      tableTitle: 'Container Pricing Table',
       isHidden: false,
       approverSelect: false,
       tableData: [],
@@ -118,7 +130,7 @@ export default {
     }),
     ...mapActions({
       setAdmins: 'setAdmins',
-      deactivate_location_pricing: 'deactivate_location_pricing',
+      deactivate_container_pricing: 'deactivate_container_pricing',
     }),
     viewSummary() {
       this.updateSummaryStatus(true);
@@ -141,15 +153,15 @@ export default {
     },
     resetCustomPricing() {
       this.trackResetConfigs();
-      const locationPayload = [];
+      const containerPayload = [];
       this.tableData.forEach(row => {
-        locationPayload.push(row);
+        containerPayload.push(row);
       });
-      if (locationPayload.length > 0) {
-        const configParams = this.createLocationPayload(locationPayload);
+      if (containerPayload.length > 0) {
+        const configParams = this.createContainerPayload(containerPayload);
         const payload = {
           app: 'PRICING_SERVICE',
-          endpoint: 'pricing/price_config/update_custom_distance_details',
+          endpoint: 'price_config/update_custom_distance_details',
           apiKey: false,
           params: configParams,
         };
@@ -158,9 +170,9 @@ export default {
     },
     removeSinglePriceConfig(row, index) {
       this.trackRemoveSingleConfigs();
-      const locationPayload = [];
-      locationPayload.push(row);
-      const configParams = this.createLocationPayload(locationPayload);
+      const containerPayload = [];
+      containerPayload.push(row);
+      const configParams = this.createContainerPayload(containerPayload);
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'price_config/update_custom_distance_details',
@@ -173,11 +185,10 @@ export default {
       const notification = [];
       let actionClass = '';
       try {
-        const data = await this.deactivate_location_pricing(payload);
+        const data = await this.deactivate_container_pricing(payload);
         if (data.status) {
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
-          this.$emit('viewUpdate', false);
           this.trackResetConfigsSuccess();
           this.trackMixpanelPeople();
           this.viewSummary();
@@ -198,7 +209,7 @@ export default {
       const notification = [];
       let actionClass = '';
       try {
-        const data = await this.deactivate_location_pricing(payload);
+        const data = await this.deactivate_container_pricing(payload);
         if (data.status) {
           notification.push('Custom price configs deactivated successfully.');
           actionClass = this.display_order_action_notification(data.status);
@@ -220,20 +231,20 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    createLocationPayload(data) {
-      const locationPricingArray = [];
+    createContainerPayload(data) {
+      const containerPricingArray = [];
       for (let i = 0; i < data.length; i += 1) {
-        const locationPricingObject = {
+        const containerPricingObject = {
           cop_id: this.copId,
           vendor_id: data[i].id,
+          object_id: data[i].object_id,
           from_coordinates: data[i].from_location.coordinates,
           to_coordinates: data[i].to_location.coordinates,
-          object_id: data[i].object_id,
           custom_pricing_details: {
-            location_pricing: [],
+            container_pricing: [],
           },
         };
-        const locationData = {
+        const containerData = {
           id: data[i].id,
           name: data[i].name,
           cop_id: this.copId,
@@ -259,7 +270,6 @@ export default {
           additional_location_cost: data[i].additional_location_cost,
           service_fee: data[i].service_fee,
           from: data[i].from,
-          service_fee: data[i].service_fee,
           from_location: {
             type: data[i].from_location.type,
             coordinates: data[i].from_location.coordinates,
@@ -268,18 +278,25 @@ export default {
             type: data[i].to_location.type,
             coordinates: data[i].to_location.coordinates,
           },
+          empty_return_location: {
+            type: data[i].empty_return_location.type,
+            coordinates: data[i].empty_return_location.coordinates,
+          },
           to: data[i].to,
+          empty_return: data[i].empty_return,
           status: 'Deactivated',
-          city: data[i].city,
           order_amount: data[i].order_amount,
           rider_amount: data[i].rider_amount,
+          container_size_feet: parseInt(data[i].container_size_feet, 10),
+          container_errand_type: data[i].container_errand_type,
+          city: data[i].city,
         };
-        locationPricingObject.custom_pricing_details.location_pricing.push(
-          locationData,
+        containerPricingObject.custom_pricing_details.container_pricing.push(
+          containerData,
         );
-        locationPricingArray.push(locationPricingObject);
+        containerPricingArray.push(containerPricingObject);
       }
-      return locationPricingArray;
+      return containerPricingArray;
     },
     trackViewDetailsPage() {
       mixpanel.track('View Details Link - PageView', {

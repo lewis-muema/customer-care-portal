@@ -45,6 +45,24 @@
         </el-table-column>
         <el-table-column prop="to" label="Drop off location" width="200">
         </el-table-column>
+        <el-table-column
+          prop="empty_container_destination"
+          label="Empty container return"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="container_weight_tonnes"
+          label="Cargo Type"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="container_size_feet"
+          label="Container Size"
+          width="200"
+        >
+        </el-table-column>
         <el-table-column prop="name" label="Vendor type" width="130">
         </el-table-column>
         <el-table-column prop="order_amount" label="Client fee" width="130">
@@ -54,7 +72,7 @@
         <el-table-column
           prop="sendy_commission"
           label="Sendy Commission (%)"
-          width="120"
+          width="170"
         >
         </el-table-column>
         <el-table-column prop="service_fee" label="Sendy fee" width="130">
@@ -78,7 +96,7 @@ import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 export default {
-  name: 'PreviewLocationPricingComponent',
+  name: 'PreviewContainerPricingComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
@@ -144,15 +162,15 @@ export default {
     },
     submitConfigs() {
       this.trackPricingSubmit();
-      const locationPayload = [];
+      const containerPayload = [];
       this.tableData.forEach(row => {
-        locationPayload.push(row);
+        containerPayload.push(row);
       });
-      if (locationPayload.length > 0) {
-        const configParams = this.createLocationPayload(locationPayload);
+      if (containerPayload.length > 0) {
+        const configParams = this.createContainerPayload(containerPayload);
         const payload = {
           app: 'PRICING_SERVICE',
-          endpoint: 'pricing/price_config/add_custom_distance_details',
+          endpoint: 'price_config/add_custom_distance_details',
           apiKey: false,
           params: configParams,
         };
@@ -194,28 +212,25 @@ export default {
     submitNotification() {
       this.$emit('configSubmitted');
     },
-    createLocationPayload(data) {
-      const locationPricingArray = [];
+    createContainerPayload(data) {
+      const containerPricingArray = [];
       for (let i = 0; i < data.length; i += 1) {
-        const locationPricingObject = {
+        const containerPricingObject = {
           cop_id: this.copId,
-          cop_name: this.copName,
           custom_pricing_details: {
-            id: data[i].id,
-            name: data[i].name,
-            currency: this.currency,
-            admin_id: this.approver,
-            location_pricing: [],
+            container_pricing: [],
           },
+          cop_name: this.copName,
+          admin_id: this.approver,
+          currency: this.currency,
         };
-        const locationData = {
-          id: data[i].id,
+        const containerData = {
+          status: 'Active',
           name: data[i].name,
           cop_id: this.copId,
-          cop_name: data[i].cop_name,
+          cop_name: this.copName,
           currency: this.currency,
           admin_id: this.approver,
-          sendy_commission: parseInt(data[i].sendy_commission, 10),
           service_fee: parseInt(data[i].service_fee, 10),
           from: data[i].from,
           from_location: {
@@ -227,20 +242,34 @@ export default {
             coordinates: data[i].to_location.coordinates,
           },
           to: data[i].to,
-          status: 'Pending',
           city: data[i].city,
           order_amount: parseInt(data[i].order_amount, 10),
           rider_amount: parseInt(data[i].rider_amount, 10),
+          cost_per_km_above_base_km: 0,
+          waiting_time_cost_per_min: 3.33,
+          sendy_commission: parseInt(data[i].sendy_commission, 10),
+          extra_distance_base_km: 1,
+          loader_cost: 0,
+          min_cancellation_fee: 0,
+          max_cancellation_fee: 0,
+          percentage_cancellation_fee: 0,
+          order_pick_up_time_delay: 0,
+          order_confirmation_time_delay: 0,
+          container_size_feet: parseInt(data[i].container_size_feet, 10),
+          container_errand_type: data[i].container_errand_type,
+          id: data[i].id,
+          empty_return_location: data[i].empty_return_location,
+          empty_return: data[i].empty_container_destination,
         };
-        locationPricingObject.custom_pricing_details.location_pricing.push(
-          locationData,
+        containerPricingObject.custom_pricing_details.container_pricing.push(
+          containerData,
         );
-        locationPricingArray.push(locationPricingObject);
+        containerPricingArray.push(containerPricingObject);
       }
-      return locationPricingArray;
+      return containerPricingArray;
     },
     trackPricingSubmitPage() {
-      mixpanel.track('Submit location pricing for approval Page - PageView', {
+      mixpanel.track('Submit container pricing for approval Page - PageView', {
         type: 'PageView',
       });
     },
@@ -250,12 +279,12 @@ export default {
       });
     },
     trackPassedSubmission() {
-      mixpanel.track('Location pricing saved - Success', {
+      mixpanel.track('Container pricing saved - Success', {
         type: 'Success',
       });
     },
     trackFailedSubmission() {
-      mixpanel.track('Location pricing not saved - Fail', {
+      mixpanel.track('Container pricing not saved - Fail', {
         type: 'Fail',
       });
     },

@@ -695,20 +695,34 @@ export default {
   async request_pending_distance_pricing_data({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
-      const pendingDistancePricing = [];
+      let pendingDistancePricing = [];
       let pendingLocationPricing = [];
+      const pricingTableData = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < pendingPricingDetails.length; i += 1) {
-          if (pendingPricingDetails[i].location_pricing) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              pendingPricingDetails[i],
+              'location_pricing',
+            )
+          ) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
-          } else {
+          }
+          if (
+            Object.prototype.hasOwnProperty.call(
+              pendingPricingDetails[i],
+              'distance_pricing',
+            )
+          ) {
             pendingPricingDetails[
               i
-            ].distance_pricing.waiting_time_cost_per_min *= 60;
-            pendingDistancePricing.push(
-              pendingPricingDetails[i].distance_pricing,
-            );
+            ].distance_pricing.waiting_time_cost_per_min = (
+              pendingPricingDetails[i].distance_pricing
+                .waiting_time_cost_per_min * 60
+            ).toFixed(0);
+            pricingTableData.push(pendingPricingDetails[i].distance_pricing);
+            pendingDistancePricing = pricingTableData;
           }
         }
         commit('updatePendingDistancePricing', pendingDistancePricing);
@@ -726,15 +740,27 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let approverId = 0;
-      const distancePricing = [];
+      let distancePricing = [];
       let locationPricing = [];
+      const pricingTableData = [];
       if (res.data.status) {
         const customPricingDetails = res.data.custom_pricing_details;
         for (let i = 0; i < customPricingDetails.length; i += 1) {
-          if (customPricingDetails[i].location_pricing) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              customPricingDetails[i],
+              'location_pricing',
+            )
+          ) {
             approverId = customPricingDetails[i].location_pricing[0].admin_id;
             locationPricing = customPricingDetails[i].location_pricing;
-          } else if (customPricingDetails[i].container_pricing) {
+          }
+          if (
+            Object.prototype.hasOwnProperty.call(
+              customPricingDetails[i],
+              'container_pricing',
+            )
+          ) {
             approverId = customPricingDetails[i].container_pricing[0].admin_id;
             if (locationPricing.length > 0) {
               locationPricing = locationPricing.concat(
@@ -743,12 +769,22 @@ export default {
             } else {
               locationPricing = customPricingDetails[i].container_pricing;
             }
-          } else if (customPricingDetails[i].distance_pricing) {
+          }
+          if (
+            Object.prototype.hasOwnProperty.call(
+              customPricingDetails[i],
+              'distance_pricing',
+            )
+          ) {
             approverId = customPricingDetails[i].admin_id;
             customPricingDetails[
               i
-            ].distance_pricing.waiting_time_cost_per_min *= 60;
-            distancePricing.push(customPricingDetails[i].distance_pricing);
+            ].distance_pricing.waiting_time_cost_per_min = (
+              customPricingDetails[i].distance_pricing
+                .waiting_time_cost_per_min * 60
+            ).toFixed(0);
+            pricingTableData.push(customPricingDetails[i].distance_pricing);
+            distancePricing = pricingTableData;
           }
         }
         commit('updateLocationPricing', locationPricing);
@@ -793,6 +829,14 @@ export default {
     }
   },
   async deactivate_location_pricing({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async deactivate_container_pricing({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
