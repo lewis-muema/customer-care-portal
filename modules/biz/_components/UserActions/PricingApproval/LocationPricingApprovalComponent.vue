@@ -140,7 +140,6 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    mixpanel.init('d0554ae8b8905e4984de170b62b2c9c6');
     this.trackApprovalHomePage();
   },
   methods: {
