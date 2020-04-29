@@ -28,8 +28,14 @@
         <tr>
           <th>Approximate Extra Distance Covered in KMs</th>
         </tr>
-        <tr v-for="(item, index) in distance" :key="index">
+        <tr v-if="distance.length === 0">
           <td>
+            0
+            <strong> &nbsp;Kilometers</strong>
+          </td>
+        </tr>
+        <tr v-else>
+          <td v-for="(item, index) in distance" :key="index">
             <strong>At Waypoint &nbsp;</strong> {{ item.waypoint_no }}
             <span class="pull-right">
               {{ (item.extra_distance / 1000).toFixed(2) }}
