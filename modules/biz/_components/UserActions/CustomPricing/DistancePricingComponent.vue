@@ -19,6 +19,7 @@
           <el-table-column class="delete-col" width="40" fixed="left">
             <template slot-scope="scope">
               <el-button
+                v-if="scope.$index > 0"
                 @click.native.prevent="deleteRow(scope.$index, scope.row)"
                 type="text"
                 size="small"
@@ -29,25 +30,31 @@
           </el-table-column>
           <el-table-column prop="city" label="City" width="335">
             <template slot-scope="scope">
-              <el-input
-                v-if="scope.row.city"
-                size="small"
-                class="table--col-text"
-                placeholder="Search city"
-                v-model="scope.row.city"
-              ></el-input>
-              <el-autocomplete
-                v-else
-                size="small"
-                class="inline-input"
-                v-model="pacInput"
-                :value="handleSelect"
-                :fetch-suggestions="querySearch"
-                placeholder="Search city"
-                :trigger-on-focus="false"
-                @select="handleSelect($event, scope.$index, scope.row)"
+              <el-popover
+                placement="bottom"
+                width="Min width 150px"
+                v-model="visible"
+                :disabled="scope.$index !== currentIndex"
               >
-              </el-autocomplete>
+                <div>
+                  <div
+                    class="single-suggestion"
+                    v-for="suggestion in suggestions"
+                    :key="suggestion.id"
+                    @click="handleSelect(scope.$index, suggestion.description)"
+                  >
+                    {{ suggestion.description }}
+                  </div>
+                </div>
+                <el-input
+                  slot="reference"
+                  size="small"
+                  class="table--col-text"
+                  placeholder="Search city"
+                  v-model="pacInput[scope.$index].name"
+                  @focus="handleFocus(scope.$index)"
+                ></el-input>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Vendor Type" width="200">
@@ -57,6 +64,7 @@
                 placeholder="Select Vendor"
                 size="small"
                 @change="onChange($event, scope.$index, scope.row)"
+                @focus="currentIndex = scope.$index"
               >
                 <el-option
                   v-for="vendor in vendorTypes"
@@ -77,9 +85,29 @@
                 class="table--col-text"
                 v-model="scope.row.base_cost"
                 @change="calculateClientFee(scope.$index, scope.row)"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="sendy_commission"
+            label="Sendy Commission (%)"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input
+                size="small"
+                type="text"
+                class="table--col-text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="scope.row.sendy_commission"
+                @focus="currentIndex = scope.$index"
+                ><template class="pricing-prepend" slot="append">
+                  %
+                </template></el-input
               >
             </template>
           </el-table-column>
@@ -92,6 +120,7 @@
                 class="table--col-text"
                 v-model="scope.row.service_fee"
                 @change="calculateClientFee(scope.$index, scope.row)"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -107,6 +136,7 @@
                 class="table--col-text"
                 v-model="scope.row.insurance"
                 @change="calculateClientFee(scope.$index, scope.row)"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -122,6 +152,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.client_fee"
+                @focus="currentIndex = scope.$index"
               >
                 <template class="pricing-prepend" slot="prepend"
                   >{{ currency }}
@@ -137,6 +168,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.base_km"
+                @focus="currentIndex = scope.$index"
               >
                 <template class="pricing-prepend" slot="prepend">
                   KM
@@ -156,6 +188,7 @@
                 size="small"
                 class="table--col-text"
                 v-model="scope.row.cost_per_km_above_base_km"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -174,6 +207,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.additional_location_cost"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -192,6 +226,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.waiting_time_cost_per_min"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -210,6 +245,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.loader_cost"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -228,6 +264,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.cancellation_fee"
+                @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -265,7 +302,13 @@ export default {
   mixins: [PricingConfigsMxn],
   data() {
     return {
-      pacInput: '',
+      visible: false,
+      pacInput: [
+        {
+          name: '',
+        },
+      ],
+      currentIndex: 0,
       currency: '',
       vendorName: '',
       suggestions: [],
@@ -280,6 +323,7 @@ export default {
           additional_location_cost: '',
           waiting_time_cost_per_min: '',
           loader_cost: '',
+          sendy_commission: '',
           service_fee: '',
           insurance: '',
           client_fee: '',
@@ -310,8 +354,18 @@ export default {
     },
   },
   watch: {
-    pacInput(val) {
-      this.search(val);
+    pacInput: {
+      handler(val) {
+        val = val[this.currentIndex].name;
+        if (
+          val &&
+          val.length > 2 &&
+          this.tableData[this.currentIndex].city !== val
+        ) {
+          this.search(val);
+        }
+      },
+      deep: true,
     },
     calculateClientFee(val) {},
   },
@@ -344,18 +398,22 @@ export default {
       const orderAmount = partnerAmount + serviceFee + insurance;
       return (this.tableData[index].client_fee = orderAmount);
     },
-    querySearch(queryString, cb) {
-      for (let i = 0; i < this.suggestions.length; i += 1) {
-        this.suggestions[i].value = this.suggestions[i]['description'];
-        delete this.suggestions[i].description;
+    handleFocus(index) {
+      this.currentIndex = index;
+      if (this.pacInput[index].name !== '') {
+        this.search(this.pacInput[index].name);
       }
-      cb(this.suggestions);
     },
-    handleSelect(item, index, row) {
-      this.tableData[index].city = item.value;
+    handleSelect(index, item) {
+      this.pacInput[index].name = item;
+      this.visible = false;
+      this.tableData[index].city = item;
+      this.suggestions = [];
     },
     deleteRow(index, rows) {
+      this.currentIndex = this.tableData.length - 2;
       this.tableData.splice(index, 1);
+      this.pacInput.splice(index, 1);
     },
     onSectionUpdate(value) {
       this.previewDistancePricing = value;
@@ -363,6 +421,7 @@ export default {
     configSubmitted() {
       this.previewLocationPricing = false;
       this.$emit('destroyDistanceComponent');
+      this.goBack();
     },
     trackAddPricingDataPage() {
       mixpanel.track('Add Distance Pricing data Page - PageView', {
@@ -375,15 +434,16 @@ export default {
       });
     },
     // eslint-disable-next-line func-names
-    search: _.throttle(function(val) {
+    search: _.debounce(function(val) {
       axios
         .get(
           `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
+          this.visible = true;
         });
-    }, 2000),
+    }, 500),
   },
 };
 </script>
@@ -397,5 +457,10 @@ export default {
 .el-table--scrollable-x .el-table__body-wrapper {
   overflow-x: auto;
   padding-bottom: 15px !important;
+}
+.single-suggestion {
+  cursor: pointer;
+  height: 25px;
+  padding-right: 15px;
 }
 </style>

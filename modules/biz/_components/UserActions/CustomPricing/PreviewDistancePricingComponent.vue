@@ -47,6 +47,12 @@
         </el-table-column>
         <el-table-column prop="base_cost" label="Partner Amount" width="150">
         </el-table-column>
+        <el-table-column
+          prop="sendy_commission"
+          label="Sendy Commission (%)"
+          width="120"
+        >
+        </el-table-column>
         <el-table-column prop="service_fee" label="Service Fee" width="120">
         </el-table-column>
         <el-table-column prop="insurance" label="Insurance" width="120">
@@ -252,6 +258,10 @@ export default {
               ),
               additional_location_cost: parseInt(
                 pricingConfigData[i].additional_location_cost,
+                10,
+              ),
+              sendy_commission: parseInt(
+                pricingConfigData[i].sendy_commission,
                 10,
               ),
               service_fee: parseInt(pricingConfigData[i].service_fee, 10),

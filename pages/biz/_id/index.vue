@@ -27,6 +27,7 @@ export default {
       copId: parseInt(this.$route.params.id, 10),
       locationPricing: false,
       distancePricing: false,
+      containerPricing: false,
       defaultCurrency: '',
       message: '',
       user: {},
@@ -62,11 +63,27 @@ export default {
       };
       try {
         const data = await this.request_pricing_data(payload);
-        if (data.custom_pricing_details[0].distance_pricing) {
-          this.distancePricing = true;
-        } else {
-          this.locationPricing = true;
-        }
+        data.custom_pricing_details.forEach(row => {
+          if (Object.prototype.hasOwnProperty.call(row, 'distance_pricing')) {
+            if (row.distance_pricing.status === 'Pending') {
+              this.distancePricing = true;
+            }
+          }
+          if (Object.prototype.hasOwnProperty.call(row, 'location_pricing')) {
+            row.location_pricing.forEach(row1 => {
+              if (row1.status === 'Pending') {
+                this.locationPricing = true;
+              }
+            });
+          }
+          if (Object.prototype.hasOwnProperty.call(row, 'container_pricing')) {
+            row.container_pricing.forEach(row2 => {
+              if (row2.status === 'Pending') {
+                this.containerPricing = true;
+              }
+            });
+          }
+        });
       } catch (error) {
         this.message = 'Something went wrong. Please try again.';
       }

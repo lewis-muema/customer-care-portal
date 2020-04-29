@@ -131,7 +131,9 @@ const PricingConfigsMxn = {
     },
     addRow(model) {
       if (model === 'Distance') {
-        this.pacInput = '';
+        this.pacInput.push({
+          name: '',
+        });
         const distancePricingRow = {
           city: '',
           name: '',
@@ -142,6 +144,7 @@ const PricingConfigsMxn = {
           waiting_time_cost_per_min: '',
           loader_cost: '',
           service_fee: '',
+          sendy_commission: '',
           insurance: '',
           client_fee: '',
           cancellation_fee: '',
@@ -154,9 +157,6 @@ const PricingConfigsMxn = {
         this.pacInput2.push({
           name: '',
         });
-        this.pacInput3.push({
-          name: '',
-        });
         const locationPricingRow = {
           id: 1,
           name: '',
@@ -165,6 +165,42 @@ const PricingConfigsMxn = {
           currency: '',
           admin_id: 1,
           service_fee: 0,
+          sendy_commission: 0,
+          from: '',
+          from_location: {
+            type: 'Point',
+            coordinates: [36.799157, -1.299287],
+          },
+          to_location: {
+            type: 'Point',
+            coordinates: [39.671947, -4.056442],
+          },
+          to: '',
+          status: '',
+          city: '',
+          order_amount: 0,
+          rider_amount: 0,
+        };
+        this.tableData.push(locationPricingRow);
+      } else if (model === 'Container') {
+        this.pacInput1.push({
+          name: '',
+        });
+        this.pacInput2.push({
+          name: '',
+        });
+        this.pacInput3.push({
+          name: '',
+        });
+        const ContainerPricingRow = {
+          id: 1,
+          name: '',
+          cop_id: 1,
+          cop_name: '',
+          currency: 'KES',
+          admin_id: 1,
+          service_fee: 0,
+          sendy_commission: 0,
           from: '',
           from_location: {
             type: 'Point',
@@ -188,7 +224,7 @@ const PricingConfigsMxn = {
           container_size_feet: '',
           container_errand_type: 'drop_off',
         };
-        this.tableData.push(locationPricingRow);
+        this.tableData.push(ContainerPricingRow);
       }
     },
     async sendEmailNotification(email, name) {
