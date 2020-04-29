@@ -13,11 +13,13 @@
         <tr v-for="(item, index) in waiting" :key="index">
           <td>
             <strong>From &nbsp;</strong>
-            {{ item.start_time }} <strong>To &nbsp;</strong> {{ item.end_time }}
+            {{ convertTime(item.start_time) }}
+            <strong>To &nbsp;</strong> {{ convertTime(item.end_time) }}
 
             <span class="pull-right">
-              {{ Math.floor(item.waiting_time / 60) }}
-              <strong> &nbsp;minutes</strong>
+              <strong>
+                {{ Math.floor(item.waiting_time / 60) }} &nbsp;minutes</strong
+              >
             </span>
           </td>
         </tr>
@@ -48,6 +50,8 @@
   </div>
 </template>
 <script>
+import moment from 'moment';
+
 export default {
   name: 'BillingDataComponent',
   props: {
@@ -62,9 +66,17 @@ export default {
       distance: this.order.billing_data.extra_distance,
     };
   },
+
+  methods: {
+    convertTime(date) {
+      const UTC = this.convertToUTC(date);
+      const localTime = this.convertToLocalTime(UTC);
+      return moment(localTime).format('MMMM Do YYYY, h:mm:ss a');
+    },
+  },
 };
 </script>
-//
+
 <style>
 .table {
   border: 0;
