@@ -20,6 +20,7 @@ const PricingConfigsMxn = {
       customPricingDetails: [],
       distancePricingTableData: [],
       locationPricingTableData: [],
+      containerPricingTableData: [],
     };
   },
   mounted() {
@@ -64,9 +65,11 @@ const PricingConfigsMxn = {
           this.customPricingDetails = data.custom_pricing_details;
           this.distancePricingTableData = this.pendingDistancePricing;
           this.locationPricingTableData = this.pendingLocationPricing;
+          this.containerPricingTableData = this.pendingContainerPricing;
         } else {
           this.distancePricingTableData = [];
           this.locationPricingTableData = [];
+          this.containerPricingTableData = [];
         }
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
@@ -180,6 +183,7 @@ const PricingConfigsMxn = {
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
         };
         this.tableData.push(locationPricingRow);
       } else if (model === 'Container') {
@@ -220,6 +224,7 @@ const PricingConfigsMxn = {
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',

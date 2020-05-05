@@ -14,6 +14,7 @@
       <el-table-column prop="" label="" width="50">
         <template slot-scope="scope">
           <i
+            v-if="status === 'Active'"
             class="fa fa-fw fa-trash-o"
             id="delete-column"
             @click="removeSinglePriceConfig(scope.row, scope.$index)"

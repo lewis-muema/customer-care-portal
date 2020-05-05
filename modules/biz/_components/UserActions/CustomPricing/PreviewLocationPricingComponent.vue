@@ -59,6 +59,8 @@
         </el-table-column>
         <el-table-column prop="service_fee" label="Sendy fee" width="130">
         </el-table-column>
+        <el-table-column prop="insurance" label="Insurance" width="130">
+        </el-table-column>
       </el-table>
       <button @click="editTable" class="edit-table-link">
         Edit Table
@@ -231,7 +233,11 @@ export default {
           city: data[i].city,
           order_amount: parseInt(data[i].order_amount, 10),
           rider_amount: parseInt(data[i].rider_amount, 10),
+          insurance: parseInt(data[i].insurance, 10),
         };
+        if (data[i].id === 20) {
+          locationData.fixed_cost = 1;
+        }
         locationPricingObject.custom_pricing_details.location_pricing.push(
           locationData,
         );

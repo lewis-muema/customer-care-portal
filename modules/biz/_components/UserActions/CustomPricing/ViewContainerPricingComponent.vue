@@ -14,6 +14,7 @@
       <el-table-column prop="" label="" width="50">
         <template slot-scope="scope">
           <i
+            v-if="status === 'Active'"
             class="fa fa-fw fa-trash-o"
             id="delete-column"
             @click="removeSinglePriceConfig(scope.row, scope.$index)"
@@ -49,6 +50,8 @@
       >
       </el-table-column>
       <el-table-column prop="service_fee" label="Sendy fee" width="130">
+      </el-table-column>
+      <el-table-column prop="insurance" label="Insurance" width="120">
       </el-table-column>
     </el-table>
     <div class="pricing-view-actions">

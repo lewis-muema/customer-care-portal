@@ -5,6 +5,10 @@
       v-if="locationPricing"
       :user="user"
     ></LocationPricingApprovalComponent>
+    <ContainerPricingApprovalComponent
+      v-if="containerPricing"
+      :user="user"
+    ></ContainerPricingApprovalComponent>
   </div>
 </template>
 <script>
@@ -20,6 +24,10 @@ export default {
     LocationPricingApprovalComponent: () =>
       import(
         '../../../modules/biz/_components/UserActions/PricingApproval/LocationPricingApprovalComponent'
+      ),
+    ContainerPricingApprovalComponent: () =>
+      import(
+        '../../../modules/biz/_components/UserActions/PricingApproval/ContainerPricingApprovalComponent'
       ),
   },
   data() {
@@ -39,7 +47,10 @@ export default {
     this.fetchCustomDistancePricingData();
   },
   methods: {
-    ...mapActions(['request_single_user', 'request_pricing_data']),
+    ...mapActions([
+      'request_single_user',
+      'request_pending_distance_pricing_data',
+    ]),
     async singleCopUserRequest() {
       const payload = { userID: this.copId, userType: 'cop' };
       try {
@@ -58,30 +69,22 @@ export default {
         params: {
           cop_id: this.copId,
           currency: this.defaultCurrency,
-          status: ['Pending', 'Active'],
+          status: ['Pending'],
+          get_object_id: true,
+          admin_id: parseInt(this.session.payload.data.admin_id, 10),
         },
       };
       try {
-        const data = await this.request_pricing_data(payload);
+        const data = await this.request_pending_distance_pricing_data(payload);
         data.custom_pricing_details.forEach(row => {
           if (Object.prototype.hasOwnProperty.call(row, 'distance_pricing')) {
-            if (row.distance_pricing.status === 'Pending') {
-              this.distancePricing = true;
-            }
+            this.distancePricing = true;
           }
           if (Object.prototype.hasOwnProperty.call(row, 'location_pricing')) {
-            row.location_pricing.forEach(row1 => {
-              if (row1.status === 'Pending') {
-                this.locationPricing = true;
-              }
-            });
+            this.locationPricing = true;
           }
           if (Object.prototype.hasOwnProperty.call(row, 'container_pricing')) {
-            row.container_pricing.forEach(row2 => {
-              if (row2.status === 'Pending') {
-                this.containerPricing = true;
-              }
-            });
+            this.containerPricing = true;
           }
         });
       } catch (error) {
