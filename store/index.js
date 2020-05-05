@@ -81,6 +81,7 @@ export default {
       distancePricingData: [],
       pendingPricingData: [],
       pendingLocationData: [],
+      pendingContainerData: [],
       locationPricingData: [],
       tableData: [],
       customPricingDetails: [],

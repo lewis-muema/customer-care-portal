@@ -106,6 +106,9 @@ export default {
   updatePendingLocationPricing(state, val) {
     state.pendingLocationData = val;
   },
+  updatePendingContainerPricing(state, val) {
+    state.pendingContainerData = val;
+  },
   updateApproveStatus(state, val) {
     state.approveStatus = val;
   },

@@ -94,6 +94,9 @@ export default {
   getPendingLocationPricing(state) {
     return state.pendingLocationData;
   },
+  getPendingContainerPricing(state) {
+    return state.pendingContainerData;
+  },
   getApproveStatus(state) {
     return state.approveStatus;
   },

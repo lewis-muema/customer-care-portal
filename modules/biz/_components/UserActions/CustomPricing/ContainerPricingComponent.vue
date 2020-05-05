@@ -240,6 +240,22 @@
               >
             </template>
           </el-table-column>
+          <el-table-column prop="insurance" label="Insurance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="table--col-text"
+                v-model="scope.row.insurance"
+                @focus="rowIndex = scope.$index"
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
+              >
+            </template>
+          </el-table-column>
         </el-table>
         <p class="pricing-add-row" @click="addRow('Container')">
           <i class="fa fa-plus"></i> Add a new row
@@ -332,6 +348,7 @@ export default {
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',
@@ -529,6 +546,9 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
+      this.tableData[index].insurance = this.vendor.insurance
+        ? this.vendor.insurance.max_distance_cost
+        : 0;
     },
     previewConfig() {
       this.previewLocationPricing = true;
@@ -570,6 +590,7 @@ export default {
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',

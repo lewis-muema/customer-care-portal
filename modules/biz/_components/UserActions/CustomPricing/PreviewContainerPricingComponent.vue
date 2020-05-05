@@ -77,6 +77,8 @@
         </el-table-column>
         <el-table-column prop="service_fee" label="Sendy fee" width="130">
         </el-table-column>
+        <el-table-column prop="insurance" label="Insurance" width="130">
+        </el-table-column>
       </el-table>
       <button @click="editTable" class="edit-table-link">
         Edit Table
@@ -225,7 +227,7 @@ export default {
           currency: this.currency,
         };
         const containerData = {
-          status: 'Active',
+          status: 'Pending',
           name: data[i].name,
           cop_id: this.copId,
           cop_name: this.copName,
@@ -245,6 +247,7 @@ export default {
           city: data[i].city,
           order_amount: parseInt(data[i].order_amount, 10),
           rider_amount: parseInt(data[i].rider_amount, 10),
+          insurance: parseInt(data[i].insurance, 10),
           cost_per_km_above_base_km: 0,
           waiting_time_cost_per_min: 3.33,
           sendy_commission: parseInt(data[i].sendy_commission, 10),

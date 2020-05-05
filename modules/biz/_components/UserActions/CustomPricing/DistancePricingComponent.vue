@@ -130,6 +130,7 @@
           <el-table-column prop="insurance" label="Insurance" width="200">
             <template slot-scope="scope">
               <el-input
+                :disabled="true"
                 size="small"
                 type="text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
@@ -390,6 +391,9 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
+      this.tableData[index].insurance = this.vendor.insurance
+        ? this.vendor.insurance.max_distance_cost
+        : 0;
     },
     calculateClientFee(index, row) {
       const partnerAmount = parseInt(row.base_cost, 10);
