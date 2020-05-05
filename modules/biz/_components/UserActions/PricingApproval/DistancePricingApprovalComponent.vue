@@ -139,6 +139,7 @@ export default {
   computed: {
     ...mapGetters({
       pendingDistancePricing: 'getPendingDistancePricing',
+      getCustomPricingDetails: 'getCustomPricingDetails',
       getSessionData: 'getSession',
       getApproveStatus: 'getApproveStatus',
     }),
@@ -155,8 +156,13 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.getDistancePricingConfigs();
-    this.trackApprovalHomePage();
+    this.distancePricingTableData = this.pendingDistancePricing;
+    this.getCustomPricingDetails.forEach(row => {
+      if (Object.prototype.hasOwnProperty.call(row, 'distance_pricing')) {
+        this.customPricingDetails.push(row);
+      }
+    });
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -184,7 +190,7 @@ export default {
         ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
       }
       this.approvalParams = JSON.parse(
-        JSON.stringify(this.createPayload(pricingTableData, 'deactivated')),
+        JSON.stringify(this.createPayload(pricingTableData, 'Deactivated')),
       );
       const notification = [];
       let actionClass = '';
@@ -204,6 +210,7 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
+          this.updateApproveStatus(false);
         } else {
           this.trackFailedReject();
           this.trackMixpanelPeople();
@@ -286,6 +293,7 @@ export default {
               name: pricingApprovalData[i].name,
               currency: pricingApprovalData[i].currency,
               admin_id: pricingApprovalData[i].admin_id,
+              object_id: pricingApprovalData[i].object_id,
               distance_pricing: pricingApprovalData[i].distance_pricing,
               rejection_message: this.rejectionReason,
             },

@@ -9,13 +9,19 @@
           {{ approvalText }}
         </div>
         <el-table
-          :data="locationPricingTableData"
+          :data="containerPricingTableData"
           border
           class="pricing-table-styling preview-container"
         >
           <el-table-column prop="from" label="Pick up location" width="200">
           </el-table-column>
           <el-table-column prop="to" label="Drop off location" width="200">
+          </el-table-column>
+          <el-table-column
+            prop="empty_return"
+            label="Empty return location"
+            width="200"
+          >
           </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="130">
           </el-table-column>
@@ -43,7 +49,7 @@
         </button>
         <el-button
           class="approve-config-btn btn-primary"
-          @click="approveLocationPricingConfigs"
+          @click="approveContainerPricingConfigs"
           >Approve pricing</el-button
         >
       </div>
@@ -68,7 +74,7 @@
               <el-button
                 :disabled="rejectionReason === ''"
                 class="pricing-save-btn submit-approval-btn btn-primary"
-                @click="rejectDistancePricingConfigs"
+                @click="rejectContainerPricingConfigs"
                 >Reject Request</el-button
               >
             </div>
@@ -102,7 +108,7 @@ export default {
   },
   data() {
     return {
-      locationPricingTableData: [],
+      containerPricingTableData: [],
       customPricingDetails: [],
       approvalParams: [],
       copId: '',
@@ -113,13 +119,13 @@ export default {
       copName: '',
       pendingRequests: false,
       rejectWithReason: false,
-      pricingTitle: 'Location Pricing Table',
+      pricingTitle: 'Container Pricing Table',
       approvalText: 'Requires your approval',
     };
   },
   computed: {
     ...mapGetters({
-      pendingLocationPricing: 'getPendingLocationPricing',
+      pendingContainerPricing: 'getPendingContainerPricing',
       getSessionData: 'getSession',
       getApproveStatus: 'getApproveStatus',
     }),
@@ -131,9 +137,9 @@ export default {
   },
   mounted() {
     this.updateApproveStatus(true);
-    this.locationPricingTableData = this.pendingLocationPricing;
+    this.containerPricingTableData = this.pendingContainerPricing;
     this.pendingRequests = false;
-    if (this.getApproveStatus && this.locationPricingTableData.length !== 0) {
+    if (this.getApproveStatus && this.containerPricingTableData.length !== 0) {
       this.pendingRequests = true;
     }
     this.copId = this.user.user_details.cop_id;
@@ -141,7 +147,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.trackApprovalHomePage();
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -151,24 +157,23 @@ export default {
       updateApproveStatus: 'updateApproveStatus',
     }),
     ...mapActions({
-      approve_location_pricing_configs: 'approve_location_pricing_configs',
+      approve_container_pricing_configs: 'approve_container_pricing_configs',
     }),
-    async rejectDistancePricingConfigs() {
+    async rejectContainerPricingConfigs() {
       this.trackRejectConfigs();
-      this.approvalParams = this.createPayload(
-        this.locationPricingTableData,
-        'Deactivated',
-      );
+      const clone = JSON.parse(JSON.stringify(this.containerPricingTableData));
+      const pricingTableData = clone;
+      this.approvalParams = this.createPayload(pricingTableData, 'Deactivated');
       const notification = [];
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/update_custom_distance_details',
+        endpoint: 'price_config/update_custom_distance_details',
         apiKey: false,
         params: this.approvalParams,
       };
       try {
-        const data = await this.approve_location_pricing_configs(payload);
+        const data = await this.approve_container_pricing_configs(payload);
         if (data.status) {
           this.trackMixpanelPeople();
           notification.push(
@@ -196,22 +201,22 @@ export default {
     goBack() {
       this.rejectWithReason = false;
     },
-    async approveLocationPricingConfigs() {
+    async approveContainerPricingConfigs() {
       this.trackApproveConfig();
       this.approvalParams = this.createPayload(
-        this.locationPricingTableData,
+        this.containerPricingTableData,
         'Active',
       );
       const notification = [];
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/update_custom_distance_details',
+        endpoint: 'price_config/update_custom_distance_details',
         apiKey: false,
         params: this.approvalParams,
       };
       try {
-        const data = await this.approve_location_pricing_configs(payload);
+        const data = await this.approve_container_pricing_configs(payload);
         if (data.status) {
           this.trackPassedApproval();
           this.trackMixpanelPeople();
@@ -233,20 +238,20 @@ export default {
       this.updateErrors(notification);
     },
     createPayload(data, status) {
-      const locationPricingArray = [];
+      const containerPricingArray = [];
       for (let i = 0; i < data.length; i += 1) {
-        const locationPricingObject = {
+        const containerPricingObject = {
           cop_id: this.copId,
           vendor_id: data[i].id,
           from_coordinates: data[i].from_location.coordinates,
           to_coordinates: data[i].to_location.coordinates,
-          custom_pricing_details: {
-            location_pricing: [],
-          },
           object_id: data[i].object_id,
+          custom_pricing_details: {
+            container_pricing: [],
+          },
           rejection_message: this.rejectionReason,
         };
-        const locationData = {
+        const containerData = {
           id: data[i].id,
           name: data[i].name,
           cop_id: this.copId,
@@ -283,16 +288,19 @@ export default {
           },
           to: data[i].to,
           status,
-          city: data[i].city,
           order_amount: data[i].order_amount,
           rider_amount: data[i].rider_amount,
+          empty_return_location: data[i].empty_return_location,
+          empty_return: data[i].empty_return,
+          container_size_feet: parseInt(data[i].container_size_feet, 10),
+          container_errand_type: data[i].container_errand_type,
         };
-        locationPricingObject.custom_pricing_details.location_pricing.push(
-          locationData,
+        containerPricingObject.custom_pricing_details.container_pricing.push(
+          containerData,
         );
-        locationPricingArray.push(locationPricingObject);
+        containerPricingArray.push(containerPricingObject);
       }
-      return locationPricingArray;
+      return containerPricingArray;
     },
     trackApprovalHomePage() {
       mixpanel.track('Open Approval tab - PageView', {

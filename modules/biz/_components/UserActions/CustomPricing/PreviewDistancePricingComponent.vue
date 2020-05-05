@@ -272,6 +272,9 @@ export default {
             },
           },
         };
+        if (pricingConfigData[i].id === 20) {
+          distancePricingObject.custom_pricing_details.distance_pricing.fixed_cost = 1;
+        }
         distancePricingArray.push(distancePricingObject);
       }
       return distancePricingArray;

@@ -10,6 +10,10 @@
     </div>
     <div v-else>
       <template>
+        <p class="insurance-reminder">
+          PS: Insurance fees are charged as Ksh 200 for 100km and below and Ksh
+          400 for above 100km.
+        </p>
         <el-table
           :data="tableData"
           row-class-name="no-hover"
@@ -173,6 +177,22 @@
               >
             </template>
           </el-table-column>
+          <el-table-column prop="insurance" label="Insurance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="table--col-text"
+                v-model="scope.row.insurance"
+                @focus="rowIndex = scope.$index"
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
+              >
+            </template>
+          </el-table-column>
         </el-table>
         <p class="pricing-add-row" @click="addRow('Location')">
           <i class="fa fa-plus"></i> Add a new row
@@ -255,6 +275,7 @@ export default {
           empty_container_destination: '',
           status: '',
           city: '',
+          insurance: 0,
           order_amount: 0,
           rider_amount: 0,
           container_weight_tonnes: '',
@@ -398,6 +419,9 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
+      this.tableData[index].insurance = this.vendor.insurance
+        ? this.vendor.insurance.max_distance_cost
+        : 0;
     },
     previewConfig() {
       this.previewLocationPricing = true;
@@ -438,6 +462,7 @@ export default {
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',
@@ -518,5 +543,10 @@ tr:hover {
 .el-table--scrollable-x .el-table__body-wrapper {
   overflow-x: auto;
   padding-bottom: 25px !important;
+}
+.insurance-reminder {
+  margin-bottom: 5px;
+  font-style: italic;
+  font-weight: 900;
 }
 </style>
