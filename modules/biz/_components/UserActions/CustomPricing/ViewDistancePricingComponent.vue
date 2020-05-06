@@ -56,7 +56,7 @@
         width="150"
       >
       </el-table-column>
-      <el-table-column prop="base_km" label="Loading Fee" width="120">
+      <el-table-column prop="loader_cost" label="Loading Fee" width="120">
       </el-table-column>
       <el-table-column
         prop="cancellation_fee"
