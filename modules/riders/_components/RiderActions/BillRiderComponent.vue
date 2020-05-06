@@ -13,7 +13,7 @@
           </div>
           <div class="input-group-area">
             <input
-              type="text"
+              type="number"
               v-model="amount"
               name="amount"
               placeholder="Amount"
