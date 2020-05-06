@@ -49,7 +49,7 @@
                 </div>
                 <div class="input-group-area amount-input">
                   <input
-                    type="text"
+                    type="number"
                     v-model="amount"
                     :id="`amount`"
                     name="amount"
