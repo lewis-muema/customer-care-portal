@@ -13,6 +13,25 @@
           border
           class="pricing-table-styling preview-container"
         >
+          <el-table-column width="110">
+            <template slot-scope="scope">
+              <el-button
+                class="approve-config-btn btn-primary"
+                @click="approveContainerPricingConfigs(scope.row, scope.$index)"
+                >Approve</el-button
+              >
+            </template>
+          </el-table-column>
+          <el-table-column width="110">
+            <template slot-scope="scope">
+              <el-button
+                @click="provideReason(scope.row, scope.$index)"
+                class="reject-config-btn btn-primary"
+              >
+                Reject
+              </el-button>
+            </template>
+          </el-table-column>
           <el-table-column prop="from" label="Pick up location" width="200">
           </el-table-column>
           <el-table-column prop="to" label="Drop off location" width="200">
@@ -44,14 +63,6 @@
           <el-table-column prop="insurance" label="Insurance" width="120">
           </el-table-column>
         </el-table>
-        <button @click="provideReason" class="reject-config-text">
-          Reject Pricing
-        </button>
-        <el-button
-          class="approve-config-btn btn-primary"
-          @click="approveContainerPricingConfigs"
-          >Approve pricing</el-button
-        >
       </div>
       <div class="approver-select reject-textarea" v-show="rejectWithReason">
         <template>
@@ -115,6 +126,7 @@ export default {
       adminId: '',
       currency: '',
       rejectionReason: '',
+      rejectIndex: 0,
       crmName: '',
       copName: '',
       pendingRequests: false,
@@ -162,7 +174,7 @@ export default {
     async rejectContainerPricingConfigs() {
       this.trackRejectConfigs();
       const clone = JSON.parse(JSON.stringify(this.containerPricingTableData));
-      const pricingTableData = clone;
+      const pricingTableData = [clone[this.rejectIndex]];
       this.approvalParams = this.createPayload(pricingTableData, 'Deactivated');
       const notification = [];
       let actionClass = '';
@@ -175,13 +187,19 @@ export default {
       try {
         const data = await this.approve_container_pricing_configs(payload);
         if (data.status) {
+          const configs = await this.getDistancePricingConfigs();
           this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.pendingRequests = false;
+          this.rejectionReason = '';
+          if (this.containerPricingTableData.length === 0) {
+            this.pendingRequests = false;
+          } else {
+            this.goBack();
+          }
         } else {
           this.trackMixpanelPeople();
           notification.push(data.error);
@@ -194,17 +212,18 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    provideReason() {
+    provideReason(dataRow, dataIndex) {
+      this.rejectIndex = dataIndex;
       this.rejectWithReason = true;
       this.trackRejectConfigsPage();
     },
     goBack() {
       this.rejectWithReason = false;
     },
-    async approveContainerPricingConfigs() {
+    async approveContainerPricingConfigs(dataRow, dataIndex) {
       this.trackApproveConfig();
       this.approvalParams = this.createPayload(
-        this.containerPricingTableData,
+        [this.containerPricingTableData[dataIndex]],
         'Active',
       );
       const notification = [];
@@ -218,12 +237,15 @@ export default {
       try {
         const data = await this.approve_container_pricing_configs(payload);
         if (data.status) {
+          const configs = await this.getDistancePricingConfigs();
           this.trackPassedApproval();
           this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.pendingRequests = false;
+          if (this.containerPricingTableData.length === 0) {
+            this.pendingRequests = false;
+          }
         } else {
           this.trackFailedApproval();
           this.trackMixpanelPeople();
