@@ -99,10 +99,20 @@
   color: white !important;
 }
 .approve-config-btn {
-  float: right !important;
-  margin-top: 1% !important;
   color: white !important;
   background-color: #43a047 !important;
+  width: 90px;
+  height: 20px;
+  line-height: 0 !important;
+  border-color: #43a047 !important;
+}
+.reject-config-btn {
+  color: white !important;
+  background-color: #e53935 !important;
+  width: 90px;
+  height: 20px;
+  line-height: 0 !important;
+  border-color: #e53935 !important;
 }
 .pricing-back-text {
   margin-top: 4%;
@@ -125,7 +135,6 @@
   background: transparent;
   margin-bottom: 4%;
   cursor: pointer;
-  margin-left: 80%;
   border: transparent;
 }
 .pricing-save-btn .approve-config-btn .reject-config-text:focus {
