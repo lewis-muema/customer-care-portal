@@ -101,6 +101,7 @@
                 placeholder="Select Vendor"
                 size="small"
                 @change="onChange($event, scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
               >
                 <el-option
                   v-for="vendor in vendorTypes.slice(0, -1)"
@@ -115,11 +116,13 @@
           <el-table-column prop="order_amount" label="Client fee" width="200">
             <template slot-scope="scope">
               <el-input
+                :disabled="true"
                 size="small"
                 type="text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.order_amount"
+                @focus="rowIndex = scope.$index"
               >
                 <template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -139,6 +142,8 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.rider_amount"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -171,6 +176,8 @@
                 class="table--col-text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 v-model="scope.row.service_fee"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -186,6 +193,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.insurance"
+                @input="calculateClientFee(scope.$index, scope.row)"
                 @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -422,6 +430,14 @@ export default {
       this.tableData[index].insurance = this.vendor.insurance
         ? this.vendor.insurance.max_distance_cost
         : 0;
+      this.calculateClientFee(index, row);
+    },
+    calculateClientFee(index, row) {
+      const partnerAmount = parseInt(row.rider_amount, 10);
+      const serviceFee = parseInt(row.service_fee, 10);
+      const insurance = parseInt(row.insurance, 10);
+      const orderAmount = partnerAmount + serviceFee + insurance;
+      return (this.tableData[index].order_amount = orderAmount);
     },
     previewConfig() {
       this.previewLocationPricing = true;

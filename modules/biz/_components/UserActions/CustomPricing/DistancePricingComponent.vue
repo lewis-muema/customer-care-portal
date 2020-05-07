@@ -76,6 +76,23 @@
               </el-select>
             </template>
           </el-table-column>
+          <el-table-column prop="base_km" label="Base Distance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                size="small"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="table--col-text"
+                v-model="scope.row.base_km"
+                @input="onChange($event, scope.$index, scope.row)"
+                @focus="currentIndex = scope.$index"
+              >
+                <template class="pricing-prepend" slot="prepend">
+                  KM
+                </template>
+              </el-input>
+            </template>
+          </el-table-column>
           <el-table-column prop="base_cost" label="Partner Amount" width="200">
             <template slot-scope="scope">
               <el-input
@@ -84,7 +101,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.base_cost"
-                @change="calculateClientFee(scope.$index, scope.row)"
+                @input="calculateClientFee(scope.$index, scope.row)"
                 @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -119,7 +136,7 @@
                 type="text"
                 class="table--col-text"
                 v-model="scope.row.service_fee"
-                @change="calculateClientFee(scope.$index, scope.row)"
+                @input="calculateClientFee(scope.$index, scope.row)"
                 @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -136,7 +153,7 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.insurance"
-                @change="calculateClientFee(scope.$index, scope.row)"
+                @input="calculateClientFee(scope.$index, scope.row)"
                 @focus="currentIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -159,22 +176,6 @@
                   >{{ currency }}
                 </template></el-input
               >
-            </template>
-          </el-table-column>
-          <el-table-column prop="base_km" label="Base Distance" width="200">
-            <template slot-scope="scope">
-              <el-input
-                size="small"
-                type="text"
-                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                class="table--col-text"
-                v-model="scope.row.base_km"
-                @focus="currentIndex = scope.$index"
-              >
-                <template class="pricing-prepend" slot="prepend">
-                  KM
-                </template>
-              </el-input>
             </template>
           </el-table-column>
           <el-table-column
@@ -391,9 +392,20 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
-      this.tableData[index].insurance = this.vendor.insurance
-        ? this.vendor.insurance.max_distance_cost
-        : 0;
+      if (this.vendor.insurance) {
+        this.tableData[index].base_km =
+          this.tableData[index].base_km === ''
+            ? 0
+            : this.tableData[index].base_km;
+        const vendorInsurance =
+          this.tableData[index].base_km < this.vendor.insurance.max_distance_km
+            ? this.vendor.insurance.max_distance_cost
+            : this.vendor.insurance.above_max_distance_cost;
+        this.tableData[index].insurance = vendorInsurance;
+      } else {
+        this.tableData[index].insurance = 0;
+      }
+      this.calculateClientFee(index, row);
     },
     calculateClientFee(index, row) {
       const partnerAmount = parseInt(row.base_cost, 10);
