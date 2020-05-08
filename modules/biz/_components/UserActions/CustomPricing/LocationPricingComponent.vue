@@ -366,7 +366,6 @@ export default {
     const countryCode = this.user.user_details.country_code;
     await this.fetchVendorTypes(countryCode);
     this.trackAddPricingDataPage();
-    // this.distanceCalculator();
   },
   methods: {
     ...mapMutations({
