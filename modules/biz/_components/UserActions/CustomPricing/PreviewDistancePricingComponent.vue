@@ -45,6 +45,8 @@
         </el-table-column>
         <el-table-column prop="name" label="Vendor Type" width="150">
         </el-table-column>
+        <el-table-column prop="base_km" label="Base Distance" width="120">
+        </el-table-column>
         <el-table-column prop="base_cost" label="Partner Amount" width="150">
         </el-table-column>
         <el-table-column
@@ -58,8 +60,6 @@
         <el-table-column prop="insurance" label="Insurance" width="120">
         </el-table-column>
         <el-table-column prop="client_fee" label="Client Fee" width="120">
-        </el-table-column>
-        <el-table-column prop="base_km" label="Base Distance" width="120">
         </el-table-column>
         <el-table-column
           prop="cost_per_km_above_base_km"
@@ -272,6 +272,9 @@ export default {
             },
           },
         };
+        if (pricingConfigData[i].id === 20) {
+          distancePricingObject.custom_pricing_details.distance_pricing.fixed_cost = 1;
+        }
         distancePricingArray.push(distancePricingObject);
       }
       return distancePricingArray;

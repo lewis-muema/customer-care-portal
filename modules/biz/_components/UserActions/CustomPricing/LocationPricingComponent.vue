@@ -10,6 +10,10 @@
     </div>
     <div v-else>
       <template>
+        <p class="insurance-reminder">
+          PS: Insurance fees are charged as Ksh 200 for 100km and below and Ksh
+          400 for above 100km.
+        </p>
         <el-table
           :data="tableData"
           row-class-name="no-hover"
@@ -90,6 +94,21 @@
               </el-popover>
             </template>
           </el-table-column>
+          <el-table-column prop="distance" label="Distance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="text"
+                class="table--col-text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="scope.row.distance"
+                ><template class="pricing-prepend" slot="append">
+                  KMS
+                </template></el-input
+              >
+            </template>
+          </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
             <template slot-scope="scope">
               <el-select
@@ -97,6 +116,7 @@
                 placeholder="Select Vendor"
                 size="small"
                 @change="onChange($event, scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
               >
                 <el-option
                   v-for="vendor in vendorTypes.slice(0, -1)"
@@ -111,11 +131,13 @@
           <el-table-column prop="order_amount" label="Client fee" width="200">
             <template slot-scope="scope">
               <el-input
+                :disabled="true"
                 size="small"
                 type="text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.order_amount"
+                @focus="rowIndex = scope.$index"
               >
                 <template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -135,6 +157,8 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.rider_amount"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -167,6 +191,25 @@
                 class="table--col-text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 v-model="scope.row.service_fee"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="insurance" label="Insurance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="table--col-text"
+                v-model="scope.row.insurance"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -222,6 +265,7 @@ export default {
           name: '',
         },
       ],
+      shortestDistance: 0,
       visible1: false,
       visible2: false,
       currency: '',
@@ -241,20 +285,22 @@ export default {
           from: '',
           from_location: {
             type: 'Point',
-            coordinates: [36.799157, -1.299287],
+            coordinates: [0, 0],
           },
           to_location: {
             type: 'Point',
-            coordinates: [39.671947, -4.056442],
+            coordinates: [0, 0],
           },
           empty_return_location: {
             type: 'Point',
-            coordinates: [37.671947, -4.056444],
+            coordinates: [0, 0],
           },
           to: '',
           empty_container_destination: '',
           status: '',
           city: '',
+          distance: '',
+          insurance: 0,
           order_amount: 0,
           rider_amount: 0,
           container_weight_tonnes: '',
@@ -365,6 +411,16 @@ export default {
             parseFloat(coordinatesArray[0].toFixed(6)),
           ];
           this.tableData[index].from_location.coordinates = coordinatesArray;
+          if (
+            this.tableData[index].to_location.coordinates[0] !== 0 &&
+            this.tableData[index].to_location.coordinates[1] !== 0
+          ) {
+            const distance = this.distanceCalculator(
+              this.tableData[index].from_location,
+              this.tableData[index].to_location,
+              index,
+            );
+          }
         });
     },
     handleSelectTo(item, index, rows) {
@@ -387,6 +443,16 @@ export default {
             parseFloat(coordinatesArray[0].toFixed(6)),
           ];
           this.tableData[index].to_location.coordinates = coordinatesArray;
+          if (
+            this.tableData[index].from_location.coordinates[0] !== 0 &&
+            this.tableData[index].from_location.coordinates[1] !== 0
+          ) {
+            this.distanceCalculator(
+              this.tableData[index].from_location,
+              this.tableData[index].to_location,
+              index,
+            );
+          }
         });
     },
     deleteRow(index, rows) {
@@ -398,6 +464,27 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
+      let insuranceValue = 0;
+      if (this.tableData[index].distance && this.vendor.insurance) {
+        insuranceValue =
+          this.tableData[index].distance < this.vendor.insurance.max_distance_km
+            ? this.vendor.insurance.max_distance_cost
+            : this.vendor.insurance.above_max_distance_cost;
+      } else if (
+        this.tableData[index].distance === '' &&
+        this.vendor.insurance
+      ) {
+        insuranceValue = this.vendor.insurance.max_distance_cost;
+      }
+      this.tableData[index].insurance = insuranceValue;
+      this.calculateClientFee(index, row);
+    },
+    calculateClientFee(index, row) {
+      const partnerAmount = parseInt(row.rider_amount, 10);
+      const serviceFee = parseInt(row.service_fee, 10);
+      const insurance = parseInt(row.insurance, 10);
+      const orderAmount = partnerAmount + serviceFee + insurance;
+      return (this.tableData[index].order_amount = orderAmount);
     },
     previewConfig() {
       this.previewLocationPricing = true;
@@ -422,22 +509,24 @@ export default {
           from: '',
           from_location: {
             type: 'Point',
-            coordinates: [36.799157, -1.299287],
+            coordinates: [0, 0],
           },
           to_location: {
             type: 'Point',
-            coordinates: [39.671947, -4.056442],
+            coordinates: [0, 0],
           },
           empty_return_location: {
             type: 'Point',
-            coordinates: [37.671947, -4.056444],
+            coordinates: [0, 0],
           },
           to: '',
           empty_container_destination: '',
           status: '',
           city: '',
+          distance: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',
@@ -483,6 +572,28 @@ export default {
           }, 50);
         });
     }, 500),
+    distanceCalculator(from, to, index) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?origin=${
+            from.coordinates[1]
+          },${from.coordinates[0]}&destination=${to.coordinates[1]},${
+            to.coordinates[0]
+          }&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.tableData[index].distance = Math.floor(
+            response.data.routes[0].legs[0].distance.value / 1000,
+          );
+          if (this.vendor) {
+            this.onChange(
+              this.tableData[index].distance,
+              index,
+              this.tableData[index],
+            );
+          }
+        });
+    },
   },
 };
 </script>
@@ -518,5 +629,10 @@ tr:hover {
 .el-table--scrollable-x .el-table__body-wrapper {
   overflow-x: auto;
   padding-bottom: 25px !important;
+}
+.insurance-reminder {
+  margin-bottom: 5px;
+  font-style: italic;
+  font-weight: 900;
 }
 </style>
