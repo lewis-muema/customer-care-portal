@@ -14,6 +14,7 @@
       <el-table-column prop="" label="" width="50">
         <template slot-scope="scope">
           <i
+            v-if="status === 'Active'"
             class="fa fa-fw fa-trash-o"
             id="delete-column"
             @click="removeSinglePriceConfig(scope.row, scope.$index)"
@@ -55,7 +56,7 @@
         width="150"
       >
       </el-table-column>
-      <el-table-column prop="base_km" label="Loading Fee" width="120">
+      <el-table-column prop="loader_cost" label="Loading Fee" width="120">
       </el-table-column>
       <el-table-column
         prop="cancellation_fee"

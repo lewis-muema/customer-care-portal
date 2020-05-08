@@ -697,6 +697,7 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let pendingDistancePricing = [];
       let pendingLocationPricing = [];
+      let pendingContainerPricing = [];
       const pricingTableData = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
@@ -708,6 +709,15 @@ export default {
             )
           ) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
+          }
+          if (
+            Object.prototype.hasOwnProperty.call(
+              pendingPricingDetails[i],
+              'container_pricing',
+            )
+          ) {
+            pendingContainerPricing =
+              pendingPricingDetails[i].container_pricing;
           }
           if (
             Object.prototype.hasOwnProperty.call(
@@ -725,11 +735,14 @@ export default {
             pendingDistancePricing = pricingTableData;
           }
         }
+        commit('setCustomPricingDetails', pendingPricingDetails);
         commit('updatePendingDistancePricing', pendingDistancePricing);
         commit('updatePendingLocationPricing', pendingLocationPricing);
+        commit('updatePendingContainerPricing', pendingContainerPricing);
       } else {
         commit('updatePendingDistancePricing', pendingDistancePricing);
         commit('updatePendingLocationPricing', pendingLocationPricing);
+        commit('updatePendingContainerPricing', pendingContainerPricing);
       }
       return res.data;
     } catch (error) {
@@ -805,6 +818,14 @@ export default {
     }
   },
   async approve_location_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async approve_container_pricing_configs({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;

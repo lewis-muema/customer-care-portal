@@ -180,7 +180,7 @@ import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 const pricingModels = [
   { model_id: 1, pricing_model_name: 'Distance based pricing(Customised)' },
   { model_id: 2, pricing_model_name: 'Location pricing' },
-  { model_id: 3, pricing_model_name: 'Tonnage pricing' },
+  // { model_id: 3, pricing_model_name: 'Tonnage pricing' },
   { model_id: 4, pricing_model_name: 'Container pricing' },
 ];
 const mixpanel = Mixpanel.init('b36c8592008057290bf5e1186135ca2f');

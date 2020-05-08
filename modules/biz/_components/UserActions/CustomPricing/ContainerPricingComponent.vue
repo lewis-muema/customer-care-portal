@@ -140,6 +140,7 @@
                 v-model="scope.row.container_weight_tonnes"
                 placeholder="Select cargo type"
                 size="small"
+                @focus="rowIndex = scope.$index"
               >
                 <el-option label="Empty container" value="0"> </el-option>
                 <el-option label="Full container" value="28"> </el-option>
@@ -156,6 +157,7 @@
                 v-model="scope.row.container_size_feet"
                 placeholder="Select container size"
                 size="small"
+                @focus="rowIndex = scope.$index"
               >
                 <el-option label="20 Feet" value="20"> </el-option>
                 <el-option label="40 Feet" value="40"> </el-option>
@@ -169,6 +171,7 @@
                 placeholder="Select Vendor"
                 size="small"
                 @change="onChange($event, scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
               >
                 <el-option :key="25" label="Freight" value="Freight">
                 </el-option>
@@ -178,11 +181,13 @@
           <el-table-column prop="order_amount" label="Client fee" width="200">
             <template slot-scope="scope">
               <el-input
+                :disabled="true"
                 size="small"
                 type="text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.order_amount"
+                @focus="rowIndex = scope.$index"
               >
                 <template class="pricing-prepend" slot="prepend">{{
                   currency
@@ -202,6 +207,8 @@
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="table--col-text"
                 v-model="scope.row.rider_amount"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -220,6 +227,7 @@
                 class="table--col-text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 v-model="scope.row.sendy_commission"
+                @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="append">
                   %
                 </template></el-input
@@ -234,6 +242,25 @@
                 class="table--col-text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 v-model="scope.row.service_fee"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
+                ><template class="pricing-prepend" slot="prepend">{{
+                  currency
+                }}</template></el-input
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="insurance" label="Insurance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="table--col-text"
+                v-model="scope.row.insurance"
+                @input="calculateClientFee(scope.$index, scope.row)"
+                @focus="rowIndex = scope.$index"
                 ><template class="pricing-prepend" slot="prepend">{{
                   currency
                 }}</template></el-input
@@ -332,6 +359,7 @@ export default {
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',
@@ -451,6 +479,13 @@ export default {
       this.visible2 = false;
       this.visible3 = false;
     },
+    calculateClientFee(index, row) {
+      const partnerAmount = parseInt(row.rider_amount, 10);
+      const serviceFee = parseInt(row.service_fee, 10);
+      const insurance = parseInt(row.insurance, 10);
+      const orderAmount = partnerAmount + serviceFee + insurance;
+      return (this.tableData[index].order_amount = orderAmount);
+    },
     handleSelectFrom(item, index, rows) {
       this.handleBlur();
       this.suggestions = [];
@@ -529,6 +564,10 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
+      this.tableData[index].insurance = this.vendor.insurance
+        ? this.vendor.insurance.max_distance_cost
+        : 0;
+      this.calculateClientFee(index, row);
     },
     previewConfig() {
       this.previewLocationPricing = true;
@@ -570,6 +609,7 @@ export default {
           city: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',
