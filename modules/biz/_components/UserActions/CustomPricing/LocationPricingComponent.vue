@@ -94,6 +94,21 @@
               </el-popover>
             </template>
           </el-table-column>
+          <el-table-column prop="distance" label="Distance" width="200">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="true"
+                size="small"
+                type="text"
+                class="table--col-text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="scope.row.distance"
+                ><template class="pricing-prepend" slot="append">
+                  KMS
+                </template></el-input
+              >
+            </template>
+          </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="200">
             <template slot-scope="scope">
               <el-select
@@ -250,6 +265,7 @@ export default {
           name: '',
         },
       ],
+      shortestDistance: 0,
       visible1: false,
       visible2: false,
       currency: '',
@@ -269,20 +285,21 @@ export default {
           from: '',
           from_location: {
             type: 'Point',
-            coordinates: [36.799157, -1.299287],
+            coordinates: [0, 0],
           },
           to_location: {
             type: 'Point',
-            coordinates: [39.671947, -4.056442],
+            coordinates: [0, 0],
           },
           empty_return_location: {
             type: 'Point',
-            coordinates: [37.671947, -4.056444],
+            coordinates: [0, 0],
           },
           to: '',
           empty_container_destination: '',
           status: '',
           city: '',
+          distance: '',
           insurance: 0,
           order_amount: 0,
           rider_amount: 0,
@@ -349,6 +366,7 @@ export default {
     const countryCode = this.user.user_details.country_code;
     await this.fetchVendorTypes(countryCode);
     this.trackAddPricingDataPage();
+    // this.distanceCalculator();
   },
   methods: {
     ...mapMutations({
@@ -394,6 +412,16 @@ export default {
             parseFloat(coordinatesArray[0].toFixed(6)),
           ];
           this.tableData[index].from_location.coordinates = coordinatesArray;
+          if (
+            this.tableData[index].to_location.coordinates[0] !== 0 &&
+            this.tableData[index].to_location.coordinates[1] !== 0
+          ) {
+            const distance = this.distanceCalculator(
+              this.tableData[index].from_location,
+              this.tableData[index].to_location,
+              index,
+            );
+          }
         });
     },
     handleSelectTo(item, index, rows) {
@@ -416,6 +444,16 @@ export default {
             parseFloat(coordinatesArray[0].toFixed(6)),
           ];
           this.tableData[index].to_location.coordinates = coordinatesArray;
+          if (
+            this.tableData[index].from_location.coordinates[0] !== 0 &&
+            this.tableData[index].from_location.coordinates[1] !== 0
+          ) {
+            this.distanceCalculator(
+              this.tableData[index].from_location,
+              this.tableData[index].to_location,
+              index,
+            );
+          }
         });
     },
     deleteRow(index, rows) {
@@ -427,9 +465,19 @@ export default {
     onChange(event, index, row) {
       this.vendorName = row.name;
       this.tableData[index].id = this.vendor.id;
-      this.tableData[index].insurance = this.vendor.insurance
-        ? this.vendor.insurance.max_distance_cost
-        : 0;
+      let insuranceValue = 0;
+      if (this.tableData[index].distance && this.vendor.insurance) {
+        insuranceValue =
+          this.tableData[index].distance < this.vendor.insurance.max_distance_km
+            ? this.vendor.insurance.max_distance_cost
+            : this.vendor.insurance.above_max_distance_cost;
+      } else if (
+        this.tableData[index].distance === '' &&
+        this.vendor.insurance
+      ) {
+        insuranceValue = this.vendor.insurance.max_distance_cost;
+      }
+      this.tableData[index].insurance = insuranceValue;
       this.calculateClientFee(index, row);
     },
     calculateClientFee(index, row) {
@@ -462,20 +510,21 @@ export default {
           from: '',
           from_location: {
             type: 'Point',
-            coordinates: [36.799157, -1.299287],
+            coordinates: [0, 0],
           },
           to_location: {
             type: 'Point',
-            coordinates: [39.671947, -4.056442],
+            coordinates: [0, 0],
           },
           empty_return_location: {
             type: 'Point',
-            coordinates: [37.671947, -4.056444],
+            coordinates: [0, 0],
           },
           to: '',
           empty_container_destination: '',
           status: '',
           city: '',
+          distance: '',
           order_amount: 0,
           rider_amount: 0,
           insurance: 0,
@@ -524,6 +573,28 @@ export default {
           }, 50);
         });
     }, 500),
+    distanceCalculator(from, to, index) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?origin=${
+            from.coordinates[1]
+          },${from.coordinates[0]}&destination=${to.coordinates[1]},${
+            to.coordinates[0]
+          }&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.tableData[index].distance = Math.floor(
+            response.data.routes[0].legs[0].distance.value / 1000,
+          );
+          if (this.vendor) {
+            this.onChange(
+              this.tableData[index].distance,
+              index,
+              this.tableData[index],
+            );
+          }
+        });
+    },
   },
 };
 </script>
