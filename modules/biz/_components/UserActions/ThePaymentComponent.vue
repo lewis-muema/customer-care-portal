@@ -120,6 +120,30 @@
             </div>
           </td>
         </tr>
+        <tr>
+          <td class="biz-units-outer">
+            <div class="form-group actions" v-if="paymentOption === '2'">
+              <label>Invoice Number</label>
+              <input
+                type="text"
+                v-model="invoiceNumber"
+                :id="invoiceNumber"
+                name="Invoice Number"
+                placeholder="invoiceNumber"
+                class="form-control"
+                :class="{
+                  'is-invalid': submitted && $v.invoiceNumber.$error,
+                }"
+              />
+              <div
+                v-if="submitted && !$v.invoiceNumber.minLength"
+                class="invalid-feedback"
+              >
+                Invoice Number should not be less than 18 characters
+              </div>
+            </div>
+          </td>
+        </tr>
         <tr v-if="!isChargeEntity">
           <td v-if="refNoMethods.includes(paymentMethod)">
             <div class="form-group">
@@ -160,7 +184,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import { required } from 'vuelidate/lib/validators';
+import { required, minLength } from 'vuelidate/lib/validators';
 
 export default {
   name: 'ThePaymentComponent',
@@ -178,6 +202,7 @@ export default {
       refNo: '',
       hide: '',
       narrative: '',
+      invoiceNumber: '',
       submitted: false,
       refNoMethods: [1, 4],
       businessUnits: [
@@ -194,6 +219,7 @@ export default {
     amount: { required },
     narrative: { required },
     businessUnit: { required },
+    invoiceNumber: { minLength: minLength(18) },
   },
   computed: {
     currency() {
@@ -202,6 +228,9 @@ export default {
     },
     actionUser() {
       return this.session.payload.data.name;
+    },
+    paymentOption() {
+      return this.user.user_details.payment_option;
     },
   },
 
@@ -288,7 +317,9 @@ export default {
         currency: this.currency,
         business_unit: parseInt(this.businessUnit, 10),
       };
-
+      if (this.paymentOption === '2') {
+        action_payload.invoiceNumber = this.invoiceNumber;
+      }
       if (this.isChargeEntity) {
         action_payload = {
           amount: this.amount,
