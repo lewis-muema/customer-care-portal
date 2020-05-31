@@ -121,6 +121,12 @@ export default {
   setCustomPricingDetails(state, val) {
     state.customPricingDetails = val;
   },
+  modifyCustomPricingDetails(state, val) {
+    state.customPricingDetails[val.index][val.model][val.field] = val.value;
+  },
+  modifyCustomLocationDetails(state, val) {
+    state.locationPricingData[val.index][val.field] = val.value;
+  },
   setLoginErrors(state, val) {
     state.loginErrors = val;
   },
