@@ -9,6 +9,10 @@
       v-if="containerPricing"
       :user="user"
     ></ContainerPricingApprovalComponent>
+    <DailyRatePricingApprovalComponent :user="user" v-if="dailyRatePricing">
+    </DailyRatePricingApprovalComponent>
+    <MileagePricingApprovalComponent :user="user" v-if="mileagePricing">
+    </MileagePricingApprovalComponent>
   </div>
 </template>
 <script>
@@ -29,6 +33,14 @@ export default {
       import(
         '../../../modules/biz/_components/UserActions/PricingApproval/ContainerPricingApprovalComponent'
       ),
+    MileagePricingApprovalComponent: () =>
+      import(
+        '../../../modules/biz/_components/UserActions/PricingApproval/MileagePricingApprovalComponent'
+      ),
+    DailyRatePricingApprovalComponent: () =>
+      import(
+        '../../../modules/biz/_components/UserActions/PricingApproval/DailyRatePricingApprovalComponent'
+      ),
   },
   data() {
     return {
@@ -36,6 +48,8 @@ export default {
       locationPricing: false,
       distancePricing: false,
       containerPricing: false,
+      dailyRatePricing: false,
+      mileagePricing: false,
       defaultCurrency: '',
       message: '',
       user: {},
@@ -45,11 +59,13 @@ export default {
   async mounted() {
     await this.singleCopUserRequest();
     this.fetchCustomDistancePricingData();
+    this.fetchDedicatedPricingData();
   },
   methods: {
     ...mapActions([
       'request_single_user',
       'request_pending_distance_pricing_data',
+      'pending_dedicated_pricing_data',
     ]),
     async singleCopUserRequest() {
       const payload = { userID: this.copId, userType: 'cop' };
@@ -87,6 +103,42 @@ export default {
             this.containerPricing = true;
           }
         });
+      } catch (error) {
+        this.message = 'Something went wrong. Please try again.';
+      }
+    },
+    async fetchDedicatedPricingData() {
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/get_dedicated_price_configs',
+        apiKey: false,
+        params: {
+          cop_id: this.copId,
+        },
+      };
+      try {
+        const data = await this.pending_dedicated_pricing_data(payload);
+        if (data.status) {
+          data.data.forEach(row => {
+            if (
+              row.price_type === 'daily_rate' &&
+              row.status === 'Pending' &&
+              row.approved_by ===
+                parseInt(this.session.payload.data.admin_id, 10)
+            ) {
+              this.dailyRatePricing = true;
+            }
+            if (
+              (row.price_type === 'per_km_band' ||
+                row.price_type === 'standard_rate_per_km') &&
+              row.status === 'Pending' &&
+              row.approved_by ===
+                parseInt(this.session.payload.data.admin_id, 10)
+            ) {
+              this.mileagePricing = true;
+            }
+          });
+        }
       } catch (error) {
         this.message = 'Something went wrong. Please try again.';
       }

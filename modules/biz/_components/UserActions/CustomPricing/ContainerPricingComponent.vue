@@ -1,304 +1,518 @@
 <template>
   <div>
-    <div v-if="previewLocationPricing">
-      <preview-container-pricing-component
-        :configs="tableData"
-        :user="user"
-        @sectionUpdate="onSectionUpdate"
-        @configSubmitted="configSubmitted"
-      ></preview-container-pricing-component>
-    </div>
-    <div v-else>
-      <template>
-        <el-table
-          :data="tableData"
-          row-class-name="no-hover"
-          class="table--width"
-          max-height="300"
+    <div class="pricing-container">
+      <p class="daily-rate-title">Container Pricing</p>
+      <div class="daily-rate-pricing-tabs">
+        <div
+          class="daily-rate-pricing-tabs-titles"
+          :class="mode === 'newPricing' ? 'active-pricing-tab' : ''"
+          @click="mode = 'newPricing'"
         >
-          <el-table-column class="delete-col" width="40" fixed="left">
-            <template slot-scope="scope">
-              <el-button
-                v-if="scope.$index > 0"
-                @click.native.prevent="deleteRow(scope.$index, scope.row)"
-                type="text"
-                size="small"
-              >
-                <i class="fa fa-fw fa-close pricing-delete-icon"></i>
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column prop="from" label="Pick up location" width="335">
-            <template slot-scope="scope">
-              <el-popover
-                placement="bottom"
-                width="Min width 150px"
-                v-model="visible1"
-                :disabled="scope.$index !== rowIndex"
-              >
-                <div>
-                  <div
-                    class="single-suggestion"
-                    v-for="suggestion in suggestions"
-                    :key="suggestion.id"
-                    @click="
-                      handleSelectFrom(suggestion, scope.$index, scope.row)
-                    "
-                  >
-                    {{ suggestion.description }}
+          New pricing
+        </div>
+        <div
+          class="daily-rate-pricing-tabs-titles"
+          :class="mode === 'allPricing' ? 'active-pricing-tab' : ''"
+          @click="mode = 'allPricing'"
+        >
+          All pricings
+        </div>
+      </div>
+      <div class="new-pricing-tab">
+        <div v-if="displayInputs">
+          <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Pick up location</p>
+              <template>
+                <el-popover
+                  placement="bottom"
+                  width="Min width 150px"
+                  v-model="visible1"
+                >
+                  <div>
+                    <div
+                      class="single-suggestion"
+                      v-for="suggestion in suggestions"
+                      :key="suggestion.id"
+                      @click="
+                        handleSelect(
+                          suggestion.description,
+                          1,
+                          suggestion.place_id,
+                        )
+                      "
+                    >
+                      {{ suggestion.description }}
+                    </div>
                   </div>
-                </div>
-                <el-input
-                  slot="reference"
-                  size="small"
-                  class="table--col-text"
-                  placeholder="Search location"
-                  v-model="pacInput1[scope.$index].name"
-                  @focus="handleFocus(scope.$index, 1)"
-                  @blur="handleBlur()"
-                ></el-input>
-              </el-popover>
-            </template>
-          </el-table-column>
-          <el-table-column prop="to" label="Drop off location" width="335">
-            <template slot-scope="scope">
-              <el-popover
-                placement="bottom"
-                width="Min width 150px"
-                v-model="visible2"
-                :disabled="scope.$index !== rowIndex"
-              >
-                <div>
-                  <div
-                    class="single-suggestion"
-                    v-for="suggestion in suggestions"
-                    :key="suggestion.id"
-                    @click="handleSelectTo(suggestion, scope.$index, scope.row)"
-                  >
-                    {{ suggestion.description }}
+                  <el-input
+                    slot="reference"
+                    size="large"
+                    class="new-pricing-inputs"
+                    placeholder="Search pick up"
+                    v-model="pickUp"
+                    @focus="handleFocus($event.target.value, 1)"
+                  ></el-input>
+                </el-popover>
+              </template>
+            </div>
+            <div>
+              <p class="pricing-input-labels">Destination location</p>
+              <template>
+                <el-popover
+                  placement="bottom"
+                  width="Min width 150px"
+                  v-model="visible2"
+                >
+                  <div>
+                    <div
+                      class="single-suggestion"
+                      v-for="suggestion in suggestions"
+                      :key="suggestion.id"
+                      @click="
+                        handleSelect(
+                          suggestion.description,
+                          2,
+                          suggestion.place_id,
+                        )
+                      "
+                    >
+                      {{ suggestion.description }}
+                    </div>
                   </div>
-                </div>
-                <el-input
-                  slot="reference"
-                  size="small"
-                  class="table--col-text"
-                  placeholder="Search location"
-                  v-model="pacInput2[scope.$index].name"
-                  @focus="handleFocus(scope.$index, 2)"
-                  @blur="handleBlur()"
-                ></el-input>
-              </el-popover>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="empty_container_destination"
-            label="Empty container return (Freight)"
-            width="335"
-          >
-            <template slot-scope="scope">
-              <el-popover
-                placement="bottom"
-                width="Min width 150px"
-                v-model="visible3"
-                :disabled="scope.$index !== rowIndex"
-              >
-                <div>
-                  <div
-                    class="single-suggestion"
-                    v-for="suggestion in suggestions"
-                    :key="suggestion.id"
-                    @click="
-                      handleSelectContainerDestination(
-                        suggestion,
-                        scope.$index,
-                        scope.row,
-                      )
-                    "
-                  >
-                    {{ suggestion.description }}
+                  <el-input
+                    slot="reference"
+                    size="large"
+                    class="new-pricing-inputs"
+                    placeholder="Search destination"
+                    v-model="destination"
+                    @focus="handleFocus($event.target.value, 2)"
+                  ></el-input>
+                </el-popover>
+              </template>
+            </div>
+            <div>
+              <p class="pricing-input-labels">Empty return location</p>
+              <template>
+                <el-popover
+                  placement="bottom"
+                  width="Min width 150px"
+                  v-model="visible3"
+                >
+                  <div>
+                    <div
+                      class="single-suggestion"
+                      v-for="suggestion in suggestions"
+                      :key="suggestion.id"
+                      @click="
+                        handleSelect(
+                          suggestion.description,
+                          3,
+                          suggestion.place_id,
+                        )
+                      "
+                    >
+                      {{ suggestion.description }}
+                    </div>
                   </div>
-                </div>
-                <el-input
-                  slot="reference"
-                  size="small"
-                  class="table--col-text"
-                  placeholder="Search container destination"
-                  v-model="pacInput3[scope.$index].name"
-                  @focus="handleFocus(scope.$index, 3)"
-                  @blur="handleBlur()"
-                ></el-input>
-              </el-popover>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="container_weight_tonnes"
-            label="Cargo Type"
-            width="200"
-          >
-            <template slot-scope="scope">
+                  <el-input
+                    slot="reference"
+                    size="large"
+                    class="new-pricing-inputs"
+                    placeholder="Search empty return"
+                    v-model="emptyReturn"
+                    @focus="handleFocus($event.target.value, 3)"
+                  ></el-input>
+                </el-popover>
+              </template>
+            </div>
+          </div>
+          <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Currency</p>
+              <div>
+                <template>
+                  <el-select
+                    v-model="currency"
+                    placeholder="Select Currency"
+                    size="large"
+                    class="new-pricing-inputs"
+                    disabled
+                  >
+                    <el-option :label="currency" :value="currency"> </el-option>
+                  </el-select>
+                </template>
+              </div>
+            </div>
+            <div>
+              <p class="pricing-input-labels">Container size</p>
               <el-select
-                v-model="scope.row.container_weight_tonnes"
-                placeholder="Select cargo type"
-                size="small"
-                @focus="rowIndex = scope.$index"
-              >
-                <el-option label="Empty container" value="0"> </el-option>
-                <el-option label="Full container" value="28"> </el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="container_size_feet"
-            label="Container Size"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-select
-                v-model="scope.row.container_size_feet"
+                v-model="containerSize"
                 placeholder="Select container size"
-                size="small"
-                @focus="rowIndex = scope.$index"
+                class="new-pricing-inputs"
+                size="large"
               >
                 <el-option label="20 Feet" value="20"> </el-option>
                 <el-option label="40 Feet" value="40"> </el-option>
               </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="name" label="Vendor type" width="200">
-            <template slot-scope="scope">
+            </div>
+            <div>
+              <p class="pricing-input-labels">Cargo type</p>
               <el-select
-                v-model="scope.row.name"
-                placeholder="Select Vendor"
-                size="small"
-                @change="onChange($event, scope.$index, scope.row)"
-                @focus="rowIndex = scope.$index"
+                v-model="containerWeight"
+                placeholder="Select cargo type"
+                class="new-pricing-inputs"
+                size="large"
               >
-                <el-option :key="25" label="Freight" value="Freight">
-                </el-option>
+                <el-option label="Empty container" value="0"> </el-option>
+                <el-option label="Full container" value="28"> </el-option>
               </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="order_amount" label="Client fee" width="200">
-            <template slot-scope="scope">
+            </div>
+          </div>
+          <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Vendor type</p>
+              <template>
+                <el-select
+                  :disabled="true"
+                  v-model="selectedVendor"
+                  placeholder="Select Vendor"
+                  size="large"
+                  class="new-pricing-inputs"
+                >
+                  <el-option
+                    v-for="vendor in vendorTypes"
+                    :key="vendor.id"
+                    :label="vendor.name"
+                    :value="vendor.name"
+                  >
+                  </el-option>
+                </el-select>
+              </template>
+            </div>
+          </div>
+          <p class="pricing-input-section-titles">
+            Base charges
+          </p>
+          <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Client fee</p>
               <el-input
                 :disabled="true"
-                size="small"
                 type="text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                class="table--col-text"
-                v-model="scope.row.order_amount"
-                @focus="rowIndex = scope.$index"
-              >
-                <template class="pricing-prepend" slot="prepend">{{
-                  currency
-                }}</template>
+                v-model="clientFee"
+                class="new-pricing-inputs"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template>
               </el-input>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="rider_amount"
-            label="Partner price"
-            width="200"
-          >
-            <template slot-scope="scope">
+            </div>
+            <div>
+              <p class="pricing-input-labels">Partner Fee</p>
               <el-input
-                size="small"
                 type="text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                class="table--col-text"
-                v-model="scope.row.rider_amount"
-                @input="calculateClientFee(scope.$index, scope.row)"
-                @focus="rowIndex = scope.$index"
-                ><template class="pricing-prepend" slot="prepend">{{
-                  currency
-                }}</template></el-input
-              >
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="sendy_commission"
-            label="Sendy Commission (%)"
-            width="200"
-          >
-            <template slot-scope="scope">
+                v-model="partnerFee"
+                class="new-pricing-inputs"
+                @input="calculateClientFee()"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template>
+              </el-input>
+            </div>
+            <div>
+              <p class="pricing-input-labels">Sendy commission</p>
               <el-input
-                size="small"
                 type="text"
-                class="table--col-text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                v-model="scope.row.sendy_commission"
-                @focus="rowIndex = scope.$index"
+                v-model="sendyCommission"
+                class="new-pricing-inputs"
                 ><template class="pricing-prepend" slot="append">
                   %
-                </template></el-input
-              >
-            </template>
-          </el-table-column>
-          <el-table-column prop="service_fee" label="Sendy fee" width="200">
-            <template slot-scope="scope">
+                </template>
+              </el-input>
+            </div>
+          </div>
+          <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Sendy fee</p>
               <el-input
-                size="small"
                 type="text"
-                class="table--col-text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                v-model="scope.row.service_fee"
-                @input="calculateClientFee(scope.$index, scope.row)"
-                @focus="rowIndex = scope.$index"
-                ><template class="pricing-prepend" slot="prepend">{{
-                  currency
-                }}</template></el-input
-              >
-            </template>
-          </el-table-column>
-          <el-table-column prop="insurance" label="Insurance" width="200">
-            <template slot-scope="scope">
+                v-model="serviceCharge"
+                class="new-pricing-inputs"
+                @input="calculateClientFee()"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template>
+              </el-input>
+            </div>
+            <div>
+              <p class="pricing-input-labels">Insurance fee</p>
               <el-input
                 :disabled="true"
-                size="small"
                 type="text"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                class="table--col-text"
-                v-model="scope.row.insurance"
-                @input="calculateClientFee(scope.$index, scope.row)"
-                @focus="rowIndex = scope.$index"
-                ><template class="pricing-prepend" slot="prepend">{{
-                  currency
-                }}</template></el-input
+                v-model="insuranceFee"
+                class="new-pricing-inputs"
+                @input="calculateClientFee()"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template>
+              </el-input>
+            </div>
+          </div>
+        </div>
+        <div v-if="mode === 'allPricing' && !editStatus">
+          <div class="bands-heading-row" v-if="tablePricingData.length > 0">
+            <div class="bands-col-1">Pick up</div>
+            <div class="bands-col-2">Destination</div>
+            <div class="bands-col-3"></div>
+          </div>
+          <div v-for="(data, index) in tablePricingData" :key="index">
+            <div class="pricing-body-row" @click="toggleRow(index)">
+              <div class="bands-col-1 pricing-table-divider">
+                {{ data.from }}
+              </div>
+              <div class="bands-col-2">
+                {{ data.to }}
+              </div>
+              <div class="bands-col-3">
+                <span>
+                  <p
+                    v-if="data.status === 'Active'"
+                    class="active-status-tag pricing-status-button status-tag"
+                  >
+                    Active
+                  </p>
+                  <p
+                    v-else
+                    class="waiting-status-tag pricing-status-button status-tag"
+                  >
+                    Awaiting approval
+                  </p>
+                </span>
+                <span class="" v-if="opened.includes(index)">
+                  <i class="fa fa-chevron-circle-up all-pricing-arrow"></i>
+                </span>
+                <span class="" v-if="!opened.includes(index)">
+                  <i class="fa fa-chevron-circle-down all-pricing-arrow"></i>
+                </span>
+              </div>
+            </div>
+            <div
+              class="all-pricing-container pricing-row-spacer"
+              v-if="opened.includes(index)"
+            >
+              <div class="all-pricing-dropdown-buttons">
+                <div class="all-pricing-edit" @click="editAllPricing(index)">
+                  edit
+                </div>
+                <div
+                  v-if="data.status === 'Active'"
+                  class="all-pricing-delete"
+                  @click="
+                    showDeleteDialogue('tablePricingData', index, data.name)
+                  "
+                >
+                  delete
+                </div>
+              </div>
+              <div class="all-pricing-details">
+                <div class="all-pricing-column-left">
+                  <p class="all-pricing-column-title">Locations</p>
+                  <div>
+                    <p class="all-pricing-column-label">Pick up</p>
+                    <p class="all-pricing-column-value">
+                      {{ data.from }}
+                    </p>
+                  </div>
+                  <div>
+                    <p class="all-pricing-column-label">Destination</p>
+                    <p class="all-pricing-column-value">{{ data.to }}</p>
+                  </div>
+                  <div>
+                    <p class="all-pricing-column-label">
+                      Empty return location
+                    </p>
+                    <p class="all-pricing-column-value">
+                      {{ data.empty_return }}
+                    </p>
+                  </div>
+                  <div>
+                    <p class="all-pricing-column-label">
+                      Container size
+                    </p>
+                    <p class="all-pricing-column-value">
+                      {{ data.container_size_feet }} Feet
+                    </p>
+                  </div>
+                </div>
+                <div class="all-pricing-column-right">
+                  <p class="all-pricing-column-title">Additional Charges</p>
+                  <div class="all-pricing-column-container">
+                    <div class="all-pricing-column-divided">
+                      <div>
+                        <p class="all-pricing-column-label">
+                          Client Fee
+                        </p>
+                        <p class="all-pricing-column-value">
+                          {{ currency }}
+                          {{
+                            (data.insurance ? data.insurance : 0) +
+                              data.service_fee +
+                              data.rider_amount
+                          }}
+                        </p>
+                      </div>
+                      <div>
+                        <p class="all-pricing-column-label">
+                          Sendy commission
+                        </p>
+                        <p class="all-pricing-column-value">
+                          {{ data.sendy_commission }}%
+                        </p>
+                      </div>
+                      <div>
+                        <p class="all-pricing-column-label">
+                          Partner Fee
+                        </p>
+                        <p class="all-pricing-column-value">
+                          {{ currency }} {{ data.rider_amount }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="all-pricing-column-divided">
+                      <div>
+                        <p class="all-pricing-column-label">
+                          Service Charge
+                        </p>
+                        <p class="all-pricing-column-value">
+                          {{ currency }} {{ data.service_fee }}
+                        </p>
+                      </div>
+                      <div>
+                        <p class="all-pricing-column-label">
+                          Insurance Fee
+                        </p>
+                        <p class="all-pricing-column-value">
+                          {{ currency }}
+                          {{ data.insurance ? data.insurance : 0 }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pricing-row-spacer" v-else />
+          </div>
+          <div v-if="tablePricingData.length === 0">
+            There are no container configs for {{ user.user_details.cop_name }}
+          </div>
+        </div>
+        <div
+          class="pricing-approvers-container"
+          v-if="displayInputs && !editStatus"
+        >
+          <template>
+            <div class="pricing-approver-select">
+              <div class="approver-title">
+                Select the manager to approve
+              </div>
+              <el-select
+                v-model="approver"
+                size="small"
+                class="el-input--small"
+                filterable
+                placeholder="Select manager"
               >
-            </template>
-          </el-table-column>
-        </el-table>
-        <p class="pricing-add-row" @click="addRow('Container')">
-          <i class="fa fa-plus"></i> Add a new row
-        </p>
-        <button @click="goBack()" class="pricing-back-text">
-          Previous page
-        </button>
-        <el-button
-          class="pricing-save-btn btn-primary"
-          @click="previewConfig"
-          :disabled="validNewStep"
-          >Save & Preview
-        </el-button>
-      </template>
+                <el-option
+                  v-for="admin in admin_list"
+                  :key="admin.admin_id"
+                  :label="admin.name"
+                  :value="admin.admin_id"
+                >
+                </el-option>
+              </el-select>
+            </div>
+          </template>
+        </div>
+        <div
+          v-if="displayInputs"
+          class="new-pricing-tab-rows new-pricing-buttons"
+        >
+          <button
+            v-if="editStatus"
+            class="edit-pricing-cancel-button new-pricing-input-buttons"
+            @click="cancelEdit()"
+          >
+            cancel
+          </button>
+          <button
+            v-if="editStatus"
+            class="new-pricing-input-buttons"
+            :class="
+              saveBandStatus
+                ? 'new-pricing-submit-button'
+                : 'inactive-submit-approval-button'
+            "
+            @click="saveAllPricing()"
+          >
+            Save
+          </button>
+          <button
+            v-if="!editStatus"
+            class="new-pricing-input-buttons"
+            :class="
+              saveBandStatus && approver !== ''
+                ? 'new-pricing-submit-button'
+                : 'inactive-submit-approval-button'
+            "
+            @click="submitConfigs()"
+          >
+            Submit for approval
+          </button>
+        </div>
+        <div class="pricing-popup-dialogue" v-if="showDialogue">
+          <div class="pricing-popup-dialogue-box">
+            <p class="pricing-popup-dialogue-title">
+              Are you sure you want to delete this price configuration for
+              {{ deleteBand.vendor }} vendor type?
+            </p>
+            <button
+              class="pricing-popup-dialogue-buttons delete-button"
+              @click="deleteSingleBand()"
+            >
+              Yes, Delete
+            </button>
+            <button
+              class="pricing-popup-dialogue-buttons cancel-button"
+              @click="showDialogue = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <button @click="goBack()" class="pricing-back-text">
+        Previous page
+      </button>
     </div>
   </div>
 </template>
 <script>
-import Mixpanel from 'mixpanel';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
+import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
-import PreviewContainerPricingComponent from './PreviewContainerPricingComponent.vue';
+import SessionMxn from '@/mixins/session_mixin';
 
-const mixpanel = Mixpanel.init('b36c8592008057290bf5e1186135ca2f');
 export default {
-  name: 'LocationPricingComponent',
-  components: {
-    'preview-container-pricing-component': PreviewContainerPricingComponent,
-  },
-  mixins: [PricingConfigsMxn],
+  name: 'ContainerPricingComponent',
+  mixins: [PricingConfigsMxn, SessionMxn],
   props: {
     user: {
       type: Object,
@@ -307,191 +521,226 @@ export default {
   },
   data() {
     return {
-      rowIndex: 0,
-      pacInput1: [
-        {
-          name: '',
-        },
-      ],
-      pacInput2: [
-        {
-          name: '',
-        },
-      ],
-      pacInput3: [
-        {
-          name: '',
-        },
-      ],
+      copName: this.user.user_details.cop_name,
+      copId: this.user.user_details.cop_id,
       visible1: false,
       visible2: false,
       visible3: false,
-      currency: '',
-      vendorName: '',
+      searched: false,
+      mode: 'newPricing',
+      showDialogue: false,
+      admin_list: [],
       suggestions: [],
+      city: '',
+      pickUp: '',
+      pickUpCoordinates: '',
+      destination: '',
+      destinationCoordinates: '',
+      emptyReturn: '',
+      emptyReturnCoordinates: '',
+      approver: 0,
+      approverMail: '',
+      approverSelect: false,
+      selectedVendor: 'Freight',
+      containerWeight: '',
+      containerSize: '',
+      baseKm: '',
+      baseFee: '',
+      pricePerKm: '',
+      waitingFeePerHour: '',
+      loadingFee: '',
+      serviceCharge: '',
+      cancellationFee: '',
+      sendyCommission: '',
+      pricePerAdditionalDropOff: '',
+      clientFee: '',
+      partnerFee: '',
+      currency: '',
+      editStatus: false,
+      editedBandIndex: 0,
+      deleteBand: {
+        index: 0,
+        vendor: 'Bike',
+        table: 'tableData',
+      },
       vendorTypes: [],
-      tableData: [
-        {
-          id: 1,
-          name: '',
-          cop_id: 1,
-          cop_name: '',
-          currency: '',
-          admin_id: 1,
-          service_fee: 0,
-          sendy_commission: 0,
-          from: '',
-          from_location: {
-            type: 'Point',
-            coordinates: [36.799157, -1.299287],
-          },
-          to_location: {
-            type: 'Point',
-            coordinates: [39.671947, -4.056442],
-          },
-          empty_return_location: {
-            type: 'Point',
-            coordinates: [37.671947, -4.056444],
-          },
-          to: '',
-          empty_container_destination: '',
-          status: '',
-          city: '',
-          order_amount: 0,
-          rider_amount: 0,
-          insurance: 0,
-          container_weight_tonnes: '',
-          container_size_feet: '',
-          container_errand_type: 'drop_off',
-        },
-      ],
-      previewLocationPricing: false,
+      opened: [],
+      tablePricingData: [],
     };
   },
   computed: {
+    ...mapGetters({
+      getAdmins: 'getAdmins',
+      section: 'getSectionView',
+      getSessionData: 'getSession',
+      getTableData: 'getTableData',
+      configuredDistancePricing: 'getConfiguredDistancePricing',
+      configuredLocationPricing: 'getConfiguredLocationPricing',
+      getCustomPricingDetails: 'getCustomPricingDetails',
+    }),
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
     },
     vendor() {
       return this.vendorTypes.find(op => {
-        return op.name === this.vendorName;
+        return op.name === this.selectedVendor;
       });
     },
-    fromLocation() {
-      return this.suggestions.find(op => {
-        return op.place_id === this.fromPlaceId;
+    admin() {
+      return this.admin_list.find(op => {
+        return op.admin_id === this.approver;
       });
     },
-    validNewStep() {
-      let from = '';
-      let to = '';
-      let empty_return = '';
-      let vendor = '';
-      let size = '';
-      let weight = '';
-      for (let i = 0; i < this.tableData.length; i += 1) {
-        from = this.tableData[i].from;
-        to = this.tableData[i].to;
-        empty_return = this.tableData[i].empty_container_destination;
-        vendor = this.tableData[i].name;
-        size = this.tableData[i].container_size_feet;
-        weight = this.tableData[i].container_weight_tonnes;
+    insuranceFee() {
+      if (this.vendorTypes.length > 0) {
+        return this.vendor.insurance
+          ? this.vendor.insurance.max_distance_cost
+          : 0;
       }
-      return (
-        from === '' ||
-        to === '' ||
-        empty_return === '' ||
-        vendor === '' ||
-        size === '' ||
-        weight === ''
-      );
+      return 0;
+    },
+    containerPriceData() {
+      const data = [];
+      this.configuredLocationPricing.forEach((row, i) => {
+        if (Object.prototype.hasOwnProperty.call(row, 'empty_return')) {
+          row.index = i;
+          data.push(row);
+        }
+      });
+      return data;
+    },
+    displayInputs() {
+      if (
+        this.mode === 'newPricing' ||
+        (this.mode === 'allPricing' && this.editStatus)
+      ) {
+        return true;
+      }
+      return false;
+    },
+    assignments() {
+      const waitingtimePerMinute = this.waitingFeePerHour / 60;
+      const assignments = {
+        from: this.pickUp,
+        from_location: this.pickUpCoordinates,
+        to: this.destination,
+        to_location: this.destinationCoordinates,
+        empty_return: this.emptyReturn,
+        empty_return_location: this.emptyReturnCoordinates,
+        name: this.selectedVendor,
+        currency: this.currency,
+        container_size_feet: this.containerSize,
+        rider_amount: parseInt(this.partnerFee, 10),
+        service_fee: parseInt(this.serviceCharge, 10),
+        insurance: parseInt(this.insuranceFee, 10),
+        sendy_commission: parseInt(this.sendyCommission, 10),
+        order_amount: parseInt(this.clientFee, 10),
+      };
+      return assignments;
+    },
+    saveBandStatus() {
+      if (
+        this.currency &&
+        this.selectedVendor &&
+        this.pickUp &&
+        this.pickUpCoordinates &&
+        this.destination &&
+        this.destinationCoordinates &&
+        this.emptyReturn &&
+        this.emptyReturnCoordinates &&
+        this.containerWeight &&
+        this.containerSize &&
+        this.partnerFee &&
+        this.serviceCharge &&
+        this.sendyCommission &&
+        this.clientFee
+      ) {
+        return true;
+      }
+      return false;
     },
   },
   watch: {
-    pacInput1: {
-      handler(val) {
-        val = val[this.rowIndex].name;
-        if (
-          val &&
-          val.length > 2 &&
-          this.tableData[this.rowIndex].from !== val
-        ) {
-          this.search(val, 1);
-        }
-      },
-      deep: true,
+    mode(val) {
+      this.editStatus = false;
+      this.clearInputs();
+      this.opened = [];
+      this.editedBandIndex = 0;
     },
-    pacInput2: {
-      handler(val) {
-        val = val[this.rowIndex].name;
-        if (val && val.length > 2 && this.tableData[this.rowIndex].to !== val) {
-          this.search(val, 2);
-        }
-      },
-      deep: true,
+    getAdmins(admins) {
+      return (this.admin_list = admins);
     },
-    pacInput3: {
-      handler(val) {
-        val = val[this.rowIndex].name;
-        if (
-          val &&
-          val.length > 2 &&
-          this.tableData[this.rowIndex].empty_container_destination !== val
-        ) {
-          this.search(val, 3);
-        }
-      },
-      deep: true,
+    pickUp(val) {
+      if (val && val.length > 2 && !this.searched) {
+        this.search(val);
+      }
+    },
+    destination(val) {
+      if (val && val.length > 2 && !this.searched) {
+        this.search(val);
+      }
+    },
+    emptyReturn(val) {
+      if (val && val.length > 2 && !this.searched) {
+        this.search(val);
+      }
     },
   },
   async mounted() {
+    await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
     const countryCode = this.user.user_details.country_code;
     await this.fetchVendorTypes(countryCode);
     this.trackAddPricingDataPage();
+    this.tablePricingData = this.containerPriceData;
   },
   methods: {
     ...mapMutations({
+      updatePricing: 'updatePricing',
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
       updateSection: 'setSectionView',
+      modifyCustomLocationDetails: 'modifyCustomLocationDetails',
     }),
-    goBack() {
-      this.updateSection(1);
-      this.$emit('sectionUpdate', false);
+    ...mapActions({
+      submit_custom_pricing: 'submit_custom_pricing',
+      setAdmins: 'setAdmins',
+      deactivate_distance_pricing_configs:
+        'deactivate_distance_pricing_configs',
+    }),
+    // eslint-disable-next-line func-names
+    search: _.debounce(function(val) {
+      axios
+        .get(
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+        )
+        .then(response => {
+          this.suggestions = response.data.predictions;
+          this.visible = true;
+        });
+    }, 500),
+    calculateClientFee() {
+      const orderAmount =
+        parseInt(this.partnerFee ? this.partnerFee : 0, 10) +
+        parseInt(this.serviceCharge ? this.serviceCharge : 0, 10) +
+        parseInt(this.insuranceFee ? this.insuranceFee : 0, 10);
+      this.clientFee = orderAmount;
     },
-    handleFocus(index, input) {
-      this.rowIndex = index;
+    handleSelect(item, input, placeId) {
       if (input === 1) {
-        if (this.pacInput1[index].name !== '') {
-          this.search(this.pacInput1[index].name, input);
-        }
+        this.pickUp = item;
       } else if (input === 2) {
-        if (this.pacInput2[index].name !== '') {
-          this.search(this.pacInput2[index].name, input);
-        }
+        this.destination = item;
       } else if (input === 3) {
-        if (this.pacInput3[index].name !== '') {
-          this.search(this.pacInput3[index].name, input);
-        }
+        this.emptyReturn = item;
       }
-    },
-    handleBlur() {
       this.visible1 = false;
       this.visible2 = false;
       this.visible3 = false;
-    },
-    calculateClientFee(index, row) {
-      const partnerAmount = parseInt(row.rider_amount, 10);
-      const serviceFee = parseInt(row.service_fee, 10);
-      const insurance = parseInt(row.insurance, 10);
-      const orderAmount = partnerAmount + serviceFee + insurance;
-      return (this.tableData[index].order_amount = orderAmount);
-    },
-    handleSelectFrom(item, index, rows) {
-      this.handleBlur();
+      this.searched = true;
       this.suggestions = [];
-      this.tableData[index].from = item.description;
-      this.pacInput1[index].name = item.description;
-      const fromPlaceId = item.place_id;
+      const fromPlaceId = placeId;
       axios
         .get(
           `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=${this.herokuKey}`,
@@ -505,119 +754,333 @@ export default {
             parseFloat(coordinatesArray[1].toFixed(6)),
             parseFloat(coordinatesArray[0].toFixed(6)),
           ];
-          this.tableData[index].from_location.coordinates = coordinatesArray;
+          if (input === 1) {
+            this.pickUpCoordinates = {
+              coordinates: coordinatesArray,
+              type: 'Point',
+            };
+          } else if (input === 2) {
+            this.destinationCoordinates = {
+              coordinates: coordinatesArray,
+              type: 'Point',
+            };
+          } else if (input === 3) {
+            this.emptyReturnCoordinates = {
+              coordinates: coordinatesArray,
+              type: 'Point',
+            };
+          }
         });
     },
-    handleSelectTo(item, index, rows) {
-      this.handleBlur();
-      this.suggestions = [];
-      this.tableData[index].to = item.description;
-      this.pacInput2[index].name = item.description;
-      const toPlaceId = item.place_id;
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          const toLatLong = response.data.result.geometry.location;
-          const coordinatesArray = Object.keys(toLatLong).map(
-            key => toLatLong[key],
-          );
-          [coordinatesArray[0], coordinatesArray[1]] = [
-            parseFloat(coordinatesArray[1].toFixed(6)),
-            parseFloat(coordinatesArray[0].toFixed(6)),
-          ];
-          this.tableData[index].to_location.coordinates = coordinatesArray;
+    handleFocus(val, input) {
+      this.searched = false;
+      if (val) {
+        this.search(val);
+      }
+    },
+    goBack() {
+      this.updateSection(1);
+      this.$emit('sectionUpdate', false);
+    },
+    toggleRow(i) {
+      if (this.opened.includes(i)) {
+        const index = this.opened.indexOf(i);
+        this.opened.splice(index, 1);
+      } else {
+        this.opened.push(i);
+      }
+    },
+    clearInputs() {
+      this.selectedVendor = 'Freight';
+      this.pickUp = '';
+      this.pickUpCoordinates = '';
+      this.destination = '';
+      this.destinationCoordinates = '';
+      this.emptyReturn = '';
+      this.emptyReturnCoordinates = '';
+      this.containerWeight = '';
+      this.containerSize = '';
+      this.partnerFee = '';
+      this.serviceCharge = '';
+      this.sendyCommission = '';
+      this.clientFee = '';
+    },
+    cancelEdit() {
+      this.editStatus = false;
+      this.clearInputs();
+      this.editedBandIndex = 0;
+    },
+    showDeleteDialogue(table, index, vendor) {
+      this.deleteBand = {
+        index,
+        table,
+        vendor,
+      };
+      this.showDialogue = true;
+    },
+    deleteSingleBand() {
+      this.opened = [];
+      this.modifySinglePriceConfig(
+        this.tablePricingData[this.deleteBand.index],
+        this.deleteBand.index,
+        'delete',
+      );
+    },
+    editAllPricing(i) {
+      this.selectedVendor = this.tablePricingData[i].name;
+      this.pickUp = this.tablePricingData[i].from;
+      this.pickUpCoordinates = this.tablePricingData[i].from_location;
+      this.destination = this.tablePricingData[i].to;
+      this.destinationCoordinates = this.tablePricingData[i].to_location;
+      this.emptyReturn = this.tablePricingData[i].empty_return;
+      this.emptyReturnCoordinates = this.tablePricingData[
+        i
+      ].empty_return_location;
+      this.containerSize = this.tablePricingData[
+        i
+      ].container_size_feet.toString();
+      this.containerWeight = this.tablePricingData[i].container_weight_tonnes
+        ? this.tablePricingData[i].container_weight_tonnes.toString()
+        : '0';
+      this.partnerFee = this.tablePricingData[i].rider_amount;
+      this.serviceCharge = this.tablePricingData[i].service_fee;
+      this.sendyCommission = this.tablePricingData[i].sendy_commission;
+      this.clientFee =
+        (this.tablePricingData[i].insurance
+          ? this.tablePricingData[i].insurance
+          : 0) +
+        this.tablePricingData[i].service_fee +
+        this.tablePricingData[i].rider_amount;
+      this.editStatus = true;
+      this.editedBandIndex = i;
+    },
+    saveAllPricing() {
+      Object.keys(this.assignments).forEach((row, i) => {
+        this.modifyCustomLocationDetails({
+          index: this.tablePricingData[this.editedBandIndex].index,
+          field: row,
+          model: 'container_pricing',
+          value: Object.values(this.assignments)[i],
         });
+      });
+      this.modifySinglePriceConfig(
+        this.tablePricingData[this.editedBandIndex],
+        this.editedBandIndex,
+        'edit',
+      );
+      this.editedBandIndex = 0;
+      this.editStatus = false;
+      this.clearInputs();
     },
-    handleSelectContainerDestination(item, index, rows) {
-      this.handleBlur();
-      this.suggestions = [];
-      this.tableData[index].empty_container_destination = item.description;
-      this.pacInput3[index].name = item.description;
-      const toPlaceId = item.place_id;
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${toPlaceId}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          const toLatLong = response.data.result.geometry.location;
-          const coordinatesArray = Object.keys(toLatLong).map(
-            key => toLatLong[key],
-          );
-          [coordinatesArray[0], coordinatesArray[1]] = [
-            parseFloat(coordinatesArray[1].toFixed(6)),
-            parseFloat(coordinatesArray[0].toFixed(6)),
-          ];
-          // eslint-disable-next-line prettier/prettier
-          this.tableData[index].empty_return_location.coordinates = coordinatesArray;
-          this.tableData[index].container_errand_type = 'empty_return';
-        });
+    async modifySinglePriceConfig(row, index, action) {
+      this.trackRemoveSingleConfigs();
+      const containerPricingTable = [row];
+      const approvalParams = this.createPayload(containerPricingTable, action);
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/update_custom_distance_details',
+        apiKey: false,
+        params: approvalParams,
+      };
+      try {
+        const data = await this.deactivate_distance_pricing_configs(payload);
+        this.trackMixpanelIdentify();
+        this.trackMixpanelPeople();
+        this.fetchData();
+        if (data.status) {
+          this.trackResetConfigsSuccess();
+          if (action === 'delete') {
+            notification.push('Custom price configs deactivated successfully.');
+          } else {
+            notification.push('Custom price configs edited successfully.');
+          }
+          actionClass = this.display_order_action_notification(data.status);
+        } else {
+          this.trackResetConfigsFail();
+          notification.push(data.error);
+          actionClass = this.display_order_action_notification(data.status);
+          this.showDialogue = false;
+        }
+      } catch (error) {
+        this.fetchData();
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+        this.showDialogue = false;
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
-    deleteRow(index, rows) {
-      this.rowIndex = this.tableData.length - 2;
-      this.tableData.splice(index, 1);
-      this.pacInput1.splice(index, 1);
-      this.pacInput2.splice(index, 1);
-      this.pacInput3.splice(index, 1);
+    async fetchData() {
+      await this.fetchCustomDistancePricingData();
+      this.tablePricingData = this.containerPriceData;
+      this.showDialogue = false;
     },
-    onChange(event, index, row) {
-      this.vendorName = row.name;
-      this.tableData[index].id = this.vendor.id;
-      this.tableData[index].insurance = this.vendor.insurance
-        ? this.vendor.insurance.max_distance_cost
-        : 0;
-      this.calculateClientFee(index, row);
-    },
-    previewConfig() {
-      this.previewLocationPricing = true;
-      this.trackSaveAndPreview();
-    },
-    onSectionUpdate(value) {
-      this.previewLocationPricing = value;
-    },
-    configSubmitted() {
-      this.pacInput1[0].name = '';
-      this.pacInput2[0].name = '';
-      this.pacInput3[0].name = '';
-      this.tableData = [
-        {
-          id: 1,
-          name: '',
-          cop_id: 1,
-          cop_name: '',
-          currency: 'KES',
-          admin_id: 1,
-          service_fee: 0,
-          sendy_commission: 0,
-          from: '',
+    createPayload(data, action) {
+      const containerPricingArray = [];
+      for (let i = 0; i < data.length; i += 1) {
+        const containerPricingObject = {
+          cop_id: this.copId,
+          vendor_id: data[i].id,
+          object_id: data[i].object_id,
+          from_coordinates: data[i].from_location.coordinates,
+          to_coordinates: data[i].to_location.coordinates,
+          custom_pricing_details: {
+            container_pricing: [],
+          },
+        };
+        const containerData = {
+          id: data[i].id,
+          name: data[i].name,
+          cop_id: this.copId,
+          cop_name: data[i].cop_name,
+          currency: this.currency,
+          admin_id: parseInt(this.adminId, 10),
+          waiting_time_cost_per_min: data[i].waiting_time_cost_per_min,
+          sendy_commission: data[i].sendy_commission,
+          order_confirmation_time_delay: data[i].order_confirmation_time_delay,
+          waiting_time_base: data[i].waiting_time_base,
+          fixed_status: data[i].fixed_status,
+          cancellation_fee: data[i].cancellation_fee,
+          min_cancellation_fee: data[i].min_cancellation_fee,
+          extra_distance_base_km: data[i].extra_distance_base_km,
+          order_pickup_time_delay: data[i].order_pickup_time_delay,
+          percentage_cancellation_fee: data[i].percentage_cancellation_fee,
+          max_cancellation_fee: data[i].max_cancellation_fee,
+          time: data[i].time,
+          fixed_cost: data[i].fixed_cost,
+          base_cost: data[i].base_cost,
+          base_km: data[i].base_km,
+          cost_per_km_above_base_km: data[i].cost_per_km_above_base_km,
+          additional_location_cost: data[i].additional_location_cost,
+          service_fee: data[i].service_fee,
+          from: data[i].from,
           from_location: {
-            type: 'Point',
-            coordinates: [36.799157, -1.299287],
+            type: data[i].from_location.type,
+            coordinates: data[i].from_location.coordinates,
           },
           to_location: {
-            type: 'Point',
-            coordinates: [39.671947, -4.056442],
+            type: data[i].to_location.type,
+            coordinates: data[i].to_location.coordinates,
           },
           empty_return_location: {
-            type: 'Point',
-            coordinates: [37.671947, -4.056444],
+            type: data[i].empty_return_location.type,
+            coordinates: data[i].empty_return_location.coordinates,
           },
-          to: '',
-          empty_container_destination: '',
-          status: '',
-          city: '',
-          order_amount: 0,
-          rider_amount: 0,
-          insurance: 0,
-          container_weight_tonnes: '',
-          container_size_feet: '',
-          container_errand_type: 'drop_off',
+          to: data[i].to,
+          empty_return: data[i].empty_return,
+          status: data[i].status,
+          order_amount: data[i].order_amount,
+          rider_amount: data[i].rider_amount,
+          container_size_feet: parseInt(data[i].container_size_feet, 10),
+          container_errand_type: data[i].container_errand_type,
+          city: data[i].city,
+        };
+        if (action === 'delete') {
+          containerData.status = 'Deactivated';
+        }
+        containerPricingObject.custom_pricing_details.container_pricing.push(
+          containerData,
+        );
+        containerPricingArray.push(containerPricingObject);
+      }
+      return containerPricingArray;
+    },
+    createSumbitPayload() {
+      const payload = [
+        {
+          cop_id: this.copId,
+          cop_name: this.copName,
+          currency: this.currency,
+          admin_id: this.approver,
+          custom_pricing_details: {
+            container_pricing: [
+              {
+                status: 'Pending',
+                name: this.vendor.name,
+                cop_id: this.copId,
+                cop_name: this.copName,
+                currency: this.currency,
+                admin_id: this.approver,
+                from: this.pickUp,
+                from_location: this.pickUpCoordinates,
+                to_location: this.destinationCoordinates,
+                to: this.destination,
+                city: '',
+                order_amount: parseInt(this.clientFee, 10),
+                rider_amount: parseInt(this.partnerFee, 10),
+                insurance: parseInt(this.insuranceFee, 10),
+                fixed_cost: this.vendor.id === 20 ? 1 : 0,
+                sendy_commission: parseInt(this.sendyCommission, 10),
+                service_fee: parseInt(this.serviceCharge, 10),
+                cost_per_km_above_base_km: 0,
+                waiting_time_cost_per_min: 3.33,
+                extra_distance_base_km: 1,
+                loader_cost: 0,
+                min_cancellation_fee: 0,
+                max_cancellation_fee: 0,
+                percentage_cancellation_fee: 0,
+                order_pick_up_time_delay: 0,
+                order_confirmation_time_delay: 0,
+                container_size_feet: parseInt(this.containerSize, 10),
+                container_errand_type: 'empty_return',
+                id: this.vendor.id,
+                empty_return_location: this.emptyReturnCoordinates,
+                empty_return: this.emptyReturn,
+              },
+            ],
+          },
         },
       ];
-      this.previewLocationPricing = false;
-      this.$emit('destroyContainerComponent');
-      this.goBack();
+      return payload;
+    },
+    async submitConfigs() {
+      this.trackPricingSubmit();
+      const configParams = this.createSumbitPayload();
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/add_custom_distance_details',
+        apiKey: false,
+        params: configParams,
+      };
+      try {
+        const data = await this.submit_custom_pricing(payload);
+        if (data.status) {
+          this.fetchData();
+          this.clearInputs();
+          this.trackPassedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
+          this.submitNotification();
+          notification.push(
+            'You have successfully created the custom pricing config!',
+          );
+          actionClass = this.display_order_action_notification(data.status);
+          this.updateSuccess(false);
+          this.sendEmailNotification(this.admin.email, this.admin.name);
+        } else {
+          this.trackFailedSubmission();
+          this.trackMixpanelIdentify();
+          this.trackMixpanelPeople();
+          notification.push(data.error);
+          actionClass = this.display_order_action_notification(data.status);
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
+      this.trackMixpanelPeople();
+    },
+    submitNotification() {
+      this.$emit('configSubmitted');
     },
     trackAddPricingDataPage() {
       mixpanel.track('Add Container Pricing data Page - PageView', {
@@ -632,34 +1095,64 @@ export default {
         },
       );
     },
-    // eslint-disable-next-line func-names
-    search: _.debounce(function(val, input) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-          if (input === 1) {
-            this.visible1 = true;
-          } else if (input === 2) {
-            this.visible2 = true;
-          } else if (input === 3) {
-            this.visible3 = true;
-          }
-          setTimeout(() => {
-            document
-              .querySelectorAll('.el-popover')
-              .forEach((row, index, arr) => {
-                if (row.style.position === 'fixed') {
-                  if (index === arr.length - 2) {
-                    row.style.display = 'none';
-                  }
-                }
-              });
-          }, 50);
-        });
-    }, 500),
+    trackPricingSubmitPage() {
+      mixpanel.track('Submit Container pricing for approval Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackPricingSubmit() {
+      mixpanel.track('"Submit Request" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPassedSubmission() {
+      mixpanel.track('Container pricing saved - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedSubmission() {
+      mixpanel.track('Container pricing not saved - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackViewDetailsPage() {
+      mixpanel.track('View Details Link - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackResetConfigs() {
+      mixpanel.track('"Reset Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackRemoveSingleConfigs() {
+      mixpanel.track('"Remove Single Pricing" Icon - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackResetConfigsSuccess() {
+      mixpanel.track('Reset successful - Success', {
+        type: 'Success',
+      });
+    },
+    trackResetConfigsFail() {
+      mixpanel.track('Reset failed - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('Approver', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Approver',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
+    },
   },
 };
 </script>
@@ -700,5 +1193,265 @@ tr:hover {
   cursor: pointer;
   height: 25px;
   padding-right: 15px;
+}
+
+.daily-rate-title {
+  color: #1871ac;
+  font-size: 20px;
+  font-weight: 500;
+}
+.daily-rate-pricing-tabs {
+  display: flex;
+  margin-bottom: -1px;
+}
+.daily-rate-pricing-tabs-titles {
+  padding: 15px;
+  color: #1b7fc3;
+  font-size: 14px;
+}
+.active-pricing-tab {
+  border-top: 2px solid #1b7fc3;
+  border-left: 1px solid #ebebeb;
+  border-right: 1px solid #ebebeb;
+  border-bottom: 1px solid white;
+}
+.new-pricing-tab {
+  border: 1px solid #ebebeb;
+  padding: 30px;
+}
+.new-pricing-tab-rows {
+  display: flex;
+  margin-bottom: 20px;
+}
+.pricing-input-labels {
+  margin: 5px;
+}
+.pricing-input-section-titles {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #1e7d11;
+  font-size: 14px;
+  font-weight: 600;
+}
+.pricing-time-input-labels {
+  margin: 0px;
+  color: #2197e5;
+}
+.new-pricing-inputs {
+  height: 40px;
+  width: 200px;
+  margin-right: 20px;
+}
+.pricing-monthly-rate-inputs {
+  margin-top: 18px;
+}
+.pricing-radio-labels {
+  margin: 10px 20px 5px 5px;
+}
+.new-pricing-input-buttons {
+  height: 40px;
+  width: 165px;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 10px;
+  border: 0px solid;
+}
+.new-pricing-buttons {
+  justify-content: flex-end;
+}
+.new-pricing-add-band-button {
+  background: #f28226;
+  border-color: #f28226;
+}
+.new-pricing-submit-button {
+  background: #1b7fc3;
+  border-color: #1b7fc3;
+}
+.inactive-add-band-button {
+  background: #f282268c;
+  border-color: #f282268c;
+  pointer-events: none;
+}
+.inactive-submit-approval-button {
+  background: #1b7fc37a;
+  border-color: #1b7fc37a;
+  pointer-events: none;
+}
+.bands-col-1,
+.bands-col-2 {
+  width: 25%;
+  padding-left: 15px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+}
+.bands-col-3 {
+  width: 50%;
+  justify-content: flex-end;
+  display: flex;
+  padding-right: 5%;
+}
+.bands-heading-row,
+.bands-body-row {
+  display: flex;
+}
+.bands-heading-row {
+  color: #1871ac;
+}
+.bands-body-row {
+  color: #8f9bb3;
+  background-color: rgba(191, 209, 227, 0.18);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  margin-bottom: 15px;
+}
+.pricing-body-row {
+  color: #8f9bb3;
+  background-color: rgba(191, 209, 227, 0.18);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+.pricing-row-spacer {
+  margin-bottom: 15px;
+}
+.pricing-table-divider {
+  border-right: 1px solid #80808040;
+}
+.new-pricing-edit,
+.new-pricing-delete {
+  font-size: 12px;
+  text-align: right;
+  margin: 0px 25px 0px 0px;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
+.new-pricing-edit {
+  color: #d2212a;
+}
+.new-pricing-delete {
+  color: #0e4266;
+}
+.all-pricing-arrow {
+  color: #1871ac;
+  font-size: 20px;
+}
+.all-pricing-dropdown-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+.all-pricing-container {
+  padding: 2% 5% 5% 5%;
+  background: rgba(191, 209, 227, 0.18);
+  border-top: 1px solid #80808040;
+  border-radius: 5px;
+}
+.all-pricing-details {
+  display: flex;
+}
+.all-pricing-column-left {
+  width: 35%;
+}
+.all-pricing-column-right {
+  width: 65%;
+}
+.all-pricing-column-label {
+  color: #1871ac;
+  margin: 0px;
+  font-size: 14px;
+}
+.all-pricing-column-value {
+  margin: 5px 0px 15px 0px;
+  font-size: 15px;
+  color: #848484;
+}
+.all-pricing-edit {
+  color: #43b634;
+  text-decoration: underline;
+  padding: 0 15px 0 0px;
+  cursor: pointer;
+}
+.all-pricing-delete {
+  color: #d2212a;
+  text-decoration: underline;
+  padding: 0 15px 0 0px;
+  cursor: pointer;
+}
+.edit-pricing-cancel-button {
+  background: #c5cee0;
+  border-color: #c5cee0;
+}
+.pricing-container {
+  position: relative;
+}
+.pricing-popup-dialogue {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin-left: -30px;
+  background: #10142673;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pricing-popup-dialogue-box {
+  background: white;
+  padding: 5%;
+  border-radius: 10px;
+}
+.pricing-popup-dialogue-buttons {
+  display: block;
+  margin: auto;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  width: 100px;
+  margin-bottom: 10px;
+  border: 0px solid;
+}
+.pricing-popup-dialogue-title {
+  width: 240px;
+  margin: 20px;
+  text-align: center;
+}
+.delete-button {
+  background: #d2212a;
+  border-color: #d2212a;
+}
+.cancel-button {
+  background: #6ec763;
+  border-color: #6ec763;
+}
+.pricing-approvers-container {
+  width: 200px;
+  margin-left: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.single-suggestion {
+  cursor: pointer;
+  height: 25px;
+  padding-right: 15px;
+}
+.status-tag {
+  margin: 0px 15px 0px 0px !important;
+}
+.all-pricing-column-title {
+  color: #0e4266;
+  font-size: 15px;
+  font-weight: 700;
+}
+.all-pricing-column-container {
+  display: flex;
+}
+.all-pricing-column-divided {
+  padding: 0px 25px 0 0px;
 }
 </style>

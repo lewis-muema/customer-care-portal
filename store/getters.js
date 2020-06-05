@@ -88,6 +88,9 @@ export default {
   getConfiguredLocationPricing(state) {
     return state.locationPricingData;
   },
+  getConfiguredDedicatedPricing(state) {
+    return state.dedicatedPricingData;
+  },
   getPendingDistancePricing(state) {
     return state.pendingPricingData;
   },

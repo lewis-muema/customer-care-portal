@@ -893,8 +893,24 @@ export default {
         }
         commit('updateLocationPricing', locationPricing);
         commit('updateDistancePricing', distancePricing);
+        commit('setCustomPricingDetails', customPricingDetails);
         commit('updateApproverId', approverId);
       }
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async pending_dedicated_pricing_data({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      const arrayData = [];
+      res.data.data.forEach(row => {
+        if (row.status === 'Pending' || row.status === 'Active') {
+          arrayData.push(row);
+        }
+      });
+      commit('updateDedicatedPricing', arrayData);
       return res.data;
     } catch (error) {
       return error.response;
@@ -917,6 +933,14 @@ export default {
     }
   },
   async approve_container_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async approve_pricing_configs({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
