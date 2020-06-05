@@ -349,30 +349,8 @@
                           {{ currency }} {{ data.service_fee }}
                         </p>
                       </div>
-                      <div>
-                        <p class="all-pricing-column-label">
-                          Insurance Fee
-                        </p>
-                        <p class="all-pricing-column-value">
-                          {{ currency }}
-                          {{ data.insurance ? data.insurance : 0 }}
-                        </p>
-                      </div>
                     </div>
                     <div class="all-pricing-column-divided">
-                      <div>
-                        <p class="all-pricing-column-label">
-                          Client Fee
-                        </p>
-                        <p class="all-pricing-column-value">
-                          {{ currency }}
-                          {{
-                            (data.insurance ? data.insurance : 0) +
-                              data.service_fee +
-                              data.base_cost
-                          }}
-                        </p>
-                      </div>
                       <div>
                         <p class="all-pricing-column-label">
                           Sendy commission
@@ -964,17 +942,14 @@ export default {
       this.$emit('configSubmitted');
     },
     trackAddPricingDataPage() {
-      mixpanel.track('Add Container Pricing data Page - PageView', {
+      mixpanel.track('Add Distance Pricing data Page - PageView', {
         type: 'PageView',
       });
     },
     trackSaveAndPreview() {
-      mixpanel.track(
-        'Save and Preview Container Pricing button - ButtonClick',
-        {
-          type: 'Click',
-        },
-      );
+      mixpanel.track('Save and Preview Distance Pricing button - ButtonClick', {
+        type: 'Click',
+      });
     },
     trackPricingSubmitPage() {
       mixpanel.track('Submit distance pricing for approval Page - PageView', {

@@ -184,11 +184,12 @@ export default {
     this.copId = this.user.user_details.cop_id;
     this.currency = this.user.user_details.default_currency;
     this.countryCode = this.user.user_details.country_code;
-    await this.fetchCustomDistancePricingData();
-    await this.fetchVendorTypes(this.countryCode);
-    this.updateSummaryStatus(true);
     this.updateSection(1);
+    this.updateSummaryStatus(true);
     this.trackPricingHomePage();
+    await this.fetchCustomDistancePricingData();
+    await this.fetchDedicatedPricingData();
+    await this.fetchVendorTypes(this.countryCode);
   },
   methods: {
     ...mapMutations({

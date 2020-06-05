@@ -83,6 +83,7 @@ export default {
       pendingLocationData: [],
       pendingContainerData: [],
       locationPricingData: [],
+      dedicatedPricingData: [],
       tableData: [],
       customPricingDetails: [],
       approverId: 0,

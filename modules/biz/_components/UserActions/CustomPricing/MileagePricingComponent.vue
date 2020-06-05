@@ -25,13 +25,14 @@
               <p class="pricing-input-labels">Vendor type</p>
               <template>
                 <el-select
+                  :disabled="mode === 'allPricing'"
                   v-model="selectedVendor"
                   placeholder="Select Vendor"
                   size="large"
                   class="new-pricing-inputs"
                 >
                   <el-option
-                    v-for="vendor in vendorTypes"
+                    v-for="vendor in filterdVendors"
                     :key="vendor.id"
                     :label="vendor.name"
                     :value="vendor.name"
@@ -56,10 +57,137 @@
                 </template>
               </div>
             </div>
+            <div v-if="mode === 'newPricing'">
+              <p class="pricing-input-labels">Price type</p>
+              <p class="no-margin">
+                <input
+                  type="radio"
+                  v-model="partnerPriceType"
+                  value="per_km_band"
+                  id="exclusive"
+                />
+                <label for="exclusive">per km band </label>
+              </p>
+              <p class="no-margin">
+                <input
+                  type="radio"
+                  v-model="partnerPriceType"
+                  value="standard_rate_per_km"
+                  id="inclusive"
+                />
+                <label for="inclusive">Standard rate per km </label>
+              </p>
+            </div>
           </div>
-          <p class="pricing-input-section-titles">
+          <p
+            class="pricing-input-section-titles"
+            v-if="partnerPriceType === 'per_km_band'"
+          >
             KM Bands
           </p>
+          <div v-if="partnerPriceType === 'per_km_band'">
+            <div
+              class="new-pricing-tab-rows"
+              v-for="(band, index) in kmBands"
+              :key="index"
+            >
+              <div>
+                <p class="pricing-input-labels">Enter KM range</p>
+                <div class="new-pricing-tab-rows">
+                  <div>
+                    <p class="pricing-time-input-labels">Between</p>
+                    <el-input
+                      type="text"
+                      v-model="band.lowerLimitKm"
+                      onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                      placeholder="Between X km"
+                      class="new-pricing-inputs-from-kms"
+                    >
+                    </el-input>
+                  </div>
+                  <div>
+                    <p class="pricing-time-input-labels">and</p>
+                    <el-input
+                      type="text"
+                      v-model="band.upperLimitKm"
+                      onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                      placeholder="and Y km"
+                      class="new-pricing-inputs-to-kms"
+                    >
+                      <template class="pricing-prepend" slot="append">
+                        KMS
+                      </template>
+                    </el-input>
+                  </div>
+                </div>
+              </div>
+              <div class="pricing-monthly-rate-inputs">
+                <p class="pricing-input-labels">Customer Rate (per KM)</p>
+                <el-input
+                  type="text"
+                  v-model="band.customerRatePerKm"
+                  onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                  class="new-pricing-inputs-rates"
+                  ><template class="pricing-prepend" slot="append">
+                    {{ currency }}
+                  </template>
+                </el-input>
+              </div>
+              <div class="pricing-monthly-rate-inputs">
+                <i
+                  v-if="index > 0"
+                  @click="removeBandRow(index)"
+                  class="el-icon-close remove-band-button"
+                />
+                <p class="pricing-input-labels">Partner Rate (per KM)</p>
+                <el-input
+                  type="text"
+                  v-model="band.partnerRatePerKm"
+                  onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                  class="new-pricing-inputs-rates"
+                  ><template class="pricing-prepend" slot="append">
+                    {{ currency }}
+                  </template>
+                </el-input>
+              </div>
+            </div>
+            <p class="add-band-button" @click="addBandRow()">+ Add band</p>
+          </div>
+          <p
+            class="pricing-input-section-titles"
+            v-if="partnerPriceType === 'standard_rate_per_km'"
+          >
+            Standard rate per km
+          </p>
+          <div
+            class="new-pricing-tab-rows"
+            v-if="partnerPriceType === 'standard_rate_per_km'"
+          >
+            <div>
+              <p class="pricing-input-labels">Cost per Km</p>
+              <el-input
+                type="text"
+                v-model="costPerKm"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="new-pricing-inputs"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template></el-input
+              >
+            </div>
+            <div>
+              <p class="pricing-input-labels">Parter cost per Km</p>
+              <el-input
+                type="text"
+                v-model="partnerCostPerKm"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="new-pricing-inputs"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template></el-input
+              >
+            </div>
+          </div>
           <div class="new-pricing-tab-rows">
             <div>
               <p class="pricing-input-labels">Minimum distance (KM)</p>
@@ -67,7 +195,6 @@
                 type="text"
                 v-model="minDistance"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                placeholder="< 40"
                 class="new-pricing-inputs"
                 ><template class="pricing-prepend" slot="append">
                   KMS
@@ -75,10 +202,23 @@
               >
             </div>
             <div>
-              <p class="pricing-input-labels">Cost</p>
+              <p class="pricing-input-labels">Customer Rate</p>
               <el-input
                 type="text"
-                v-model="cost"
+                v-model="customerRate"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                placeholder="Enter amount"
+                class="new-pricing-inputs"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template></el-input
+              >
+            </div>
+            <div>
+              <p class="pricing-input-labels">Partner Rate</p>
+              <el-input
+                type="text"
+                v-model="partnerRate"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 placeholder="Enter amount"
                 class="new-pricing-inputs"
@@ -89,66 +229,6 @@
             </div>
           </div>
           <div class="new-pricing-tab-rows">
-            <div>
-              <p class="pricing-input-labels">Enter KM range</p>
-              <div class="new-pricing-tab-rows">
-                <div>
-                  <p class="pricing-time-input-labels">Between</p>
-                  <el-input
-                    type="text"
-                    v-model="lowerLimitKm"
-                    onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                    placeholder="Between X km"
-                    class="new-pricing-inputs"
-                  >
-                    <template class="pricing-prepend" slot="append">
-                      KMS
-                    </template>
-                  </el-input>
-                </div>
-                <div>
-                  <p class="pricing-time-input-labels">and</p>
-                  <el-input
-                    type="text"
-                    v-model="upperLimitKm"
-                    onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                    placeholder="and Y km"
-                    class="new-pricing-inputs"
-                  >
-                    <template class="pricing-prepend" slot="append">
-                      KMS
-                    </template>
-                  </el-input>
-                </div>
-              </div>
-            </div>
-            <div class="pricing-monthly-rate-inputs">
-              <p class="pricing-input-labels">Cost per KM</p>
-              <el-input
-                type="text"
-                v-model="costPerKm"
-                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                class="new-pricing-inputs"
-                ><template class="pricing-prepend" slot="append">
-                  {{ currency }}
-                </template>
-              </el-input>
-            </div>
-          </div>
-          <div class="new-pricing-tab-rows">
-            <div>
-              <p class="pricing-input-labels">Sendy take</p>
-              <el-input
-                type="text"
-                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                placeholder="% commission"
-                v-model="sendyTake"
-                class="new-pricing-inputs"
-                ><template class="pricing-prepend" slot="append">
-                  %
-                </template>
-              </el-input>
-            </div>
             <div>
               <p class="pricing-input-labels">Fuel Cost</p>
               <input
@@ -171,47 +251,12 @@
               </label>
             </div>
           </div>
-          <p class="pricing-input-section-titles">
-            Partner Take
-          </p>
-          <div>
-            <input
-              type="radio"
-              v-model="partnerRate"
-              value="daily rate"
-              id="dailyRate"
-            />
-            <label for="dailyRate" class="pricing-radio-labels"
-              >Daily Rate
-            </label>
-            <input
-              type="radio"
-              v-model="partnerRate"
-              value="Rate per KM"
-              id="ratePerKm"
-            />
-            <label for="ratePerKm" class="pricing-radio-labels"
-              >Rate per KM
-            </label>
-          </div>
-          <div class="new-pricing-tab-rows">
-            <el-input
-              type="text"
-              placeholder="Enter Amount"
-              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-              v-model="partnerTake"
-              class="new-pricing-inputs"
-              ><template class="pricing-prepend" slot="append">
-                {{ currency }}
-              </template>
-            </el-input>
-          </div>
         </div>
-        <div v-if="mode === 'newPricing' && !editStatus">
+        <div class="bands-table" v-if="mode === 'newPricing' && !editStatus">
           <div class="bands-heading-row" v-if="tableData.length > 0">
             <div class="bands-col-1">Vendor Type</div>
-            <div class="bands-col-2">Minimum Distance</div>
-            <div class="bands-col-3">KM Band</div>
+            <div class="bands-col-2">KM Band</div>
+            <div class="bands-col-3">Minimum Distance</div>
             <div class="bands-col-4"></div>
           </div>
           <div
@@ -219,15 +264,24 @@
             :key="index"
             class="bands-body-row"
           >
-            <div class="bands-col-1 pricing-table-divider">
+            <div class="bands-col-1">
               {{ data.vendor }}
             </div>
             <div class="bands-col-2 pricing-table-divider">
-              {{ data.minimum_distance }} KMS
+              <div
+                class="bands-km-col"
+                v-if="data.partner_price_type === 'per_km_band'"
+              >
+                <div v-for="(singleBand, x) in data.km_bands" :key="x">
+                  <!-- eslint-disable-next-line prettier/prettier -->
+                {{ singleBand.lowerLimitKm }}KM - {{ singleBand.upperLimitKm }}KM
+                </div>
+              </div>
+              <div class="bands-km-col" v-else>
+                Standard rate per Km
+              </div>
             </div>
-            <div class="bands-col-3">
-              {{ data.lower_limit_km }}KM - {{ data.upper_limit_km }}KM
-            </div>
+            <div class="bands-col-3">{{ data.minimum_distance }} KMS</div>
             <div class="bands-col-4">
               <span
                 class="new-pricing-delete"
@@ -240,104 +294,165 @@
               </span>
             </div>
           </div>
+          <p class="pricing-input-section-note">
+            Note: All charges are VAT inclusive
+          </p>
         </div>
-        <div v-if="mode === 'allPricing' && !editStatus">
+        <div class="bands-table" v-if="mode === 'allPricing' && !editStatus">
           <div class="bands-heading-row" v-if="tablePricingData.length > 0">
             <div class="bands-col-1">Vendor Type</div>
-            <div class="bands-col-2">Minimum Distance</div>
-            <div class="bands-col-3">KM Band</div>
+            <div class="bands-col-2">KM Band</div>
+            <div class="bands-col-3">Minimum Distance</div>
             <div class="bands-col-4"></div>
           </div>
           <div v-for="(data, index) in tablePricingData" :key="index">
             <div class="pricing-body-row" @click="toggleRow(index)">
               <div class="bands-col-1 pricing-table-divider">
-                {{ data.vendor }}
+                {{ data.name }}
               </div>
               <div class="bands-col-2 pricing-table-divider">
-                {{ data.minimum_distance }} KMS
+                <div
+                  class="bands-km-col"
+                  v-if="data.partner_price_type === 'per_km_band'"
+                >
+                  <div v-for="(singleBand, x) in data.cost_band" :key="x">
+                    <!-- eslint-disable-next-line prettier/prettier -->
+                {{ singleBand.min_km }}KM - {{ singleBand.max_km }}KM
+                  </div>
+                </div>
+                <div class="bands-km-col" v-else>
+                  Standard rate per Km
+                </div>
               </div>
-              <div class="bands-col-3">
-                {{ data.lower_limit_km }}KM - {{ data.upper_limit_km }}KM
-              </div>
+              <div class="bands-col-3">{{ data.minimum_distance }} KMS</div>
               <div class="bands-col-4">
-                <span class="" v-if="opened.includes(index)">
-                  <i class="fa fa-chevron-circle-up all-pricing-arrow"></i>
-                </span>
-                <span class="" v-if="!opened.includes(index)">
-                  <i class="fa fa-chevron-circle-down all-pricing-arrow"></i>
-                </span>
+                <div class="all-pricing-dropdown-buttons">
+                  <span>
+                    <p
+                      v-if="data.status === 'Active'"
+                      class="active-status-tag pricing-status-button status-tag"
+                    >
+                      Active
+                    </p>
+                    <p
+                      v-else
+                      class="waiting-status-tag pricing-status-button status-tag"
+                    >
+                      Awaiting approval
+                    </p>
+                  </span>
+                </div>
               </div>
             </div>
             <div
               class="all-pricing-container pricing-row-spacer"
               v-if="opened.includes(index)"
             >
-              <div class="all-pricing-dropdown-buttons">
-                <div class="all-pricing-edit" @click="editAllPricing(index)">
-                  edit
-                </div>
-                <div
-                  class="all-pricing-delete"
-                  @click="
-                    showDeleteDialogue('tablePricingData', index, data.vendor)
-                  "
-                >
-                  delete
-                </div>
+              <div class="pricing-input-titles">
+                <span class="pricing-input-container-title">
+                  Pricing
+                </span>
+                <span class="pricing-input-container-buttons">
+                  <div
+                    class="all-pricing-delete"
+                    @click="
+                      showDeleteDialogue('tablePricingData', index, data.vendor)
+                    "
+                    v-if="data.status === 'Active'"
+                  >
+                    delete
+                  </div>
+                  <div class="all-pricing-edit" @click="editAllPricing(index)">
+                    edit
+                  </div>
+                </span>
               </div>
               <div class="all-pricing-details">
                 <div class="all-pricing-column">
-                  <div>
-                    <p class="all-pricing-column-label">Vendor Type</p>
-                    <p class="all-pricing-column-value">{{ data.vendor }}</p>
-                  </div>
-                  <div>
-                    <p class="all-pricing-column-label">Sendy Commission</p>
-                    <p class="all-pricing-column-value">
-                      {{ data.sendy_take }} %
+                  <p class="pricing-input-section-titles">
+                    Rates
+                  </p>
+                  <div class="all-pricing-card">
+                    <p class="all-pricing-card-text">
+                      Customer Rate:
+                      <span class="all-pricing-card-values"
+                        >{{ currency }} {{ data.minimum_customer_rate }}</span
+                      >
                     </p>
-                  </div>
-                  <div>
-                    <p class="all-pricing-column-label">Fuel Cost</p>
-                    <p class="all-pricing-column-value">
-                      {{ data.fuelInclusivity ? 'Inclusive' : 'Non Inclusive' }}
+                    <p class="all-pricing-card-text">
+                      Partner Rate:
+                      <span class="all-pricing-card-values"
+                        >{{ currency }} {{ data.minimum_partner_rate }}</span
+                      >
                     </p>
-                  </div>
-                  <div>
-                    <p class="all-pricing-column-label">Partner Rate</p>
-                    <p class="all-pricing-column-value">
-                      {{ currency }} {{ data.partner_amount }}
-                      {{
-                        data.partner_rate === 'daily rate'
-                          ? 'per day'
-                          : 'per km'
-                      }}
+                    <p
+                      class="all-pricing-card-text"
+                      v-if="data.partner_price_type === 'standard_rate_per_km'"
+                    >
+                      Cost per KM:
+                      <span class="all-pricing-card-values"
+                        >{{ currency }} {{ data.cost_per_km }}</span
+                      >
+                    </p>
+                    <p
+                      class="all-pricing-card-text"
+                      v-if="data.partner_price_type === 'standard_rate_per_km'"
+                    >
+                      Partner cost per KM:
+                      <span class="all-pricing-card-values"
+                        >{{ currency }} {{ data.partner_cost_per_km }}</span
+                      >
+                    </p>
+                    <p class="all-pricing-card-text">
+                      Fuel cost:
+                      <span class="all-pricing-card-values">{{
+                        data.fuel_inclusive === true
+                          ? 'Inclusive'
+                          : 'Non-inclusive'
+                      }}</span>
                     </p>
                   </div>
                 </div>
                 <div class="all-pricing-column">
-                  <div>
-                    <p class="all-pricing-column-label">Minimum Distance</p>
-                    <p class="all-pricing-column-value">
-                      {{ data.minimum_distance }} KMS
+                  <p class="pricing-input-section-titles">
+                    Minimum KM
+                  </p>
+                  <div class="all-pricing-card">
+                    <p class="all-pricing-card-text">
+                      Minimum KMs:
+                      <span class="all-pricing-card-values"
+                        >{{ data.minimum_distance }} KMs</span
+                      >
                     </p>
                   </div>
-                  <div>
-                    <p class="all-pricing-column-label">Cost</p>
-                    <p class="all-pricing-column-value">
-                      {{ currency }} {{ data.cost }}
+                  <p
+                    class="pricing-input-section-titles"
+                    v-if="data.partner_price_type === 'per_km_band'"
+                  >
+                    KM bands
+                  </p>
+                  <div
+                    class="all-pricing-card"
+                    v-for="(band, index) in data.cost_band"
+                    :key="index"
+                  >
+                    <p class="all-pricing-card-text">
+                      Band:
+                      <span class="all-pricing-card-values card-values-override"
+                        >{{ band.min_km }}KMs - {{ band.max_km }}KMs</span
+                      >
                     </p>
-                  </div>
-                  <div>
-                    <p class="all-pricing-column-label">Distance Band</p>
-                    <p class="all-pricing-column-value">
-                      {{ data.lower_limit_km }}KM - {{ data.upper_limit_km }}KM
+                    <p class="all-pricing-card-text">
+                      Customer rate per km:
+                      <span class="all-pricing-card-values"
+                        >{{ data.currency }} {{ band.customer_rate }}</span
+                      >
                     </p>
-                  </div>
-                  <div>
-                    <p class="all-pricing-column-label">Cost per KM</p>
-                    <p class="all-pricing-column-value">
-                      {{ data.cost_per_km }} {{ currency }}
+                    <p class="all-pricing-card-text">
+                      Partner rate per km:
+                      <span class="all-pricing-card-values"
+                        >{{ data.currency }} {{ band.customer_rate }}</span
+                      >
                     </p>
                   </div>
                 </div>
@@ -390,7 +505,7 @@
             "
             @click="addBand()"
           >
-            Add band
+            Add vendor type
           </button>
           <button
             v-if="editStatus"
@@ -431,6 +546,7 @@
                 ? 'new-pricing-submit-button'
                 : 'inactive-submit-approval-button'
             "
+            @click="submitConfigs()"
           >
             Submit for approval
           </button>
@@ -486,25 +602,37 @@ export default {
   },
   data() {
     return {
+      copName: this.user.user_details.cop_name,
+      copId: this.user.user_details.cop_id,
       mode: 'newPricing',
       showDialogue: false,
       admin_list: [],
       approver: 0,
       approverMail: '',
       approverSelect: false,
+      kmBands: [
+        {
+          lowerLimitKm: '',
+          upperLimitKm: '',
+          customerRatePerKm: '',
+          partnerRatePerKm: '',
+        },
+      ],
       lowerLimitKm: '',
       upperLimitKm: '',
       preview: false,
-      selectedVendor: 'Bike',
+      selectedVendor: '',
       minDistance: '',
-      cost: '',
       costPerKm: '',
-      sendyTake: '',
-      partnerTake: '',
+      partnerCostPerKm: '',
+      customerRatePerKm: '',
+      partnerRatePerKm: '',
+      customerRate: '',
+      partnerRate: '',
+      partnerPriceType: 'per_km_band',
       currency: '',
       vendorName: '',
       fuelInclusivity: true,
-      partnerRate: 'daily rate',
       editStatus: false,
       editedBandIndex: 0,
       deleteBand: {
@@ -515,47 +643,7 @@ export default {
       vendorTypes: [],
       opened: [],
       tableData: [],
-      tablePricingData: [
-        {
-          vendor: 'Bike',
-          currency: 'KES',
-          minimum_distance: '20',
-          cost: '20',
-          cost_per_km: '20',
-          lower_limit_km: '20',
-          upper_limit_km: '30',
-          sendy_take: '20',
-          fuel_inclusivity: true,
-          partner_rate: 'daily rate',
-          partner_amount: '20',
-        },
-        {
-          vendor: 'Bike',
-          currency: 'KES',
-          minimum_distance: '30',
-          cost: '30',
-          cost_per_km: '30',
-          lower_limit_km: '40',
-          upper_limit_km: '50',
-          sendy_take: '30',
-          fuel_inclusivity: 'false',
-          partner_rate: 'Rate per KM',
-          partner_amount: '30',
-        },
-        {
-          vendor: 'Bike',
-          currency: 'KES',
-          minimum_distance: '40',
-          cost: '40',
-          cost_per_km: '40',
-          lower_limit_km: '60',
-          upper_limit_km: '70',
-          sendy_take: '40',
-          fuel_inclusivity: 'false',
-          partner_rate: 'daily rate',
-          partner_amount: '40',
-        },
-      ],
+      tablePricingData: [],
     };
   },
   computed: {
@@ -563,6 +651,7 @@ export default {
       getAdmins: 'getAdmins',
       section: 'getSectionView',
       getSessionData: 'getSession',
+      configuredDedicatedPricing: 'getConfiguredDedicatedPricing',
     }),
     vendor() {
       return this.vendorTypes.find(op => {
@@ -583,15 +672,73 @@ export default {
       }
       return false;
     },
+    filterdVendors() {
+      const vendors = [];
+      const enabledVendors = [];
+      this.configuredDedicatedPricing.forEach(row => {
+        vendors.push(row.name);
+      });
+      this.vendorTypes.forEach(row => {
+        if (!vendors.includes(row.name)) {
+          enabledVendors.push(row);
+        }
+      });
+      return enabledVendors;
+    },
+    MileageData() {
+      const data = [];
+      this.configuredDedicatedPricing.forEach((row, i) => {
+        if (
+          row.price_type === 'standard_rate_per_km' ||
+          row.price_type === 'per_km_band'
+        ) {
+          row.index = i;
+          data.push(row);
+        }
+      });
+      return data;
+    },
+    assignments() {
+      const vendor_id = this.vendorTypes.find(op => {
+        return op.name === this.selectedVendor;
+      });
+      const assignments = {
+        id: vendor_id.id,
+        name: this.selectedVendor,
+        currency: this.currency,
+        minimum_distance: parseInt(this.minDistance, 10),
+        minimum_customer_rate: parseInt(this.customerRate, 10),
+        minimum_partner_rate: parseInt(this.partnerRate, 10),
+        fuel_inclusive: JSON.parse(this.fuelInclusivity),
+        partner_price_type: this.partnerPriceType,
+      };
+      if (this.partnerPriceType === 'per_km_band') {
+        assignments.cost_band = this.modifyCostBand(this.kmBands);
+      } else {
+        assignments.cost_per_km = parseInt(this.costPerKm, 10);
+        assignments.partner_cost_per_km = parseInt(this.partnerCostPerKm, 10);
+      }
+      return assignments;
+    },
     addBandStatus() {
       if (
         this.minDistance &&
-        this.cost &&
+        this.kmBands[0].customerRatePerKm &&
+        this.kmBands[0].partnerRatePerKm &&
+        this.customerRate &&
+        this.partnerRate &&
+        this.kmBands[0].lowerLimitKm &&
+        this.kmBands[0].upperLimitKm &&
+        this.partnerPriceType === 'per_km_band'
+      ) {
+        return true;
+      } else if (
+        this.minDistance &&
+        this.customerRate &&
+        this.partnerRate &&
         this.costPerKm &&
-        this.lowerLimitKm &&
-        this.upperLimitKm &&
-        this.sendyTake &&
-        this.partnerTake
+        this.partnerCostPerKm &&
+        this.partnerPriceType === 'standard_rate_per_km'
       ) {
         return true;
       }
@@ -621,6 +768,8 @@ export default {
     const countryCode = this.user.user_details.country_code;
     await this.fetchVendorTypes(countryCode);
     this.trackAddPricingDataPage();
+    this.tablePricingData = this.MileageData;
+    this.selectedVendor = this.filterdVendors[0].name;
   },
   methods: {
     ...mapMutations({
@@ -629,11 +778,24 @@ export default {
       updateClass: 'setActionClass',
       updateSuccess: 'setUserActionSuccess',
       updateSection: 'setSectionView',
+      modifyDedicatedDetails: 'modifyDedicatedDetails',
     }),
     ...mapActions({
       submit_custom_pricing: 'submit_custom_pricing',
+      approve_pricing_configs: 'approve_pricing_configs',
       setAdmins: 'setAdmins',
     }),
+    addBandRow() {
+      this.kmBands.push({
+        lowerLimitKm: '',
+        upperLimitKm: '',
+        customerRatePerKm: '',
+        partnerRatePerKm: '',
+      });
+    },
+    removeBandRow(i) {
+      this.kmBands.splice(i, 1);
+    },
     goBack() {
       this.updateSection(1);
       this.$emit('sectionUpdate', false);
@@ -651,28 +813,33 @@ export default {
         vendor: this.selectedVendor,
         currency: this.currency,
         minimum_distance: this.minDistance,
-        cost: this.cost,
-        cost_per_km: this.costPerKm,
-        lower_limit_km: this.lowerLimitKm,
-        upper_limit_km: this.upperLimitKm,
-        sendy_take: this.sendyTake,
-        fuel_inclusivity: this.fuelInclusivity,
+        customer_rate: this.customerRate,
         partner_rate: this.partnerRate,
-        partner_amount: this.partnerTake,
+        km_bands: this.kmBands,
+        cost_per_km: this.costPerKm,
+        partner_cost_per_km: this.partnerCostPerKm,
+        fuel_inclusive: this.fuelInclusivity,
+        partner_price_type: this.partnerPriceType,
       });
       this.clearInputs();
     },
     clearInputs() {
-      this.selectedVendor = 'Bike';
+      this.selectedVendor = this.filterdVendors[0].name;
       this.minDistance = '';
-      this.cost = '';
+      this.customerRate = '';
+      this.partnerRate = '';
+      this.kmBands = [
+        {
+          lowerLimitKm: '',
+          upperLimitKm: '',
+          customerRatePerKm: '',
+          partnerRatePerKm: '',
+        },
+      ];
       this.costPerKm = '';
-      this.lowerLimitKm = '';
-      this.upperLimitKm = '';
-      this.sendyTake = '';
+      this.partnerCostPerKm = '';
       this.fuelInclusivity = true;
-      this.partnerRate = 'daily rate';
-      this.partnerTake = '';
+      this.partnerPriceType = 'per_km_band';
     },
     cancelEdit() {
       this.editStatus = false;
@@ -687,12 +854,49 @@ export default {
       };
       this.showDialogue = true;
     },
-    deleteSingleBand() {
+    async deleteSingleBand() {
       this.opened = [];
       if (this.deleteBand.table === 'tableData') {
         this.tableData.splice(this.deleteBand.index, 1);
       } else {
-        this.tablePricingData.splice(this.deleteBand.index, 1);
+        const notification = [];
+        let actionClass = '';
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'price_config/review_dedicated_price_configs',
+          apiKey: false,
+          params: {
+            cop_id: this.copId,
+            date: moment().format('YYYY-MM-DD HH:mm:ss'),
+            approval_info: [
+              {
+                vendor_id: this.tablePricingData[this.deleteBand.index].id,
+                message: 'Approved',
+                approved_by: parseInt(this.adminId, 10),
+                status: 'DeActivated',
+              },
+            ],
+          },
+        };
+        try {
+          const data = await this.approve_pricing_configs(payload);
+          if (data.status) {
+            this.fetchData();
+            this.trackMixpanelPeople();
+            notification.push(data.message);
+            actionClass = this.display_order_action_notification(data.status);
+            this.updateSuccess(false);
+          } else {
+            this.trackMixpanelPeople();
+            notification.push(data.error);
+            actionClass = this.display_order_action_notification(data.status);
+          }
+        } catch (error) {
+          notification.push('Something went wrong. Please try again.');
+          actionClass = 'danger';
+        }
+        this.updateClass(actionClass);
+        this.updateErrors(notification);
       }
       this.showDialogue = false;
     },
@@ -700,14 +904,13 @@ export default {
       this.selectedVendor = this.tableData[i].vendor;
       this.currency = this.tableData[i].currency;
       this.minDistance = this.tableData[i].minimum_distance;
-      this.cost = this.tableData[i].cost;
-      this.costPerKm = this.tableData[i].cost_per_km;
-      this.lowerLimitKm = this.tableData[i].lower_limit_km;
-      this.upperLimitKm = this.tableData[i].upper_limit_km;
-      this.sendyTake = this.tableData[i].sendy_take;
-      this.fuelInclusivity = this.tableData[i].fuel_inclusivity;
+      this.customerRate = this.tableData[i].customer_rate;
       this.partnerRate = this.tableData[i].partner_rate;
-      this.partnerTake = this.tableData[i].partner_amount;
+      this.partnerPriceType = this.tableData[i].partner_price_type;
+      this.costPerKm = this.tableData[i].cost_per_km;
+      this.partnerCostPerKm = this.tableData[i].partner_cost_per_km;
+      this.kmBands = this.tableData[i].km_bands;
+      this.fuelInclusivity = this.tableData[i].fuel_inclusive;
       this.editStatus = true;
       this.editedBandIndex = i;
     },
@@ -715,75 +918,297 @@ export default {
       this.tableData[this.editedBandIndex].vendor = this.selectedVendor;
       this.tableData[this.editedBandIndex].currency = this.currency;
       this.tableData[this.editedBandIndex].minimum_distance = this.minDistance;
-      this.tableData[this.editedBandIndex].cost = this.cost;
-      this.tableData[this.editedBandIndex].cost_per_km = this.costPerKm;
-      this.tableData[this.editedBandIndex].lower_limit_km = this.lowerLimitKm;
-      this.tableData[this.editedBandIndex].upper_limit_km = this.upperLimitKm;
-      this.tableData[this.editedBandIndex].sendy_take = this.sendyTake;
+      this.tableData[this.editedBandIndex].customer_rate = this.customerRate;
+      this.tableData[this.editedBandIndex].partner_rate = this.partnerRate;
       this.tableData[
         this.editedBandIndex
-      ].fuel_inclusivity = this.fuelInclusivity;
-      this.tableData[this.editedBandIndex].partner_rate = this.partnerRate;
-      this.tableData[this.editedBandIndex].partner_amount = this.partnerTake;
+      ].partner_price_type = this.partnerPriceType;
+      this.tableData[this.editedBandIndex].cost_per_km = this.costPerKm;
+      this.tableData[
+        this.editedBandIndex
+      ].partner_cost_per_km = this.partnerCostPerKm;
+      this.tableData[this.editedBandIndex].km_bands = this.kmBands;
+      this.tableData[
+        this.editedBandIndex
+      ].partner_price_type = this.partnerPriceType;
+      this.tableData[
+        this.editedBandIndex
+      ].fuel_inclusive = this.fuelInclusivity;
       this.editStatus = false;
       this.editedBandIndex = 0;
       this.clearInputs();
     },
     editAllPricing(i) {
-      this.selectedVendor = this.tablePricingData[i].vendor;
+      this.selectedVendor = this.tablePricingData[i].name;
       this.currency = this.tablePricingData[i].currency;
       this.minDistance = this.tablePricingData[i].minimum_distance;
-      this.cost = this.tablePricingData[i].cost;
-      this.costPerKm = this.tablePricingData[i].cost_per_km;
-      this.lowerLimitKm = this.tablePricingData[i].lower_limit_km;
-      this.upperLimitKm = this.tablePricingData[i].upper_limit_km;
-      this.sendyTake = this.tablePricingData[i].sendy_take;
-      this.fuelInclusivity = this.tablePricingData[i].fuel_inclusivity;
-      this.partnerRate = this.tablePricingData[i].partner_rate;
-      this.partnerTake = this.tablePricingData[i].partner_amount;
+      this.customerRate = this.tablePricingData[i].minimum_customer_rate;
+      this.partnerRate = this.tablePricingData[i].minimum_partner_rate;
+      this.partnerPriceType = this.tablePricingData[i].partner_price_type;
+      this.costPerKm = Object.prototype.hasOwnProperty.call(
+        this.tablePricingData[i],
+        'cost_per_km',
+      )
+        ? this.tablePricingData[i].cost_per_km
+        : '';
+      this.partnerCostPerKm = Object.prototype.hasOwnProperty.call(
+        this.tablePricingData[i],
+        'partner_cost_per_km',
+      )
+        ? this.tablePricingData[i].partner_cost_per_km
+        : '';
+      this.kmBands = Object.prototype.hasOwnProperty.call(
+        this.tablePricingData[i],
+        'cost_band',
+      )
+        ? this.revertCostBand(this.tablePricingData[i].cost_band)
+        : [
+            {
+              lowerLimitKm: '',
+              upperLimitKm: '',
+              customerRatePerKm: '',
+              partnerRatePerKm: '',
+            },
+          ];
+      this.fuelInclusivity = this.tablePricingData[i].fuel_inclusive;
       this.editStatus = true;
       this.editedBandIndex = i;
     },
     saveAllPricing() {
-      this.tablePricingData[this.editedBandIndex].vendor = this.selectedVendor;
-      this.tablePricingData[this.editedBandIndex].currency = this.currency;
-      this.tablePricingData[
-        this.editedBandIndex
-      ].minimum_distance = this.minDistance;
-      this.tablePricingData[this.editedBandIndex].cost = this.cost;
-      this.tablePricingData[this.editedBandIndex].cost_per_km = this.costPerKm;
-      this.tablePricingData[
-        this.editedBandIndex
-      ].lower_limit_km = this.lowerLimitKm;
-      this.tablePricingData[
-        this.editedBandIndex
-      ].upper_limit_km = this.upperLimitKm;
-      this.tablePricingData[this.editedBandIndex].sendy_take = this.sendyTake;
-      this.tablePricingData[
-        this.editedBandIndex
-      ].fuel_inclusivity = this.fuelInclusivity;
-      this.tablePricingData[
-        this.editedBandIndex
-      ].partner_rate = this.partnerRate;
-      this.tablePricingData[
-        this.editedBandIndex
-      ].partner_amount = this.partnerTake;
-      this.editedBandIndex = 0;
-      this.editStatus = false;
-      this.clearInputs();
+      Object.keys(this.assignments).forEach((row, i) => {
+        this.modifyDedicatedDetails({
+          index: this.tablePricingData[this.editedBandIndex].index,
+          field: row,
+          value: Object.values(this.assignments)[i],
+        });
+      });
+      this.editConfigs(this.tablePricingData[this.editedBandIndex].index);
+    },
+    async fetchData() {
+      await this.fetchDedicatedPricingData();
+      this.tablePricingData = this.MileageData;
+      this.selectedVendor = this.filterdVendors[0].name;
+      this.showDialogue = false;
+    },
+    modifyCostBand(bands) {
+      const allbands = [];
+      bands.forEach(row => {
+        allbands.push({
+          min_km: parseInt(row.lowerLimitKm, 10),
+          max_km: parseInt(row.upperLimitKm, 10),
+          customer_rate: parseInt(row.customerRatePerKm, 10),
+          partner_rate: parseInt(row.partnerRatePerKm, 10),
+        });
+      });
+      return allbands;
+    },
+    revertCostBand(bands) {
+      const allbands = [];
+      bands.forEach(row => {
+        allbands.push({
+          lowerLimitKm: parseInt(row.min_km, 10),
+          upperLimitKm: parseInt(row.max_km, 10),
+          customerRatePerKm: parseInt(row.customer_rate, 10),
+          partnerRatePerKm: parseInt(row.partner_rate, 10),
+        });
+      });
+      return allbands;
+    },
+    createSubmitPayload() {
+      const payload = {
+        cop_id: this.copId,
+        cop_name: this.copName,
+        vendors: [],
+      };
+      this.tableData.forEach(row => {
+        const vendor_id = this.vendorTypes.find(op => {
+          return op.name === row.vendor;
+        });
+        const payloadData = {
+          id: vendor_id.id,
+          name: row.vendor,
+          currency: row.currency,
+          price_type: row.partner_price_type,
+          fuel_inclusive: JSON.parse(row.fuel_inclusive),
+          minimum_distance: parseInt(row.minimum_distance, 10),
+          partner_price_type: row.partner_price_type,
+          minimum_customer_rate: parseInt(row.customer_rate, 10),
+          minimum_partner_rate: parseInt(row.partner_rate, 10),
+          created_by: parseInt(this.getSessionData.payload.data.admin_id),
+          approved_by: this.admin.admin_id,
+          date_approved: '',
+          date_created: moment().format('YYYY-MM-DD HH:mm:ss'),
+          status: 'Pending',
+        };
+        if (row.partner_price_type === 'per_km_band') {
+          payloadData.cost_band = this.modifyCostBand(row.km_bands);
+        } else {
+          payloadData.cost_per_km = parseInt(row.cost_per_km, 10);
+          payloadData.partner_cost_per_km = parseInt(
+            row.partner_cost_per_km,
+            10,
+          );
+        }
+        payload.vendors.push(payloadData);
+      });
+      return payload;
+    },
+    async submitConfigs() {
+      this.trackPricingSubmit();
+      const configParams = this.createSubmitPayload();
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/add_mileage_pricing',
+        apiKey: false,
+        params: configParams,
+      };
+      try {
+        const data = await this.submit_custom_pricing(payload);
+        if (data.status) {
+          this.tableData = [];
+          this.approver = 0;
+          this.fetchData();
+          this.clearInputs();
+          this.trackPassedSubmission();
+          this.trackMixpanelPeople();
+          this.submitNotification();
+          notification.push(
+            'You have successfully created the custom pricing config!',
+          );
+          actionClass = this.display_order_action_notification(data.status);
+          this.updateSuccess(false);
+          this.sendEmailNotification(this.admin.email, this.admin.name);
+        } else {
+          this.trackFailedSubmission();
+          this.trackMixpanelPeople();
+          notification.push(`${data.message}, ${data.errors}`);
+          actionClass = this.display_order_action_notification(data.status);
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
+      this.trackMixpanelPeople();
+    },
+    async editConfigs(index) {
+      delete this.configuredDedicatedPricing[index].index;
+      const configParams = {
+        cop_id: this.copId,
+        cop_name: this.copName,
+        vendors: [this.configuredDedicatedPricing[index]],
+      };
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/update_mileage_pricing',
+        apiKey: false,
+        params: configParams,
+      };
+      try {
+        const data = await this.submit_custom_pricing(payload);
+        if (data.status) {
+          this.editStatus = false;
+          this.editedBandIndex = 0;
+          this.clearInputs();
+          this.fetchData();
+          notification.push(
+            'You have successfully edited the custom pricing config!',
+          );
+          actionClass = this.display_order_action_notification(data.status);
+          this.updateSuccess(false);
+        } else {
+          notification.push(`${data.message}, ${data.errors}`);
+          actionClass = this.display_order_action_notification(data.status);
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
+      this.trackMixpanelPeople();
+    },
+    submitNotification() {
+      this.$emit('configSubmitted');
     },
     trackAddPricingDataPage() {
-      mixpanel.track('Add Container Pricing data Page - PageView', {
+      mixpanel.track('Add Mileage Pricing data Page - PageView', {
         type: 'PageView',
       });
     },
     trackSaveAndPreview() {
-      mixpanel.track(
-        'Save and Preview Container Pricing button - ButtonClick',
-        {
-          type: 'Click',
-        },
-      );
+      mixpanel.track('Save and Preview Mileage Pricing button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPricingSubmitPage() {
+      mixpanel.track('Submit mileage pricing for approval Page - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackPricingSubmit() {
+      mixpanel.track('"Submit Request" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackPassedSubmission() {
+      mixpanel.track('Mileage pricing saved - Success', {
+        type: 'Success',
+      });
+    },
+    trackFailedSubmission() {
+      mixpanel.track('Mileage pricing not saved - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackViewDetailsPage() {
+      mixpanel.track('View Details Link - PageView', {
+        type: 'PageView',
+      });
+    },
+    trackResetConfigs() {
+      mixpanel.track('"Reset Pricing" Button - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackRemoveSingleConfigs() {
+      mixpanel.track('"Remove Single Pricing" Icon - ButtonClick', {
+        type: 'Click',
+      });
+    },
+    trackResetConfigsSuccess() {
+      mixpanel.track('Reset successful - Success', {
+        type: 'Success',
+      });
+    },
+    trackResetConfigsFail() {
+      mixpanel.track('Reset failed - Fail', {
+        type: 'Fail',
+      });
+    },
+    trackMixpanelIdentify() {
+      mixpanel.identify('Approver', {
+        email: this.getSessionData.payload.data.email,
+        admin_id: this.getSessionData.payload.data.admin_id,
+      });
+    },
+    trackMixpanelPeople() {
+      mixpanel.people.set({
+        'User Type': 'Approver',
+        $email: this.getSessionData.payload.data.email,
+        $name: this.getSessionData.payload.data.name,
+      });
     },
   },
 };
@@ -853,7 +1278,7 @@ tr:hover {
 }
 .new-pricing-tab-rows {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 .pricing-input-labels {
   margin: 5px;
@@ -874,11 +1299,25 @@ tr:hover {
   width: 200px;
   margin-right: 20px;
 }
+.new-pricing-inputs-from-kms {
+  height: 40px;
+  width: 120px;
+}
+.new-pricing-inputs-to-kms {
+  height: 40px;
+  width: 170px;
+  margin-right: 20px;
+}
+.new-pricing-inputs-rates {
+  height: 40px;
+  width: 150px;
+  margin-right: 20px;
+}
 .pricing-monthly-rate-inputs {
   margin-top: 18px;
 }
 .pricing-radio-labels {
-  margin: 10px 20px 5px 5px;
+  margin: 10px 15px 5px 5px;
 }
 .new-pricing-input-buttons {
   height: 40px;
@@ -916,7 +1355,7 @@ tr:hover {
 .bands-col-3 {
   width: 25%;
   padding-left: 15px;
-  height: 50px;
+  height: max-content;
   display: flex;
   align-items: center;
 }
@@ -925,6 +1364,11 @@ tr:hover {
   justify-content: flex-end;
   display: flex;
   padding-right: 5%;
+}
+.bands-km-col {
+  min-height: 50px;
+  display: grid;
+  align-items: center;
 }
 .bands-heading-row,
 .bands-body-row {
@@ -955,6 +1399,7 @@ tr:hover {
 }
 .pricing-table-divider {
   border-right: 1px solid #80808040;
+  border-left: 1px solid #80808040;
 }
 .new-pricing-edit,
 .new-pricing-delete {
@@ -980,8 +1425,7 @@ tr:hover {
   justify-content: flex-end;
 }
 .all-pricing-container {
-  padding: 2% 5% 5% 5%;
-  background: rgba(191, 209, 227, 0.18);
+  padding: 2% 2% 2% 2%;
   border-top: 1px solid #80808040;
   border-radius: 5px;
 }
@@ -1002,7 +1446,7 @@ tr:hover {
   color: #848484;
 }
 .all-pricing-edit {
-  color: #43b634;
+  color: #0e4266;
   text-decoration: underline;
   padding: 0 15px 0 0px;
   cursor: pointer;
@@ -1064,5 +1508,68 @@ tr:hover {
   margin-left: auto;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+.pricing-radio-input-labels {
+  width: max-content;
+  padding: 0px 10px 0px 0px;
+}
+.all-pricing-card {
+  margin: 0px 15px 15px 0px;
+  padding: 20px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+.all-pricing-card-text {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+.all-pricing-card-values {
+  position: absolute;
+  right: 30px;
+  width: 85px;
+}
+.pricing-input-container-title {
+  color: #8f9bb3;
+  font-size: 18px;
+  margin: 0px;
+}
+.pricing-input-section-note {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #7e1419;
+  font-size: 13px;
+  font-weight: 600;
+  font-style: italic;
+}
+.pricing-input-titles {
+  display: flex;
+  position: relative;
+}
+.pricing-input-container-buttons {
+  position: absolute;
+  right: 0;
+  display: flex;
+  margin-right: 20px;
+}
+.add-band-button {
+  text-align: right;
+  padding-right: 20px;
+  color: #43a4e9;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.remove-band-button {
+  text-align: right;
+  padding-right: 20px;
+  color: #d2212a;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+}
+.card-values-override {
+  width: max-content !important;
 }
 </style>
