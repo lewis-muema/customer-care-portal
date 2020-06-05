@@ -100,6 +100,9 @@ export default {
   updateLocationPricing(state, val) {
     state.locationPricingData = val;
   },
+  updateDedicatedPricing(state, val) {
+    state.dedicatedPricingData = val;
+  },
   updatePendingDistancePricing(state, val) {
     state.pendingPricingData = val;
   },
@@ -126,6 +129,9 @@ export default {
   },
   modifyCustomLocationDetails(state, val) {
     state.locationPricingData[val.index][val.field] = val.value;
+  },
+  modifyDedicatedDetails(state, val) {
+    state.dedicatedPricingData[val.index][val.field] = val.value;
   },
   setLoginErrors(state, val) {
     state.loginErrors = val;

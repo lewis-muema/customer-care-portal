@@ -22,47 +22,6 @@
         <div v-if="displayInputs">
           <div class="new-pricing-tab-rows">
             <div>
-              <p class="pricing-input-labels">Vendor type</p>
-              <template>
-                <el-select
-                  :disabled="true"
-                  v-model="selectedVendor"
-                  placeholder="Select Vendor"
-                  size="large"
-                  class="new-pricing-inputs"
-                >
-                  <el-option
-                    v-for="vendor in vendorTypes"
-                    :key="vendor.id"
-                    :label="vendor.name"
-                    :value="vendor.name"
-                  >
-                  </el-option>
-                </el-select>
-              </template>
-            </div>
-            <div>
-              <p class="pricing-input-labels">Currency</p>
-              <div>
-                <template>
-                  <el-select
-                    v-model="currency"
-                    placeholder="Select Currency"
-                    size="large"
-                    class="new-pricing-inputs"
-                    disabled
-                  >
-                    <el-option :label="currency" :value="currency"> </el-option>
-                  </el-select>
-                </template>
-              </div>
-            </div>
-          </div>
-          <p class="pricing-input-section-titles">
-            Locations
-          </p>
-          <div class="new-pricing-tab-rows">
-            <div>
               <p class="pricing-input-labels">Pick up location</p>
               <template>
                 <el-popover
@@ -168,21 +127,22 @@
               </template>
             </div>
           </div>
-          <p class="pricing-input-section-titles">
-            Truck details
-          </p>
           <div class="new-pricing-tab-rows">
             <div>
-              <p class="pricing-input-labels">Container weight</p>
-              <el-select
-                v-model="containerWeight"
-                placeholder="Select cargo type"
-                class="new-pricing-inputs"
-                size="large"
-              >
-                <el-option label="Empty container" value="0"> </el-option>
-                <el-option label="Full container" value="28"> </el-option>
-              </el-select>
+              <p class="pricing-input-labels">Currency</p>
+              <div>
+                <template>
+                  <el-select
+                    v-model="currency"
+                    placeholder="Select Currency"
+                    size="large"
+                    class="new-pricing-inputs"
+                    disabled
+                  >
+                    <el-option :label="currency" :value="currency"> </el-option>
+                  </el-select>
+                </template>
+              </div>
             </div>
             <div>
               <p class="pricing-input-labels">Container size</p>
@@ -196,11 +156,58 @@
                 <el-option label="40 Feet" value="40"> </el-option>
               </el-select>
             </div>
+            <div>
+              <p class="pricing-input-labels">Cargo type</p>
+              <el-select
+                v-model="containerWeight"
+                placeholder="Select cargo type"
+                class="new-pricing-inputs"
+                size="large"
+              >
+                <el-option label="Empty container" value="0"> </el-option>
+                <el-option label="Full container" value="28"> </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Vendor type</p>
+              <template>
+                <el-select
+                  :disabled="true"
+                  v-model="selectedVendor"
+                  placeholder="Select Vendor"
+                  size="large"
+                  class="new-pricing-inputs"
+                >
+                  <el-option
+                    v-for="vendor in vendorTypes"
+                    :key="vendor.id"
+                    :label="vendor.name"
+                    :value="vendor.name"
+                  >
+                  </el-option>
+                </el-select>
+              </template>
+            </div>
           </div>
           <p class="pricing-input-section-titles">
             Base charges
           </p>
           <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Client fee</p>
+              <el-input
+                :disabled="true"
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="clientFee"
+                class="new-pricing-inputs"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template>
+              </el-input>
+            </div>
             <div>
               <p class="pricing-input-labels">Partner Fee</p>
               <el-input
@@ -215,34 +222,6 @@
               </el-input>
             </div>
             <div>
-              <p class="pricing-input-labels">Service charge</p>
-              <el-input
-                type="text"
-                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                v-model="serviceCharge"
-                class="new-pricing-inputs"
-                @input="calculateClientFee()"
-                ><template class="pricing-prepend" slot="append">
-                  {{ currency }}
-                </template>
-              </el-input>
-            </div>
-            <div>
-              <p class="pricing-input-labels">Client fee</p>
-              <el-input
-                :disabled="true"
-                type="text"
-                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                v-model="clientFee"
-                class="new-pricing-inputs"
-                ><template class="pricing-prepend" slot="append">
-                  {{ currency }}
-                </template>
-              </el-input>
-            </div>
-          </div>
-          <div class="new-pricing-tab-rows">
-            <div>
               <p class="pricing-input-labels">Sendy commission</p>
               <el-input
                 type="text"
@@ -251,6 +230,21 @@
                 class="new-pricing-inputs"
                 ><template class="pricing-prepend" slot="append">
                   %
+                </template>
+              </el-input>
+            </div>
+          </div>
+          <div class="new-pricing-tab-rows">
+            <div>
+              <p class="pricing-input-labels">Sendy fee</p>
+              <el-input
+                type="text"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                v-model="serviceCharge"
+                class="new-pricing-inputs"
+                @input="calculateClientFee()"
+                ><template class="pricing-prepend" slot="append">
+                  {{ currency }}
                 </template>
               </el-input>
             </div>
