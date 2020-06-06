@@ -102,6 +102,7 @@
                       onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                       placeholder="Between X km"
                       class="new-pricing-inputs-from-kms"
+                      @blur="setLowerLimit(index)"
                     >
                     </el-input>
                   </div>
@@ -113,6 +114,7 @@
                       onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                       placeholder="and Y km"
                       class="new-pricing-inputs-to-kms"
+                      @blur="setUpperLimit(index)"
                     >
                       <template class="pricing-prepend" slot="append">
                         KMS
@@ -451,7 +453,7 @@
                     <p class="all-pricing-card-text">
                       Partner rate per km:
                       <span class="all-pricing-card-values"
-                        >{{ data.currency }} {{ band.customer_rate }}</span
+                        >{{ data.currency }} {{ band.partner_rate }}</span
                       >
                     </p>
                   </div>
@@ -792,6 +794,28 @@ export default {
         customerRatePerKm: '',
         partnerRatePerKm: '',
       });
+    },
+    setLowerLimit(i) {
+      if (
+        i > 0 &&
+        this.kmBands[i - 1].upperLimitKm &&
+        this.kmBands[i].lowerLimitKm
+      ) {
+        this.kmBands[i].lowerLimitKm =
+          parseInt(this.kmBands[i].lowerLimitKm) >
+          parseInt(this.kmBands[i - 1].upperLimitKm)
+            ? this.kmBands[i].lowerLimitKm
+            : this.kmBands[i - 1].upperLimitKm;
+      }
+    },
+    setUpperLimit(i) {
+      if (this.kmBands[i].upperLimitKm && this.kmBands[i].lowerLimitKm) {
+        this.kmBands[i].upperLimitKm =
+          parseInt(this.kmBands[i].lowerLimitKm) >
+          parseInt(this.kmBands[i].upperLimitKm)
+            ? parseInt(this.kmBands[i].lowerLimitKm) + 1
+            : this.kmBands[i].upperLimitKm;
+      }
     },
     removeBandRow(i) {
       this.kmBands.splice(i, 1);

@@ -329,7 +329,7 @@
                         </p>
                         <p class="all-pricing-column-value">
                           {{ currency }}
-                          {{ parseFloat(data.waiting_time_cost_per_min) * 60 }}
+                          {{ parseFloat(data.waiting_time_cost_per_min) }}
                         </p>
                       </div>
                       <div>
@@ -565,7 +565,6 @@ export default {
       return false;
     },
     assignments() {
-      const waitingtimePerMinute = this.waitingFeePerHour / 60;
       const assignments = {
         city: this.city,
         name: this.selectedVendor,
@@ -573,7 +572,7 @@ export default {
         base_cost: parseInt(this.baseFee, 10),
         base_km: parseInt(this.baseKm, 10),
         cost_per_km_above_base_km: parseInt(this.pricePerKm, 10),
-        waiting_time_cost_per_min: waitingtimePerMinute,
+        waiting_time_cost_per_min: this.waitingFeePerHour,
         loader_cost: parseInt(this.loadingFee, 10),
         service_fee: parseInt(this.serviceCharge, 10),
         insurance: parseInt(this.insuranceFee, 10),
@@ -750,8 +749,9 @@ export default {
       this.baseFee = this.tablePricingData[i].base_cost;
       this.baseKm = this.tablePricingData[i].base_km;
       this.pricePerKm = this.tablePricingData[i].cost_per_km_above_base_km;
-      this.waitingFeePerHour =
-        parseFloat(this.tablePricingData[i].waiting_time_cost_per_min) * 60;
+      this.waitingFeePerHour = parseFloat(
+        this.tablePricingData[i].waiting_time_cost_per_min,
+      );
       this.loadingFee = this.tablePricingData[i].loader_cost;
       this.serviceCharge = this.tablePricingData[i].service_fee;
       this.insuranceFee = this.tablePricingData[i].insurance;
@@ -790,9 +790,9 @@ export default {
     async modifySinglePriceConfig(row, index, action) {
       this.trackRemoveSingleConfigs();
       const clone = JSON.parse(JSON.stringify(this.getCustomPricingDetails));
-      clone[index].distance_pricing.waiting_time_cost_per_min = parseFloat(
-        clone[index].distance_pricing.waiting_time_cost_per_min,
-      );
+      clone[index].distance_pricing.waiting_time_cost_per_min =
+        parseFloat(clone[index].distance_pricing.waiting_time_cost_per_min) /
+        60;
       const distancePricingTable = [clone[index]];
       const approvalParams = this.createPayload(distancePricingTable, action);
       const notification = [];
