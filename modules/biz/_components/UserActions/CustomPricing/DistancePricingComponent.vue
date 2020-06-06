@@ -565,7 +565,6 @@ export default {
       return false;
     },
     assignments() {
-      const waitingtimePerMinute = parseInt(this.waitingFeePerHour, 10) / 60;
       const assignments = {
         city: this.city,
         name: this.selectedVendor,
