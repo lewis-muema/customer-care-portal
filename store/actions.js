@@ -814,11 +814,13 @@ export default {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       const arrayData = [];
-      res.data.data.forEach(row => {
-        if (row.status === 'Pending' || row.status === 'Active') {
-          arrayData.push(row);
-        }
-      });
+      if (res.data.status) {
+        res.data.data.forEach(row => {
+          if (row.status === 'Pending' || row.status === 'Active') {
+            arrayData.push(row);
+          }
+        });
+      }
       commit('updateDedicatedPricing', arrayData);
       return res.data;
     } catch (error) {
