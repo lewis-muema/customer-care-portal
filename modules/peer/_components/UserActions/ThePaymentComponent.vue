@@ -294,7 +294,7 @@ export default {
           amount: this.amount,
           cop_id: 0,
           user_id: userID,
-          reason: this.narrative,
+          narrative: this.narrative,
           currency: this.currency,
           entity_id: 1,
           business_unit: parseInt(this.businessUnit, 10),
