@@ -147,6 +147,7 @@ const PricingConfigsMxn = {
         params: {
           pickup_country_code: countryCode,
           dropoff_country_code: countryCode,
+          currency: this.user.user_details.default_currency,
         },
       };
       try {
