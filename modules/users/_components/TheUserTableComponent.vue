@@ -15,6 +15,9 @@
           <div class="mega" v-if="userType === 'invoice'">
             <TheInvoiceView />
           </div>
+          <div class="mega" v-if="userType === 'rewards'">
+            <RewardsView />
+          </div>
         </div>
       </div>
     </div>
@@ -31,6 +34,7 @@ export default {
     ThePeerTable: () => import('~/modules/peer/_components/ThePeerTable'),
     TheInvoiceView: () =>
       import('~/modules/invoice/_components/TheInvoiceView'),
+    RewardsView: () => import('~/modules/rewards/_components/RewardsView'),
   },
   data() {
     return {
@@ -60,7 +64,7 @@ export default {
       this.searchKey += 1;
     },
     setBackground() {
-      if (this.userType === 'invoice') {
+      if (this.userType === 'invoice' || this.userType === 'rewards') {
         return 'invoiceBackground';
       }
       return '';

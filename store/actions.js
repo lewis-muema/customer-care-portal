@@ -305,6 +305,45 @@ export default {
       return error.response;
     }
   },
+  async requestAxiosPatch({ state, commit, dispatch }, payload) {
+    let endpoint = payload.endpoint;
+    const app = payload.app;
+
+    // Capture custom HTTP request actions via managed transactions.
+    this._vm.$apm
+      .startTransaction(`${endpoint}`, 'custom', { managed: true })
+      .addLabels({ app });
+
+    const customConfig = state.config;
+    const url = customConfig[app];
+
+    let backendKey = null;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    if (this.$env.APP_ENV !== 'production' && payload.apiKey) {
+      backendKey = this.$env.BACKEND_KEY;
+      endpoint = `${endpoint}?apikey=${backendKey}`;
+    }
+
+    const values = JSON.stringify(payload.params);
+
+    try {
+      const response = await axios.patch(`${url}${endpoint}`, values, config);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+
+      return error.response;
+    }
+  },
   // eslint-disable-next-line require-await
   async handleErrors({ state, commit }, error) {
     switch (error) {
@@ -366,6 +405,66 @@ export default {
       },
     };
     const url = `${config.ADONIS_API}business-units`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestRewards({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}rewards`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestPenalties({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}penalties`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestWarningMessages({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}warning_messages`;
     try {
       const response = await axios.get(url, param);
       return response.data;
@@ -967,6 +1066,28 @@ export default {
   async update_vat_config({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async create_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async update_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
       return res.data;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
