@@ -52,6 +52,17 @@
               ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
+
+          <li class="treeview" v-if="permissions.auto_rewards">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/invoice"
+              @click="showModal('rewards', $event)"
+              ><i class="fa fa-tasks"></i>
+              <span> Auto Rewards and Penalties </span>
+            </a>
+          </li>
+
           <li class="treeview" v-if="permissions.invoice_generation">
             <a
               class="fancybox fancybox.iframe fancyboxy"
