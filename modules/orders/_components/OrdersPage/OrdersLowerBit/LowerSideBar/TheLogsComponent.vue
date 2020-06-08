@@ -47,7 +47,8 @@ export default {
     ...mapState(['userData']),
     signedByName() {
       const deliveryArray =
-        this.status === 'delivered'
+        this.status === 'delivered' &&
+        this.order.delivery_details.delivery_images.length > 0
           ? this.order.delivery_details.delivery_images
           : null;
       // eslint-disable-next-line prettier/prettier

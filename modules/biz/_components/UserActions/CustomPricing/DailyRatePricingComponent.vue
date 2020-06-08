@@ -333,7 +333,7 @@
                   <div
                     class="all-pricing-delete"
                     @click="
-                      showDeleteDialogue('tablePricingData', index, data.vendor)
+                      showDeleteDialogue('tablePricingData', index, data.name)
                     "
                     v-if="data.status === 'Active'"
                   >
@@ -821,7 +821,8 @@ export default {
       this.clearInputs();
     },
     clearInputs() {
-      this.selectedVendor = this.filterdVendors[0].name;
+      this.selectedVendor =
+        this.filterdVendors.length > 0 ? this.filterdVendors[0].name : 'Bike';
       this.maxDistance = '';
       this.daysWorked = '';
       this.monthlyRate = '';
@@ -1034,7 +1035,6 @@ export default {
         const data = await this.submit_custom_pricing(payload);
         if (data.status) {
           this.tableData = [];
-          this.clearInputs();
           this.fetchData();
           this.clearInputs();
           this.trackPassedSubmission();
