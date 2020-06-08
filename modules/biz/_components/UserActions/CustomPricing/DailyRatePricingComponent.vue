@@ -248,7 +248,7 @@
             </div>
           </div>
           <p class="pricing-input-section-note">
-            Note: All charges are VAT inclusive
+            Note: All charges are VAT exclusive
           </p>
         </div>
         <div v-if="mode === 'newPricing' && !editStatus">
