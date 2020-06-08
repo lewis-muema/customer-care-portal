@@ -1034,7 +1034,6 @@ export default {
         const data = await this.submit_custom_pricing(payload);
         if (data.status) {
           this.tableData = [];
-          this.approver = 0;
           this.clearInputs();
           this.fetchData();
           this.clearInputs();
@@ -1047,6 +1046,7 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.sendEmailNotification(this.admin.email, this.admin.name);
+          this.approver = 0;
         } else {
           this.trackFailedSubmission();
           this.trackMixpanelPeople();
