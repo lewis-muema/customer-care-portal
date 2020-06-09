@@ -418,6 +418,7 @@ export default {
       create_reward: 'create_reward',
     }),
     initiateData() {
+      this.clearData();
       this.fetchVendorTypes();
       this.requestRewards();
     },
@@ -427,6 +428,20 @@ export default {
         status = true;
       }
       this.add_btn = status;
+    },
+    clearData() {
+      this.submit_status = false;
+      this.add_btn = false;
+      this.parameter = '';
+      this.parameter_comp = '';
+      this.parameter_value = '';
+      this.parameter_data = '';
+      this.block_hours = '';
+      this.country = '';
+      this.vendor_type = '';
+      this.from_date = '';
+      this.to_date = '';
+      this.message = '';
     },
     async requestRewards() {
       const arr = await this.request_penalties();
