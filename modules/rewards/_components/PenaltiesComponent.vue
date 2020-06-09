@@ -576,16 +576,8 @@ export default {
 
       try {
         const resp = await this.update_reward(payload);
-
-        if (resp.status) {
-          setTimeout(() => {
-            this.loading_penalties = true;
-            this.initiateData();
-          }, 2000);
-        } else {
-          this.loading_penalties = true;
-          this.initiateData();
-        }
+        this.loading_penalties = true;
+        this.initiateData();
       } catch (error) {
         this.loading_penalties = true;
         this.initiateData();
