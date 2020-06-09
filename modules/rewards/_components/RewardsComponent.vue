@@ -525,7 +525,6 @@ export default {
       delivery_parameter: '',
       reassigned_orders: '',
       reassign_parameter: '',
-      componentKey: 0,
     };
   },
   validations: {
