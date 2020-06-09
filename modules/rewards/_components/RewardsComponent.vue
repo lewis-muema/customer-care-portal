@@ -337,6 +337,51 @@
         </div>
 
         <el-table :data="reward_logs" size="medium" :border="false">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <div class="form-inline expand-logs-section">
+                <div class="form-group col-md-4 expandable-header">
+                  <label class="expandable-data">Delays at pick up be </label>
+                  {{
+                    pickupDelay(
+                      props.row.delayed_at_pickup_comp,
+                      props.row.delayed_at_pickup,
+                    )
+                  }}
+                </div>
+                <div class="form-group col-md-4 expandable-header">
+                  <label class="expandable-data">
+                    Delays at destination be</label
+                  >
+                  {{
+                    destinationDelay(
+                      props.row.delayed_at_delivery_comp,
+                      props.row.delayed_at_delivery,
+                    )
+                  }}
+                </div>
+                <div class="form-group col-md-4 expandable-header">
+                  <label class="expandable-data"> Orders reassigned be</label>
+                  {{
+                    reassignData(
+                      props.row.reassigned_comp,
+                      props.row.reassigned,
+                    )
+                  }}
+                </div>
+                <div class="form-group col-md-4 expandable-header">
+                  <label class="expandable-data"> Reward goal message</label>
+                  {{ props.row.message }}
+                </div>
+                <div class="form-group col-md-4 expandable-header">
+                  <label class="expandable-data">
+                    Congratulatory message
+                  </label>
+                  {{ props.row.congratulatory_message }}
+                </div>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label="Country" prop="country">
             <template slot-scope="scope">
               {{ fetchCountry(reward_logs[scope.$index]['country']) }}
@@ -480,6 +525,7 @@ export default {
       delivery_parameter: '',
       reassigned_orders: '',
       reassign_parameter: '',
+      componentKey: 0,
     };
   },
   validations: {
@@ -523,6 +569,7 @@ export default {
       update_reward: 'update_reward',
     }),
     initiateData() {
+      this.clearData();
       this.fetchVendorTypes();
       this.requestRewards();
     },
@@ -532,6 +579,27 @@ export default {
         status = true;
       }
       this.add_btn = status;
+    },
+    clearData() {
+      this.submit_status = false;
+      this.add_btn = false;
+      this.completed = '';
+      this.completed_comp = '';
+      this.delayed_at_pickup = '';
+      this.delayed_at_pickup_comp = '';
+      this.delayed_at_delivery = '';
+      this.delayed_at_delivery_comp = '';
+      this.reassigned = '';
+      this.reassigned_comp = '';
+      this.reward_type = '';
+      this.amount = '';
+      this.currency = '';
+      this.country = '';
+      this.vendor_type = '';
+      this.from_date = '';
+      this.to_date = '';
+      this.message = '';
+      this.congratulatory_message = '';
     },
     async fetchVendorTypes() {
       const notification = [];
@@ -629,6 +697,36 @@ export default {
       }
       return name;
     },
+    pickupDelay(comparator, value) {
+      let resp = '';
+      if (Object.keys(this.comparator).length > 0) {
+        const data = this.comparator.find(
+          location => location.code === comparator,
+        );
+        resp = `${data.name} ${value} orders`;
+      }
+      return resp;
+    },
+    destinationDelay(comparator, value) {
+      let resp = '';
+      if (Object.keys(this.comparator).length > 0) {
+        const data = this.comparator.find(
+          location => location.code === comparator,
+        );
+        resp = `${data.name} ${value} orders`;
+      }
+      return resp;
+    },
+    reassignData(comparator, value) {
+      let resp = '';
+      if (Object.keys(this.comparator).length > 0) {
+        const data = this.comparator.find(
+          location => location.code === comparator,
+        );
+        resp = `${data.name} ${value} orders`;
+      }
+      return resp;
+    },
     fetchCountry(id) {
       const data = this.country_code.find(location => location.code === id);
       return data.name;
@@ -672,16 +770,8 @@ export default {
 
       try {
         const resp = await this.update_reward(payload);
-
-        if (resp.status) {
-          setTimeout(() => {
-            this.loading_rewards = true;
-            this.initiateData();
-          }, 2000);
-        } else {
-          this.loading_rewards = true;
-          this.initiateData();
-        }
+        this.loading_rewards = true;
+        this.initiateData();
       } catch (error) {
         this.loading_rewards = true;
         this.initiateData();
@@ -859,5 +949,20 @@ export default {
   background-color: #13ce66;
   border-color: #13ce66;
   color: #fff;
+}
+.expandable-data{
+  width: 100%;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 19px;
+  color: #000000;
+  margin-bottom: 3%!important;
+}
+.expand-logs-section{
+  width: 100% !important;
+}
+.expandable-header {
+  margin-bottom: 15px;
+  width: 20%;
 }
 </style>
