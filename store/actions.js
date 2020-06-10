@@ -802,6 +802,7 @@ export default {
         }
         commit('updateLocationPricing', locationPricing);
         commit('updateDistancePricing', distancePricing);
+        commit('setCustomPricingDetails', customPricingDetails);
         commit('updateApproverId', approverId);
       }
       return res.data;

@@ -77,7 +77,7 @@ export default {
       editStatus: 0,
       firstPricing: false,
       approveStatus: true,
-      section: 0,
+      section: 1,
       distancePricingData: [],
       pendingPricingData: [],
       pendingLocationData: [],
