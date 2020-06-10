@@ -47,6 +47,7 @@ const PricingConfigsMxn = {
       pending_dedicated_pricing_data: 'pending_dedicated_pricing_data',
       request_vendor_types: 'request_vendor_types',
       send_mail_to_admin: 'send_mail_to_admin',
+      log_action: 'log_action',
     }),
     async getDistancePricingConfigs() {
       const notification = [];
@@ -296,6 +297,27 @@ const PricingConfigsMxn = {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    async logAction(action, actionId) {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'log_cc_action',
+        params: {
+          channel: 'customer_support',
+          data_set: 'cc_actions',
+          action_id: actionId,
+          _user_email: this.getSessionData.payload.data.email,
+          _user_id: this.getSessionData.payload.data.admin_id,
+          action_user: this.getSessionData.payload.data.name,
+          description: action,
+          order_no: '',
+        },
+      };
+      try {
+        const data = await this.log_action(payload);
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 };

@@ -837,9 +837,11 @@ export default {
           if (action === 'delete') {
             notification.push('Custom price configs deactivated successfully.');
             actionClass = this.display_order_action_notification(data.status);
+            await this.logAction('Deactivate location pricing config', 36);
           } else {
             notification.push('Custom price configs edited successfully.');
             actionClass = this.display_order_action_notification(data.status);
+            await this.logAction('Edit location pricing config', 36);
           }
         } else {
           this.trackResetConfigsFail();
@@ -996,6 +998,7 @@ export default {
             this.admin.name,
             'created',
           );
+          await this.logAction('Add location pricing config', 36);
         } else {
           this.trackFailedSubmission();
           this.trackMixpanelIdentify();
