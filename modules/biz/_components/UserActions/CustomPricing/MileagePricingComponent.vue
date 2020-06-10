@@ -178,7 +178,7 @@
               >
             </div>
             <div>
-              <p class="pricing-input-labels">Parter cost per Km</p>
+              <p class="pricing-input-labels">Partner cost per Km</p>
               <el-input
                 type="text"
                 v-model="partnerCostPerKm"
@@ -918,6 +918,7 @@ export default {
             this.trackMixpanelPeople();
             notification.push(data.message);
             actionClass = this.display_order_action_notification(data.status);
+            await this.logAction('Deactivate mileage pricing config', 36);
             this.updateSuccess(false);
           } else {
             this.trackMixpanelPeople();
@@ -1117,6 +1118,7 @@ export default {
             'created',
           );
           this.approver = 0;
+          await this.logAction('Add mileage pricing config', 36);
         } else {
           this.trackFailedSubmission();
           this.trackMixpanelPeople();
@@ -1160,6 +1162,7 @@ export default {
             'You have successfully edited the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
+          await this.logAction('Edit mileage pricing config', 36);
           this.updateSuccess(false);
         } else {
           notification.push(`${data.message}, ${data.errors}`);
