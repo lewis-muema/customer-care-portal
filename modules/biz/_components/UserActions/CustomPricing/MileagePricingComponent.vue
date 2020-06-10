@@ -354,7 +354,15 @@
                 <span class="pricing-input-container-title">
                   Pricing
                 </span>
-                <span class="pricing-input-container-buttons">
+                <span
+                  class="pricing-input-container-buttons"
+                  v-if="
+                    data.approved_by ===
+                      parseInt(getSessionData.payload.data.admin_id) ||
+                      JSON.parse(getSessionData.payload.data.privilege)
+                        .modify_price_config
+                  "
+                >
                   <div
                     class="all-pricing-delete"
                     @click="
@@ -1152,13 +1160,6 @@ export default {
             'You have successfully edited the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
-          this.approver = this.configuredDedicatedPricing[index].approved_by;
-          this.sendEmailNotification(
-            this.admin.email,
-            this.admin.name,
-            'edited',
-          );
-          this.approver = 0;
           this.updateSuccess(false);
         } else {
           notification.push(`${data.message}, ${data.errors}`);
