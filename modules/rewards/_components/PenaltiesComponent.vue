@@ -230,21 +230,25 @@
 
         <el-table :data="penalty_logs" size="medium" :border="false">
           <el-table-column type="expand">
-            <!-- <template slot-scope="props">
-              <el-table :data="props.row.partners">
-                <el-table-column label="Partner name" prop="rider_name">
-                </el-table-column>
-                <el-table-column
-                  label="Partner phone number"
-                  prop="rider_phone"
-                >
-                </el-table-column>
-                <el-table-column label="Days worked" prop="days">
-                </el-table-column>
-                <el-table-column label="Amount billed" prop="amount">
-                </el-table-column>
-              </el-table>
-            </template> -->
+            <template slot-scope="props">
+              <div class="form-inline expand-logs-section">
+                <div class="form-group col-md-4 expandable-header">
+                  <label class="expandable-data">
+                    Orders to penalize for be</label
+                  >
+                  {{
+                    reassignData(
+                      props.row.parameter_comp,
+                      props.row.parameter_data,
+                    )
+                  }}
+                </div>
+                <div class="form-group col-md-4 expandable-header">
+                  <label class="expandable-data"> Penalty message</label>
+                  {{ props.row.message }}
+                </div>
+              </div>
+            </template>
           </el-table-column>
           <el-table-column label="Country" prop="country">
             <template slot-scope="scope">
@@ -601,6 +605,16 @@ export default {
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
+    reassignData(comparator, value) {
+      let resp = '';
+      if (Object.keys(this.comparator).length > 0) {
+        const data = this.comparator.find(
+          location => location.code === comparator,
+        );
+        resp = `${data.name} ${value} orders`;
+      }
+      return resp;
+    },
   },
 };
 </script>
@@ -770,5 +784,20 @@ export default {
   background-color: #13ce66;
   border-color: #13ce66;
   color: #fff;
+}
+.expandable-data{
+  width: 100%;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 19px;
+  color: #000000;
+  margin-bottom: 3%!important;
+}
+.expand-logs-section{
+  width: 100% !important;
+}
+.expandable-header {
+  margin-bottom: 15px;
+  width: 20%;
 }
 </style>
