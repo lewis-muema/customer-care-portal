@@ -812,10 +812,18 @@ export default {
           this.trackResetConfigsSuccess();
           if (action === 'delete') {
             notification.push('Custom price configs deactivated successfully.');
+            actionClass = this.display_order_action_notification(data.status);
           } else {
             notification.push('Custom price configs edited successfully.');
+            actionClass = this.display_order_action_notification(data.status);
+            this.approver = clone[index].admin_id;
+            this.sendEmailNotification(
+              this.admin.email,
+              this.admin.name,
+              'edited',
+            );
+            this.approver = 0;
           }
-          actionClass = this.display_order_action_notification(data.status);
         } else {
           this.trackResetConfigsFail();
           notification.push(data.error);
@@ -830,6 +838,9 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
     },
     async fetchData() {
       await this.fetchCustomDistancePricingData();
@@ -919,7 +930,11 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.sendEmailNotification(this.admin.email, this.admin.name);
+          this.sendEmailNotification(
+            this.admin.email,
+            this.admin.name,
+            'created',
+          );
         } else {
           this.trackFailedSubmission();
           this.trackMixpanelIdentify();
