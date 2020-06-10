@@ -676,7 +676,6 @@ export default {
       this.editedBandIndex = 0;
     },
     getAdmins(admins) {
-      console.log(admins);
       return (this.admin_list = admins);
     },
     pickUp(val) {
