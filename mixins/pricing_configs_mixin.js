@@ -18,6 +18,7 @@ const PricingConfigsMxn = {
       vendorTypes: [],
       tableData: [],
       customPricingDetails: [],
+      dedicatedPricingDetails: [],
       distancePricingTableData: [],
       locationPricingTableData: [],
       containerPricingTableData: [],
@@ -32,6 +33,7 @@ const PricingConfigsMxn = {
     ...mapGetters({
       configuredDistancePricing: 'getConfiguredDistancePricing',
       configuredLocationPricing: 'getConfiguredLocationPricing',
+      configuredDedicatedPricing: 'getConfiguredDedicatedPricing',
       getSessionData: 'getSession',
       pendingLocationPricing: 'getPendingLocationPricing',
       pendingDistancePricing: 'getPendingDistancePricing',
@@ -42,6 +44,7 @@ const PricingConfigsMxn = {
       request_pending_distance_pricing_data:
         'request_pending_distance_pricing_data',
       request_pricing_data: 'request_pricing_data',
+      pending_dedicated_pricing_data: 'pending_dedicated_pricing_data',
       request_vendor_types: 'request_vendor_types',
       send_mail_to_admin: 'send_mail_to_admin',
     }),
@@ -109,6 +112,31 @@ const PricingConfigsMxn = {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
+    async fetchDedicatedPricingData() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'price_config/get_dedicated_price_configs',
+        apiKey: false,
+        params: {
+          cop_id: this.copId,
+        },
+      };
+      try {
+        const data = await this.pending_dedicated_pricing_data(payload);
+        if (data.status) {
+          this.dedicatedPricingDetails = data.data;
+        } else {
+          this.dedicatedPricingDetails = [];
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     async fetchVendorTypes(countryCode) {
       const notification = [];
       let actionClass = '';
@@ -119,6 +147,7 @@ const PricingConfigsMxn = {
         params: {
           pickup_country_code: countryCode,
           dropoff_country_code: countryCode,
+          currency: this.user.user_details.default_currency,
         },
       };
       try {
