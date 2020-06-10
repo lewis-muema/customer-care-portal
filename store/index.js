@@ -21,7 +21,7 @@ const apix = new Apix({
     { name: 'businessUnits', url: `business-units` },
     { name: 'cities', url: `cities` },
     { name: 'copTypes', url: `cop-types` },
-    { name: 'admins', url: `admins` },
+    { name: 'admins', url: `admins?status=1` },
     { name: 'surveys', url: `nps/surveys` },
     { name: 'countries', url: `countries` },
   ],

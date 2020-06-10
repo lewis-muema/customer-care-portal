@@ -47,6 +47,7 @@ const PricingConfigsMxn = {
       pending_dedicated_pricing_data: 'pending_dedicated_pricing_data',
       request_vendor_types: 'request_vendor_types',
       send_mail_to_admin: 'send_mail_to_admin',
+      log_action: 'log_action',
     }),
     async getDistancePricingConfigs() {
       const notification = [];
@@ -263,7 +264,7 @@ const PricingConfigsMxn = {
         this.tableData.push(ContainerPricingRow);
       }
     },
-    async sendEmailNotification(email, name) {
+    async sendEmailNotification(email, name, action) {
       const notification = [];
       let actionClass = '';
       const crmName = this.getSessionData.payload.data.name;
@@ -277,14 +278,14 @@ const PricingConfigsMxn = {
           name,
           email,
           cop_id: copId,
-          message: `${crmName} has created a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
+          message: `${crmName} has ${action} a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
           subject: `Requires approval - Custom pricing for ${copName}`,
         },
       };
       try {
         const data = await this.send_mail_to_admin(payload);
         if (data.status) {
-          notification.push('Custom price configs created successfully.');
+          notification.push(`Custom price configs ${action} successfully.`);
           actionClass = this.display_order_action_notification(data.status);
         } else {
           notification.push(data.error);
@@ -296,6 +297,23 @@ const PricingConfigsMxn = {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    async logAction(action, actionId) {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'log_cc_action',
+        params: {
+          channel: 'customer_support',
+          data_set: 'cc_actions',
+          action_id: actionId,
+          _user_email: this.getSessionData.payload.data.email,
+          _user_id: this.getSessionData.payload.data.admin_id,
+          action_user: this.getSessionData.payload.data.name,
+          description: action,
+          order_no: '',
+        },
+      };
+      const data = await this.log_action(payload);
     },
   },
 };

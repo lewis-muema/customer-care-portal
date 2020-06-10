@@ -305,7 +305,15 @@
               class="all-pricing-container pricing-row-spacer"
               v-if="opened.includes(index)"
             >
-              <div class="all-pricing-dropdown-buttons">
+              <div
+                class="all-pricing-dropdown-buttons"
+                v-if="
+                  data.admin_id ===
+                    parseInt(getSessionData.payload.data.admin_id) ||
+                    JSON.parse(getSessionData.payload.data.privilege)
+                      .modify_price_config
+                "
+              >
                 <div class="all-pricing-edit" @click="editAllPricing(index)">
                   edit
                 </div>
@@ -893,10 +901,13 @@ export default {
           this.trackResetConfigsSuccess();
           if (action === 'delete') {
             notification.push('Custom price configs deactivated successfully.');
+            actionClass = this.display_order_action_notification(data.status);
+            await this.logAction('Deactivate Container pricing config', 36);
           } else {
             notification.push('Custom price configs edited successfully.');
+            actionClass = this.display_order_action_notification(data.status);
+            await this.logAction('Edit Container pricing config', 36);
           }
-          actionClass = this.display_order_action_notification(data.status);
         } else {
           this.trackResetConfigsFail();
           notification.push(data.error);
@@ -911,6 +922,9 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      setTimeout(() => {
+        this.updateErrors([]);
+      }, 5000);
     },
     async fetchData() {
       await this.fetchCustomDistancePricingData();
@@ -1060,7 +1074,12 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.sendEmailNotification(this.admin.email, this.admin.name);
+          this.sendEmailNotification(
+            this.admin.email,
+            this.admin.name,
+            'created',
+          );
+          await this.logAction('Add Container pricing config', 36);
         } else {
           this.trackFailedSubmission();
           this.trackMixpanelIdentify();
