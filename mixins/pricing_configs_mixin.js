@@ -263,7 +263,7 @@ const PricingConfigsMxn = {
         this.tableData.push(ContainerPricingRow);
       }
     },
-    async sendEmailNotification(email, name) {
+    async sendEmailNotification(email, name, action) {
       const notification = [];
       let actionClass = '';
       const crmName = this.getSessionData.payload.data.name;
@@ -277,14 +277,14 @@ const PricingConfigsMxn = {
           name,
           email,
           cop_id: copId,
-          message: `${crmName} has created a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
+          message: `${crmName} has ${action} a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
           subject: `Requires approval - Custom pricing for ${copName}`,
         },
       };
       try {
         const data = await this.send_mail_to_admin(payload);
         if (data.status) {
-          notification.push('Custom price configs created successfully.');
+          notification.push(`Custom price configs ${action} successfully.`);
           actionClass = this.display_order_action_notification(data.status);
         } else {
           notification.push(data.error);

@@ -1103,7 +1103,11 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.sendEmailNotification(this.admin.email, this.admin.name);
+          this.sendEmailNotification(
+            this.admin.email,
+            this.admin.name,
+            'created',
+          );
           this.approver = 0;
         } else {
           this.trackFailedSubmission();
@@ -1148,6 +1152,13 @@ export default {
             'You have successfully edited the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
+          this.approver = this.configuredDedicatedPricing[index].approved_by;
+          this.sendEmailNotification(
+            this.admin.email,
+            this.admin.name,
+            'edited',
+          );
+          this.approver = 0;
           this.updateSuccess(false);
         } else {
           notification.push(`${data.message}, ${data.errors}`);
