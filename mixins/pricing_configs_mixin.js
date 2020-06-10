@@ -313,11 +313,7 @@ const PricingConfigsMxn = {
           order_no: '',
         },
       };
-      try {
-        const data = await this.log_action(payload);
-      } catch (err) {
-        console.log(err);
-      }
+      const data = await this.log_action(payload);
     },
   },
 };
