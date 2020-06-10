@@ -896,7 +896,7 @@ export default {
         let actionClass = '';
         const payload = {
           app: 'PRICING_SERVICE',
-          endpoint: 'price_config/review_dedicated_price_configs',
+          endpoint: 'pricing/price_config/review_dedicated_price_configs',
           apiKey: false,
           params: {
             cop_id: this.copId,
@@ -1094,7 +1094,7 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/add_mileage_pricing',
+        endpoint: 'pricing/price_config/add_mileage_pricing',
         apiKey: false,
         params: configParams,
       };
@@ -1147,7 +1147,7 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/update_mileage_pricing',
+        endpoint: 'pricing/price_config/update_mileage_pricing',
         apiKey: false,
         params: configParams,
       };

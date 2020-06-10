@@ -118,7 +118,7 @@ const PricingConfigsMxn = {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_dedicated_price_configs',
+        endpoint: 'pricing/price_config/get_dedicated_price_configs',
         apiKey: false,
         params: {
           cop_id: this.copId,
