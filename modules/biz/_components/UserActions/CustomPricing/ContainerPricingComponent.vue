@@ -305,7 +305,15 @@
               class="all-pricing-container pricing-row-spacer"
               v-if="opened.includes(index)"
             >
-              <div class="all-pricing-dropdown-buttons">
+              <div
+                class="all-pricing-dropdown-buttons"
+                v-if="
+                  data.admin_id ===
+                    parseInt(getSessionData.payload.data.admin_id) ||
+                    JSON.parse(getSessionData.payload.data.privilege)
+                      .modify_price_config
+                "
+              >
                 <div class="all-pricing-edit" @click="editAllPricing(index)">
                   edit
                 </div>
@@ -668,6 +676,7 @@ export default {
       this.editedBandIndex = 0;
     },
     getAdmins(admins) {
+      console.log(admins);
       return (this.admin_list = admins);
     },
     pickUp(val) {
@@ -897,13 +906,6 @@ export default {
           } else {
             notification.push('Custom price configs edited successfully.');
             actionClass = this.display_order_action_notification(data.status);
-            this.approver = row.admin_id;
-            this.sendEmailNotification(
-              this.admin.email,
-              this.admin.name,
-              'edited',
-            );
-            this.approver = 0;
           }
         } else {
           this.trackResetConfigsFail();
