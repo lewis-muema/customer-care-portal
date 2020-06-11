@@ -224,9 +224,6 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-        <div v-if="penalty_logs.length === 0 || penalty_logs === null">
-          No Records
-        </div>
 
         <el-table :data="penalty_logs" size="medium" :border="false">
           <el-table-column type="expand">
