@@ -332,9 +332,6 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-        <div v-if="reward_logs.length === 0 || reward_logs === null">
-          No Records
-        </div>
 
         <el-table :data="reward_logs" size="medium" :border="false">
           <el-table-column type="expand">
