@@ -332,7 +332,6 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-
         <el-table :data="reward_logs" size="medium" :border="false">
           <el-table-column type="expand">
             <template slot-scope="props">
@@ -587,7 +586,7 @@ export default {
       this.delayed_at_delivery_comp = '';
       this.reassigned = '';
       this.reassigned_comp = '';
-      this.reward_type = '';
+      this.rewardType = '';
       this.amount = '';
       this.currency = '';
       this.country = '';
