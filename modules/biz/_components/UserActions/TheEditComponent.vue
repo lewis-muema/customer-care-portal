@@ -150,6 +150,18 @@
           Company Category is required
         </div>
       </div>
+      <div class="form-group  col-md-6 exempt-check">
+        <input
+          value="1"
+          name="exempt_vat"
+          id="exempt_vat>"
+          type="checkbox"
+          class=""
+          v-model="vat_exempt"
+          checked
+        />
+        <label for="" class="exempt-vat-label"> Exempt VAT</label>
+      </div>
       <div class="form-group  col-md-12">
         <button class="btn btn-primary action-button">
           Process
@@ -195,6 +207,7 @@ export default {
       period: '',
       cop_type_list: [],
       admin_list: [],
+      vat_exempt: false,
     };
   },
 
@@ -431,6 +444,7 @@ export default {
             credit_period: period,
             cop_category: category,
             sales_agent: 0,
+            vat_exempt: this.vat_exempt ? 1 : 0,
           },
           request_id: `19`,
           action_user: this.actionUser,
@@ -462,5 +476,11 @@ export default {
 }
 .form-inline .form-group {
   padding-top: 23px;
+}
+.exempt-check {
+  padding-top: 4em !important;
+}
+.exempt-vat-label {
+  margin-left: 7px;
 }
 </style>
