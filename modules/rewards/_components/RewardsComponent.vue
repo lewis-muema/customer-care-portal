@@ -60,6 +60,8 @@
             placeholder="Please input"
             v-model="completed_task"
             class="input-with-select"
+            min="0"
+            type="number"
           >
             <el-select
               v-model="orders_parameter"
@@ -92,6 +94,8 @@
             placeholder="Please input"
             v-model="pickup_delays"
             class="input-with-select"
+            min="0"
+            type="number"
           >
             <el-select
               v-model="pickup_parameter"
@@ -124,6 +128,8 @@
             placeholder="Please input"
             v-model="delivery_delays"
             class="input-with-select"
+            min="0"
+            type="number"
           >
             <el-select
               v-model="delivery_parameter"
@@ -157,6 +163,8 @@
             placeholder="Please input"
             v-model="reassigned_orders"
             class="input-with-select"
+            min="0"
+            type="number"
           >
             <el-select
               v-model="reassign_parameter"
@@ -211,6 +219,7 @@
             placeholder="Please input"
             v-model="amount"
             class="input-with-select"
+            min="0"
             type="number"
           >
             <el-select v-model="currency" slot="prepend" placeholder="Select">
@@ -242,6 +251,8 @@
               readonly: true,
               class: 'form-control config-input ',
             }"
+            :attributes="attrs"
+            :min-date="new Date()"
           />
           <div class="rewards_valid" v-if="submitted && !$v.from_date.required">
             From Date is required
@@ -259,6 +270,8 @@
               readonly: true,
               class: 'form-control config-input ',
             }"
+            :attributes="attrs"
+            :min-date="new Date()"
           />
           <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
             To Date is required
@@ -521,6 +534,11 @@ export default {
       delivery_parameter: '',
       reassigned_orders: '',
       reassign_parameter: '',
+      attrs: [
+        {
+          highlight: true,
+        },
+      ],
     };
   },
   validations: {
@@ -635,50 +653,57 @@ export default {
       this.response_status = true;
 
       const user_data = this.getSession.payload.data.name;
+      const date_range = moment(this.to_date).diff(moment(this.from_date));
 
-      const payload = {
-        app: 'ADONIS_API',
-        endpoint: '/rewards',
-        apiKey: false,
-        params: {
-          completed: parseInt(this.completed_task, 10),
-          completed_comp: this.orders_parameter,
-          delayed_at_pickup: parseInt(this.pickup_delays, 10),
-          delayed_at_pickup_comp: this.pickup_parameter,
-          delayed_at_delivery: parseInt(this.delivery_delays, 10),
-          delayed_at_delivery_comp: this.delivery_parameter,
-          reassigned: parseInt(this.reassigned_orders, 10),
-          reassigned_comp: this.reassign_parameter,
-          reward_type: this.rewardType,
-          amount: parseInt(this.amount, 10),
-          currency: this.currency,
-          country: this.country,
-          vendor_type: this.vendorType,
-          from_date: moment(this.from_date).format('YYYY-MM-DD'),
-          to_date: moment(this.to_date).format('YYYY-MM-DD'),
-          message: this.reward_message,
-          congratulatory_message: this.congratulatory_message,
-        },
-      };
+      if (date_range > 0) {
+        const payload = {
+          app: 'ADONIS_API',
+          endpoint: '/rewards',
+          apiKey: false,
+          params: {
+            completed: parseInt(this.completed_task, 10),
+            completed_comp: this.orders_parameter,
+            delayed_at_pickup: parseInt(this.pickup_delays, 10),
+            delayed_at_pickup_comp: this.pickup_parameter,
+            delayed_at_delivery: parseInt(this.delivery_delays, 10),
+            delayed_at_delivery_comp: this.delivery_parameter,
+            reassigned: parseInt(this.reassigned_orders, 10),
+            reassigned_comp: this.reassign_parameter,
+            reward_type: this.rewardType,
+            amount: parseInt(this.amount, 10),
+            currency: this.currency,
+            country: this.country,
+            vendor_type: this.vendorType,
+            from_date: moment(this.from_date).format('YYYY-MM-DD'),
+            to_date: moment(this.to_date).format('YYYY-MM-DD'),
+            message: this.reward_message,
+            congratulatory_message: this.congratulatory_message,
+          },
+        };
 
-      try {
-        const data = await this.create_reward(payload);
+        try {
+          const data = await this.create_reward(payload);
 
-        if (data.status) {
-          this.response_status = 'success';
+          if (data.status) {
+            this.response_status = 'success';
 
-          setTimeout(() => {
-            this.loading_rewards = true;
-            this.initiateData();
-          }, 5000);
-        } else {
+            setTimeout(() => {
+              this.loading_rewards = true;
+              this.initiateData();
+            }, 5000);
+          } else {
+            this.response_status = 'error';
+            this.error_msg = data.message;
+          }
+        } catch (error) {
           this.response_status = 'error';
-          this.error_msg = data.message;
+          this.error_msg =
+            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
         }
-      } catch (error) {
+      } else {
         this.response_status = 'error';
         this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+          'Time Range Error : Ensure that From date is not later than the To date';
       }
     },
     formatReward(text) {

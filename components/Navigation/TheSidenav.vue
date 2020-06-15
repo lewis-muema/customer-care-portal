@@ -56,7 +56,7 @@
           <li class="treeview" v-if="permissions.auto_rewards">
             <a
               class="fancybox fancybox.iframe fancyboxy"
-              href="/invoice"
+              href="/rewards"
               @click="showModal('rewards', $event)"
               ><i class="fa fa-tasks"></i>
               <span> Auto Rewards and Penalties </span>
