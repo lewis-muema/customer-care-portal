@@ -11,7 +11,7 @@
       ></el-button>
       <form
         id="reallocate-form"
-        @submit.prevent="generate_reward"
+        @submit.prevent="generate_penalty"
         class="form-inline add-reward-section"
         v-if="add_btn"
       >
@@ -203,7 +203,10 @@
         </div>
 
         <div class="form-group  col-md-12 config-submit">
-          <button class="btn btn-primary action-button">
+          <button
+            class="btn btn-primary action-button"
+            :disabled="checkSubmitStatus()"
+          >
             Submit
           </button>
         </div>
@@ -388,6 +391,7 @@ export default {
       country: '',
       penalizing_reason: [],
       penalized_orders: '',
+      submit_state: false,
     };
   },
   validations: {
@@ -476,8 +480,10 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-
-    async generate_reward() {
+    checkSubmitStatus() {
+      return this.submit_state;
+    },
+    async generate_penalty() {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -486,6 +492,7 @@ export default {
       this.submit_status = true;
       this.response_status = true;
       const date_range = moment(this.to_date).diff(moment(this.from_date));
+      this.submit_state = true;
 
       if (this.penalizing_param !== 'REASSIGNED') {
         this.penalizing_reason = [];
@@ -495,9 +502,11 @@ export default {
         this.penalizing_param === 'REASSIGNED' &&
         this.penalizing_reason.length === 0
       ) {
+        this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'Reasssigned reason to penalize is required!';
       } else if (date_range < 0) {
+        this.submit_state = false;
         this.response_status = 'error';
         this.error_msg =
           'Time Range Error : Ensure that From date is not later than the To date';
@@ -528,13 +537,16 @@ export default {
 
             setTimeout(() => {
               this.loading_penalties = true;
+              this.submit_state = false;
               this.initiateData();
             }, 5000);
           } else {
+            this.submit_state = false;
             this.response_status = 'error';
             this.error_msg = data.message;
           }
         } catch (error) {
+          this.submit_state = false;
           this.response_status = 'error';
           this.error_msg =
             'Internal Server Error. Kindly refresh the page. If error persists contact tech support';

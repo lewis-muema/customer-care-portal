@@ -317,7 +317,10 @@
         </div>
 
         <div class="form-group  col-md-12 config-submit">
-          <button class="btn btn-primary action-button">
+          <button
+            class="btn btn-primary action-button"
+            :disabled="checkSubmitStatus()"
+          >
             Submit
           </button>
         </div>
@@ -532,6 +535,7 @@ export default {
       delivery_parameter: '',
       reassigned_orders: '',
       reassign_parameter: '',
+      submit_state: false,
     };
   },
   validations: {
@@ -635,7 +639,9 @@ export default {
       this.reward_logs = arr;
       this.loading_rewards = false;
     },
-
+    checkSubmitStatus() {
+      return this.submit_state;
+    },
     async generate_reward() {
       this.submitted = true;
       this.$v.$touch();
@@ -647,6 +653,7 @@ export default {
 
       const user_data = this.getSession.payload.data.name;
       const date_range = moment(this.to_date).diff(moment(this.from_date));
+      this.submit_state = true;
 
       if (date_range > 0) {
         const payload = {
@@ -682,19 +689,23 @@ export default {
 
             setTimeout(() => {
               this.loading_rewards = true;
+              this.submit_state = false;
               this.initiateData();
             }, 5000);
           } else {
             this.response_status = 'error';
             this.error_msg = data.message;
+            this.submit_state = false;
           }
         } catch (error) {
           this.response_status = 'error';
+          this.submit_state = false;
           this.error_msg =
             'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
         }
       } else {
         this.response_status = 'error';
+        this.submit_state = false;
         this.error_msg =
           'Time Range Error : Ensure that From date is not later than the To date';
       }
