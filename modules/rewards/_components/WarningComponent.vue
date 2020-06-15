@@ -102,6 +102,8 @@
             placeholder="Please input"
             v-model="penalized_orders"
             class="input-with-select"
+            min="0"
+            type="number"
           >
             <el-select
               v-model="orders_parameter"
@@ -132,6 +134,7 @@
           <label class="vat"> Number of hours to block on dispatch </label>
 
           <input
+            min="0"
             type="number"
             name="blocking_hrs"
             placeholder=""
@@ -157,6 +160,7 @@
               readonly: true,
               class: 'form-control config-input ',
             }"
+            :min-date="new Date()"
           />
           <div class="rewards_valid" v-if="submitted && !$v.from_date.required">
             From Date is required
@@ -174,6 +178,7 @@
               readonly: true,
               class: 'form-control config-input ',
             }"
+            :min-date="new Date()"
           />
           <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
             To Date is required
@@ -224,7 +229,6 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-
         <el-table :data="penalty_logs" size="medium" :border="false">
           <el-table-column label="Country" prop="country">
             <template slot-scope="scope">
@@ -457,6 +461,10 @@ export default {
       }
       this.submit_status = true;
       this.response_status = true;
+      const date_range = moment(this.to_date).diff(moment(this.from_date));
+      if (this.penalizing_param !== 'REASSIGNED') {
+        this.penalizing_reason = [];
+      }
 
       if (
         this.penalizing_param === 'REASSIGNED' &&
@@ -464,6 +472,10 @@ export default {
       ) {
         this.response_status = 'error';
         this.error_msg = 'Reasssigned reason to penalize is required!';
+      } else if (date_range < 0) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Time Range Error : Ensure that From date is not later than the To date';
       } else {
         const payload = {
           app: 'ADONIS_API',
