@@ -160,7 +160,6 @@
               readonly: true,
               class: 'form-control config-input ',
             }"
-            :attributes="attrs"
             :min-date="new Date()"
           />
           <div class="rewards_valid" v-if="submitted && !$v.from_date.required">
@@ -179,7 +178,6 @@
               readonly: true,
               class: 'form-control config-input ',
             }"
-            :attributes="attrs"
             :min-date="new Date()"
           />
           <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
@@ -390,11 +388,6 @@ export default {
       country: '',
       penalizing_reason: [],
       penalized_orders: '',
-      attrs: [
-        {
-          highlight: true,
-        },
-      ],
     };
   },
   validations: {
