@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="loading_loan_types" style="margin-left: 1%;">
+    <div v-if="loading_loan_types" class="spinner">
       <p>
         Fetching Loan Types ...
         <i class="fa fa-spinner fa-spin loader"></i>
@@ -340,5 +340,8 @@ export default {
 }
 .rider-lable {
   margin-left: 15px;
+}
+.spinner {
+  margin-left: 1%;
 }
 </style>
