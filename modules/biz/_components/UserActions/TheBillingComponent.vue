@@ -395,6 +395,7 @@ export default {
       const isPeer = !(this.accountType > 1);
       const is_peer = this.billingType === 15 ? isPeer : '';
       let action_id = this.billingType === 15 ? 21 : this.actionID;
+      const vat_exempt = this.user.cop_details.vat_exempt;
 
       if (this.businessUnit === '') {
         notification.push('Business Unit is required !!!');
@@ -415,6 +416,7 @@ export default {
           creditor_id: creditor_details,
           is_VAT: this.isVAT,
           business_unit: parseInt(this.businessUnit, 10),
+          vat_exempt: vat_exempt ? 1 : 0,
         };
 
         if (this.billingType === 99) {
@@ -424,6 +426,7 @@ export default {
             user_id,
             pay_reference: this.refNo,
             business_unit: parseInt(this.businessUnit, 10),
+            vat_exempt: vat_exempt ? 1 : 0,
           };
         }
 
