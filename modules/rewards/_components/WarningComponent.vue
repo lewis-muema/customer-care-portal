@@ -130,25 +130,6 @@
           </div>
         </div>
 
-        <div class="form-group col-md-4 user-input">
-          <label class="vat"> Number of hours to block on dispatch </label>
-
-          <input
-            min="0"
-            type="number"
-            name="blocking_hrs"
-            placeholder=""
-            class="form-control config-input"
-            v-model="blocking_hrs"
-          />
-          <div
-            class="rewards_valid"
-            v-if="submitted && !$v.blocking_hrs.required"
-          >
-            Number of hours to block on dispatch is required
-          </div>
-        </div>
-
         <div class="form-group col-md-4 user-input start-date--align">
           <label class="config"> From </label>
 
@@ -328,7 +309,6 @@ export default {
       penalty_logs: [],
       error_msg: '',
       add_btn: false,
-      blocking_hrs: '',
       from_date: '',
       to_date: '',
       message: '',
@@ -371,7 +351,6 @@ export default {
     };
   },
   validations: {
-    blocking_hrs: { required },
     from_date: { required },
     to_date: { required },
     message: { required },
