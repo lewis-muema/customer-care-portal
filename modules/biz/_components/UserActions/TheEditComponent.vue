@@ -207,13 +207,15 @@ export default {
       period: '',
       cop_type_list: [],
       admin_list: [],
-      vat_exempt: false,
     };
   },
 
   computed: {
     ...mapGetters(['getCopTypes', 'getAdmins']),
-
+    vat_exempt() {
+      const vat_exempt = this.user.cop_details.vat_exempt;
+      return vat_exempt;
+    },
     manager() {
       const manager = this.user.user_details.account_manager;
       const state = manager;
