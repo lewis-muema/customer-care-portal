@@ -224,7 +224,6 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-
         <el-table :data="penalty_logs" size="medium" :border="false">
           <el-table-column label="Country" prop="country">
             <template slot-scope="scope">
