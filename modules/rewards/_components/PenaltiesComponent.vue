@@ -136,6 +136,7 @@
           <input
             min="0"
             type="number"
+            step="0.01"
             name="blocking_hrs"
             placeholder=""
             class="form-control config-input"
