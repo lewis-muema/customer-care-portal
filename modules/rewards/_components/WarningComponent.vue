@@ -213,15 +213,15 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-        <el-table :data="penalty_logs" size="medium" :border="false">
+        <el-table :data="warning_logs" size="medium" :border="false">
           <el-table-column label="Country" prop="country">
             <template slot-scope="scope">
-              {{ fetchCountry(penalty_logs[scope.$index]['country']) }}
+              {{ fetchCountry(warning_logs[scope.$index]['country']) }}
             </template>
           </el-table-column>
           <el-table-column label="Vendor" prop="vendor_type">
             <template slot-scope="scope">
-              {{ vendor(penalty_logs[scope.$index]['vendor_type']) }}
+              {{ vendor(warning_logs[scope.$index]['vendor_type']) }}
             </template>
           </el-table-column>
           <el-table-column
@@ -230,19 +230,19 @@
             prop="parameter"
           >
             <template slot-scope="scope">
-              {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
+              {{ penalizingParams(warning_logs[scope.$index]['parameter']) }}
             </template>
           </el-table-column>
           <el-table-column label="Warning message" width="180" prop="message">
             <template slot-scope="scope">
-              {{ penalty_logs[scope.$index]['message'] }}
+              {{ warning_logs[scope.$index]['message'] }}
             </template>
           </el-table-column>
           <el-table-column label="From" prop="from_date">
             <template slot-scope="scope">
               {{
                 getFormattedDate(
-                  penalty_logs[scope.$index]['from_date'],
+                  warning_logs[scope.$index]['from_date'],
                   'DD/MM/YYYY ',
                 )
               }}
@@ -252,7 +252,7 @@
             <template slot-scope="scope">
               {{
                 getFormattedDate(
-                  penalty_logs[scope.$index]['to_date'],
+                  warning_logs[scope.$index]['to_date'],
                   'DD/MM/YYYY ',
                 )
               }}
@@ -260,21 +260,34 @@
           </el-table-column>
           <el-table-column label="Status" prop="status">
             <template slot-scope="scope">
-              {{ activeStatus(penalty_logs[scope.$index]['status']) }}
+              {{ activeStatus(warning_logs[scope.$index]['status']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Actions" prop="status" class="data">
+          <el-table-column
+            label="Actions"
+            prop="status"
+            class="data"
+            width="200"
+          >
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 :class="
-                  penalty_logs[scope.$index]['status'] === 1
+                  warning_logs[scope.$index]['status'] === 1
                     ? 'action-button--danger'
                     : 'action-button--active'
                 "
-                @click="handleAction(penalty_logs[scope.$index])"
+                @click="handleAction(warning_logs[scope.$index])"
               >
-                {{ actionStatus(penalty_logs[scope.$index]['status']) }}
+                {{ actionStatus(warning_logs[scope.$index]['status']) }}
+              </el-button>
+              <el-button
+                v-if="warning_logs[scope.$index]['status'] === 0"
+                size="mini"
+                class="action-button--archive"
+                @click="handleArchive(warning_logs[scope.$index])"
+              >
+                Archive
               </el-button>
             </template>
           </el-table-column>
@@ -306,7 +319,7 @@ export default {
       submit_status: false,
       response_status: true,
       sendyEntities: [],
-      penalty_logs: [],
+      warning_logs: [],
       error_msg: '',
       add_btn: false,
       from_date: '',
@@ -409,7 +422,7 @@ export default {
     },
     async requestRewards() {
       const arr = await this.request_messages();
-      this.penalty_logs = arr;
+      this.warning_logs = arr.filter(obj => obj.status !== 2);
       this.loading_messages = false;
     },
     async fetchVendorTypes() {
@@ -556,11 +569,11 @@ export default {
       if (row.status === 1) {
         data.status = 0;
         data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
       } else {
         data.status = 1;
         data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
       }
 
       const payload = {
@@ -574,10 +587,40 @@ export default {
         const resp = await this.update_reward(payload);
 
         if (resp.status) {
-          setTimeout(() => {
-            this.loading_messages = true;
-            this.initiateData();
-          }, 2000);
+          this.loading_messages = true;
+          this.initiateData();
+        } else {
+          this.loading_messages = true;
+          this.initiateData();
+        }
+      } catch (error) {
+        this.loading_messages = true;
+        this.initiateData();
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async handleArchive(row) {
+      let data = {};
+      data = row;
+      data.status = 2;
+      data.from_date = moment(row.from_date).format('YYYY-MM-DD');
+      data.to_date = moment(row.to_date).format('YYYY-MM-DD');
+
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: `/warning_messages/${row.id}`,
+        apiKey: false,
+        params: data,
+      };
+
+      try {
+        const resp = await this.update_reward(payload);
+
+        if (resp.status) {
+          this.loading_messages = true;
+          this.initiateData();
         } else {
           this.loading_messages = true;
           this.initiateData();
@@ -758,6 +801,11 @@ export default {
 .action-button--active{
   background-color: #13ce66;
   border-color: #13ce66;
+  color: #fff;
+}
+.action-button--archive{
+  background-color: #3c8dbc;
+  border-color: #3c8dbc;
   color: #fff;
 }
 </style>

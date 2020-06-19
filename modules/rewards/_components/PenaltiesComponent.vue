@@ -308,7 +308,12 @@
               {{ activeStatus(penalty_logs[scope.$index]['status']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Actions" prop="status" class="data">
+          <el-table-column
+            label="Actions"
+            prop="status"
+            class="data"
+            width="200"
+          >
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -320,6 +325,14 @@
                 @click="handleAction(penalty_logs[scope.$index])"
               >
                 {{ actionStatus(penalty_logs[scope.$index]['status']) }}
+              </el-button>
+              <el-button
+                v-if="penalty_logs[scope.$index]['status'] === 0"
+                size="mini"
+                class="action-button--archive"
+                @click="handleArchive(penalty_logs[scope.$index])"
+              >
+                Archive
               </el-button>
             </template>
           </el-table-column>
@@ -455,7 +468,7 @@ export default {
     },
     async requestRewards() {
       const arr = await this.request_penalties();
-      this.penalty_logs = arr;
+      this.penalty_logs = arr.filter(obj => obj.status !== 2);
       this.loading_penalties = false;
     },
     async fetchVendorTypes() {
@@ -602,11 +615,11 @@ export default {
       if (row.status === 1) {
         data.status = 0;
         data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
       } else {
         data.status = 1;
         data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
       }
 
       const payload = {
@@ -637,6 +650,33 @@ export default {
         resp = `${data.name} ${value} orders`;
       }
       return resp;
+    },
+    async handleArchive(row) {
+      let data = {};
+      data = row;
+
+      data.status = 2;
+      data.from_date = moment(row.from_date).format('YYYY-MM-DD');
+      data.to_date = moment(row.to_date).format('YYYY-MM-DD');
+
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: `/penalties/${row.id}`,
+        apiKey: false,
+        params: data,
+      };
+
+      try {
+        const resp = await this.update_reward(payload);
+        this.loading_penalties = true;
+        this.initiateData();
+      } catch (error) {
+        this.loading_penalties = true;
+        this.initiateData();
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
     },
   },
 };
@@ -822,5 +862,10 @@ export default {
 .expandable-header {
   margin-bottom: 15px;
   width: 20%;
+}
+.action-button--archive{
+  background-color: #3c8dbc;
+  border-color: #3c8dbc;
+  color: #fff;
 }
 </style>
