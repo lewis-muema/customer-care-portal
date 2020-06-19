@@ -448,7 +448,12 @@
               {{ activeStatus(reward_logs[scope.$index]['status']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Actions" prop="status" class="data">
+          <el-table-column
+            label="Actions"
+            prop="status"
+            class="data"
+            width="200"
+          >
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -460,6 +465,14 @@
                 @click="handleAction(reward_logs[scope.$index])"
               >
                 {{ actionStatus(reward_logs[scope.$index]['status']) }}
+              </el-button>
+              <el-button
+                v-if="reward_logs[scope.$index]['status'] === 0"
+                size="mini"
+                class="action-button--archive"
+                @click="handleArchive(reward_logs[scope.$index])"
+              >
+                Archive
               </el-button>
             </template>
           </el-table-column>
@@ -636,7 +649,7 @@ export default {
     },
     async requestRewards() {
       const arr = await this.request_rewards();
-      this.reward_logs = arr;
+      this.reward_logs = arr.filter(obj => obj.status !== 2);
       this.loading_rewards = false;
     },
     checkSubmitStatus() {
@@ -778,12 +791,38 @@ export default {
       if (row.status === 1) {
         data.status = 0;
         data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
       } else {
         data.status = 1;
         data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
       }
+
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: `/rewards/${row.id}`,
+        apiKey: false,
+        params: data,
+      };
+
+      try {
+        const resp = await this.update_reward(payload);
+        this.loading_rewards = true;
+        this.initiateData();
+      } catch (error) {
+        this.loading_rewards = true;
+        this.initiateData();
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async handleArchive(row) {
+      let data = {};
+      data = row;
+      data.status = 2;
+      data.from_date = moment(row.from_date).format('YYYY-MM-DD');
+      data.to_date = moment(row.to_date).format('YYYY-MM-DD');
 
       const payload = {
         app: 'ADONIS_API',
@@ -972,6 +1011,11 @@ export default {
 .action-button--active{
   background-color: #13ce66;
   border-color: #13ce66;
+  color: #fff;
+}
+.action-button--archive{
+  background-color: #3c8dbc;
+  border-color: #3c8dbc;
   color: #fff;
 }
 .expandable-data{
