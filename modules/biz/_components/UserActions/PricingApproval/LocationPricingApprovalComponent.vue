@@ -38,6 +38,8 @@
           </el-table-column>
           <el-table-column prop="name" label="Vendor type" width="130">
           </el-table-column>
+          <el-table-column prop="currency" label="Currency" width="80">
+          </el-table-column>
           <el-table-column prop="order_amount" label="Client fee" width="130">
           </el-table-column>
           <el-table-column
@@ -273,7 +275,7 @@ export default {
           name: data[i].name,
           cop_id: this.copId,
           cop_name: data[i].cop_name,
-          currency: this.currency,
+          currency: data[i].currency,
           admin_id: parseInt(this.adminId, 10),
           waiting_time_cost_per_min: data[i].waiting_time_cost_per_min,
           sendy_commission: data[i].sendy_commission,
