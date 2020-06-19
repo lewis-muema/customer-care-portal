@@ -34,7 +34,7 @@
           </el-table-column>
           <el-table-column prop="name" label="Vendor Type" width="200">
           </el-table-column>
-          <el-table-column prop="currency" label="Currency" width="200">
+          <el-table-column prop="currency" label="Currency" width="80">
           </el-table-column>
           <el-table-column label="Partner rate" width="170">
             <template slot-scope="scope">

@@ -51,6 +51,7 @@ export default {
       dailyRatePricing: false,
       mileagePricing: false,
       defaultCurrency: '',
+      secondaryCurrency: '',
       message: '',
       user: {},
     };
@@ -72,19 +73,24 @@ export default {
       try {
         const data = await this.request_single_user(payload);
         this.defaultCurrency = data.user_details.default_currency;
+        this.secondaryCurrency = data.user_details.secondary_currency;
         this.user = data;
       } catch (error) {
         this.message = 'Something went wrong. Please try again.';
       }
     },
     async fetchCustomDistancePricingData() {
+      const currenciesArray = [this.defaultCurrency];
+      if (this.secondaryCurrency) {
+        currenciesArray.push(this.secondaryCurrency);
+      }
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
-          currency: this.defaultCurrency,
+          currency: currenciesArray,
           status: ['Pending'],
           get_object_id: true,
           admin_id: parseInt(this.session.payload.data.admin_id, 10),
