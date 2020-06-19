@@ -290,7 +290,7 @@ export default {
             pay_out: true,
             pay_frommpesa: false,
             rider_id: riderID,
-            loan_type: 1,
+            loan_type: this.loantype,
             amount: this.amount,
             narrative: this.narrative,
             payment_type: 5,
