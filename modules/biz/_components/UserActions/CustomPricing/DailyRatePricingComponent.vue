@@ -50,9 +50,19 @@
                     placeholder="Select Currency"
                     size="large"
                     class="new-pricing-inputs"
-                    disabled
+                    :disabled="!secondaryCurrency || mode === 'allPricing'"
                   >
-                    <el-option :label="currency" :value="currency"> </el-option>
+                    <el-option
+                      :label="defaultCurrency"
+                      :value="defaultCurrency"
+                    >
+                    </el-option>
+                    <el-option
+                      v-if="secondaryCurrency"
+                      :label="secondaryCurrency"
+                      :value="secondaryCurrency"
+                    >
+                    </el-option>
                   </el-select>
                 </template>
               </div>
@@ -268,9 +278,11 @@
               {{ data.vendor }}
             </div>
             <div class="bands-col-2 pricing-table-divider">
-              {{ currency }} {{ data.monthly_rate }}
+              {{ data.currency }} {{ data.monthly_rate }}
             </div>
-            <div class="bands-col-3">{{ currency }} {{ data.daily_rate }}</div>
+            <div class="bands-col-3">
+              {{ data.currency }} {{ data.daily_rate }}
+            </div>
             <div class="bands-col-4">{{ data.maximum_distance }} KMS</div>
             <div class="bands-col-5">
               <span
@@ -286,23 +298,34 @@
           </div>
         </div>
         <div v-if="mode === 'allPricing' && !editStatus">
-          <div class="bands-heading-row" v-if="tablePricingData.length > 0">
+          <div class="currency-selector">
+            <div
+              v-for="(currencies, i) in userCurrencies"
+              :key="`${i}${currencies}`"
+              class="currency-buttons"
+              @click="activeCurrency = currencies"
+              :class="activeCurrency === currencies ? 'active-currency' : ''"
+            >
+              {{ currencies }}
+            </div>
+          </div>
+          <div class="bands-heading-row" v-if="filteredCurrencies.length > 0">
             <div class="bands-col-1">Vendor Type</div>
             <div class="bands-col-2">Monthly Rate</div>
             <div class="bands-col-3">Daily Rate</div>
             <div class="bands-col-4">Max distance</div>
             <div class="bands-col-5"></div>
           </div>
-          <div v-for="(data, index) in tablePricingData" :key="index">
+          <div v-for="(data, index) in filteredCurrencies" :key="index">
             <div class="pricing-body-row" @click="toggleRow(index)">
               <div class="bands-col-1 pricing-table-divider">
                 {{ data.name }}
               </div>
               <div class="bands-col-2 pricing-table-divider">
-                {{ currency }} {{ data.monthly_rate }}
+                {{ data.currency }} {{ data.monthly_rate }}
               </div>
               <div class="bands-col-3 pricing-table-divider">
-                {{ currency }} {{ data.daily_rate }}
+                {{ data.currency }} {{ data.daily_rate }}
               </div>
               <div class="bands-col-4">{{ data.maximum_km }} KMS</div>
               <div class="bands-col-5">
@@ -341,13 +364,20 @@
                   <div
                     class="all-pricing-delete"
                     @click="
-                      showDeleteDialogue('tablePricingData', index, data.name)
+                      showDeleteDialogue(
+                        'tablePricingData',
+                        data.table_index,
+                        data.name,
+                      )
                     "
                     v-if="data.status === 'Active'"
                   >
                     delete
                   </div>
-                  <div class="all-pricing-edit" @click="editAllPricing(index)">
+                  <div
+                    class="all-pricing-edit"
+                    @click="editAllPricing(data.table_index)"
+                  >
                     edit
                   </div>
                 </span>
@@ -379,7 +409,7 @@
                     <p class="all-pricing-card-text">
                       Sendy Take:
                       <span class="all-pricing-card-values"
-                        >{{ currency }} {{ data.sendy_take }}</span
+                        >{{ data.currency }} {{ data.sendy_take }}</span
                       >
                     </p>
                     <p class="all-pricing-card-text">
@@ -429,8 +459,9 @@
             </div>
             <div class="pricing-row-spacer" v-else />
           </div>
-          <div v-if="tablePricingData.length === 0">
-            There are no daily rate configs for {{ user.user_details.cop_name }}
+          <div v-if="filteredCurrencies.length === 0">
+            There are no {{ activeCurrency }} daily rate configs for
+            {{ user.user_details.cop_name }}
           </div>
         </div>
         <div
@@ -576,6 +607,7 @@ export default {
       mode: 'newPricing',
       showDialogue: false,
       admin_list: [],
+      activeCurrency: '',
       approver: 0,
       approverMail: '',
       approverSelect: false,
@@ -594,6 +626,8 @@ export default {
       sendyTake: '',
       partnerTake: '',
       currency: '',
+      defaultCurrency: '',
+      secondaryCurrency: '',
       vendorName: '',
       fuelInclusivity: true,
       partnerRate: 'daily rate',
@@ -710,6 +744,25 @@ export default {
       });
       return data;
     },
+    userCurrencies() {
+      const currencies = [];
+      this.tablePricingData.forEach(row => {
+        if (!currencies.includes(row.currency)) {
+          currencies.push(row.currency);
+        }
+      });
+      return currencies;
+    },
+    filteredCurrencies() {
+      const filtered = [];
+      this.tablePricingData.forEach((row, i) => {
+        if (row.currency === this.activeCurrency) {
+          row.table_index = i;
+          filtered.push(row);
+        }
+      });
+      return filtered;
+    },
   },
   watch: {
     mode(val) {
@@ -775,12 +828,21 @@ export default {
     getAdmins(admins) {
       return (this.admin_list = admins);
     },
+    activeCurrency(val) {
+      this.opened = [];
+    },
+    currency(val) {
+      this.fetchVendorTypes(val);
+    },
   },
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
+    this.defaultCurrency = this.user.user_details.default_currency;
+    this.secondaryCurrency = this.user.user_details.secondary_currency;
     const countryCode = this.user.user_details.country_code;
-    await this.fetchVendorTypes(countryCode);
+    this.activeCurrency = this.defaultCurrency;
+    await this.fetchVendorTypes(this.defaultCurrency);
     this.tablePricingData = this.dailyRateData;
     this.selectedVendor = this.filterdVendors[0].name;
     this.trackAddPricingDataPage();
@@ -1523,5 +1585,21 @@ tr:hover {
   right: 0;
   display: flex;
   margin-right: 20px;
+}
+.currency-selector {
+  display: flex;
+  height: 40px;
+  align-items: flex-end;
+  border-bottom: 1px solid #ebebeb;
+}
+.currency-buttons {
+  width: 100px;
+  text-align: center;
+  color: #8f9bb3;
+  cursor: pointer;
+  padding-bottom: 10px;
+}
+.active-currency {
+  border-bottom: 3px solid #1b7fc3;
 }
 </style>

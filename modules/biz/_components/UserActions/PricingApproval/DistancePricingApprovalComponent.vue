@@ -36,6 +36,8 @@
           </el-table-column>
           <el-table-column prop="name" label="Vendor Type" width="170">
           </el-table-column>
+          <el-table-column prop="currency" label="Currency" width="80">
+          </el-table-column>
           <el-table-column prop="base_cost" label="Partner Amount" width="150">
           </el-table-column>
           <el-table-column
