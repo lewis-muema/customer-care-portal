@@ -996,6 +996,7 @@ export default {
 }
 .add-reward-section{
   width: 80% !important;
+  min-height: 340px;
 }
 .message-input{
   margin-left: -5%;

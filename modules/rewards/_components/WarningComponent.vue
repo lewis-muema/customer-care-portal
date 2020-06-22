@@ -786,6 +786,7 @@ export default {
 }
 .add-reward-section{
   width: 80% !important;
+  min-height: 340px;
 }
 .user-textarea{
   margin-right: 9%;
