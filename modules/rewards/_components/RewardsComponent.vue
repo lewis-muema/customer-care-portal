@@ -69,7 +69,7 @@
               placeholder="Select"
             >
               <el-option
-                v-for="value in comparator"
+                v-for="value in orderValue()"
                 :key="value.code"
                 :label="value.name"
                 :value="value.code"
@@ -103,7 +103,7 @@
               placeholder="Select"
             >
               <el-option
-                v-for="value in comparator"
+                v-for="value in delayValue()"
                 :key="value.code"
                 :label="value.name"
                 :value="value.code"
@@ -137,7 +137,7 @@
               placeholder="Select"
             >
               <el-option
-                v-for="value in comparator"
+                v-for="value in delayValue()"
                 :key="value.code"
                 :label="value.name"
                 :value="value.code"
@@ -172,7 +172,7 @@
               placeholder="Select"
             >
               <el-option
-                v-for="value in comparator"
+                v-for="value in delayValue()"
                 :key="value.code"
                 :label="value.name"
                 :value="value.code"
@@ -540,6 +540,8 @@ export default {
         { code: 'KE', name: 'Kenya' },
         { code: 'UG', name: 'Uganda' },
       ],
+      completed_comp_id: ['ET', 'GT', 'GET'],
+      delays_comp_id: ['ET', 'LT', 'LET'],
       country: '',
       currency: '',
       pickup_delays: '',
@@ -668,7 +670,23 @@ export default {
       const date_range = moment(this.to_date).diff(moment(this.from_date));
       this.submit_state = true;
 
-      if (date_range > 0) {
+      if (date_range < 0) {
+        this.response_status = 'error';
+        this.submit_state = false;
+        this.error_msg =
+          'Time Range Error : Ensure that From date is not later than the To date';
+      } else if (
+        (this.delayed_at_pickup_comp === 'ET' &&
+          this.delayed_at_pickup > '0') ||
+        (this.delayed_at_delivery_comp === 'ET' &&
+          this.delayed_at_delivery > '0') ||
+        (this.reassigned_comp === 'ET' && this.reassigned > '0')
+      ) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg =
+          'Value should be 0 for delayed at pick up , delivery and reassigned equal to comparator !';
+      } else {
         const payload = {
           app: 'ADONIS_API',
           endpoint: '/rewards',
@@ -716,11 +734,6 @@ export default {
           this.error_msg =
             'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
         }
-      } else {
-        this.response_status = 'error';
-        this.submit_state = false;
-        this.error_msg =
-          'Time Range Error : Ensure that From date is not later than the To date';
       }
     },
     formatReward(text) {
@@ -842,6 +855,20 @@ export default {
         this.error_msg =
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
+    },
+    orderValue() {
+      const record = this.comparator.filter(i =>
+        this.completed_comp_id.includes(i.code),
+      );
+
+      return record;
+    },
+    delayValue() {
+      const record = this.comparator.filter(i =>
+        this.delays_comp_id.includes(i.code),
+      );
+
+      return record;
     },
   },
 };
