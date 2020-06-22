@@ -111,7 +111,7 @@
               placeholder="Select"
             >
               <el-option
-                v-for="value in comparator"
+                v-for="value in delayValue()"
                 :key="value.code"
                 :label="value.name"
                 :value="value.code"
@@ -361,6 +361,7 @@ export default {
       penalizing_reason: [],
       penalized_orders: '',
       submit_state: false,
+      completed_comp_id: ['LT', 'LET', 'GT', 'GET'],
     };
   },
   validations: {
@@ -474,6 +475,14 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'Reasssigned reason to penalize is required!';
+      } else if (
+        this.orders_parameter === 'ET' &&
+        this.penalized_orders > '0'
+      ) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg =
+          'Order to penalize for should be equal to 0 for the selected comparator !';
       } else if (date_range < 0) {
         this.submit_state = false;
         this.response_status = 'error';
@@ -633,6 +642,13 @@ export default {
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
+    delayValue() {
+      const record = this.comparator.filter(i =>
+        this.delays_comp_id.includes(i.code),
+      );
+
+      return record;
+    },
   },
 };
 </script>
@@ -786,6 +802,7 @@ export default {
 }
 .add-reward-section{
   width: 80% !important;
+  min-height: 340px;
 }
 .user-textarea{
   margin-right: 9%;

@@ -111,7 +111,7 @@
               placeholder="Select"
             >
               <el-option
-                v-for="value in comparator"
+                v-for="value in orderValue()"
                 :key="value.code"
                 :label="value.name"
                 :value="value.code"
@@ -399,6 +399,7 @@ export default {
         { code: 12, name: 'The load cannot fit in my vehicle' },
         { code: 13, name: 'My Vehicle broke down' },
       ],
+      completed_comp_id: ['ET', 'GT', 'GET'],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
@@ -519,6 +520,14 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'Reasssigned reason to penalize is required!';
+      } else if (
+        this.orders_parameter === 'ET' &&
+        this.penalized_orders > '0'
+      ) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg =
+          'Order to penalize for should be equal to 0 for the selected comparator !';
       } else if (date_range < 0) {
         this.submit_state = false;
         this.response_status = 'error';
@@ -678,6 +687,13 @@ export default {
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
+    orderValue() {
+      const record = this.comparator.filter(i =>
+        this.completed_comp_id.includes(i.code),
+      );
+
+      return record;
+    },
   },
 };
 </script>
@@ -831,6 +847,7 @@ export default {
 }
 .add-reward-section{
   width: 80% !important;
+  min-height: 340px;
 }
 .user-textarea{
   margin-right: 9%;
