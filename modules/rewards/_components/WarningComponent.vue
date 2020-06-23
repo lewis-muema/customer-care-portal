@@ -644,7 +644,7 @@ export default {
     },
     delayValue() {
       const record = this.comparator.filter(i =>
-        this.delays_comp_id.includes(i.code),
+        this.completed_comp_id.includes(i.code),
       );
 
       return record;
