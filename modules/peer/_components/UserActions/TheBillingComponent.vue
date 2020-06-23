@@ -243,6 +243,7 @@ export default {
         { value: 12, name: 'Cash Order', transactionID: 1 },
         { value: 14, name: 'Customer Coupon', transactionID: 1 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
+        { value: 21, name: 'Deduction', transactionID: 6 },
         { value: 99, name: 'Reversal', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 9, 14],
