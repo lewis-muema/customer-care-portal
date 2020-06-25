@@ -361,7 +361,7 @@ export default {
       penalizing_reason: [],
       penalized_orders: '',
       submit_state: false,
-      completed_comp_id: ['LT', 'LET', 'GT', 'GET'],
+      completed_comp_id: ['GT', 'GET'],
     };
   },
   validations: {
