@@ -399,7 +399,7 @@ export default {
         { code: 12, name: 'The load cannot fit in my vehicle' },
         { code: 13, name: 'My Vehicle broke down' },
       ],
-      completed_comp_id: ['ET', 'GT', 'GET'],
+      completed_comp_id: ['GT', 'GET'],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
