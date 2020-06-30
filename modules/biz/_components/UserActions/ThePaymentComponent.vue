@@ -274,6 +274,7 @@ export default {
         return;
       }
       const action_id = this.isChargeEntity ? 27 : 7;
+      const vat_exempt = this.user.cop_details.vat_exempt;
 
       let action_payload = {
         reverse,
@@ -287,6 +288,7 @@ export default {
         reason: this.narrative,
         currency: this.currency,
         business_unit: parseInt(this.businessUnit, 10),
+        vat_exempt: vat_exempt ? 1 : 0,
       };
 
       if (this.isChargeEntity) {
@@ -298,6 +300,7 @@ export default {
           currency: this.currency,
           entity_id: 1,
           business_unit: parseInt(this.businessUnit, 10),
+          vat_exempt: vat_exempt ? 1 : 0,
         };
       }
 
