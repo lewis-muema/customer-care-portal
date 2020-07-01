@@ -1067,6 +1067,9 @@ table {
   border: 1px solid #d3d6d8;
   margin: 5px;
 }
+.freight-assign-rider-rate-input {
+  width: 160px;
+}
 .freight-assign-new-rider-buttons {
   width: 118px;
 }
