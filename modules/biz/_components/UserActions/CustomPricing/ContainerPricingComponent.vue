@@ -444,7 +444,7 @@
             </div>
             <div class="pricing-row-spacer" v-else />
           </div>
-          <div v-if="filteredCurrencies.length === 0">
+          <div v-if="filteredCurrencies.length === 0" class="no-configs-label">
             There are no {{ activeCurrency }} container configs for
             {{ user.user_details.cop_name }}
           </div>
@@ -757,10 +757,18 @@ export default {
     this.defaultCurrency = this.user.user_details.default_currency;
     this.secondaryCurrency = this.user.user_details.secondary_currency;
     const countryCode = this.user.user_details.country_code;
-    this.activeCurrency = this.defaultCurrency;
     await this.fetchVendorTypes(this.defaultCurrency);
     this.trackAddPricingDataPage();
     this.tablePricingData = this.containerPriceData;
+    if (this.userCurrencies.length > 0) {
+      this.activeCurrency =
+        this.defaultCurrency in this.userCurrencies
+          ? this.defaultCurrency
+          : this.userCurrencies[0];
+    } else {
+      this.userCurrencies.push(this.defaultCurrency);
+      this.activeCurrency = this.defaultCurrency;
+    }
   },
   methods: {
     ...mapMutations({
@@ -1549,5 +1557,8 @@ tr:hover {
 }
 .active-currency {
   border-bottom: 3px solid #1b7fc3;
+}
+.no-configs-label {
+  margin: 20px 0px 10px 0px;
 }
 </style>

@@ -76,11 +76,12 @@
       :readonly="existingStatus"
       @input="passNewDriver()"
     />
-    <input
-      type="number"
-      class="freight-assign-rider-buttons"
+    <el-input
+      type="text"
+      onkeypress="return event.charCode >= 48 && event.charCode <= 57"
       placeholder="Driver rate"
-      v-model.number="rate"
+      v-model="rate"
+      class="freight-assign-rider-rate-input"
       @input="
         rate =
           rate > order.payment_details.order_amount
@@ -88,7 +89,10 @@
             : rate;
         passNewDriver();
       "
-    />
+      ><template class="pricing-prepend" slot="append">
+        {{ order.payment_details.order_currency }}
+      </template>
+    </el-input>
   </div>
 </template>
 
