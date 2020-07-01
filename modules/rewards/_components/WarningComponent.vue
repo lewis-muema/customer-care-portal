@@ -338,7 +338,6 @@ export default {
         { code: 'UG', name: 'Uganda' },
       ],
       penalizing_data: [
-        { code: 'COMPLETED', name: 'Completed orders ' },
         { code: 'DELAYED_AT_PICKUP', name: 'Orders delayed at pick up' },
         { code: 'DELAYED_AT_DELIVERY', name: 'Orders delayed at delivery ' },
         { code: 'REASSIGNED', name: 'Reassigned orders ' },
