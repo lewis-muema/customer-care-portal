@@ -994,6 +994,11 @@ export default {
         commit('updateDistancePricing', distancePricing);
         commit('setCustomPricingDetails', customPricingDetails);
         commit('updateApproverId', approverId);
+      } else {
+        commit('updateLocationPricing', locationPricing);
+        commit('updateDistancePricing', distancePricing);
+        commit('setCustomPricingDetails', []);
+        commit('updateApproverId', approverId);
       }
       return res.data;
     } catch (error) {
