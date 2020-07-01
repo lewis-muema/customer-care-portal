@@ -270,6 +270,8 @@ export default {
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
         { value: 21, name: 'Deduction', transactionID: 6 },
         { value: 99, name: 'Reversal', transactionID: 1 },
+        { value: 22, name: 'Cash Reversals', transactionID: 1 },
+        { value: 23, name: 'Partner Top up', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
       array: {
