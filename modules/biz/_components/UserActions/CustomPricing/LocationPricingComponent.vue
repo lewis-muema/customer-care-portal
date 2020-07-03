@@ -645,9 +645,6 @@ export default {
       const filtered = [];
       this.tablePricingData.forEach((row, i) => {
         if (row.currency === this.activeCurrency) {
-          if (!Object.prototype.hasOwnProperty.call(row, 'rider_amount')) {
-            row.rider_amount = 0;
-          }
           row.table_index = i;
           filtered.push(row);
         }
