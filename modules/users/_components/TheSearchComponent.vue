@@ -1,6 +1,6 @@
 <template>
   <div class="col-md-7 user-search">
-    <div class="Typeahead" v-if="hideSearch()">
+    <div class="Typeahead">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
 
       <input
@@ -165,13 +165,6 @@ export default {
       if (this.user === 'riders') {
         this.updateRider(item.rider_id);
       }
-    },
-    hideSearch() {
-      let hide = true;
-      if (this.user === 'rewards') {
-        hide = false;
-      }
-      return hide;
     },
   },
 };
