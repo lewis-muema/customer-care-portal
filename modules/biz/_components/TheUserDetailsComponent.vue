@@ -76,7 +76,11 @@
           role="tabpanel"
           v-if="showTab === `deliveries_${copID}`"
         >
-          <TheDeliveriesComponent :deliveries="deliveries" :user="copID" />
+          <TheDeliveriesComponent
+            :deliveries="deliveries"
+            :user="copID"
+            :currency="currency"
+          />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
