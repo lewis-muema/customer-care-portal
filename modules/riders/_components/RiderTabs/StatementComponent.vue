@@ -5,7 +5,7 @@
         <div
           class="currency-tabs"
           v-for="(currency, index) in currencies"
-          :class="activeCurrency === currency ? 'active-currency' : ''"
+          :class="activeCurrency === currency ? 'active-currency-button' : ''"
           @click="activeCurrency = currency"
           :key="index"
         >
