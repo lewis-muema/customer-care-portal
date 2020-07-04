@@ -190,6 +190,25 @@
   border-collapse: collapse;
 }
 
+.currency-holder {
+  display: flex;
+}
+
+.currency-tabs {
+  height: 40px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #BDBDBD;
+}
+
+.active-currency {
+  color: white;
+  background: #1B7FC3;
+  border: 1px solid #1B7FC3;
+}
+
 .tracking_map_table td {
   height: 34px;
   font-size: 15px;
