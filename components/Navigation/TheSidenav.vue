@@ -52,26 +52,16 @@
               ><i class="fa fa-users"></i> <span> Biz </span>
             </a>
           </li>
-
-          <li class="treeview" v-if="permissions.auto_rewards">
-            <a
-              class="fancybox fancybox.iframe fancyboxy"
-              href="/rewards"
-              @click="showModal('rewards', $event)"
-              ><i class="fa fa-tasks"></i>
-              <span> Auto Rewards and Penalties </span>
-            </a>
+          <li class="treeview >">
+            <nuxt-link to="/nps/dashboard"
+              ><i class="fa fa-bars"></i> <span> Nps </span></nuxt-link
+            >
           </li>
 
           <li class="treeview" v-if="permissions.create_orders">
             <nuxt-link to="/offlineOrders"
               ><i class="fa fa-plus-circle"></i>
               <span> Create Order </span></nuxt-link
-            >
-          </li>
-          <li class="treeview >">
-            <nuxt-link to="/nps/dashboard"
-              ><i class="fa fa-bars"></i> <span> Nps </span></nuxt-link
             >
           </li>
 

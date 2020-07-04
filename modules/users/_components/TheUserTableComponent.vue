@@ -1,7 +1,7 @@
 <template>
   <section class="content">
     <div class="row">
-      <div class="box" :class="setBackground()">
+      <div class="box">
         <div class="box-body" :key="searchKey">
           <div v-if="userType === 'biz'">
             <TheBizTable />
@@ -11,9 +11,6 @@
           </div>
           <div v-if="userType === 'riders'">
             <TheRiderTable />
-          </div>
-          <div class="mega" v-if="userType === 'rewards'">
-            <RewardsView />
           </div>
         </div>
       </div>
@@ -29,7 +26,6 @@ export default {
     TheBizTable: () => import('~/modules/biz/_components/TheBizTable'),
     TheRiderTable: () => import('~/modules/riders/_components/TheRiderTable'),
     ThePeerTable: () => import('~/modules/peer/_components/ThePeerTable'),
-    RewardsView: () => import('~/modules/rewards/_components/RewardsView'),
   },
   data() {
     return {
@@ -57,12 +53,6 @@ export default {
   methods: {
     forceRerender() {
       this.searchKey += 1;
-    },
-    setBackground() {
-      if (this.userType === 'rewards') {
-        return 'invoiceBackground';
-      }
-      return '';
     },
   },
 };
@@ -115,11 +105,5 @@ export default {
 }
 .vs__dropdown-menu {
   border-top: 1px solid #d3d7de;
-}
-.invoiceBackground {
-  border-top: 0px !important;
-  box-shadow: none !important;
-  background: #ecf0f5 !important;
-  margin-top: 2%;
 }
 </style>

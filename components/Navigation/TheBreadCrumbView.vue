@@ -70,11 +70,6 @@ export default {
           description: 'invoices',
           mainName: 'Home',
         },
-        rewards: {
-          name: 'Rewards and Penalties',
-          description: '',
-          mainName: 'Home',
-        },
         user: {
           name: 'User',
           description: '3CX Users',

@@ -21,7 +21,6 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
-    VENDORS: 'https://authtest.sendyit.com/vendors/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
     OFFLINE_PRICING:
@@ -57,7 +56,6 @@ const config = {
     LOGIN_URL: 'https://authtest.sendyit.com/parcel/admin_glogin',
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
-    VENDORS: 'https://authtest.sendyit.com/vendors/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
@@ -94,7 +92,6 @@ const config = {
     NODE_PARTNER_API: 'https://auth.staging.sendyit.com/partner/v1/',
     ORDERS_APP: 'https://auth.staging.sendyit.com/orders/',
     LOGIN_URL: 'https://auth.staging.sendyit.com/parcel/admin_glogin',
-    VENDORS: 'https://auth.sendyit.com/vendors/',
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
@@ -132,7 +129,6 @@ const config = {
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clients/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clients/',
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehicle/',
-    VENDORS: 'https://auth.sendyit.com/vendors/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/owner/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
