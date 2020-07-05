@@ -43,7 +43,11 @@
           role="tabpanel"
           v-if="showTab === `deliveries_${userID}`"
         >
-          <TheDeliveriesComponent :deliveries="deliveryList" :user="userID" />
+          <TheDeliveriesComponent
+            :deliveries="deliveryList"
+            :user="userID"
+            :currency="currency"
+          />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"

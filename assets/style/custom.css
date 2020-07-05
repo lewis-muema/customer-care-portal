@@ -190,6 +190,25 @@
   border-collapse: collapse;
 }
 
+.currency-holder {
+  display: flex;
+}
+
+.currency-tabs {
+  height: 40px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #BDBDBD;
+}
+
+.active-currency-button {
+  color: white;
+  background: #1B7FC3;
+  border: 1px solid #1B7FC3;
+}
+
 .tracking_map_table td {
   height: 34px;
   font-size: 15px;
@@ -1077,8 +1096,8 @@ table {
   border: 1px solid #d3d6d8;
   margin: 5px;
 }
-.freight-assign-rider-buttons {
-  width: auto;
+.freight-assign-rider-rate-input {
+  width: 160px;
 }
 .freight-assign-new-rider-buttons {
   width: 118px;

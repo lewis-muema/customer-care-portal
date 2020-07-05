@@ -49,9 +49,19 @@
                     placeholder="Select Currency"
                     size="large"
                     class="new-pricing-inputs"
-                    disabled
+                    :disabled="!secondaryCurrency || mode === 'allPricing'"
                   >
-                    <el-option :label="currency" :value="currency"> </el-option>
+                    <el-option
+                      :label="defaultCurrency"
+                      :value="defaultCurrency"
+                    >
+                    </el-option>
+                    <el-option
+                      v-if="secondaryCurrency"
+                      :label="secondaryCurrency"
+                      :value="secondaryCurrency"
+                    >
+                    </el-option>
                   </el-select>
                 </template>
               </div>
@@ -218,18 +228,29 @@
             </div>
           </div>
           <p class="insurance-reminder">
-            PS: Insurance fees are charged as Ksh 200 for 100km and below and
-            Ksh 400 for above 100km.
+            PS: Insurance fees are charged as Ksh 200 / Usd 2 for 100km and
+            below and Ksh 400 / Usd 4 for above 100km.
           </p>
         </div>
         <div v-if="mode === 'allPricing' && !editStatus">
-          <div class="bands-heading-row" v-if="tablePricingData.length > 0">
+          <div class="currency-selector">
+            <div
+              v-for="(currencies, i) in userCurrencies"
+              :key="`${i}${currencies}`"
+              class="currency-buttons"
+              @click="activeCurrency = currencies"
+              :class="activeCurrency === currencies ? 'active-currency' : ''"
+            >
+              {{ currencies }}
+            </div>
+          </div>
+          <div class="bands-heading-row" v-if="filteredCurrencies.length > 0">
             <div class="bands-col-1">Pick up</div>
             <div class="bands-col-2">Destination</div>
             <div class="bands-col-3">Vendor</div>
             <div class="bands-col-4"></div>
           </div>
-          <div v-for="(data, index) in tablePricingData" :key="index">
+          <div v-for="(data, index) in filteredCurrencies" :key="index">
             <div class="pricing-body-row" @click="toggleRow(index)">
               <div class="bands-col-1 pricing-table-divider">
                 {{ data.from }}
@@ -276,14 +297,21 @@
                       .modify_price_config
                 "
               >
-                <div class="all-pricing-edit" @click="editAllPricing(index)">
+                <div
+                  class="all-pricing-edit"
+                  @click="editAllPricing(data.table_index)"
+                >
                   edit
                 </div>
                 <div
                   v-if="data.status === 'Active'"
                   class="all-pricing-delete"
                   @click="
-                    showDeleteDialogue('tablePricingData', index, data.name)
+                    showDeleteDialogue(
+                      'tablePricingData',
+                      data.table_index,
+                      data.name,
+                    )
                   "
                 >
                   delete
@@ -312,7 +340,7 @@
                           Client Fee
                         </p>
                         <p class="all-pricing-column-value">
-                          {{ currency }}
+                          {{ data.currency }}
                           {{
                             (data.insurance ? data.insurance : 0) +
                               data.service_fee +
@@ -333,7 +361,7 @@
                           Partner Fee
                         </p>
                         <p class="all-pricing-column-value">
-                          {{ currency }} {{ data.rider_amount }}
+                          {{ data.currency }} {{ data.rider_amount }}
                         </p>
                       </div>
                     </div>
@@ -343,7 +371,7 @@
                           Service Charge
                         </p>
                         <p class="all-pricing-column-value">
-                          {{ currency }} {{ data.service_fee }}
+                          {{ data.currency }} {{ data.service_fee }}
                         </p>
                       </div>
                       <div>
@@ -351,7 +379,7 @@
                           Insurance Fee
                         </p>
                         <p class="all-pricing-column-value">
-                          {{ currency }}
+                          {{ data.currency }}
                           {{ data.insurance ? data.insurance : 0 }}
                         </p>
                       </div>
@@ -362,8 +390,9 @@
             </div>
             <div class="pricing-row-spacer" v-else />
           </div>
-          <div v-if="tablePricingData.length === 0">
-            There are no location configs for {{ user.user_details.cop_name }}
+          <div v-if="filteredCurrencies.length === 0" class="no-configs-label">
+            There are no {{ activeCurrency }} location configs for
+            {{ user.user_details.cop_name }}
           </div>
         </div>
         <div
@@ -484,6 +513,7 @@ export default {
       showDialogue: false,
       admin_list: [],
       suggestions: [],
+      activeCurrency: '',
       city: '',
       pickUp: '',
       pickUpCoordinates: '',
@@ -500,6 +530,8 @@ export default {
       clientFee: '',
       partnerFee: '',
       currency: '',
+      defaultCurrency: '',
+      secondaryCurrency: '',
       editStatus: false,
       editedBandIndex: 0,
       deleteBand: {
@@ -600,6 +632,28 @@ export default {
       }
       return false;
     },
+    userCurrencies() {
+      const currencies = [];
+      this.tablePricingData.forEach(row => {
+        if (!currencies.includes(row.currency)) {
+          currencies.push(row.currency);
+        }
+      });
+      return currencies;
+    },
+    filteredCurrencies() {
+      const filtered = [];
+      this.tablePricingData.forEach((row, i) => {
+        if (row.currency === this.activeCurrency) {
+          if (!Object.prototype.hasOwnProperty.call(row, 'rider_amount')) {
+            row.rider_amount = 0;
+          }
+          row.table_index = i;
+          filtered.push(row);
+        }
+      });
+      return filtered;
+    },
   },
   watch: {
     mode(val) {
@@ -626,14 +680,31 @@ export default {
         this.search(val);
       }
     },
+    activeCurrency(val) {
+      this.opened = [];
+    },
+    currency(val) {
+      this.fetchVendorTypes(val);
+    },
   },
   async mounted() {
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
+    this.defaultCurrency = this.user.user_details.default_currency;
+    this.secondaryCurrency = this.user.user_details.secondary_currency;
     const countryCode = this.user.user_details.country_code;
-    await this.fetchVendorTypes(countryCode);
+    await this.fetchVendorTypes(this.defaultCurrency);
     this.trackAddPricingDataPage();
     this.tablePricingData = this.locationPriceData;
+    if (this.userCurrencies.length > 0) {
+      this.activeCurrency =
+        this.defaultCurrency in this.userCurrencies
+          ? this.defaultCurrency
+          : this.userCurrencies[0];
+    } else {
+      this.userCurrencies.push(this.defaultCurrency);
+      this.activeCurrency = this.defaultCurrency;
+    }
   },
   methods: {
     ...mapMutations({
@@ -781,6 +852,7 @@ export default {
     },
     editAllPricing(i) {
       this.selectedVendor = this.tablePricingData[i].name;
+      this.currency = this.tablePricingData[i].currency;
       this.pickUp = this.tablePricingData[i].from;
       this.pickUpCoordinates = this.tablePricingData[i].from_location;
       this.destination = this.tablePricingData[i].to;
@@ -1394,5 +1466,24 @@ tr:hover {
   margin-bottom: 5px;
   font-style: italic;
   font-weight: 900;
+}
+.currency-selector {
+  display: flex;
+  height: 40px;
+  align-items: flex-end;
+  border-bottom: 1px solid #ebebeb;
+}
+.currency-buttons {
+  width: 100px;
+  text-align: center;
+  color: #8f9bb3;
+  cursor: pointer;
+  padding-bottom: 10px;
+}
+.active-currency {
+  border-bottom: 3px solid #1b7fc3;
+}
+.no-configs-label {
+  margin: 20px 0px 10px 0px;
 }
 </style>
