@@ -174,6 +174,13 @@ export default {
       this.updateErrors(notification);
     },
 
+    validateInvoiceNo(string) {
+      const startChar = string.startsWith('CN-');
+      const substring = startChar ? string.substring(3) : '';
+      const length = substring.length;
+      return length === 14;
+    },
+
     // eslint-disable-next-line require-await
     async update_reverse_invoice() {
       const notification = [];
@@ -181,6 +188,17 @@ export default {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
+        return;
+      }
+
+      const isValidInvoiceNo = this.validateInvoiceNo(this.invoice_number);
+      if (!isValidInvoiceNo) {
+        notification.push(
+          'The Invoice number should follow this format CN-14digits',
+        );
+        actionClass = 'danger';
+        this.updateClass(actionClass);
+        this.updateErrors(notification);
         return;
       }
 
