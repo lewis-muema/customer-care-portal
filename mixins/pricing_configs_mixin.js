@@ -15,6 +15,7 @@ const PricingConfigsMxn = {
       pacInput1: '',
       pacInput2: '',
       defaultCurrency: '',
+      secondaryCurrency: '',
       vendorTypes: [],
       tableData: [],
       customPricingDetails: [],
@@ -27,6 +28,7 @@ const PricingConfigsMxn = {
   mounted() {
     this.copId = this.user.user_details.cop_id;
     this.defaultCurrency = this.user.user_details.default_currency;
+    this.secondaryCurrency = this.user.user_details.secondary_currency;
     this.adminId = parseInt(this.session.payload.data.admin_id, 10);
   },
   computed: {
@@ -52,13 +54,17 @@ const PricingConfigsMxn = {
     async getDistancePricingConfigs() {
       const notification = [];
       let actionClass = '';
+      const currenciesArray = [this.defaultCurrency];
+      if (this.secondaryCurrency) {
+        currenciesArray.push(this.secondaryCurrency);
+      }
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
-          currency: this.defaultCurrency,
+          currency: currenciesArray,
           status: ['Pending'],
           admin_id: this.adminId,
         },
@@ -85,13 +91,17 @@ const PricingConfigsMxn = {
     async fetchCustomDistancePricingData() {
       const notification = [];
       let actionClass = '';
+      const currenciesArray = [this.defaultCurrency];
+      if (this.secondaryCurrency) {
+        currenciesArray.push(this.secondaryCurrency);
+      }
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
-          currency: this.defaultCurrency,
+          currency: currenciesArray,
           status: ['Pending', 'Active'],
           get_object_id: true,
         },
@@ -146,9 +156,9 @@ const PricingConfigsMxn = {
         endpoint: 'vendors/types',
         apiKey: false,
         params: {
-          pickup_country_code: countryCode,
-          dropoff_country_code: countryCode,
-          currency: this.user.user_details.default_currency,
+          pickup_country_code: this.user.user_details.country_code,
+          dropoff_country_code: this.user.user_details.country_code,
+          currency: countryCode,
         },
       };
       try {

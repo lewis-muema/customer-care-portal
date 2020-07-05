@@ -1,6 +1,17 @@
 <template>
   <div>
     <div class="tab-pane" :id="`statement${user.rider_id}`">
+      <div class="currency-holder">
+        <div
+          class="currency-tabs"
+          v-for="(currency, index) in currencies"
+          :class="activeCurrency === currency ? 'active-currency-button' : ''"
+          @click="activeCurrency = currency"
+          :key="index"
+        >
+          {{ currency }}
+        </div>
+      </div>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -15,17 +26,17 @@
             <th>Narrative</th>
           </tr>
         </thead>
-        <tbody v-if="this.user.current_list.length > 0">
-          <tr v-for="statement in user.current_list" :key="statement.index">
+        <tbody v-if="this.transactions.length > 0">
+          <tr v-for="statement in transactions" :key="statement.index">
             <td>{{ statement.pay_type }}</td>
             <td>{{ statement.pay_method }}</td>
             <td>{{ statement.txn }}</td>
             <td>
-              {{ user.default_currency }}
+              {{ activeCurrency }}
               {{ new Intl.NumberFormat().format(statement.amount) }}
             </td>
             <td>
-              {{ user.default_currency }}
+              {{ activeCurrency }}
               {{ new Intl.NumberFormat().format(statement.rb) }}
             </td>
             <td>{{ statement.status === 1 ? 'Completed' : 'Incomplete' }}</td>
@@ -60,19 +71,17 @@
           <tr>
             <td>
               Running Bal
-              <span v-if="this.user.current_list.length > 0" class="badge"
-                >{{ user.default_currency }}
+              <span v-if="this.transactions.length > 0" class="badge"
+                >{{ activeCurrency }}
                 {{
-                  new Intl.NumberFormat().format(
-                    Math.round(user.current_list[0].rb),
-                  )
+                  new Intl.NumberFormat().format(Math.round(transactions[0].rb))
                 }}</span
               >
-              <span v-else class="badge">{{ user.default_currency }} 0</span>
+              <span v-else class="badge">{{ activeCurrency }} 0</span>
             </td>
             <td>
               Next Transfer
-              <span v-if="this.user.current_list.length > 0" class="badge"
+              <span v-if="this.transactions.length > 0" class="badge"
                 >{{ user.default_currency }}
                 {{
                   new Intl.NumberFormat().format(Math.round(nextTransfer))
@@ -102,10 +111,24 @@ export default {
     return {
       riderId: this.user.rider_id,
       nextTransfer: null,
+      currencies: [],
+      activeCurrency: '',
     };
+  },
+  computed: {
+    transactions() {
+      const transactionArray = [];
+      this.user.current_list.forEach(row => {
+        if (row.currency === this.activeCurrency) {
+          transactionArray.push(row);
+        }
+      });
+      return transactionArray;
+    },
   },
   mounted() {
     this.transfer();
+    this.filterCurrencies();
   },
   methods: {
     ...mapActions({
@@ -127,6 +150,15 @@ export default {
       } catch (error) {
         return error;
       }
+    },
+    filterCurrencies() {
+      this.activeCurrency = this.user.default_currency;
+      this.currencies.push(this.activeCurrency);
+      this.user.current_list.forEach(row => {
+        if (!this.currencies.includes(row.currency)) {
+          this.currencies.push(row.currency);
+        }
+      });
     },
   },
 };

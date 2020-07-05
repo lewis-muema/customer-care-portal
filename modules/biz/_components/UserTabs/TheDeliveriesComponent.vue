@@ -1,10 +1,21 @@
 <template>
   <div class="body-box">
-    <div v-if="deliveries.length === 0">No Orders</div>
+    <div class="currency-holder">
+      <div
+        class="currency-tabs"
+        v-for="(currency, index) in currencies"
+        :class="activeCurrency === currency ? 'active-currency-button' : ''"
+        @click="activeCurrency = currency"
+        :key="index"
+      >
+        {{ currency }}
+      </div>
+    </div>
+    <div v-if="transactions.length === 0">No Orders</div>
     <table
       class="table table-bordered"
       :id="`business_deliveries_table_${user}`"
-      v-if="deliveries.length > 0"
+      v-if="transactions.length > 0"
     >
       <thead>
         <tr>
@@ -17,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(delivery, key) in deliveries" :key="key">
+        <tr v-for="(delivery, key) in transactions" :key="key">
           <td>{{ key + 1 }}</td>
           <td>{{ delivery.order_no }}</td>
           <td>
@@ -43,6 +54,41 @@ export default {
     user: {
       type: Number,
       required: true,
+    },
+    currency: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      currencies: [],
+      activeCurrency: '',
+    };
+  },
+  computed: {
+    transactions() {
+      const transactionArray = [];
+      this.deliveries.forEach(row => {
+        if (row.currency === this.activeCurrency) {
+          transactionArray.push(row);
+        }
+      });
+      return transactionArray;
+    },
+  },
+  mounted() {
+    this.filterCurrencies();
+  },
+  methods: {
+    filterCurrencies() {
+      this.activeCurrency = this.currency;
+      this.currencies.push(this.activeCurrency);
+      this.deliveries.forEach(row => {
+        if (!this.currencies.includes(row.currency)) {
+          this.currencies.push(row.currency);
+        }
+      });
     },
   },
 };
