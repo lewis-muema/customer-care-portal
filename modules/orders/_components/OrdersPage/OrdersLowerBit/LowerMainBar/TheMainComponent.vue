@@ -1,10 +1,10 @@
 <template>
   <span v-if="freightContainer">
-    <TheOrderDetailsComponent :order="order" :rates="conversionRates" />
+    <TheOrderDetailsComponent :order="order" />
   </span>
   <span v-else>
-    <TheOrderActionsComponent :order="order" :rates="conversionRates" />
-    <TheOrderDetailsComponent :order="order" :rates="conversionRates" />
+    <TheOrderActionsComponent :order="order" />
+    <TheOrderDetailsComponent :order="order" />
   </span>
 </template>
 
@@ -32,9 +32,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      getExchangeRates: 'getExchangeRates',
-    }),
     freightContainer() {
       if (
         Object.prototype.hasOwnProperty.call(this.order, 'freight_details') &&
@@ -46,19 +43,6 @@ export default {
       }
       return false;
     },
-  },
-  watch: {
-    getExchangeRates(value) {
-      return (this.conversionRates = value);
-    },
-  },
-  mounted() {
-    this.setExchangeRates();
-  },
-  methods: {
-    ...mapActions({
-      setExchangeRates: 'setExchangeRates',
-    }),
   },
 };
 </script>
