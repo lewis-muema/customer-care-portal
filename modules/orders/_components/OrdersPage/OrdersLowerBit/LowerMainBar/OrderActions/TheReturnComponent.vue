@@ -11,15 +11,13 @@
         <tr>
           <td>One way:</td>
           <td
-            v-html="showCurrencyBasedAmounts(order, rates, paymentDetails.cost)"
+            v-html="showCurrencyBasedAmounts(order, paymentDetails.cost)"
           ></td>
         </tr>
         <tr>
           <td>Return:</td>
           <td
-            v-html="
-              showCurrencyBasedAmounts(order, rates, paymentDetails.return_cost)
-            "
+            v-html="showCurrencyBasedAmounts(order, paymentDetails.return_cost)"
           ></td>
         </tr>
       </tbody>
@@ -59,10 +57,6 @@ export default {
   props: {
     order: {
       type: Object,
-      required: true,
-    },
-    rates: {
-      type: Array,
       required: true,
     },
   },
