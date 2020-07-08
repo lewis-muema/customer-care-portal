@@ -26,7 +26,6 @@
           v-html="
             display_conditional_amounts(
               orderDetails,
-              rates,
               paymentDetails.extra_distance_amount,
             )
           "
@@ -40,7 +39,6 @@
           v-html="
             display_conditional_amounts(
               orderDetails,
-              rates,
               paymentDetails.waiting_time_amount,
             )
           "
@@ -58,10 +56,6 @@ export default {
   props: {
     order: {
       type: Object,
-      required: true,
-    },
-    rates: {
-      type: Array,
       required: true,
     },
   },
