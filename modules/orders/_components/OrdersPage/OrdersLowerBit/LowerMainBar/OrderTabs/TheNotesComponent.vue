@@ -20,7 +20,7 @@
       <div v-if="notesLog[0].msg === 'none'">
         <div class="">
           <div class="route-header">
-            PICKUP INSTRUCTIONS AT {{ notesData()[0].name }}
+            Pickup instructions at {{ notesData()[0].name }}
           </div>
           <div v-if="checkPickUpNotes(notesData()[0])">
             <div v-if="displayNotes(notesData()[0])" class="notes-text">
@@ -52,7 +52,7 @@
 
         <div v-for="(val, index) in notesData()" v-if="index > 0" :key="index">
           <div class="route-header">
-            DROP OFF INSTRUCTIONS AT {{ val.name }}
+            Drop off instructions at {{ val.name }}
           </div>
           <div v-if="checkPickUpNotes(val)">
             <div v-if="displayNotes(val)" class="notes-text">
