@@ -40,7 +40,7 @@
             </div>
           </td>
           <td>
-            <div class="form-group" v-if="!hide_amount">
+            <div class="form-group">
               <label>Amount</label>
 
               <div class="input-group">
@@ -243,7 +243,6 @@ export default {
     paymentMethod(newVal, oldVal) {
       if (this.paymentMethod === 9) {
         this.creditNote = true;
-        this.amount = 0;
       } else {
         this.creditNote = false;
       }
@@ -332,6 +331,7 @@ export default {
       this.paymentMethod === 9
         ? (action_payload = {
             reverse,
+            amount: this.amount,
             ref_no: this.refNoMethods.includes(this.paymentMethod)
               ? this.refNo
               : '',
