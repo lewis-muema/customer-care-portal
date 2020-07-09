@@ -40,7 +40,7 @@
             </div>
           </td>
           <td>
-            <div class="form-group">
+            <div class="form-group" v-if="!hide_amount">
               <label>Amount</label>
 
               <div class="input-group">
@@ -55,16 +55,7 @@
                     name="amount"
                     placeholder="Amount"
                     class="form-control"
-                    :class="{
-                      'is-invalid': submitted && $v.amount.$error,
-                    }"
                   />
-                </div>
-                <div
-                  v-if="submitted && !$v.amount.required"
-                  class="invalid-feedback"
-                >
-                  Amount is required
                 </div>
               </div>
             </div>
@@ -120,30 +111,6 @@
             </div>
           </td>
         </tr>
-        <tr>
-          <td class="biz-units-outer">
-            <div class="form-group actions" v-if="paymentOption === '2'">
-              <label>Invoice Number</label>
-              <input
-                type="text"
-                v-model="invoiceNumber"
-                :id="invoiceNumber"
-                name="Invoice Number"
-                placeholder="invoiceNumber"
-                class="form-control"
-                :class="{
-                  'is-invalid': submitted && $v.invoiceNumber.$error,
-                }"
-              />
-              <div
-                v-if="submitted && !$v.invoiceNumber.minLength"
-                class="invalid-feedback"
-              >
-                Invoice Number should not be less than 18 characters
-              </div>
-            </div>
-          </td>
-        </tr>
         <tr v-if="!isChargeEntity">
           <td v-if="refNoMethods.includes(paymentMethod)">
             <div class="form-group">
@@ -159,6 +126,36 @@
               <div :class="`invalid-feedback`">
                 Payment ID is required
               </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td v-if="creditNote">
+            <div class="form-group bill-check">
+              <input
+                value="1"
+                type="checkbox"
+                class="chargeVAT"
+                @click="check($event)"
+                v-model="isChargeVAT"
+                checked
+              />
+              <label for="" class="charge_vat--label"> Charge VAT </label>
+            </div>
+          </td>
+
+          <td>
+            <div class="form-group">
+              <label>Order Number</label>
+              <input
+                type="text"
+                v-model="order_no"
+                :id="order_no"
+                name="order_no"
+                placeholder="Order Number"
+                class="form-control"
+              />
             </div>
           </td>
         </tr>
@@ -184,7 +181,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import { required, minLength } from 'vuelidate/lib/validators';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'ThePaymentComponent',
@@ -202,7 +199,6 @@ export default {
       refNo: '',
       hide: '',
       narrative: '',
-      invoiceNumber: '',
       submitted: false,
       refNoMethods: [1, 4],
       businessUnits: [
@@ -212,14 +208,17 @@ export default {
       ],
       businessUnit: '',
       isChargeEntity: false,
+      creditNote: false,
+      isChargeVAT: false,
+      hide_amount: false,
+      order_no: '',
     };
   },
   validations: {
     paymentMethod: { required },
-    amount: { required },
+    // amount: { required },
     narrative: { required },
     businessUnit: { required },
-    invoiceNumber: { minLength: minLength(18) },
   },
   computed: {
     currency() {
@@ -229,8 +228,21 @@ export default {
     actionUser() {
       return this.session.payload.data.name;
     },
-    paymentOption() {
-      return this.user.user_details.payment_option;
+  },
+
+  watch: {
+    paymentMethod(newVal, oldVal) {
+      if (this.paymentMethod === 9) {
+        this.creditNote = true;
+      } else {
+        this.creditNote = false;
+      }
+    },
+
+    order_no(newVal, oldVal) {
+      this.order_no.length > 0
+        ? (this.hide_amount = true)
+        : (this.hide_amount = false);
     },
   },
 
@@ -305,23 +317,39 @@ export default {
       const action_id = this.isChargeEntity ? 27 : 7;
       const vat_exempt = this.user.cop_details.vat_exempt;
 
-      let action_payload = {
-        reverse,
-        amount: this.amount,
-        ref_no: this.refNoMethods.includes(this.paymentMethod)
-          ? this.refNo
-          : '',
-        pay_method: this.paymentMethod,
-        cop_id: copID,
-        user_id: userID,
-        reason: this.narrative,
-        currency: this.currency,
-        business_unit: parseInt(this.businessUnit, 10),
-        vat_exempt: vat_exempt ? 1 : 0,
-      };
-      if (this.paymentOption === '2') {
-        action_payload.invoiceNumber = this.invoiceNumber;
-      }
+      let action_payload;
+
+      this.paymentMethod === 9
+        ? (action_payload = {
+            reverse,
+            ref_no: this.refNoMethods.includes(this.paymentMethod)
+              ? this.refNo
+              : '',
+            pay_method: this.paymentMethod,
+            cop_id: copID,
+            user_id: userID,
+            reason: this.narrative,
+            currency: this.currency,
+            business_unit: parseInt(this.businessUnit, 10),
+            vat_exempt: vat_exempt ? 1 : 0,
+            order_no: this.order_no,
+            is_VAT: this.isChargeVAT,
+          })
+        : (action_payload = {
+            reverse,
+            amount: this.amount,
+            ref_no: this.refNoMethods.includes(this.paymentMethod)
+              ? this.refNo
+              : '',
+            pay_method: this.paymentMethod,
+            cop_id: copID,
+            user_id: userID,
+            reason: this.narrative,
+            currency: this.currency,
+            business_unit: parseInt(this.businessUnit, 10),
+            vat_exempt: vat_exempt ? 1 : 0,
+          });
+
       if (this.isChargeEntity) {
         action_payload = {
           amount: this.amount,
@@ -386,5 +414,9 @@ export default {
 }
 .amount-input {
   width: 83% !important;
+}
+.chargeVAT {
+  margin-top: 26px;
+  margin-left: 11px;
 }
 </style>
