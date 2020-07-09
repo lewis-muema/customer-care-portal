@@ -335,7 +335,7 @@ export default {
               reason: this.narrative,
               currency: this.currency,
               business_unit: parseInt(this.businessUnit, 10),
-              order_no: this.order_no,
+              order_number: this.order_no,
               is_VAT: this.isChargeVAT,
             }
           : {

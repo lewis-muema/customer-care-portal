@@ -342,7 +342,7 @@ export default {
             currency: this.currency,
             business_unit: parseInt(this.businessUnit, 10),
             vat_exempt: vat_exempt ? 1 : 0,
-            order_no: this.order_no,
+            order_number: this.order_no,
             is_VAT: this.isChargeVAT,
           })
         : (action_payload = {
