@@ -54,7 +54,16 @@
                     name="amount"
                     placeholder="Amount"
                     class="form-control"
+                    :class="{
+                      'is-invalid': submitted && $v.amount.$error,
+                    }"
                   />
+                </div>
+                <div
+                  v-if="submitted && !$v.amount.required"
+                  class="invalid-feedback"
+                >
+                  Amount is required
                 </div>
               </div>
             </div>
@@ -213,7 +222,7 @@ export default {
   },
   validations: {
     paymentMethod: { required },
-    // amount: { required },
+    amount: { required },
     narrative: { required },
     businessUnit: { required },
   },
@@ -230,6 +239,7 @@ export default {
     paymentMethod(newVal, oldVal) {
       if (this.paymentMethod === 9) {
         this.creditNote = true;
+        this.amount = 0;
       } else {
         this.creditNote = false;
       }
