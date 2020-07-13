@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="display_billing_info" style="margin-left: 2%;">
+    <div v-if="billingState()" class="biz-billing-outer">
       <p class="info">
         <i class="fa fa-exclamation-circle info-loader"></i>
         {{ billingInfo() }}
@@ -305,6 +305,9 @@ export default {
     actionUser() {
       return this.session.payload.data.name;
     },
+    permissions() {
+      return JSON.parse(this.session.payload.data.privilege);
+    },
     userType() {
       const arr = this.accountTypes;
       const index = arr
@@ -361,6 +364,16 @@ export default {
       if (e.target.checked) {
         return (this.checked = e.target.value);
       }
+    },
+    billingState() {
+      let state = true;
+      if (this.permissions.approve_cancellation_billing) {
+        state = false;
+      } else {
+        state = this.display_billing_info;
+      }
+
+      return state;
     },
     searchedRider(riderData) {
       return (this.rider = riderData.riderID);
@@ -501,7 +514,10 @@ export default {
     },
     billingStatus() {
       let disabled = false;
-      if (this.userRb === '0' || this.userRb > '0') {
+      if (
+        (this.userRb === '0' || this.userRb > '0') &&
+        !this.permissions.approve_cancellation_billing
+      ) {
         disabled = true;
       }
       return disabled;
@@ -586,5 +602,8 @@ export default {
 }
 .amount-align {
   margin-left: 5%;
+}
+.biz-billing-outer {
+  margin-left: 2%;
 }
 </style>
