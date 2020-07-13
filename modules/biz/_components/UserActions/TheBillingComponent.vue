@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="billingState()" class="biz-billing-outer">
+    <div v-if="display_billing_info" class="biz-billing-outer">
       <p class="info">
         <i class="fa fa-exclamation-circle info-loader"></i>
         {{ billingInfo() }}
@@ -365,16 +365,6 @@ export default {
         return (this.checked = e.target.value);
       }
     },
-    billingState() {
-      let state = true;
-      if (this.permissions.approve_cancellation_billing) {
-        state = false;
-      } else {
-        state = this.display_billing_info;
-      }
-
-      return state;
-    },
     searchedRider(riderData) {
       return (this.rider = riderData.riderID);
     },
@@ -486,8 +476,12 @@ export default {
     },
     handleUserData() {
       this.paymentOption = this.user.user_details.payment_option;
-      if (this.paymentOption === '2') {
+      if (
+        this.paymentOption === '2' ||
+        this.permissions.approve_cancellation_billing
+      ) {
         this.display_billing_info = false;
+        this.max_amount = '';
       } else {
         if (this.user.payments.length > 0) {
           const amount = this.user.payments[0].rb.toString().replace('-', '');
