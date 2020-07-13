@@ -18,6 +18,9 @@
           <div class="mega" v-if="userType === 'rewards'">
             <RewardsView />
           </div>
+          <div class="mega" v-if="userType === 'refund'">
+            <RefundsView />
+          </div>
         </div>
       </div>
     </div>
@@ -35,6 +38,7 @@ export default {
     TheInvoiceView: () =>
       import('~/modules/invoice/_components/TheInvoiceView'),
     RewardsView: () => import('~/modules/rewards/_components/RewardsView'),
+    RefundsView: () => import('~/modules/refunds/_components/RefundsView'),
   },
   data() {
     return {
@@ -64,7 +68,11 @@ export default {
       this.searchKey += 1;
     },
     setBackground() {
-      if (this.userType === 'invoice' || this.userType === 'rewards') {
+      if (
+        this.userType === 'invoice' ||
+        this.userType === 'rewards' ||
+        this.userType === 'refund'
+      ) {
         return 'invoiceBackground';
       }
       return '';
