@@ -124,52 +124,53 @@
                 </div>
                 <TheTrackerComponent
                   v-if="
-                    ActiveTab === 'gps' &&
-                      (!completeStatus() && !cancelStatus())
+                    ActiveTab === 'gps' && !completeStatus() && !cancelStatus()
                   "
                   :order="order"
                 />
                 <AuxilliaryServices
                   v-if="
                     ActiveTab === 'finances' &&
-                      (!completeStatus() &&
-                        !cancelStatus() &&
-                        hasFreightPermissions())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      hasFreightPermissions()
                   "
                   :order="order"
                 />
                 <AssignRider
                   v-if="
                     ActiveTab === 'assign' &&
-                      (!completeStatus() &&
-                        !cancelStatus() &&
-                        hasFreightPermissions())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      hasFreightPermissions()
                   "
                   :order="order"
                 />
                 <OrderStatuses
                   v-if="
                     ActiveTab === 'status' &&
-                      (!completeStatus() &&
-                        !cancelStatus() &&
-                        hasFreightPermissions())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      hasFreightPermissions()
                   "
                   :order="order"
                 />
                 <TheReallocateComponent
                   v-if="
                     ActiveTab === 'reallocate' &&
-                      (order.order_details.confirm_status !== 0 &&
-                        !completeStatus() &&
-                        !cancelStatus() &&
-                        canReallocate())
+                      order.order_details.confirm_status !== 0 &&
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      canReallocate()
                   "
                   :order="order"
                 />
                 <TheCancelComponent
                   v-if="
                     ActiveTab === 'cancel' &&
-                      (!completeStatus() && !cancelStatus() && canCancel())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      canCancel()
                   "
                   :order="order"
                 />

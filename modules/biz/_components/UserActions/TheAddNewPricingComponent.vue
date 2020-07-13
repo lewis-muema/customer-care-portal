@@ -73,12 +73,12 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
 import Mixpanel from 'mixpanel';
+import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import LocationPricingComponent from './CustomPricing/LocationPricingComponent.vue';
 import DistancePricingComponent from './CustomPricing/DistancePricingComponent.vue';
 import ContainerPricingComponent from './CustomPricing/ContainerPricingComponent.vue';
 import DailyRatePricingComponent from './CustomPricing/DailyRatePricingComponent.vue';
 import MileagePricingComponent from './CustomPricing/MileagePricingComponent.vue';
-import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 const pricingModels = [
   { model_id: 1, pricing_model_name: 'Distance based pricing(Customised)' },
