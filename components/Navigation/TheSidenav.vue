@@ -84,6 +84,15 @@
               ><i class="fa fa-bars"></i> <span> Nps </span></nuxt-link
             >
           </li>
+          <li class="treeview" v-if="permissions.approve_permit_refund">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/refund"
+              @click="showModal('refund', $event)"
+              ><i class="fa fa-handshake-o"></i>
+              <span> Permit Refund </span>
+            </a>
+          </li>
 
           <li id="offline_2" class="hidden">
             <a href="#"
