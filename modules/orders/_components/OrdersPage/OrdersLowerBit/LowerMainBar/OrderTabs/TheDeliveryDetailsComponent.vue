@@ -4,7 +4,7 @@
       No docs found for this Delivery
     </div>
     <div v-else class="holder">
-      <div class="form-inline" v-for="img in riderDeliverImg" :key="img.index">
+      <div class="form-inline" v-for="img in riderImages" :key="img.index">
         <div class="delivery-images__header col-md-12">
           <h3 class="text-center">
             <strong>{{ ` Delivery at waypoint ${img.waypoint_no} ` }}</strong>
@@ -112,6 +112,17 @@ export default {
     ...mapState(['userData']),
     actionUser() {
       return this.session.payload.data.name;
+    },
+    riderImages() {
+      const riderDeliverImg = this.riderDeliverImg;
+      let filtered = riderDeliverImg;
+      if (riderDeliverImg.length > 1) {
+        // eslint-disable-next-line func-names
+        filtered = riderDeliverImg.filter(function(el) {
+          return el.images.length !== 0;
+        });
+      }
+      return filtered;
     },
   },
   methods: {
