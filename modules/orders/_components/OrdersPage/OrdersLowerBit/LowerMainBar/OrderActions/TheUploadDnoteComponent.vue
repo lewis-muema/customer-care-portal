@@ -312,6 +312,8 @@ export default {
       if (!notify) {
         this.loading = false;
         return;
+      } else {
+        await this.logAction();
       }
     },
     async logAction() {
