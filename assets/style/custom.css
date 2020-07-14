@@ -1610,3 +1610,15 @@ color: #000000;
   color: #212529;
   background-color: rgba(0,0,0,.075) !important;
 }
+.decline-refunds-pop-up > div > div > div.el-dialog__header{
+  padding-top: 0 !important;
+}
+.decline-refunds-pop-up > div > div > div.el-dialog__body{
+  padding-top: 0 !important;
+}
+.updateDeclineReasonsDialog > div > div.el-dialog__body{
+  padding-top: 0% !important;
+}
+.updateDeclineReasonsDialog > div > div.el-dialog__header{
+  padding: 0px 20px 10px !important;
+}
