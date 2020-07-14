@@ -27,7 +27,7 @@
                 {{
                   getFormattedDate(
                     pending_refund_logs[scope.$index]['date'],
-                    'DD/MM/YYYY ',
+                    'MMMM Do YYYY',
                   )
                 }}
               </template>
@@ -61,7 +61,7 @@
       <div v-else>
         <div class="body-box col-md-12 table-content refunds-dialog">
           <div class="inner-dialog">
-            <div class="" style="">
+            <div class="">
               <i class="el-icon-back edit-back" @click="one_step_back" />
             </div>
             <div class="drag-image">
@@ -91,7 +91,7 @@
                     Submission Date
                   </p>
                   <p class="refund-text">
-                    {{ getFormattedDate(requestViewData.date, 'DD/MM/YYYY ') }}
+                    {{ getFormattedDate(requestViewData.date, 'MMMM Do YYYY') }}
                   </p>
                 </div>
               </div>
@@ -128,7 +128,7 @@
                   </p>
                   <p class="refund-text">{{ requestViewData.order_no }}</p>
                 </div>
-                <div class="request-refund-inputs" style="padding-bottom: 5%;">
+                <div class="request-refund-inputs refund-documents-outer">
                   <p class="request-refund-label">
                     Documents
                   </p>
@@ -617,5 +617,8 @@ export default {
   margin-top: .25rem;
   font-size: 100%;
   color: #dc3545;
+}
+.refund-documents-outer{
+  padding-bottom: 5%;
 }
 </style>
