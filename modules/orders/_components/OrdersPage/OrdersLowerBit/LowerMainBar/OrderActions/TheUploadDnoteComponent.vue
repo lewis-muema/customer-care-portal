@@ -127,7 +127,7 @@ export default {
   computed: {
     ...mapState(['userData', 'config']),
     signedBy() {
-      return `Sendy Staff - ${this.userData.payload.data.name}`;
+      return `Sendy Staff - ${this.userData.payload.data.name} - upload`;
     },
     userPhone() {
       return this.userData.payload.data.phone;

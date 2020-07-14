@@ -16,7 +16,13 @@
           <div class="signature-image">
             <span v-if="isSendyStaff(img.name)" class="signature-text">
               <br />
-              <h5>Order completed from cc portal</h5>
+              <h5 v-if="!isDnoteUpload(img.name)">
+                Order completed from cc portal
+              </h5>
+              <h5 v-if="isDnoteUpload(img.name)">
+                Dnote(s) uploaded from cc portal by
+                <strong>{{ trimString(img.name) }}</strong>
+              </h5>
             </span>
             <span v-else>
               <img
@@ -30,10 +36,13 @@
         </div>
         <div class="col-md-4">
           <strong> Order Signed By: </strong>
-          <span class="">{{ img.name }}</span
+          <span class="">
+            {{ isDnoteUpload(img.name) ? 'Not Set' : img.name }} </span
           ><br />
           <strong> Phone Number:</strong>
-          <span class="">{{ img.phone_no }}</span>
+          <span class="">
+            {{ isDnoteUpload(img.name) ? 'Not Set' : img.phone_no }}
+          </span>
         </div>
         <div class="col-md-12">
           <h5>Delivery Notes</h5>
@@ -137,6 +146,10 @@ export default {
       this.modalImage = image;
       $(`#${this.orderNo}`).modal('show');
       e.preventDefault();
+    },
+    trimString(string) {
+      const new_string = string.replace('- upload', '');
+      return new_string;
     },
   },
 };

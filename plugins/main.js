@@ -108,6 +108,13 @@ Vue.mixin({
       }
       return false;
     },
+    isDnoteUpload(name) {
+      if (name) {
+        const isUpload = name.includes('upload');
+        return isUpload;
+      }
+      return false;
+    },
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
