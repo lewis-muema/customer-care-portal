@@ -15,7 +15,13 @@
         </span>
         <h3 class="timeline-header no-border">
           {{ deliveryLog.description }}
-          <span v-if="deliveryLog.log_type === 4 && isSendyStaff(signedByName)">
+          <span
+            v-if="
+              deliveryLog.log_type === 4 &&
+                isSendyStaff(signedByName) &&
+                !isDnoteUpload(signedByName)
+            "
+          >
             <strong
               >( Completion done from CC portal by {{ signedByName }})</strong
             >
