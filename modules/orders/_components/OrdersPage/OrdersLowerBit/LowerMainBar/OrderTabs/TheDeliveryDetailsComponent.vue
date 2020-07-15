@@ -4,7 +4,7 @@
       No docs found for this delivery
     </div>
     <div v-else class="holder">
-      <div class="form-inline" v-for="img in riderDeliverImg" :key="img.index">
+      <div class="form-inline" v-for="img in riderImages" :key="img.index">
         <div class="delivery-images__header col-md-12">
           <h3 class="text-center">
             <strong>{{ ` Delivery at waypoint ${img.waypoint_no} ` }}</strong>
@@ -16,7 +16,13 @@
           <div class="signature-image">
             <span v-if="isSendyStaff(img.name)" class="signature-text">
               <br />
-              <h5>Order completed from cc portal</h5>
+              <h5 v-if="!isDnoteUpload(img.name)">
+                Order completed from cc portal
+              </h5>
+              <h5 v-if="isDnoteUpload(img.name)">
+                Dnote(s) uploaded from cc portal by
+                <strong>{{ trimString(img.name) }}</strong>
+              </h5>
             </span>
             <span v-else>
               <img
@@ -30,12 +36,21 @@
         </div>
         <div class="col-md-4">
           <strong> Order Signed By: </strong>
-          <span class="">{{ img.name !== '' ? img.name : 'Not Set' }}</span
-          ><br />
+          <span v-if="!isDnoteUpload" class="">{{
+            img.name !== '' ? img.name : 'Not Set'
+          }}</span>
+          <span v-if="isDnoteUpload" class="">
+            Not Set
+          </span>
+
+          <br />
           <strong> Phone Number:</strong>
-          <span class="">{{
+          <span v-if="!isDnoteUpload" class="">{{
             img.phone_no !== '' ? img.phone_no : 'Not Set'
           }}</span>
+          <span v-if="isDnoteUpload" class="">
+            Not Set
+          </span>
         </div>
         <div class="col-md-12">
           <h5>Delivery Notes</h5>
@@ -115,6 +130,17 @@ export default {
     actionUser() {
       return this.session.payload.data.name;
     },
+    riderImages() {
+      const riderDeliverImg = this.riderDeliverImg;
+      let filtered = riderDeliverImg;
+      if (riderDeliverImg.length > 1) {
+        // eslint-disable-next-line func-names
+        filtered = riderDeliverImg.filter(function(el) {
+          return el.images.length !== 0;
+        });
+      }
+      return filtered;
+    },
   },
   methods: {
     ...mapMutations({
@@ -128,6 +154,10 @@ export default {
       this.modalImage = image;
       $(`#${this.orderNo}`).modal('show');
       e.preventDefault();
+    },
+    trimString(string) {
+      const new_string = string.replace('- upload', '');
+      return new_string;
     },
   },
 };

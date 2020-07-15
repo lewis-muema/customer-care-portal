@@ -110,6 +110,14 @@ Vue.mixin({
         : this.s3Path;
       return isStaff;
     },
+    isDnoteUpload(name) {
+      if (name) {
+        const isUpload = name.includes('upload');
+        return isUpload;
+      }
+      return false;
+    },
+
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
