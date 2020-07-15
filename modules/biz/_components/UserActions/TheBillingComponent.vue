@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="display_billing_info" style="margin-left: 2%;">
+    <div v-if="display_billing_info" class="biz-billing-outer">
       <p class="info">
         <i class="fa fa-exclamation-circle info-loader"></i>
         {{ billingInfo() }}
@@ -305,6 +305,9 @@ export default {
     actionUser() {
       return this.session.payload.data.name;
     },
+    permissions() {
+      return JSON.parse(this.session.payload.data.privilege);
+    },
     userType() {
       const arr = this.accountTypes;
       const index = arr
@@ -473,8 +476,12 @@ export default {
     },
     handleUserData() {
       this.paymentOption = this.user.user_details.payment_option;
-      if (this.paymentOption === '2') {
+      if (
+        this.paymentOption === '2' ||
+        this.permissions.approve_cancellation_billing
+      ) {
         this.display_billing_info = false;
+        this.max_amount = '';
       } else {
         if (this.user.payments.length > 0) {
           const amount = this.user.payments[0].rb.toString().replace('-', '');
@@ -501,7 +508,10 @@ export default {
     },
     billingStatus() {
       let disabled = false;
-      if (this.userRb === '0' || this.userRb > '0') {
+      if (
+        (this.userRb === '0' || this.userRb > '0') &&
+        !this.permissions.approve_cancellation_billing
+      ) {
         disabled = true;
       }
       return disabled;
@@ -586,5 +596,8 @@ export default {
 }
 .amount-align {
   margin-left: 5%;
+}
+.biz-billing-outer {
+  margin-left: 2%;
 }
 </style>

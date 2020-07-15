@@ -217,6 +217,9 @@ module.exports = {
      */
 
     extend(config, ctx) {},
+    filenames: {
+      chunk: ({ isDev }) => (isDev ? '[name].js' : '[chunkhash].js'),
+    },
     transpile: ['vue-google-autocomplete'],
   },
 

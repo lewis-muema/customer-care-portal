@@ -23,6 +23,8 @@ export default {
   computed: {
     ticketData() {
       const userName = this.order.client_details.name;
+      const length = 39;
+      const trimmedName = userName.substring(0, length);
       const email =
         this.order.client_details.email !== null
           ? this.order.client_details.email
@@ -32,7 +34,7 @@ export default {
         id: this.order.order_details.order_no,
         title: this.order.order_details.order_no,
         customer: {
-          firstName: userName,
+          firstName: trimmedName,
           lastName: '.',
           email: email.trim(),
           phone: this.order.client_details.phone_no,
