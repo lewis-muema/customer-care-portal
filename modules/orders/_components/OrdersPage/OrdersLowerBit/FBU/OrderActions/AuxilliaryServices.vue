@@ -11,6 +11,15 @@
       >
         Fuel Advance
       </p>
+      <p
+        class="advance-tabs"
+        :class="
+          tab === 'products' ? 'active-services-tab' : 'inactive-services-tab'
+        "
+        @click="switchTab('products')"
+      >
+        Fuel Station Products
+      </p>
     </div>
     <div class="finances-tab" v-if="tab === 'fuel'">
       <div class="auxilliary-inputs">
@@ -33,6 +42,53 @@
               </select>
             </span>
             <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Select Product</p>
+              <select
+                name="fuel-stations"
+                id=""
+                class="freight-assign-rider-buttons assign_inputs currency-input"
+                v-model="address"
+              >
+                <option value="">--</option>
+                <option value="Maanzoni Kyumbi / Machakos"
+                  >Maanzoni Kyumbi / Machakos</option
+                >
+                <option value="Athi river-mombasa road / Mavoko"
+                  >Athi river-mombasa road / Mavoko</option
+                >
+                <option value="Malaba / Malaba">Malaba / Malaba</option>
+                <option value="Jomvu Area, Bonje hills / Mombasa"
+                  >Jomvu Area, Bonje hills / Mombasa</option
+                >
+                <option value="Thika Road,Kahawa,Nairobi / Nairobi"
+                  >Thika Road,Kahawa,Nairobi / Nairobi</option
+                >
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Fuel Type</p>
+              <select
+                v-model="fuelType"
+                class="freight-assign-rider-buttons assign_inputs"
+                placeholder="Type here"
+              >
+                <option value="">--</option>
+                <option value="petrol">Petrol</option>
+                <option value="diesel">Diesel</option>
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Total Litres</p>
+              <input
+                v-model="litres"
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                placeholder="Litres"
+              />
+            </span>
+          </span>
+          <span>
+            <span class="labeled-inputs">
               <p class="no-margin fuel-input-labels">Currency</p>
               <select
                 name="fuel-stations"
@@ -45,17 +101,6 @@
                 }}</option>
               </select>
             </span>
-            <span class="labeled-inputs">
-              <p class="no-margin fuel-input-labels">Notes (Optional)</p>
-              <input
-                v-model="Notes"
-                type="text"
-                class="freight-assign-rider-buttons assign_inputs"
-                placeholder="Type here"
-              />
-            </span>
-          </span>
-          <span>
             <span class="labeled-inputs">
               <p class="no-margin fuel-input-labels">Pump Rate</p>
               <input
@@ -75,12 +120,12 @@
               />
             </span>
             <span class="labeled-inputs">
-              <p class="no-margin fuel-input-labels">Total Litres</p>
+              <p class="no-margin fuel-input-labels">Notes (Optional)</p>
               <input
-                v-model="litres"
+                v-model="Notes"
                 type="text"
                 class="freight-assign-rider-buttons assign_inputs"
-                placeholder="Litres"
+                placeholder="Type here"
               />
             </span>
           </span>
@@ -154,6 +199,96 @@
         </div>
       </div>
     </div>
+    <div class="finances-tab" v-if="tab === 'products'">
+      <div class="auxilliary-inputs">
+        <div class="inputs-container">
+          <span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Fueling Stations</p>
+              <select
+                id="stations"
+                name="fuel-stations"
+                class="freight-assign-rider-buttons assign_inputs currency-input"
+                v-model="selectedStation"
+              >
+                <option
+                  :value="station.id"
+                  v-for="(station, index) in stations"
+                  :key="index"
+                  >{{ station.name }}</option
+                >
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Select Product</p>
+              <select
+                name="fuel-stations"
+                id=""
+                class="freight-assign-rider-buttons assign_inputs currency-input"
+                v-model="productName"
+              >
+                <option value="">--</option>
+                <option
+                  v-for="(product, index) in products"
+                  :key="index"
+                  :value="product.name"
+                  >{{ product.name }}</option
+                >
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Product Type</p>
+              <select
+                name="fuel-stations"
+                id=""
+                class="freight-assign-rider-buttons assign_inputs currency-input"
+                v-model="productType"
+                :disabled="filteredProduct[0] === 'n/a'"
+              >
+                <option value="" v-if="filteredProduct[0] !== 'n/a'">--</option>
+                <option
+                  v-for="(type, index) in filteredProduct"
+                  :key="index"
+                  :value="type"
+                  >{{ type }}</option
+                >
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Quantity</p>
+              <select
+                name="fuel-stations"
+                id=""
+                class="freight-assign-rider-buttons assign_inputs currency-input"
+                v-model="productQuantity"
+                :disabled="productQuantity === 'n/a'"
+              >
+                <option :value="productQuantity">{{ productQuantity }}</option>
+              </select>
+            </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Cost</p>
+              <input
+                v-model="Notes"
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                placeholder="Type here"
+              />
+            </span>
+          </span>
+          <button
+            :class="
+              activeButtonStatus
+                ? 'auxillary-save-button__active'
+                : 'auxillary-save-button__inactive'
+            "
+            @click="submitFuelAdvance(true)"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -183,6 +318,34 @@ export default {
       sendyTakeAmount: 0,
       history: [],
       Notes: '',
+      fuelType: '',
+      address: '',
+      products: [
+        {
+          name: 'Oils',
+          types: ['Engine oil', 'Hydraulic oil', 'Transmission oil', 'Grease'],
+          quantity: 'Litres',
+        },
+        {
+          name: 'Lubricants',
+          types: ['n/a'],
+          quantity: 'Litres',
+        },
+        {
+          name: 'Car wash service',
+          types: ['n/a'],
+          quantity: 'n/a',
+        },
+        {
+          name: 'Vehicle service',
+          types: ['Interim', 'Full', 'Major'],
+          quantity: 'n/a',
+        },
+      ],
+      productName: '',
+      productType: '',
+      productQuantity: 'n/a',
+      filteredProduct: [],
     };
   },
   computed: {
@@ -223,6 +386,19 @@ export default {
       if (this.activeButtonStatus) {
         this.submitFuelAdvance(false);
       }
+    },
+    productName(data) {
+      const singleProduct = this.products.filter(product => {
+        return product.name === data;
+      });
+      this.productQuantity =
+        singleProduct.length > 0 ? singleProduct[0].quantity : 'n/a';
+      this.filteredProduct =
+        singleProduct.length > 0 ? singleProduct[0].types : [];
+      this.productType =
+        this.filteredProduct.length > 0 && this.filteredProduct[0] === 'n/a'
+          ? 'n/a'
+          : '';
     },
     litres(data) {
       if (this.sendyTakeAmount === '--' || this.sendyTakeAmount < 0) {
@@ -389,7 +565,7 @@ export default {
   width: max-content;
 }
 .advance-tabs {
-  width: 120px;
+  width: 150px;
   margin: 0;
   height: 45px;
   text-align: center;
@@ -400,7 +576,7 @@ export default {
 }
 .labeled-inputs {
   display: inline-grid;
-  width: 33%;
+  width: 24%;
 }
 .fuel-input-labels {
   margin-left: 5px !important;
@@ -441,7 +617,7 @@ export default {
   line-height: 14px;
 }
 .assign_inputs {
-  width: auto;
+  width: 96%;
 }
 .history-header {
   color: #1b7fc3;
