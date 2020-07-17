@@ -99,14 +99,16 @@ Vue.mixin({
       updateClass: 'setActionClass',
     }),
     isSendyStaff(name) {
-      if (name) {
-        const isStaff = name.includes('Sendy Staff -');
-        this.s3Path = isStaff
-          ? 'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image/'
-          : this.s3Path;
-        return isStaff;
+      let isStaff;
+      if (name === null || name === '') {
+        isStaff = false;
+      } else {
+        isStaff = name.includes('Sendy Staff -');
       }
-      return false;
+      this.s3Path = isStaff
+        ? 'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image/'
+        : this.s3Path;
+      return isStaff;
     },
     isDnoteUpload(name) {
       if (name) {
