@@ -15,22 +15,27 @@ const PricingConfigsMxn = {
       pacInput1: '',
       pacInput2: '',
       defaultCurrency: '',
+      secondaryCurrency: '',
       vendorTypes: [],
       tableData: [],
       customPricingDetails: [],
+      dedicatedPricingDetails: [],
       distancePricingTableData: [],
       locationPricingTableData: [],
+      containerPricingTableData: [],
     };
   },
   mounted() {
     this.copId = this.user.user_details.cop_id;
     this.defaultCurrency = this.user.user_details.default_currency;
+    this.secondaryCurrency = this.user.user_details.secondary_currency;
     this.adminId = parseInt(this.session.payload.data.admin_id, 10);
   },
   computed: {
     ...mapGetters({
       configuredDistancePricing: 'getConfiguredDistancePricing',
       configuredLocationPricing: 'getConfiguredLocationPricing',
+      configuredDedicatedPricing: 'getConfiguredDedicatedPricing',
       getSessionData: 'getSession',
       pendingLocationPricing: 'getPendingLocationPricing',
       pendingDistancePricing: 'getPendingDistancePricing',
@@ -41,19 +46,25 @@ const PricingConfigsMxn = {
       request_pending_distance_pricing_data:
         'request_pending_distance_pricing_data',
       request_pricing_data: 'request_pricing_data',
+      pending_dedicated_pricing_data: 'pending_dedicated_pricing_data',
       request_vendor_types: 'request_vendor_types',
       send_mail_to_admin: 'send_mail_to_admin',
+      log_action: 'log_action',
     }),
     async getDistancePricingConfigs() {
       const notification = [];
       let actionClass = '';
+      const currenciesArray = [this.defaultCurrency];
+      if (this.secondaryCurrency) {
+        currenciesArray.push(this.secondaryCurrency);
+      }
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
-          currency: this.defaultCurrency,
+          currency: currenciesArray,
           status: ['Pending'],
           admin_id: this.adminId,
         },
@@ -64,9 +75,11 @@ const PricingConfigsMxn = {
           this.customPricingDetails = data.custom_pricing_details;
           this.distancePricingTableData = this.pendingDistancePricing;
           this.locationPricingTableData = this.pendingLocationPricing;
+          this.containerPricingTableData = this.pendingContainerPricing;
         } else {
           this.distancePricingTableData = [];
           this.locationPricingTableData = [];
+          this.containerPricingTableData = [];
         }
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
@@ -78,13 +91,17 @@ const PricingConfigsMxn = {
     async fetchCustomDistancePricingData() {
       const notification = [];
       let actionClass = '';
+      const currenciesArray = [this.defaultCurrency];
+      if (this.secondaryCurrency) {
+        currenciesArray.push(this.secondaryCurrency);
+      }
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
-          currency: this.defaultCurrency,
+          currency: currenciesArray,
           status: ['Pending', 'Active'],
           get_object_id: true,
         },
@@ -106,6 +123,31 @@ const PricingConfigsMxn = {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
+    async fetchDedicatedPricingData() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'pricing/price_config/get_dedicated_price_configs',
+        apiKey: false,
+        params: {
+          cop_id: this.copId,
+        },
+      };
+      try {
+        const data = await this.pending_dedicated_pricing_data(payload);
+        if (data.status) {
+          this.dedicatedPricingDetails = data.data;
+        } else {
+          this.dedicatedPricingDetails = [];
+        }
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     async fetchVendorTypes(countryCode) {
       const notification = [];
       let actionClass = '';
@@ -114,8 +156,9 @@ const PricingConfigsMxn = {
         endpoint: 'vendors/types',
         apiKey: false,
         params: {
-          pickup_country_code: countryCode,
-          dropoff_country_code: countryCode,
+          pickup_country_code: this.user.user_details.country_code,
+          dropoff_country_code: this.user.user_details.country_code,
+          currency: countryCode,
         },
       };
       try {
@@ -178,8 +221,10 @@ const PricingConfigsMxn = {
           to: '',
           status: '',
           city: '',
+          distance: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
         };
         this.tableData.push(locationPricingRow);
       } else if (model === 'Container') {
@@ -218,8 +263,10 @@ const PricingConfigsMxn = {
           empty_container_destination: '',
           status: '',
           city: '',
+          distance: '',
           order_amount: 0,
           rider_amount: 0,
+          insurance: 0,
           container_weight_tonnes: '',
           container_size_feet: '',
           container_errand_type: 'drop_off',
@@ -227,7 +274,7 @@ const PricingConfigsMxn = {
         this.tableData.push(ContainerPricingRow);
       }
     },
-    async sendEmailNotification(email, name) {
+    async sendEmailNotification(email, name, action) {
       const notification = [];
       let actionClass = '';
       const crmName = this.getSessionData.payload.data.name;
@@ -241,14 +288,14 @@ const PricingConfigsMxn = {
           name,
           email,
           cop_id: copId,
-          message: `${crmName} has created a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
+          message: `${crmName} has ${action} a custom pricing for ${copName}. Kindly review and approve the custom pricing.`,
           subject: `Requires approval - Custom pricing for ${copName}`,
         },
       };
       try {
         const data = await this.send_mail_to_admin(payload);
         if (data.status) {
-          notification.push('Custom price configs created successfully.');
+          notification.push(`Custom price configs ${action} successfully.`);
           actionClass = this.display_order_action_notification(data.status);
         } else {
           notification.push(data.error);
@@ -260,6 +307,23 @@ const PricingConfigsMxn = {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    async logAction(action, actionId) {
+      const payload = {
+        app: 'ORDERS_APP',
+        endpoint: 'log_cc_action',
+        params: {
+          channel: 'customer_support',
+          data_set: 'cc_actions',
+          action_id: actionId,
+          _user_email: this.getSessionData.payload.data.email,
+          _user_id: this.getSessionData.payload.data.admin_id,
+          action_user: this.getSessionData.payload.data.name,
+          description: action,
+          order_no: '',
+        },
+      };
+      const data = await this.log_action(payload);
     },
   },
 };

@@ -9,7 +9,7 @@
           {{ approvalText }}
         </div>
         <el-table
-          :data="locationPricingTableData"
+          :data="MileagePricingTableData"
           border
           class="pricing-table-styling preview-container"
         >
@@ -32,31 +32,66 @@
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="from" label="Pick up location" width="200">
-          </el-table-column>
-          <el-table-column prop="to" label="Drop off location" width="200">
-          </el-table-column>
-          <el-table-column prop="name" label="Vendor type" width="130">
+          <el-table-column prop="name" label="Vendor Type" width="200">
           </el-table-column>
           <el-table-column prop="currency" label="Currency" width="80">
           </el-table-column>
-          <el-table-column prop="order_amount" label="Client fee" width="130">
+          <el-table-column label="Partner rate" width="170">
+            <template slot-scope="scope">
+              {{ scope.row.partner_price_type.replace(/_/g, ' ') }}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="rider_amount"
-            label="Partner price"
+            prop="minimum_distance"
+            label="Minimum distance"
+            width="200"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="minimum_customer_rate"
+            label="Customer rate"
             width="130"
           >
           </el-table-column>
           <el-table-column
-            prop="sendy_commission"
-            label="Sendy commission (%)"
-            width="170"
+            prop="minimum_partner_rate"
+            label="Partner rate"
+            width="130"
           >
           </el-table-column>
-          <el-table-column prop="service_fee" label="Sendy fee" width="130">
+          <el-table-column prop="cost_per_km" label="Cost per Km" width="170">
           </el-table-column>
-          <el-table-column prop="insurance" label="Insurance" width="120">
+          <el-table-column
+            prop="partner_cost_per_km"
+            label="Partner cost per Km"
+            width="130"
+          >
+          </el-table-column>
+          <el-table-column label="Km bands" width="130">
+            <template slot-scope="scope">
+              <p v-for="(band, index) in scope.row.cost_band" :key="index">
+                {{ band.min_km }} - {{ band.max_km }} Kms
+              </p>
+            </template>
+          </el-table-column>
+          <el-table-column label="Customer rate per Km" width="170">
+            <template slot-scope="scope">
+              <p v-for="(band, index) in scope.row.cost_band" :key="index">
+                {{ scope.row.currency }} {{ band.customer_rate }}
+              </p>
+            </template>
+          </el-table-column>
+          <el-table-column label="Partner rate per Km" width="170">
+            <template slot-scope="scope">
+              <p v-for="(band, index) in scope.row.cost_band" :key="index">
+                {{ scope.row.currency }} {{ band.partner_rate }}
+              </p>
+            </template>
+          </el-table-column>
+          <el-table-column label="Fuel inclusivity" width="200">
+            <template slot-scope="scope">
+              {{ scope.row.fuel_inclusive ? 'Inclusive' : 'Non-inclusive' }}
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -100,12 +135,13 @@
 <script>
 import Mixpanel from 'mixpanel';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
+import moment from 'moment';
 import SessionMxn from '@/mixins/session_mixin';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 
 const mixpanel = Mixpanel.init('d0554ae8b8905e4984de170b62b2c9c6');
 export default {
-  name: 'DistancePricingApprovalComponent',
+  name: 'MileagePricingApprovalComponent',
   mixins: [SessionMxn, PricingConfigsMxn],
   props: {
     user: {
@@ -115,7 +151,7 @@ export default {
   },
   data() {
     return {
-      locationPricingTableData: [],
+      MileagePricingTableData: [],
       customPricingDetails: [],
       approvalParams: [],
       copId: '',
@@ -127,16 +163,31 @@ export default {
       copName: '',
       pendingRequests: false,
       rejectWithReason: false,
-      pricingTitle: 'Location Pricing Table',
+      pricingTitle: 'Mileage Pricing Table',
       approvalText: 'Requires your approval',
     };
   },
   computed: {
     ...mapGetters({
       pendingLocationPricing: 'getPendingLocationPricing',
+      configuredDedicatedPricing: 'getConfiguredDedicatedPricing',
       getSessionData: 'getSession',
       getApproveStatus: 'getApproveStatus',
     }),
+    pendingMileagePricing() {
+      const data = [];
+      this.configuredDedicatedPricing.forEach(row => {
+        if (
+          (row.price_type === 'standard_rate_per_km' ||
+            row.price_type === 'per_km_band') &&
+          row.status === 'Pending' &&
+          row.approved_by === this.adminId
+        ) {
+          data.push(row);
+        }
+      });
+      return data;
+    },
   },
   watch: {
     pendingRequests(val) {
@@ -145,9 +196,9 @@ export default {
   },
   mounted() {
     this.updateApproveStatus(true);
-    this.locationPricingTableData = this.pendingLocationPricing;
+    this.MileagePricingTableData = this.pendingMileagePricing;
     this.pendingRequests = false;
-    if (this.getApproveStatus && this.locationPricingTableData.length !== 0) {
+    if (this.getApproveStatus && this.MileagePricingTableData.length !== 0) {
       this.pendingRequests = true;
     }
     this.copId = this.user.user_details.cop_id;
@@ -155,7 +206,7 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.trackApprovalHomePage();
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -165,26 +216,28 @@ export default {
       updateApproveStatus: 'updateApproveStatus',
     }),
     ...mapActions({
-      approve_location_pricing_configs: 'approve_location_pricing_configs',
+      approve_pricing_configs: 'approve_pricing_configs',
     }),
     async rejectDistancePricingConfigs() {
       this.trackRejectConfigs();
       this.approvalParams = this.createPayload(
-        [this.locationPricingTableData[this.rejectIndex]],
-        'Deactivated',
+        this.MileagePricingTableData[this.rejectIndex],
+        'DeActivated',
+        this.rejectionReason,
       );
       const notification = [];
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/update_custom_distance_details',
+        endpoint: 'pricing/price_config/review_dedicated_price_configs',
         apiKey: false,
         params: this.approvalParams,
       };
       try {
-        const data = await this.approve_location_pricing_configs(payload);
+        const data = await this.approve_pricing_configs(payload);
         if (data.status) {
-          const configs = await this.getDistancePricingConfigs();
+          const configs = await this.fetchDedicatedPricingData();
+          this.MileagePricingTableData = this.pendingMileagePricing;
           this.trackMixpanelPeople();
           notification.push(
             'You have successfully rejected the custom pricing config!',
@@ -192,7 +245,7 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
           this.rejectionReason = '';
-          if (this.locationPricingTableData.length === 0) {
+          if (this.MileagePricingTableData.length === 0) {
             this.pendingRequests = false;
           } else {
             this.goBack();
@@ -220,27 +273,29 @@ export default {
     async approveLocationPricingConfigs(dataRow, dataIndex) {
       this.trackApproveConfig();
       this.approvalParams = this.createPayload(
-        [this.locationPricingTableData[dataIndex]],
+        this.MileagePricingTableData[dataIndex],
         'Active',
+        'Approved',
       );
       const notification = [];
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'pricing/price_config/update_custom_distance_details',
+        endpoint: 'pricing/price_config/review_dedicated_price_configs',
         apiKey: false,
         params: this.approvalParams,
       };
       try {
-        const data = await this.approve_location_pricing_configs(payload);
+        const data = await this.approve_pricing_configs(payload);
         if (data.status) {
-          const configs = await this.getDistancePricingConfigs();
+          const configs = await this.fetchDedicatedPricingData();
+          this.MileagePricingTableData = this.pendingMileagePricing;
           this.trackPassedApproval();
           this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          if (this.locationPricingTableData.length === 0) {
+          if (this.MileagePricingTableData.length === 0) {
             this.pendingRequests = false;
           }
         } else {
@@ -256,67 +311,20 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    createPayload(data, status) {
-      const locationPricingArray = [];
-      for (let i = 0; i < data.length; i += 1) {
-        const locationPricingObject = {
-          cop_id: this.copId,
-          vendor_id: data[i].id,
-          from_coordinates: data[i].from_location.coordinates,
-          to_coordinates: data[i].to_location.coordinates,
-          custom_pricing_details: {
-            location_pricing: [],
+    createPayload(data, status, message) {
+      const payload = {
+        cop_id: this.copId,
+        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+        approval_info: [
+          {
+            vendor_id: data.id,
+            message,
+            approved_by: parseInt(this.adminId, 10),
+            status,
           },
-          object_id: data[i].object_id,
-          rejection_message: this.rejectionReason,
-        };
-        const locationData = {
-          id: data[i].id,
-          name: data[i].name,
-          cop_id: this.copId,
-          cop_name: data[i].cop_name,
-          currency: data[i].currency,
-          admin_id: parseInt(this.adminId, 10),
-          waiting_time_cost_per_min: data[i].waiting_time_cost_per_min,
-          sendy_commission: data[i].sendy_commission,
-          order_confirmation_time_delay: data[i].order_confirmation_time_delay,
-          waiting_time_base: data[i].waiting_time_base,
-          fixed_status: data[i].fixed_status,
-          cancellation_fee: data[i].cancellation_fee,
-          min_cancellation_fee: data[i].min_cancellation_fee,
-          extra_distance_base_km: data[i].extra_distance_base_km,
-          order_pickup_time_delay: data[i].order_pickup_time_delay,
-          percentage_cancellation_fee: data[i].percentage_cancellation_fee,
-          max_cancellation_fee: data[i].max_cancellation_fee,
-          time: data[i].time,
-          fixed_cost: data[i].fixed_cost,
-          base_cost: data[i].base_cost,
-          base_km: data[i].base_km,
-          cost_per_km_above_base_km: data[i].cost_per_km_above_base_km,
-          additional_location_cost: data[i].additional_location_cost,
-          service_fee: data[i].service_fee,
-          from: data[i].from,
-          service_fee: data[i].service_fee,
-          from_location: {
-            type: data[i].from_location.type,
-            coordinates: data[i].from_location.coordinates,
-          },
-          to_location: {
-            type: data[i].to_location.type,
-            coordinates: data[i].to_location.coordinates,
-          },
-          to: data[i].to,
-          status,
-          city: data[i].city,
-          order_amount: data[i].order_amount,
-          rider_amount: data[i].rider_amount,
-        };
-        locationPricingObject.custom_pricing_details.location_pricing.push(
-          locationData,
-        );
-        locationPricingArray.push(locationPricingObject);
-      }
-      return locationPricingArray;
+        ],
+      };
+      return payload;
     },
     trackApprovalHomePage() {
       mixpanel.track('Open Approval tab - PageView', {

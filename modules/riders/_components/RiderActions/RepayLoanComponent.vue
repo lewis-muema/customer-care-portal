@@ -53,9 +53,9 @@
         <label class="rider-lable">OutStanding Loan </label>
         <v-select
           :options="loanTypes"
-          :reduce="type => type.code"
-          name="type"
-          label="type"
+          :reduce="name => name.loan_type_id"
+          name="name"
+          label="name"
           class="form-control select"
           placeholder="OutStanding Loan"
           :id="`loantype`"
@@ -161,14 +161,9 @@ export default {
         { code: 1, type: 'Mpesa' },
         { code: 2, type: 'Current' },
       ],
-      loanTypes: [
-        { code: 6, type: 'Sacco Loan' },
-        { code: 1, type: 'Tracker Loan' },
-        { code: 7, type: 'Insurance' },
-        { code: 2, type: 'Box Loan' },
-        { code: 9, type: 'Fuel Advance' },
-        { code: 'Damage', type: 'Loss or Damage' },
-      ],
+      loading_loan_types: true,
+      types: [],
+      loanTypes: [],
       repaymentModes: [
         { code: '1', status: 'Weekly' },
         { code: '3', status: 'One Time' },
@@ -187,6 +182,22 @@ export default {
       return this.session.payload.data.name;
     },
   },
+  watch: {
+    types(data) {
+      const arr = [];
+      for (let i = 0; i < data.length; i += 1) {
+        const index = _.findIndex(arr, ['loan_type_id', data[i].loan_type_id]);
+        if (index === -1) {
+          arr.push(data[i]);
+        }
+      }
+      this.loanTypes = arr;
+    },
+  },
+  mounted() {
+    const loanTypes = this.fetchLoanTypes();
+  },
+
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -195,6 +206,7 @@ export default {
     }),
     ...mapActions({
       perform_user_action: 'perform_user_action',
+      request_loan_types: 'request_loan_types',
     }),
     handleError(status, error) {
       const notification = [];
@@ -204,6 +216,39 @@ export default {
         actionClass = this.display_order_action_notification(status);
         this.updateClass(actionClass);
         this.updateErrors(notification);
+      }
+    },
+    async fetchLoanTypes() {
+      const notification = [];
+      let actionClass = '';
+      const riderID = this.user.rider_id;
+      const payload = {
+        app: 'PARTNERS_APP',
+        endpoint: 'sendy/loan_types',
+        apiKey: true,
+        params: {
+          rider_id: riderID,
+        },
+      };
+      try {
+        const res = await this.request_loan_types(payload);
+        const error = !this.status ? res.error : '';
+        if (!res.status) {
+          notification.push(res.error);
+          actionClass = this.display_order_action_notification(res.status);
+          this.updateClass(actionClass);
+          this.updateErrors(notification);
+        }
+        this.loading_loan_types = false;
+        const data = res.data;
+        let arr = [];
+        for (let i = 0; i < data.length; i += 1) {
+          arr = arr.concat(data[i].loan_types);
+        }
+        return (this.types = arr);
+      } catch (error) {
+        const msg = 'Something went wrong. Try again or contact Tech Support';
+        this.notificationHandler(false, true, msg);
       }
     },
 
@@ -233,7 +278,7 @@ export default {
             pay_out: true,
             pay_frommpesa: false,
             rider_id: riderID,
-            loan_type: 1,
+            loan_type: this.loantype,
             amount: this.amount,
             narrative: this.narrative,
             payment_type: 5,

@@ -13,9 +13,30 @@
           border
           class="pricing-table-styling"
         >
+          <el-table-column width="110">
+            <template slot-scope="scope">
+              <el-button
+                class="approve-config-btn btn-primary"
+                @click="approveDistancePricingConfigs(scope.row, scope.$index)"
+                >Approve</el-button
+              >
+            </template>
+          </el-table-column>
+          <el-table-column width="110">
+            <template slot-scope="scope">
+              <el-button
+                @click="provideReason(scope.row, scope.$index)"
+                class="reject-config-btn btn-primary"
+              >
+                Reject
+              </el-button>
+            </template>
+          </el-table-column>
           <el-table-column prop="city" label="City" width="170">
           </el-table-column>
           <el-table-column prop="name" label="Vendor Type" width="170">
+          </el-table-column>
+          <el-table-column prop="currency" label="Currency" width="80">
           </el-table-column>
           <el-table-column prop="base_cost" label="Partner Amount" width="150">
           </el-table-column>
@@ -58,14 +79,6 @@
           >
           </el-table-column>
         </el-table>
-        <button @click="provideReason" class="reject-config-text">
-          Reject Pricing
-        </button>
-        <el-button
-          class="approve-config-btn btn-primary"
-          @click="approveDistancePricingConfigs"
-          >Approve pricing</el-button
-        >
       </div>
       <div class="approver-select reject-textarea" v-show="rejectWithReason">
         <template>
@@ -129,6 +142,7 @@ export default {
       adminId: '',
       currency: '',
       rejectionReason: '',
+      rejectIndex: 0,
       crmName: '',
       copName: '',
       rejectWithReason: false,
@@ -139,6 +153,7 @@ export default {
   computed: {
     ...mapGetters({
       pendingDistancePricing: 'getPendingDistancePricing',
+      getCustomPricingDetails: 'getCustomPricingDetails',
       getSessionData: 'getSession',
       getApproveStatus: 'getApproveStatus',
     }),
@@ -155,8 +170,13 @@ export default {
     this.currency = this.user.user_details.default_currency;
     this.adminId = parseInt(this.getSessionData.payload.data.admin_id, 10);
     this.crmName = this.getSessionData.payload.data.name;
-    this.getDistancePricingConfigs();
-    this.trackApprovalHomePage();
+    this.distancePricingTableData = this.pendingDistancePricing;
+    this.getCustomPricingDetails.forEach(row => {
+      if (Object.prototype.hasOwnProperty.call(row, 'distance_pricing')) {
+        this.customPricingDetails.push(row);
+      }
+    });
+    // this.trackApprovalHomePage();
   },
   methods: {
     ...mapMutations({
@@ -174,7 +194,7 @@ export default {
     async rejectDistancePricingConfigs() {
       this.trackRejectConfigs();
       const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
-      const pricingTableData = clone;
+      const pricingTableData = [clone[this.rejectIndex]];
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee =
           pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
@@ -184,7 +204,7 @@ export default {
         ].distance_pricing.waiting_time_cost_per_min = parseFloat(perMinuteFee);
       }
       this.approvalParams = JSON.parse(
-        JSON.stringify(this.createPayload(pricingTableData, 'deactivated')),
+        JSON.stringify(this.createPayload(pricingTableData, 'Deactivated')),
       );
       const notification = [];
       let actionClass = '';
@@ -197,6 +217,7 @@ export default {
       try {
         const data = await this.reject_distance_pricing_configs(payload);
         if (data.status) {
+          const configs = await this.getDistancePricingConfigs();
           this.trackPassedReject();
           this.trackMixpanelPeople();
           notification.push(
@@ -204,6 +225,12 @@ export default {
           );
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
+          this.rejectionReason = '';
+          if (this.distancePricingTableData.length === 0) {
+            this.updateApproveStatus(false);
+          } else {
+            this.goBack();
+          }
         } else {
           this.trackFailedReject();
           this.trackMixpanelPeople();
@@ -217,17 +244,18 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    provideReason() {
+    provideReason(dataRow, dataIndex) {
+      this.rejectIndex = dataIndex;
       this.rejectWithReason = true;
       this.trackRejectConfigsPage();
     },
     goBack() {
       this.rejectWithReason = false;
     },
-    async approveDistancePricingConfigs() {
+    async approveDistancePricingConfigs(dataRow, dataIndex) {
       this.trackApproveConfig();
       const clone = JSON.parse(JSON.stringify(this.customPricingDetails));
-      const pricingTableData = clone;
+      const pricingTableData = [clone[dataIndex]];
       for (let i = 0; i < pricingTableData.length; i += 1) {
         const perHourFee =
           pricingTableData[i].distance_pricing.waiting_time_cost_per_min;
@@ -250,12 +278,15 @@ export default {
       try {
         const data = await this.approve_distance_pricing_configs(payload);
         if (data.status) {
+          const configs = await this.getDistancePricingConfigs();
           this.trackPassedApproval();
           this.trackMixpanelPeople();
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateSuccess(false);
-          this.updateApproveStatus(false);
+          if (this.distancePricingTableData.length === 0) {
+            this.updateApproveStatus(false);
+          }
         } else {
           this.trackFailedApproval();
           this.trackMixpanelPeople();
@@ -286,6 +317,7 @@ export default {
               name: pricingApprovalData[i].name,
               currency: pricingApprovalData[i].currency,
               admin_id: pricingApprovalData[i].admin_id,
+              object_id: pricingApprovalData[i].object_id,
               distance_pricing: pricingApprovalData[i].distance_pricing,
               rejection_message: this.rejectionReason,
             },

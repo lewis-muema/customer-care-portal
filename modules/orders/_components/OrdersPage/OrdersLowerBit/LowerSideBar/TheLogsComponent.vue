@@ -15,7 +15,13 @@
         </span>
         <h3 class="timeline-header no-border">
           {{ deliveryLog.description }}
-          <span v-if="deliveryLog.log_type === 4 && isSendyStaff(signedByName)">
+          <span
+            v-if="
+              deliveryLog.log_type === 4 &&
+                isSendyStaff(signedByName) &&
+                !isDnoteUpload(signedByName)
+            "
+          >
             <strong
               >( Completion done from CC portal by {{ signedByName }})</strong
             >
@@ -47,7 +53,8 @@ export default {
     ...mapState(['userData']),
     signedByName() {
       const deliveryArray =
-        this.status === 'delivered'
+        this.status === 'delivered' &&
+        this.order.delivery_details.delivery_images.length > 0
           ? this.order.delivery_details.delivery_images
           : null;
       // eslint-disable-next-line prettier/prettier

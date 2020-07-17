@@ -305,6 +305,45 @@ export default {
       return error.response;
     }
   },
+  async requestAxiosPatch({ state, commit, dispatch }, payload) {
+    let endpoint = payload.endpoint;
+    const app = payload.app;
+
+    // Capture custom HTTP request actions via managed transactions.
+    this._vm.$apm
+      .startTransaction(`${endpoint}`, 'custom', { managed: true })
+      .addLabels({ app });
+
+    const customConfig = state.config;
+    const url = customConfig[app];
+
+    let backendKey = null;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    if (this.$env.APP_ENV !== 'production' && payload.apiKey) {
+      backendKey = this.$env.BACKEND_KEY;
+      endpoint = `${endpoint}?apikey=${backendKey}`;
+    }
+
+    const values = JSON.stringify(payload.params);
+
+    try {
+      const response = await axios.patch(`${url}${endpoint}`, values, config);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+
+      return error.response;
+    }
+  },
   // eslint-disable-next-line require-await
   async handleErrors({ state, commit }, error) {
     switch (error) {
@@ -366,6 +405,66 @@ export default {
       },
     };
     const url = `${config.ADONIS_API}business-units`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestRewards({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}rewards`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestPenalties({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}penalties`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestWarningMessages({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}warning_messages`;
     try {
       const response = await axios.get(url, param);
       return response.data;
@@ -757,6 +856,7 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       let pendingDistancePricing = [];
       let pendingLocationPricing = [];
+      let pendingContainerPricing = [];
       const pricingTableData = [];
       if (res.data.status) {
         const pendingPricingDetails = res.data.custom_pricing_details;
@@ -768,6 +868,15 @@ export default {
             )
           ) {
             pendingLocationPricing = pendingPricingDetails[i].location_pricing;
+          }
+          if (
+            Object.prototype.hasOwnProperty.call(
+              pendingPricingDetails[i],
+              'container_pricing',
+            )
+          ) {
+            pendingContainerPricing =
+              pendingPricingDetails[i].container_pricing;
           }
           if (
             Object.prototype.hasOwnProperty.call(
@@ -785,11 +894,14 @@ export default {
             pendingDistancePricing = pricingTableData;
           }
         }
+        commit('setCustomPricingDetails', pendingPricingDetails);
         commit('updatePendingDistancePricing', pendingDistancePricing);
         commit('updatePendingLocationPricing', pendingLocationPricing);
+        commit('updatePendingContainerPricing', pendingContainerPricing);
       } else {
         commit('updatePendingDistancePricing', pendingDistancePricing);
         commit('updatePendingLocationPricing', pendingLocationPricing);
+        commit('updatePendingContainerPricing', pendingContainerPricing);
       }
       return res.data;
     } catch (error) {
@@ -849,8 +961,31 @@ export default {
         }
         commit('updateLocationPricing', locationPricing);
         commit('updateDistancePricing', distancePricing);
+        commit('setCustomPricingDetails', customPricingDetails);
+        commit('updateApproverId', approverId);
+      } else {
+        commit('updateLocationPricing', locationPricing);
+        commit('updateDistancePricing', distancePricing);
+        commit('setCustomPricingDetails', []);
         commit('updateApproverId', approverId);
       }
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async pending_dedicated_pricing_data({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      const arrayData = [];
+      if (res.data.status) {
+        res.data.data.forEach(row => {
+          if (row.status === 'Pending' || row.status === 'Active') {
+            arrayData.push(row);
+          }
+        });
+      }
+      commit('updateDedicatedPricing', arrayData);
       return res.data;
     } catch (error) {
       return error.response;
@@ -865,6 +1000,22 @@ export default {
     }
   },
   async approve_location_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async approve_container_pricing_configs({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async approve_pricing_configs({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
@@ -1004,6 +1155,51 @@ export default {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+    }
+  },
+  async request_cancellation_options({ state }) {
+    const config = state.config;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}cancel-reasons?platform=cc`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async create_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async update_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
     }
   },
 };

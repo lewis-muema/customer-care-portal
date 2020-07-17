@@ -190,6 +190,25 @@
   border-collapse: collapse;
 }
 
+.currency-holder {
+  display: flex;
+}
+
+.currency-tabs {
+  height: 40px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #BDBDBD;
+}
+
+.active-currency-button {
+  color: white;
+  background: #1B7FC3;
+  border: 1px solid #1B7FC3;
+}
+
 .tracking_map_table td {
   height: 34px;
   font-size: 15px;
@@ -1541,6 +1560,68 @@ color: #000000;
   margin-top: 4px;
 }
 .datetimepicker .datepicker{
-  position: relative !important; 
+  position: relative !important;
   min-width: 378px !important;
+}
+.el-input-group__prepend{
+  width: 46%;
+}
+.el-table__row {
+  height: 44px !important;
+}
+.el-table thead {
+  color: #606266 !important;
+}
+.el-table {
+  color: #555 !important;
+  font-size: 13px !important;
+}
+.el-table .cell {
+  line-height: 20px !important;
+}
+
+.el-table td,
+.el-table th {
+  padding: 10px 0 ;
+}
+.el-table--border td,
+.el-table th.is-leaf {
+  border-bottom: 1px solid #dcdfe6 ;
+}
+
+.el-table--border td,
+.el-table--border th,
+.el-table--border th {
+  border-right: 1px solid #dcdfe6 ;
+}
+
+.el-table--border,
+.el-table--group {
+  border: 1px solid #dcdfe6 ;
+}
+.table-bordered td,
+.table-bordered th {
+  border: none ;
+}
+.el-table__expanded-cell {
+  background-color: white ;
+}
+.el-table__expanded-cell:hover {
+    background-color: white !important;
+}
+
+.el-table td,
+.el-table th {
+  padding: 0px ;
+}
+.el-table th,
+.el-table tr {
+  height: 41px !important;
+}
+.el-table{
+  background-color: #f9f9f9 ;
+}
+.expanded{
+  color: #212529;
+  background-color: rgba(0,0,0,.075) !important;
 }

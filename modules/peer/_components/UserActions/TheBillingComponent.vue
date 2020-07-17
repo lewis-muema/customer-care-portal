@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <div v-if="display_billing_info" style="margin-left: 2%;">
+    <div v-if="display_billing_info" class="peer-billing-outer">
       <p class="info">
         <i class="fa fa-exclamation-circle info-loader"></i>
         {{ billingInfo() }}
@@ -243,7 +243,10 @@ export default {
         { value: 12, name: 'Cash Order', transactionID: 1 },
         { value: 14, name: 'Customer Coupon', transactionID: 1 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
+        { value: 21, name: 'Deduction', transactionID: 6 },
         { value: 99, name: 'Reversal', transactionID: 1 },
+        { value: 22, name: 'Cash Reversals', transactionID: 1 },
+        { value: 23, name: 'Partner Top up', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 9, 14],
       display_billing_info: true,
@@ -276,6 +279,9 @@ export default {
 
     actionUser() {
       return this.session.payload.data.name;
+    },
+    permissions() {
+      return JSON.parse(this.session.payload.data.privilege);
     },
     userType() {
       const arr = this.accountTypes;
@@ -443,7 +449,10 @@ export default {
       return this.submit_status;
     },
     handleUserData() {
-      if (this.user.payments.length > 0) {
+      if (this.permissions.approve_cancellation_billing) {
+        this.display_billing_info = false;
+        this.max_amount = '';
+      } else if (this.user.payments.length > 0) {
         const amount = this.user.payments[0].rb.toString().replace('-', '');
         this.max_amount = parseInt(amount, 10);
         this.userRb = this.formatNumber(this.user.payments[0].rb);
@@ -467,7 +476,10 @@ export default {
     },
     billingStatus() {
       let disabled = false;
-      if (this.userRb === '0' || this.userRb > '0') {
+      if (
+        (this.userRb === '0' || this.userRb > '0') &&
+        !this.permissions.approve_cancellation_billing
+      ) {
         disabled = true;
       }
       return disabled;
@@ -556,5 +568,8 @@ export default {
 }
 .vat-check {
   padding-left: 0;
+}
+.peer-billing-outer {
+  margin-left: 2%;
 }
 </style>

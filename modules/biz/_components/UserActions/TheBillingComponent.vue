@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="display_billing_info" style="margin-left: 2%;">
+    <div v-if="display_billing_info" class="biz-billing-outer">
       <p class="info">
         <i class="fa fa-exclamation-circle info-loader"></i>
         {{ billingInfo() }}
@@ -268,7 +268,10 @@ export default {
         { value: 12, name: 'Cash Order', transactionID: 1 },
         { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
+        { value: 21, name: 'Deduction', transactionID: 6 },
         { value: 99, name: 'Reversal', transactionID: 1 },
+        { value: 22, name: 'Cash Reversals', transactionID: 1 },
+        { value: 23, name: 'Partner Top up', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
       array: {
@@ -301,6 +304,9 @@ export default {
 
     actionUser() {
       return this.session.payload.data.name;
+    },
+    permissions() {
+      return JSON.parse(this.session.payload.data.privilege);
     },
     userType() {
       const arr = this.accountTypes;
@@ -395,6 +401,7 @@ export default {
       const isPeer = !(this.accountType > 1);
       const is_peer = this.billingType === 15 ? isPeer : '';
       let action_id = this.billingType === 15 ? 21 : this.actionID;
+      const vat_exempt = this.user.cop_details.vat_exempt;
 
       if (this.businessUnit === '') {
         notification.push('Business Unit is required !!!');
@@ -415,6 +422,7 @@ export default {
           creditor_id: creditor_details,
           is_VAT: this.isVAT,
           business_unit: parseInt(this.businessUnit, 10),
+          vat_exempt: vat_exempt ? 1 : 0,
         };
 
         if (this.billingType === 99) {
@@ -424,6 +432,7 @@ export default {
             user_id,
             pay_reference: this.refNo,
             business_unit: parseInt(this.businessUnit, 10),
+            vat_exempt: vat_exempt ? 1 : 0,
           };
         }
 
@@ -467,8 +476,12 @@ export default {
     },
     handleUserData() {
       this.paymentOption = this.user.user_details.payment_option;
-      if (this.paymentOption === '2') {
+      if (
+        this.paymentOption === '2' ||
+        this.permissions.approve_cancellation_billing
+      ) {
         this.display_billing_info = false;
+        this.max_amount = '';
       } else {
         if (this.user.payments.length > 0) {
           const amount = this.user.payments[0].rb.toString().replace('-', '');
@@ -495,7 +508,10 @@ export default {
     },
     billingStatus() {
       let disabled = false;
-      if (this.userRb === '0' || this.userRb > '0') {
+      if (
+        (this.userRb === '0' || this.userRb > '0') &&
+        !this.permissions.approve_cancellation_billing
+      ) {
         disabled = true;
       }
       return disabled;
@@ -580,5 +596,8 @@ export default {
 }
 .amount-align {
   margin-left: 5%;
+}
+.biz-billing-outer {
+  margin-left: 2%;
 }
 </style>

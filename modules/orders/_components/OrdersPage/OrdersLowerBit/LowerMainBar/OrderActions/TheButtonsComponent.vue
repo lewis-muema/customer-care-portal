@@ -7,6 +7,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `dispatch_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('dispatch', orderNo)"
@@ -27,6 +28,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `reallocate_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('reallocate', orderNo)"
@@ -46,6 +48,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `cancel_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('cancel', orderNo)"
@@ -64,6 +67,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `schedule_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('schedule', orderNo)"
@@ -83,6 +87,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `return_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('return', orderNo)"
@@ -98,6 +103,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `sms_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('sms', orderNo)"
@@ -118,6 +124,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `proximity_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('proximity', orderNo)"
@@ -130,6 +137,7 @@
       <li class="nav-item">
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `ticket_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('ticket', orderNo)"
@@ -150,6 +158,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `tracker__${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('tracker', orderNo)"
@@ -168,6 +177,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `allocate__${orderNo}` }"
           data-toggle="tab"
           aria-expanded=" false"
           @click="viewTab('allocate', orderNo)"
@@ -189,6 +199,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `mark_in_transit_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('mark_in_transit', orderNo)"
@@ -207,6 +218,7 @@
       >
         <a
           class="force_blue"
+          :class="{ activeLink: showTab === `complete_order_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('complete_order', orderNo)"
@@ -236,6 +248,25 @@
         >
           <span class="fa fa-fw fa-check-square"></span>
           Finances
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        v-if="
+          order.order_details.order_status === 'delivered' &&
+            permissions.upload_dnotes
+        "
+      >
+        <a
+          class="force_blue"
+          :class="{ activeLink: showTab === `upload_dnotes_${orderNo}` }"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('upload_dnotes', orderNo)"
+          :id="`upload_dnotes_${orderNo}`"
+        >
+          <span class="fa fa fa-upload"></span>
+          Upload Dnotes
         </a>
       </li>
     </ul>
@@ -357,6 +388,14 @@
       >
         <AuxilliaryServices :order="order" />
       </div>
+      <div
+        :class="`tab-pane fade ${show} ${active}`"
+        :id="`upload_dnotes_${orderNo}`"
+        role="tabpanel"
+        v-if="showTab === `upload_dnotes_${orderNo}`"
+      >
+        <TheUploadDnoteComponent :order="order" />
+      </div>
     </div>
   </div>
 </template>
@@ -380,6 +419,7 @@ export default {
     TheCompleteOrderComponent: () => import('./TheCompleteOrderComponent'),
     AuxilliaryServices: () =>
       import('../../FBU/OrderActions/AuxilliaryServices'),
+    TheUploadDnoteComponent: () => import('./TheUploadDnoteComponent'),
   },
   props: {
     order: {
@@ -487,5 +527,13 @@ export default {
 }
 .order-input {
   padding: 19px 0.75rem;
+}
+.activeLink {
+  background: #3c8dbc !important;
+  cursor: pointer;
+  color: white !important;
+}
+.nav-tabs .nav-item {
+  margin-bottom: 15px;
 }
 </style>

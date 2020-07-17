@@ -108,6 +108,14 @@ Vue.mixin({
       }
       return false;
     },
+    isDnoteUpload(name) {
+      if (name) {
+        const isUpload = name.includes('upload');
+        return isUpload;
+      }
+      return false;
+    },
+
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
@@ -155,7 +163,9 @@ Vue.mixin({
       return notification;
     },
     getOrderFormattedDate(date, requiredFormat) {
-      const dt = moment(date).format(requiredFormat);
+      const utcDate = this.convertToUTC(date);
+      const localTime = this.convertToLocalTime(utcDate);
+      const dt = moment(localTime).format(requiredFormat);
       return dt;
     },
     convertToUTC(date) {
