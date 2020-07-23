@@ -138,36 +138,6 @@
             </div>
           </td>
         </tr>
-
-        <tr>
-          <td v-if="creditNote">
-            <div class="form-group bill-check">
-              <input
-                value="1"
-                type="checkbox"
-                class="chargeVAT"
-                @click="check($event)"
-                v-model="isChargeVAT"
-                checked
-              />
-              <label for="" class="charge_vat--label"> Charge VAT </label>
-            </div>
-          </td>
-
-          <td>
-            <div class="form-group">
-              <label>Order Number</label>
-              <input
-                type="text"
-                v-model="order_no"
-                :id="order_no"
-                name="order_no"
-                placeholder="Order Number"
-                class="form-control"
-              />
-            </div>
-          </td>
-        </tr>
       </table>
 
       <div class="form-group col-md-3 bill-check">
@@ -217,10 +187,6 @@ export default {
       ],
       businessUnit: '',
       isChargeEntity: false,
-      creditNote: false,
-      isChargeVAT: false,
-      hide_amount: false,
-      order_no: '',
     };
   },
   validations: {
@@ -236,22 +202,6 @@ export default {
     },
     actionUser() {
       return this.session.payload.data.name;
-    },
-  },
-
-  watch: {
-    paymentMethod(newVal, oldVal) {
-      if (this.paymentMethod === 9) {
-        this.creditNote = true;
-      } else {
-        this.creditNote = false;
-      }
-    },
-
-    order_no(newVal, oldVal) {
-      this.order_no.length > 0
-        ? (this.hide_amount = true)
-        : (this.hide_amount = false);
     },
   },
 
@@ -326,39 +276,20 @@ export default {
       const action_id = this.isChargeEntity ? 27 : 7;
       const vat_exempt = this.user.cop_details.vat_exempt;
 
-      let action_payload;
-
-      this.paymentMethod === 9
-        ? (action_payload = {
-            reverse,
-            amount: this.amount,
-            ref_no: this.refNoMethods.includes(this.paymentMethod)
-              ? this.refNo
-              : '',
-            pay_method: this.paymentMethod,
-            cop_id: copID,
-            user_id: userID,
-            reason: this.narrative,
-            currency: this.currency,
-            business_unit: parseInt(this.businessUnit, 10),
-            vat_exempt: vat_exempt ? 1 : 0,
-            order_number: this.order_no,
-            is_VAT: this.isChargeVAT,
-          })
-        : (action_payload = {
-            reverse,
-            amount: this.amount,
-            ref_no: this.refNoMethods.includes(this.paymentMethod)
-              ? this.refNo
-              : '',
-            pay_method: this.paymentMethod,
-            cop_id: copID,
-            user_id: userID,
-            reason: this.narrative,
-            currency: this.currency,
-            business_unit: parseInt(this.businessUnit, 10),
-            vat_exempt: vat_exempt ? 1 : 0,
-          });
+      let action_payload = {
+        reverse,
+        amount: this.amount,
+        ref_no: this.refNoMethods.includes(this.paymentMethod)
+          ? this.refNo
+          : '',
+        pay_method: this.paymentMethod,
+        cop_id: copID,
+        user_id: userID,
+        reason: this.narrative,
+        currency: this.currency,
+        business_unit: parseInt(this.businessUnit, 10),
+        vat_exempt: vat_exempt ? 1 : 0,
+      };
 
       if (this.isChargeEntity) {
         action_payload = {
@@ -424,9 +355,5 @@ export default {
 }
 .amount-input {
   width: 83% !important;
-}
-.chargeVAT {
-  margin-top: 26px;
-  margin-left: 11px;
 }
 </style>
