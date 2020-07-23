@@ -137,35 +137,6 @@
             </div>
           </td>
         </tr>
-        <tr>
-          <td v-if="creditNote">
-            <div class="form-group bill-check">
-              <input
-                value="1"
-                type="checkbox"
-                class="chargeVAT"
-                @click="check($event)"
-                v-model="isChargeVAT"
-                checked
-              />
-              <label for="" class="charge_vat--label"> Charge VAT </label>
-            </div>
-          </td>
-
-          <td>
-            <div class="form-group">
-              <label>Order Number</label>
-              <input
-                type="text"
-                v-model="order_no"
-                :id="order_no"
-                name="order_no"
-                placeholder="Order Number"
-                class="form-control"
-              />
-            </div>
-          </td>
-        </tr>
       </table>
 
       <div class="form-group col-md-3 bill-check">
@@ -179,6 +150,7 @@
         />
         <label for="" class="charge_vat--label"> Bill Sendy Entity </label>
       </div>
+
       <button class="btn btn-primary action-button">
         Pay
       </button>
@@ -199,13 +171,11 @@ export default {
   },
   data() {
     return {
-      creditNote: false,
       paymentMethods: null,
       paymentMethod: '',
       amount: '',
       refNo: '',
       narrative: '',
-      order_no: '',
       submitted: false,
       hide: '',
       refNoMethods: [1, 4],
@@ -216,8 +186,6 @@ export default {
       ],
       businessUnit: '',
       isChargeEntity: false,
-      isChargeVAT: false,
-      hide_amount: false,
     };
   },
   validations: {
@@ -235,21 +203,7 @@ export default {
       return this.session.payload.data.name;
     },
   },
-  watch: {
-    paymentMethod(newVal, oldVal) {
-      if (this.paymentMethod === 9) {
-        this.creditNote = true;
-      } else {
-        this.creditNote = false;
-      }
-    },
 
-    order_no(newVal, oldVal) {
-      this.order_no.length > 0
-        ? (this.hide_amount = true)
-        : (this.hide_amount = false);
-    },
-  },
   mounted() {
     const countryCode = 'KE';
     this.fetchPaymentOptions(countryCode);
@@ -321,36 +275,19 @@ export default {
 
       const action_id = this.isChargeEntity ? 27 : 7;
 
-      let action_payload =
-        this.paymentMethod === 9
-          ? {
-              reverse,
-              amount: this.amount,
-              ref_no: this.refNoMethods.includes(this.paymentMethod)
-                ? this.refNo
-                : '',
-              pay_method: this.paymentMethod,
-              cop_id: 0,
-              user_id: userID,
-              reason: this.narrative,
-              currency: this.currency,
-              business_unit: parseInt(this.businessUnit, 10),
-              order_number: this.order_no,
-              is_VAT: this.isChargeVAT,
-            }
-          : {
-              reverse,
-              amount: this.amount,
-              ref_no: this.refNoMethods.includes(this.paymentMethod)
-                ? this.refNo
-                : '',
-              pay_method: this.paymentMethod,
-              cop_id: 0,
-              user_id: userID,
-              reason: this.narrative,
-              currency: this.currency,
-              business_unit: parseInt(this.businessUnit, 10),
-            };
+      let action_payload = {
+        reverse,
+        amount: this.amount,
+        ref_no: this.refNoMethods.includes(this.paymentMethod)
+          ? this.refNo
+          : '',
+        pay_method: this.paymentMethod,
+        cop_id: 0,
+        user_id: userID,
+        reason: this.narrative,
+        currency: this.currency,
+        business_unit: parseInt(this.businessUnit, 10),
+      };
 
       if (this.isChargeEntity) {
         action_payload = {
@@ -417,9 +354,5 @@ export default {
 }
 .amount-input {
   width: 83% !important;
-}
-.chargeVAT {
-  margin-top: 26px;
-  margin-left: 11px;
 }
 </style>
