@@ -127,7 +127,8 @@ export default {
         if (data.status) {
           data.data.forEach(row => {
             if (
-              row.price_type === 'daily_rate' &&
+              (row.price_type === 'daily_rate' ||
+                row.price_type === 'hourly_rate') &&
               row.status === 'Pending' &&
               row.approved_by ===
                 parseInt(this.session.payload.data.admin_id, 10)

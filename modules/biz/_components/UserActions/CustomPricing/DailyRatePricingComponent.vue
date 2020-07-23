@@ -69,7 +69,7 @@
             </div>
           </div>
           <div class="new-pricing-tab-rows">
-            <div>
+            <div v-if="selectedVendor !== 'Bike'">
               <p class="pricing-input-labels">Monthly Rate</p>
               <el-input
                 type="text"
@@ -81,7 +81,7 @@
                 </template>
               </el-input>
             </div>
-            <div>
+            <div v-if="selectedVendor !== 'Bike'">
               <p class="pricing-input-labels">No of working days per month</p>
               <el-input
                 type="text"
@@ -92,12 +92,25 @@
               >
               </el-input>
             </div>
-            <div>
+            <div v-if="selectedVendor !== 'Bike'">
               <p class="pricing-input-labels">Daily rate</p>
               <el-input
                 :disabled="true"
                 type="text"
                 v-model="dailyRateValue"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                class="new-pricing-inputs"
+              >
+                <template class="pricing-prepend" slot="append">
+                  {{ currency }}
+                </template>
+              </el-input>
+            </div>
+            <div v-if="selectedVendor === 'Bike'">
+              <p class="pricing-input-labels">Hourly rate</p>
+              <el-input
+                type="text"
+                v-model="hourlyRateValue"
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 class="new-pricing-inputs"
               >
@@ -153,7 +166,7 @@
                 </template>
               </el-input>
             </div>
-            <div>
+            <div v-if="selectedVendor !== 'Bike'">
               <p class="pricing-input-labels">Partner take</p>
               <div class="pricing-radio-input-labels">
                 <input
@@ -266,8 +279,9 @@
             <div class="bands-col-1">Vendor Type</div>
             <div class="bands-col-2">Monthly Rate</div>
             <div class="bands-col-3">Daily Rate</div>
-            <div class="bands-col-4">Max distance</div>
-            <div class="bands-col-5"></div>
+            <div class="bands-col-4">Hourly Rate</div>
+            <div class="bands-col-5">Max distance</div>
+            <div class="bands-col-6"></div>
           </div>
           <div
             v-for="(data, index) in tableData"
@@ -278,13 +292,25 @@
               {{ data.vendor }}
             </div>
             <div class="bands-col-2 pricing-table-divider">
-              {{ data.currency }} {{ data.monthly_rate }}
+              <span v-if="data.monthly_rate">
+                {{ data.currency }} {{ data.monthly_rate }}
+              </span>
+              <span v-else>N/A</span>
             </div>
             <div class="bands-col-3">
-              {{ data.currency }} {{ data.daily_rate }}
+              <span v-if="data.daily_rate">
+                {{ data.currency }} {{ data.daily_rate }}
+              </span>
+              <span v-else>N/A</span>
             </div>
-            <div class="bands-col-4">{{ data.maximum_distance }} KMS</div>
-            <div class="bands-col-5">
+            <div class="bands-col-4">
+              <span v-if="data.hourly_rate">
+                {{ data.currency }} {{ data.hourly_rate }}
+              </span>
+              <span v-else>N/A</span>
+            </div>
+            <div class="bands-col-5">{{ data.maximum_distance }} KMS</div>
+            <div class="bands-col-6">
               <span
                 class="new-pricing-delete"
                 @click="showDeleteDialogue('tableData', index, data.vendor)"
@@ -313,8 +339,9 @@
             <div class="bands-col-1">Vendor Type</div>
             <div class="bands-col-2">Monthly Rate</div>
             <div class="bands-col-3">Daily Rate</div>
-            <div class="bands-col-4">Max distance</div>
-            <div class="bands-col-5"></div>
+            <div class="bands-col-4">Hourly Rate</div>
+            <div class="bands-col-5">Max distance</div>
+            <div class="bands-col-6"></div>
           </div>
           <div v-for="(data, index) in filteredCurrencies" :key="index">
             <div class="pricing-body-row" @click="toggleRow(index)">
@@ -322,13 +349,25 @@
                 {{ data.name }}
               </div>
               <div class="bands-col-2 pricing-table-divider">
-                {{ data.currency }} {{ data.monthly_rate }}
+                <span v-if="data.monthly_rate">
+                  {{ data.currency }} {{ data.monthly_rate }}
+                </span>
+                <span v-else>N/A</span>
               </div>
               <div class="bands-col-3 pricing-table-divider">
-                {{ data.currency }} {{ data.daily_rate }}
+                <span v-if="data.daily_rate">
+                  {{ data.currency }} {{ data.daily_rate }}
+                </span>
+                <span v-else>N/A</span>
               </div>
-              <div class="bands-col-4">{{ data.maximum_km }} KMS</div>
-              <div class="bands-col-5">
+              <div class="bands-col-4 pricing-table-divider">
+                <span v-if="data.hourly_rate">
+                  {{ data.currency }} {{ data.hourly_rate }}
+                </span>
+                <span v-else>N/A</span>
+              </div>
+              <div class="bands-col-5">{{ data.maximum_km }} KMS</div>
+              <div class="bands-col-6">
                 <div class="all-pricing-dropdown-buttons">
                   <span>
                     <p
@@ -388,22 +427,31 @@
                     Rates
                   </p>
                   <div class="all-pricing-card">
-                    <p class="all-pricing-card-text">
+                    <p class="all-pricing-card-text" v-if="data.monthly_rate">
                       Monthly Rate:
                       <span class="all-pricing-card-values"
                         >{{ data.currency }} {{ data.monthly_rate }}</span
                       >
                     </p>
-                    <p class="all-pricing-card-text">
+                    <p
+                      class="all-pricing-card-text"
+                      v-if="data.no_of_working_days"
+                    >
                       No. of working days:
                       <span class="all-pricing-card-values">{{
                         data.no_of_working_days
                       }}</span>
                     </p>
-                    <p class="all-pricing-card-text">
+                    <p class="all-pricing-card-text" v-if="data.daily_rate">
                       Daily Rate:
                       <span class="all-pricing-card-values"
                         >{{ data.currency }} {{ data.daily_rate }}</span
+                      >
+                    </p>
+                    <p class="all-pricing-card-text" v-if="data.hourly_rate">
+                      Hourly Rate:
+                      <span class="all-pricing-card-values"
+                        >{{ data.currency }} {{ data.hourly_rate }}</span
                       >
                     </p>
                     <p class="all-pricing-card-text">
@@ -412,10 +460,23 @@
                         >{{ data.currency }} {{ data.sendy_take }}</span
                       >
                     </p>
-                    <p class="all-pricing-card-text">
+                    <p
+                      class="all-pricing-card-text"
+                      v-if="data.partner_daily_rate"
+                    >
                       Partner Take (Daily):
                       <span class="all-pricing-card-values"
                         >{{ data.currency }} {{ data.partner_daily_rate }}</span
+                      >
+                    </p>
+                    <p
+                      class="all-pricing-card-text"
+                      v-if="data.partner_hourly_rate"
+                    >
+                      Partner Take (Hourly):
+                      <span class="all-pricing-card-values"
+                        >{{ data.currency }}
+                        {{ data.partner_hourly_rate }}</span
                       >
                     </p>
                     <p class="all-pricing-card-text">
@@ -621,6 +682,7 @@ export default {
       ratePerAdditionalKm: '',
       maxPartnerTakePerAdditionalKm: '',
       dailyRateValue: '',
+      hourlyRateValue: '',
       timeRangeVisibility: false,
       monthlyRate: '',
       sendyTake: '',
@@ -679,9 +741,6 @@ export default {
         name: this.selectedVendor,
         currency: this.currency,
         maximum_km: parseInt(this.maxDistance, 10),
-        daily_rate: parseInt(this.dailyRateValue, 10),
-        no_of_working_days: parseInt(this.daysWorked, 10),
-        monthly_rate: parseInt(this.monthlyRate, 10),
         rate_per_additional_km: parseInt(this.ratePerAdditionalKm, 10),
         partner_rate_per_additional_km: parseInt(
           this.maxPartnerTakePerAdditionalKm,
@@ -690,21 +749,42 @@ export default {
         sendy_take: parseInt(this.sendyTake, 10),
         fuel_inclusive: JSON.parse(this.fuelInclusivity),
         partner_price_type: this.partnerRate,
-        partner_daily_rate:
-          this.partnerRate === 'daily rate'
-            ? parseInt(this.partnerTake, 10)
-            : parseInt(this.partnerTake, 10) / parseInt(this.daysWorked, 10),
-        partner_monthly_rate:
-          this.partnerRate === 'daily rate'
-            ? parseInt(this.partnerTake, 10)
-            : parseInt(this.partnerTake, 10) * parseInt(this.daysWorked, 10),
       };
+      if (this.partnerRate === 'hourly_rate') {
+        assignments.hourly_rate = parseInt(this.hourlyRateValue, 10);
+        assignments.partner_hourly_rate = parseInt(this.partnerTake, 10);
+      } else if (this.partnerRate === 'daily rate') {
+        assignments.daily_rate = parseInt(this.dailyRateValue, 10);
+        assignments.no_of_working_days = parseInt(this.daysWorked, 10);
+        assignments.monthly_rate = parseInt(this.monthlyRate, 10);
+        assignments.partner_daily_rate = parseInt(this.partnerTake, 10);
+        assignments.partner_monthly_rate =
+          parseInt(this.partnerTake, 10) * parseInt(this.daysWorked, 10);
+      } else if (this.partnerRate === 'monthly rate') {
+        assignments.daily_rate = parseInt(this.dailyRateValue, 10);
+        assignments.no_of_working_days = parseInt(this.daysWorked, 10);
+        assignments.monthly_rate = parseInt(this.monthlyRate, 10);
+        assignments.partner_daily_rate =
+          parseInt(this.partnerTake, 10) / parseInt(this.daysWorked, 10);
+        assignments.partner_monthly_rate = parseInt(this.partnerTake, 10);
+      }
       return assignments;
     },
     addBandStatus() {
       if (
+        this.selectedVendor !== 'Bike' &&
         this.monthlyRate &&
         this.daysWorked &&
+        this.maxDistance &&
+        this.sendyTake &&
+        this.partnerTake &&
+        this.ratePerAdditionalKm &&
+        this.maxPartnerTakePerAdditionalKm
+      ) {
+        return true;
+      } else if (
+        this.selectedVendor === 'Bike' &&
+        this.hourlyRateValue &&
         this.maxDistance &&
         this.sendyTake &&
         this.partnerTake &&
@@ -737,7 +817,10 @@ export default {
     dailyRateData() {
       const data = [];
       this.configuredDedicatedPricing.forEach((row, i) => {
-        if (row.price_type === 'daily_rate') {
+        if (
+          row.price_type === 'daily_rate' ||
+          row.price_type === 'hourly_rate'
+        ) {
           row.index = i;
           data.push(row);
         }
@@ -813,6 +896,11 @@ export default {
           parseInt(this.monthlyRate, 10) - partnerTakeVal,
         );
       }
+      if (val && this.hourlyRateValue) {
+        this.sendyTake = Math.floor(
+          parseInt(this.hourlyRateValue, 10) - parseInt(this.partnerTake, 10),
+        );
+      }
     },
     partnerRate(val) {
       if (val && this.monthlyRate && this.daysWorked) {
@@ -825,6 +913,13 @@ export default {
         );
       }
     },
+    hourlyRateValue(val) {
+      if (val && this.partnerTake) {
+        this.sendyTake = Math.floor(
+          parseInt(this.hourlyRateValue, 10) - parseInt(this.partnerTake, 10),
+        );
+      }
+    },
     getAdmins(admins) {
       return (this.admin_list = admins);
     },
@@ -833,6 +928,21 @@ export default {
     },
     currency(val) {
       this.fetchVendorTypes(val);
+    },
+    selectedVendor(val) {
+      if (!this.editStatus) {
+        if (val === 'Bike') {
+          this.partnerRate = 'hourly rate';
+          this.daysWorked = '';
+          this.monthlyRate = '';
+          this.dailyRateValue = '';
+        } else {
+          this.partnerRate = 'daily rate';
+          this.hourlyRateValue = '';
+        }
+        this.sendyTake = '';
+        this.partnerTake = '';
+      }
     },
   },
   async mounted() {
@@ -844,6 +954,8 @@ export default {
     await this.fetchVendorTypes(this.defaultCurrency);
     this.tablePricingData = this.dailyRateData;
     this.selectedVendor = this.filterdVendors[0].name;
+    this.partnerRate =
+      this.selectedVendor === 'Bike' ? 'hourly rate' : 'daily rate';
     if (this.userCurrencies.length > 0) {
       this.activeCurrency =
         this.defaultCurrency in this.userCurrencies
@@ -889,6 +1001,7 @@ export default {
         days_worked: this.daysWorked,
         monthly_rate: this.monthlyRate,
         daily_rate: this.dailyRateValue,
+        hourly_rate: this.hourlyRateValue,
         sendy_take: this.sendyTake,
         fuel_inclusive: this.fuelInclusivity,
         partner_rate: this.partnerRate,
@@ -905,6 +1018,7 @@ export default {
       this.daysWorked = '';
       this.monthlyRate = '';
       this.dailyRateValue = '';
+      this.hourlyRateValue = '';
       this.ratePerAdditionalKm = '';
       this.sendyTake = '';
       this.fuelInclusivity = true;
@@ -979,6 +1093,7 @@ export default {
       this.daysWorked = this.tableData[i].days_worked;
       this.monthlyRate = this.tableData[i].monthly_rate;
       this.dailyRateValue = this.tableData[i].daily_rate;
+      this.hourlyRateValue = this.tableData[i].hourly_rate;
       this.ratePerAdditionalKm = this.tableData[i].rate_per_additional_km;
       this.maxPartnerTakePerAdditionalKm = this.tableData[
         i
@@ -995,6 +1110,7 @@ export default {
       this.tableData[this.editedBandIndex].currency = this.currency;
       this.tableData[this.editedBandIndex].maximum_distance = this.maxDistance;
       this.tableData[this.editedBandIndex].daily_rate = this.dailyRateValue;
+      this.tableData[this.editedBandIndex].hourly_rate = this.hourlyRateValue;
       this.tableData[this.editedBandIndex].days_worked = this.daysWorked;
       this.tableData[this.editedBandIndex].monthly_rate = this.monthlyRate;
       this.tableData[
@@ -1020,6 +1136,7 @@ export default {
       this.daysWorked = this.tablePricingData[i].no_of_working_days;
       this.dailyRateValue = this.tablePricingData[i].daily_rate;
       this.monthlyRate = this.tablePricingData[i].monthly_rate;
+      this.hourlyRateValue = this.tablePricingData[i].hourly_rate;
       this.ratePerAdditionalKm = this.tablePricingData[
         i
       ].rate_per_additional_km;
@@ -1029,10 +1146,17 @@ export default {
       this.sendyTake = this.tablePricingData[i].sendy_take;
       this.fuelInclusivity = this.tablePricingData[i].fuel_inclusive;
       this.partnerRate = this.tablePricingData[i].partner_price_type;
-      this.partnerTake =
-        this.tablePricingData[i].partner_price_type === 'daily rate'
-          ? this.tablePricingData[i].partner_daily_rate
-          : this.tablePricingData[i].partner_monthly_rate;
+      if (this.tablePricingData[i].partner_price_type === 'daily rate') {
+        this.partnerTake = this.tablePricingData[i].partner_daily_rate;
+      } else if (
+        this.tablePricingData[i].partner_price_type === 'hourly_rate'
+      ) {
+        this.partnerTake = this.tablePricingData[i].partner_hourly_rate;
+      } else if (
+        this.tablePricingData[i].partner_price_type === 'monthly rate'
+      ) {
+        this.partnerTake = this.tablePricingData[i].partner_monthly_rate;
+      }
       this.editStatus = true;
       this.editedBandIndex = i;
     },
@@ -1062,22 +1186,11 @@ export default {
         const vendor_id = this.vendorTypes.find(op => {
           return op.name === row.vendor;
         });
-        const partnerMonthlyRate =
-          row.partner_rate === 'daily rate'
-            ? parseInt(row.partner_amount, 10) * parseInt(row.days_worked, 10)
-            : parseInt(row.partner_amount, 10);
-        const partnerDailyRate =
-          row.partner_rate === 'monthly rate'
-            ? parseInt(row.partner_amount, 10) / parseInt(row.days_worked, 10)
-            : parseInt(row.partner_amount, 10);
         const payloadData = {
           id: vendor_id.id,
           name: row.vendor,
           currency: row.currency,
-          price_type: 'daily_rate',
-          daily_rate: parseInt(row.daily_rate, 10),
           sendy_take: parseInt(row.sendy_take, 10),
-          monthly_rate: parseInt(row.monthly_rate, 10),
           maximum_km: parseInt(row.maximum_distance, 10),
           rate_per_additional_km: parseInt(row.rate_per_additional_km, 10),
           partner_rate_per_additional_km: parseInt(
@@ -1085,16 +1198,34 @@ export default {
             10,
           ),
           fuel_inclusive: JSON.parse(row.fuel_inclusive),
-          partner_price_type: row.partner_rate,
-          partner_monthly_rate: Math.floor(partnerMonthlyRate),
-          partner_daily_rate: Math.floor(partnerDailyRate),
-          no_of_working_days: parseInt(row.days_worked, 10),
           created_by: parseInt(this.getSessionData.payload.data.admin_id),
           approved_by: this.admin.admin_id,
           date_approved: '',
           date_created: moment().format('YYYY-MM-DD HH:mm:ss'),
           status: 'Pending',
         };
+        if (row.partner_rate === 'hourly rate') {
+          payloadData.price_type = 'hourly_rate';
+          payloadData.partner_price_type = 'hourly_rate';
+          payloadData.hourly_rate = parseInt(row.hourly_rate, 10);
+          payloadData.partner_hourly_rate = parseInt(row.partner_amount, 10);
+        } else {
+          const partnerMonthlyRate =
+            row.partner_rate === 'daily rate'
+              ? parseInt(row.partner_amount, 10) * parseInt(row.days_worked, 10)
+              : parseInt(row.partner_amount, 10);
+          const partnerDailyRate =
+            row.partner_rate === 'monthly rate'
+              ? parseInt(row.partner_amount, 10) / parseInt(row.days_worked, 10)
+              : parseInt(row.partner_amount, 10);
+          payloadData.price_type = 'daily_rate';
+          payloadData.partner_price_type = row.partner_rate;
+          payloadData.daily_rate = parseInt(row.daily_rate, 10);
+          payloadData.monthly_rate = parseInt(row.monthly_rate, 10);
+          payloadData.partner_monthly_rate = Math.floor(partnerMonthlyRate);
+          payloadData.partner_daily_rate = Math.floor(partnerDailyRate);
+          payloadData.no_of_working_days = parseInt(row.days_worked, 10);
+        }
         payload.vendors.push(payloadData);
       });
       return payload;
@@ -1102,6 +1233,7 @@ export default {
     async submitConfigs() {
       this.trackPricingSubmit();
       const configParams = this.createSubmitPayload();
+      const copId = configParams.cop_id;
       const notification = [];
       let actionClass = '';
       const payload = {
@@ -1409,14 +1541,15 @@ tr:hover {
 .bands-col-1,
 .bands-col-2,
 .bands-col-3,
-.bands-col-4 {
-  width: 20%;
+.bands-col-4,
+.bands-col-5 {
+  width: 16%;
   padding-left: 15px;
   height: 50px;
   display: flex;
   align-items: center;
 }
-.bands-col-5 {
+.bands-col-6 {
   width: 20%;
   justify-content: flex-end;
   display: flex;
