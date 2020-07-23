@@ -46,6 +46,8 @@
           </el-table-column>
           <el-table-column prop="daily_rate" label="Daily rate" width="130">
           </el-table-column>
+          <el-table-column prop="hourly_rate" label="Hourly rate" width="130">
+          </el-table-column>
           <el-table-column
             prop="sendy_take"
             label="Sendy take (Amount)"
@@ -61,6 +63,12 @@
             prop="partner_daily_rate"
             label="Partner daily rate"
             width="130"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="partner_hourly_rate"
+            label="Partner hourly rate"
+            width="200"
           >
           </el-table-column>
           <el-table-column
@@ -173,7 +181,8 @@ export default {
       const data = [];
       this.configuredDedicatedPricing.forEach(row => {
         if (
-          row.price_type === 'daily_rate' &&
+          (row.price_type === 'daily_rate' ||
+            row.price_type === 'hourly_rate') &&
           row.status === 'Pending' &&
           row.approved_by === this.adminId
         ) {
