@@ -69,7 +69,48 @@
             </div>
           </div>
           <div class="new-pricing-tab-rows">
-            <div v-if="selectedVendor !== 'Bike'">
+            <div>
+              <p class="pricing-input-labels">Partner take</p>
+              <div class="pricing-radio-input-labels">
+                <input
+                  type="radio"
+                  v-model="partnerRate"
+                  value="daily rate"
+                  id="dailyRate"
+                  :disabled="mode === 'allPricing'"
+                />
+                <label for="dailyRate" class="pricing-radio-labels"
+                  >Daily Rate
+                </label>
+                <input
+                  type="radio"
+                  v-model="partnerRate"
+                  value="hourly_rate"
+                  id="hourlyRate"
+                  v-if="selectedVendor === 'Bike'"
+                  :disabled="mode === 'allPricing'"
+                />
+                <label
+                  for="hourlyRate"
+                  v-if="selectedVendor === 'Bike'"
+                  class="pricing-radio-labels"
+                  >Hourly Rate
+                </label>
+                <input
+                  type="radio"
+                  v-model="partnerRate"
+                  value="monthly rate"
+                  id="monthlyRate"
+                  :disabled="mode === 'allPricing'"
+                />
+                <label for="monthlyRate" class="pricing-radio-labels"
+                  >Monthly Rate
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="new-pricing-tab-rows">
+            <div v-if="partnerRate !== 'hourly_rate'">
               <p class="pricing-input-labels">Monthly Rate</p>
               <el-input
                 type="text"
@@ -81,7 +122,7 @@
                 </template>
               </el-input>
             </div>
-            <div v-if="selectedVendor !== 'Bike'">
+            <div v-if="partnerRate !== 'hourly_rate'">
               <p class="pricing-input-labels">No of working days per month</p>
               <el-input
                 type="text"
@@ -92,7 +133,7 @@
               >
               </el-input>
             </div>
-            <div v-if="selectedVendor !== 'Bike'">
+            <div v-if="partnerRate !== 'hourly_rate'">
               <p class="pricing-input-labels">Daily rate</p>
               <el-input
                 :disabled="true"
@@ -106,7 +147,7 @@
                 </template>
               </el-input>
             </div>
-            <div v-if="selectedVendor === 'Bike'">
+            <div v-if="partnerRate === 'hourly_rate'">
               <p class="pricing-input-labels">Hourly rate</p>
               <el-input
                 type="text"
@@ -165,29 +206,6 @@
                   {{ currency }}
                 </template>
               </el-input>
-            </div>
-            <div v-if="selectedVendor !== 'Bike'">
-              <p class="pricing-input-labels">Partner take</p>
-              <div class="pricing-radio-input-labels">
-                <input
-                  type="radio"
-                  v-model="partnerRate"
-                  value="daily rate"
-                  id="dailyRate"
-                />
-                <label for="dailyRate" class="pricing-radio-labels"
-                  >Daily Rate
-                </label>
-                <input
-                  type="radio"
-                  v-model="partnerRate"
-                  value="monthly rate"
-                  id="monthlyRate"
-                />
-                <label for="monthlyRate" class="pricing-radio-labels"
-                  >Monthly Rate
-                </label>
-              </div>
             </div>
             <div>
               <p class="pricing-input-labels">Partner take(Amount)</p>
@@ -746,6 +764,7 @@ export default {
           this.maxPartnerTakePerAdditionalKm,
           10,
         ),
+        price_type: this.partnerRate,
         sendy_take: parseInt(this.sendyTake, 10),
         fuel_inclusive: JSON.parse(this.fuelInclusivity),
         partner_price_type: this.partnerRate,
@@ -772,7 +791,7 @@ export default {
     },
     addBandStatus() {
       if (
-        this.selectedVendor !== 'Bike' &&
+        this.partnerRate !== 'hourly_rate' &&
         this.monthlyRate &&
         this.daysWorked &&
         this.maxDistance &&
@@ -783,7 +802,7 @@ export default {
       ) {
         return true;
       } else if (
-        this.selectedVendor === 'Bike' &&
+        this.partnerRate === 'hourly_rate' &&
         this.hourlyRateValue &&
         this.maxDistance &&
         this.sendyTake &&
@@ -912,6 +931,12 @@ export default {
           parseInt(this.monthlyRate, 10) - partnerTakeVal,
         );
       }
+      if (val === 'hourly_rate') {
+        this.monthlyRate = '';
+        this.dailyRateValue = '';
+      } else {
+        this.hourlyRateValue = '';
+      }
     },
     hourlyRateValue(val) {
       if (val && this.partnerTake) {
@@ -931,15 +956,11 @@ export default {
     },
     selectedVendor(val) {
       if (!this.editStatus) {
-        if (val === 'Bike') {
-          this.partnerRate = 'hourly rate';
-          this.daysWorked = '';
-          this.monthlyRate = '';
-          this.dailyRateValue = '';
-        } else {
-          this.partnerRate = 'daily rate';
-          this.hourlyRateValue = '';
-        }
+        this.partnerRate = 'daily rate';
+        this.daysWorked = '';
+        this.monthlyRate = '';
+        this.dailyRateValue = '';
+        this.hourlyRateValue = '';
         this.sendyTake = '';
         this.partnerTake = '';
       }
@@ -954,8 +975,6 @@ export default {
     await this.fetchVendorTypes(this.defaultCurrency);
     this.tablePricingData = this.dailyRateData;
     this.selectedVendor = this.filterdVendors[0].name;
-    this.partnerRate =
-      this.selectedVendor === 'Bike' ? 'hourly rate' : 'daily rate';
     if (this.userCurrencies.length > 0) {
       this.activeCurrency =
         this.defaultCurrency in this.userCurrencies
@@ -1204,7 +1223,7 @@ export default {
           date_created: moment().format('YYYY-MM-DD HH:mm:ss'),
           status: 'Pending',
         };
-        if (row.partner_rate === 'hourly rate') {
+        if (row.partner_rate === 'hourly_rate') {
           payloadData.price_type = 'hourly_rate';
           payloadData.partner_price_type = 'hourly_rate';
           payloadData.hourly_rate = parseInt(row.hourly_rate, 10);
@@ -1282,6 +1301,7 @@ export default {
     },
     async editConfigs(index) {
       delete this.configuredDedicatedPricing[index].index;
+      delete this.configuredDedicatedPricing[index].table_index;
       const configParams = {
         cop_id: this.copId,
         cop_name: this.copName,
