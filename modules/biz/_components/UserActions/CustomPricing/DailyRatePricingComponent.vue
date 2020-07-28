@@ -87,12 +87,18 @@
                   v-model="partnerRate"
                   value="hourly_rate"
                   id="hourlyRate"
-                  v-if="selectedVendor === 'Bike'"
+                  v-if="
+                    selectedVendor === 'Bike' &&
+                      parseInt(user.user_details.payment_option, 10) === 2
+                  "
                   :disabled="mode === 'allPricing'"
                 />
                 <label
                   for="hourlyRate"
-                  v-if="selectedVendor === 'Bike'"
+                  v-if="
+                    selectedVendor === 'Bike' &&
+                      parseInt(user.user_details.payment_option, 10) === 2
+                  "
                   class="pricing-radio-labels"
                   >Hourly Rate
                 </label>
