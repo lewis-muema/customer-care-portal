@@ -34,14 +34,10 @@
           order.order_details.order_no !== order.order_details.parent_order_no
       "
     >
-      <span class=""
-        ><LowerSlideComponent :orderno="order" :rates="conversionRates"
-      /></span>
+      <span class=""><LowerSlideComponent :orderno="order"/></span>
     </div>
     <div v-else>
-      <span class=""
-        ><TheLowerSlideComponent :orderno="orderno" :rates="conversionRates"
-      /></span>
+      <span class=""><TheLowerSlideComponent :orderno="orderno"/></span>
     </div>
   </td>
 </template>
@@ -75,16 +71,6 @@ export default {
       blinderActive: false,
     };
   },
-  computed: {
-    ...mapGetters({
-      getExchangeRates: 'getExchangeRates',
-    }),
-  },
-  watch: {
-    getExchangeRates(value) {
-      return (this.conversionRates = value);
-    },
-  },
   created() {
     this.singleOrderRequest();
   },
@@ -92,7 +78,6 @@ export default {
     this.$root.$off(`Save Driver ${this.orderno}`);
   },
   mounted() {
-    this.setExchangeRates();
     this.rootListener();
     const notification = [];
     const actionClass = '';

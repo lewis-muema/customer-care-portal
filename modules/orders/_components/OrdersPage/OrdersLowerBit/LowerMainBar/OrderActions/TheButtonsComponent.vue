@@ -307,7 +307,7 @@
           role="tabpanel"
           v-if="showTab === `return_${orderNo}`"
         >
-          <TheReturnComponent :order="order" :rates="rates" />
+          <TheReturnComponent :order="order" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -392,10 +392,6 @@ export default {
   props: {
     order: {
       type: Object,
-      required: true,
-    },
-    rates: {
-      type: Array,
       required: true,
     },
   },
