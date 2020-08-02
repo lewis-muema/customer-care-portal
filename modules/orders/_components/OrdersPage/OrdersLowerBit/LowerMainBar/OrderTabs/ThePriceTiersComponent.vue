@@ -23,17 +23,11 @@
         </td>
         <td>45</td>
         <td
-          v-html="
-            showCurrencyBasedAmounts(orderDetails, rates, tier.discount_amount)
-          "
+          v-html="showCurrencyBasedAmounts(orderDetails, tier.discount_amount)"
         ></td>
+        <td v-html="showCurrencyBasedAmounts(orderDetails, tier.cost)"></td>
         <td
-          v-html="showCurrencyBasedAmounts(orderDetails, rates, tier.cost)"
-        ></td>
-        <td
-          v-html="
-            showCurrencyBasedAmounts(orderDetails, rates, tier.return_cost)
-          "
+          v-html="showCurrencyBasedAmounts(orderDetails, tier.return_cost)"
         ></td>
       </tr>
     </tbody>
@@ -44,7 +38,7 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'ThePriceTiersComponent',
-  props: ['order', 'eta', 'rates'],
+  props: ['order', 'eta'],
 
   data() {
     return {

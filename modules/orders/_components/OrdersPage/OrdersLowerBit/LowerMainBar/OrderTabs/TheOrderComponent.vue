@@ -12,11 +12,7 @@
           <td>Order Amount</td>
           <td
             v-html="
-              showCurrencyBasedAmounts(
-                orderDetails,
-                currencyConversions,
-                calculatedOrderAmount,
-              )
+              showCurrencyBasedAmounts(orderDetails, calculatedOrderAmount)
             "
           ></td>
         </tr>
@@ -31,7 +27,6 @@
             v-html="
               showCurrencyBasedAmounts(
                 orderDetails,
-                currencyConversions,
                 paymentDetails.economy_order_cost,
               )
             "
@@ -43,7 +38,6 @@
             v-html="
               display_conditional_amounts(
                 orderDetails,
-                currencyConversions,
                 paymentDetails.extra_distance_amount,
               )
             "
@@ -55,7 +49,6 @@
             v-html="
               display_conditional_amounts(
                 orderDetails,
-                currencyConversions,
                 paymentDetails.waiting_time_amount,
               )
             "
@@ -119,7 +112,6 @@
             v-html="
               display_conditional_amounts(
                 orderDetails,
-                currencyConversions,
                 riderDetails.rider_amount,
               )
             "
@@ -131,7 +123,6 @@
             v-html="
               showCurrencyBasedAmounts(
                 orderDetails,
-                currencyConversions,
                 paymentDetails.insurance_amount,
               )
             "
@@ -142,11 +133,7 @@
           <td>Sendy Fee</td>
           <td
             v-html="
-              showCurrencyBasedAmounts(
-                orderDetails,
-                currencyConversions,
-                paymentDetails.sendy_fee,
-              )
+              showCurrencyBasedAmounts(orderDetails, paymentDetails.sendy_fee)
             "
           >
             ?>
@@ -160,11 +147,7 @@
           <td>VAT Amount</td>
           <td
             v-html="
-              showCurrencyBasedAmounts(
-                orderDetails,
-                currencyConversions,
-                paymentDetails.vat_amount,
-              )
+              showCurrencyBasedAmounts(orderDetails, paymentDetails.vat_amount)
             "
           >
             ?>
@@ -174,11 +157,7 @@
           <td>Rider cost</td>
           <td
             v-html="
-              display_conditional_amounts(
-                orderDetails,
-                currencyConversions,
-                riderDetails.rider_cost,
-              )
+              display_conditional_amounts(orderDetails, riderDetails.rider_cost)
             "
           ></td>
         </tr>
@@ -200,7 +179,6 @@
             v-html="
               display_cash_to_collect(
                 orderDetails,
-                currencyConversions,
                 paymentDetails.cash_to_collect,
                 paymentDetails.cash_status,
               )
@@ -223,10 +201,6 @@ export default {
       type: Object,
       required: true,
     },
-    rates: {
-      type: Array,
-      required: true,
-    },
   },
   data() {
     return {
@@ -236,7 +210,6 @@ export default {
       moreData: false,
       clientDetails: false,
       calculatedOrderAmount: false,
-      currencyConversions: this.rates,
     };
   },
   computed: {
@@ -267,16 +240,10 @@ export default {
     );
   },
   methods: {
-    display_cash_to_collect(
-      orderDetails,
-      currencyConversions,
-      amount,
-      cashStatus,
-    ) {
+    display_cash_to_collect(orderDetails, amount, cashStatus) {
       let displayAmount = 0;
       const convertedAmount = this.showCurrencyBasedAmounts(
         orderDetails,
-        currencyConversions,
         amount,
       );
       if (cashStatus) {
