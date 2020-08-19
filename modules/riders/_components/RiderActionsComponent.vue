@@ -99,6 +99,18 @@
             Top Up
           </a>
         </li>
+        <li class="nav-item" v-if="unblockPermission()">
+          <a
+            class="nav-link action-list dispatch-tab"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('unblockdispatch', riderID)"
+            :id="`unblockdispatch_${riderID}`"
+          >
+            <span class="fa fa-fw fa-unlock"></span>
+            Unblock Rider
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -181,6 +193,14 @@
           >
             <TopUpComponent :user="user" :session="userData" />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`unblockdispatch_${riderID}`"
+            role="tabpanel"
+            v-if="showTab === `unblockdispatch_${riderID}`"
+          >
+            <UnblockRiderComponent :user="user" :session="userData" />
+          </div>
         </div>
       </div>
     </div>
@@ -200,6 +220,7 @@ export default {
     EditComponent: () => import('./RiderActions/EditComponent'),
     TheTicketComponent: () => import('~/components/UI/TheTicketComponent'),
     TopUpComponent: () => import('./RiderActions/TopUpComponent'),
+    UnblockRiderComponent: () => import('./RiderActions/UnblockRiderComponent'),
   },
   props: {
     user: {
@@ -267,6 +288,14 @@ export default {
       this.active = 'active';
       this.show = 'show';
     },
+    unblockPermission() {
+      let state = false;
+
+      if (this.user.rider_stat === 3 && this.permissions.unblock_rider) {
+        state = true;
+      }
+      return state;
+    },
   },
 };
 </script>
@@ -279,5 +308,8 @@ export default {
 }
 .nav-link .action-list .new-loan {
   width: max-content;
+}
+.dispatch-tab {
+  width: 100% !important;
 }
 </style>
