@@ -1266,4 +1266,13 @@ export default {
       return error.response;
     }
   },
+  // eslint-disable-next-line require-await
+  async unblock_rider({ rootState, dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
 };
