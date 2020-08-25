@@ -239,10 +239,11 @@
               <div class="form-inline expand-logs-section">
                 <div class="form-group col-md-4 expandable-header">
                   <label class="expandable-data">
-                    Orders to penalize for be</label
+                    {{ penalizeLabel(props.row.parameter) }}</label
                   >
                   {{
                     reassignData(
+                      props.row.parameter,
                       props.row.parameter_comp,
                       props.row.parameter_data,
                     )
@@ -650,13 +651,32 @@ export default {
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
-    reassignData(comparator, value) {
+    reassignData(param, comparator, value) {
       let resp = '';
       if (Object.keys(this.comparator).length > 0) {
-        const data = this.comparator.find(
-          location => location.code === comparator,
-        );
-        resp = `${data.name} ${value} orders`;
+        if (param === 'REASSIGNED') {
+          const response = [];
+          const arr = JSON.parse(value);
+          for (let i = 0; i < arr.length; i++) {
+            const extract = this.reasons_data.find(
+              location => location.code === arr[i],
+            );
+            response.push(extract.name);
+            resp = response.toString();
+          }
+        } else {
+          const data = this.comparator.find(
+            location => location.code === comparator,
+          );
+          resp = `${data.name} ${value} orders`;
+        }
+      }
+      return resp;
+    },
+    penalizeLabel(val) {
+      let resp = 'Orders to penalize for be';
+      if (val === 'REASSIGNED') {
+        resp = 'Reassign reasons to penalize for ';
       }
       return resp;
     },
