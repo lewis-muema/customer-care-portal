@@ -168,7 +168,7 @@ export default {
     },
     hideSearch() {
       let hide = true;
-      if (this.user === 'rewards') {
+      if (this.user === 'rewards' || this.user === 'refund') {
         hide = false;
       }
       return hide;
