@@ -311,7 +311,8 @@ export default {
         params: {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
-          action_id: this.paymentMethod === 9 ? 28 : action_id,
+          action_id:
+            this.paymentMethod === 9 && !this.isChargeEntity ? 28 : action_id,
           action_data: action_payload,
           request_id: `11211`,
           action_user: this.actionUser,
