@@ -2,7 +2,7 @@
   <div class="box box-primary order-main-lowerslide ">
     <div class="body-box lower_slide_body">
       <!-- <div class="tabs custom_more"> -->
-      <TheButtonsComponent :order="order" :rates="rates" />
+      <TheButtonsComponent :order="order" />
       <!-- </div> -->
     </div>
   </div>
@@ -18,10 +18,6 @@ export default {
   props: {
     order: {
       type: Object,
-      required: true,
-    },
-    rates: {
-      type: Array,
       required: true,
     },
   },

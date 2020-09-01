@@ -1202,4 +1202,32 @@ export default {
       return error.response;
     }
   },
+
+  async request_refund_data({ dispatch }, payload) {
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    try {
+      const res = await dispatch('requestAxiosPost', payload, param, {
+        root: true,
+      });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async unblock_rider({ rootState, dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
 };

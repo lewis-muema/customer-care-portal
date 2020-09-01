@@ -75,6 +75,11 @@ export default {
           description: '',
           mainName: 'Home',
         },
+        refund: {
+          name: 'Permits Refunds',
+          description: '',
+          mainName: 'Home',
+        },
         user: {
           name: 'User',
           description: '3CX Users',

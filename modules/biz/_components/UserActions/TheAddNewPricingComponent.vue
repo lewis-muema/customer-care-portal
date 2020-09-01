@@ -15,8 +15,21 @@
               :value="model.model_id"
               :id="model.model_id"
               v-model="checkedPricingModel"
+              :disabled="
+                parseInt(user.user_details.payment_option, 10) !== 2 &&
+                  model.model_id === 6
+              "
             />
-            <label :for="model.model_id">{{ model.pricing_model_name }}</label>
+            <label
+              :for="model.model_id"
+              :class="
+                parseInt(user.user_details.payment_option, 10) !== 2 &&
+                model.model_id === 6
+                  ? 'disabled-price-option'
+                  : ''
+              "
+              >{{ model.pricing_model_name }}</label
+            >
           </div>
         </div>
         <button
@@ -304,5 +317,11 @@ tr:hover {
 }
 .table td {
   padding: 5px !important;
+}
+.disabled-price-option {
+  background: #d7dfe4f2;
+  color: #949191;
+  border-color: #c3b9b9;
+  pointer-events: none;
 }
 </style>
