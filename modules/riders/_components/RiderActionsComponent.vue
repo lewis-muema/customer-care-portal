@@ -249,10 +249,7 @@ export default {
       return currency;
     },
     ticketData() {
-      const splitName = this.user.rider_name.split(' ');
-      const split_SName = splitName.length > 1 ? splitName[1] : null;
-      const f_name = this.user.rider_name;
-      const s_name = this.user.s_name;
+      const userName = this.user.rider_name.split(' ');
       const id = this.user.rider_id;
       const userPhone = this.user.phone_no !== '' ? this.user.phone_no : '';
 
@@ -260,8 +257,8 @@ export default {
         id,
         title: `${userPhone} ( Rider)`,
         customer: {
-          firstName: s_name.length > 1 ? f_name : splitName[0],
-          lastName: s_name.length > 1 ? s_name : split_SName || '. ',
+          firstName: userName[0],
+          lastName: userName.length > 1 ? userName[1] : '. ',
           email: this.user.email === null ? '' : this.user.email,
           phone: userPhone,
         },
