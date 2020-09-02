@@ -21,7 +21,7 @@
                   v-if="
                     order.order_details.confirm_status === 0 &&
                       !cancelStatus() &&
-                      hasFreightPermissions()
+                      permissions.freight_actions_assign_rider
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -50,7 +50,7 @@
                     order.order_details.confirm_status !== 0 &&
                       !completeStatus() &&
                       !cancelStatus() &&
-                      hasFreightPermissions()
+                      permissions.freight_actions_finances
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -65,7 +65,7 @@
                   v-if="
                     !completeStatus() &&
                       !cancelStatus() &&
-                      hasFreightPermissions()
+                      permissions.freight_actions_order_statuses
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -139,7 +139,7 @@
                     ActiveTab === 'finances' &&
                       (!completeStatus() &&
                         !cancelStatus() &&
-                        hasFreightPermissions())
+                        permissions.freight_actions_finances)
                   "
                   :order="order"
                 />
@@ -148,7 +148,7 @@
                     ActiveTab === 'assign' &&
                       (!completeStatus() &&
                         !cancelStatus() &&
-                        hasFreightPermissions())
+                        permissions.freight_actions_assign_rider)
                   "
                   :order="order"
                 />
@@ -157,7 +157,7 @@
                     ActiveTab === 'status' &&
                       (!completeStatus() &&
                         !cancelStatus() &&
-                        hasFreightPermissions())
+                        permissions.freight_actions_order_statuses)
                   "
                   :order="order"
                 />
@@ -242,6 +242,9 @@ export default {
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
   },
   mounted() {
     const notification = [];
@@ -274,16 +277,6 @@ export default {
     },
     cancelStatus() {
       if (this.order.order_details.order_status === 'cancelled') {
-        return true;
-      }
-      return false;
-    },
-    hasFreightPermissions() {
-      const privileges = JSON.parse(this.userData.payload.data.privilege);
-      if (
-        Object.prototype.hasOwnProperty.call(privileges, 'freight_actions') &&
-        privileges.freight_actions
-      ) {
         return true;
       }
       return false;

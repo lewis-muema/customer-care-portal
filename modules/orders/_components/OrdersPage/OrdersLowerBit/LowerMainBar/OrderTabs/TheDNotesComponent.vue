@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div v-if="!DeliverImg || DeliverImg.length === 0">
+    <div v-if="DeliverImg.length === 0">
       No DNotes found for this delivery
     </div>
     <div v-else>
