@@ -14,7 +14,7 @@
             Edit
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_payment">
+        <li class="nav-item" v-if="permissions.approve_payment_biz">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -62,7 +62,10 @@
             Invoice Receiver
           </a>
         </li>
-        <li class="nav-item custom-padding" v-if="hasInvoicePermissions()">
+        <li
+          class="nav-item custom-padding"
+          v-if="permissions.approve_custom_invoice_3"
+        >
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -74,7 +77,10 @@
             New Invoice
           </a>
         </li>
-        <li class="nav-item custom-padding" v-if="hasInvoicePermissions()">
+        <li
+          class="nav-item custom-padding"
+          v-if="permissions.approve_custom_invoice_4"
+        >
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -86,12 +92,7 @@
             Reverse Invoice
           </a>
         </li>
-        <li
-          class="nav-item"
-          v-if="
-            permissions.approve_vat_configs || permissions.approve_vat_configs_2
-          "
-        >
+        <li class="nav-item" v-if="permissions.approve_vat_configs_biz">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -419,30 +420,11 @@ export default {
           approve_billing = true;
         }
       } else {
-        if (
-          this.permissions.approve_prepay_billing ||
-          this.permissions.approve_prepay_billing_2
-        ) {
+        if (this.permissions.approve_prepay_billing_biz) {
           approve_billing = true;
         }
       }
       return approve_billing;
-    },
-
-    hasInvoicePermissions() {
-      const privileges = JSON.parse(this.userData.payload.data.privilege);
-      if (
-        Object.prototype.hasOwnProperty.call(
-          privileges,
-          'approve_custom_invoice',
-        ) &&
-        (privileges.approve_custom_invoice ||
-          privileges.approve_custom_invoice_3 ||
-          privileges.approve_custom_invoice_4)
-      ) {
-        return true;
-      }
-      return false;
     },
   },
 };

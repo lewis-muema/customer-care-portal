@@ -14,7 +14,10 @@
             Bill Rider
           </a>
         </li>
-        <li class="nav-item" v-if="hasTransactionPermissions()">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_repay_loan"
+        >
           <a
             class="nav-link action-list repay-loan"
             data-toggle="tab"
@@ -26,7 +29,10 @@
             Repay Loan
           </a>
         </li>
-        <li class="nav-item" v-if="hasTransactionPermissions()">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_transfer"
+        >
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -51,7 +57,10 @@
           </a>
         </li>
 
-        <li class="nav-item" v-if="hasTransactionPermissions()">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_new_loan"
+        >
           <a
             class="nav-link action-list new-loan"
             data-toggle="tab"
@@ -87,7 +96,10 @@
             Ticket
           </a>
         </li>
-        <li class="nav-item" v-if="hasTransactionPermissions()">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_top_up"
+        >
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -298,23 +310,6 @@ export default {
         state = true;
       }
       return state;
-    },
-
-    hasTransactionPermissions() {
-      const privileges = JSON.parse(this.userData.payload.data.privilege);
-      if (
-        Object.prototype.hasOwnProperty.call(
-          privileges,
-          'approve_rider_transaction',
-        ) &&
-        (privileges.approve_rider_transaction ||
-          privileges.approve_rider_transaction_1 ||
-          privileges.approve_rider_transaction_2 ||
-          privileges.approve_rider_transaction_3)
-      ) {
-        return true;
-      }
-      return false;
     },
   },
 };

@@ -2,10 +2,7 @@
   <div class="body-box user_button_view_peer">
     <div id="tabs" class="container custom_more">
       <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
-        <li
-          class="nav-item"
-          v-if="permissions.approve_payment || permissions.approve_payment_1"
-        >
+        <li class="nav-item" v-if="permissions.approve_payment_peer">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -17,13 +14,7 @@
             Payment
           </a>
         </li>
-        <li
-          class="nav-item"
-          v-if="
-            permissions.approve_prepay_billing ||
-              permissions.approve_prepay_billing_1
-          "
-        >
+        <li class="nav-item" v-if="permissions.approve_prepay_billing_peer">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -47,12 +38,7 @@
             Ticket
           </a>
         </li>
-        <li
-          class="nav-item"
-          v-if="
-            permissions.approve_vat_configs || permissions.approve_vat_configs_1
-          "
-        >
+        <li class="nav-item" v-if="permissions.approve_vat_configs_peer">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -66,7 +52,7 @@
         </li>
         <li
           class="nav-item custom_invoice-padding"
-          v-if="hasInvoicePermissions()"
+          v-if="permissions.approve_custom_invoice_1"
         >
           <a
             class="nav-link action-list custom-width"
@@ -79,7 +65,7 @@
             New Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="hasInvoicePermissions()">
+        <li class="nav-item" v-if="permissions.approve_custom_invoice_2">
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -248,22 +234,6 @@ export default {
       this.showTab = `${tab}_${userID}`;
       this.active = 'active';
       this.show = 'show';
-    },
-
-    hasInvoicePermissions() {
-      const privileges = JSON.parse(this.userData.payload.data.privilege);
-      if (
-        Object.prototype.hasOwnProperty.call(
-          privileges,
-          'approve_custom_invoice',
-        ) &&
-        (privileges.approve_custom_invoice ||
-          privileges.approve_custom_invoice_1 ||
-          privileges.approve_custom_invoice_2)
-      ) {
-        return true;
-      }
-      return false;
     },
   },
 };
