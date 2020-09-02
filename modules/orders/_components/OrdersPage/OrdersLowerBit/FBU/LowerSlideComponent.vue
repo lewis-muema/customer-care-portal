@@ -277,7 +277,10 @@ export default {
       const privileges = JSON.parse(this.userData.payload.data.privilege);
       if (
         Object.prototype.hasOwnProperty.call(privileges, 'freight_actions') &&
-        privileges.freight_actions
+        (privileges.freight_actions ||
+          privileges.freight_actions_1 ||
+          privileges.freight_actions_2 ||
+          privileges.freight_actions_3)
       ) {
         return true;
       }
