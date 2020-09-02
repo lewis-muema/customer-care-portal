@@ -34,7 +34,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['config']),
+    ...mapState(['config', 'cities']),
 
     url() {
       return this.config.RABBITMQ_URL;
@@ -163,13 +163,20 @@ export default {
       pushobj.vendor_type_id = this.order_push.vendor_type;
       pushobj.orderCountryCode = this.order_push.country_codes;
       pushobj.push_order = true;
-      pushobj.city_id = city_id;
+      pushobj.city_name = this.fetchCity(city_id);
       this.pushes.push(pushobj);
       this.handlePush(pushobj);
     },
 
     handlePush(pushobj) {
       this.$emit('pushedSomething', pushobj);
+    },
+
+    fetchCity(cityID) {
+      this.citiesData = this.cities;
+      const result = _.find(this.citiesData, ['city_id', cityID]);
+
+      return result.city_name;
     },
 
     deteremineOrderType(priceType) {

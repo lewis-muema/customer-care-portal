@@ -14,7 +14,10 @@
             Bill Rider
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_rider_transaction">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_repay_loan"
+        >
           <a
             class="nav-link action-list repay-loan"
             data-toggle="tab"
@@ -26,7 +29,10 @@
             Repay Loan
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_rider_transaction">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_transfer"
+        >
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -51,7 +57,10 @@
           </a>
         </li>
 
-        <li class="nav-item" v-if="permissions.approve_rider_transaction">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_new_loan"
+        >
           <a
             class="nav-link action-list new-loan"
             data-toggle="tab"
@@ -87,7 +96,10 @@
             Ticket
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_rider_transaction">
+        <li
+          class="nav-item"
+          v-if="permissions.approve_rider_transaction_top_up"
+        >
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -249,7 +261,10 @@ export default {
       return currency;
     },
     ticketData() {
-      const userName = this.user.rider_name.split(' ');
+      const splitName = this.user.rider_name.split(' ');
+      const split_SName = splitName.length > 1 ? splitName[1] : null;
+      const f_name = this.user.rider_name;
+      const s_name = this.user.s_name;
       const id = this.user.rider_id;
       const userPhone = this.user.phone_no !== '' ? this.user.phone_no : '';
 
@@ -257,8 +272,8 @@ export default {
         id,
         title: `${userPhone} ( Rider)`,
         customer: {
-          firstName: userName[0],
-          lastName: userName.length > 1 ? userName[1] : '. ',
+          firstName: s_name.length > 1 ? f_name : splitName[0],
+          lastName: s_name.length > 1 ? s_name : split_SName || '. ',
           email: this.user.email === null ? '' : this.user.email,
           phone: userPhone,
         },
