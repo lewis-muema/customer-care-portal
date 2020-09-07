@@ -1625,3 +1625,6 @@ color: #000000;
   color: #212529;
   background-color: rgba(0,0,0,.075) !important;
 }
+.text-grey {
+  color: #b8c7ce !important;
+}
