@@ -2,131 +2,133 @@
 eslint-disable no-shadow */ /* eslint-disable no-shadow */ /* eslint-disable
 no-shadow */
 <template>
-  <table
-    id="rider_list"
-    class="table  table-bordered table-hover"
-    :key="riderTable"
-  >
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Vendor</th>
-        <th>City</th>
-        <th>Box</th>
-        <th>Current</th>
-        <th>Loan</th>
-        <th>Savings</th>
-        <th>Status</th>
-        <th>Online Status</th>
-        <th>Order Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-if="riderID === null">
-        <td colspan="11">Search to view Rider details.</td>
-      </tr>
-      <template v-else>
-        <tr v-if="loading">
-          <i class="fa fa-spinner fa-spin loader"></i>
+  <div class="table-responsive">
+    <table
+      id="rider_list"
+      class="table  table-bordered table-hover"
+      :key="riderTable"
+    >
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Vendor</th>
+          <th>City</th>
+          <th>Box</th>
+          <th>Current</th>
+          <th>Loan</th>
+          <th>Savings</th>
+          <th>Status</th>
+          <th>Online Status</th>
+          <th>Order Status</th>
         </tr>
-        <tr
-          v-else-if="riderDetails !== null"
-          @click="toggle('rider')"
-          :class="{ opened: opened.includes('rider') }"
-        >
-          <td>{{ riderDetails.rider_name }}</td>
-          <td>{{ riderDetails.phone_no }}</td>
-          <td>{{ determine_vendor_name(riderDetails.vendor_type) }}</td>
-          <td>{{ riderDetails.city_name }}</td>
-          <td>
-            {{
-              get_carrier_type(
-                riderDetails.carrier_type,
-                riderDetails.vendor_type,
-              )
-            }}
-          </td>
-          <td>
-            {{ riderDetails.default_currency }}
-            {{
-              riderDetails.current_list.length > 0
-                ? new Intl.NumberFormat().format(
-                    Math.round(riderDetails.current_list[0].rb),
-                  )
-                : '0'
-            }}
-          </td>
-          <td>
-            {{ riderDetails.default_currency }}
-            {{
-              riderDetails.loans_list.length > 0
-                ? new Intl.NumberFormat().format(
-                    Math.round(riderDetails.loans_list[0].rb),
-                  )
-                : '0'
-            }}
-          </td>
-          <td>
-            {{ riderDetails.default_currency }}
-            {{
-              riderDetails.savings_list.length > 0
-                ? new Intl.NumberFormat().format(
-                    Math.round(riderDetails.savings_list[0].rb),
-                  )
-                : '0'
-            }}
-          </td>
-          <td>
-            <span :class="`label label-${showClass}`">
-              {{ get_account_status(riderDetails.status) }}
-            </span>
-          </td>
-          <td>
-            <span :class="`label label-${showClass1}`">
-              {{ get_online_status(riderDetails.rider_stat) }}
-            </span>
-          </td>
-          <td>
-            <span :class="`label label-${showClass}`">
+      </thead>
+      <tbody>
+        <tr v-if="riderID === null">
+          <td colspan="11">Search to view Rider details.</td>
+        </tr>
+        <template v-else>
+          <tr v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i>
+          </tr>
+          <tr
+            v-else-if="riderDetails !== null"
+            @click="toggle('rider')"
+            :class="{ opened: opened.includes('rider') }"
+          >
+            <td>{{ riderDetails.rider_name }}</td>
+            <td>{{ riderDetails.phone_no }}</td>
+            <td>{{ determine_vendor_name(riderDetails.vendor_type) }}</td>
+            <td>{{ riderDetails.city_name }}</td>
+            <td>
               {{
-                getOrderServiceStatus(
-                  riderDetails.delivery_detail,
-                  riderDetails.status,
+                get_carrier_type(
+                  riderDetails.carrier_type,
+                  riderDetails.vendor_type,
                 )
               }}
-            </span>
-          </td>
-        </tr>
+            </td>
+            <td>
+              {{ riderDetails.default_currency }}
+              {{
+                riderDetails.current_list.length > 0
+                  ? new Intl.NumberFormat().format(
+                      Math.round(riderDetails.current_list[0].rb),
+                    )
+                  : '0'
+              }}
+            </td>
+            <td>
+              {{ riderDetails.default_currency }}
+              {{
+                riderDetails.loans_list.length > 0
+                  ? new Intl.NumberFormat().format(
+                      Math.round(riderDetails.loans_list[0].rb),
+                    )
+                  : '0'
+              }}
+            </td>
+            <td>
+              {{ riderDetails.default_currency }}
+              {{
+                riderDetails.savings_list.length > 0
+                  ? new Intl.NumberFormat().format(
+                      Math.round(riderDetails.savings_list[0].rb),
+                    )
+                  : '0'
+              }}
+            </td>
+            <td>
+              <span :class="`label label-${showClass}`">
+                {{ get_account_status(riderDetails.status) }}
+              </span>
+            </td>
+            <td>
+              <span :class="`label label-${showClass1}`">
+                {{ get_online_status(riderDetails.rider_stat) }}
+              </span>
+            </td>
+            <td>
+              <span :class="`label label-${showClass}`">
+                {{
+                  getOrderServiceStatus(
+                    riderDetails.delivery_detail,
+                    riderDetails.status,
+                  )
+                }}
+              </span>
+            </td>
+          </tr>
 
-        <tr v-if="opened.includes('rider')">
-          <td colspan="11" class="user-details">
-            <div class="lower_slide_bit" style="" :id="`bumba_${riderID}`">
-              <div class="row">
-                <SideComponent :details="riderDetails" />
-                <MainComponent :rider="riderDetails" />
+          <tr v-if="opened.includes('rider')">
+            <td colspan="11" class="user-details">
+              <div class="lower_slide_bit" style="" :id="`bumba_${riderID}`">
+                <div class="row">
+                  <SideComponent :details="riderDetails" />
+                  <MainComponent :rider="riderDetails" />
+                </div>
               </div>
-            </div>
-          </td>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Vendor</th>
+          <th>City</th>
+          <th>Box</th>
+          <th>Current</th>
+          <th>Loan</th>
+          <th>Savings</th>
+          <th>Status</th>
+          <th>Online Status</th>
+          <th>Order Status</th>
         </tr>
-      </template>
-    </tbody>
-    <tfoot>
-      <tr>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Vendor</th>
-        <th>City</th>
-        <th>Box</th>
-        <th>Current</th>
-        <th>Loan</th>
-        <th>Savings</th>
-        <th>Status</th>
-        <th>Online Status</th>
-        <th>Order Status</th>
-      </tr>
-    </tfoot>
-  </table>
+      </tfoot>
+    </table>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex';

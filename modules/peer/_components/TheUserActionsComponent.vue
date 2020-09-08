@@ -77,6 +77,18 @@
             Reverse Invoice
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reversals', userID)"
+            :id="`reversals_${userID}`"
+          >
+            <span class="fa fa-fw fa-history"></span>
+            Reversals & Credit Note
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -155,6 +167,20 @@
               :session="userData"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reversals_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `reversals_${userID}`"
+          >
+            <TheReveralsComponent
+              :user="user"
+              :currency="currency"
+              :session="userData"
+              :user-type="category"
+              :id="userID"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -174,6 +200,8 @@ export default {
       import('./UserActions/TheCustomInvoiceComponent'),
     TheReverseInvoiceComponent: () =>
       import('./UserActions/TheReverseInvoiceComponent'),
+    TheReveralsComponent: () =>
+      import('../../users/_components/Reversals/TheReveralsComponent'),
   },
   props: {
     user: {

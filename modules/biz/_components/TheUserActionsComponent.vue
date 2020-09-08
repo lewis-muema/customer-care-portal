@@ -158,6 +158,18 @@
             Millers tonnage
           </a>
         </li>
+        <li class="nav-item reversal-item">
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reversals', copID)"
+            :id="`reversals_${copID}`"
+          >
+            <span class="fa fa-fw fa-clipboard"></span>
+            Reversals & Credit Note
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -298,6 +310,20 @@
               :currency="currency"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reversals_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `reversals_${copID}`"
+          >
+            <TheReveralsComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+              :user-type="category"
+              :id="copID"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -327,6 +353,8 @@ export default {
       import('./UserActions/TheOfflineOrdersComponent'),
     TheMillersTonnageComponent: () =>
       import('./UserActions/TheMillersTonnageComponent'),
+    TheReveralsComponent: () =>
+      import('../../users/_components/Reversals/TheReveralsComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -475,5 +503,8 @@ export default {
 }
 .custom-width {
   width: 100% !important;
+}
+.reversal-item {
+  width: 24%;
 }
 </style>
