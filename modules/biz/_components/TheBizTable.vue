@@ -1,82 +1,87 @@
 <template>
-  <table class="table  table-bordered table-hover" :key="bizTable">
-    <thead>
-      <tr>
-        <th>&nbsp;</th>
-        <th>Acc No</th>
-        <th>Cop Name</th>
-        <th>Cop Phone</th>
-        <th>Email</th>
-        <th>Acc Manager</th>
+  <div class="table-responsive">
+    <table class="table  table-bordered table-hover" :key="bizTable">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Acc No</th>
+          <th>Cop Name</th>
+          <th>Cop Phone</th>
+          <th>Email</th>
+          <th>Acc Manager</th>
 
-        <th>Status</th>
-        <th>Date</th>
-      </tr>
-    </thead>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <tr v-if="copID === null">
-        <td colspan="8">Search to view Biz details.</td>
-      </tr>
-      <template v-else>
-        <tr v-if="userDetails === null">
-          <i class="fa fa-spinner fa-spin loader"></i>
+      <tbody>
+        <tr v-if="copID === null">
+          <td colspan="8">Search to view Biz details.</td>
         </tr>
-        <tr
-          v-else
-          @click="toggle('biz')"
-          :class="{ opened: opened.includes('biz') }"
-        >
-          <td>{{ offset }}</td>
-          <td>SENDY {{ userDetails.cop_id }}</td>
-          <td>
-            <span data-toggle="tooltip" :title="`${userDetails.cop_name}`">
-              {{ smartify_display(userDetails.cop_name, 20) }}
-            </span>
-          </td>
-          <td align="right">{{ userDetails.cop_phone }}</td>
-          <td>{{ userDetails.cop_email }}</td>
-          <td>
-            {{
-              userDetails.account_manager
-                ? userDetails.account_manager
-                : 'No account manager'
-            }}
-          </td>
-          <td>
-            <span :class="`label label-${showClass}`"> {{ status }}</span>
-          </td>
-          <td>
-            {{
-              getFormattedDate(userDetails.date_signed_up, 'hh.mm a DD/MM/YYYY')
-            }}
-          </td>
-        </tr>
-        <tr v-if="opened.includes('biz')">
-          <td colspan="8" class="user-details">
-            <div class="lower_slide_bit" style="" :id="`bumba_${copID}`">
-              <div class="row">
-                <TheSideComponent :details="userDetails" />
-                <TheMainComponent :user="userInfo" />
+        <template v-else>
+          <tr v-if="userDetails === null">
+            <i class="fa fa-spinner fa-spin loader"></i>
+          </tr>
+          <tr
+            v-else
+            @click="toggle('biz')"
+            :class="{ opened: opened.includes('biz') }"
+          >
+            <td>{{ offset }}</td>
+            <td>SENDY {{ userDetails.cop_id }}</td>
+            <td>
+              <span data-toggle="tooltip" :title="`${userDetails.cop_name}`">
+                {{ smartify_display(userDetails.cop_name, 20) }}
+              </span>
+            </td>
+            <td align="right">{{ userDetails.cop_phone }}</td>
+            <td>{{ userDetails.cop_email }}</td>
+            <td>
+              {{
+                userDetails.account_manager
+                  ? userDetails.account_manager
+                  : 'No account manager'
+              }}
+            </td>
+            <td>
+              <span :class="`label label-${showClass}`"> {{ status }}</span>
+            </td>
+            <td>
+              {{
+                getFormattedDate(
+                  userDetails.date_signed_up,
+                  'hh.mm a DD/MM/YYYY',
+                )
+              }}
+            </td>
+          </tr>
+          <tr v-if="opened.includes('biz')">
+            <td colspan="8" class="user-details">
+              <div class="lower_slide_bit" style="" :id="`bumba_${copID}`">
+                <div class="row">
+                  <TheSideComponent :details="userDetails" />
+                  <TheMainComponent :user="userInfo" />
+                </div>
               </div>
-            </div>
-          </td>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Acc No</th>
+          <th>Cop Name</th>
+          <th>Cop Phone</th>
+          <th>Email</th>
+          <th>Acc Manager</th>
+          <th>Status</th>
+          <th>Date</th>
         </tr>
-      </template>
-    </tbody>
-    <tfoot>
-      <tr>
-        <th>&nbsp;</th>
-        <th>Acc No</th>
-        <th>Cop Name</th>
-        <th>Cop Phone</th>
-        <th>Email</th>
-        <th>Acc Manager</th>
-        <th>Status</th>
-        <th>Date</th>
-      </tr>
-    </tfoot>
-  </table>
+      </tfoot>
+    </table>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex';
