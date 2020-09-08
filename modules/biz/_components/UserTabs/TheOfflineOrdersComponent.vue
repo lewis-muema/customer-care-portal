@@ -200,53 +200,53 @@ export default {
 
 .el-table td,
 .el-table th {
-  padding: 10px 0 ;
+  padding: 10px 0;
 }
 .el-table--border td,
 .el-table th.is-leaf {
-  border-bottom: 1px solid #dcdfe6 ;
+  border-bottom: 1px solid #dcdfe6;
 }
 
 .el-table--border td,
 .el-table--border th,
 .el-table--border th {
-  border-right: 1px solid #dcdfe6 ;
+  border-right: 1px solid #dcdfe6;
 }
 
 .el-table--border,
 .el-table--group {
-  border: 1px solid #dcdfe6 ;
+  border: 1px solid #dcdfe6;
 }
 .table-bordered td,
 .table-bordered th {
-  border: none ;
+  border: none;
 }
 .el-table__expanded-cell {
-  background-color: white ;
+  background-color: white;
 }
 .el-table__expanded-cell:hover {
-    background-color: white !important;
+  background-color: white !important;
 }
 
 .el-table td,
 .el-table th {
-  padding: 0px ;
+  padding: 0px;
 }
 .el-table th,
 .el-table tr {
   height: 41px !important;
 }
-.el-table{
-  background-color: #f9f9f9 ;
+.el-table {
+  background-color: #f9f9f9;
 }
-.expanded{
+.expanded {
   color: #212529;
-  background-color: rgba(0,0,0,.075) !important;
+  background-color: rgba(0, 0, 0, 0.075) !important;
 }
-.search-outer{
+.search-outer {
   margin-top: 3.7%;
 }
-.search-btn--inline{
+.search-btn--inline {
   width: 52% !important;
   margin-left: 23%;
 }

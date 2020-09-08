@@ -723,19 +723,19 @@ export default {
 .table-background {
   background: #fff;
 }
-.add_section{
-  background: #FFFFFF;
+.add_section {
+  background: #ffffff;
   border: 1px solid #000000;
-  color: #1F1D1D;
+  color: #1f1d1d;
   margin-left: 2%;
   width: 15% !important;
   margin-bottom: 1%;
 }
 .add_section:focus,
 .add_section:hover {
-  background: #FFFFFF !important;
+  background: #ffffff !important;
   border: 1px solid #000000 !important;
-  color: #1F1D1D;
+  color: #1f1d1d;
   cursor: pointer;
 }
 .form-inline .form-control {
@@ -796,30 +796,30 @@ export default {
   color: #dc3545;
   margin-left: -4% !important;
 }
-.input-with-select{
+.input-with-select {
   margin-left: -6%;
 }
-.add-reward-section{
+.add-reward-section {
   width: 80% !important;
   min-height: 340px;
 }
-.user-textarea{
+.user-textarea {
   margin-right: 9%;
 }
-.message-input{
+.message-input {
   margin-left: -5%;
 }
-.action-button--danger{
+.action-button--danger {
   background-color: #ff4949;
   border-color: #ff4949;
   color: #fff;
 }
-.action-button--active{
+.action-button--active {
   background-color: #13ce66;
   border-color: #13ce66;
   color: #fff;
 }
-.action-button--archive{
+.action-button--archive {
   background-color: #3c8dbc;
   border-color: #3c8dbc;
   color: #fff;
