@@ -199,6 +199,7 @@
             :category-details="categoryDetails"
             :user-type="userType"
             :user-id="userID"
+            :user="user"
             @creditNoteData="creditNoteData"
           />
         </span>
@@ -333,7 +334,7 @@ export default {
     userID() {
       return this.userType === 'biz'
         ? this.user.user_details.cop_id
-        : this.user.user_details_user_id;
+        : this.user.user_details.user_id;
     },
     actionUser() {
       return this.session.payload.data.name;
@@ -399,7 +400,7 @@ export default {
       switch (this.userType) {
         case 'peer':
           this.reversalData.user_id = this.userID;
-          this.reverseData.cop_id = 0;
+          this.reversalData.cop_id = 0;
 
           break;
         case 'biz':
