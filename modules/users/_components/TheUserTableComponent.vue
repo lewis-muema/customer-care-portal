@@ -2,7 +2,7 @@
   <section class="content">
     <div class="row">
       <div class="box" :class="setBackground()">
-        <div class="box-body" :key="searchKey">
+        <div class="box-body" :key="searchKey" :class="setInterCountyMargin()">
           <div v-if="userType === 'biz'">
             <TheBizTable />
           </div>
@@ -20,6 +20,9 @@
           </div>
           <div class="mega" v-if="userType === 'refund'">
             <RefundsView />
+          </div>
+          <div class="mega" v-if="userType === 'intercounty'">
+            <InterCountyPriceConfigView />
           </div>
         </div>
       </div>
@@ -39,6 +42,8 @@ export default {
       import('~/modules/invoice/_components/TheInvoiceView'),
     RewardsView: () => import('~/modules/rewards/_components/RewardsView'),
     RefundsView: () => import('~/modules/refunds/_components/RefundsView'),
+    InterCountyPriceConfigView: () =>
+      import('~/modules/intercounty/_components/InterCountyPriceConfigView'),
   },
   data() {
     return {
@@ -68,12 +73,21 @@ export default {
       this.searchKey += 1;
     },
     setBackground() {
-      if (
+      if (this.userType === 'intercounty') {
+        return 'inter-county-border';
+      } else if (
         this.userType === 'invoice' ||
         this.userType === 'rewards' ||
         this.userType === 'refund'
       ) {
-        return 'invoiceBackground';
+        return 'invoice-background';
+      } else {
+        return '';
+      }
+    },
+    setInterCountyMargin() {
+      if (this.userType === 'intercounty') {
+        return 'inter-county-margin';
       }
       return '';
     },
@@ -129,10 +143,16 @@ export default {
 .vs__dropdown-menu {
   border-top: 1px solid #d3d7de;
 }
-.invoiceBackground {
+.invoice-background {
   border-top: 0px !important;
   box-shadow: none !important;
   background: #ecf0f5 !important;
   margin-top: 2%;
+}
+.inter-county-margin {
+  margin-top: 1%;
+}
+.inter-county-border {
+  border-top: 1px solid #d2d6de;
 }
 </style>

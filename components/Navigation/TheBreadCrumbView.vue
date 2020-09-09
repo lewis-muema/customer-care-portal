@@ -80,6 +80,11 @@ export default {
           description: '',
           mainName: 'Home',
         },
+        intercounty: {
+          name: 'Intercounty Price Configuration',
+          description: '',
+          mainName: 'Home',
+        },
         user: {
           name: 'User',
           description: '3CX Users',
