@@ -352,7 +352,8 @@ export default {
     },
   },
   mounted() {
-    const countryCode = this.user.user_details.country_code;
+    const countryCode =
+      this.userType === 'biz' ? this.user.user_details.country_code : 'KE';
     this.fetchPaymentOptions(countryCode);
     this.setBusinessUnits();
   },
@@ -388,28 +389,20 @@ export default {
               currency: this.currency,
               reversalID: this.typeDetails.id,
               referenceNumber: this.referenceNumber,
+              ...(this.reversalType === 'payment' && {
+                paymentMethod: this.paymentMethod,
+              }),
+              ...(this.reversalType === 'payment' &&
+                this.paymentMethod === 1 && {
+                  amount: this.transactionDetails.total_credit_amount,
+                }),
             }
           : {};
-      if (this.reversalType === 'payment') {
-        reverseData.paymentMethod = this.paymentMethod;
-      }
-
       this.reversalData =
         this.reversalCategory === 'reversal' ? reverseData : this.reversalData;
 
-      switch (this.userType) {
-        case 'peer':
-          this.reversalData.user_id = this.userID;
-          this.reversalData.cop_id = 0;
-
-          break;
-        case 'biz':
-          this.reversalData.user_id = 0;
-          this.reversalData.cop_id = this.userID;
-          break;
-        default:
-          break;
-      }
+      this.reversalData.user_id = this.userType === 'biz' ? 0 : this.userID;
+      this.reversalData.cop_id = this.userType === 'peer' ? 0 : this.userID;
 
       const payload = {
         app: 'CUSTOMERS_APP',
