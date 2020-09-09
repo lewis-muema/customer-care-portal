@@ -171,6 +171,7 @@ export default {
       if (
         this.user === 'invoice' ||
         this.user === 'rewards' ||
+        this.user === 'intercounty' ||
         this.user === 'refund'
       ) {
         hide = false;
