@@ -403,6 +403,7 @@ export default {
 
       this.reversalData.user_id = this.userType === 'biz' ? 0 : this.userID;
       this.reversalData.cop_id = this.userType === 'peer' ? 0 : this.userID;
+      const actionID = this.reversalCategory === 'invoice-reversal' ? 24 : 22;
 
       const payload = {
         app: 'CUSTOMERS_APP',
@@ -411,7 +412,7 @@ export default {
         params: {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
-          action_id: this.reversalCategory === 'credit-note' ? 28 : 22,
+          action_id: this.reversalCategory === 'credit-note' ? 28 : actionID,
           action_data: this.reversalData,
           request_id: 110,
           action_user: this.actionUser,
