@@ -787,6 +787,7 @@ export default {
     distanceCalculator(from, to) {
       axios
         .get(
+          // eslint-disable-next-line prettier/prettier
           `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?origin=${
             from.coordinates[1]
           },${from.coordinates[0]}&destination=${to.coordinates[1]},${

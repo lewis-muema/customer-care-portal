@@ -1254,95 +1254,47 @@ export default {
       return error;
     }
   },
-  async request_intercounty_destination_configs({ state, dispatch }) {
-    const config = state.config;
+  async requestTransactions({ rootState }, payload) {
+    const config = rootState.config;
     const jwtToken = localStorage.getItem('jwtToken');
+    const endpoint =
+      payload.category === 'invoice-reversal' ? 'invoice' : 'txn';
+    const searchkey =
+      payload.category === 'invoice-reversal' ? 'invoice_no' : 'txn';
+
     const param = {
       headers: {
-        'Content-Type': 'text/plain',
+        'Content-Type': 'application/json',
         Accept: 'application/json',
         Authorization: jwtToken,
       },
     };
-    const url = `${config.PRICING_SERVICE}inter_county_config/destinations`;
+    const url = `${config.CUSTOMERS_APP}${endpoint}/?${searchkey}=${payload.referenceNumber}`;
     try {
       const response = await axios.get(url, param);
-      return response.data;
+      const data = await response;
+      return data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
-  async request_intercounty_pickup_configs({ state, dispatch }) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.PRICING_SERVICE}inter_county_config/pickups`;
-    try {
-      const response = await axios.get(url, param);
-      return response.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
-  async request_pickup_cities({ state, dispatch }) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.PRICING_SERVICE}inter_county_config/cities`;
-    try {
-      const response = await axios.get(url, param);
-      return response.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
-  async create_pickup_config({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-  async request_route_data({ state, dispatch }) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.PRICING_SERVICE}inter_county_config/routes`;
-    try {
-      const response = await axios.get(url, param);
-      return response.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
+      let err;
+      switch (error.response.status) {
+        case 403:
+          // eslint-disable-next-line no-case-declarations
+          err = await dispatch('handleErrors', error.response.status, {
+            root: true,
+          });
+          break;
+        case 400:
+          err = {
+            status: false,
+            code: 400,
+            message: `No such transaction: ${payload.referenceNumber}`,
+          };
+          break;
+        default:
+          break;
+      }
+
+      return err;
     }
   },
 };
