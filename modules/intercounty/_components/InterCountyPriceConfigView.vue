@@ -42,7 +42,7 @@ export default {
   components: { PriceConfig, PickupConfig, DestinationConfig },
   data() {
     return {
-      mode: 'setDestination',
+      mode: 'priceConfig',
       componentKey: 0,
     };
   },
