@@ -132,7 +132,7 @@ export default {
         reversalCategory: 'invoice-reversal',
         reversalType: this.typeDetails.name,
         currency: this.currency,
-        reversalAmount: this.reversalAmount,
+        reversalAmount: parseFloat(this.reversalAmount),
         newInvoiceAmount: this.newInvoiceAmount,
         narrative: this.narrative,
         reversalID: this.typeDetails.id,
