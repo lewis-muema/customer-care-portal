@@ -95,20 +95,6 @@ export default {
   ],
   data() {
     return {
-      amountTypes: [
-        {
-          code: 'VAT',
-          title: 'VAT (Value Added Tax)',
-        },
-        {
-          code: 'other-amount',
-          title: 'Other Invoice charge',
-        },
-      ],
-      types: [
-        { code: 'VAT', status: 'VAT (Value Added Tax)' },
-        { code: 'other-amount', status: 'Other Invoice charge' },
-      ],
       submitted: false,
       vat_amount: '',
       reversalAmount: '',
