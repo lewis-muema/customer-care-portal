@@ -205,7 +205,7 @@ export default {
   },
 
   mounted() {
-    const countryCode = 'KE';
+    const countryCode = this.user.user_details.country_code;
     this.fetchPaymentOptions(countryCode);
   },
   methods: {

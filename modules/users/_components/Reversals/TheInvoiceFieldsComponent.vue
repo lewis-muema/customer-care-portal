@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="typeDetails.name === 'partial-invoice'">
-      <div class="form-group col-md-12 methods-holder">
+      <div class="form-group methods-holder">
         <label>Invoice Reversal type</label>
         <v-select
           :options="types"
@@ -107,7 +107,14 @@
 <script>
 export default {
   name: 'TheInvoiceFieldsComponent',
-  props: ['invoiceDetails', 'typeDetails', 'currency', 'userID', 'userType'],
+  props: [
+    'invoiceDetails',
+    'typeDetails',
+    'currency',
+    'userID',
+    'userType',
+    'referenceNumber',
+  ],
   data() {
     return {
       amountTypes: [
@@ -135,7 +142,6 @@ export default {
   },
   computed: {
     disabled() {
-      console.log('this.reversalCategory', this.reversalCategory);
       return this.InvoiceReversaltype === 'VAT'
         ? this.reversalAmount === '' ||
             this.newInvoiceAmount === '' ||
@@ -178,6 +184,8 @@ export default {
         newInvoiceAmount: this.newInvoiceAmount,
         narrative: this.narrative,
         reversalID: this.typeDetails.id,
+        invoiceNumber: this.referenceNumber,
+        vatRate: this.invoiceDetails.vat_rate,
       });
     },
   },
@@ -185,4 +193,7 @@ export default {
 </script>
 <style scoped>
 @import '@/assets/style/reversal.css';
+.input-group-area {
+  width: 92%;
+}
 </style>

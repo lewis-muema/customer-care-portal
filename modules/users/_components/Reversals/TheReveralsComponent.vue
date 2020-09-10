@@ -186,6 +186,7 @@
                 :currency="currency"
                 :user-type="userType"
                 :user-id="userID"
+                :reference-number="referenceNumber"
                 @invoiceReversalData="invoiceReversalData"
               />
             </div>
@@ -352,8 +353,7 @@ export default {
     },
   },
   mounted() {
-    const countryCode =
-      this.userType === 'biz' ? this.user.user_details.country_code : 'KE';
+    const countryCode = this.user.user_details.country_code;
     this.fetchPaymentOptions(countryCode);
     this.setBusinessUnits();
   },
