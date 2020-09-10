@@ -25,24 +25,27 @@
           </div>
         </div>
         <div class="body-box col-md-12 intercounty-table">
-          <el-table
-            :data="destination_config_data"
-            size="medium"
-            :border="false"
-          >
-            <el-table-column label="Name" prop="name">
-              <template>
-                Name
+          <el-table :data="pickup_config_data" size="medium" :border="false">
+            <el-table-column label="Name" prop="city_id">
+              <template slot-scope="scope">
+                {{ getCityName(pickup_config_data[scope.$index]['city_id']) }}
               </template>
             </el-table-column>
-            <el-table-column label="Collection centre address" prop="centre">
-              <template>
-                Pending
+            <el-table-column
+              label="Collection centre address"
+              prop="collection_centers"
+            >
+              <template slot-scope="scope">
+                {{
+                  displayCollectionCentre(
+                    pickup_config_data[scope.$index]['collection_centers'],
+                  )
+                }}
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template>
-                Pending
+                Edit
               </template>
             </el-table-column>
           </el-table>
@@ -66,12 +69,12 @@
               class="vendors-select"
               filterable
               placeholder="Select"
-              v-model="selected_pickup_centre"
+              v-model="city_id"
             >
               <el-option
                 v-for="city in city_list"
                 :key="city.city_id"
-                :label="city.name"
+                :label="city.city_name"
                 :value="city.city_id"
               >
               </el-option>
@@ -83,6 +86,7 @@
               Physical address of the collection centre
             </p>
             <el-input
+              v-model="collection_centre_address"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4 }"
               placeholder="E.g Sendy caravan at Westlands Total petrol station along Ojijo road"
@@ -155,21 +159,45 @@
               size="medium"
               class="vendors-select"
               filterable
+              multiple
               placeholder="Select"
-              v-model="selected_vendor"
+              v-model="supported_vendor_types"
             >
               <el-option
                 v-for="vendor in vendor_list"
-                :key="vendor.vendor_id"
+                :key="vendor.id"
                 :label="vendor.name"
-                :value="vendor.vendor_id"
+                :value="vendor.id"
               >
               </el-option>
             </el-select>
           </div>
+          <div v-if="submit_status" class="intercounty-response">
+            <p class="response-text" v-if="response_status === true">
+              <i
+                class="fa fa-spinner fa-spin loader intercounty-loader--align"
+              ></i>
+              Processing your request ....
+            </p>
+            <p class="response-text" v-else-if="response_status === 'success'">
+              <i
+                class="fa fa-check-circle intercounty-loader--align intercounty-submit-success"
+              ></i>
+              Data submitted successfully !
+            </p>
+            <p class="response-text" v-else>
+              <i
+                class="fa fa-exclamation-circle intercounty-loader--align intercounty-submit-error"
+              ></i>
+              {{ error_msg }}
+            </p>
+          </div>
 
           <div class="submit-intercounty-config">
-            <button class="new-pricing-input-buttons new-pricing-submit-button">
+            <button
+              class="new-pricing-input-buttons new-pricing-submit-button"
+              @click="createPickUpConfig"
+            >
               Submit
             </button>
           </div>
@@ -180,6 +208,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 import axios from 'axios';
 import Loading from './LoadingComponent.vue';
@@ -190,7 +219,7 @@ export default {
   data() {
     return {
       loading_data: false,
-      destination_config_data: [],
+      pickup_config_data: [],
       add_destination: false,
       visible: false,
       suggestions: [],
@@ -210,11 +239,19 @@ export default {
       selected_vendor: [],
       locations: [],
       extra_collection: 0,
-      selected_pickup_centre: [],
+      city_id: '',
+      collection_centre_address: '',
       city_list: [],
+      supported_vendor_types: [],
+      collection_centers: [],
+      submit_status: false,
+      response_status: true,
+      error_msg: '',
     };
   },
   computed: {
+    ...mapGetters(['getSession']),
+
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
     },
@@ -227,8 +264,56 @@ export default {
     this.$gmapApiPromiseLazy().then(() => {
       this.mapLoaded = true;
     });
+    this.initiateData();
   },
   methods: {
+    ...mapActions({
+      request_vendor_types: 'request_vendor_types',
+      request_pickup_configs: 'request_intercounty_pickup_configs',
+      request_pickup_cities: 'request_pickup_cities',
+      create_pickup_config: 'create_pickup_config',
+    }),
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
+    }),
+    initiateData() {
+      this.requestPickUpCities();
+      this.fetchVendorTypes();
+    },
+    async requestPickUpCities() {
+      const arr = await this.request_pickup_cities();
+      this.city_list = arr.cities;
+      this.requestPickupData();
+    },
+    async fetchVendorTypes() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'VENDORS',
+        endpoint: 'types',
+        apiKey: false,
+        params: {
+          pickup_country_code: 'KE',
+          dropoff_country_code: 'KE',
+        },
+      };
+      try {
+        const data = await this.request_vendor_types(payload);
+        this.vendor_list = data.vendor_types;
+        return data.vendor_types;
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    async requestPickupData() {
+      const arr = await this.request_pickup_configs();
+      this.pickup_config_data = arr.pickups;
+    },
     goToAddPickUpConfig() {
       this.add_destination = true;
     },
@@ -242,7 +327,6 @@ export default {
           `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
         )
         .then(response => {
-          console.log('response', response.data.predictions);
           this.suggestions = response.data.predictions;
           this.visible = true;
         });
@@ -258,6 +342,14 @@ export default {
         )
         .then(response => {
           this.markers.splice(input, 1);
+          this.collection_centers.splice(input, 1);
+          const collection_marker = response.data.result.geometry;
+          const data = {
+            address: this.locations[input],
+            lat: collection_marker.location.lat,
+            long: collection_marker.location.lng,
+          };
+          this.collection_centers.splice(input, 0, data);
           this.markers.splice(input, 0, response.data.result.geometry);
           const bounds = new google.maps.LatLngBounds();
           for (const m of this.markers) {
@@ -294,6 +386,73 @@ export default {
     removeExtraCollectionWrapper(index) {
       this.extra_collection--;
       this.markers.splice(index, 1);
+    },
+    displayCollectionCentre(val) {
+      let resp = 'N/A';
+      if (Object.keys(val).length > 0) {
+        const response = [];
+        for (let i = 0; i < val.length; i++) {
+          response.push(val[i].address);
+          resp = response.toString();
+        }
+      }
+
+      return resp;
+    },
+    getCityName(val) {
+      let resp = '';
+      if (this.city_list.length > 0) {
+        const data = this.city_list.find(location => location.city_id === val);
+        resp = data.city_name;
+      }
+
+      return resp;
+    },
+    async createPickUpConfig() {
+      if (
+        this.city_id === '' ||
+        this.collection_centre_address === '' ||
+        this.supported_vendor_types.length === 0 ||
+        this.collection_centers.length === 0
+      ) {
+        this.submit_status = true;
+        this.response_status = 'fail';
+        this.error_msg = 'Kindly provide all values .';
+      } else {
+        this.submit_status = true;
+        this.response_status = true;
+
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'inter_county_config/pickups',
+          apiKey: false,
+          params: {
+            city_id: parseInt(this.city_id, 10),
+            supported_vendor_types: this.supported_vendor_types,
+            collection_centers: this.collection_centers,
+          },
+        };
+
+        try {
+          const data = await this.create_pickup_config(payload);
+
+          if (data.status) {
+            this.response_status = 'success';
+            setTimeout(() => {
+              this.submit_state = false;
+              this.add_destination = false;
+              this.initiateData();
+            }, 2000);
+          } else {
+            this.response_status = 'error';
+            this.error_msg = data.message;
+          }
+        } catch (error) {
+          this.response_status = 'error';
+          this.error_msg =
+            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        }
+      }
     },
   },
 };

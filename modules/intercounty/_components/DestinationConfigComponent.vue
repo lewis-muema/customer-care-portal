@@ -31,18 +31,25 @@
             :border="false"
           >
             <el-table-column label="Name" prop="name">
-              <template>
-                Name
+              <template slot-scope="scope">
+                {{ destination_config_data[scope.$index]['name'] }}
               </template>
             </el-table-column>
-            <el-table-column label="Collection centre address" prop="centre">
-              <template>
-                Pending
+            <el-table-column
+              label="Collection centre address"
+              prop="collection_centers"
+            >
+              <template slot-scope="scope">
+                {{
+                  displayCollectionCentre(
+                    destination_config_data[scope.$index]['collection_centers'],
+                  )
+                }}
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template>
-                Pending
+                Edit
               </template>
             </el-table-column>
           </el-table>
@@ -96,7 +103,7 @@
               <p class="pricing-input-labels">Distance</p>
               <el-input
                 type="text"
-                v-model="distance"
+                v-model="radius"
                 class="intercounty-pricing-inputs extra-dist"
                 ><template class="pricing-prepend" slot="append">
                   KMS
@@ -126,14 +133,15 @@
               size="medium"
               class="vendors-select"
               filterable
+              multiple
               placeholder="Select"
-              v-model="selected_vendor"
+              v-model="supported_vendor_types"
             >
               <el-option
                 v-for="vendor in vendor_list"
-                :key="vendor.vendor_id"
+                :key="vendor.id"
                 :label="vendor.name"
-                :value="vendor.vendor_id"
+                :value="vendor.id"
               >
               </el-option>
             </el-select>
@@ -143,7 +151,7 @@
               Home delivery range from the collection centre in (Kilometres) by
               the 3pl partner
             </p>
-            <el-input-number v-model="delivery_range" :min="0" :max="10" />
+            <el-input-number v-model="max_delivery_range" :min="0" :max="10" />
           </div>
 
           <p class="inter-county-headers">
@@ -154,6 +162,7 @@
               Physical address of the collection centre
             </p>
             <el-input
+              v-model="collection_centre_address[0]"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4 }"
               placeholder="E.g Nation courier, Umoja building 3rd floor, Nyeri"
@@ -232,6 +241,7 @@
                 Physical address of the collection centre {{ n + 1 }}
               </p>
               <el-input
+                v-model="collection_centre_address[n]"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4 }"
                 placeholder="E.g Nation courier, Umoja building 3rd floor, Nyeri"
@@ -295,12 +305,38 @@
               </div>
             </div>
           </div>
+
           <div v-if="allow_add_collection" @click="addExtraCollectionWrapper()">
             <i class="el-icon-circle-plus-outline add-collection-icon"></i>
             <a class="add-collection-extra">Add collection centre</a>
           </div>
+
+          <div v-if="submit_status" class="intercounty-response">
+            <p class="response-text" v-if="response_status === true">
+              <i
+                class="fa fa-spinner fa-spin loader intercounty-loader--align"
+              ></i>
+              Processing your request ....
+            </p>
+            <p class="response-text" v-else-if="response_status === 'success'">
+              <i
+                class="fa fa-check-circle intercounty-loader--align intercounty-submit-success"
+              ></i>
+              Data submitted successfully !
+            </p>
+            <p class="response-text" v-else>
+              <i
+                class="fa fa-exclamation-circle intercounty-loader--align intercounty-submit-error"
+              ></i>
+              {{ error_msg }}
+            </p>
+          </div>
+
           <div class="submit-intercounty-config">
-            <button class="new-pricing-input-buttons new-pricing-submit-button">
+            <button
+              class="new-pricing-input-buttons new-pricing-submit-button"
+              @click="createDestinationConfig"
+            >
               Submit
             </button>
           </div>
@@ -311,6 +347,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 import axios from 'axios';
 import Loading from './LoadingComponent.vue';
@@ -326,7 +363,7 @@ export default {
       visible: false,
       suggestions: [],
       pickUp: '',
-      distance: '',
+      radius: '',
       mapCentreLocation: {
         lat: -1.3084143,
         lng: 36.7658132,
@@ -337,13 +374,21 @@ export default {
       markers: [],
       mapLoaded: false,
       vendor_list: [],
-      delivery_range: 5,
-      selected_vendor: [],
+      max_delivery_range: 5,
+      supported_vendor_types: [],
       locations: [],
       extra_collection: 0,
+      collection_centers: [],
+      destination_center: [],
+      submit_status: false,
+      response_status: true,
+      error_msg: '',
+      collection_centre_address: [],
     };
   },
   computed: {
+    ...mapGetters(['getSession']),
+
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
     },
@@ -356,8 +401,45 @@ export default {
     this.$gmapApiPromiseLazy().then(() => {
       this.mapLoaded = true;
     });
+    this.initiateData();
   },
   methods: {
+    ...mapActions({
+      request_vendor_types: 'request_vendor_types',
+      request_destination_configs: 'request_intercounty_destination_configs',
+      create_destination_config: 'create_pickup_config',
+    }),
+    initiateData() {
+      this.fetchVendorTypes();
+      this.requestDestinationData();
+    },
+    async fetchVendorTypes() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'VENDORS',
+        endpoint: 'types',
+        apiKey: false,
+        params: {
+          pickup_country_code: 'KE',
+          dropoff_country_code: 'KE',
+        },
+      };
+      try {
+        const data = await this.request_vendor_types(payload);
+        this.vendor_list = data.vendor_types;
+        return data.vendor_types;
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    async requestDestinationData() {
+      const arr = await this.request_destination_configs();
+      this.destination_config_data = arr.destinations;
+    },
     goToAddDestination() {
       this.add_destination = true;
     },
@@ -371,7 +453,6 @@ export default {
           `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
         )
         .then(response => {
-          console.log('response', response.data.predictions);
           this.suggestions = response.data.predictions;
           this.visible = true;
         });
@@ -387,8 +468,23 @@ export default {
         )
         .then(response => {
           this.markers.splice(input, 1);
+          const collection_marker = response.data.result.geometry;
+          const data = {
+            address: this.locations[input],
+            lat: collection_marker.location.lat,
+            long: collection_marker.location.lng,
+          };
+          if (input === 0) {
+            this.destination_center.splice(input, 1);
+            this.destination_center.splice(input, 0, data);
+          } else {
+            this.collection_centers.splice(input - 1, 1);
+            this.collection_centers.splice(input - 1, 0, data);
+          }
           this.markers.splice(input, 0, response.data.result.geometry);
+
           const bounds = new google.maps.LatLngBounds();
+
           for (const m of this.markers) {
             bounds.extend(m.location);
           }
@@ -423,6 +519,72 @@ export default {
     removeExtraCollectionWrapper(index) {
       this.extra_collection--;
       this.markers.splice(index, 1);
+      this.collection_centers.splice(index - 1, 1);
+    },
+    displayCollectionCentre(val) {
+      let resp = 'N/A';
+      if (Object.keys(val).length > 0) {
+        const response = [];
+        for (let i = 0; i < val.length; i++) {
+          response.push(val[i].address);
+          resp = response.toString();
+        }
+      }
+
+      return resp;
+    },
+    async createDestinationConfig() {
+      if (
+        this.radius === '' ||
+        this.max_delivery_range === '' ||
+        this.collection_centre_address.length === 0 ||
+        this.supported_vendor_types.length === 0 ||
+        this.destination_center.length === 0 ||
+        this.collection_centers.length === 0
+      ) {
+        this.submit_status = true;
+        this.response_status = 'fail';
+        this.error_msg = 'Kindly provide all values .';
+      } else {
+        this.submit_status = true;
+        this.response_status = true;
+
+        const payload = {
+          app: 'PRICING_SERVICE',
+          endpoint: 'inter_county_config/destinations',
+          apiKey: false,
+          params: {
+            name: this.destination_center[0].address,
+            lat: this.destination_center[0].lat,
+            long: this.destination_center[0].long,
+            country_code: 'KE',
+            supported_vendor_types: this.supported_vendor_types,
+            collection_centers: this.collection_centers,
+            radius: parseInt(this.radius, 10),
+            max_delivery_range: parseInt(this.max_delivery_range, 10),
+          },
+        };
+
+        try {
+          const data = await this.create_destination_config(payload);
+
+          if (data.status) {
+            this.response_status = 'success';
+            setTimeout(() => {
+              this.submit_state = false;
+              this.add_destination = false;
+              this.initiateData();
+            }, 2000);
+          } else {
+            this.response_status = 'error';
+            this.error_msg = data.message;
+          }
+        } catch (error) {
+          this.response_status = 'error';
+          this.error_msg =
+            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        }
+      }
     },
   },
 };
