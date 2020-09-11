@@ -508,6 +508,12 @@ export default {
       this.reversalData = creditNoteData;
       this.update_reversal();
     },
+    clearErrorMessages() {
+      const notification = [];
+      const actionClass = '';
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     reset() {
       this.reversing = false;
       this.submitted = false;
@@ -516,6 +522,7 @@ export default {
       this.referenceNumber = '';
       this.paymentMethod = '';
       this.emptyRef = false;
+      this.clearErrorMessages();
     },
     setReversalCategory(option) {
       this.reset();
