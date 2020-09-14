@@ -214,3 +214,8 @@
   margin-top: 1%;
   font-size: 12px;
 }
+.el-button:focus, .el-button:hover{
+  color: #3a8ee6;
+  border-color: #3a8ee6;
+  outline: 0;
+}
