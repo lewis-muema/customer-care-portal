@@ -215,19 +215,25 @@
           </div>
 
           <div v-if="submit_status" class="intercounty-response">
-            <p class="response-text" v-if="response_status === true">
+            <p
+              class="intercounty-response-text"
+              v-if="response_status === true"
+            >
               <i
                 class="fa fa-spinner fa-spin loader intercounty-loader--align"
               ></i>
               Processing your request ....
             </p>
-            <p class="response-text" v-else-if="response_status === 'success'">
+            <p
+              class="intercounty-response-text"
+              v-else-if="response_status === 'success'"
+            >
               <i
                 class="fa fa-check-circle intercounty-loader--align intercounty-submit-success"
               ></i>
               Data submitted successfully !
             </p>
-            <p class="response-text" v-else>
+            <p class="intercounty-response-text" v-else>
               <i
                 class="fa fa-exclamation-circle intercounty-loader--align intercounty-submit-error"
               ></i>
@@ -457,6 +463,7 @@ export default {
           '3pl_extra_weight_cost': parseInt(this.excess_weight_rate, 10),
           sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
           max_weight: parseInt(this.maximum_weight, 10),
+          status: 1,
         },
       };
 
