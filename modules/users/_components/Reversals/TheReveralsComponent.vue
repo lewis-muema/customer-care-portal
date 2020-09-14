@@ -466,7 +466,7 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
           this.updateClass(actionClass);
           this.updateErrors(notification);
-          this.transactionDetails = {};
+          this.transactionDetails = null;
         }
       } catch (error) {
         return error;

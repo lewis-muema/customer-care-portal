@@ -268,8 +268,6 @@ export default {
         { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
         { value: 21, name: 'Deduction', transactionID: 6 },
-        { value: 99, name: 'Reversal', transactionID: 1 },
-        { value: 22, name: 'Cash Reversals', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
       array: {
