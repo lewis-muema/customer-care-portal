@@ -52,7 +52,13 @@
             </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template slot-scope="scope">
-                <el-button size="mini" class="config-button--active">
+                <el-button
+                  size="mini"
+                  class="config-button--active"
+                  @click="
+                    editDestination(filtered_destination_data[scope.$index])
+                  "
+                >
                   Edit
                 </el-button>
                 <el-button
@@ -406,6 +412,8 @@ export default {
       error_msg: '',
       collection_centre_address: [],
       search_data: '',
+      route_key: '',
+      edit_route: false,
     };
   },
   computed: {
@@ -444,6 +452,7 @@ export default {
       request_destination_configs: 'request_intercounty_destination_configs',
       create_destination_config: 'create_pickup_config',
       remove_intercounty_record: 'remove_intercounty_record',
+      update_intercounty_record: 'update_intercounty_record',
     }),
     initiateData() {
       this.fetchVendorTypes();
@@ -482,6 +491,7 @@ export default {
     },
     one_step_back() {
       this.add_destination = false;
+      this.clearStoreData();
     },
     // eslint-disable-next-line func-names
     search: _.debounce(function(val) {
@@ -505,12 +515,23 @@ export default {
         )
         .then(response => {
           this.markers.splice(input, 1);
+          this.locations[input] = response.data.result.name;
           const collection_marker = response.data.result.geometry;
           const data = {
             address: this.locations[input],
             lat: collection_marker.location.lat,
             long: collection_marker.location.lng,
           };
+
+          const resp = this.destination_config_data[
+            input
+          ].collection_centers.find(
+            position => position.address === this.locations[input],
+          );
+          if (resp !== undefined) {
+            data.object_id = resp.object_id;
+          }
+
           if (input === 0) {
             this.destination_center.splice(input, 1);
             this.destination_center.splice(input, 0, data);
@@ -587,7 +608,65 @@ export default {
         this.initiateData();
       }
     },
-    async createDestinationConfig() {
+    editDestination(val) {
+      this.supported_vendor_types = val.supported_vendor_types;
+      this.locations[0] = val.name;
+      this.radius = val.radius;
+      this.max_delivery_range = val.max_delivery_range;
+      let location = {
+        address: val.name,
+        lat: val.coordinates.coordinates[1],
+        long: val.coordinates.coordinates[0],
+        lng: val.coordinates.coordinates[0],
+      };
+      this.destination_center.push(location);
+      const collection_cordinates = {
+        location,
+      };
+
+      this.markers.splice(0, 0, collection_cordinates);
+
+      const data = val.collection_centers;
+
+      this.extra_collection = data.length - 1;
+
+      for (let i = 0; i < data.length; i++) {
+        location = {
+          address: data[i].address,
+          lat: data[i].coordinates.coordinates[1],
+          long: data[i].coordinates.coordinates[0],
+          lng: data[i].coordinates.coordinates[0],
+          object_id: data[i].object_id,
+        };
+
+        this.collection_centers.push(location);
+        this.locations[i + 1] = data[i].address;
+
+        const collection_data = {
+          location,
+        };
+        this.markers.splice(i + 1, 0, collection_data);
+      }
+
+      this.route_key = val.object_id;
+      this.edit_route = true;
+      this.add_destination = true;
+    },
+    clearStoreData() {
+      this.locations = [];
+      this.destination_center = [];
+      this.supported_vendor_types = [];
+      this.collection_centers = [];
+      this.radius = '';
+      this.max_delivery_range = 5;
+      this.edit_route = false;
+      this.route_key = '';
+      this.route_key = false;
+      this.extra_collection = 0;
+      this.markers = [];
+      this.collection_centre_address = [];
+    },
+    createDestinationConfig() {
       if (
         this.radius === '' ||
         this.max_delivery_range === '' ||
@@ -603,41 +682,85 @@ export default {
         this.submit_status = true;
         this.response_status = true;
 
-        const payload = {
-          app: 'PRICING_SERVICE',
-          endpoint: 'inter_county_config/destinations',
-          apiKey: false,
-          params: {
-            name: this.destination_center[0].address,
-            lat: this.destination_center[0].lat,
-            long: this.destination_center[0].long,
-            country_code: 'KE',
-            supported_vendor_types: this.supported_vendor_types,
-            collection_centers: this.collection_centers,
-            radius: parseInt(this.radius, 10),
-            max_delivery_range: parseInt(this.max_delivery_range, 10),
-          },
-        };
-
-        try {
-          const data = await this.create_destination_config(payload);
-
-          if (data.status) {
-            this.response_status = 'success';
-            setTimeout(() => {
-              this.submit_state = false;
-              this.add_destination = false;
-              this.initiateData();
-            }, 2000);
-          } else {
-            this.response_status = 'error';
-            this.error_msg = data.message;
-          }
-        } catch (error) {
-          this.response_status = 'error';
-          this.error_msg =
-            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        if (this.edit_route && this.route_key !== '') {
+          this.updateDestinationConfig();
+        } else {
+          this.addNewDestinationConfig();
         }
+      }
+    },
+    async addNewDestinationConfig() {
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'inter_county_config/destinations',
+        apiKey: false,
+        params: {
+          name: this.destination_center[0].address,
+          lat: this.destination_center[0].lat,
+          long: this.destination_center[0].long,
+          country_code: 'KE',
+          supported_vendor_types: this.supported_vendor_types,
+          collection_centers: this.collection_centers,
+          radius: parseInt(this.radius, 10),
+          max_delivery_range: parseInt(this.max_delivery_range, 10),
+        },
+      };
+
+      try {
+        const data = await this.create_destination_config(payload);
+
+        if (data.status) {
+          this.response_status = 'success';
+          setTimeout(() => {
+            this.submit_state = false;
+            this.add_destination = false;
+            this.initiateData();
+          }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.error_msg = data.message;
+        }
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async updateDestinationConfig() {
+      const payload = {
+        id: this.route_key,
+        route: 'destinations',
+        params: {
+          name: this.destination_center[0].address,
+          lat: this.destination_center[0].lat,
+          long: this.destination_center[0].long,
+          country_code: 'KE',
+          supported_vendor_types: this.supported_vendor_types,
+          collection_centers: this.collection_centers,
+          radius: parseInt(this.radius, 10),
+          max_delivery_range: parseInt(this.max_delivery_range, 10),
+          status: 1,
+        },
+      };
+      try {
+        const data = await this.update_intercounty_record(payload);
+
+        if (data.status) {
+          this.response_status = 'success';
+          setTimeout(() => {
+            this.submit_state = false;
+            this.add_destination = false;
+            this.initiateData();
+            this.clearStoreData();
+          }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.error_msg = data.message;
+        }
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
   },

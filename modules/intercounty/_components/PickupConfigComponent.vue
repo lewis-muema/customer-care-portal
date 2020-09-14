@@ -46,7 +46,11 @@
             </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template slot-scope="scope">
-                <el-button size="mini" class="config-button--active">
+                <el-button
+                  size="mini"
+                  class="config-button--active"
+                  @click="editPickUp(filtered_pickup_data[scope.$index])"
+                >
                   Edit
                 </el-button>
                 <el-button
@@ -265,6 +269,8 @@ export default {
       response_status: true,
       error_msg: '',
       search_data: '',
+      edit_route: false,
+      route_key: '',
     };
   },
   computed: {
@@ -304,6 +310,7 @@ export default {
       request_pickup_cities: 'request_pickup_cities',
       create_pickup_config: 'create_pickup_config',
       remove_intercounty_record: 'remove_intercounty_record',
+      update_intercounty_record: 'update_intercounty_record',
     }),
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -362,6 +369,7 @@ export default {
     },
     one_step_back() {
       this.add_destination = false;
+      this.clearStoreData();
     },
     // eslint-disable-next-line func-names
     search: _.debounce(function(val) {
@@ -386,12 +394,19 @@ export default {
         .then(response => {
           this.markers.splice(input, 1);
           this.collection_centers.splice(input, 1);
+          this.locations[input] = response.data.result.name;
           const collection_marker = response.data.result.geometry;
           const data = {
             address: this.locations[input],
             lat: collection_marker.location.lat,
             long: collection_marker.location.lng,
           };
+          const resp = this.pickup_config_data[input].collection_centers.find(
+            position => position.address === this.locations[input],
+          );
+          if (resp !== undefined) {
+            data.object_id = resp.object_id;
+          }
           this.collection_centers.splice(input, 0, data);
           this.markers.splice(input, 0, response.data.result.geometry);
           const bounds = new google.maps.LatLngBounds();
@@ -451,7 +466,41 @@ export default {
 
       return resp;
     },
-    async createPickUpConfig() {
+    editPickUp(val) {
+      this.city_id = val.city_id;
+      this.supported_vendor_types = val.supported_vendor_types;
+      this.locations[0] = val.collection_centers[0].address;
+      const collection_cordinates = val.collection_centers[0].coordinates;
+      collection_cordinates.location = {
+        lat: val.collection_centers[0].coordinates.coordinates[1],
+        lng: val.collection_centers[0].coordinates.coordinates[0],
+      };
+      const data = {
+        address: val.collection_centers[0].address,
+        lat: val.collection_centers[0].coordinates.coordinates[1],
+        long: val.collection_centers[0].coordinates.coordinates[0],
+        object_id: val.collection_centers[0].object_id,
+      };
+      this.collection_centers.splice(0, 0, data);
+
+      this.markers.splice(0, 0, collection_cordinates);
+
+      this.route_key = val.object_id;
+      this.edit_route = true;
+      this.add_destination = true;
+    },
+    clearStoreData() {
+      this.edit_route = false;
+      this.route_key = '';
+      this.add_destination = false;
+      this.city_id = '';
+      this.supported_vendor_types = [];
+      this.collection_centers = [];
+      this.locations = [];
+      this.markers = [];
+      this.collection_centre_address = [];
+    },
+    createPickUpConfig() {
       if (
         this.city_id === '' ||
         this.collection_centre_address === '' ||
@@ -465,36 +514,76 @@ export default {
         this.submit_status = true;
         this.response_status = true;
 
-        const payload = {
-          app: 'PRICING_SERVICE',
-          endpoint: 'inter_county_config/pickups',
-          apiKey: false,
-          params: {
-            city_id: parseInt(this.city_id, 10),
-            supported_vendor_types: this.supported_vendor_types,
-            collection_centers: this.collection_centers,
-          },
-        };
-
-        try {
-          const data = await this.create_pickup_config(payload);
-
-          if (data.status) {
-            this.response_status = 'success';
-            setTimeout(() => {
-              this.submit_state = false;
-              this.add_destination = false;
-              this.initiateData();
-            }, 2000);
-          } else {
-            this.response_status = 'error';
-            this.error_msg = data.message;
-          }
-        } catch (error) {
-          this.response_status = 'error';
-          this.error_msg =
-            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        if (this.edit_route && this.route_key !== '') {
+          this.updatePickUpConfig();
+        } else {
+          this.addNewPickUpConfig();
         }
+      }
+    },
+    async addNewPickUpConfig() {
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'inter_county_config/pickups',
+        apiKey: false,
+        params: {
+          city_id: parseInt(this.city_id, 10),
+          supported_vendor_types: this.supported_vendor_types,
+          collection_centers: this.collection_centers,
+        },
+      };
+
+      try {
+        const data = await this.create_pickup_config(payload);
+
+        if (data.status) {
+          this.response_status = 'success';
+          setTimeout(() => {
+            this.submit_state = false;
+            this.add_destination = false;
+            this.initiateData();
+          }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.error_msg = data.message;
+        }
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async updatePickUpConfig() {
+      const payload = {
+        id: this.route_key,
+        route: 'pickups',
+        params: {
+          city_id: parseInt(this.city_id, 10),
+          supported_vendor_types: this.supported_vendor_types,
+          collection_centers: this.collection_centers,
+          status: 1,
+        },
+      };
+
+      try {
+        const data = await this.update_intercounty_record(payload);
+
+        if (data.status) {
+          this.response_status = 'success';
+          setTimeout(() => {
+            this.submit_state = false;
+            this.add_destination = false;
+            this.initiateData();
+            this.clearStoreData();
+          }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.error_msg = data.message;
+        }
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
   },
