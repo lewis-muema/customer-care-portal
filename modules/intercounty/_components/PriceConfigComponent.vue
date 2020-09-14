@@ -79,11 +79,15 @@
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action" width="250">
-              <template>
+              <template slot-scope="scope">
                 <el-button size="mini" class="config-button--active">
                   Edit
                 </el-button>
-                <el-button size="mini" class="config-button--archive">
+                <el-button
+                  size="mini"
+                  class="config-button--archive"
+                  @click="removeRoute(price_config_data[scope.$index])"
+                >
                   Delete
                 </el-button>
               </template>
@@ -287,6 +291,7 @@ export default {
       create_route_config: 'create_pickup_config',
       request_pickup_configs: 'request_intercounty_pickup_configs',
       request_destination_configs: 'request_intercounty_destination_configs',
+      remove_intercounty_record: 'remove_intercounty_record',
     }),
     initiateData() {
       this.requestPickUpCities();
@@ -320,6 +325,16 @@ export default {
     async requestDestinationData() {
       const arr = await this.request_destination_configs();
       this.destinationData = arr.destinations;
+    },
+    async removeRoute(data) {
+      const payload = {
+        id: data.object_id,
+        route: 'routes',
+      };
+      const resp = await this.remove_intercounty_record(payload);
+      if (resp.status) {
+        this.initiateData();
+      }
     },
     goToAddPriceConfig() {
       this.add_destination = true;

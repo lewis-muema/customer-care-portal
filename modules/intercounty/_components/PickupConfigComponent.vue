@@ -45,11 +45,15 @@
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action">
-              <template>
+              <template slot-scope="scope">
                 <el-button size="mini" class="config-button--active">
                   Edit
                 </el-button>
-                <el-button size="mini" class="config-button--archive">
+                <el-button
+                  size="mini"
+                  class="config-button--archive"
+                  @click="removePickUp(filtered_pickup_data[scope.$index])"
+                >
                   Delete
                 </el-button>
               </template>
@@ -293,6 +297,7 @@ export default {
       request_pickup_configs: 'request_intercounty_pickup_configs',
       request_pickup_cities: 'request_pickup_cities',
       create_pickup_config: 'create_pickup_config',
+      remove_intercounty_record: 'remove_intercounty_record',
     }),
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -335,6 +340,16 @@ export default {
       const arr = await this.request_pickup_configs();
       this.pickup_config_data = arr.pickups;
       this.filtered_pickup_data = arr.pickups;
+    },
+    async removePickUp(data) {
+      const payload = {
+        id: data.object_id,
+        route: 'pickups',
+      };
+      const resp = await this.remove_intercounty_record(payload);
+      if (resp.status) {
+        this.initiateData();
+      }
     },
     goToAddPickUpConfig() {
       this.add_destination = true;
