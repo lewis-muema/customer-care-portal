@@ -64,13 +64,28 @@
               label="3pl excess weight pricing"
               prop="excess_pricing"
             >
-              <template>
-                Kes 70/kg
+              <template slot-scope="scope">
+                {{
+                  `${
+                    price_config_data[scope.$index]['cost_per_kg'][0][
+                      'currency'
+                    ]
+                  }  ${
+                    price_config_data[scope.$index]['cost_per_kg'][0][
+                      'partner_cost'
+                    ]
+                  }/Kg`
+                }}
               </template>
             </el-table-column>
-            <el-table-column label="Actions" prop="action">
+            <el-table-column label="Actions" prop="action" width="250">
               <template>
-                Edit
+                <el-button size="mini" class="config-button--active">
+                  Edit
+                </el-button>
+                <el-button size="mini" class="config-button--archive">
+                  Delete
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
