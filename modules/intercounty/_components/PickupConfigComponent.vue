@@ -10,8 +10,9 @@
             <input
               type="text"
               class="config-search"
-              placeholder="Search ..."
+              placeholder="Search for collection centre address .."
               autocomplete="off"
+              v-model="search_data"
             />
             <i class="fa fa-search config-search-icon"></i>
           </div>
@@ -25,10 +26,10 @@
           </div>
         </div>
         <div class="body-box col-md-12 intercounty-table">
-          <el-table :data="pickup_config_data" size="medium" :border="false">
+          <el-table :data="filtered_pickup_data" size="medium" :border="false">
             <el-table-column label="Name" prop="city_id">
               <template slot-scope="scope">
-                {{ getCityName(pickup_config_data[scope.$index]['city_id']) }}
+                {{ getCityName(filtered_pickup_data[scope.$index]['city_id']) }}
               </template>
             </el-table-column>
             <el-table-column
@@ -38,14 +39,19 @@
               <template slot-scope="scope">
                 {{
                   displayCollectionCentre(
-                    pickup_config_data[scope.$index]['collection_centers'],
+                    filtered_pickup_data[scope.$index]['collection_centers'],
                   )
                 }}
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template>
-                Edit
+                <el-button size="mini" class="config-button--active">
+                  Edit
+                </el-button>
+                <el-button size="mini" class="config-button--archive">
+                  Delete
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -220,6 +226,7 @@ export default {
     return {
       loading_data: false,
       pickup_config_data: [],
+      filtered_pickup_data: [],
       add_destination: false,
       visible: false,
       suggestions: [],
@@ -247,6 +254,7 @@ export default {
       submit_status: false,
       response_status: true,
       error_msg: '',
+      search_data: '',
     };
   },
   computed: {
@@ -258,8 +266,21 @@ export default {
     allow_add_collection() {
       return this.markers.length > 1;
     },
+    filteredData() {
+      const self = this;
+      return this.pickup_config_data.filter(
+        pr =>
+          pr.collection_centers[0].address
+            .toLowerCase()
+            .indexOf(self.search_data.toLowerCase()) >= 0,
+      );
+    },
   },
-  watch: {},
+  watch: {
+    filteredData(val) {
+      this.filtered_pickup_data = val;
+    },
+  },
   mounted() {
     this.$gmapApiPromiseLazy().then(() => {
       this.mapLoaded = true;
@@ -313,6 +334,7 @@ export default {
     async requestPickupData() {
       const arr = await this.request_pickup_configs();
       this.pickup_config_data = arr.pickups;
+      this.filtered_pickup_data = arr.pickups;
     },
     goToAddPickUpConfig() {
       this.add_destination = true;

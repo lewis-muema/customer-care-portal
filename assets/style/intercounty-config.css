@@ -198,3 +198,15 @@
 .intercounty-submit-error {
   color: #ff0000;
 }
+.config-button--active {
+  background-color: #daf9eb;
+  border-color: #daf9eb;
+  color: #51a65b;
+  width: 30%;
+}
+.config-button--archive {
+  background-color: #fcf5b6;
+  border-color: #fcf5b6;
+  color: #757575;
+  width: 30%;
+}

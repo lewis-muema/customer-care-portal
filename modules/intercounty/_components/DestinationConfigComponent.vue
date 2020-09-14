@@ -10,8 +10,9 @@
             <input
               type="text"
               class="config-search"
-              placeholder="Search ..."
+              placeholder="Search for collection centre address .."
               autocomplete="off"
+              v-model="search_data"
             />
             <i class="fa fa-search config-search-icon"></i>
           </div>
@@ -26,13 +27,13 @@
         </div>
         <div class="body-box col-md-12 intercounty-table">
           <el-table
-            :data="destination_config_data"
+            :data="filtered_destination_data"
             size="medium"
             :border="false"
           >
             <el-table-column label="Name" prop="name">
               <template slot-scope="scope">
-                {{ destination_config_data[scope.$index]['name'] }}
+                {{ filtered_destination_data[scope.$index]['name'] }}
               </template>
             </el-table-column>
             <el-table-column
@@ -42,14 +43,21 @@
               <template slot-scope="scope">
                 {{
                   displayCollectionCentre(
-                    destination_config_data[scope.$index]['collection_centers'],
+                    filtered_destination_data[scope.$index][
+                      'collection_centers'
+                    ],
                   )
                 }}
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template>
-                Edit
+                <el-button size="mini" class="config-button--active">
+                  Edit
+                </el-button>
+                <el-button size="mini" class="config-button--archive">
+                  Delete
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -113,7 +121,7 @@
           </div>
           <div class="inter-county-map">
             <GmapMap
-              ref="map"
+              ref="map0"
               :center="mapCentreLocation"
               :zoom="10"
               map-type-id="roadmap"
@@ -209,7 +217,7 @@
             </div>
             <div class="inter-county-map">
               <GmapMap
-                ref="map"
+                ref="map1"
                 :center="mapCentreLocation"
                 :zoom="10"
                 map-type-id="roadmap"
@@ -288,7 +296,7 @@
               </div>
               <div class="inter-county-map">
                 <GmapMap
-                  ref="map"
+                  :ref="`map${n + 1}`"
                   :center="mapCentreLocation"
                   :zoom="10"
                   map-type-id="roadmap"
@@ -359,6 +367,7 @@ export default {
     return {
       loading_data: false,
       destination_config_data: [],
+      filtered_destination_data: [],
       add_destination: false,
       visible: false,
       suggestions: [],
@@ -384,6 +393,7 @@ export default {
       response_status: true,
       error_msg: '',
       collection_centre_address: [],
+      search_data: '',
     };
   },
   computed: {
@@ -395,8 +405,21 @@ export default {
     allow_add_collection() {
       return this.markers.length > 1;
     },
+    filteredData() {
+      const self = this;
+      return this.destination_config_data.filter(
+        pr =>
+          pr.collection_centers[0].address
+            .toLowerCase()
+            .indexOf(self.search_data.toLowerCase()) >= 0,
+      );
+    },
   },
-  watch: {},
+  watch: {
+    filteredData(val) {
+      this.filtered_destination_data = val;
+    },
+  },
   mounted() {
     this.$gmapApiPromiseLazy().then(() => {
       this.mapLoaded = true;
@@ -439,6 +462,7 @@ export default {
     async requestDestinationData() {
       const arr = await this.request_destination_configs();
       this.destination_config_data = arr.destinations;
+      this.filtered_destination_data = arr.destinations;
     },
     goToAddDestination() {
       this.add_destination = true;
@@ -483,13 +507,20 @@ export default {
           }
           this.markers.splice(input, 0, response.data.result.geometry);
 
+          const map_value = `map${input}`;
+          let ref = '';
+          if (input > 1) {
+            ref = this.$refs[map_value][0];
+          } else {
+            ref = this.$refs[map_value];
+          }
+
           const bounds = new google.maps.LatLngBounds();
 
-          for (const m of this.markers) {
-            bounds.extend(m.location);
-          }
-          this.$refs.map.$mapObject.fitBounds(bounds);
-          this.$refs.map.$mapObject.setZoom(this.$refs.map.$mapObject.zoom - 1);
+          bounds.extend(response.data.result.geometry.location);
+
+          ref.$mapObject.fitBounds(bounds);
+          ref.$mapObject.setZoom(ref.$mapObject.zoom - 1);
         });
     },
     handleFocus(val, input) {
