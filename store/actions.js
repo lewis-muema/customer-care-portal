@@ -1408,4 +1408,26 @@ export default {
       });
     }
   },
+  async update_intercounty_record({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const values = JSON.stringify(payload.params);
+
+    const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
+    try {
+      const response = await axios.put(url, values, param);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
 };
