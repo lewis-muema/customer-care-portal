@@ -80,7 +80,11 @@
             </el-table-column>
             <el-table-column label="Actions" prop="action" width="250">
               <template slot-scope="scope">
-                <el-button size="mini" class="config-button--active">
+                <el-button
+                  size="mini"
+                  class="config-button--active"
+                  @click="editRoute(price_config_data[scope.$index])"
+                >
                   Edit
                 </el-button>
                 <el-button
@@ -277,6 +281,8 @@ export default {
       error_msg: '',
       pickupData: [],
       destinationData: [],
+      edit_route: false,
+      route_key: '',
     };
   },
   computed: {},
@@ -292,6 +298,7 @@ export default {
       request_pickup_configs: 'request_intercounty_pickup_configs',
       request_destination_configs: 'request_intercounty_destination_configs',
       remove_intercounty_record: 'remove_intercounty_record',
+      update_intercounty_record: 'update_intercounty_record',
     }),
     initiateData() {
       this.requestPickUpCities();
@@ -336,11 +343,35 @@ export default {
         this.initiateData();
       }
     },
+    editRoute(data) {
+      this.pickup = data.pickup.object_id;
+      this.destination = data.destination.object_id;
+      this.base_rate = data.price[0].partner_price;
+      this.sendy_rate = data.price[0].sendy_price;
+      this.excess_weight_rate = data.cost_per_kg[0].partner_cost;
+      this.sendy_commission = data.cost_per_kg[0].sendy_up_charge;
+      this.maximum_weight = data.max_weight;
+      this.route_key = data.object_id;
+      this.edit_route = true;
+      this.add_destination = true;
+    },
     goToAddPriceConfig() {
       this.add_destination = true;
     },
     one_step_back() {
       this.add_destination = false;
+      this.clearStoreData();
+    },
+    clearStoreData() {
+      this.edit_route = false;
+      this.route_key = '';
+      this.pickup = '';
+      this.destination = '';
+      this.base_rate = '';
+      this.sendy_rate = '';
+      this.excess_weight_rate = '';
+      this.sendy_commission = '';
+      this.maximum_weight = '';
     },
     getCityName(val) {
       let resp = '';
@@ -351,7 +382,7 @@ export default {
 
       return resp;
     },
-    async createRouteConfig() {
+    createRouteConfig() {
       if (
         this.pickup === '' ||
         this.destination === '' ||
@@ -368,41 +399,86 @@ export default {
         this.submit_status = true;
         this.response_status = true;
 
-        const payload = {
-          app: 'PRICING_SERVICE',
-          endpoint: 'inter_county_config/routes',
-          apiKey: false,
-          params: {
-            pickup: this.pickup,
-            destination: this.destination,
-            currency: 'KES',
-            '3pl_base_price': parseInt(this.base_rate, 10),
-            sendy_base_price: parseInt(this.sendy_rate, 10),
-            '3pl_extra_weight_cost': parseInt(this.excess_weight_rate, 10),
-            sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
-            max_weight: parseInt(this.maximum_weight, 10),
-          },
-        };
-
-        try {
-          const data = await this.create_route_config(payload);
-
-          if (data.status) {
-            this.response_status = 'success';
-            setTimeout(() => {
-              this.submit_state = false;
-              this.add_destination = false;
-              this.initiateData();
-            }, 2000);
-          } else {
-            this.response_status = 'error';
-            this.error_msg = data.message;
-          }
-        } catch (error) {
-          this.response_status = 'error';
-          this.error_msg =
-            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        if (this.edit_route && this.route_key !== '') {
+          this.updateRoute();
+        } else {
+          this.addNewRoute();
         }
+      }
+    },
+    async addNewRoute() {
+      const payload = {
+        app: 'PRICING_SERVICE',
+        endpoint: 'inter_county_config/routes',
+        apiKey: false,
+        params: {
+          pickup: this.pickup,
+          destination: this.destination,
+          currency: 'KES',
+          '3pl_base_price': parseInt(this.base_rate, 10),
+          sendy_base_price: parseInt(this.sendy_rate, 10),
+          '3pl_extra_weight_cost': parseInt(this.excess_weight_rate, 10),
+          sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
+          max_weight: parseInt(this.maximum_weight, 10),
+        },
+      };
+
+      try {
+        const data = await this.create_route_config(payload);
+
+        if (data.status) {
+          this.response_status = 'success';
+          setTimeout(() => {
+            this.submit_state = false;
+            this.add_destination = false;
+            this.initiateData();
+            this.clearStoreData();
+          }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.error_msg = data.message;
+        }
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async updateRoute() {
+      const payload = {
+        id: this.route_key,
+        route: 'routes',
+        params: {
+          pickup: this.pickup,
+          destination: this.destination,
+          currency: 'KES',
+          '3pl_base_price': parseInt(this.base_rate, 10),
+          sendy_base_price: parseInt(this.sendy_rate, 10),
+          '3pl_extra_weight_cost': parseInt(this.excess_weight_rate, 10),
+          sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
+          max_weight: parseInt(this.maximum_weight, 10),
+        },
+      };
+
+      try {
+        const data = await this.update_intercounty_record(payload);
+
+        if (data.status) {
+          this.response_status = 'success';
+          setTimeout(() => {
+            this.submit_state = false;
+            this.add_destination = false;
+            this.initiateData();
+            this.clearStoreData();
+          }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.error_msg = data.message;
+        }
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
   },
