@@ -461,6 +461,7 @@ export default {
         const data = await this.requestTransactions(payload);
         if (data.status === 200) {
           this.transactionDetails = data.data;
+          this.clearErrorMessages();
         } else {
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
@@ -506,7 +507,6 @@ export default {
     },
     creditNoteData(creditNoteData) {
       this.reversalData = creditNoteData;
-      this.update_reversal();
     },
     clearErrorMessages() {
       const notification = [];
