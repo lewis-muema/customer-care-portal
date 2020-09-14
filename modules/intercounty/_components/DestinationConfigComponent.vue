@@ -51,11 +51,17 @@
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action">
-              <template>
+              <template slot-scope="scope">
                 <el-button size="mini" class="config-button--active">
                   Edit
                 </el-button>
-                <el-button size="mini" class="config-button--archive">
+                <el-button
+                  size="mini"
+                  class="config-button--archive"
+                  @click="
+                    removeDestination(filtered_destination_data[scope.$index])
+                  "
+                >
                   Delete
                 </el-button>
               </template>
@@ -431,6 +437,7 @@ export default {
       request_vendor_types: 'request_vendor_types',
       request_destination_configs: 'request_intercounty_destination_configs',
       create_destination_config: 'create_pickup_config',
+      remove_intercounty_record: 'remove_intercounty_record',
     }),
     initiateData() {
       this.fetchVendorTypes();
@@ -563,6 +570,16 @@ export default {
       }
 
       return resp;
+    },
+    async removeDestination(data) {
+      const payload = {
+        id: data.object_id,
+        route: 'destinations',
+      };
+      const resp = await this.remove_intercounty_record(payload);
+      if (resp.status) {
+        this.initiateData();
+      }
     },
     async createDestinationConfig() {
       if (
