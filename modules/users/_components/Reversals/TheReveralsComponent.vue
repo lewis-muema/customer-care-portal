@@ -249,7 +249,8 @@ export default {
         {
           name: 'reversal',
           title: 'Reversal',
-          description: 'Undo a manual billing or a payment',
+          description:
+            'Undo a manual billing, a payment or transactions pertaining to an order ',
           hasChild: true,
           subMenu: [
             {
