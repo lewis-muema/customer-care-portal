@@ -255,7 +255,7 @@ export default {
           subMenu: [
             {
               name: 'full',
-              title: 'Full Reversal',
+              title: 'Reverse an order',
               id: 1,
             },
 
