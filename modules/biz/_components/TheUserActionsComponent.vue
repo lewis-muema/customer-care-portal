@@ -14,7 +14,7 @@
             Edit
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_payment">
+        <li class="nav-item" v-if="permissions.approve_payment_biz">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -64,7 +64,7 @@
         </li>
         <li
           class="nav-item custom-padding"
-          v-if="permissions.approve_custom_invoice"
+          v-if="permissions.approve_custom_invoice_3"
         >
           <a
             class="nav-link action-list custom-width"
@@ -79,7 +79,7 @@
         </li>
         <li
           class="nav-item custom-padding"
-          v-if="permissions.approve_custom_invoice"
+          v-if="permissions.approve_custom_invoice_4"
         >
           <a
             class="nav-link action-list custom-width"
@@ -92,7 +92,7 @@
             Reverse Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_vat_configs">
+        <li class="nav-item" v-if="permissions.approve_vat_configs_biz">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -420,7 +420,7 @@ export default {
           approve_billing = true;
         }
       } else {
-        if (this.permissions.approve_prepay_billing) {
+        if (this.permissions.approve_prepay_billing_biz) {
           approve_billing = true;
         }
       }
