@@ -7,27 +7,29 @@
     >
       <div class="reversal-choice col-md-6" v-if="stage === 1">
         <h3>What would you like to create?</h3>
-        <div
-          class="form-group category-group"
-          :class="{ 'active-category': reversalCategory === option.name }"
-          v-for="(option, index) in reversalsOptions"
-          :key="index"
-        >
-          <input
-            type="radio"
-            :id="option.name"
-            name="category"
-            :value="option.name"
-            class="options-radio"
-            v-model="reversalCategory"
-            @click="setReversalCategory(option)"
-          />
-          <label :for="option.name" class="option-label">{{
-            option.title
-          }}</label>
-          <br />
-          <span class="option-description">{{ option.description }}</span>
-        </div>
+        <template v-for="(option, index) in reversalsOptions">
+          <div
+            class="form-group category-group"
+            :class="{ 'active-category': reversalCategory === option.name }"
+            :key="index"
+            v-if="option.users !== userType"
+          >
+            <input
+              type="radio"
+              :id="option.name"
+              name="category"
+              :value="option.name"
+              class="options-radio"
+              v-model="reversalCategory"
+              @click="setReversalCategory(option)"
+            />
+            <label :for="option.name" class="option-label">{{
+              option.title
+            }}</label>
+            <br />
+            <span class="option-description">{{ option.description }}</span>
+          </div>
+        </template>
         <button
           :disabled="reversalCategory === ''"
           class="btn btn-primary action-button reversal-button pull-right"
@@ -252,6 +254,7 @@ export default {
           description:
             'Undo a manual billing, a payment or transactions pertaining to an order ',
           hasChild: true,
+          users: 'all',
           subMenu: [
             {
               name: 'full',
@@ -276,6 +279,7 @@ export default {
           title: 'Invoice Reversal',
           description: 'Reverse the full amount or part of the amount invoiced',
           hasChild: true,
+          users: 'peer',
           subMenu: [
             {
               name: 'partial-invoice',
@@ -294,6 +298,7 @@ export default {
           title: 'Credit Note',
           description:
             'Creates a Credit to increase this customer running balance',
+          users: 'all',
           hasChild: false,
         },
       ],
