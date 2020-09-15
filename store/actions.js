@@ -1401,11 +1401,10 @@ export default {
     const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
     try {
       const response = await axios.delete(url, param);
+      console.log('response 2', response);
       return response;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
+      return error.response.data;
     }
   },
   async update_intercounty_record({ state, dispatch }, payload) {

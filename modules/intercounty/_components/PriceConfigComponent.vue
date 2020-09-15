@@ -24,6 +24,42 @@
             >
           </div>
         </div>
+
+        <div
+          v-if="delete_status"
+          class=" col-md-12 intercounty-response response-flex-box"
+        >
+          <div class="response-highlight">
+            <p
+              class="delete-response-text"
+              v-if="delete_response_status === true"
+            >
+              <i
+                class="fa fa-spinner fa-spin loader intercounty-loader--align"
+              ></i>
+              Processing your request ....
+            </p>
+            <p
+              class="delete-response-text"
+              v-else-if="delete_response_status === 'success'"
+            >
+              <i
+                class="fa fa-check-circle intercounty-loader--align intercounty-submit-success"
+              ></i>
+              Record removed successfully !
+            </p>
+            <p class="delete-response-text" v-else>
+              <i
+                class="fa fa-exclamation-circle intercounty-loader--align intercounty-submit-error"
+              ></i>
+              {{ error_msg }}
+            </p>
+          </div>
+          <div class="close-response-highlight">
+            <i class="el-icon-circle-close" @click="closeHighlight()"></i>
+          </div>
+        </div>
+
         <div class="body-box col-md-12 intercounty-table">
           <el-table :data="price_config_data" size="medium" :border="false">
             <el-table-column label="Pick up" prop="pickup">
@@ -289,6 +325,8 @@ export default {
       destinationData: [],
       edit_route: false,
       route_key: '',
+      delete_status: false,
+      delete_response_status: true,
     };
   },
   computed: {},
@@ -340,13 +378,23 @@ export default {
       this.destinationData = arr.destinations;
     },
     async removeRoute(data) {
+      this.delete_status = true;
+      this.delete_response_status = true;
+
       const payload = {
         id: data.object_id,
         route: 'routes',
       };
       const resp = await this.remove_intercounty_record(payload);
+
       if (resp.status) {
-        this.initiateData();
+        this.delete_response_status = 'success';
+        setTimeout(() => {
+          this.initiateData();
+        }, 2000);
+      } else {
+        this.delete_response_status = false;
+        this.error_msg = JSON.stringify(resp.errors[0]);
       }
     },
     editRoute(data) {
@@ -487,6 +535,11 @@ export default {
         this.error_msg =
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
+    },
+    closeHighlight() {
+      this.error_msg = '';
+      this.delete_response_status = true;
+      this.delete_status = false;
     },
   },
 };
