@@ -1403,9 +1403,7 @@ export default {
       const response = await axios.delete(url, param);
       return response;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
+      return error.response.data;
     }
   },
   async update_intercounty_record({ state, dispatch }, payload) {
