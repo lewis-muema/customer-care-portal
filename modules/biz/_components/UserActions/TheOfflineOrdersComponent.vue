@@ -279,7 +279,7 @@
               </table>
             </div>
 
-            <div class="offline-billing-amount">
+            <div class="offline-billing-amount" v-if="!isChargeEntity">
               <label class="config offline-billing-label">
                 Amount to bill the customer
               </label>
@@ -293,7 +293,7 @@
               />
               <div
                 class="invoice_valid"
-                v-if="submitted && !$v.billingAmount.required"
+                v-if="submitted && !isChargeEntity && billingAmount === ''"
               >
                 Billing Amount is required
               </div>
@@ -452,7 +452,6 @@ export default {
   validations: {
     end_date: { required },
     start_date: { required },
-    billingAmount: { required },
     notes: { required },
     businessUnit: { required },
   },
@@ -650,7 +649,8 @@ export default {
           }
         } else if (
           this.checked &&
-          this.billingAmount <= this.calculatedAmount
+          this.billingAmount <= this.calculatedAmount &&
+          !this.isChargeEntity
         ) {
           this.UpdateMessaging(
             true,
@@ -671,7 +671,9 @@ export default {
                 to: moment(this.end_date).format('YYYY-MM-DD'),
                 cop_id: this.user.user_details.cop_id,
                 notes: this.notes,
-                bill_amount: this.billingAmount,
+                bill_amount: this.isChargeEntity
+                  ? this.calculatedAmount
+                  : this.billingAmount,
                 charge_vat: this.charge_vat,
                 currency: this.currency,
                 business_unit: parseInt(this.businessUnit, 10),
