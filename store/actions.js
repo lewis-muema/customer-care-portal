@@ -1365,7 +1365,7 @@ export default {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
-      return error.response;
+      return error.response.data;
     }
   },
   async request_route_data({ state, dispatch }) {

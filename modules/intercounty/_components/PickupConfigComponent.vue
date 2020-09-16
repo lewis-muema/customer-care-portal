@@ -593,7 +593,11 @@ export default {
           }, 2000);
         } else {
           this.response_status = 'error';
-          this.error_msg = data.message;
+          if (Object.prototype.hasOwnProperty.call(data, 'errors')) {
+            this.error_msg = data.errors;
+          } else {
+            this.error_msg = data.message;
+          }
         }
       } catch (error) {
         this.response_status = 'error';
