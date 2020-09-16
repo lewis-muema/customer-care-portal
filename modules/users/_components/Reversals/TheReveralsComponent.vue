@@ -7,27 +7,32 @@
     >
       <div class="reversal-choice col-md-6" v-if="stage === 1">
         <h3>What would you like to create?</h3>
-        <div
-          class="form-group category-group"
-          :class="{ 'active-category': reversalCategory === option.name }"
-          v-for="(option, index) in reversalsOptions"
-          :key="index"
-        >
-          <input
-            type="radio"
-            :id="option.name"
-            name="category"
-            :value="option.name"
-            class="options-radio"
-            v-model="reversalCategory"
-            @click="setReversalCategory(option)"
-          />
-          <label :for="option.name" class="option-label">{{
-            option.title
-          }}</label>
-          <br />
-          <span class="option-description">{{ option.description }}</span>
-        </div>
+        <template v-for="(option, index) in reversalsOptions">
+          <div
+            class="form-group category-group"
+            :class="{
+              'active-category': reversalCategory === option.name,
+              hidden: option.hidden,
+            }"
+            :key="index"
+            v-if="option.users !== userType"
+          >
+            <input
+              type="radio"
+              :id="option.name"
+              name="category"
+              :value="option.name"
+              class="options-radio"
+              v-model="reversalCategory"
+              @click="setReversalCategory(option)"
+            />
+            <label :for="option.name" class="option-label">{{
+              option.title
+            }}</label>
+            <br />
+            <span class="option-description">{{ option.description }}</span>
+          </div>
+        </template>
         <button
           :disabled="reversalCategory === ''"
           class="btn btn-primary action-button reversal-button pull-right"
@@ -186,6 +191,7 @@
                 :currency="currency"
                 :user-type="userType"
                 :user-id="userID"
+                :reference-number="referenceNumber"
                 @invoiceReversalData="invoiceReversalData"
               />
             </div>
@@ -199,6 +205,7 @@
             :category-details="categoryDetails"
             :user-type="userType"
             :user-id="userID"
+            :user="user"
             @creditNoteData="creditNoteData"
           />
         </span>
@@ -247,12 +254,15 @@ export default {
         {
           name: 'reversal',
           title: 'Reversal',
-          description: 'Undo a manual billing or a payment',
+          description:
+            'Undo a manual billing, a payment or transactions pertaining to an order ',
           hasChild: true,
+          users: 'all',
+          hidden: false,
           subMenu: [
             {
               name: 'full',
-              title: 'Full Reversal',
+              title: 'Reverse an order',
               id: 1,
             },
 
@@ -273,6 +283,8 @@ export default {
           title: 'Invoice Reversal',
           description: 'Reverse the full amount or part of the amount invoiced',
           hasChild: true,
+          users: 'peer',
+          hidden: true,
           subMenu: [
             {
               name: 'partial-invoice',
@@ -291,6 +303,8 @@ export default {
           title: 'Credit Note',
           description:
             'Creates a Credit to increase this customer running balance',
+          users: 'all',
+          hidden: false,
           hasChild: false,
         },
       ],
@@ -333,7 +347,7 @@ export default {
     userID() {
       return this.userType === 'biz'
         ? this.user.user_details.cop_id
-        : this.user.user_details_user_id;
+        : this.user.user_details.user_id;
     },
     actionUser() {
       return this.session.payload.data.name;
@@ -387,28 +401,21 @@ export default {
               currency: this.currency,
               reversalID: this.typeDetails.id,
               referenceNumber: this.referenceNumber,
+              ...(this.reversalType === 'payment' && {
+                paymentMethod: this.paymentMethod,
+              }),
+              ...(this.reversalType === 'payment' &&
+                this.paymentMethod === 1 && {
+                  amount: this.transactionDetails.total_credit_amount,
+                }),
             }
           : {};
-      if (this.reversalType === 'payment') {
-        reverseData.paymentMethod = this.paymentMethod;
-      }
-
       this.reversalData =
         this.reversalCategory === 'reversal' ? reverseData : this.reversalData;
 
-      switch (this.userType) {
-        case 'peer':
-          this.reversalData.user_id = this.userID;
-          this.reverseData.cop_id = 0;
-
-          break;
-        case 'biz':
-          this.reversalData.user_id = 0;
-          this.reversalData.cop_id = this.userID;
-          break;
-        default:
-          break;
-      }
+      this.reversalData.user_id = this.userType === 'biz' ? 0 : this.userID;
+      this.reversalData.cop_id = this.userType === 'peer' ? 0 : this.userID;
+      const actionID = this.reversalCategory === 'invoice-reversal' ? 24 : 22;
 
       const payload = {
         app: 'CUSTOMERS_APP',
@@ -417,7 +424,7 @@ export default {
         params: {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
-          action_id: this.reversalCategory === 'credit-note' ? 28 : 22,
+          action_id: this.reversalCategory === 'credit-note' ? 28 : actionID,
           action_data: this.reversalData,
           request_id: 110,
           action_user: this.actionUser,
@@ -466,12 +473,13 @@ export default {
         const data = await this.requestTransactions(payload);
         if (data.status === 200) {
           this.transactionDetails = data.data;
+          this.clearErrorMessages();
         } else {
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateClass(actionClass);
           this.updateErrors(notification);
-          this.transactionDetails = {};
+          this.transactionDetails = null;
         }
       } catch (error) {
         return error;
@@ -511,7 +519,12 @@ export default {
     },
     creditNoteData(creditNoteData) {
       this.reversalData = creditNoteData;
-      this.update_reversal();
+    },
+    clearErrorMessages() {
+      const notification = [];
+      const actionClass = '';
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     reset() {
       this.reversing = false;
@@ -521,6 +534,7 @@ export default {
       this.referenceNumber = '';
       this.paymentMethod = '';
       this.emptyRef = false;
+      this.clearErrorMessages();
     },
     setReversalCategory(option) {
       this.reset();

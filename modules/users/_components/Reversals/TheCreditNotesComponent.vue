@@ -102,7 +102,14 @@ import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TheCreditNotesComponent',
-  props: ['businessUnits', 'currency', 'categoryDetails', 'userID', 'userType'],
+  props: [
+    'businessUnits',
+    'currency',
+    'categoryDetails',
+    'userID',
+    'userType',
+    'user',
+  ],
   data() {
     return {
       businessUnit: '',
@@ -114,7 +121,6 @@ export default {
   },
   computed: {
     disabled() {
-      console.log('this.reversalCategory', this.reversalCategory);
       return (
         this.businessUnit === '' || this.narrative === '' || this.amount === ''
       );
@@ -123,14 +129,18 @@ export default {
   methods: {
     emit_reversal() {
       this.submitted = true;
-
-      this.$emit('creditNoteData', {
+      const data = {
         reversalCategory: 'credit-note',
         currency: this.currency,
         reversalAmount: this.amount,
         narrative: this.narrative,
         businessUnit: this.businessUnit,
-      });
+      };
+      if (this.userType === 'biz') {
+        const vat_exempt = this.user.cop_details.vat_exempt;
+        data.vat_exempt = vat_exempt ? 1 : 0;
+      }
+      this.$emit('creditNoteData', data);
     },
   },
 };
