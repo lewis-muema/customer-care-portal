@@ -423,7 +423,7 @@ export default {
     search: _.debounce(function(val) {
       axios
         .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=name,geometry&components=country:ke|country:ug|country:tz&key=${this.herokuKey}`,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
