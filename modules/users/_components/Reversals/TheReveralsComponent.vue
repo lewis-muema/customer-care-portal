@@ -10,7 +10,10 @@
         <template v-for="(option, index) in reversalsOptions">
           <div
             class="form-group category-group"
-            :class="{ 'active-category': reversalCategory === option.name }"
+            :class="{
+              'active-category': reversalCategory === option.name,
+              hidden: option.hidden,
+            }"
             :key="index"
             v-if="option.users !== userType"
           >
@@ -255,6 +258,7 @@ export default {
             'Undo a manual billing, a payment or transactions pertaining to an order ',
           hasChild: true,
           users: 'all',
+          hidden: false,
           subMenu: [
             {
               name: 'full',
@@ -280,6 +284,7 @@ export default {
           description: 'Reverse the full amount or part of the amount invoiced',
           hasChild: true,
           users: 'peer',
+          hidden: true,
           subMenu: [
             {
               name: 'partial-invoice',
@@ -299,6 +304,7 @@ export default {
           description:
             'Creates a Credit to increase this customer running balance',
           users: 'all',
+          hidden: false,
           hasChild: false,
         },
       ],
