@@ -158,7 +158,10 @@
             Millers tonnage
           </a>
         </li>
-        <li class="nav-item reversal-item">
+        <li
+          v-if="permissions.approve_reversals_biz"
+          class="nav-item reversal-item"
+        >
           <a
             class="nav-link action-list invoice-action"
             data-toggle="tab"

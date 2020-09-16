@@ -77,7 +77,7 @@
             Reverse Invoice
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permissions.approve_reversals_peer">
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
