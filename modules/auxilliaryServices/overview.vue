@@ -1,5 +1,5 @@
 <template>
-  <div class="overview-content-holder">
+  <div class="overview-content-holder" v-loading="loadingStatus">
     <div class="date-filter-input">
       <el-date-picker
         v-model="filterdate"
@@ -11,7 +11,7 @@
       </el-date-picker>
     </div>
     <div class="date-filter-title">
-      The data you are currently viewing is from XX date
+      The data you are currently viewing is from {{ startDate }} date
     </div>
     <div>
       <div class="overview-tab-sections">
@@ -20,7 +20,9 @@
             <img src="https://images.sendyit.com/CCredesign/money.png" alt="" />
           </div>
           <div class="filter-section-desc">Total fuel amount advanced</div>
-          <div class="filter-section-amount">KES 104,500</div>
+          <div class="filter-section-amount">
+            {{ currency }} {{ total_fuel_amount_advanced }}
+          </div>
         </div>
         <div class="overview-tabs-upper">
           <div class="icon-container brown-bg">
@@ -30,14 +32,14 @@
             />
           </div>
           <div class="filter-section-desc">Total litres advanced</div>
-          <div class="filter-section-amount">2000 L</div>
+          <div class="filter-section-amount">{{ total_litres_advanced }}</div>
         </div>
         <div class="overview-tabs-upper">
           <div class="icon-container orange-bg">
             <img src="https://images.sendyit.com/CCredesign/link.png" alt="" />
           </div>
           <div class="filter-section-desc">Total requests</div>
-          <div class="filter-section-amount">101</div>
+          <div class="filter-section-amount">{{ total_requests }}</div>
         </div>
       </div>
       <div class="overview-tab-sections">
@@ -49,7 +51,7 @@
             />
           </div>
           <div class="filter-section-desc">Total partners</div>
-          <div class="filter-section-amount">75</div>
+          <div class="filter-section-amount">{{ total_partners }}</div>
         </div>
         <div class="overview-tabs-lower">
           <div class="icon-container pink-bg">
@@ -59,7 +61,7 @@
             />
           </div>
           <div class="filter-section-desc">Total approvals</div>
-          <div class="filter-section-amount">90</div>
+          <div class="filter-section-amount">{{ total_approvals }}</div>
         </div>
         <div class="overview-tabs-lower">
           <div class="icon-container red-bg">
@@ -69,14 +71,16 @@
             />
           </div>
           <div class="filter-section-desc">Total Rejects</div>
-          <div class="filter-section-amount">11</div>
+          <div class="filter-section-amount">{{ total_rejects }}</div>
         </div>
         <div class="overview-tabs-lower">
           <div class="icon-container yellow-bg">
             <img src="https://images.sendyit.com/CCredesign/graph.png" alt="" />
           </div>
           <div class="filter-section-desc">Sendy take</div>
-          <div class="filter-section-amount">KES 12,000</div>
+          <div class="filter-section-amount">
+            {{ currency }} {{ sendy_take }}
+          </div>
         </div>
       </div>
     </div>
@@ -84,11 +88,108 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import moment from 'moment';
+
 export default {
+  props: {
+    rider: {
+      type: Number,
+      required: true,
+    },
+    service: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    unit: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       filterdate: '',
+      params: '',
+      total_fuel_amount_advanced: '',
+      total_litres_advanced: '',
+      total_requests: '',
+      total_partners: '',
+      total_approvals: '',
+      total_rejects: '',
+      sendy_take: '',
+      currency: '',
+      loadingStatus: false,
+      dateParam: '',
+      unitParam: '',
+      countryParam: '?country_code=KE',
+      serviceParam: '',
     };
+  },
+  computed: {
+    startDate() {
+      return moment()
+        .startOf('month')
+        .format('YYYY-MM-DD');
+    },
+  },
+  computed: {
+    allParams() {
+      return `${this.countryParam}${this.dateParam}${this.unitParam}${this.serviceParam}`;
+    },
+  },
+  watch: {
+    filterdate(val) {
+      if (val) {
+        this.dateParam = `&from_date=${new Date(
+          val[0],
+        ).toISOString()}&to_date=${new Date(val[1]).toISOString()}`;
+      } else {
+        this.dateParam = '';
+      }
+      this.fetchStats();
+    },
+    service(val) {
+      this.serviceParam = '';
+      this.fetchStats();
+    },
+    country(val) {
+      this.countryParam = `?country_code=${val.toUpperCase()}`;
+      this.fetchStats();
+    },
+    unit(val) {
+      this.unitParam = `&business_unit=${val.toUpperCase()}`;
+      this.fetchStats();
+    },
+  },
+  created() {
+    this.fetchStats();
+  },
+  methods: {
+    ...mapActions({
+      get_fuel_stats: 'fuel_stats',
+    }),
+    async fetchStats() {
+      this.loadingStatus = true;
+      const payload = {
+        param: `${this.allParams}`,
+      };
+      const data = await this.get_fuel_stats(payload);
+      this.loadingStatus = false;
+      if (data.status) {
+        this.total_fuel_amount_advanced = data.data.total_amount_advanced;
+        this.total_litres_advanced = data.data.total_litres_advanced;
+        this.total_requests = data.data.total_requests;
+        this.total_partners = data.data.no_of_riders;
+        this.total_approvals = data.data.approved_advances;
+        this.total_rejects = data.data.rejected_advances;
+        this.sendy_take = data.data.sendy_take;
+        this.currency = data.data.currency;
+      }
+    },
   },
 };
 </script>
