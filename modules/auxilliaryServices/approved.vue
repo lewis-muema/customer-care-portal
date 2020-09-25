@@ -71,7 +71,7 @@
               <div
                 class="approved-requests-standard-column-adv approved-requests-column-ovverride"
               >
-                {{ order.request_details.date_time }}
+                {{ dateFormat(order.request_details.date_time) }}
               </div>
               <div class="approved-requests-large-column-adv">
                 <div class="approved-requests-orderno">
@@ -131,7 +131,10 @@
                 {{ order.owner_details.phone_number }}
               </div>
             </div>
-            <div class="approved-requests-owner-sections">
+            <div
+              class="approved-requests-owner-sections"
+              v-if="order.admin_details"
+            >
               <div class="approved-requests-section-header">Ops</div>
               <div class="approved-requests-owner-details">
                 <span class="approved-requests-owner-label">Name:</span>
@@ -153,16 +156,52 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="orders.length === 0 && !loadingStatus"
+      class="no-requests-container"
+    >
+      There are no approved requests
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import moment from 'moment';
+
 export default {
+  props: {
+    rider: {
+      type: Number,
+      required: true,
+    },
+    service: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    unit: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       orders: [],
       loadingStatus: false,
+      riderParam: '',
+      serviceParam: '',
+      countryParam: '&country_code=ke',
+      unitParam: '',
     };
+  },
+  computed: {
+    params() {
+      return `${this.riderParam}${this.serviceParam}${this.countryParam}${this.unitParam}`;
+    },
   },
   watch: {
     orders: {
@@ -171,212 +210,67 @@ export default {
       },
       deep: true,
     },
+    rider(val) {
+      this.orders = [];
+      if (val > 0) {
+        this.riderParam = `&rider_id=${val}`;
+      } else {
+        this.riderParam = '';
+      }
+      this.fetchOrders();
+    },
+    service(val) {
+      this.orders = [];
+      this.serviceParam = '';
+      this.fetchOrders();
+    },
+    country(val) {
+      this.orders = [];
+      this.countryParam = `&country_code=${val}`;
+      this.fetchOrders();
+    },
+    unit(val) {
+      this.orders = [];
+      this.unitParam = `&business_unit=${val}`;
+      this.fetchOrders();
+    },
   },
   created() {
-    this.loadingStatus = true;
     this.fetchOrders();
   },
   methods: {
-    fetchOrders() {
-      const rawData = [
-        {
-          request_details: {
-            order_no: 'AD23VX485-2PV',
-            pick_up: 'ICD, Nairobi Somwhere',
-            destination: 'Kamukunji DC Central (Long name)',
-            amount: 20000,
-            currency: 'KES',
-            station: 'Shell',
-            address: 'Maanzoni Kyumbi, Machakos',
-            fuel_type: 'Petrol',
-            order_type: 'On-demand',
-            percentage: 75,
-            date_time: '2020/08/24 14:00:00',
-            status: 'pending',
-          },
-          owner_details: {
-            name: 'Loice Njeri',
-            phone_number: '070123456',
-            status: 'pending',
-          },
-          admin_details: {
-            name: 'Phil Ope',
-            email: 'phil@sendyit.com',
-            status: 'pending',
-          },
-          driver_details: {
-            name: 'Davey',
-            phone: '07988445533',
-            rider_photo: 'c75e9xqfts-kratos.jpg',
-          },
-        },
-        {
-          request_details: {
-            order_no: 'AD23VX485-2PV',
-            pick_up: 'ICD, Nairobi Somwhere',
-            destination: 'Kamukunji DC Central (Long name)',
-            amount: 20000,
-            currency: 'KES',
-            station: 'Shell',
-            address: 'Maanzoni Kyumbi, Machakos',
-            fuel_type: 'Petrol',
-            order_type: 'On-demand',
-            percentage: 75,
-            date_time: '2020/08/24 14:00:00',
-            status: 'pending',
-          },
-          owner_details: {
-            name: 'Loice Njeri',
-            phone_number: '070123456',
-            status: 'pending',
-          },
-          admin_details: {
-            name: 'Phil Ope',
-            email: 'phil@sendyit.com',
-            status: 'pending',
-          },
-          driver_details: {
-            name: 'Davey',
-            phone: '07988445533',
-            rider_photo: '',
-          },
-        },
-        {
-          request_details: {
-            order_no: 'AD23VX485-2PV',
-            pick_up: 'ICD, Nairobi Somwhere',
-            destination: 'Kamukunji DC Central (Long name)',
-            amount: 20000,
-            currency: 'KES',
-            station: 'Shell',
-            address: 'Maanzoni Kyumbi, Machakos',
-            fuel_type: 'Petrol',
-            order_type: 'On-demand',
-            percentage: 75,
-            date_time: '2020/08/24 14:00:00',
-            status: 'pending',
-          },
-          owner_details: {
-            name: 'Loice Njeri',
-            phone_number: '070123456',
-            status: 'pending',
-          },
-          admin_details: {
-            name: 'Phil Ope',
-            email: 'phil@sendyit.com',
-            status: 'pending',
-          },
-          driver_details: {
-            name: 'Davey',
-            phone: '07988445533',
-            rider_photo: 'c75e9xqfts-kratos.jpg',
-          },
-        },
-        {
-          request_details: {
-            order_no: 'AD23VX485-2PV',
-            pick_up: 'ICD, Nairobi Somwhere',
-            destination: 'Kamukunji DC Central (Long name)',
-            amount: 20000,
-            currency: 'KES',
-            station: 'Shell',
-            address: 'Maanzoni Kyumbi, Machakos',
-            fuel_type: 'Petrol',
-            order_type: 'On-demand',
-            percentage: 75,
-            date_time: '2020/08/24 14:00:00',
-            status: 'pending',
-          },
-          owner_details: {
-            name: 'Loice Njeri',
-            phone_number: '070123456',
-            status: 'pending',
-          },
-          admin_details: {
-            name: 'Phil Ope',
-            email: 'phil@sendyit.com',
-            status: 'pending',
-          },
-          driver_details: {
-            name: 'Davey',
-            phone: '07988445533',
-            rider_photo: '',
-          },
-        },
-        {
-          request_details: {
-            order_no: 'AD23VX485-2PV',
-            pick_up: 'ICD, Nairobi Somwhere',
-            destination: 'Kamukunji DC Central (Long name)',
-            amount: 20000,
-            currency: 'KES',
-            station: 'Shell',
-            address: 'Maanzoni Kyumbi, Machakos',
-            fuel_type: 'Petrol',
-            order_type: 'On-demand',
-            percentage: 75,
-            date_time: '2020/08/24 14:00:00',
-            status: 'pending',
-          },
-          owner_details: {
-            name: 'Loice Njeri',
-            phone_number: '070123456',
-            status: 'pending',
-          },
-          admin_details: {
-            name: 'Phil Ope',
-            email: 'phil@sendyit.com',
-            status: 'pending',
-          },
-          driver_details: {
-            name: 'Davey',
-            phone: '07988445533',
-            rider_photo: 'c75e9xqfts-kratos.jpg',
-          },
-        },
-        {
-          request_details: {
-            order_no: 'AD23VX485-2PV',
-            pick_up: 'ICD, Nairobi Somwhere',
-            destination: 'Kamukunji DC Central (Long name)',
-            amount: 20000,
-            currency: 'KES',
-            station: 'Shell',
-            address: 'Maanzoni Kyumbi, Machakos',
-            fuel_type: 'Petrol',
-            order_type: 'On-demand',
-            percentage: 75,
-            date_time: '2020/08/24 14:00:00',
-            status: 'pending',
-          },
-          owner_details: {
-            name: 'Loice Njeri',
-            phone_number: '070123456',
-            status: 'pending',
-          },
-          admin_details: {
-            name: 'Phil Ope',
-            email: 'phil@sendyit.com',
-            status: 'pending',
-          },
-          driver_details: {
-            name: 'Davey',
-            phone: '07988445533',
-            rider_photo: '',
-          },
-        },
-      ];
-      rawData.forEach(row => {
-        row.activeMenuTab = 'details';
-      });
-      this.loadingStatus = false;
-      this.orders = rawData;
+    ...mapActions({
+      get_fuel_advances: 'fuel_advances',
+    }),
+    async fetchOrders() {
+      this.loadingStatus = true;
+      const oldOrders = this.orders;
+      const payload = {
+        param: `?approved=1${this.params}`,
+      };
+      const response = await this.get_fuel_advances(payload);
+      if (response.status) {
+        response.data.forEach((row, i) => {
+          row.activeMenuTab =
+            oldOrders.length > 0 && oldOrders.length > i
+              ? oldOrders[i].activeMenuTab
+              : 'details';
+        });
+        this.loadingStatus = false;
+        this.orders = response.data;
+      } else {
+        this.loadingStatus = false;
+        this.orders = [];
+      }
     },
     changeTab(index, data) {
       this.orders[index].activeMenuTab = data;
     },
     thousandsSeparator(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    dateFormat(date) {
+      return moment(date).format('YYYY-MM-DD HH:mm:ss');
     },
   },
 };
@@ -409,7 +303,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-left: 5px solid #ea7125;
+  border-left: 5px solid #1e7d11;
 }
 .approved-requests-driver-name,
 .approved-requests-driver-phone {
@@ -591,5 +485,15 @@ export default {
   color: #ea7125;
   font-weight: 600;
   font-size: 14px;
+}
+.no-requests-container {
+  width: 90%;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #c9531b;
+  font-size: 15px;
+  font-weight: 600;
 }
 </style>
