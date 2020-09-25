@@ -47,7 +47,7 @@
                 </button>
                 <button
                   v-if="
-                    order.order_details.confirm_status !== 0 &&
+                    order.order_details.order_status === 'in transit' &&
                       !completeStatus() &&
                       !cancelStatus() &&
                       permissions.freight_actions_finances

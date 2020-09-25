@@ -642,14 +642,6 @@ export default {
       return error.response;
     }
   },
-  async fuel_stations({ dispatch }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      return error.response;
-    }
-  },
   async submit_fuel_advance({ dispatch }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -678,6 +670,100 @@ export default {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+    }
+  },
+  async fuel_types({ state }) {
+    const config = state.config;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}aux/fuel/fuel-types`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async fuel_stations({ state }) {
+    const config = state.config;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}aux/fuel/fuel-stations`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async action_owner_request({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async edit_owner_request({ dispatch }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async fuel_advances({ state }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}aux/fuel/fuel-advances${payload.param}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  async fuel_stats({ state }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}aux/fuel/dashboard${payload.param}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
     }
   },
   async fuel_history_cop({ state }, payload) {
