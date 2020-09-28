@@ -147,6 +147,8 @@
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import moment from 'moment';
 
+let timer = '';
+
 export default {
   props: {
     rider: {
@@ -174,6 +176,7 @@ export default {
       serviceParam: '',
       countryParam: '&country_code=ke',
       unitParam: '',
+      pollActive: false,
     };
   },
   computed: {
@@ -188,6 +191,11 @@ export default {
       },
       deep: true,
     },
+    pollActive(val) {
+      if (val) {
+        this.poll();
+      }
+    },
     rider(val) {
       this.orders = [];
       if (val > 0) {
@@ -195,33 +203,41 @@ export default {
       } else {
         this.riderParam = '';
       }
+      this.loadingStatus = true;
       this.fetchOrders();
     },
     service(val) {
       this.orders = [];
       this.serviceParam = '';
+      this.loadingStatus = true;
       this.fetchOrders();
     },
     country(val) {
       this.orders = [];
       this.countryParam = `&country_code=${val}`;
+      this.loadingStatus = true;
       this.fetchOrders();
     },
     unit(val) {
       this.orders = [];
       this.unitParam = `&business_unit=${val}`;
+      this.loadingStatus = true;
       this.fetchOrders();
     },
   },
   created() {
+    this.loadingStatus = true;
     this.fetchOrders();
+    this.pollActive = true;
+  },
+  beforeDestroy() {
+    clearTimeout(timer);
   },
   methods: {
     ...mapActions({
       get_fuel_advances: 'fuel_advances',
     }),
     async fetchOrders() {
-      this.loadingStatus = true;
       const oldOrders = this.orders;
       const payload = {
         param: `?declined=1${this.params}`,
@@ -239,6 +255,14 @@ export default {
       } else {
         this.loadingStatus = false;
         this.orders = [];
+      }
+    },
+    poll() {
+      if (this.pollActive) {
+        timer = setTimeout(() => {
+          this.fetchOrders();
+          this.poll();
+        }, 60000);
       }
     },
     changeTab(index, data) {

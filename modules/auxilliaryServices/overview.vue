@@ -11,7 +11,7 @@
       </el-date-picker>
     </div>
     <div class="date-filter-title">
-      The data you are currently viewing is from {{ startDate }} date
+      The data you are currently viewing is from {{ startDate }}
     </div>
     <div>
       <div class="overview-tab-sections">
@@ -21,7 +21,8 @@
           </div>
           <div class="filter-section-desc">Total fuel amount advanced</div>
           <div class="filter-section-amount">
-            {{ currency }} {{ total_fuel_amount_advanced }}
+            {{ currency }}
+            {{ parseFloat(total_fuel_amount_advanced).toFixed(2) }}
           </div>
         </div>
         <div class="overview-tabs-upper">
@@ -32,7 +33,9 @@
             />
           </div>
           <div class="filter-section-desc">Total litres advanced</div>
-          <div class="filter-section-amount">{{ total_litres_advanced }}</div>
+          <div class="filter-section-amount">
+            {{ parseFloat(total_litres_advanced).toFixed(2) }}
+          </div>
         </div>
         <div class="overview-tabs-upper">
           <div class="icon-container orange-bg">
@@ -79,7 +82,7 @@
           </div>
           <div class="filter-section-desc">Sendy take</div>
           <div class="filter-section-amount">
-            {{ currency }} {{ sendy_take }}
+            {{ currency }} {{ parseFloat(sendy_take).toFixed(2) }}
           </div>
         </div>
       </div>
@@ -130,15 +133,16 @@ export default {
     };
   },
   computed: {
+    allParams() {
+      return `${this.countryParam}${this.dateParam}${this.unitParam}${this.serviceParam}`;
+    },
     startDate() {
+      if (this.filterdate) {
+        return moment(this.filterdate[0]).format('YYYY-MM-DD');
+      }
       return moment()
         .startOf('month')
         .format('YYYY-MM-DD');
-    },
-  },
-  computed: {
-    allParams() {
-      return `${this.countryParam}${this.dateParam}${this.unitParam}${this.serviceParam}`;
     },
   },
   watch: {

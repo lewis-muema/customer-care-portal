@@ -553,6 +553,8 @@
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import moment from 'moment';
 
+let timer = '';
+
 export default {
   props: {
     rider: {
@@ -598,6 +600,7 @@ export default {
       countryParam: '&country_code=ke',
       unitParam: '',
       editData: [],
+      pollActive: false,
     };
   },
   computed: {
@@ -613,6 +616,11 @@ export default {
       },
       deep: true,
     },
+    pollActive(val) {
+      if (val) {
+        this.poll();
+      }
+    },
     rider(val) {
       this.orders = [];
       if (val > 0) {
@@ -621,31 +629,40 @@ export default {
         this.riderParam = '';
       }
       this.clearAdmin();
+      this.loadingStatus = true;
       this.fetchOrders();
     },
     service(val) {
       this.orders = [];
       this.serviceParam = '';
       this.clearAdmin();
+      this.loadingStatus = true;
       this.fetchOrders();
     },
     country(val) {
       this.orders = [];
       this.countryParam = `&country_code=${val}`;
       this.clearAdmin();
+      this.loadingStatus = true;
       this.fetchOrders();
     },
     unit(val) {
       this.orders = [];
       this.unitParam = `&business_unit=${val}`;
       this.clearAdmin();
+      this.loadingStatus = true;
       this.fetchOrders();
     },
   },
   created() {
+    this.loadingStatus = true;
     this.fetchOrders();
     this.getFuelTypes();
     this.getFuelStations();
+    this.pollActive = true;
+  },
+  beforeDestroy() {
+    clearTimeout(timer);
   },
   methods: {
     ...mapActions({
@@ -663,7 +680,6 @@ export default {
       updateClass: 'setActionClass',
     }),
     async fetchOrders() {
-      this.loadingStatus = true;
       const oldOrders = this.orders;
       const payload = {
         param: `?pending=0${this.params}`,
@@ -696,6 +712,14 @@ export default {
       } else {
         this.loadingStatus = false;
         this.orders = [];
+      }
+    },
+    poll() {
+      if (this.pollActive) {
+        timer = setTimeout(() => {
+          this.fetchOrders();
+          this.poll();
+        }, 60000);
       }
     },
     changeTab(index, data) {
