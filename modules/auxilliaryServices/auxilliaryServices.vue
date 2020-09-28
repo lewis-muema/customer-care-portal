@@ -43,7 +43,10 @@
     </div>
     <div class="auxilliary-services-tabs">
       <div class="auxilliary-services-search">
-        <div v-if="activeClassAux !== 'overview'">
+        <div
+          v-if="activeClassAux !== 'overview'"
+          class="auxilliary-services-search-container"
+        >
           <i class="fa fa-search text-grey auxilliary-services-search-icon"></i>
           <input
             v-if="this.editStatus"
@@ -328,6 +331,9 @@ export default {
   padding: 20px;
   border-radius: 7px;
 }
+.auxilliary-services-search-container {
+  position: relative;
+}
 .auxilliary-services-menu {
   display: flex;
   height: 60px;
@@ -346,6 +352,7 @@ export default {
 .auxilliary-services-search-icon {
   position: absolute;
   margin: auto;
+  right: 0px;
 }
 .auxilliary-active-tab {
   color: #c9531b !important;
