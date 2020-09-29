@@ -22,7 +22,11 @@
           <div class="filter-section-desc">Total fuel amount advanced</div>
           <div class="filter-section-amount">
             {{ currency }}
-            {{ parseFloat(total_fuel_amount_advanced).toFixed(2) }}
+            {{
+              total_fuel_amount_advanced
+                ? parseFloat(total_fuel_amount_advanced).toFixed(2)
+                : ''
+            }}
           </div>
         </div>
         <div class="overview-tabs-upper">
@@ -34,7 +38,11 @@
           </div>
           <div class="filter-section-desc">Total litres advanced</div>
           <div class="filter-section-amount">
-            {{ parseFloat(total_litres_advanced).toFixed(2) }}
+            {{
+              total_litres_advanced
+                ? parseFloat(total_litres_advanced).toFixed(2)
+                : ''
+            }}
           </div>
         </div>
         <div class="overview-tabs-upper">
@@ -82,7 +90,8 @@
           </div>
           <div class="filter-section-desc">Sendy take</div>
           <div class="filter-section-amount">
-            {{ currency }} {{ parseFloat(sendy_take).toFixed(2) }}
+            {{ currency }}
+            {{ sendy_take ? parseFloat(sendy_take).toFixed(2) : '' }}
           </div>
         </div>
       </div>
