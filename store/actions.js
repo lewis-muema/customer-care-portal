@@ -766,6 +766,24 @@ export default {
       return error.response.data;
     }
   },
+  async max_advance({ state }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}aux/fuel/max-advance/${payload.order_no}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
   async fuel_history_cop({ state }, payload) {
     const config = state.config;
 

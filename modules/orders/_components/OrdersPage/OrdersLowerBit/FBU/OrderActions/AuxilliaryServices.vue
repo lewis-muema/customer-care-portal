@@ -103,6 +103,11 @@
               </select>
             </span>
           </span>
+          <p class="max-advance-title" v-if="maxAdvance">
+            The maximum amount you can request for this order is
+            {{ order.payment_details.order_currency }}
+            {{ parseFloat(maxAdvance).toFixed(2) }}
+          </p>
           <button
             :class="
               activeButtonStatus && !loading
@@ -306,6 +311,8 @@ export default {
       selectedAddress: '',
       fuelAmount: '',
       loading: false,
+      limit: false,
+      maxAdvance: '',
     };
   },
   computed: {
@@ -324,7 +331,8 @@ export default {
         this.selectedStation &&
         this.selectedAddress &&
         this.fuelType > 0 &&
-        this.fuelAmount
+        this.fuelAmount &&
+        !this.limit
       ) {
         return true;
       }
@@ -346,6 +354,7 @@ export default {
           : '';
     },
     fuelAmount(val) {
+      val = val > this.maxAdvance ? this.maxAdvance : val;
       if (
         val.toString().split('.').length > 2 ||
         (val.toString().split('.').length === 2 &&
@@ -360,6 +369,7 @@ export default {
     this.getFuelTypes();
     this.getFuelStations();
     this.fetchOrders();
+    this.fetchMaxAdvance();
   },
   methods: {
     ...mapActions({
@@ -369,6 +379,7 @@ export default {
       get_fuel_types: 'fuel_types',
       get_fuel_stations: 'fuel_stations',
       get_fuel_advances: 'fuel_advances',
+      get_max_advance: 'max_advance',
     }),
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -426,6 +437,7 @@ export default {
         this.updateClass('success');
         this.updateErrors([data.message]);
         this.fetchOrders();
+        this.fetchMaxAdvance();
         setTimeout(() => {
           this.updateErrors([]);
           this.resetVals();
@@ -436,6 +448,19 @@ export default {
         setTimeout(() => {
           this.updateErrors([]);
         }, 3000);
+      }
+    },
+    async fetchMaxAdvance() {
+      const payload = {
+        order_no: this.order.order_details.order_no,
+      };
+      const data = await this.get_max_advance(payload);
+      if (data.status) {
+        this.maxAdvance = data.data.data.available_advance;
+      } else {
+        this.updateClass('danger');
+        this.updateErrors([data.errors.message]);
+        this.limit = true;
       }
     },
     resetVals() {
@@ -550,6 +575,12 @@ export default {
 }
 .auxillary-save-button__active,
 .auxillary-save-button__inactive {
-  margin-top: 70px !important;
+  margin-top: 10px !important;
+}
+.max-advance-title {
+  margin: 10px 5px 10px 5px;
+  color: #c9531b;
+  font-style: italic;
+  font-weight: 600;
 }
 </style>
