@@ -50,7 +50,7 @@
                     order.order_details.order_status === 'in transit' &&
                       !completeStatus() &&
                       !cancelStatus() &&
-                      permissions.freight_actions_finances
+                      hasAuxilliaryPermissions()
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -278,6 +278,19 @@ export default {
     },
     cancelStatus() {
       if (this.order.order_details.order_status === 'cancelled') {
+        return true;
+      }
+      return false;
+    },
+    hasAuxilliaryPermissions() {
+      const privileges = JSON.parse(this.userData.payload.data.privilege);
+      if (
+        Object.prototype.hasOwnProperty.call(
+          privileges,
+          'auxilliary_services_order',
+        ) &&
+        privileges.auxilliary_services_order
+      ) {
         return true;
       }
       return false;
