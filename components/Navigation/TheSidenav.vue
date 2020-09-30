@@ -89,7 +89,7 @@
               ><i class="fa fa-circle-o text-red"></i> <span>Offline</span></a
             >
           </li>
-          <li class="treeview">
+          <li class="treeview" v-if="permissions.freight_actions">
             <nuxt-link to="/auxilliary"
               ><i class="fa fa-money text-grey"></i>
               <span> Auxilliary services </span></nuxt-link
