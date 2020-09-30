@@ -50,7 +50,8 @@
                     order.order_details.order_status === 'in transit' &&
                       !completeStatus() &&
                       !cancelStatus() &&
-                      hasFreightPermissions()
+                      hasFreightPermissions() &&
+                      hasAuxilliaryPermissions()
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -283,6 +284,19 @@ export default {
       if (
         Object.prototype.hasOwnProperty.call(privileges, 'freight_actions') &&
         privileges.freight_actions
+      ) {
+        return true;
+      }
+      return false;
+    },
+    hasAuxilliaryPermissions() {
+      const privileges = JSON.parse(this.userData.payload.data.privilege);
+      if (
+        Object.prototype.hasOwnProperty.call(
+          privileges,
+          'auxilliary_services_order',
+        ) &&
+        privileges.auxilliary_services_order
       ) {
         return true;
       }

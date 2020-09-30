@@ -232,7 +232,7 @@
         class="nav-item"
         v-if="
           order.order_details.order_status === 'in transit' &&
-            permissions.freight_actions &&
+            permissions.auxilliary_services_order &&
             [6, 10, 13, 14, 17, 18, 19, 20].includes(
               order.rider_details.vendor_type_id,
             )
