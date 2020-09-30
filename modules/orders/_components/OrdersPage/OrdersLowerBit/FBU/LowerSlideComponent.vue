@@ -138,7 +138,7 @@
                     ActiveTab === 'finances' &&
                       !completeStatus() &&
                       !cancelStatus() &&
-                      permissions.freight_actions_finances
+                      hasAuxilliaryPermissions()
                   "
                   :order="order"
                 />
