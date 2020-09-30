@@ -284,7 +284,7 @@ export default {
           description: 'Reverse the full amount or part of the amount invoiced',
           hasChild: true,
           users: 'peer',
-          hidden: true,
+          hidden: false,
           subMenu: [
             {
               name: 'partial-invoice',
