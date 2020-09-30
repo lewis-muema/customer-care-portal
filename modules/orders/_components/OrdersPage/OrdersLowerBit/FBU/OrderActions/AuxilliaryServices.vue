@@ -459,7 +459,7 @@ export default {
         this.maxAdvance = data.data.data.available_advance;
       } else {
         this.updateClass('danger');
-        this.updateErrors([data.errors.message]);
+        this.updateErrors([data.message]);
         this.limit = true;
       }
     },

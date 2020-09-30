@@ -35,7 +35,7 @@
                 ? 'rejection-dialogue-confirm-active'
                 : 'rejection-dialogue-confirm-inactive'
             "
-            @click="actionAdminRequest()"
+            @click="actionAdminRequest(rowIndex)"
           >
             Confirm
           </button>
@@ -439,7 +439,7 @@
                         : 'inactive-update-override'
                     "
                     v-loading="loading && rowIndex === index"
-                    @click="actionAdminRequest()"
+                    @click="actionAdminRequest(index)"
                   >
                     Update
                   </button>
@@ -831,7 +831,8 @@ export default {
         this.showNotification('failed', data.message);
       }
     },
-    async actionAdminRequest() {
+    async actionAdminRequest(index) {
+      this.rowIndex = index;
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'v1/aux/admin_approve_fuel_advance',
