@@ -3,7 +3,7 @@
     <div class="auxilliary-services-filters">
       <div class="filters-container">
         <div class="filters-title">Filters</div>
-        <div class="filters-section-titles">Auxilliary Services</div>
+        <div class="filters-section-titles">Auxiliary Services</div>
         <div class="filters-section-items-holder">
           <div
             v-for="(service, index) in auxilliary"

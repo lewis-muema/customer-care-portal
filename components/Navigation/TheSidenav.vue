@@ -111,7 +111,7 @@
           <li class="treeview" v-if="permissions.auxilliary_services">
             <nuxt-link to="/auxilliary"
               ><i class="fa fa-money text-grey"></i>
-              <span> Auxilliary services </span></nuxt-link
+              <span> Auxiliary services </span></nuxt-link
             >
           </li>
           <li id="online_2">
