@@ -456,7 +456,7 @@ export default {
       };
       const data = await this.get_max_advance(payload);
       if (data.status) {
-        this.maxAdvance = data.data.data.available_advance;
+        this.maxAdvance = data.data.available_advance;
       } else {
         this.updateClass('danger');
         this.updateErrors([data.message]);
