@@ -2,7 +2,7 @@
   <div class="body-box user_button_view_peer">
     <div id="tabs" class="container custom_more">
       <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
-        <li class="nav-item" v-if="permissions.approve_payment">
+        <li class="nav-item" v-if="permissions.approve_payment_peer">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -14,7 +14,7 @@
             Payment
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_prepay_billing">
+        <li class="nav-item" v-if="permissions.approve_prepay_billing_peer">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -38,7 +38,7 @@
             Ticket
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_vat_configs">
+        <li class="nav-item" v-if="permissions.approve_vat_configs_peer">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -52,7 +52,7 @@
         </li>
         <li
           class="nav-item custom_invoice-padding"
-          v-if="permissions.approve_custom_invoice"
+          v-if="permissions.approve_custom_invoice_1"
         >
           <a
             class="nav-link action-list custom-width"
@@ -65,7 +65,7 @@
             New Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_custom_invoice">
+        <li class="nav-item" v-if="permissions.approve_custom_invoice_2">
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -75,6 +75,18 @@
           >
             <span class="fa fa-fw fa-history"></span>
             Reverse Invoice
+          </a>
+        </li>
+        <li class="nav-item" v-if="permissions.approve_reversals_peer">
+          <a
+            class="nav-link action-list custom-width"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reversals', userID)"
+            :id="`reversals_${userID}`"
+          >
+            <span class="fa fa-fw fa-history"></span>
+            Reversals & Credit Note
           </a>
         </li>
       </ul>
@@ -155,6 +167,20 @@
               :session="userData"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reversals_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `reversals_${userID}`"
+          >
+            <TheReveralsComponent
+              :user="user"
+              :currency="currency"
+              :session="userData"
+              :user-type="category"
+              :id="userID"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -174,6 +200,8 @@ export default {
       import('./UserActions/TheCustomInvoiceComponent'),
     TheReverseInvoiceComponent: () =>
       import('./UserActions/TheReverseInvoiceComponent'),
+    TheReveralsComponent: () =>
+      import('../../users/_components/Reversals/TheReveralsComponent'),
   },
   props: {
     user: {

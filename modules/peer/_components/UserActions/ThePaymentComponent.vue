@@ -205,7 +205,7 @@ export default {
   },
 
   mounted() {
-    const countryCode = 'KE';
+    const countryCode = this.user.user_details.country_code;
     this.fetchPaymentOptions(countryCode);
   },
   methods: {
@@ -308,7 +308,8 @@ export default {
         params: {
           channel: 'customer_support_peer_biz',
           data_set: 'cc_actions',
-          action_id,
+          action_id:
+            this.paymentMethod === 9 && !this.isChargeEntity ? 28 : action_id,
           action_data: action_payload,
           request_id: `11222`,
           action_user: this.actionUser,

@@ -349,22 +349,22 @@ export default {
   margin-left: 2%;
 }
 
-.action-button--danger{
+.action-button--danger {
   background-color: #ff4949;
   border-color: #ff4949;
   color: #fff;
 }
-.action-button--active{
+.action-button--active {
   background-color: #13ce66;
   border-color: #13ce66;
   color: #fff;
 }
-.action-button--archive{
+.action-button--archive {
   background-color: #3c8dbc;
   border-color: #3c8dbc;
   color: #fff;
 }
-.view-refund-data{
+.view-refund-data {
   width: 65%;
 }
 .inner-dialog {
@@ -380,19 +380,19 @@ export default {
   flex: 55%;
   padding: 0px 20px 20px;
 }
-.rider-summary-info{
-  border: 1px solid #BEBEBE;
+.rider-summary-info {
+  border: 1px solid #bebebe;
   box-sizing: border-box;
   border-radius: 6px;
   min-height: 130px !important;
-  background-color: #FFF;
+  background-color: #fff;
 }
-.documents-summary-info{
-  border: 1px solid #BEBEBE;
+.documents-summary-info {
+  border: 1px solid #bebebe;
   box-sizing: border-box;
   border-radius: 6px;
   min-height: 460px !important;
-  background-color: #FFF;
+  background-color: #fff;
 }
 .request-refund-inputs {
   padding: 0px 10px 10px;
@@ -421,8 +421,8 @@ export default {
   margin-right: 0%;
   width: 22%;
   margin-left: 2%;
-  background: #FF7100;
-  color: #FFFFFF;
+  background: #ff7100;
+  color: #ffffff;
   margin-bottom: 3%;
   margin-top: 3%;
 }
@@ -430,21 +430,21 @@ export default {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  transition: .3s;
+  transition: 0.3s;
   line-height: 50px !important;
   cursor: pointer;
   border: 1px solid #555;
   text-align: center;
   font-size: 23px;
-  background-color: #FFF;
+  background-color: #fff;
 }
-.refunds-dialog{
+.refunds-dialog {
   margin-top: 2% !important;
 }
-.refunds-rider-details{
+.refunds-rider-details {
   margin-bottom: 17% !important;
 }
-.refunds-activity-log{
+.refunds-activity-log {
   margin-top: 9% !important;
 }
 .download-refund-img {
@@ -455,7 +455,7 @@ export default {
   margin-top: 2%;
   max-height: 370px;
 }
-.refund-documents-outer{
+.refund-documents-outer {
   padding-bottom: 5%;
 }
 </style>

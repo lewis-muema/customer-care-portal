@@ -17,11 +17,11 @@
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
-import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
+import NPSMxn from '@/mixins/nps_mixin';
+import order_store from './_store';
 import TheTopSection from './_components/TheTopSection';
 import TheMainSection from './_components/TheMainSection';
-import NPSMxn from '@/mixins/nps_mixin';
 
 export default {
   name: 'TheNpsDashboardComponent',

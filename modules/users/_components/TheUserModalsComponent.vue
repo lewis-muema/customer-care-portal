@@ -1,30 +1,28 @@
 <template>
-  <span>
-    <div id="usersModal" class="modal fade" role="dialog">
-      <div class="modal-dialog user-modal">
-        <div class="modal-content">
-          <button
-            type="button"
-            class="close fancybox-item fancybox-close"
-            data-dismiss="modal"
-          >
-            <i class="fa fa-times-circle" aria-hidden="true"></i>
-          </button>
+  <div id="usersModal" class="modal fade" role="dialog">
+    <div class="modal-dialog user-modal">
+      <div class="modal-content">
+        <button
+          type="button"
+          class="close fancybox-item fancybox-close"
+          data-dismiss="modal"
+        >
+          <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
 
-          <div class="modal-body">
-            <span v-if="getTokenExpiryStatus">
-              <TheGlobalNotification />
+        <div class="modal-body">
+          <span v-if="getTokenExpiryStatus">
+            <TheGlobalNotification />
+          </span>
+          <span v-else>
+            <span v-if="user !== ''">
+              <TheUserPageComponent :user="user" />
             </span>
-            <span v-else>
-              <span v-if="user !== ''">
-                <TheUserPageComponent :user="user" />
-              </span>
-            </span>
-          </div>
+          </span>
         </div>
       </div>
     </div>
-  </span>
+  </div>
 </template>
 <script>
 import { mapGetters, mapMutations } from 'vuex';
@@ -53,8 +51,10 @@ export default {
 };
 </script>
 <style>
+.modal-dialog {
+  max-width: 92% !important;
+}
 .modal-content {
-  width: 1263px;
   position: relative;
   background: #f9f9f9;
   color: #444;
@@ -66,11 +66,9 @@ export default {
   min-height: 675px;
 }
 .user-modal {
-  width: 1263px;
-  height: auto;
-  position: fixed;
+  width: 95%;
   top: 37px;
-  left: 88px;
+  height: auto;
   opacity: 1;
   overflow: visible;
 }
@@ -88,9 +86,5 @@ export default {
   height: 36px;
   cursor: pointer;
   z-index: 8040;
-}
-.modal-content {
-  max-height: 30px;
-  overflow-y: auto;
 }
 </style>
