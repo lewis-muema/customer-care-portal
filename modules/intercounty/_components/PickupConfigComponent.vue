@@ -85,13 +85,7 @@
               prop="supported_vendor_types"
             >
               <template slot-scope="scope">
-                {{
-                  allowedVendors(
-                    filtered_pickup_data[scope.$index][
-                      'supported_vendor_types'
-                    ],
-                  )
-                }}
+                {{ allowedVendors(filtered_pickup_data[scope.$index]) }}
               </template>
             </el-table-column>
             <el-table-column label="Actions" prop="action">
@@ -661,13 +655,17 @@ export default {
       let resp = 'None available';
       if (Object.keys(this.vendor_list).length > 0) {
         const response = [];
-        const arr = value;
-        for (let i = 0; i < arr.length; i++) {
-          const extract = this.vendor_list.find(
-            location => location.id === arr[i],
-          );
-          response.push(extract.name);
-          resp = response.toString();
+        if (
+          Object.prototype.hasOwnProperty.call(value, 'supported_vendor_types')
+        ) {
+          const arr = value.supported_vendor_types;
+          for (let i = 0; i < arr.length; i++) {
+            const extract = this.vendor_list.find(
+              location => location.id === arr[i],
+            );
+            response.push(extract.name);
+            resp = response.toString();
+          }
         }
       }
       return resp;
