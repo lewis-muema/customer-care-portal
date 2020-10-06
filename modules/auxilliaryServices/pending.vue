@@ -195,9 +195,8 @@
                   class="pending-requests-standard-column pending-requests-column-ovverride"
                 >
                   {{
-                    order.request_details.order_type === 1
-                      ? 'On-demand'
-                      : 'Dedicated'
+                    order.request_details.order_type.charAt(0).toUpperCase() +
+                      order.request_details.order_type.slice(1).split('_')[0]
                   }}
                 </div>
                 <div
@@ -527,7 +526,10 @@
                 <div
                   class="pending-requests-standard-column-adv pending-requests-column-ovverride"
                 >
-                  {{ order.request_details.order_type }}
+                  {{
+                    order.request_details.order_type.charAt(0).toUpperCase() +
+                      order.request_details.order_type.slice(1).split('_')[0]
+                  }}
                 </div>
                 <div
                   class="pending-requests-standard-column-adv pending-requests-column-ovverride"

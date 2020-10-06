@@ -69,7 +69,7 @@
               <div
                 class="declined-requests-standard-column-adv declined-requests-column-ovverride"
               >
-                {{ dateFormat(order.request_details.date_time) }}
+                {{ dateFormat(order.owner_details.owner_approval_date) }}
               </div>
               <div class="declined-requests-large-column-adv">
                 <div class="declined-requests-orderno">
@@ -105,7 +105,10 @@
               <div
                 class="declined-requests-standard-column-adv declined-requests-column-ovverride"
               >
-                {{ order.request_details.order_type }}
+                {{
+                  order.request_details.order_type.charAt(0).toUpperCase() +
+                    order.request_details.order_type.slice(1).split('_')[0]
+                }}
               </div>
               <div
                 class="declined-requests-standard-column-adv declined-requests-column-ovverride"
