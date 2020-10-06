@@ -560,13 +560,18 @@ export default {
             long: collection_marker.location.lng,
           };
 
-          const resp = this.destination_config_data[
-            input
-          ].collection_centers.find(
-            position => position.address === this.locations[input],
-          );
-          if (resp !== undefined) {
-            data.object_id = resp.object_id;
+          const destination_config = this.destination_config_data;
+
+          for (let i = 0; i < destination_config.length; i++) {
+            const retrived_collection_centre =
+              destination_config[i].collection_centers;
+            for (let val = 0; val < retrived_collection_centre.length; val++) {
+              if (
+                retrived_collection_centre[i].address !== this.locations[input]
+              ) {
+                data.object_id = retrived_collection_centre[i].object_id;
+              }
+            }
           }
 
           if (input === 0) {
