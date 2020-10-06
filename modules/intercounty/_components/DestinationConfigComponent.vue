@@ -731,7 +731,6 @@ export default {
         this.radius === '' ||
         this.max_delivery_range === '' ||
         this.collection_centre_address.length === 0 ||
-        this.supported_vendor_types.length === 0 ||
         this.destination_center.length === 0 ||
         this.collection_centers.length === 0
       ) {
@@ -778,7 +777,11 @@ export default {
           }, 2000);
         } else {
           this.response_status = 'error';
-          this.error_msg = data.message;
+          if (Object.prototype.hasOwnProperty.call(data, 'errors')) {
+            this.error_msg = data.errors;
+          } else {
+            this.error_msg = data.message;
+          }
         }
       } catch (error) {
         this.response_status = 'error';
