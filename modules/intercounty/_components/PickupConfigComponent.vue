@@ -560,7 +560,6 @@ export default {
       if (
         this.city_id === '' ||
         this.collection_centre_address === '' ||
-        this.supported_vendor_types.length === 0 ||
         this.collection_centers.length === 0
       ) {
         this.submit_status = true;
