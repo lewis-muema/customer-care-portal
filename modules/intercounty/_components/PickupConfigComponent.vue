@@ -80,6 +80,20 @@
                 }}
               </template>
             </el-table-column>
+            <el-table-column
+              label="Supported Vendors"
+              prop="supported_vendor_types"
+            >
+              <template slot-scope="scope">
+                {{
+                  allowedVendors(
+                    filtered_pickup_data[scope.$index][
+                      'supported_vendor_types'
+                    ],
+                  )
+                }}
+              </template>
+            </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template slot-scope="scope">
                 <el-button
@@ -642,6 +656,21 @@ export default {
       this.error_msg = '';
       this.delete_response_status = true;
       this.delete_status = false;
+    },
+    allowedVendors(value) {
+      let resp = 'None available';
+      if (Object.keys(this.vendor_list).length > 0) {
+        const response = [];
+        const arr = value;
+        for (let i = 0; i < arr.length; i++) {
+          const extract = this.vendor_list.find(
+            location => location.id === arr[i],
+          );
+          response.push(extract.name);
+          resp = response.toString();
+        }
+      }
+      return resp;
     },
   },
 };
