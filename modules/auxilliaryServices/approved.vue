@@ -71,7 +71,7 @@
               <div
                 class="approved-requests-standard-column-adv approved-requests-column-ovverride"
               >
-                {{ dateFormat(order.request_details.date_time) }}
+                {{ dateFormat(order.owner_details.owner_approval_date) }}
               </div>
               <div class="approved-requests-large-column-adv">
                 <div class="approved-requests-orderno">
@@ -107,7 +107,10 @@
               <div
                 class="approved-requests-standard-column-adv approved-requests-column-ovverride"
               >
-                {{ order.request_details.order_type }}
+                {{
+                  order.request_details.order_type.charAt(0).toUpperCase() +
+                    order.request_details.order_type.slice(1).split('_')[0]
+                }}
               </div>
               <div
                 class="approved-requests-standard-column-adv approved-requests-column-ovverride"

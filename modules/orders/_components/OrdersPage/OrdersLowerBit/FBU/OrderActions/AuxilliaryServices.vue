@@ -147,9 +147,8 @@
               </td>
               <td>
                 {{
-                  row.request_details.order_type === 1
-                    ? 'On-demand'
-                    : 'Dedicated'
+                  row.request_details.order_type.charAt(0).toUpperCase() +
+                    row.request_details.order_type.slice(1).split('_')[0]
                 }}
               </td>
               <td>
