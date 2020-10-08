@@ -102,6 +102,14 @@
                 onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
               />
             </span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Notes</p>
+              <input
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                v-model="notes"
+              />
+            </span>
           </span>
           <p class="max-advance-title" v-if="maxAdvance">
             The maximum amount you can request for this order is
@@ -312,6 +320,7 @@ export default {
       loading: false,
       limit: false,
       maxAdvance: '',
+      notes: '',
     };
   },
   computed: {
@@ -429,6 +438,9 @@ export default {
           amount: parseFloat(this.fuelAmount),
         },
       };
+      if (this.notes) {
+        payload.params.notes = this.notes;
+      }
       this.loading = true;
       const data = await this.submit_fuel_advance(payload);
       this.loading = false;
