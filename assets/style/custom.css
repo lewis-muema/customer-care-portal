@@ -1291,6 +1291,9 @@ table {
   height: 40px;
   border: 1px solid #1B7FC3;
 }
+.freight-button-width-override {
+  width: 140px !important;
+}
 .freight-order-actions-buttons:focus {
   border: 1px solid #1B7FC3 !important;
 }
