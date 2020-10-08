@@ -1532,4 +1532,25 @@ export default {
       });
     }
   },
+  async update_intercounty_delivery_state({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const values = JSON.stringify(payload.params);
+
+    const url = `${config.ORDERS_APP}v1/inter_county/${payload.route}`;
+    try {
+      const response = await axios.post(url, values, param);
+      console.log('response', response);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
 };
