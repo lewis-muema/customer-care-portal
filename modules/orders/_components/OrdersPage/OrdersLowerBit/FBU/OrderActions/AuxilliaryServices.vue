@@ -79,17 +79,6 @@
               </select>
             </span>
             <span class="labeled-inputs">
-              <p class="no-margin fuel-input-labels">Amount</p>
-              <input
-                type="text"
-                class="freight-assign-rider-buttons assign_inputs"
-                v-model="fuelAmount"
-                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
-              />
-            </span>
-          </span>
-          <span>
-            <span class="labeled-inputs">
               <p class="no-margin fuel-input-labels">Currency</p>
               <select
                 name="fuel-stations"
@@ -101,6 +90,17 @@
                   order.payment_details.order_currency
                 }}</option>
               </select>
+            </span>
+          </span>
+          <span>
+            <span class="labeled-inputs">
+              <p class="no-margin fuel-input-labels">Amount</p>
+              <input
+                type="text"
+                class="freight-assign-rider-buttons assign_inputs"
+                v-model="fuelAmount"
+                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
+              />
             </span>
           </span>
           <p class="max-advance-title" v-if="maxAdvance">

@@ -245,8 +245,8 @@
           @click="viewTab('auxilliary_services', orderNo)"
           :id="`auxilliary_services_${orderNo}`"
         >
-          <span class="fa fa-fw fa-check-square"></span>
-          Finances
+          <span class="fa fa-fw fa-money blue-override"></span>
+          Auxiliary Services
         </a>
       </li>
       <li
@@ -498,7 +498,9 @@ export default {
   color: #3c8dbc !important;
   cursor: pointer;
 }
-
+.blue-override {
+  color: #3c8dbc !important;
+}
 .vs__dropdown-toggle {
   padding: 6px 4px;
   color: #ccc;
