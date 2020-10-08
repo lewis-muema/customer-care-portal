@@ -52,14 +52,14 @@
                       !cancelStatus() &&
                       hasAuxilliaryPermissions()
                   "
-                  class="freight-order-actions-buttons"
+                  class="freight-order-actions-buttons freight-button-width-override"
                   :class="
                     ActiveTab === 'finances' ? 'active-tab' : 'inactive-tab'
                   "
                   @click="ActiveTab = 'finances'"
                 >
                   <span class="fa fa-fw fa-usd"></span>
-                  Finances
+                  Auxiliary Services
                 </button>
                 <button
                   v-if="
