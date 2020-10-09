@@ -574,8 +574,6 @@ export default {
 
           const destination_config = this.destination_config_data;
 
-          console.log('destination_config', this.destination_config);
-
           if (this.destination_config !== undefined) {
             for (let i = 0; i < destination_config.length; i++) {
               const retrived_collection_centre =
