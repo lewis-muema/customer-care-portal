@@ -213,6 +213,7 @@ export default {
       msg: '',
       returned: false,
       companyUnits: [],
+      copNames: [],
     };
   },
   computed: {
@@ -220,6 +221,7 @@ export default {
       'getOrders',
       'getOrderStatuses',
       'getSelectedBusinessUnits',
+      'getSelectedCopNames',
       'getSelectedCities',
       'getReorganizeStatus',
       'getOrderCount',
@@ -265,18 +267,23 @@ export default {
       const business_unit = this.businessUnits;
       const status = this.statusArray;
       const country_code = this.countryCode;
+      const cop_name = this.copNames;
 
       const params = {
         business_unit,
         status,
         city,
         country_code,
+        cop_name,
       };
       for (const param in params) {
         if (params[param] === null || params[param] === undefined) {
+          console.log(params, 'this is nul param');
+
           delete params[param];
         }
       }
+      console.log(params, 'filtered params');
       return params;
     },
   },
@@ -308,6 +315,7 @@ export default {
       this.sendRequest(this.params);
       return (this.cities = cities);
     },
+
     getReorganizeStatus(status) {
       this.orders = [];
       this.sendRequest(this.params);
@@ -335,7 +343,21 @@ export default {
       }
       return (this.businessUnits = units);
     },
+    getSelectedCopNames(copNames) {
+      this.orders = [];
+      this.copNames = copNames;
+      console.log(this.copNames, 'this is copids in get selected');
+      this.ordersExist = false;
+      this.msg = 'There are no orders fitting these criteria';
+      if (!this.isEmpty(copNames)) {
+        this.sendRequest(this.params);
+        this.ordersExist = true;
+        this.msg = '';
+      }
+      return (this.copNames = copNames);
+    },
   },
+
   created() {
     if (process.client) {
       window.addEventListener('scroll', () => {

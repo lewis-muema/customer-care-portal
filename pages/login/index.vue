@@ -71,12 +71,14 @@ export default {
   top: 0;
   bottom: 0;
 }
+
 .sendy--social-auth h1.sendy--app-name {
   text-align: center;
   font-size: 35px;
   margin-bottom: 25px;
   font-weight: 300;
 }
+
 .sendy--social-auth div.sendy--form {
   text-align: center;
   color: #666;

@@ -4,6 +4,11 @@
       {{ pageBreadCrumbs.name }}
       <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
+
+    <!-- filters for kiota and sendy go -->
+    <FilterComponent />
+    <!-- filters for kiota and sendy go -->
+
     <div class="breadcrumb business-units" v-if="route === 'orders'">
       <span>
         <input type="checkbox" @click="checkAll()" v-model="isCheckAll" />
@@ -31,15 +36,24 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
+import FilterComponent from './FilterComponet';
 
 export default {
   name: 'TheBreadCrumbView',
+  components: {
+    FilterComponent,
+  },
   props: ['route'],
   data() {
     return {
       isCheckAll: true,
+      isCheckAllCopIds: true,
       unitsdata: [],
       units: null,
+      cop_ids: [],
+      cop_names: ['normal', 'kiota', 'sendyGo'],
+      copId_Data: [],
+      selected_cop_ids: [],
       selectedUnits: [],
       businessUnits: [],
 
@@ -96,16 +110,18 @@ export default {
 
   computed: {
     ...mapGetters(['getBusinessUnits', 'getOrderStatuses']),
-
     pageBreadCrumbs() {
       const routeName = this.route;
       const links = this.breadCrumbs;
+      console.log(routeName, 'thisi is routename');
       return links[routeName];
     },
   },
   watch: {
     getBusinessUnits(data) {
       for (let i = 0; i < data.length; i += 1) {
+        // console.log(data, 'this is data');
+
         this.unitsdata.push(data[i].abbr);
       }
       return (this.units = data);
@@ -120,11 +136,13 @@ export default {
     ...mapMutations({
       updateSelectedUnits: 'setSelectedBusinessUnits',
     }),
+
     ...mapActions(['setBusinessUnits', 'requestBusinessUnits']),
     async requestUnits() {
       const arr = await this.requestBusinessUnits();
       await this.setBusinessUnits();
     },
+
     checkAll() {
       this.isCheckAll = !this.isCheckAll;
       this.businessUnits = [];
@@ -134,8 +152,10 @@ export default {
           this.businessUnits.push(this.units[key].abbr);
         }
       }
+
       this.printValues();
     },
+
     updateCheckall() {
       if (this.businessUnits.length === this.unitsdata.length) {
         this.isCheckAll = true;
@@ -144,18 +164,28 @@ export default {
       }
       this.printValues();
     },
+    printCopIds() {
+      this.selected_cop_ids = [];
+      for (let i = 0; i < this.cop_ids.length; i++) {
+        this.selected_cop_ids.push(this.cop_ids[i]);
+      }
+      this.updateSelectedCopids(this.selected_cop_ids);
+    },
+
     printValues() {
       this.selectedUnits = [];
       // eslint-disable-next-line guard-for-in
       for (const key in this.businessUnits) {
         this.selectedUnits.push(this.businessUnits[key].toLowerCase().trim());
       }
+
       this.updateSelectedUnits(this.selectedUnits);
     },
     toggle_show(status) {},
   },
 };
 </script>
+
 <style scoped>
 .breadcrumb > li {
   padding: 0 7px;
@@ -163,6 +193,7 @@ export default {
 .breadcrumb > .active {
   color: #777;
 }
+
 .business-units {
   right: 220px;
   color: #333;
@@ -170,7 +201,20 @@ export default {
   background: #ecf0f5;
   border: 1px solid #3333;
 }
+
 .business-units > span {
+  padding-left: 26px;
+}
+
+.cop {
+  right: 500px;
+  color: #333;
+  font-size: 13px;
+  background: #ecf0f5;
+  border: 1px solid #3333;
+}
+
+.cop > span {
   padding-left: 26px;
 }
 </style>

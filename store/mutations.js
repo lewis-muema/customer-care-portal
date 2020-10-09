@@ -19,6 +19,10 @@ export default {
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;
   },
+  setSelectedCopNames(state, SelectedCopNames) {
+    state.selectedCopNames = SelectedCopNames;
+  },
+
   setSelectedCities(state, selectedCities) {
     state.selectedCities = selectedCities;
   },
