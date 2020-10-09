@@ -461,11 +461,13 @@ export default {
             lat: collection_marker.location.lat,
             long: collection_marker.location.lng,
           };
-          const resp = this.pickup_config_data[input].collection_centers.find(
-            position => position.address === this.locations[input],
-          );
-          if (resp !== undefined) {
-            data.object_id = resp.object_id;
+          if (this.pickup_config_data !== null) {
+            const resp = this.pickup_config_data[input].collection_centers.find(
+              position => position.address === this.locations[input],
+            );
+            if (resp !== undefined) {
+              data.object_id = resp.object_id;
+            }
           }
           this.collection_centers.splice(input, 0, data);
           this.markers.splice(input, 0, response.data.result.geometry);

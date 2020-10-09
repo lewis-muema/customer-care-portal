@@ -574,14 +574,21 @@ export default {
 
           const destination_config = this.destination_config_data;
 
-          for (let i = 0; i < destination_config.length; i++) {
-            const retrived_collection_centre =
-              destination_config[i].collection_centers;
-            for (let val = 0; val < retrived_collection_centre.length; val++) {
-              if (
-                retrived_collection_centre[i].address !== this.locations[input]
+          if (this.destination_config !== undefined) {
+            for (let i = 0; i < destination_config.length; i++) {
+              const retrived_collection_centre =
+                destination_config[i].collection_centers;
+              for (
+                let val = 0;
+                val < retrived_collection_centre.length;
+                val++
               ) {
-                data.object_id = retrived_collection_centre[i].object_id;
+                if (
+                  retrived_collection_centre[i].address !==
+                  this.locations[input]
+                ) {
+                  data.object_id = retrived_collection_centre[i].object_id;
+                }
               }
             }
           }
