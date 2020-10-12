@@ -3,11 +3,11 @@
     <span>
       <input
         type="checkbox"
-        value="all"
-        v-model="cop_ids"
+        value="normal"
+        v-model="isCheckAllCopIds"
         @change="checkAllCopids()"
       />
-      All
+      Normal
     </span>
     <span v-for="item in cop_names" :key="item">
       <input
@@ -30,7 +30,7 @@ export default {
     return {
       isCheckAllCopIds: true,
       cop_ids: [],
-      cop_names: ['normal', 'kiota', 'sendyGo'],
+      cop_names: ['Kiota', 'SendyGO'],
       copId_Data: [],
       selected_cop_ids: [],
     };
@@ -42,28 +42,35 @@ export default {
     }),
     checkAllCopids() {
       this.isCheckAllCopIds = true;
-      this.cop_ids = [];
-      console.log('all selected');
-
+      this.cop_ids = ['normal'];
       this.printCopIds();
     },
 
     checkCopId() {
       this.isCheckAllCopIds = false;
       if (this.cop_ids.includes('normal')) {
-        this.cop_ids = ['normal'];
+        this.cop_ids.shift();
       }
-
-      console.log(this.cop_ids);
+      // console.log(this.cop_ids);
       this.printCopIds();
     },
 
     printCopIds() {
       this.selected_cop_ids = [];
+      // console.log(this.cop_ids);
+      // if (!this.isEmpty(this.cop_ids)) {
       for (let i = 0; i < this.cop_ids.length; i++) {
         this.selected_cop_ids.push(this.cop_ids[i]);
       }
       this.updateSelectedCopNames(this.selected_cop_ids);
+    },
+    isEmpty(obj) {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return false;
+        }
+      }
+      return true;
     },
   },
 };
