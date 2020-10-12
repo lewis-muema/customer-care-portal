@@ -69,7 +69,7 @@
               <div
                 class="declined-requests-standard-column-adv declined-requests-column-ovverride"
               >
-                {{ dateFormat(order.owner_details.owner_approval_date) }}
+                {{ dateFormat(order) }}
               </div>
               <div class="declined-requests-large-column-adv">
                 <div class="declined-requests-orderno">
@@ -126,11 +126,16 @@
                 Rejected by {{ declinedUser(order) }}
               </div>
               <div class="declined-requests-owner-details">
-                <span class="declined-requests-owner-label">{{
-                  order.admin_details.reason
-                    ? order.admin_details.reason
-                    : 'No reason given'
-                }}</span>
+                <span
+                  class="declined-requests-owner-label"
+                  v-if="order.admin_details"
+                >
+                  {{
+                    order.admin_details.reason
+                      ? order.admin_details.reason
+                      : 'No reason given'
+                  }}
+                </span>
               </div>
             </div>
           </div>
@@ -274,16 +279,24 @@ export default {
     thousandsSeparator(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
-    dateFormat(date) {
-      return moment(date).format('YYYY-MM-DD HH:mm:ss');
+    dateFormat(order) {
+      if (order.owner_details.owner_approval_date) {
+        return moment(order.owner_details.owner_approval_date).format(
+          'YYYY-MM-DD HH:mm:ss',
+        );
+      }
+      return moment(order.request_details.date_time).format(
+        'YYYY-MM-DD HH:mm:ss',
+      );
     },
     declinedUser(order) {
-      if (order.owner_details.status === 'rejected') {
-        return 'Owner';
+      if (order.request_details.status === 'Rider Cancelled') {
+        return 'Rider';
       }
-      if (order.admin_details.status === 'rejected') {
+      if (order.admin_details && order.admin_details.status === 'rejected') {
         return 'Ops';
       }
+      return 'Owner';
     },
   },
 };
