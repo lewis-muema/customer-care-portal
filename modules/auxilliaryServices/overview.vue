@@ -273,7 +273,7 @@ export default {
   background: #fffff5;
 }
 .filter-section-desc {
-  color: #dcdcdc;
+  color: #c0c4cc;
   font-size: 14px;
 }
 .filter-section-amount {
