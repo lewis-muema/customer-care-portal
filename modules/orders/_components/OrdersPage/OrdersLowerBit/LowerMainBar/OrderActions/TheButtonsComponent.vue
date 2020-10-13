@@ -1,10 +1,7 @@
 <template>
   <div id="tabs" class="container">
     <ul class="nav nav-tabs buttons-tab" id="myTab" role="tablist">
-      <li
-        class="nav-item"
-        v-if="order.order_details.order_status === 'pending'"
-      >
+      <li class="nav-item" v-if="showDispatch(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `dispatch_${orderNo}` }"
@@ -17,15 +14,7 @@
           Dispatch
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status !== 'pending' &&
-            permissions.reassign_orders &&
-            order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'cancelled'
-        "
-      >
+      <li class="nav-item" v-if="showReallocateBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `reallocate_${orderNo}` }"
@@ -58,13 +47,7 @@
           Cancel
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status === 'pending' ||
-            order.order_details.order_status === 'confirmed'
-        "
-      >
+      <li class="nav-item" v-if="showScheduleBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `schedule_${orderNo}` }"
@@ -77,14 +60,7 @@
           Schedule
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'cancelled' &&
-            userData['admin_type'] !== 1
-        "
-      >
+      <li class="nav-item" v-if="showReturnBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `return_${orderNo}` }"
@@ -113,15 +89,7 @@
           Sms Link
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status !== 'pending' &&
-            order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'cancelled' &&
-            permissions.location_proximity
-        "
-      >
+      <li class="nav-item" v-if="showProximityBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `proximity_${orderNo}` }"
@@ -168,13 +136,7 @@
           GPS-Tracker
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status === 'pending' &&
-            permissions.assign_orders
-        "
-      >
+      <li class="nav-item" v-if="showAllocateOrdersBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `allocate__${orderNo}` }"
@@ -187,16 +149,7 @@
           Allocate Orders
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'cancelled' &&
-            order.order_details.order_status !== 'pending' &&
-            mm === 0 &&
-            permissions.update_delivery_status
-        "
-      >
+      <li class="nav-item" v-if="showMarkInTransitBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `mark_in_transit_${orderNo}` }"
@@ -209,13 +162,7 @@
           Mark in Transit
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status === 'in transit' &&
-            permissions.complete_order
-        "
-      >
+      <li class="nav-item" v-if="showCompleteOrderBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `complete_order_${orderNo}` }"
@@ -231,12 +178,11 @@
       <li
         class="nav-item"
         v-if="
-          order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'pending' &&
-            order.order_details.order_status !== 'cancelled' &&
-            permissions.freight_actions &&
-            (order.rider_details.vendor_type_id === 20 ||
-              order.rider_details.vendor_type_id === 25)
+          order.order_details.order_status === 'in transit' &&
+            permissions.auxilliary_services_order &&
+            [6, 10, 13, 14, 17, 18, 19, 20].includes(
+              order.rider_details.vendor_type_id,
+            )
         "
       >
         <a
@@ -247,17 +193,11 @@
           @click="viewTab('auxilliary_services', orderNo)"
           :id="`auxilliary_services_${orderNo}`"
         >
-          <span class="fa fa-fw fa-check-square"></span>
-          Finances
+          <span class="fa fa-fw fa-money blue-override"></span>
+          Auxiliary Services
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status === 'delivered' &&
-            permissions.upload_dnotes
-        "
-      >
+      <li class="nav-item" v-if="showUploadDnotesBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `upload_dnotes_${orderNo}` }"
@@ -268,6 +208,32 @@
         >
           <span class="fa fa fa-upload"></span>
           Upload Dnotes
+        </a>
+      </li>
+      <li class="nav-item" v-if="showDeliveryStatusBtn(order)">
+        <a
+          class="force_blue"
+          :class="{ activeLink: showTab === `delivery_status_${orderNo}` }"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('delivery_status', orderNo)"
+          :id="`delivery_status_${orderNo}`"
+        >
+          <span class="fa fa fa-location-arrow"></span>
+          Delivery status
+        </a>
+      </li>
+      <li class="nav-item" v-if="showWeightOfOrderBtn(order)">
+        <a
+          class="force_blue"
+          :class="{ activeLink: showTab === `weight_of_order_${orderNo}` }"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('weight_of_order', orderNo)"
+          :id="`weight_of_order_${orderNo}`"
+        >
+          <span class="fa fa fa-cubes"></span>
+          Weight of the order
         </a>
       </li>
     </ul>
@@ -397,6 +363,22 @@
       >
         <TheUploadDnoteComponent :order="order" />
       </div>
+      <div
+        :class="`tab-pane fade ${show} ${active}`"
+        :id="`delivery_status_${orderNo}`"
+        role="tabpanel"
+        v-if="showTab === `delivery_status_${orderNo}`"
+      >
+        <TheDeliveryStatusComponent :order="order" />
+      </div>
+      <div
+        :class="`tab-pane fade ${show} ${active}`"
+        :id="`weight_of_order_${orderNo}`"
+        role="tabpanel"
+        v-if="showTab === `weight_of_order_${orderNo}`"
+      >
+        <TheInterCountyWeighingComponent :order="order" />
+      </div>
     </div>
   </div>
 </template>
@@ -421,6 +403,9 @@ export default {
     AuxilliaryServices: () =>
       import('../../FBU/OrderActions/AuxilliaryServices'),
     TheUploadDnoteComponent: () => import('./TheUploadDnoteComponent'),
+    TheDeliveryStatusComponent: () => import('./TheDeliveryStatusComponent'),
+    TheInterCountyWeighingComponent: () =>
+      import('./TheInterCountyWeighingComponent'),
   },
   props: {
     order: {
@@ -478,6 +463,84 @@ export default {
       this.active = 'active';
       this.show = 'show';
     },
+    showDispatch(order) {
+      const resp =
+        order.order_details.order_status === 'pending' &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showReallocateBtn(order) {
+      const resp =
+        order.order_details.order_status !== 'pending' &&
+        this.permissions.reassign_orders &&
+        order.order_details.order_status !== 'delivered' &&
+        order.order_details.order_status !== 'cancelled' &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showReturnBtn(order) {
+      const resp =
+        order.order_details.order_status !== 'delivered' &&
+        order.order_details.order_status !== 'cancelled' &&
+        this.userData['admin_type'] !== 1 &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showScheduleBtn(order) {
+      const resp =
+        (order.order_details.order_status === 'pending' ||
+          order.order_details.order_status === 'confirmed') &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showProximityBtn(order) {
+      const resp =
+        order.order_details.order_status !== 'pending' &&
+        order.order_details.order_status !== 'delivered' &&
+        order.order_details.order_status !== 'cancelled' &&
+        this.permissions.location_proximity &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showAllocateOrdersBtn(order) {
+      const resp =
+        order.order_details.order_status === 'pending' &&
+        this.permissions.assign_orders &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showMarkInTransitBtn(order) {
+      const resp =
+        order.order_details.order_status !== 'delivered' &&
+        order.order_details.order_status !== 'cancelled' &&
+        order.order_details.order_status !== 'pending' &&
+        this.mm === 0 &&
+        this.permissions.update_delivery_status &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showCompleteOrderBtn(order) {
+      const resp =
+        order.order_details.order_status === 'in transit' &&
+        this.permissions.complete_order &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showUploadDnotesBtn(order) {
+      const resp =
+        order.order_details.order_status === 'delivered' &&
+        this.permissions.upload_dnotes &&
+        order.rider_details.vendor_type_id !== 26;
+      return resp;
+    },
+    showDeliveryStatusBtn(order) {
+      const resp = order.rider_details.vendor_type_id === 26;
+      return resp;
+    },
+    showWeightOfOrderBtn(order) {
+      const resp = order.rider_details.vendor_type_id === 26;
+      return resp;
+    },
   },
 };
 </script>
@@ -500,7 +563,9 @@ export default {
   color: #3c8dbc !important;
   cursor: pointer;
 }
-
+.blue-override {
+  color: #3c8dbc !important;
+}
 .vs__dropdown-toggle {
   padding: 6px 4px;
   color: #ccc;

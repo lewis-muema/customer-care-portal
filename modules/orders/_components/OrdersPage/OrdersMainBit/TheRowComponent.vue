@@ -40,7 +40,7 @@
               :id="`order_indicator_${order.order_no}`"
               :class="`label ${order.order_status.toLowerCase()}_ind`"
             >
-              {{ order.order_status }}
+              {{ orderStatus(order) }}
             </span>
           </span>
         </td>
@@ -64,7 +64,7 @@
           </span>
         </td>
         <td>
-          {{ order.rider_name }}
+          {{ orderRider(order) }}
           <span style="float:right;">
             <span>
               {{ vendorLabels[order.vendor_type_id]
@@ -107,7 +107,17 @@
             )
           }}
         </td>
-        <td>
+        <td v-if="order.vendor_type_id === 26">
+          N/A
+          <span
+            data-toggle="tooltip"
+            title="No rider amount to be displayed for intercounty orders"
+            class="badge bg-info"
+          >
+            <i class="fa fa-info"></i>
+          </span>
+        </td>
+        <td v-else>
           {{
             displayAmount(
               order.order_currency,
@@ -399,6 +409,34 @@ export default {
         return '-C';
       }
     },
+    orderStatus(order) {
+      let resp = order.order_status;
+      if (order.vendor_type_id === 26) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            order,
+            'inter_county_order_details',
+          )
+        ) {
+          resp = order.inter_county_order_details.status;
+        }
+      }
+      return resp;
+    },
+    orderRider(order) {
+      let resp = order.rider_name;
+      if (order.vendor_type_id === 26) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            order,
+            'inter_county_order_details',
+          )
+        ) {
+          resp = 'Intercounty Order';
+        }
+      }
+      return resp;
+    },
     container_destination(order) {
       if (Object.prototype.hasOwnProperty.call(order, 'path')) {
         return `${order.path[1].name}${order.path[1].road ? ',' : ''} ${
@@ -455,7 +493,13 @@ export default {
     },
 
     // eslint-disable-next-line prettier/prettier
-    determineAmounts(amount, vendor_type_id, fixed_cost,  customer_min_amount,confirm_status,  ) {
+    determineAmounts(
+      amount,
+      vendor_type_id,
+      fixed_cost,
+      customer_min_amount,
+      confirm_status,
+    ) {
       if (vendor_type_id === 20 && fixed_cost !== true) {
         if (confirm_status < 1) {
           amount = customer_min_amount;
@@ -464,9 +508,22 @@ export default {
       return amount;
     },
     // eslint-disable-next-line prettier/prettier
-    displayAmount(currency, amount, vendor_type_id,fixed_cost, customer_min_amount,confirm_status,) {
+    displayAmount(
+      currency,
+      amount,
+      vendor_type_id,
+      fixed_cost,
+      customer_min_amount,
+      confirm_status,
+    ) {
       // eslint-disable-next-line prettier/prettier
-      const computedAmount = this.determineAmounts(amount, vendor_type_id, fixed_cost, customer_min_amount, confirm_status,);
+      const computedAmount = this.determineAmounts(
+        amount,
+        vendor_type_id,
+        fixed_cost,
+        customer_min_amount,
+        confirm_status,
+      );
       currency = currency || '';
       amount = this.numberWithCommas(computedAmount);
       let amountString = `${currency} ${amount}`;

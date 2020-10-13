@@ -1291,6 +1291,9 @@ table {
   height: 40px;
   border: 1px solid #1B7FC3;
 }
+.freight-button-width-override {
+  width: 140px !important;
+}
 .freight-order-actions-buttons:focus {
   border: 1px solid #1B7FC3 !important;
 }
@@ -1621,4 +1624,7 @@ color: #000000;
 }
 .updateDeclineReasonsDialog > div > div.el-dialog__header{
   padding: 0px 20px 10px !important;
+}
+.text-grey {
+  color: #b8c7ce !important;
 }

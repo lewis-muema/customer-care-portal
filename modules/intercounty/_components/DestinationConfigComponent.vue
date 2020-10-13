@@ -85,6 +85,14 @@
                 }}
               </template>
             </el-table-column>
+            <el-table-column
+              label="Supported Vendors"
+              prop="supported_vendor_types"
+            >
+              <template slot-scope="scope">
+                {{ allowedVendors(filtered_destination_data[scope.$index]) }}
+              </template>
+            </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template slot-scope="scope">
                 <el-button
@@ -464,12 +472,16 @@ export default {
     },
     filteredData() {
       const self = this;
-      return this.destination_config_data.filter(
-        pr =>
-          pr.collection_centers[0].address
-            .toLowerCase()
-            .indexOf(self.search_data.toLowerCase()) >= 0,
-      );
+      if (this.destination_config_data === null) {
+        return this.destination_config_data;
+      } else {
+        return this.destination_config_data.filter(
+          pr =>
+            pr.collection_centers[0].address
+              .toLowerCase()
+              .indexOf(self.search_data.toLowerCase()) >= 0,
+        );
+      }
     },
   },
   watch: {
@@ -560,13 +572,25 @@ export default {
             long: collection_marker.location.lng,
           };
 
-          const resp = this.destination_config_data[
-            input
-          ].collection_centers.find(
-            position => position.address === this.locations[input],
-          );
-          if (resp !== undefined) {
-            data.object_id = resp.object_id;
+          const destination_config = this.destination_config_data;
+
+          if (this.destination_config !== undefined) {
+            for (let i = 0; i < destination_config.length; i++) {
+              const retrived_collection_centre =
+                destination_config[i].collection_centers;
+              for (
+                let val = 0;
+                val < retrived_collection_centre.length;
+                val++
+              ) {
+                if (
+                  retrived_collection_centre[i].address !==
+                  this.locations[input]
+                ) {
+                  data.object_id = retrived_collection_centre[i].object_id;
+                }
+              }
+            }
           }
 
           if (input === 0) {
@@ -718,7 +742,6 @@ export default {
         this.radius === '' ||
         this.max_delivery_range === '' ||
         this.collection_centre_address.length === 0 ||
-        this.supported_vendor_types.length === 0 ||
         this.destination_center.length === 0 ||
         this.collection_centers.length === 0
       ) {
@@ -765,7 +788,11 @@ export default {
           }, 2000);
         } else {
           this.response_status = 'error';
-          this.error_msg = data.message;
+          if (Object.prototype.hasOwnProperty.call(data, 'errors')) {
+            this.error_msg = data.errors;
+          } else {
+            this.error_msg = data.message;
+          }
         }
       } catch (error) {
         this.response_status = 'error';
@@ -818,6 +845,25 @@ export default {
       this.error_msg = '';
       this.delete_response_status = true;
       this.delete_status = false;
+    },
+    allowedVendors(value) {
+      let resp = 'None available';
+      if (Object.keys(this.vendor_list).length > 0) {
+        const response = [];
+        if (
+          Object.prototype.hasOwnProperty.call(value, 'supported_vendor_types')
+        ) {
+          const arr = value.supported_vendor_types;
+          for (let i = 0; i < arr.length; i++) {
+            const extract = this.vendor_list.find(
+              location => location.id === arr[i],
+            );
+            response.push(extract.name);
+            resp = response.toString();
+          }
+        }
+      }
+      return resp;
     },
   },
 };

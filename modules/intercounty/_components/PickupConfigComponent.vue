@@ -80,6 +80,14 @@
                 }}
               </template>
             </el-table-column>
+            <el-table-column
+              label="Supported Vendors"
+              prop="supported_vendor_types"
+            >
+              <template slot-scope="scope">
+                {{ allowedVendors(filtered_pickup_data[scope.$index]) }}
+              </template>
+            </el-table-column>
             <el-table-column label="Actions" prop="action">
               <template slot-scope="scope">
                 <el-button
@@ -322,12 +330,16 @@ export default {
     },
     filteredData() {
       const self = this;
-      return this.pickup_config_data.filter(
-        pr =>
-          pr.collection_centers[0].address
-            .toLowerCase()
-            .indexOf(self.search_data.toLowerCase()) >= 0,
-      );
+      if (this.pickup_config_data === null) {
+        return this.pickup_config_data;
+      } else {
+        return this.pickup_config_data.filter(
+          pr =>
+            pr.collection_centers[0].address
+              .toLowerCase()
+              .indexOf(self.search_data.toLowerCase()) >= 0,
+        );
+      }
     },
   },
   watch: {
@@ -449,11 +461,13 @@ export default {
             lat: collection_marker.location.lat,
             long: collection_marker.location.lng,
           };
-          const resp = this.pickup_config_data[input].collection_centers.find(
-            position => position.address === this.locations[input],
-          );
-          if (resp !== undefined) {
-            data.object_id = resp.object_id;
+          if (this.pickup_config_data !== null) {
+            const resp = this.pickup_config_data[input].collection_centers.find(
+              position => position.address === this.locations[input],
+            );
+            if (resp !== undefined) {
+              data.object_id = resp.object_id;
+            }
           }
           this.collection_centers.splice(input, 0, data);
           this.markers.splice(input, 0, response.data.result.geometry);
@@ -552,7 +566,6 @@ export default {
       if (
         this.city_id === '' ||
         this.collection_centre_address === '' ||
-        this.supported_vendor_types.length === 0 ||
         this.collection_centers.length === 0
       ) {
         this.submit_status = true;
@@ -642,6 +655,25 @@ export default {
       this.error_msg = '';
       this.delete_response_status = true;
       this.delete_status = false;
+    },
+    allowedVendors(value) {
+      let resp = 'None available';
+      if (Object.keys(this.vendor_list).length > 0) {
+        const response = [];
+        if (
+          Object.prototype.hasOwnProperty.call(value, 'supported_vendor_types')
+        ) {
+          const arr = value.supported_vendor_types;
+          for (let i = 0; i < arr.length; i++) {
+            const extract = this.vendor_list.find(
+              location => location.id === arr[i],
+            );
+            response.push(extract.name);
+            resp = response.toString();
+          }
+        }
+      }
+      return resp;
     },
   },
 };
