@@ -51,17 +51,11 @@ export default {
       if (this.cop_ids.includes('normal')) {
         this.cop_ids.shift();
       }
-      // console.log(this.cop_ids);
       this.printCopIds();
     },
 
     printCopIds() {
-      this.selected_cop_ids = [];
-      // console.log(this.cop_ids);
-      // if (!this.isEmpty(this.cop_ids)) {
-      for (let i = 0; i < this.cop_ids.length; i++) {
-        this.selected_cop_ids.push(this.cop_ids[i]);
-      }
+      this.selected_cop_ids = [...this.cop_ids];
       this.updateSelectedCopNames(this.selected_cop_ids);
     },
     isEmpty(obj) {

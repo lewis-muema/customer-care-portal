@@ -5,9 +5,7 @@
       <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
 
-    <!-- filters for kiota and sendy go -->
     <FilterComponent />
-    <!-- filters for kiota and sendy go -->
 
     <div class="breadcrumb business-units" v-if="route === 'orders'">
       <span>
@@ -50,10 +48,6 @@ export default {
       isCheckAllCopIds: true,
       unitsdata: [],
       units: null,
-      cop_ids: [],
-      cop_names: ['normal', 'kiota', 'sendyGo'],
-      copId_Data: [],
-      selected_cop_ids: [],
       selectedUnits: [],
       businessUnits: [],
 
@@ -120,8 +114,6 @@ export default {
   watch: {
     getBusinessUnits(data) {
       for (let i = 0; i < data.length; i += 1) {
-        // console.log(data, 'this is data');
-
         this.unitsdata.push(data[i].abbr);
       }
       return (this.units = data);
@@ -154,22 +146,6 @@ export default {
       }
 
       this.printValues();
-    },
-
-    updateCheckall() {
-      if (this.businessUnits.length === this.unitsdata.length) {
-        this.isCheckAll = true;
-      } else {
-        this.isCheckAll = false;
-      }
-      this.printValues();
-    },
-    printCopIds() {
-      this.selected_cop_ids = [];
-      for (let i = 0; i < this.cop_ids.length; i++) {
-        this.selected_cop_ids.push(this.cop_ids[i]);
-      }
-      this.updateSelectedCopids(this.selected_cop_ids);
     },
 
     printValues() {

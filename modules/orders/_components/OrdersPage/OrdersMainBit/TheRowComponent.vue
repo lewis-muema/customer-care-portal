@@ -288,11 +288,9 @@ export default {
       };
       for (const param in params) {
         if (params[param] === null || params[param] === undefined) {
-          console.log(params, 'this is nul param');
           delete params[param];
         }
       }
-      console.log(params, 'filtered params');
       return params;
     },
   },
@@ -355,11 +353,9 @@ export default {
     getSelectedCopNames(copNames) {
       this.orders = [];
       this.copNames = copNames;
-      // console.log(this.copNames, 'this is copids in get selected');
       this.ordersExist = false;
       this.msg = 'There are no orders fitting these criteria';
       if (!this.isEmpty(copNames)) {
-        // console.log(this.params, 'this filtered paramas in get selected');
         if (this.copNames.includes('normal')) {
           this.copNames = null;
         }
