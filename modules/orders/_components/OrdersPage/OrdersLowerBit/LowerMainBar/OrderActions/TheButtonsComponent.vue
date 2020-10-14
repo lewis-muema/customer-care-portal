@@ -171,12 +171,11 @@
       <li
         class="nav-item"
         v-if="
-          order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'pending' &&
-            order.order_details.order_status !== 'cancelled' &&
-            permissions.freight_actions &&
-            (order.rider_details.vendor_type_id === 20 ||
-              order.rider_details.vendor_type_id === 25)
+          order.order_details.order_status === 'in transit' &&
+            permissions.auxilliary_services_order &&
+            [6, 10, 13, 14, 17, 18, 19, 20].includes(
+              order.rider_details.vendor_type_id,
+            )
         "
       >
         <a
@@ -187,8 +186,8 @@
           @click="viewTab('auxilliary_services', orderNo)"
           :id="`auxilliary_services_${orderNo}`"
         >
-          <span class="fa fa-fw fa-check-square"></span>
-          Finances
+          <span class="fa fa-fw fa-money blue-override"></span>
+          Auxiliary Services
         </a>
       </li>
       <li class="nav-item" v-if="showUploadDnotesBtn(order)">
@@ -577,7 +576,9 @@ export default {
   color: #3c8dbc !important;
   cursor: pointer;
 }
-
+.blue-override {
+  color: #3c8dbc !important;
+}
 .vs__dropdown-toggle {
   padding: 6px 4px;
   color: #ccc;
