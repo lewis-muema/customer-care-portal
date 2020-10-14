@@ -89,7 +89,12 @@
               ><i class="fa fa-circle-o text-red"></i> <span>Offline</span></a
             >
           </li>
-
+          <li class="treeview" v-if="permissions.auxilliary_services">
+            <nuxt-link to="/auxilliary"
+              ><i class="fa fa-money text-grey"></i>
+              <span> Auxiliary services </span></nuxt-link
+            >
+          </li>
           <li id="online_2">
             <a href="#"
               ><i class="fa fa-circle-o text-success"></i>

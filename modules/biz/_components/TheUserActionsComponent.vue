@@ -159,6 +159,21 @@
           </a>
         </li>
         <li
+          v-if="permissions.freight_actions && activeStatus"
+          class="nav-item invoice-item"
+        >
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('financing', copID)"
+            :id="`financing_${copID}`"
+          >
+            <span class="fa fa-fw fa-clipboard"></span>
+            Financing
+          </a>
+        </li>
+        <li
           v-if="permissions.approve_reversals_biz"
           class="nav-item reversal-item"
         >
@@ -315,6 +330,18 @@
           </div>
           <div
             :class="`tab-pane fade ${show} ${active}`"
+            :id="`financing_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `financing_${copID}` && activeStatus"
+          >
+            <TheFinancingComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+            />
+          </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
             :id="`reversals_${copID}`"
             role="tabpanel"
             v-if="showTab === `reversals_${copID}`"
@@ -356,6 +383,7 @@ export default {
       import('./UserActions/TheOfflineOrdersComponent'),
     TheMillersTonnageComponent: () =>
       import('./UserActions/TheMillersTonnageComponent'),
+    TheFinancingComponent: () => import('./UserActions/AuxilliaryServices'),
     TheReveralsComponent: () =>
       import('../../users/_components/Reversals/TheReveralsComponent'),
   },
@@ -379,6 +407,7 @@ export default {
       category: 'biz',
       distancePricingTableData: [],
       locationPricingTableData: [],
+      activeStatus: false,
     };
   },
   computed: {

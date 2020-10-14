@@ -1106,8 +1106,7 @@ table {
 .freight-assign-new-rider-buttons {
   border: 1px solid #c0c2c3 !important;
 }
-.assign-order-button,
-.auxillary-save-button {
+.assign-order-button, .auxillary-save-button__active {
   color: white;
   background: #1a7fc3;
   border: 1px solid #1b7fc3;
@@ -1119,6 +1118,20 @@ table {
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: auto;
+}
+.auxillary-save-button__inactive {
+  color: white;
+  background: #BDBDBD;
+  border: 1px solid #BDBDBD;
+  width: 120px;
+  height: 40px;
+  border-radius: 5px;
+  float: right;
+  margin-right: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: auto;
+  pointer-events: none;
 }
 .assign-owner-find {
   background: #1a7fc3 !important;
@@ -1211,17 +1224,14 @@ table {
 .assign-details-tab {
   margin-top: 15px;
 }
-.auxilliary-inputs,
-.finances-tab,
-.save-truck-button,
-.driver-assign-inputs {
+.save-truck-button, .driver-assign-inputs {
   width: max-content;
 }
 .finances-tab {
   border: 1px solid #bdbdbd;
   margin-top: -1px;
   padding: 20px;
-  width: 90%;
+  width: 100%;
 }
 .save-truck-button {
   font-weight: 600;
@@ -1293,6 +1303,9 @@ table {
   margin: 5px;
   height: 40px;
   border: 1px solid #1b7fc3;
+}
+.freight-button-width-override {
+  width: 140px !important;
 }
 .freight-order-actions-buttons:focus {
   border: 1px solid #1b7fc3 !important;
@@ -1614,4 +1627,7 @@ color: #000000;
 .expanded{
   color: #212529;
   background-color: rgba(0,0,0,.075) !important;
+}
+.text-grey {
+  color: #b8c7ce !important;
 }

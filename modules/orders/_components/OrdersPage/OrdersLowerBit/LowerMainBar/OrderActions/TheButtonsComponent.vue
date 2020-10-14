@@ -231,6 +231,27 @@
       <li
         class="nav-item"
         v-if="
+          order.order_details.order_status === 'in transit' &&
+            permissions.auxilliary_services_order &&
+            [6, 10, 13, 14, 17, 18, 19, 20].includes(
+              order.rider_details.vendor_type_id,
+            )
+        "
+      >
+        <a
+          class="force_blue"
+          data-toggle="tab"
+          aria-expanded="false"
+          @click="viewTab('auxilliary_services', orderNo)"
+          :id="`auxilliary_services_${orderNo}`"
+        >
+          <span class="fa fa-fw fa-money blue-override"></span>
+          Auxiliary Services
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        v-if="
           order.order_details.order_status === 'delivered' &&
             permissions.upload_dnotes
         "
@@ -360,6 +381,14 @@
       </div>
       <div
         :class="`tab-pane fade ${show} ${active}`"
+        :id="`auxilliary_services_${orderNo}`"
+        role="tabpanel"
+        v-if="showTab === `auxilliary_services_${orderNo}`"
+      >
+        <AuxilliaryServices :order="order" />
+      </div>
+      <div
+        :class="`tab-pane fade ${show} ${active}`"
         :id="`upload_dnotes_${orderNo}`"
         role="tabpanel"
         v-if="showTab === `upload_dnotes_${orderNo}`"
@@ -387,6 +416,8 @@ export default {
     TrackerComponent: () => import('./TrackerComponent'),
     TheMarkInTransitComponent: () => import('./TheMarkInTransitComponent'),
     TheCompleteOrderComponent: () => import('./TheCompleteOrderComponent'),
+    AuxilliaryServices: () =>
+      import('../../FBU/OrderActions/AuxilliaryServices'),
     TheUploadDnoteComponent: () => import('./TheUploadDnoteComponent'),
   },
   props: {
@@ -467,7 +498,9 @@ export default {
   color: #3c8dbc !important;
   cursor: pointer;
 }
-
+.blue-override {
+  color: #3c8dbc !important;
+}
 .vs__dropdown-toggle {
   padding: 6px 4px;
   color: #ccc;
