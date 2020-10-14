@@ -408,16 +408,9 @@ export default {
       this.delete_status = true;
       this.delete_response_status = true;
 
-      const userInfo = this.userData.payload.data;
-
       const payload = {
         id: data.object_id,
         route: 'pickups',
-        params: {
-          _user_email: userInfo.email,
-          _user_id: userInfo.admin_id,
-          action_user: userInfo.name,
-        },
       };
       const resp = await this.remove_intercounty_record(payload);
 
@@ -631,8 +624,6 @@ export default {
       }
     },
     async updatePickUpConfig() {
-      const userInfo = this.userData.payload.data;
-
       const payload = {
         id: this.route_key,
         route: 'pickups',
@@ -641,9 +632,6 @@ export default {
           supported_vendor_types: this.supported_vendor_types,
           collection_centers: this.collection_centers,
           status: 1,
-          _user_email: userInfo.email,
-          _user_id: userInfo.admin_id,
-          action_user: userInfo.name,
         },
       };
 

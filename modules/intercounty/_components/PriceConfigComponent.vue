@@ -383,16 +383,9 @@ export default {
       this.delete_status = true;
       this.delete_response_status = true;
 
-      const userInfo = this.userData.payload.data;
-
       const payload = {
         id: data.object_id,
         route: 'routes',
-        params: {
-          _user_email: userInfo.email,
-          _user_id: userInfo.admin_id,
-          action_user: userInfo.name,
-        },
       };
       const resp = await this.remove_intercounty_record(payload);
 
@@ -517,8 +510,6 @@ export default {
       }
     },
     async updateRoute() {
-      const userInfo = this.userData.payload.data;
-
       const payload = {
         id: this.route_key,
         route: 'routes',
@@ -532,9 +523,6 @@ export default {
           sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
           max_weight: parseInt(this.maximum_weight, 10),
           status: 1,
-          _user_email: userInfo.email,
-          _user_id: userInfo.admin_id,
-          action_user: userInfo.name,
         },
       };
 

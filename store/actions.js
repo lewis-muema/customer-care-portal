@@ -1390,6 +1390,8 @@ export default {
   },
   async remove_intercounty_record({ state, dispatch }, payload) {
     const config = state.config;
+    const userData = state.userData;
+
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
       headers: {
@@ -1397,6 +1399,11 @@ export default {
         Accept: 'application/json',
         Authorization: jwtToken,
       },
+    };
+    payload.params = {
+      _user_email: userData.payload.data.email,
+      _user_id: userData.payload.data.admin_id,
+      action_user: userData.payload.data.name,
     };
     const values = JSON.stringify(payload.params);
 
@@ -1410,6 +1417,8 @@ export default {
   },
   async update_intercounty_record({ state, dispatch }, payload) {
     const config = state.config;
+    const userData = state.userData;
+
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
       headers: {
@@ -1418,6 +1427,10 @@ export default {
         Authorization: jwtToken,
       },
     };
+    payload.params._user_email = userData.payload.data.email;
+    payload.params._user_id = userData.payload.data.admin_id;
+    payload.params.action_user = userData.payload.data.name;
+
     const values = JSON.stringify(payload.params);
 
     const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
