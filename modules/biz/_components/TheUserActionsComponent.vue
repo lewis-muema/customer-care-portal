@@ -14,7 +14,7 @@
             Edit
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_payment">
+        <li class="nav-item" v-if="permissions.approve_payment_biz">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -64,7 +64,7 @@
         </li>
         <li
           class="nav-item custom-padding"
-          v-if="permissions.approve_custom_invoice"
+          v-if="permissions.approve_custom_invoice_3"
         >
           <a
             class="nav-link action-list custom-width"
@@ -79,7 +79,7 @@
         </li>
         <li
           class="nav-item custom-padding"
-          v-if="permissions.approve_custom_invoice"
+          v-if="permissions.approve_custom_invoice_4"
         >
           <a
             class="nav-link action-list custom-width"
@@ -92,7 +92,7 @@
             Reverse Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_vat_configs">
+        <li class="nav-item" v-if="permissions.approve_vat_configs_biz">
           <a
             class="nav-link action-list"
             data-toggle="tab"
@@ -171,6 +171,21 @@
           >
             <span class="fa fa-fw fa-clipboard"></span>
             Financing
+          </a>
+        </li>
+        <li
+          v-if="permissions.approve_reversals_biz"
+          class="nav-item reversal-item"
+        >
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('reversals', copID)"
+            :id="`reversals_${copID}`"
+          >
+            <span class="fa fa-fw fa-clipboard"></span>
+            Reversals & Credit Note
           </a>
         </li>
       </ul>
@@ -325,6 +340,20 @@
               :currency="currency"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`reversals_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `reversals_${copID}`"
+          >
+            <TheReveralsComponent
+              :user="user"
+              :session="userData"
+              :currency="currency"
+              :user-type="category"
+              :id="copID"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -355,6 +384,8 @@ export default {
     TheMillersTonnageComponent: () =>
       import('./UserActions/TheMillersTonnageComponent'),
     TheFinancingComponent: () => import('./UserActions/AuxilliaryServices'),
+    TheReveralsComponent: () =>
+      import('../../users/_components/Reversals/TheReveralsComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -449,7 +480,7 @@ export default {
           approve_billing = true;
         }
       } else {
-        if (this.permissions.approve_prepay_billing) {
+        if (this.permissions.approve_prepay_billing_biz) {
           approve_billing = true;
         }
       }
@@ -504,5 +535,8 @@ export default {
 }
 .custom-width {
   width: 100% !important;
+}
+.reversal-item {
+  width: 24%;
 }
 </style>
