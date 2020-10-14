@@ -6,13 +6,10 @@
   </footer>
 </template>
 <script>
-const moment = require('moment');
+import moment from 'moment';
 
 export default {
   name: 'TheFooter',
-  data() {
-    return {};
-  },
   computed: {
     getDate() {
       return moment().format('YYYY');
