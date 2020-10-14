@@ -292,7 +292,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 import axios from 'axios';
 import Loading from './LoadingComponent.vue';
@@ -329,7 +329,9 @@ export default {
       delete_response_status: true,
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(['userData']),
+  },
   watch: {},
   mounted() {
     this.initiateData();
@@ -381,9 +383,16 @@ export default {
       this.delete_status = true;
       this.delete_response_status = true;
 
+      const userInfo = this.userData.payload.data;
+
       const payload = {
         id: data.object_id,
         route: 'routes',
+        params: {
+          _user_email: userInfo.email,
+          _user_id: userInfo.admin_id,
+          action_user: userInfo.name,
+        },
       };
       const resp = await this.remove_intercounty_record(payload);
 
@@ -461,6 +470,8 @@ export default {
       }
     },
     async addNewRoute() {
+      const userInfo = this.userData.payload.data;
+
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'inter_county_config/routes',
@@ -474,6 +485,9 @@ export default {
           '3pl_extra_weight_cost': parseInt(this.excess_weight_rate, 10),
           sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
           max_weight: parseInt(this.maximum_weight, 10),
+          _user_email: userInfo.email,
+          _user_id: userInfo.admin_id,
+          action_user: userInfo.name,
         },
       };
 
@@ -503,6 +517,8 @@ export default {
       }
     },
     async updateRoute() {
+      const userInfo = this.userData.payload.data;
+
       const payload = {
         id: this.route_key,
         route: 'routes',
@@ -516,6 +532,9 @@ export default {
           sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
           max_weight: parseInt(this.maximum_weight, 10),
           status: 1,
+          _user_email: userInfo.email,
+          _user_id: userInfo.admin_id,
+          action_user: userInfo.name,
         },
       };
 

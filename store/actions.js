@@ -1398,9 +1398,11 @@ export default {
         Authorization: jwtToken,
       },
     };
+    const values = JSON.stringify(payload.params);
+
     const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
     try {
-      const response = await axios.delete(url, param);
+      const response = await axios.delete(url, values, param);
       return response;
     } catch (error) {
       return error.response.data;

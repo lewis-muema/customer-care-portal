@@ -416,7 +416,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 import axios from 'axios';
 import Loading from './LoadingComponent.vue';
@@ -462,7 +462,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapState(['userData']),
 
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
@@ -663,9 +663,16 @@ export default {
       this.delete_status = true;
       this.delete_response_status = true;
 
+      const userInfo = this.userData.payload.data;
+
       const payload = {
         id: data.object_id,
         route: 'destinations',
+        params: {
+          _user_email: userInfo.email,
+          _user_id: userInfo.admin_id,
+          action_user: userInfo.name,
+        },
       };
       const resp = await this.remove_intercounty_record(payload);
 
@@ -760,6 +767,8 @@ export default {
       }
     },
     async addNewDestinationConfig() {
+      const userInfo = this.userData.payload.data;
+
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'inter_county_config/destinations',
@@ -773,6 +782,9 @@ export default {
           collection_centers: this.collection_centers,
           radius: parseInt(this.radius, 10),
           max_delivery_range: parseInt(this.max_delivery_range, 10),
+          _user_email: userInfo.email,
+          _user_id: userInfo.admin_id,
+          action_user: userInfo.name,
         },
       };
 
@@ -801,6 +813,8 @@ export default {
       }
     },
     async updateDestinationConfig() {
+      const userInfo = this.userData.payload.data;
+
       const payload = {
         id: this.route_key,
         route: 'destinations',
@@ -814,6 +828,9 @@ export default {
           radius: parseInt(this.radius, 10),
           max_delivery_range: parseInt(this.max_delivery_range, 10),
           status: 1,
+          _user_email: userInfo.email,
+          _user_id: userInfo.admin_id,
+          action_user: userInfo.name,
         },
       };
       try {
