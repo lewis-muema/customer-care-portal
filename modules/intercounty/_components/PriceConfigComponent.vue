@@ -479,7 +479,7 @@ export default {
           sendy_extra_weight_up_charge: parseInt(this.sendy_commission, 10),
           max_weight: parseInt(this.maximum_weight, 10),
           _user_email: userInfo.email,
-          _user_id: userInfo.admin_id,
+          _user_id: parseInt(userInfo.admin_id, 10),
           action_user: userInfo.name,
         },
       };
