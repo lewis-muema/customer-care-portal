@@ -33,7 +33,11 @@
                   Assign Order
                 </button>
                 <button
-                  v-if="!completeStatus() && !cancelStatus()"
+                  v-if="
+                    order.order_details.confirm_status !== 0 &&
+                      !completeStatus() &&
+                      !cancelStatus()
+                  "
                   class="freight-order-actions-buttons"
                   :class="ActiveTab === 'gps' ? 'active-tab' : 'inactive-tab'"
                   @click="ActiveTab = 'gps'"
@@ -43,18 +47,19 @@
                 </button>
                 <button
                   v-if="
-                    !completeStatus() &&
+                    order.order_details.order_status === 'in transit' &&
+                      !completeStatus() &&
                       !cancelStatus() &&
-                      permissions.freight_actions_finances
+                      hasAuxilliaryPermissions()
                   "
-                  class="freight-order-actions-buttons"
+                  class="freight-order-actions-buttons freight-button-width-override"
                   :class="
                     ActiveTab === 'finances' ? 'active-tab' : 'inactive-tab'
                   "
                   @click="ActiveTab = 'finances'"
                 >
                   <span class="fa fa-fw fa-usd"></span>
-                  Finances
+                  Auxiliary Services
                 </button>
                 <button
                   v-if="
@@ -133,7 +138,7 @@
                     ActiveTab === 'finances' &&
                       !completeStatus() &&
                       !cancelStatus() &&
-                      permissions.freight_actions_finances
+                      hasAuxilliaryPermissions()
                   "
                   :order="order"
                 />
@@ -273,6 +278,19 @@ export default {
     },
     cancelStatus() {
       if (this.order.order_details.order_status === 'cancelled') {
+        return true;
+      }
+      return false;
+    },
+    hasAuxilliaryPermissions() {
+      const privileges = JSON.parse(this.userData.payload.data.privilege);
+      if (
+        Object.prototype.hasOwnProperty.call(
+          privileges,
+          'auxilliary_services_order',
+        ) &&
+        privileges.auxilliary_services_order
+      ) {
         return true;
       }
       return false;
