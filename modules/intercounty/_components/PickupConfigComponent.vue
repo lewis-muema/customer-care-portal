@@ -272,7 +272,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 import axios from 'axios';
 import Loading from './LoadingComponent.vue';
@@ -320,7 +320,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapState(['userData']),
 
     herokuKey() {
       return this.$env.HEROKU_GOOGLE_API_KEY;
@@ -583,6 +583,8 @@ export default {
       }
     },
     async addNewPickUpConfig() {
+      const userInfo = this.userData.payload.data;
+
       const payload = {
         app: 'PRICING_SERVICE',
         endpoint: 'inter_county_config/pickups',
@@ -591,6 +593,9 @@ export default {
           city_id: parseInt(this.city_id, 10),
           supported_vendor_types: this.supported_vendor_types,
           collection_centers: this.collection_centers,
+          _user_email: userInfo.email,
+          _user_id: userInfo.admin_id,
+          action_user: userInfo.name,
         },
       };
 
