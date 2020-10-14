@@ -107,7 +107,6 @@ export default {
     pageBreadCrumbs() {
       const routeName = this.route;
       const links = this.breadCrumbs;
-      console.log(routeName, 'thisi is routename');
       return links[routeName];
     },
   },

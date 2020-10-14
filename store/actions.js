@@ -1547,7 +1547,6 @@ export default {
     const url = `${config.ORDERS_APP}v1/inter_county/${payload.route}`;
     try {
       const response = await axios.post(url, values, param);
-      console.log('response', response);
       return response.data;
     } catch (error) {
       return error.response.data;
