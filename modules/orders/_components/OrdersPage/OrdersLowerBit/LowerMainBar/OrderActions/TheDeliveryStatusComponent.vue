@@ -71,7 +71,7 @@ export default {
       options: [
         { delivery_status_id: 'approve', delivery_status: 'Approved' },
         { delivery_status_id: 'enroute', delivery_status: `In Transit` },
-        { delivery_status_id: 'arrived', delivery_status: 'Delivered' },
+        { delivery_status_id: 'arrive', delivery_status: 'Delivered' },
         {
           delivery_status_id: 'complete',
           delivery_status: `Collected by reipient`,

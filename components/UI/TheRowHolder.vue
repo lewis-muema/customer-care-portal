@@ -27,7 +27,7 @@
                   :id="`order_indicator_${orderNo}`"
                   :class="`label ${status.toLowerCase()}_ind`"
                 >
-                  {{ status }}
+                  {{ orderStatus(order) }}
                 </span>
               </span>
             </td>
@@ -50,7 +50,7 @@
               </span> -->
             </td>
             <td>
-              {{ riderDetails.name }}
+              {{ orderRider(order) }}
               <span class="vendor-label">
                 <span>
                   {{ vendorLabels[vendorTypeId]
@@ -90,7 +90,17 @@
                 )
               }}
             </td>
-            <td>
+            <td v-if="order.rider_details.vendor_type_id === 26">
+              N/A
+              <span
+                data-toggle="tooltip"
+                title="No rider amount to be displayed for intercounty orders"
+                class="badge bg-info"
+              >
+                <i class="fa fa-info"></i>
+              </span>
+            </td>
+            <td v-else>
               {{
                 displayAmount(
                   paymentDetails.order_currency,
@@ -176,7 +186,6 @@ export default {
       moreData: this.order.order_details,
       clientDetails: this.order.client_details,
       riderDetails: this.order.rider_details,
-      riderDetails: this.order.rider_details,
       paymentDetails: this.order.payment_details,
       images: this.order.delivery_details,
     };
@@ -241,6 +250,34 @@ export default {
       } else {
         this.opened.push(id);
       }
+    },
+    orderStatus(order) {
+      let resp = this.status;
+      if (order.rider_details.vendor_type_id === 26) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            order.order_details,
+            'inter_county_order_details',
+          )
+        ) {
+          resp = order.order_details.inter_county_order_details.status;
+        }
+      }
+      return resp;
+    },
+    orderRider(order) {
+      let resp = this.riderDetails.name;
+      if (order.rider_details.vendor_type_id === 26) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            order.order_details,
+            'inter_county_order_details',
+          )
+        ) {
+          resp = 'Intercounty Order';
+        }
+      }
+      return resp;
     },
   },
 };

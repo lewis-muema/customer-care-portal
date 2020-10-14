@@ -27,14 +27,7 @@
           Re-Allocate
         </a>
       </li>
-      <li
-        class="nav-item"
-        v-if="
-          order.order_details.order_status !== 'delivered' &&
-            order.order_details.order_status !== 'cancelled' &&
-            userData['admin_type'] !== 1
-        "
-      >
+      <li class="nav-item" v-if="showCancellationBtn(order)">
         <a
           class="force_blue"
           :class="{ activeLink: showTab === `cancel_${orderNo}` }"
@@ -540,6 +533,26 @@ export default {
     },
     showWeightOfOrderBtn(order) {
       const resp = order.rider_details.vendor_type_id === 26;
+      return resp;
+    },
+    showCancellationBtn(order) {
+      let resp = false;
+      if (order.rider_details.vendor_type_id === 26) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            order.order_details.inter_county_order_details,
+            'cancellable',
+          )
+        ) {
+          resp = order.order_details.inter_county_order_details.cancellable;
+        }
+      } else if (
+        order.order_details.order_status !== 'delivered' &&
+        order.order_details.order_status !== 'cancelled' &&
+        this.userData['admin_type'] !== 1
+      ) {
+        resp = true;
+      }
       return resp;
     },
   },
