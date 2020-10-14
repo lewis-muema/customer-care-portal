@@ -1497,23 +1497,23 @@ export default {
     const userData = state.userData;
 
     const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
+
+    const values = {
       headers: {
         'Content-Type': 'text/plain',
         Accept: 'application/json',
         Authorization: jwtToken,
       },
+      data: {
+        _user_email: userData.payload.data.email,
+        _user_id: parseInt(userData.payload.data.admin_id, 10),
+        action_user: userData.payload.data.name,
+      },
     };
-    payload.params = {
-      _user_email: userData.payload.data.email,
-      _user_id: userData.payload.data.admin_id,
-      action_user: userData.payload.data.name,
-    };
-    const values = JSON.stringify(payload.params);
 
     const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
     try {
-      const response = await axios.delete(url, values, param);
+      const response = await axios.delete(url, values);
       return response;
     } catch (error) {
       return error.response.data;
@@ -1531,8 +1531,9 @@ export default {
         Authorization: jwtToken,
       },
     };
+
     payload.params._user_email = userData.payload.data.email;
-    payload.params._user_id = userData.payload.data.admin_id;
+    payload.params._user_id = parseInt(userData.payload.data.admin_id, 10);
     payload.params.action_user = userData.payload.data.name;
 
     const values = JSON.stringify(payload.params);

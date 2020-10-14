@@ -594,7 +594,7 @@ export default {
           supported_vendor_types: this.supported_vendor_types,
           collection_centers: this.collection_centers,
           _user_email: userInfo.email,
-          _user_id: userInfo.admin_id,
+          _user_id: parseInt(userInfo.admin_id, 10),
           action_user: userInfo.name,
         },
       };
