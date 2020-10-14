@@ -4,9 +4,6 @@
       {{ pageBreadCrumbs.name }}
       <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
-
-    <FilterComponent />
-
     <div class="breadcrumb business-units" v-if="route === 'orders'">
       <span>
         <input type="checkbox" @click="checkAll()" v-model="isCheckAll" />
@@ -34,18 +31,13 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import FilterComponent from './FilterComponet';
 
 export default {
   name: 'TheBreadCrumbView',
-  components: {
-    FilterComponent,
-  },
   props: ['route'],
   data() {
     return {
       isCheckAll: true,
-      isCheckAllCopIds: true,
       unitsdata: [],
       units: null,
       selectedUnits: [],
@@ -104,6 +96,7 @@ export default {
 
   computed: {
     ...mapGetters(['getBusinessUnits', 'getOrderStatuses']),
+
     pageBreadCrumbs() {
       const routeName = this.route;
       const links = this.breadCrumbs;
@@ -127,13 +120,11 @@ export default {
     ...mapMutations({
       updateSelectedUnits: 'setSelectedBusinessUnits',
     }),
-
     ...mapActions(['setBusinessUnits', 'requestBusinessUnits']),
     async requestUnits() {
       const arr = await this.requestBusinessUnits();
       await this.setBusinessUnits();
     },
-
     checkAll() {
       this.isCheckAll = !this.isCheckAll;
       this.businessUnits = [];
@@ -143,24 +134,28 @@ export default {
           this.businessUnits.push(this.units[key].abbr);
         }
       }
-
       this.printValues();
     },
-
+    updateCheckall() {
+      if (this.businessUnits.length === this.unitsdata.length) {
+        this.isCheckAll = true;
+      } else {
+        this.isCheckAll = false;
+      }
+      this.printValues();
+    },
     printValues() {
       this.selectedUnits = [];
       // eslint-disable-next-line guard-for-in
       for (const key in this.businessUnits) {
         this.selectedUnits.push(this.businessUnits[key].toLowerCase().trim());
       }
-
       this.updateSelectedUnits(this.selectedUnits);
     },
     toggle_show(status) {},
   },
 };
 </script>
-
 <style scoped>
 .breadcrumb > li {
   padding: 0 7px;
@@ -168,7 +163,6 @@ export default {
 .breadcrumb > .active {
   color: #777;
 }
-
 .business-units {
   right: 220px;
   color: #333;
@@ -176,20 +170,7 @@ export default {
   background: #ecf0f5;
   border: 1px solid #3333;
 }
-
 .business-units > span {
-  padding-left: 26px;
-}
-
-.cop {
-  right: 500px;
-  color: #333;
-  font-size: 13px;
-  background: #ecf0f5;
-  border: 1px solid #3333;
-}
-
-.cop > span {
   padding-left: 26px;
 }
 </style>

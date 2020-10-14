@@ -223,7 +223,6 @@ export default {
       msg: '',
       returned: false,
       companyUnits: [],
-      copNames: null,
     };
   },
   computed: {
@@ -231,7 +230,6 @@ export default {
       'getOrders',
       'getOrderStatuses',
       'getSelectedBusinessUnits',
-      'getSelectedCopNames',
       'getSelectedCities',
       'getReorganizeStatus',
       'getOrderCount',
@@ -277,14 +275,12 @@ export default {
       const business_unit = this.businessUnits;
       const status = this.statusArray;
       const country_code = this.countryCode;
-      const cop_name = this.copNames;
 
       const params = {
         business_unit,
         status,
         city,
         country_code,
-        cop_name,
       };
       for (const param in params) {
         if (params[param] === null || params[param] === undefined) {
@@ -322,7 +318,6 @@ export default {
       this.sendRequest(this.params);
       return (this.cities = cities);
     },
-
     getReorganizeStatus(status) {
       this.orders = [];
       this.sendRequest(this.params);
@@ -350,24 +345,7 @@ export default {
       }
       return (this.businessUnits = units);
     },
-    getSelectedCopNames(copNames) {
-      this.orders = [];
-      this.copNames = copNames;
-      this.ordersExist = false;
-      this.msg = 'There are no orders fitting these criteria';
-      if (!this.isEmpty(copNames)) {
-        if (this.copNames.includes('normal')) {
-          this.copNames = null;
-        }
-        this.sendRequest(this.params);
-        this.ordersExist = true;
-        this.msg = '';
-      }
-
-      return (this.copNames = copNames);
-    },
   },
-
   created() {
     if (process.client) {
       window.addEventListener('scroll', () => {
@@ -447,7 +425,6 @@ export default {
     ordersAvailable(orders) {
       const data = orders.data;
       let status = true;
-
       if (data.length === 0) {
         status = false;
         this.msg = 'There are no more orders in this category';

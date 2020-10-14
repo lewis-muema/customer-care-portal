@@ -19,7 +19,6 @@
     "@elastic/apm-rum-vue": "^0.1.0",
     "@johmun/vue-tags-input": "^2.1.0",
     "@nuxtjs/axios": "^5.6.0",
-    "@nuxtjs/dotenv": "^1.4.1",
     "@sendyit/auth": "^0.1.5",
     "@stomp/stompjs": "^5.4.2",
     "aos": "^3.0.0-beta.6",
