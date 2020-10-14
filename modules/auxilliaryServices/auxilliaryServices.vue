@@ -214,10 +214,10 @@ export default {
           name: 'Kenya',
           code: 'ke',
         },
-        {
-          name: 'Uganda',
-          code: 'ug',
-        },
+        // {
+        //   name: 'Uganda',
+        //   code: 'ug',
+        // },
       ],
       BU: [
         {
