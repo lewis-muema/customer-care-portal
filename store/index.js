@@ -45,6 +45,7 @@ export default {
       searchedPeerUser: null,
       searchedRider: null,
       selectedBusinessUnits: null,
+      selectedCopNames: null,
       selectedCities: null,
       dbUpdated: false,
       actionSuccess: false,
