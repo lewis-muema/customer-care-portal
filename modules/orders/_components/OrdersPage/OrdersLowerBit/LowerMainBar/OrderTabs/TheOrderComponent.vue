@@ -16,6 +16,14 @@
             "
           ></td>
         </tr>
+        <tr v-if="riderDetails.vendor_type_id === 26">
+          <td>Total Order Amount (inclusive of VAT)</td>
+          <td
+            v-html="
+              showCurrencyBasedAmounts(orderDetails, totalInterCountyCost)
+            "
+          ></td>
+        </tr>
         <tr
           v-if="
             paymentDetails.economy_order_cost &&
@@ -210,6 +218,7 @@ export default {
       moreData: false,
       clientDetails: false,
       calculatedOrderAmount: false,
+      totalInterCountyCost: false,
     };
   },
   computed: {
@@ -229,6 +238,16 @@ export default {
     this.paymentDetails = this.orderDetails.payment_details;
     this.moreData = this.orderDetails.order_details;
     this.clientDetails = this.orderDetails.client_details;
+    if (this.orderDetails.rider_details.vendor_type_id === 26) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this.orderDetails.order_details,
+          'inter_county_order_details',
+        )
+      ) {
+        this.totalInterCountyCost = this.orderDetails.order_details.inter_county_order_details.total_cost;
+      }
+    }
 
     this.calculatedOrderAmount = this.determineOrderAmounts(
       this.paymentDetails.order_amount,
