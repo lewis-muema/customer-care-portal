@@ -4,7 +4,7 @@
       {{ pageBreadCrumbs.name }}
       <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
-    <FilterComponent />
+    <FilterComponent v-show="route === 'orders'" />
     <div class="breadcrumb business-units" v-if="route === 'orders'">
       <span>
         <input type="checkbox" @click="checkAll()" v-model="isCheckAll" />
