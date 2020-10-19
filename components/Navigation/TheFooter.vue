@@ -1,7 +1,7 @@
 <template>
   <footer class="main-footer">
     <div class="pull-right hidden-xs"><b>Version</b> 1.4.4</div>
-    <strong> &copy; {{ getDate }} SENDY.</strong>
+    <strong> &copy; {{ getYear }} SENDY.</strong>
     All rights reserved.
   </footer>
 </template>
@@ -11,7 +11,7 @@ import moment from 'moment';
 export default {
   name: 'TheFooter',
   computed: {
-    getDate() {
+    getYear() {
       return moment().format('YYYY');
     },
   },
