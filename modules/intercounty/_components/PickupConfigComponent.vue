@@ -139,12 +139,16 @@
             </el-select>
           </div>
 
+          <p class="inter-county-headers">
+            Collection centre
+          </p>
+
           <div class="vendor-options">
             <p class="pricing-input-labels">
               Physical address of the collection centre
             </p>
             <el-input
-              v-model="collection_centre_address"
+              v-model="collection_centre_address[0]"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4 }"
               placeholder="E.g Sendy caravan at Westlands Total petrol station along Ojijo road"
@@ -192,7 +196,7 @@
             </div>
             <div class="inter-county-map">
               <GmapMap
-                ref="map"
+                ref="map0"
                 :center="mapCentreLocation"
                 :zoom="10"
                 map-type-id="roadmap"
@@ -207,6 +211,92 @@
                 </div>
               </GmapMap>
             </div>
+          </div>
+
+          <div
+            class="vendor-options"
+            v-for="n in extra_collection"
+            :key="n"
+            :data-index="n"
+          >
+            <a class="inter-county-headers">Collection centre {{ n }}</a>
+            <i
+              class="el-icon-circle-close close-icon"
+              @click="removeExtraCollectionWrapper(n)"
+            ></i>
+            <div class="vendor-options">
+              <p class="pricing-input-labels">
+                Physical address of the collection centre {{ n }}
+              </p>
+              <el-input
+                v-model="collection_centre_address[n]"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                placeholder="E.g Nation courier, Umoja building 3rd floor, Nyeri"
+              >
+              </el-input>
+            </div>
+            <div class="vendor-options">
+              <p class="pricing-input-labels">
+                Exact location of the collection centre
+              </p>
+              <div class="">
+                <template>
+                  <el-popover
+                    placement="bottom"
+                    width="Min width 150px"
+                    v-model="visible"
+                  >
+                    <div>
+                      <div
+                        class="single-suggestion"
+                        v-for="suggestion in suggestions"
+                        :key="suggestion.id"
+                        @click="
+                          handleSelect(
+                            suggestion.description,
+                            n,
+                            suggestion.place_id,
+                          )
+                        "
+                      >
+                        {{ suggestion.description }}
+                      </div>
+                    </div>
+                    <el-input
+                      slot="reference"
+                      size="large"
+                      class=""
+                      placeholder="Enter name of the location"
+                      v-model="locations[n]"
+                      @input="handleFocus($event, n)"
+                    ></el-input>
+                  </el-popover>
+                </template>
+              </div>
+              <div class="inter-county-map">
+                <GmapMap
+                  :ref="`map${n}`"
+                  :center="mapCentreLocation"
+                  :zoom="10"
+                  map-type-id="roadmap"
+                  class="map-content"
+                  :options="mapOptions"
+                >
+                  <div v-if="markers.length > n">
+                    <gmap-marker
+                      :position="get_position(n)"
+                      :icon="path_icon()"
+                    />
+                  </div>
+                </GmapMap>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="allow_add_collection" @click="addExtraCollectionWrapper()">
+            <i class="el-icon-circle-plus-outline add-collection-icon"></i>
+            <a class="add-collection-extra">Add collection centre</a>
           </div>
 
           <div class="vendor-options">
@@ -305,7 +395,7 @@ export default {
       locations: [],
       extra_collection: 0,
       city_id: '',
-      collection_centre_address: '',
+      collection_centre_address: [],
       city_list: [],
       supported_vendor_types: [],
       collection_centers: [],
@@ -326,7 +416,7 @@ export default {
       return this.$env.HEROKU_GOOGLE_API_KEY;
     },
     allow_add_collection() {
-      return this.markers.length > 1;
+      return this.markers.length > 0;
     },
     filteredData() {
       const self = this;
@@ -471,12 +561,21 @@ export default {
           }
           this.collection_centers.splice(input, 0, data);
           this.markers.splice(input, 0, response.data.result.geometry);
-          const bounds = new google.maps.LatLngBounds();
-          for (const m of this.markers) {
-            bounds.extend(m.location);
+
+          const map_value = `map${input}`;
+          let ref = '';
+          if (input > 0) {
+            ref = this.$refs[map_value][0];
+          } else {
+            ref = this.$refs[map_value];
           }
-          this.$refs.map.$mapObject.fitBounds(bounds);
-          this.$refs.map.$mapObject.setZoom(this.$refs.map.$mapObject.zoom - 1);
+
+          const bounds = new google.maps.LatLngBounds();
+
+          bounds.extend(response.data.result.geometry.location);
+
+          ref.$mapObject.fitBounds(bounds);
+          ref.$mapObject.setZoom(ref.$mapObject.zoom - 1);
         });
     },
     handleFocus(val, input) {
@@ -529,23 +628,27 @@ export default {
       return resp;
     },
     editPickUp(val) {
+      const data = val.collection_centers;
+      this.extra_collection = data.length - 1;
       this.city_id = val.city_id;
       this.supported_vendor_types = val.supported_vendor_types;
-      this.locations[0] = val.collection_centers[0].address;
-      const collection_cordinates = val.collection_centers[0].coordinates;
-      collection_cordinates.location = {
-        lat: val.collection_centers[0].coordinates.coordinates[1],
-        lng: val.collection_centers[0].coordinates.coordinates[0],
-      };
-      const data = {
-        address: val.collection_centers[0].address,
-        lat: val.collection_centers[0].coordinates.coordinates[1],
-        long: val.collection_centers[0].coordinates.coordinates[0],
-        object_id: val.collection_centers[0].object_id,
-      };
-      this.collection_centers.splice(0, 0, data);
+      for (let i = 0; i < data.length; i++) {
+        const location = {
+          address: data[i].address,
+          lat: data[i].coordinates.coordinates[1],
+          long: data[i].coordinates.coordinates[0],
+          lng: data[i].coordinates.coordinates[0],
+          object_id: data[i].object_id,
+        };
 
-      this.markers.splice(0, 0, collection_cordinates);
+        this.collection_centers.push(location);
+        this.locations[i] = data[i].address;
+
+        const collection_data = {
+          location,
+        };
+        this.markers.splice(i, 0, collection_data);
+      }
 
       this.route_key = val.object_id;
       this.edit_route = true;
@@ -565,7 +668,7 @@ export default {
     createPickUpConfig() {
       if (
         this.city_id === '' ||
-        this.collection_centre_address === '' ||
+        this.collection_centre_address.length === 0 ||
         this.collection_centers.length === 0
       ) {
         this.submit_status = true;
