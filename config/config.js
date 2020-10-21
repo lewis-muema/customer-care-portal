@@ -34,7 +34,7 @@ const config = {
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
-    ELASTIC_APM_SERVER_URL: 'http://localhost:8200',
+    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'dev',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
   },
@@ -73,7 +73,7 @@ const config = {
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
-    ELASTIC_APM_SERVER_URL: 'https://staging-apm.sendyit.com:443',
+    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'dev',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
   },
@@ -107,7 +107,7 @@ const config = {
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://auth.sendyit.com',
-    ELASTIC_APM_SERVER_URL: 'https://apm.sendyit.com:443',
+    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'dev',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
   },
