@@ -233,7 +233,11 @@
                     type="text"
                     class="pending-requests-edit-inputs"
                     v-model="editData[index].request_details.amount"
-                    :disabled="order.owner_details.status !== 'pending'"
+                    :disabled="
+                      order.owner_details.status !== 'pending' ||
+                        maxFuelAmount === 0
+                    "
+                    @input="regulateAmount(index)"
                   />
                 </div>
                 <div class="pending-requests-filler">
@@ -300,6 +304,9 @@
                 </div>
               </div>
               <div class="pending-requests-edit-bottom">
+                <div v-if="rowIndex === index" class="edit-amount-message">
+                  {{ editMessage }}
+                </div>
                 <button
                   class="pending-requests-update-button"
                   :class="
@@ -626,6 +633,9 @@ export default {
       unitParam: '',
       editData: [],
       pollActive: false,
+      maxFuelAmount: 0,
+      editMessage: '',
+      fetchStatus: false,
     };
   },
   computed: {
@@ -644,6 +654,11 @@ export default {
     pollActive(val) {
       if (val) {
         this.poll();
+      }
+    },
+    rowIndex(val) {
+      if (this.orders[val].activeMenuTab === 'edit' && !this.fetchStatus) {
+        this.fetchMaxAdvance(this.editData[val].request_details.order_no, val);
       }
     },
     rider(val) {
@@ -699,6 +714,7 @@ export default {
       get_fuel_advances: 'fuel_advances',
       action_owner_request: 'action_owner_request',
       edit_owner_request: 'edit_owner_request',
+      get_max_advance: 'max_advance',
     }),
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -723,6 +739,7 @@ export default {
               amount: row.request_details.amount,
               station: row.request_details.station,
               address: row.request_details.address,
+              order_no: row.request_details.order_no,
             },
             owner_details: {
               status: row.owner_details.status,
@@ -769,8 +786,37 @@ export default {
           }
         }, 500);
       }
+      this.fetchMaxAdvance(
+        this.editData[index].request_details.order_no,
+        index,
+      );
       this.rowIndex = index;
       this.orders[index].activeMenuTab = data;
+    },
+    regulateAmount(index) {
+      if (this.editData[index].request_details.amount > this.maxFuelAmount) {
+        this.editData[index].request_details.amount = this.maxFuelAmount;
+      }
+    },
+    async fetchMaxAdvance(order, index) {
+      this.editMessage = '';
+      this.fetchStatus = true;
+      const payload = {
+        order_no: order,
+      };
+      const data = await this.get_max_advance(payload);
+      this.fetchStatus = false;
+      if (data.status) {
+        this.maxFuelAmount =
+          data.data.available_advance +
+          this.orders[index].request_details.amount;
+        this.editMessage = `The maximum amount you can edit is ${data.data
+          .available_advance + this.editData[index].request_details.amount}`;
+      } else {
+        this.maxFuelAmount = 0;
+        this.editMessage =
+          'The total amount for fuel advancement has already been reached for this order, we cant allow you to edit it';
+      }
     },
     tabColor(index) {
       if (this.orders[index].activeMenuTab === 'details') {
@@ -1314,5 +1360,13 @@ export default {
 }
 .rejection-dialogue-response-container {
   margin: 35px;
+}
+.edit-amount-message {
+  margin-right: auto;
+  font-style: italic;
+  color: #d20505;
+  font-size: 12px;
+  margin-top: 10px;
+  font-weight: 600;
 }
 </style>
