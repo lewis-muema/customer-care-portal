@@ -28,6 +28,8 @@ const config = {
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
 
+    ETA_URL: 'http://timepredict-test.sendyit.com/get-eta',
+
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
@@ -67,6 +69,8 @@ const config = {
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
 
+    ETA_URL: 'http://timepredict-test.sendyit.com/get-eta',
+
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
@@ -100,6 +104,8 @@ const config = {
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+
+    ETA_URL: 'http://timepredict-test.sendyit.com/get-eta',
 
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
@@ -139,6 +145,8 @@ const config = {
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+
+    ETA_URL: 'https://timepredict.sendyit.com/get-eta',
 
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',
