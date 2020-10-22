@@ -7,27 +7,32 @@
     >
       <div class="reversal-choice col-md-6" v-if="stage === 1">
         <h3>What would you like to create?</h3>
-        <div
-          class="form-group category-group"
-          :class="{ 'active-category': reversalCategory === option.name }"
-          v-for="(option, index) in reversalsOptions"
-          :key="index"
-        >
-          <input
-            type="radio"
-            :id="option.name"
-            name="category"
-            :value="option.name"
-            class="options-radio"
-            v-model="reversalCategory"
-            @click="setReversalCategory(option)"
-          />
-          <label :for="option.name" class="option-label">{{
-            option.title
-          }}</label>
-          <br />
-          <span class="option-description">{{ option.description }}</span>
-        </div>
+        <template v-for="(option, index) in reversalsOptions">
+          <div
+            class="form-group category-group"
+            :class="{
+              'active-category': reversalCategory === option.name,
+              hidden: option.hidden,
+            }"
+            :key="index"
+            v-if="option.users !== userType"
+          >
+            <input
+              type="radio"
+              :id="option.name"
+              name="category"
+              :value="option.name"
+              class="options-radio"
+              v-model="reversalCategory"
+              @click="setReversalCategory(option)"
+            />
+            <label :for="option.name" class="option-label">{{
+              option.title
+            }}</label>
+            <br />
+            <span class="option-description">{{ option.description }}</span>
+          </div>
+        </template>
         <button
           :disabled="reversalCategory === ''"
           class="btn btn-primary action-button reversal-button pull-right"
@@ -249,12 +254,15 @@ export default {
         {
           name: 'reversal',
           title: 'Reversal',
-          description: 'Undo a manual billing or a payment',
+          description:
+            'Undo a manual billing, a payment or transactions pertaining to an order ',
           hasChild: true,
+          users: 'all',
+          hidden: false,
           subMenu: [
             {
               name: 'full',
-              title: 'Full Reversal',
+              title: 'Reverse an order',
               id: 1,
             },
 
@@ -275,6 +283,8 @@ export default {
           title: 'Invoice Reversal',
           description: 'Reverse the full amount or part of the amount invoiced',
           hasChild: true,
+          users: 'peer',
+          hidden: false,
           subMenu: [
             {
               name: 'partial-invoice',
@@ -293,6 +303,8 @@ export default {
           title: 'Credit Note',
           description:
             'Creates a Credit to increase this customer running balance',
+          users: 'all',
+          hidden: false,
           hasChild: false,
         },
       ],
@@ -461,12 +473,13 @@ export default {
         const data = await this.requestTransactions(payload);
         if (data.status === 200) {
           this.transactionDetails = data.data;
+          this.clearErrorMessages();
         } else {
           notification.push(data.message);
           actionClass = this.display_order_action_notification(data.status);
           this.updateClass(actionClass);
           this.updateErrors(notification);
-          this.transactionDetails = {};
+          this.transactionDetails = null;
         }
       } catch (error) {
         return error;
@@ -506,7 +519,12 @@ export default {
     },
     creditNoteData(creditNoteData) {
       this.reversalData = creditNoteData;
-      this.update_reversal();
+    },
+    clearErrorMessages() {
+      const notification = [];
+      const actionClass = '';
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     reset() {
       this.reversing = false;
@@ -516,6 +534,7 @@ export default {
       this.referenceNumber = '';
       this.paymentMethod = '';
       this.emptyRef = false;
+      this.clearErrorMessages();
     },
     setReversalCategory(option) {
       this.reset();
