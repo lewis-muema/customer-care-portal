@@ -4,7 +4,7 @@
       Estimated weight of the parcel
     </div>
     <div>
-      {{ order.order_details.inter_county_order_details.approximate_weight }} kg
+      {{ fetchOrderWeight(order.order_details.inter_county_order_details) }} kg
     </div>
     <br />
     <form @submit.prevent="approveWeight" class="form-group">
@@ -96,6 +96,15 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    fetchOrderWeight(order) {
+      let resp = '';
+      if (order.final_weight === null) {
+        resp = order.approximate_weight;
+      } else {
+        resp = order.final_weight;
+      }
+      return resp;
     },
   },
 };
