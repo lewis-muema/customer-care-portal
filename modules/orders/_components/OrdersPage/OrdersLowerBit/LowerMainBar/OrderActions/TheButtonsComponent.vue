@@ -531,7 +531,11 @@ export default {
       return resp;
     },
     showWeightOfOrderBtn(order) {
-      const resp = order.rider_details.vendor_type_id === 26;
+      let resp = false;
+      if (order.rider_details.vendor_type_id === 26) {
+        resp =
+          order.order_details.inter_county_order_details.status === 'received';
+      }
       return resp;
     },
     showCancellationBtn(order) {
