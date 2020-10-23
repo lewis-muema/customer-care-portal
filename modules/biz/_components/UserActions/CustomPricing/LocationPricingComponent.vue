@@ -623,10 +623,10 @@ export default {
         this.pickUpCoordinates &&
         this.destination &&
         this.destinationCoordinates &&
-        this.partnerFee &&
-        this.serviceCharge &&
-        this.sendyCommission &&
-        this.clientFee
+        (this.partnerFee || this.partnerFee === 0) &&
+        (this.serviceCharge || this.serviceCharge === 0) &&
+        (this.sendyCommission || this.sendyCommission === 0) &&
+        (this.clientFee || this.clientFee === 0)
       ) {
         return true;
       }

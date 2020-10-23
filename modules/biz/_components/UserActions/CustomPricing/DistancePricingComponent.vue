@@ -630,17 +630,18 @@ export default {
         this.currency &&
         this.selectedVendor &&
         this.currency &&
-        this.baseFee &&
-        this.baseKm &&
-        this.pricePerKm &&
-        this.waitingFeePerHour &&
-        this.loadingFee &&
-        this.serviceCharge &&
-        this.insuranceFee &&
-        this.cancellationFee &&
-        this.sendyCommission &&
-        this.pricePerAdditionalDropOff &&
-        this.clientFee
+        (this.baseFee || this.baseFee === 0) &&
+        (this.baseKm || this.baseKm === 0) &&
+        (this.pricePerKm || this.pricePerKm === 0) &&
+        (this.waitingFeePerHour || this.waitingFeePerHour === 0) &&
+        (this.loadingFee || this.loadingFee === 0) &&
+        (this.serviceCharge || this.serviceCharge === 0) &&
+        (this.insuranceFee || this.insuranceFee === 0) &&
+        (this.serviceCharge || this.serviceCharge === 0) &&
+        (this.sendyCommission || this.sendyCommission === 0) &&
+        (this.pricePerAdditionalDropOff ||
+          this.pricePerAdditionalDropOff === 0) &&
+        (this.clientFee || this.clientFee === 0)
       ) {
         return true;
       }
@@ -841,7 +842,9 @@ export default {
       this.waitingFeePerHour = parseFloat(
         this.tablePricingData[i].waiting_time_cost_per_min,
       );
-      this.loadingFee = this.tablePricingData[i].loader_cost;
+      this.loadingFee = this.tablePricingData[i].loader_cost
+        ? this.tablePricingData[i].loader_cost
+        : 0;
       this.serviceCharge = this.tablePricingData[i].service_fee;
       this.insuranceFee = this.tablePricingData[i].insurance;
       this.cancellationFee = this.tablePricingData[i].cancellation_fee;
