@@ -797,24 +797,28 @@ export default {
     },
     addBandStatus() {
       if (
-        this.partnerRate !== 'hourly_rate' &&
-        this.monthlyRate &&
-        this.daysWorked &&
-        this.maxDistance &&
-        this.sendyTake &&
-        this.partnerTake &&
-        this.ratePerAdditionalKm &&
-        this.maxPartnerTakePerAdditionalKm
+        (this.partnerRate !== 'hourly_rate' ||
+          this.partnerRate !== 'hourly rate') &&
+        (this.monthlyRate || this.monthlyRate === 0) &&
+        this.daysWorked >= 1 &&
+        (this.maxDistance || this.maxDistance === 0) &&
+        (this.sendyTake || this.sendyTake === 0) &&
+        (this.partnerTake || this.partnerTake === 0) &&
+        (this.ratePerAdditionalKm || this.ratePerAdditionalKm === 0) &&
+        (this.maxPartnerTakePerAdditionalKm ||
+          this.maxPartnerTakePerAdditionalKm === 0)
       ) {
         return true;
       } else if (
-        this.partnerRate === 'hourly_rate' &&
-        this.hourlyRateValue &&
-        this.maxDistance &&
-        this.sendyTake &&
-        this.partnerTake &&
-        this.ratePerAdditionalKm &&
-        this.maxPartnerTakePerAdditionalKm
+        (this.partnerRate === 'hourly_rate' ||
+          this.partnerRate === 'hourly rate') &&
+        (this.hourlyRateValue || this.hourlyRateValue === 0) &&
+        (this.maxDistance || this.maxDistance === 0) &&
+        (this.sendyTake || this.sendyTake === 0) &&
+        (this.partnerTake || this.partnerTake === 0) &&
+        (this.ratePerAdditionalKm || this.ratePerAdditionalKm === 0) &&
+        (this.maxPartnerTakePerAdditionalKm ||
+          this.maxPartnerTakePerAdditionalKm === 0)
       ) {
         return true;
       }
@@ -1170,14 +1174,22 @@ export default {
       ].partner_rate_per_additional_km;
       this.sendyTake = this.tablePricingData[i].sendy_take;
       this.fuelInclusivity = this.tablePricingData[i].fuel_inclusive;
-      this.partnerRate = this.tablePricingData[i].partner_price_type;
-      if (this.tablePricingData[i].partner_price_type === 'daily rate') {
+      this.partnerRate = this.tablePricingData[i].partner_price_type.replace(
+        '_',
+        ' ',
+      );
+      if (
+        this.tablePricingData[i].partner_price_type === 'daily_rate' ||
+        this.tablePricingData[i].partner_price_type === 'daily rate'
+      ) {
         this.partnerTake = this.tablePricingData[i].partner_daily_rate;
       } else if (
-        this.tablePricingData[i].partner_price_type === 'hourly_rate'
+        this.tablePricingData[i].partner_price_type === 'hourly_rate' ||
+        this.tablePricingData[i].partner_price_type === 'hourly rate'
       ) {
         this.partnerTake = this.tablePricingData[i].partner_hourly_rate;
       } else if (
+        this.tablePricingData[i].partner_price_type === 'monthly_rate' ||
         this.tablePricingData[i].partner_price_type === 'monthly rate'
       ) {
         this.partnerTake = this.tablePricingData[i].partner_monthly_rate;
