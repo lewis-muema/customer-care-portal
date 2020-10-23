@@ -398,7 +398,7 @@
                           {{
                             (data.insurance ? data.insurance : 0) +
                               data.service_fee +
-                              data.rider_amount
+                              (data.rider_amount ? data.rider_amount : 0)
                           }}
                         </p>
                       </div>
@@ -690,10 +690,10 @@ export default {
         this.emptyReturnCoordinates &&
         this.containerWeight &&
         this.containerSize &&
-        this.partnerFee &&
-        this.serviceCharge &&
-        this.sendyCommission &&
-        this.clientFee
+        (this.partnerFee || this.partnerFee === 0) &&
+        (this.serviceCharge || this.serviceCharge === 0) &&
+        (this.sendyCommission || this.sendyCommission === 0) &&
+        (this.clientFee || this.clientFee === 0)
       ) {
         return true;
       }
@@ -919,7 +919,9 @@ export default {
       this.containerWeight = this.tablePricingData[i].container_weight_tonnes
         ? this.tablePricingData[i].container_weight_tonnes.toString()
         : '0';
-      this.partnerFee = this.tablePricingData[i].rider_amount;
+      this.partnerFee = this.tablePricingData[i].rider_amount
+        ? this.tablePricingData[i].rider_amount
+        : 0;
       this.serviceCharge = this.tablePricingData[i].service_fee;
       this.sendyCommission = this.tablePricingData[i].sendy_commission;
       this.clientFee =
@@ -927,7 +929,9 @@ export default {
           ? this.tablePricingData[i].insurance
           : 0) +
         this.tablePricingData[i].service_fee +
-        this.tablePricingData[i].rider_amount;
+        (this.tablePricingData[i].rider_amount
+          ? this.tablePricingData[i].rider_amount
+          : 0);
       this.editStatus = true;
       this.editedBandIndex = i;
     },
