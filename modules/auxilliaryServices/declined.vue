@@ -131,11 +131,21 @@
               <div class="declined-requests-owner-details">
                 <span
                   class="declined-requests-owner-label"
-                  v-if="order.admin_details"
+                  v-if="declinedUser(order) === 'Ops'"
                 >
                   {{
                     order.admin_details.reason
                       ? order.admin_details.reason
+                      : 'No reason given'
+                  }}
+                </span>
+                <span
+                  class="declined-requests-owner-label"
+                  v-if="declinedUser(order) === 'Owner'"
+                >
+                  {{
+                    order.owner_details.reason
+                      ? order.owner_details.reason
                       : 'No reason given'
                   }}
                 </span>
