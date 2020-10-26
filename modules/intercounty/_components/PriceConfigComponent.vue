@@ -467,7 +467,7 @@ export default {
 
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'inter_county_config/routes',
+        endpoint: 'pricing/inter_county_config/routes',
         apiKey: false,
         params: {
           pickup: this.pickup,

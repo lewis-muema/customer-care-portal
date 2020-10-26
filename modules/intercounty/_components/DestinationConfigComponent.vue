@@ -764,7 +764,7 @@ export default {
 
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'inter_county_config/destinations',
+        endpoint: 'pricing/inter_county_config/destinations',
         apiKey: false,
         params: {
           name: this.destination_center[0].address,
