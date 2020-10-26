@@ -168,7 +168,11 @@ export default {
     },
     hideSearch() {
       let hide = true;
-      if (this.user === 'rewards' || this.user === 'refund') {
+      if (
+        this.user === 'rewards' ||
+        this.user === 'intercounty' ||
+        this.user === 'refund'
+      ) {
         hide = false;
       }
       return hide;

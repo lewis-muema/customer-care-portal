@@ -62,13 +62,21 @@
         <td width="50%">Client phone</td>
         <td>{{ orderDetails.client_details.phone_no }}</td>
       </tr>
-      <tr>
+      <tr v-if="orderDetails.rider_details.vendor_type_id !== 26">
         <td width="50%">Rider name</td>
         <td>{{ orderDetails.rider_details.name }}</td>
       </tr>
-      <tr>
+      <tr v-if="orderDetails.rider_details.vendor_type_id !== 26">
         <td width="50%">Rider phone</td>
         <td>{{ orderDetails.rider_details.phone_no }}</td>
+      </tr>
+      <tr v-if="orderDetails.rider_details.vendor_type_id === 26">
+        <td width="50%">Pickup child order</td>
+        <td>{{ getPickUpChildOrder(orderDetails.order_details) }}</td>
+      </tr>
+      <tr v-if="orderDetails.rider_details.vendor_type_id === 26">
+        <td width="50%">Destination child order</td>
+        <td>{{ getDestinationChildOrder(orderDetails.order_details) }}</td>
       </tr>
     </tbody>
   </table>
@@ -99,6 +107,22 @@ export default {
     this.deliveryVerification = this.moreData.delivery_verification;
     this.nextOrder = this.moreData.next_order;
     this.previousOrder = this.moreData.previous_order;
+  },
+  methods: {
+    getPickUpChildOrder(order) {
+      let resp = 'No child order available';
+      if (order.inter_county_order_details.pickup_order_no !== null) {
+        resp = order.inter_county_order_details.pickup_order_no;
+      }
+      return resp;
+    },
+    getDestinationChildOrder(order) {
+      let resp = 'No child order available';
+      if (order.inter_county_order_details.destination_order_no !== null) {
+        resp = order.inter_county_order_details.destination_order_no;
+      }
+      return resp;
+    },
   },
 };
 </script>
