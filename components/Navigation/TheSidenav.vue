@@ -83,6 +83,15 @@
               <span> Permit Refund </span>
             </a>
           </li>
+          <li class="treeview" v-if="permissions.intercounty_price_config">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/intercounty"
+              @click="showModal('intercounty', $event)"
+              ><i class="fa fa-cogs"></i>
+              <span> Intercounty Configuration </span>
+            </a>
+          </li>
 
           <li id="offline_2" class="hidden">
             <a href="#"
@@ -109,7 +118,7 @@
   </span>
 </template>
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheSidenav',
@@ -128,6 +137,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['getSession']),
+
     photo() {
       const image = this.user.payload.data.pic;
       return `${this.userImage}${image}`;

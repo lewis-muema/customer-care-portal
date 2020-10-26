@@ -7,7 +7,7 @@
       "
     />
     <div class="rider_name_here">
-      {{ riderDetails.name }}
+      {{ riderName(riderDetails) }}
     </div>
   </div>
 </template>
@@ -31,6 +31,15 @@ export default {
       return this.riderDetails.photo
         ? this.riderDetails.photo
         : '1533214131993profile_picture_placeholder.png';
+    },
+  },
+  methods: {
+    riderName(val) {
+      let resp = val.name;
+      if (val.vendor_type_id === 26) {
+        resp = 'Intercounty Order';
+      }
+      return resp;
     },
   },
 };

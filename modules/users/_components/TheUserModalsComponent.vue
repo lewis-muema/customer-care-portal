@@ -10,7 +10,7 @@
           <i class="fa fa-times-circle" aria-hidden="true"></i>
         </button>
 
-        <div class="modal-body">
+        <div class="modal-body" :class="setBackground()">
           <span v-if="getTokenExpiryStatus">
             <TheGlobalNotification />
           </span>
@@ -42,10 +42,25 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getTokenExpiryStatus']),
+    ...mapGetters(['getTokenExpiryStatus', 'getUser']),
+    userType() {
+      const user = this.getUser === '' ? this.routeName : this.getUser;
+      return user;
+    },
+    routeName() {
+      return this.$route.name;
+    },
 
     userComponent() {
       return `<${this.user} />`;
+    },
+  },
+  methods: {
+    setBackground() {
+      if (this.userType === 'intercounty') {
+        return 'interCountyBackground';
+      }
+      return '';
     },
   },
 };
@@ -86,5 +101,8 @@ export default {
   height: 36px;
   cursor: pointer;
   z-index: 8040;
+}
+.interCountyBackground {
+  background-color: rgba(245, 245, 245, 0.56) !important;
 }
 </style>

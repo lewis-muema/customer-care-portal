@@ -920,8 +920,18 @@ export default {
     }
   },
   async request_vendor_types({ dispatch }, payload) {
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      const res = await dispatch('requestAxiosPost', payload, param, {
+        root: true,
+      });
       return res.data;
     } catch (error) {
       return error.response;
@@ -1178,6 +1188,28 @@ export default {
       return error.response;
     }
   },
+  async create_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async update_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
 
   async request_tax_rates({ state }) {
     const config = state.config;
@@ -1284,29 +1316,6 @@ export default {
       return error.response;
     }
   },
-  async create_reward({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-  async update_reward({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPatch', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-
   async request_refund_data({ dispatch }, payload) {
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
@@ -1375,6 +1384,174 @@ export default {
       }
 
       return err;
+    }
+  },
+  async request_intercounty_destination_configs({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}inter_county_config/destinations`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_intercounty_pickup_configs({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}inter_county_config/pickups`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_pickup_cities({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}inter_county_config/cities`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async create_pickup_config({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response.data;
+    }
+  },
+  async request_route_data({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}inter_county_config/routes`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async remove_intercounty_record({ state, dispatch }, payload) {
+    const config = state.config;
+    const userData = state.userData;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+      data: {
+        _user_email: userData.payload.data.email,
+        _user_id: parseInt(userData.payload.data.admin_id, 10),
+        action_user: userData.payload.data.name,
+      },
+    };
+
+    const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
+    try {
+      const response = await axios.delete(url, values);
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  async update_intercounty_record({ state, dispatch }, payload) {
+    const config = state.config;
+    const userData = state.userData;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    payload.params._user_email = userData.payload.data.email;
+    payload.params._user_id = parseInt(userData.payload.data.admin_id, 10);
+    payload.params.action_user = userData.payload.data.name;
+
+    const values = JSON.stringify(payload.params);
+
+    const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
+    try {
+      const response = await axios.put(url, values, param);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async update_intercounty_delivery_state({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const values = JSON.stringify(payload.params);
+
+    const url = `${config.ORDERS_APP}v1/inter_county/${payload.route}`;
+    try {
+      const response = await axios.post(url, values, param);
+      console.log('response', response);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
     }
   },
 };
