@@ -176,7 +176,7 @@ export default {
       this.citiesData = this.cities;
       const result = _.find(this.citiesData, ['city_id', cityID]);
 
-      return result.city_name;
+      return result ? result.city_name : 'Other';
     },
 
     deteremineOrderType(priceType) {
