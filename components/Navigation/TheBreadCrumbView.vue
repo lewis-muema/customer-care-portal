@@ -90,6 +90,7 @@ export default {
           description: '',
           mainName: 'Home',
         },
+
         user: {
           name: 'User',
           description: '3CX Users',

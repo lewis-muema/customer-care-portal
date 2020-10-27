@@ -198,7 +198,6 @@ export default {
     isPeer() {
       if (this.clientNo.length > 5) {
         const clientNo = this.clientNo.toLowerCase();
-
         if (clientNo.includes('sendy')) {
           this.peer = false;
           return this.peer;

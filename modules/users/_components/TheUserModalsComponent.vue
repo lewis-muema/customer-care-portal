@@ -43,7 +43,6 @@ export default {
   },
   computed: {
     ...mapGetters(['getTokenExpiryStatus', 'getUser']),
-
     userType() {
       const user = this.getUser === '' ? this.routeName : this.getUser;
       return user;

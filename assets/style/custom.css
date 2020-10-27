@@ -1122,6 +1122,20 @@ table {
   margin-left: auto;
   pointer-events: none;
 }
+.auxillary-save-button__inactive {
+  color: white;
+  background: #BDBDBD;
+  border: 1px solid #BDBDBD;
+  width: 120px;
+  height: 40px;
+  border-radius: 5px;
+  float: right;
+  margin-right: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: auto;
+  pointer-events: none;
+}
 .assign-owner-find {
   background: #1a7fc3 !important;
   border: 1px solid #1B7FC3 !important;
@@ -1290,6 +1304,9 @@ table {
   margin: 5px;
   height: 40px;
   border: 1px solid #1B7FC3;
+}
+.freight-button-width-override {
+  width: 140px !important;
 }
 .freight-button-width-override {
   width: 140px !important;
@@ -1612,18 +1629,6 @@ color: #000000;
 .expanded{
   color: #212529;
   background-color: rgba(0,0,0,.075) !important;
-}
-.decline-refunds-pop-up > div > div > div.el-dialog__header{
-  padding-top: 0 !important;
-}
-.decline-refunds-pop-up > div > div > div.el-dialog__body{
-  padding-top: 0 !important;
-}
-.updateDeclineReasonsDialog > div > div.el-dialog__body{
-  padding-top: 0% !important;
-}
-.updateDeclineReasonsDialog > div > div.el-dialog__header{
-  padding: 0px 20px 10px !important;
 }
 .text-grey {
   color: #b8c7ce !important;

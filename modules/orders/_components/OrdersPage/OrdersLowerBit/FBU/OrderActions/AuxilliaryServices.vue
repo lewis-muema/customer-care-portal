@@ -513,7 +513,7 @@ export default {
   width: max-content;
 }
 .advance-tabs {
-  width: 120px;
+  width: 150px;
   margin: 0;
   height: 45px;
   text-align: center;
@@ -524,7 +524,7 @@ export default {
 }
 .labeled-inputs {
   display: inline-grid;
-  width: 33%;
+  width: 24%;
 }
 .fuel-input-labels {
   margin-left: 5px !important;
@@ -565,7 +565,7 @@ export default {
   line-height: 14px;
 }
 .assign_inputs {
-  width: auto;
+  width: 96%;
 }
 .history-header {
   color: #1b7fc3;
