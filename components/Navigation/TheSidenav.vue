@@ -63,16 +63,6 @@
             </a>
           </li>
 
-          <li class="treeview" v-if="permissions.invoice_generation">
-            <a
-              class="fancybox fancybox.iframe fancyboxy"
-              href="/invoice"
-              @click="showModal('invoice', $event)"
-              ><i class="fa fa-file"></i>
-              <span> Generate Invoice Numbers </span>
-            </a>
-          </li>
-
           <li class="treeview" v-if="permissions.create_orders">
             <nuxt-link to="/offlineOrders"
               ><i class="fa fa-plus-circle"></i>

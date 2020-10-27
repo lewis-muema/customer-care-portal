@@ -129,7 +129,7 @@ export default {
         .utc()
         .format('YYYY-MM-DD HH:mm:ss');
       const payload = {
-        app: 'ORDERS_APP',
+        app: 'OFFLINE_ORDERS',
         endpoint: 'v2/deliveryconfirm',
         apiKey: false,
         params: {

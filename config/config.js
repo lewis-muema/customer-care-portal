@@ -20,8 +20,12 @@ const config = {
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
+    PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
+    OFFLINE_PRICING:
+      'https://cors-anywhere.herokuapp.com/https://pricingtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API: 'https://authtest.sendyit.com/rider/admin_partner_api/v5/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
@@ -34,11 +38,10 @@ const config = {
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
-    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
+    ELASTIC_APM_SERVER_URL: 'http://localhost:8200',
     ELASTIC_APM_ENVIRONMENT: 'dev',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
   },
-
   dev: {
     BASE_URL: 'http://localhost:8080/',
     PRIVATE_API: 'https://auth.sendyit.com/parcel',
@@ -60,9 +63,10 @@ const config = {
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
-    VENDORS: 'https://authtest.sendyit.com/vendors/',
+    PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
+    PARTNER_API:
+      'https://autht.staging.sendyit.com/rider/admin_partner_api/v5/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
@@ -73,8 +77,8 @@ const config = {
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
-    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
-    ELASTIC_APM_ENVIRONMENT: 'dev',
+    ELASTIC_APM_SERVER_URL: 'https://staging-apm.sendyit.com:443',
+    ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
   },
   staging: {
@@ -84,18 +88,22 @@ const config = {
     CUSTOMERS_APP: 'https://auth.staging.sendyit.com/customers/',
     PARTNERS_APP: 'https://auth.staging.sendyit.com/partners/',
     ADONIS_API: 'https://auth.staging.sendyit.com/adonis/',
+    RIDER_DELIVERY_IMG: 'https://sendy-delivery-signatures.s3.amazonaws.com/',
     DISPATCH_LIST: 'https://auth.staging.sendyit.com/dispatch/',
     NODE_PRIVATE_API: 'https://auth.staging.sendyit.com/v1/',
     NODE_PARTNER_API: 'https://auth.staging.sendyit.com/partner/v1/',
     ORDERS_APP: 'https://auth.staging.sendyit.com/orders/',
     LOGIN_URL: 'https://auth.staging.sendyit.com/parcel/admin_glogin',
+    VENDORS: 'https://auth.sendyit.com/vendors/',
     SOLR_BASE: 'https://gate.sendyit.com/solr/ordersstaging/',
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://auth.sendyit.com/pricing/',
-    VENDORS: 'https://auth.sendyit.com/vendors/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
+    OFFLINE_PRICING:
+      'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
     AUTH: 'https://auth.staging.sendyit.com/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
@@ -105,11 +113,6 @@ const config = {
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
-
-    ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://auth.sendyit.com',
-    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
-    ELASTIC_APM_ENVIRONMENT: 'dev',
-    ELASTIC_APM_SERVICE_VERSION: packageJson.version,
   },
   production: {
     BASE_URL: 'http://localhost:8080/',
@@ -133,7 +136,10 @@ const config = {
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/owner/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
-    VENDORS: 'https://auth.sendyit.com/vendors/',
+    OFFLINE_ORDERS:
+      'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/orders/',
+    OFFLINE_PRICING:
+      'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
     HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',

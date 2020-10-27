@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="loading_tax_rates" style="margin-left: 1%;">
+    <div v-if="loading_tax_rates" class="tax_loader">
       <p>
         Fetching VAT Tax Rates ...
         <i class="fa fa-spinner fa-spin loader"></i>
@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <div class="form-group col-md-4 user-input" style="width: 35%;">
+        <div class="form-group col-md-4 user-input narration-outer">
           <label class="config"> Narration</label>
 
           <input
@@ -76,8 +76,8 @@
 
         <div class="form-group col-md-4  user-input">
           <label class="config">Amount</label>
-          <div class="input-group config-input" style="width: 103% !important;">
-            <div class="input-group-icon" style="width:20% !important;">
+          <div class="input-group config-input amount-input">
+            <div class="input-group-icon currency-label">
               <span> {{ currency }}</span>
             </div>
             <div class="input-group-area">
@@ -98,24 +98,20 @@
           </div>
         </div>
 
-        <div
-          class="form-group col-md-4 user-input"
-          style="width: 32% !important;"
-        >
+        <div class="form-group col-md-4 user-input tax-outer">
           <label class="config"> Tax </label>
 
           <v-select
             :options="tax_data"
             name="description"
             label="description"
-            class="form-control select user-billing"
+            class="form-control select user-billing tax-select"
             placeholder="Select VAT"
             :id="`name`"
             v-model="tax"
             :class="{
               'is-invalid': submitted && $v.tax.$error,
             }"
-            style="width: 110%;"
           >
           </v-select>
           <div v-if="submitted && !$v.tax.required" class="invalid-feedback">
@@ -343,5 +339,23 @@ export default {
 }
 #reallocate-form > div:nth-child(2) > span > input {
   font-size: 13px !important;
+}
+.amount-input {
+  width: 103% !important;
+}
+.currency-label {
+  width: 20% !important;
+}
+.tax-select {
+  width: 110%;
+}
+.tax-outer {
+  width: 32% !important;
+}
+.tax_loader {
+  margin-left: 1%;
+}
+.narration-outer {
+  width: 35%;
 }
 </style>

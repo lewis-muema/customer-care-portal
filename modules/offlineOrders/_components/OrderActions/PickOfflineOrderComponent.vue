@@ -92,7 +92,7 @@ export default {
       this.trackPickOrderButton();
       this.pending = true;
       const payload = {
-        app: 'ORDERS_APP',
+        app: 'OFFLINE_ORDERS',
         endpoint: 'rider_app_pick_up',
         apiKey: false,
         params: {

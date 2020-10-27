@@ -171,8 +171,8 @@ export default {
       const notification = [];
       let actionClass = '';
       const payload = {
-        app: 'VENDORS',
-        endpoint: 'types',
+        app: 'PRICING_SERVICE',
+        endpoint: 'vendors/types',
         apiKey: false,
         params: {
           pickup_country_code: this.pickupCountryCode,
@@ -195,7 +195,7 @@ export default {
       this.trackCreateOrderButton();
       this.pending = true;
       const payload = {
-        app: 'PRICING_SERVICE',
+        app: 'OFFLINE_PRICING',
         endpoint: 'offline_request',
         apiKey: false,
         params: {

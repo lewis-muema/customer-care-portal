@@ -4,7 +4,6 @@
       {{ pageBreadCrumbs.name }}
       <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
-    <FilterComponent v-show="route === 'orders'" />
     <div class="breadcrumb business-units" v-if="route === 'orders'">
       <span>
         <input type="checkbox" @click="checkAll()" v-model="isCheckAll" />
@@ -32,13 +31,9 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import FilterComponent from './FilterComponent';
 
 export default {
   name: 'TheBreadCrumbView',
-  components: {
-    FilterComponent,
-  },
   props: ['route'],
   data() {
     return {

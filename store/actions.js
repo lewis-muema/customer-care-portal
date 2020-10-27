@@ -1255,21 +1255,6 @@ export default {
     return res.data;
   },
 
-  async getRiderDetails({ dispatch, commit }, payload) {
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const res = await dispatch('requestAxiosPost', payload, param, {
-      root: true,
-    });
-    return res.data;
-  },
-
   async pair_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;

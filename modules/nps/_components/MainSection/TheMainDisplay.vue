@@ -76,7 +76,6 @@ export default {
       import('~/modules/nps/_components/MainSection/TheSurveyComponent'),
   },
   mixins: [NPSMxn],
-
   props: {
     surveys: {
       type: Array,

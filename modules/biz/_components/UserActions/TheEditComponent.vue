@@ -162,6 +162,7 @@
         />
         <label for="" class="exempt-vat-label"> Exempt VAT</label>
       </div>
+
       <div class="form-group  col-md-12">
         <button class="btn btn-primary action-button">
           Process

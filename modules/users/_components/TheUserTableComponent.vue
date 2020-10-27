@@ -12,9 +12,6 @@
           <div v-if="userType === 'riders'">
             <TheRiderTable />
           </div>
-          <div class="mega" v-if="userType === 'invoice'">
-            <TheInvoiceView />
-          </div>
           <div class="mega" v-if="userType === 'rewards'">
             <RewardsView />
           </div>
@@ -38,8 +35,6 @@ export default {
     TheBizTable: () => import('~/modules/biz/_components/TheBizTable'),
     TheRiderTable: () => import('~/modules/riders/_components/TheRiderTable'),
     ThePeerTable: () => import('~/modules/peer/_components/ThePeerTable'),
-    TheInvoiceView: () =>
-      import('~/modules/invoice/_components/TheInvoiceView'),
     RewardsView: () => import('~/modules/rewards/_components/RewardsView'),
     RefundsView: () => import('~/modules/refunds/_components/RefundsView'),
     InterCountyPriceConfigView: () =>

@@ -232,7 +232,7 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/review_dedicated_price_configs',
+        endpoint: 'pricing/price_config/review_dedicated_price_configs',
         apiKey: false,
         params: this.approvalParams,
       };
@@ -284,7 +284,7 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/review_dedicated_price_configs',
+        endpoint: 'pricing/price_config/review_dedicated_price_configs',
         apiKey: false,
         params: this.approvalParams,
       };
