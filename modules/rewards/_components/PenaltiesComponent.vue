@@ -435,7 +435,6 @@ export default {
 
   methods: {
     ...mapActions({
-      request_invoice_data: 'request_invoice_data',
       perform_user_action: 'perform_user_action',
       request_vendor_types: 'request_vendor_types',
       request_penalties: 'requestPenalties',

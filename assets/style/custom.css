@@ -603,8 +603,9 @@
   background-color: grey !important;
 }
 .appealed_ind {
-  background-color:grey !important;
+  background-color: grey !important;
 }
+
 .badge {
   display: inline-block;
   min-width: 10px;
@@ -900,6 +901,11 @@ table {
 .select {
   border: none;
 }
+.bg-info {
+  font-size: 8px;
+  background: #00c0ef !important;
+  margin-left: 1px;
+}
 .driver-details-popup {
   background: white;
   width: 40%;
@@ -928,20 +934,20 @@ table {
   font-size: 16px;
   line-height: 21px;
   text-align: center;
-  color: #1B7FC3;
+  color: #1b7fc3;
   margin-top: 0px;
   margin-bottom: 5px;
 }
 .save-driver-prompt-button {
-  background: #DCEBFA;
-  border-color: #DCEBFA;
+  background: #dcebfa;
+  border-color: #dcebfa;
   border-radius: 5px;
   padding: 10px;
   display: block;
   margin: auto;
   font-weight: 300;
   font-size: 15px;
-  color: #0F4271;
+  color: #0f4271;
   cursor: pointer;
 }
 .ignore-driver-prompt-par {
@@ -966,7 +972,7 @@ table {
   font-size: 12px;
   text-align: center;
   width: 135px;
-  color: #BDBDBD;
+  color: #bdbdbd;
   text-transform: uppercase;
 }
 .orders-counter {
@@ -980,14 +986,14 @@ table {
   border-radius: 30px;
   font-size: 20px;
   color: white;
-  background: #1B7FC3;
+  background: #1b7fc3;
 }
 .child-order-inputs {
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   margin: 20px;
   padding: 40px;
   background: white;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
 .container-inputs {
   width: 18%;
@@ -998,7 +1004,7 @@ table {
   padding: 10px;
 }
 .container-inputs:focus {
-  box-shadow: 0 1px 6px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
 .cell-override {
   padding: 15px !important;
@@ -1025,22 +1031,29 @@ table {
 .child-orders-table {
   width: -webkit-fill-available;
   margin: 20px;
-  background-color: #F6F6F6;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
+  background-color: #f6f6f6;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
 .child-orders-table-head {
   font-weight: 600;
 }
-.child-orders-table-head, .child-orders-table-row {
+.child-orders-table-head,
+.child-orders-table-row {
   display: flex;
 }
 .child-orders-table-head:hover {
-  background: #F6F6F6 !important;
+  background: #f6f6f6 !important;
 }
 .child-orders-table-row:hover {
   background: rgba(202, 198, 198, 0.47843);
 }
-.child1, .child2, .child3, .child4, .child5, .child6, .child7 {
+.child1,
+.child2,
+.child3,
+.child4,
+.child5,
+.child6,
+.child7 {
   min-height: 40px;
   padding: 12px;
   border: 0.1px solid rgba(202, 198, 198, 0.47843);
@@ -1057,18 +1070,14 @@ table {
 .child4 {
   width: 20%;
 }
-.child5, .child6 {
+.child5,
+.child6 {
   width: 10%;
   position: relative;
   padding: 0 !important;
 }
 .child7 {
   width: 20%;
-}
-.bg-info {
-  font-size: 8px;
-  background: #00c0ef !important;
-  margin-left: 1px;
 }
 .freight-actions {
   background: white;
@@ -1079,7 +1088,8 @@ table {
 .freight-order-actions-tabs {
   margin: 15px 5px 15px;
 }
-.freight-assign-rider-buttons, .freight-assign-new-rider-buttons {
+.freight-assign-rider-buttons,
+.freight-assign-new-rider-buttons {
   height: 40px;
   padding: 7px;
   border-radius: 5px;
@@ -1092,13 +1102,14 @@ table {
 .freight-assign-new-rider-buttons {
   width: 118px;
 }
-.freight-assign-rider-buttons:focus, .freight-assign-new-rider-buttons {
+.freight-assign-rider-buttons:focus,
+.freight-assign-new-rider-buttons {
   border: 1px solid #c0c2c3 !important;
 }
 .assign-order-button, .auxillary-save-button__active {
   color: white;
   background: #1a7fc3;
-  border: 1px solid #1B7FC3;
+  border: 1px solid #1b7fc3;
   width: 120px;
   height: 40px;
   border-radius: 5px;
@@ -1124,15 +1135,15 @@ table {
 }
 .assign-owner-find {
   background: #1a7fc3 !important;
-  border: 1px solid #1B7FC3 !important;
+  border: 1px solid #1b7fc3 !important;
 }
 .assign-owner-failed {
-  background: #E53935 !important;
-  border: 1px solid #E53935 !important;
+  background: #e53935 !important;
+  border: 1px solid #e53935 !important;
 }
 .assign-owner-success {
-  background: #43A047 !important;
-  border: 1px solid #43A047 !important;
+  background: #43a047 !important;
+  border: 1px solid #43a047 !important;
 }
 .assign-header {
   color: #1b7fc3;
@@ -1153,10 +1164,11 @@ table {
 }
 .inactive-assign-button {
   cursor: not-allowed;
-  background: #BDBDBD;
-  border-color: #BDBDBD;
+  background: #bdbdbd;
+  border-color: #bdbdbd;
 }
-.search-failed-owner, .add-owner-success {
+.search-failed-owner,
+.add-owner-success {
   font-style: italic;
   width: max-content;
   position: absolute;
@@ -1165,17 +1177,17 @@ table {
   margin-bottom: 0px;
 }
 .search-failed-owner {
-  color: #E53935;
+  color: #e53935;
 }
 .add-owner-success {
-  color: #43A047;
+  color: #43a047;
   margin-top: 0px;
 }
 .no-margin {
   margin: 0 !important;
 }
 .cell-override {
-  padding:0px;
+  padding: 0px;
   background-color: rgba(245, 245, 245, 0.56) !important;
   font-size: 13px;
   width: 100vw;
@@ -1189,7 +1201,7 @@ table {
   margin-left: 10px;
   color: white;
   font-weight: 700;
-  background: #1B7FC3;
+  background: #1b7fc3;
 }
 .driver-assign-row {
   display: flex;
@@ -1257,26 +1269,27 @@ table {
   margin: 12px;
 }
 .container-cancel-input {
-  color: #E53935;
+  color: #e53935;
   text-decoration: underline;
   font-weight: 600;
 }
 .container-save-input {
-  color: #1B7FC3;
+  color: #1b7fc3;
   text-decoration: underline;
   font-weight: 600;
 }
 .pending-container {
   color: white;
-  background: #E53935;
+  background: #e53935;
 }
-.transit-container, .ec-container {
+.transit-container,
+.ec-container {
   color: white;
-  background: #155D8D;
+  background: #155d8d;
 }
 .complete-container {
   color: white;
-  background: #43A047;
+  background: #43a047;
 }
 .container-button {
   width: 100%;
@@ -1289,23 +1302,24 @@ table {
   width: 110px;
   margin: 5px;
   height: 40px;
-  border: 1px solid #1B7FC3;
+  border: 1px solid #1b7fc3;
 }
 .freight-button-width-override {
   width: 140px !important;
 }
 .freight-order-actions-buttons:focus {
-  border: 1px solid #1B7FC3 !important;
+  border: 1px solid #1b7fc3 !important;
 }
 .active-tab {
-  background: #1B7FC3;
+  background: #1b7fc3;
   color: white;
 }
 .inactive-tab {
   background: white;
-  color: #1B7FC3;
+  color: #1b7fc3;
 }
-.new-driver-details, .new-truck-details {
+.new-driver-details,
+.new-truck-details {
   border: 1px solid #d3d6d8;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -1317,13 +1331,13 @@ table {
   margin-top: -35px;
   margin-left: 20px;
   padding: 10px;
-  color: #1B7FC3;
+  color: #1b7fc3;
   font-weight: 700;
 }
 .status-indicator {
   width: 15px;
   height: 15px;
-  border: 1px solid #1B7FC3;
+  border: 1px solid #1b7fc3;
   border-radius: 10px;
   overflow: hidden;
   margin: auto;
@@ -1332,10 +1346,10 @@ table {
   background: white;
 }
 .active-status-indicator {
-  border: 1px solid #F57F20 !important;
+  border: 1px solid #f57f20 !important;
 }
 .progress-indicator {
-  background-color: #1B7FC3;
+  background-color: #1b7fc3;
   width: 100%;
   height: 100%;
 }
@@ -1350,7 +1364,7 @@ table {
 }
 .indicator-divide {
   height: 2px;
-  background: #E1E3E8;
+  background: #e1e3e8;
   width: 85px;
   margin-left: 42.5px;
   position: relative;
@@ -1374,17 +1388,17 @@ table {
 .status-action-button-confirm {
   background: #1a7fc3;
   color: white;
-  border: 1px solid #1B7FC3;
+  border: 1px solid #1b7fc3;
 }
 .status-action-button-complete {
-  background: #43A047;
+  background: #43a047;
   color: white;
-  border: 1px solid #43A047;
+  border: 1px solid #43a047;
 }
 .status-action-button-failed {
-  background: #E53935;
+  background: #e53935;
   color: white;
-  border: 1px solid #E53935;
+  border: 1px solid #e53935;
 }
 .status-progress {
   display: flex;
@@ -1402,13 +1416,14 @@ table {
   width: 30px;
   height: 30px;
   border-radius: 30px;
-  background: #1B7FC3;
+  background: #1b7fc3;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
 }
-.progress-icon-left, .progress-icon-right {
+.progress-icon-left,
+.progress-icon-right {
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -1612,18 +1627,6 @@ color: #000000;
 .expanded{
   color: #212529;
   background-color: rgba(0,0,0,.075) !important;
-}
-.decline-refunds-pop-up > div > div > div.el-dialog__header{
-  padding-top: 0 !important;
-}
-.decline-refunds-pop-up > div > div > div.el-dialog__body{
-  padding-top: 0 !important;
-}
-.updateDeclineReasonsDialog > div > div.el-dialog__body{
-  padding-top: 0% !important;
-}
-.updateDeclineReasonsDialog > div > div.el-dialog__header{
-  padding: 0px 20px 10px !important;
 }
 .text-grey {
   color: #b8c7ce !important;

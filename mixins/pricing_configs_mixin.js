@@ -60,7 +60,7 @@ const PricingConfigsMxn = {
       }
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_custom_distance_details',
+        endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
@@ -97,7 +97,7 @@ const PricingConfigsMxn = {
       }
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_custom_distance_details',
+        endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
@@ -128,7 +128,7 @@ const PricingConfigsMxn = {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_dedicated_price_configs',
+        endpoint: 'pricing/price_config/get_dedicated_price_configs',
         apiKey: false,
         params: {
           cop_id: this.copId,
@@ -152,8 +152,8 @@ const PricingConfigsMxn = {
       const notification = [];
       let actionClass = '';
       const payload = {
-        app: 'VENDORS',
-        endpoint: 'types',
+        app: 'PRICING_SERVICE',
+        endpoint: 'vendors/types',
         apiKey: false,
         params: {
           pickup_country_code: this.user.user_details.country_code,
@@ -205,7 +205,7 @@ const PricingConfigsMxn = {
           name: '',
           cop_id: 1,
           cop_name: '',
-          currency: 'KES',
+          currency: '',
           admin_id: 1,
           service_fee: 0,
           sendy_commission: 0,
@@ -282,7 +282,7 @@ const PricingConfigsMxn = {
       const copId = this.user.user_details.cop_id;
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/send_email ',
+        endpoint: 'pricing/price_config/send_email ',
         apiKey: false,
         params: {
           name,
@@ -323,11 +323,7 @@ const PricingConfigsMxn = {
           order_no: '',
         },
       };
-      try {
-        const data = await this.log_action(payload);
-      } catch (err) {
-        console.log(err);
-      }
+      const data = await this.log_action(payload);
     },
   },
 };

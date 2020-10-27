@@ -1,7 +1,7 @@
 <template>
   <span>
     <div v-if="!riderDeliverImg || riderDeliverImg.length === 0">
-      No docs found for this Delivery
+      No docs found for this delivery
     </div>
     <div v-else class="holder">
       <div class="form-inline" v-for="img in riderImages" :key="img.index">
@@ -36,12 +36,20 @@
         </div>
         <div class="col-md-4">
           <strong> Order Signed By: </strong>
-          <span class="">
-            {{ isDnoteUpload(img.name) ? 'Not Set' : img.name }} </span
-          ><br />
+          <span v-if="!isDnoteUpload" class="">{{
+            img.name !== '' ? img.name : 'Not Set'
+          }}</span>
+          <span v-if="isDnoteUpload" class="">
+            Not Set
+          </span>
+
+          <br />
           <strong> Phone Number:</strong>
-          <span class="">
-            {{ isDnoteUpload(img.name) ? 'Not Set' : img.phone_no }}
+          <span v-if="!isDnoteUpload" class="">{{
+            img.phone_no !== '' ? img.phone_no : 'Not Set'
+          }}</span>
+          <span v-if="isDnoteUpload" class="">
+            Not Set
           </span>
         </div>
         <div class="col-md-12">
@@ -54,7 +62,7 @@
               :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
               :src="
-                  `${s3Path}${image}`,              
+                  `${s3Path}${image}`,
               "
             />
           </div>

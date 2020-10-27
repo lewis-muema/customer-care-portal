@@ -99,14 +99,16 @@ Vue.mixin({
       updateClass: 'setActionClass',
     }),
     isSendyStaff(name) {
-      if (name) {
-        const isStaff = name.includes('Sendy Staff -');
-        this.s3Path = isStaff
-          ? 'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image/'
-          : this.s3Path;
-        return isStaff;
+      let isStaff;
+      if (name === null || name === '') {
+        isStaff = false;
+      } else {
+        isStaff = name.includes('Sendy Staff -');
       }
-      return false;
+      this.s3Path = isStaff
+        ? 'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image/'
+        : this.s3Path;
+      return isStaff;
     },
     isDnoteUpload(name) {
       if (name) {
@@ -115,6 +117,7 @@ Vue.mixin({
       }
       return false;
     },
+
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
@@ -124,7 +127,10 @@ Vue.mixin({
     deliveryStatus(order, notesStatus) {
       const details = order.order_details;
       // eslint-disable-next-line prettier/prettier
-      const verification = typeof details.values === 'undefined' ? details.delivery_verification : details.values.delivery_verification;
+      const verification =
+        typeof details.values === 'undefined'
+          ? details.delivery_verification
+          : details.values.delivery_verification;
 
       let status = 'delivered';
       if (notesStatus === 'Approved' || !notesStatus) {
@@ -189,12 +195,6 @@ Vue.mixin({
     getFormattedDate(date, requiredFormat) {
       const UTCDate = this.convertToUTC(date);
       const dt1 = this.convertToLocalTime(UTCDate);
-      const dt = moment(dt1).format(requiredFormat);
-      return dt;
-    },
-    formatInvoiceTime(date, requiredFormat) {
-      const utcDate = this.convertToUTC(date);
-      const dt1 = this.convertToLocalTime(utcDate);
       const dt = moment(dt1).format(requiredFormat);
       return dt;
     },

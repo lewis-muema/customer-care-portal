@@ -1,5 +1,5 @@
 <template>
-  <ul class="timeline timeline-inverse logs-holder">
+  <ul class="timeline timeline-inverse" style="margin-top:35px;">
     <li v-for="deliveryLog in order.delivery_logs" :key="deliveryLog.index">
       <i
         :class="
@@ -58,15 +58,9 @@ export default {
           ? this.order.delivery_details.delivery_images
           : null;
       // eslint-disable-next-line prettier/prettier
-      const lastArray =
-        deliveryArray ? deliveryArray.slice(-1)[0] : null;
+      const lastArray = deliveryArray ? deliveryArray.slice(-1)[0] : null;
       return lastArray ? lastArray.name : null;
     },
   },
 };
 </script>
-<style scoped>
-.logs-holder {
-  margin-top: 35px;
-}
-</style>

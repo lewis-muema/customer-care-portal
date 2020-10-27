@@ -1255,21 +1255,6 @@ export default {
     return res.data;
   },
 
-  async getRiderDetails({ dispatch, commit }, payload) {
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const res = await dispatch('requestAxiosPost', payload, param, {
-      root: true,
-    });
-    return res.data;
-  },
-
   async pair_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
@@ -1411,7 +1396,7 @@ export default {
         Authorization: jwtToken,
       },
     };
-    const url = `${config.PRICING_SERVICE}inter_county_config/destinations`;
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/destinations`;
     try {
       const response = await axios.get(url, param);
       return response.data;
@@ -1431,7 +1416,7 @@ export default {
         Authorization: jwtToken,
       },
     };
-    const url = `${config.PRICING_SERVICE}inter_county_config/pickups`;
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/pickups`;
     try {
       const response = await axios.get(url, param);
       return response.data;
@@ -1451,7 +1436,7 @@ export default {
         Authorization: jwtToken,
       },
     };
-    const url = `${config.PRICING_SERVICE}inter_county_config/cities`;
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/cities`;
     try {
       const response = await axios.get(url, param);
       return response.data;
@@ -1482,7 +1467,7 @@ export default {
         Authorization: jwtToken,
       },
     };
-    const url = `${config.PRICING_SERVICE}inter_county_config/routes`;
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/routes`;
     try {
       const response = await axios.get(url, param);
       return response.data;
@@ -1511,7 +1496,7 @@ export default {
       },
     };
 
-    const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/${payload.route}/${payload.id}`;
     try {
       const response = await axios.delete(url, values);
       return response;
@@ -1538,7 +1523,7 @@ export default {
 
     const values = JSON.stringify(payload.params);
 
-    const url = `${config.PRICING_SERVICE}inter_county_config/${payload.route}/${payload.id}`;
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/${payload.route}/${payload.id}`;
     try {
       const response = await axios.put(url, values, param);
       return response;
@@ -1563,7 +1548,6 @@ export default {
     const url = `${config.ORDERS_APP}v1/inter_county/${payload.route}`;
     try {
       const response = await axios.post(url, values, param);
-      console.log('response', response);
       return response.data;
     } catch (error) {
       return error.response.data;

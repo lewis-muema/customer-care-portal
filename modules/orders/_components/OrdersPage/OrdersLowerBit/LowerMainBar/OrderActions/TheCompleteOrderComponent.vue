@@ -376,7 +376,6 @@ export default {
             'Failed to complete order. Try again or contact Tech Support',
           );
           actionClass = 'danger';
-          this.loading = false;
         }
         await this.updateClass(actionClass);
         await this.updateErrors(notification);

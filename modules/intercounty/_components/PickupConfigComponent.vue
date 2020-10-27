@@ -690,7 +690,7 @@ export default {
 
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'inter_county_config/pickups',
+        endpoint: 'pricing/inter_county_config/pickups',
         apiKey: false,
         params: {
           city_id: parseInt(this.city_id, 10),

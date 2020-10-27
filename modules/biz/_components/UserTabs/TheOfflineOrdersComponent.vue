@@ -17,40 +17,6 @@
       </p>
     </div>
     <div v-else>
-      <!-- <div class="row">
-        <div class="form-group col-md-4 user-input">
-          <label class="config"> From </label>
-
-          <date-picker
-            v-model="start_date"
-            class="date-input"
-            :input-props="{
-              placeholder: 'Select start date',
-              readonly: true,
-              class: 'form-control config-input ',
-            }"
-          />
-        </div>
-
-        <div class="form-group col-md-4 user-input">
-          <label class="config"> To</label>
-
-          <date-picker
-            v-model="end_date"
-            class="date-input"
-            :input-props="{
-              placeholder: 'Select End date',
-              readonly: true,
-              class: 'form-control config-input ',
-            }"
-          />
-        </div>
-        <div class="form-group col-md-4 search-outer">
-          <button class="btn btn-primary action-button search-btn--inline">
-            Search
-          </button>
-        </div>
-      </div> -->
       <div class="">
         <el-table :data="tableData" size="medium" :border="false">
           <el-table-column type="expand">

@@ -286,7 +286,8 @@
               >
                 <div v-for="(singleBand, x) in data.km_bands" :key="x">
                   <!-- eslint-disable-next-line prettier/prettier -->
-                {{ singleBand.lowerLimitKm }}KM - {{ singleBand.upperLimitKm }}KM
+                  {{ singleBand.lowerLimitKm }}KM -
+                  {{ singleBand.upperLimitKm }}KM
                 </div>
               </div>
               <div class="bands-km-col" v-else>
@@ -343,7 +344,7 @@
                 >
                   <div v-for="(singleBand, x) in data.cost_band" :key="x">
                     <!-- eslint-disable-next-line prettier/prettier -->
-                {{ singleBand.min_km }}KM - {{ singleBand.max_km }}KM
+                    {{ singleBand.min_km }}KM - {{ singleBand.max_km }}KM
                   </div>
                 </div>
                 <div class="bands-km-col" v-else>
@@ -970,7 +971,7 @@ export default {
         let actionClass = '';
         const payload = {
           app: 'PRICING_SERVICE',
-          endpoint: 'price_config/review_dedicated_price_configs',
+          endpoint: 'pricing/price_config/review_dedicated_price_configs',
           apiKey: false,
           params: {
             cop_id: this.copId,
@@ -1168,7 +1169,7 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/add_mileage_pricing',
+        endpoint: 'pricing/price_config/add_mileage_pricing',
         apiKey: false,
         params: configParams,
       };
@@ -1221,7 +1222,7 @@ export default {
       let actionClass = '';
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/update_mileage_pricing',
+        endpoint: 'pricing/price_config/update_mileage_pricing',
         apiKey: false,
         params: configParams,
       };

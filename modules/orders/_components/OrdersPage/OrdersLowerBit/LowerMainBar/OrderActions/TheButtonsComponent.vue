@@ -180,7 +180,6 @@
       >
         <a
           class="force_blue"
-          :class="{ activeLink: showTab === `auxilliary_services_${orderNo}` }"
           data-toggle="tab"
           aria-expanded="false"
           @click="viewTab('auxilliary_services', orderNo)"

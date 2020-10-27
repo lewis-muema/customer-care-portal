@@ -86,7 +86,7 @@ export default {
       }
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_custom_distance_details',
+        endpoint: 'pricing/price_config/get_custom_distance_details',
         apiKey: false,
         params: {
           cop_id: this.copId,
@@ -116,7 +116,7 @@ export default {
     async fetchDedicatedPricingData() {
       const payload = {
         app: 'PRICING_SERVICE',
-        endpoint: 'price_config/get_dedicated_price_configs',
+        endpoint: 'pricing/price_config/get_dedicated_price_configs',
         apiKey: false,
         params: {
           cop_id: this.copId,

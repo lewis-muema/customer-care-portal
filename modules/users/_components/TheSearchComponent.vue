@@ -169,7 +169,6 @@ export default {
     hideSearch() {
       let hide = true;
       if (
-        this.user === 'invoice' ||
         this.user === 'rewards' ||
         this.user === 'intercounty' ||
         this.user === 'refund'

@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="loading_tax_rates" style="margin-left: 1%;">
+    <div v-if="loading_tax_rates" class="tax-loader">
       <p>
         Fetching VAT Tax Rates ...
         <i class="fa fa-spinner fa-spin loader"></i>
@@ -174,13 +174,6 @@ export default {
       this.updateErrors(notification);
     },
 
-    validateInvoiceNo(string) {
-      const startChar = string.startsWith('CN-');
-      const substring = startChar ? string.substring(3) : '';
-      const length = substring.length;
-      return length === 14;
-    },
-
     // eslint-disable-next-line require-await
     async update_reverse_invoice() {
       const notification = [];
@@ -188,17 +181,6 @@ export default {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
-        return;
-      }
-
-      const isValidInvoiceNo = this.validateInvoiceNo(this.invoice_number);
-      if (!isValidInvoiceNo) {
-        notification.push(
-          'The Invoice number should follow this format CN-14digits',
-        );
-        actionClass = 'danger';
-        this.updateClass(actionClass);
-        this.updateErrors(notification);
         return;
       }
 
@@ -302,5 +284,8 @@ export default {
 }
 .config-submit {
   padding-left: 2px !important;
+}
+.tax-loader {
+  margin-left: 1%;
 }
 </style>
