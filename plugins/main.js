@@ -127,7 +127,10 @@ Vue.mixin({
     deliveryStatus(order, notesStatus) {
       const details = order.order_details;
       // eslint-disable-next-line prettier/prettier
-      const verification = typeof details.values === 'undefined' ? details.delivery_verification : details.values.delivery_verification;
+      const verification =
+        typeof details.values === 'undefined'
+          ? details.delivery_verification
+          : details.values.delivery_verification;
 
       let status = 'delivered';
       if (notesStatus === 'Approved' || !notesStatus) {

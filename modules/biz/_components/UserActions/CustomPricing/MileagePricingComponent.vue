@@ -286,7 +286,8 @@
               >
                 <div v-for="(singleBand, x) in data.km_bands" :key="x">
                   <!-- eslint-disable-next-line prettier/prettier -->
-                {{ singleBand.lowerLimitKm }}KM - {{ singleBand.upperLimitKm }}KM
+                  {{ singleBand.lowerLimitKm }}KM -
+                  {{ singleBand.upperLimitKm }}KM
                 </div>
               </div>
               <div class="bands-km-col" v-else>
@@ -343,7 +344,7 @@
                 >
                   <div v-for="(singleBand, x) in data.cost_band" :key="x">
                     <!-- eslint-disable-next-line prettier/prettier -->
-                {{ singleBand.min_km }}KM - {{ singleBand.max_km }}KM
+                    {{ singleBand.min_km }}KM - {{ singleBand.max_km }}KM
                   </div>
                 </div>
                 <div class="bands-km-col" v-else>

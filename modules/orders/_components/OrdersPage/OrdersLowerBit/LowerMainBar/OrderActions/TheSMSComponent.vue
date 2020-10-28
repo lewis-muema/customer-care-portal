@@ -46,6 +46,7 @@ export default {
       orderNo: this.order.order_details.order_no,
       phone: this.order.client_details.phone_no,
       submitted: false,
+      app_route: '',
     };
   },
   validations: {
@@ -53,8 +54,11 @@ export default {
   },
   computed: {
     link() {
-      return `sendyit.com/track/${this.orderNo}`;
+      return `https://${this.app_route}.sendyit.com/external/tracking/${this.orderNo}`;
     },
+  },
+  created() {
+    this.checkappRoute();
   },
   methods: {
     ...mapMutations({
@@ -64,6 +68,13 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
     }),
+    checkappRoute() {
+      let app = 'webapptest';
+      if (this.$env.APP_ENV === 'production') {
+        app = 'app';
+      }
+      this.app_route = app;
+    },
     async sendSMS() {
       const notification = [];
       let actionClass = '';

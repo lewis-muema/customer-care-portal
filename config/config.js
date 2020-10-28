@@ -20,7 +20,7 @@ const config = {
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
+    PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
@@ -63,7 +63,7 @@ const config = {
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
-    PRICING_SERVICE: 'https://authtest.sendyit.com/pricing/',
+    PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API:
       'https://autht.staging.sendyit.com/rider/admin_partner_api/v5/',
