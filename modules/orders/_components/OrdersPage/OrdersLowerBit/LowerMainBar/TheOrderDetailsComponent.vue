@@ -347,8 +347,8 @@ export default {
     }),
     async requestETAs() {
       const payload = {
-        app: 'ORDERS_APP',
-        endpoint: 'eta',
+        app: 'TIME_PREDICTIONS',
+        endpoint: 'get-eta',
         apiKey: true,
         params: { order_no: this.orderNo },
       };
