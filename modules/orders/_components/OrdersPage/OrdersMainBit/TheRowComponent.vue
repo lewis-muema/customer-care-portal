@@ -90,7 +90,7 @@
           </span>
         </td>
         <td
-          v-html="smartify_display(order.from_name.replace(/,/g, ''), 30)"
+          v-html="smartify_display(order.from_name.replace(/,\s*$/, ''), 30)"
         ></td>
         <td
           v-if="freightLabel(order) === '-C'"
@@ -98,7 +98,7 @@
         ></td>
         <td
           v-else
-          v-html="smartify_display(order.to_name.replace(/,/g, ''), 30)"
+          v-html="smartify_display(order.to_name.replace(/,\s*$/, ''), 30)"
         ></td>
         <td>
           {{
