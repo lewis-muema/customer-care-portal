@@ -184,19 +184,6 @@
             >Charge Commission</label
           >
         </div>
-        <div class="form-group col-md-3 bill-check">
-          <input
-            value="1"
-            name="charge_biz_vat"
-            id="charge_biz_vat"
-            type="checkbox"
-            class=""
-            @click="check($event)"
-            v-model="isVAT"
-            checked
-          />
-          <label for="" class="charge_vat--label">Charge VAT</label>
-        </div>
       </div>
       <button
         class="btn btn-primary action-button"
@@ -279,7 +266,6 @@ export default {
       userRb: '0',
       paymentOption: '',
       max_amount: '0',
-      isVAT: true,
       submit_status: false,
       businessUnits: [
         { value: 1, name: 'Merchant Business Units - MBU' },
@@ -416,7 +402,6 @@ export default {
           transaction_id: this.transactionID,
           is_peer,
           creditor_id: creditor_details,
-          is_VAT: this.isVAT,
           business_unit: parseInt(this.businessUnit, 10),
           vat_exempt: vat_exempt ? 1 : 0,
         };
