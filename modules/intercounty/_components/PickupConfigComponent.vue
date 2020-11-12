@@ -606,7 +606,7 @@ export default {
     },
     removeExtraCollectionWrapper(index) {
       this.markers.splice(index, 1);
-      this.collection_centers.splice(index - 1, 1);
+      this.collection_centers.splice(index, 1);
       this.locations.splice(index, 1);
       this.extra_collection--;
     },
