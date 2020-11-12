@@ -36,13 +36,12 @@ const config = {
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
-    TIME_PREDICTIONS:
-      'https://cors-anywhere.herokuapp.com/http://timepredict-test.sendyit.com/',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
-    ELASTIC_APM_ENVIRONMENT: 'dev',
+    ELASTIC_APM_ENVIRONMENT: 'development',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
   dev: {
     BASE_URL: 'http://localhost:8080/',
@@ -77,13 +76,12 @@ const config = {
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
-    TIME_PREDICTIONS:
-      'https://cors-anywhere.herokuapp.com/https://timepredict-test.sendyit.com/',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
-    ELASTIC_APM_SERVER_URL: 'https://staging-apm.sendyit.com:443',
-    ELASTIC_APM_ENVIRONMENT: 'staging',
+    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
+    ELASTIC_APM_ENVIRONMENT: 'dev',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
@@ -117,8 +115,12 @@ const config = {
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
-    TIME_PREDICTIONS:
-      'https://cors-anywhere.herokuapp.com/http://timepredict-test.sendyit.com/',
+
+    ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
+    ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
+    ELASTIC_APM_ENVIRONMENT: 'staging',
+    ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
   production: {
     BASE_URL: 'http://localhost:8080/',
@@ -155,8 +157,6 @@ const config = {
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',
     BROKER_PASS: 'Z_EQ-T5rO-oQVx-OqL2',
-    TIME_PREDICTIONS:
-      'https://cors-anywhere.herokuapp.com/https://timepredict.sendyit.com/',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://auth.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://apm.sendyit.com:443',
