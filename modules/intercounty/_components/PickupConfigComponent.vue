@@ -476,6 +476,8 @@ export default {
         params: {
           pickup_country_code: 'KE',
           dropoff_country_code: 'KE',
+          boundary_matched: true,
+          boundary_name: 'Nairobi CBD',
         },
       };
       try {
@@ -603,8 +605,10 @@ export default {
       this.extra_collection++;
     },
     removeExtraCollectionWrapper(index) {
-      this.extra_collection--;
       this.markers.splice(index, 1);
+      this.collection_centers.splice(index, 1);
+      this.locations.splice(index, 1);
+      this.extra_collection--;
     },
     displayCollectionCentre(val) {
       let resp = 'N/A';
