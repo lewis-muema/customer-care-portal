@@ -151,18 +151,31 @@
         </div>
       </div>
       <div class="form-group  col-md-6 exempt-check">
-        <input
-          value="1"
-          name="exempt_vat"
-          id="exempt_vat>"
-          type="checkbox"
-          class=""
-          v-model="vat_exempt"
-          checked
-        />
-        <label for="" class="exempt-vat-label"> Exempt VAT</label>
+        <div class="col-md-5">
+          <input
+            value="1"
+            name="exempt_vat"
+            id="exempt_vat>"
+            type="checkbox"
+            class=""
+            v-model="vat_exempt"
+            checked
+          />
+          <span for="" class="exempt-vat-label"> Exempt VAT</span>
+        </div>
+        <div class="col-md-7">
+          <input
+            value="1"
+            name="email_invoice"
+            id="email_invoice>"
+            type="checkbox"
+            class=""
+            v-model="email_invoice"
+            checked
+          />
+          <span for="" class="exempt-vat-label"> Exempt Invoice</span>
+        </div>
       </div>
-
       <div class="form-group  col-md-12">
         <button class="btn btn-primary action-button">
           Process
@@ -209,6 +222,7 @@ export default {
       cop_type_list: [],
       admin_list: [],
       vat_exempt: this.user.cop_details.vat_exempt,
+      email_invoice: this.user.user_details.email_invoice,
     };
   },
 
@@ -445,6 +459,7 @@ export default {
             cop_category: category,
             sales_agent: 0,
             vat_exempt: this.vat_exempt ? 1 : 0,
+            email_invoice: this.email_invoice ? 1 : 0,
           },
           request_id: `19`,
           action_user: this.actionUser,
