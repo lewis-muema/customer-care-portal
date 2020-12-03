@@ -90,6 +90,11 @@ export default {
           description: '',
           mainName: 'Home',
         },
+        socialMediaBusiness: {
+          name: 'Social Media Business Approval',
+          description: '',
+          mainName: 'Home',
+        },
         user: {
           name: 'User',
           description: '3CX Users',

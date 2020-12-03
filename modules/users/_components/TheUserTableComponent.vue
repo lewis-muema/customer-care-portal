@@ -21,6 +21,9 @@
           <div class="mega" v-if="userType === 'intercounty'">
             <InterCountyPriceConfigView />
           </div>
+          <div class="mega" v-if="userType === 'socialMediaBusiness'">
+            <socialMediaBusinessApprovalView />
+          </div>
         </div>
       </div>
     </div>
@@ -39,6 +42,10 @@ export default {
     RefundsView: () => import('~/modules/refunds/_components/RefundsView'),
     InterCountyPriceConfigView: () =>
       import('~/modules/intercounty/_components/InterCountyPriceConfigView'),
+    socialMediaBusinessApprovalView: () =>
+      import(
+        '~/modules/socialMediaBusiness/_components/socialMediaBusinessApprovalView'
+      ),
   },
   data() {
     return {
@@ -68,7 +75,10 @@ export default {
       this.searchKey += 1;
     },
     setBackground() {
-      if (this.userType === 'intercounty') {
+      if (
+        this.userType === 'intercounty' ||
+        this.userType === 'socialMediaBusiness'
+      ) {
         return 'inter-county-border';
       } else if (
         this.userType === 'invoice' ||
@@ -81,7 +91,10 @@ export default {
       }
     },
     setInterCountyMargin() {
-      if (this.userType === 'intercounty') {
+      if (
+        this.userType === 'intercounty' ||
+        this.userType === 'socialMediaBusiness'
+      ) {
         return 'inter-county-margin';
       }
       return '';
