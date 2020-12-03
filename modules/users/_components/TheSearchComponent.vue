@@ -171,7 +171,8 @@ export default {
       if (
         this.user === 'rewards' ||
         this.user === 'intercounty' ||
-        this.user === 'refund'
+        this.user === 'refund' ||
+        this.user === 'socialMediaBusiness'
       ) {
         hide = false;
       }
