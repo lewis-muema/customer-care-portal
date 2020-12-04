@@ -92,6 +92,15 @@
               <span> Intercounty Configuration </span>
             </a>
           </li>
+          <li class="treeview">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/socialMediaBusiness"
+              @click="showModal('socialMediaBusiness', $event)"
+              ><i class="fa fa-instagram"></i>
+              <span> Social Media Biz Approval</span>
+            </a>
+          </li>
 
           <li id="offline_2" class="hidden">
             <a href="#"
