@@ -51,7 +51,16 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
+    }),
     triggerModal(e) {
+      const actionClass = '';
+      this.updateClass(actionClass);
+      this.updateErrors([]);
+
       $('#newCoupon').modal('show');
       e.preventDefault();
     },

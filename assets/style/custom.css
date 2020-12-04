@@ -1634,3 +1634,6 @@ color: #000000;
 .is-invalid > .config-input {
   border: 1px solid red;
 }
+textarea.is-invalid {
+  border: 1px solid red;
+}
