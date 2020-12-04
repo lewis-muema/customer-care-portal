@@ -185,4 +185,7 @@ export default {
   getNPSFilters(state) {
     return state.npsFilters;
   },
+  getCoupons(state) {
+    return state.coupons;
+  },
 };

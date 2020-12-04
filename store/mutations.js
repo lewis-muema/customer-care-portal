@@ -202,4 +202,7 @@ export default {
   setNPSFilters(state, val) {
     state.npsFilters = val;
   },
+  setCoupons(state, val) {
+    state.npsFilters = val;
+  },
 };
