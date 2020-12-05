@@ -27,10 +27,11 @@ export default {
   components: {
     VueTagsInput,
   },
+  props: ['targetGroups'],
   data() {
     return {
       tag: '',
-      tags: this.savedTags,
+      tags: this.targetGroups,
       posted: false,
       success: false,
       fail: false,
@@ -97,9 +98,9 @@ export default {
   margin-left: 10px;
 }
 .tag-display {
-  margin-left: 10px;
+  margin-left: 0px;
   border: 1px solid #c0c4cc;
-  width: 314px;
+  width: 350px;
   border-radius: 6px;
   padding: 1em 0;
 }
@@ -122,6 +123,7 @@ export default {
 }
 .ti-tags {
   background: #ffffff !important;
+  padding: 7px !important;
 }
 .ti-new-tag-input-wrapper input {
   background: #ffffff !important;

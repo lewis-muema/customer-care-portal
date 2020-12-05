@@ -15,7 +15,7 @@
       </span>
       <span v-else>
         <div>
-          <filterBar />
+          <FilterBar />
         </div>
         <div class="table-responsive ">
           <table class="table coupon-table">
@@ -64,9 +64,19 @@
                     >
                   </td>
                   <td>
-                    <span class="text-link text-update">Edit</span>
+                    <span
+                      class="text-link text-update"
+                      @click="triggerModal($event, 'updateCoupon', coupon)"
+                      :class="{ disabledLink: coupon.active === 1 }"
+                      >Edit</span
+                    >
                     <span class="vl"></span>
-                    <span class="text-link text-deactivate">Deactivate</span>
+                    <span
+                      class="text-link text-deactivate"
+                      @click="triggerModal($event, 'deactivateCoupon', coupon)"
+                      :class="{ disabledLink: coupon.active === 1 }"
+                      >Deactivate</span
+                    >
                   </td>
                 </tr>
               </template>
@@ -75,6 +85,8 @@
         </div>
       </span>
     </div>
+    <DeactivateCoupon :coupon-name="couponName" />
+    <UpdateCoupon :coupon-id="couponID" :loading="loading" :coupon="coupon" />
   </div>
 </template>
 
@@ -84,7 +96,9 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 export default {
   name: 'PromoCodes',
   components: {
-    filterBar: () => import('./FilterCouponComponent'),
+    FilterBar: () => import('./FilterCouponComponent'),
+    DeactivateCoupon: () => import('./DeactivateCouponComponent'),
+    UpdateCoupon: () => import('./UpdateCouponComponent'),
   },
   data() {
     return {
@@ -92,6 +106,9 @@ export default {
       loading: false,
       requested: false,
       country: 'ALL',
+      couponName: null,
+      couponID: null,
+      coupon: null,
     };
   },
   computed: {
@@ -104,13 +121,22 @@ export default {
       return data;
     },
   },
+  watch: {
+    couponID(ID) {
+      this.requestSingleCoupon(ID);
+    },
+  },
   mounted() {
     this.country = 'ALL';
     this.requestCoupons();
     this.setCountries();
   },
   methods: {
-    ...mapActions(['request_coupons', 'setCountries']),
+    ...mapActions([
+      'request_coupons',
+      'setCountries',
+      'request_single_coupons',
+    ]),
 
     setCouponStatus(status) {
       const data = this.couponStatus.filter(coupon => coupon.value === status);
@@ -132,6 +158,37 @@ export default {
         this.response_status = 'error';
         this.error_msg =
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async requestSingleCoupon(ID) {
+      this.loading = true;
+      this.requested = true;
+      const payload = {
+        id: ID,
+      };
+
+      try {
+        const data = await this.request_single_coupons(payload);
+        this.coupon = data.status ? data.message : null;
+        this.loading = false;
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    triggerModal(e, modal, coupon) {
+      const actionClass = '';
+      this.updateClass(actionClass);
+      this.updateErrors([]);
+
+      if (coupon.active !== 1) {
+        this.coupon = null;
+        this.loading = true;
+        this.couponName = coupon.couponName;
+        this.couponID = coupon.couponId;
+        $(`#${modal}`).modal('show');
+        e.preventDefault();
       }
     },
   },
@@ -186,5 +243,9 @@ export default {
 }
 .text-deactivate {
   color: #d2212a;
+}
+.disabledLink {
+  opacity: 0.3;
+  cursor: default;
 }
 </style>
