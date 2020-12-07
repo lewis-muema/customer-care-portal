@@ -6,9 +6,15 @@
       </div>
     </div>
     <div class="col-md-4 col-xs-6">
-      <select name="fuel-stations" class="filter-select pull-right">
+      <select
+        name="country_code"
+        v-model="countryCode"
+        class="filter-select pull-right"
+        @change="setCountryFilter"
+      >
+        <option value="ALL">All Countries </option>
         <option
-          :value="country.id"
+          :value="country.country_code"
           v-for="(country, index) in getCountries"
           :key="index"
         >
@@ -40,6 +46,7 @@ export default {
   data() {
     return {
       countries: [],
+      countryCode: 'ALL',
     };
   },
   computed: {
@@ -55,6 +62,7 @@ export default {
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
       updateSuccess: 'setUserActionSuccess',
+      setCouponCounty: 'setCouponCounty',
     }),
     triggerModal(e) {
       const actionClass = '';
@@ -63,6 +71,9 @@ export default {
 
       $('#newCoupon').modal('show');
       e.preventDefault();
+    },
+    setCountryFilter() {
+      this.setCouponCounty(this.countryCode);
     },
   },
 };

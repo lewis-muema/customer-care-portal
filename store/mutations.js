@@ -208,4 +208,7 @@ export default {
   setCoupons(state, val) {
     state.npsFilters = val;
   },
+  setCouponCounty(state, val) {
+    state.couponCountry = val;
+  },
 };

@@ -2,6 +2,11 @@
   <div class="box box-info coupon-holder">
     <div class="box-body coupon-display">
       <h3 class="box-title">Promo Codes</h3>
+      <span>
+        <div>
+          <FilterBar />
+        </div>
+      </span>
       <span v-if="coupons === null">
         <div class="text-center">
           <span v-if="loading">
@@ -14,9 +19,6 @@
         </div>
       </span>
       <span v-else>
-        <div>
-          <FilterBar />
-        </div>
         <div class="table-responsive ">
           <table class="table coupon-table">
             <thead>
@@ -36,10 +38,21 @@
 
             <tbody>
               <tr v-if="coupons.length === 0">
-                <td colspan="8">There are no promo codes in the system.</td>
+                <td colspan="8">No promo codes found.</td>
               </tr>
               <template v-else>
-                <tr v-for="(coupon, index) in coupons" :key="index">
+                <tr
+                  v-for="(coupon, index) in coupons"
+                  :key="index"
+                  @click="
+                    triggerModal(
+                      $event,
+                      'viewCoupon',
+                      coupon,
+                      setCouponStatus(coupon.active),
+                    )
+                  "
+                >
                   <td>{{ coupon.couponName }}</td>
                   <td>
                     {{
@@ -66,14 +79,16 @@
                   <td>
                     <span
                       class="text-link text-update"
-                      @click="triggerModal($event, 'updateCoupon', coupon)"
+                      @click.stop="triggerModal($event, 'updateCoupon', coupon)"
                       :class="{ disabledLink: coupon.active === 1 }"
                       >Edit</span
                     >
                     <span class="vl"></span>
                     <span
                       class="text-link text-deactivate"
-                      @click="triggerModal($event, 'deactivateCoupon', coupon)"
+                      @click.stop="
+                        triggerModal($event, 'deactivateCoupon', coupon)
+                      "
                       :class="{ disabledLink: coupon.active === 1 }"
                       >Deactivate</span
                     >
@@ -87,6 +102,12 @@
     </div>
     <DeactivateCoupon :coupon-name="couponName" />
     <UpdateCoupon :coupon-id="couponID" :loading="loading" :coupon="coupon" />
+    <ViewCoupon
+      :coupon-id="couponID"
+      :loading="loading"
+      :coupon="coupon"
+      :coupon-status="status"
+    />
   </div>
 </template>
 
@@ -99,6 +120,7 @@ export default {
     FilterBar: () => import('./FilterCouponComponent'),
     DeactivateCoupon: () => import('./DeactivateCouponComponent'),
     UpdateCoupon: () => import('./UpdateCouponComponent'),
+    ViewCoupon: () => import('./ViewCouponComponent'),
   },
   data() {
     return {
@@ -109,9 +131,13 @@ export default {
       couponName: null,
       couponID: null,
       coupon: null,
+      action: '',
+      status: null,
     };
   },
   computed: {
+    ...mapGetters(['getCouponCountry']),
+
     couponStatus() {
       const data = [
         { status: 'active', value: 0, title: 'Active' },
@@ -125,9 +151,15 @@ export default {
     couponID(ID) {
       this.requestSingleCoupon(ID);
     },
+    getCouponCountry(code) {
+      this.country = code;
+      this.loading = true;
+      this.coupons = null;
+      this.requestCoupons();
+    },
   },
   mounted() {
-    this.country = 'ALL';
+    this.country = this.getCouponCountry;
     this.requestCoupons();
     this.setCountries();
   },
@@ -177,19 +209,18 @@ export default {
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
-    triggerModal(e, modal, coupon) {
+    triggerModal(e, modal, coupon, status) {
       const actionClass = '';
       this.updateClass(actionClass);
       this.updateErrors([]);
 
-      if (coupon.active !== 1) {
-        this.coupon = null;
-        this.loading = true;
-        this.couponName = coupon.couponName;
-        this.couponID = coupon.couponId;
-        $(`#${modal}`).modal('show');
-        e.preventDefault();
-      }
+      this.coupon = null;
+      this.loading = true;
+      this.couponName = coupon.couponName;
+      this.couponID = coupon.couponId;
+      this.status = typeof status !== 'undefined' ? status : null;
+      $(`#${modal}`).modal('show');
+      e.preventDefault();
     },
   },
 };

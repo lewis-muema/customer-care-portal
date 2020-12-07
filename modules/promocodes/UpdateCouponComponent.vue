@@ -29,6 +29,7 @@
             <i class="fa fa-spinner fa-spin loader"></i>
           </div>
           <div class="text-center" v-if="coupon === null">
+            No promo code found
             <i class="fa fa-spinner fa-spin loader"></i>
           </div>
           <span v-else>
@@ -52,7 +53,7 @@
               <button
                 class="btn btn-primary action-button submit-btn"
                 @click="update()"
-                :disabled="!isValid"
+                :disabled="!isValid || coupon[0].active === 1"
               >
                 Add Users
               </button>
