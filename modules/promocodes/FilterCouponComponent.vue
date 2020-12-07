@@ -7,7 +7,7 @@
     </div>
     <div class="col-md-4 col-xs-6">
       <select
-        name="fuel-stations"
+        name="country_code"
         v-model="countryCode"
         class="filter-select pull-right"
         @change="setCountryFilter"
