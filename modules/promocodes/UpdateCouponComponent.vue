@@ -140,7 +140,7 @@ export default {
             country_code: null,
             sendy_staff_promo: null,
             is_targeted: false,
-            targeted_group: [],
+            targeted_group: this.targetedGroup,
             targeted_file: null,
           },
           request_id: '1622',
@@ -153,7 +153,8 @@ export default {
         notification.push(data.message);
         actionClass = this.display_order_action_notification(data.status);
         if (data.status) {
-          this.$router.app.refresh();
+          // eslint-disable-next-line no-restricted-globals
+          location.reload();
         }
       } catch (error) {
         notification.push(
