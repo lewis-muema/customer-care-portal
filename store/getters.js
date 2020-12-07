@@ -191,4 +191,7 @@ export default {
   getCoupons(state) {
     return state.coupons;
   },
+  getCouponCountry(state) {
+    return state.couponCountry;
+  },
 };

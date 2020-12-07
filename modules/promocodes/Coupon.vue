@@ -2,6 +2,11 @@
   <div class="box box-info coupon-holder">
     <div class="box-body coupon-display">
       <h3 class="box-title">Promo Codes</h3>
+      <span>
+        <div>
+          <FilterBar />
+        </div>
+      </span>
       <span v-if="coupons === null">
         <div class="text-center">
           <span v-if="loading">
@@ -14,9 +19,6 @@
         </div>
       </span>
       <span v-else>
-        <div>
-          <FilterBar />
-        </div>
         <div class="table-responsive ">
           <table class="table coupon-table">
             <thead>
@@ -36,7 +38,7 @@
 
             <tbody>
               <tr v-if="coupons.length === 0">
-                <td colspan="8">There are no promo codes in the system.</td>
+                <td colspan="8">No promo codes found.</td>
               </tr>
               <template v-else>
                 <tr v-for="(coupon, index) in coupons" :key="index">
@@ -112,6 +114,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['getCouponCountry']),
+
     couponStatus() {
       const data = [
         { status: 'active', value: 0, title: 'Active' },
@@ -125,9 +129,15 @@ export default {
     couponID(ID) {
       this.requestSingleCoupon(ID);
     },
+    getCouponCountry(code) {
+      this.country = code;
+      this.loading = true;
+      this.coupons = null;
+      this.requestCoupons();
+    },
   },
   mounted() {
-    this.country = 'ALL';
+    this.country = this.getCouponCountry;
     this.requestCoupons();
     this.setCountries();
   },
