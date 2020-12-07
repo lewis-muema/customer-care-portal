@@ -1,3 +1,55 @@
+.coupon-display {
+  background: #fafdff;
+  border-radius: 8px;
+  padding: 32px 24px;
+}
+
+.coupon-holder {
+  padding: 24px;
+  background: #f2f6fc;
+}
+.coupon-table > tbody > tr > td {
+  padding: 16px;
+}
+.status-chip {
+  padding: 6px 12px;
+  border-radius: 116px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fafdff;
+}
+.status-active {
+  background: #aee0a8;
+}
+.status-inactive {
+  background: #fcc6c8;
+}
+.status-scheduled {
+  background: #c8e8fc;
+}
+.vl {
+  border-left: 1px solid #dcdfe6;
+  height: 500px;
+  margin: 0 10px;
+}
+.text-link {
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+}
+.text-update {
+  color: #527cbd;
+}
+.text-deactivate {
+  color: #d2212a;
+}
+.disabledLink {
+  opacity: 0.3;
+  cursor: default;
+}
 .modal-dialog {
     max-width: 442px !important;
   }
