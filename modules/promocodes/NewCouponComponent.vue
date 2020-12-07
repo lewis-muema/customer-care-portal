@@ -580,6 +580,10 @@ export default {
         const data = await this.perform_user_action(payload);
         notification.push(data.message);
         actionClass = this.display_order_action_notification(data.status);
+        if (data.status) {
+          // eslint-disable-next-line no-restricted-globals
+          location.reload();
+        }
       } catch (error) {
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
