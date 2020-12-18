@@ -89,7 +89,7 @@ export default {
         endpoint: 'freight-status',
         apiKey: false,
         params: {
-          freightApprover: this.approval_value,
+          freightStatus: this.approval_value,
           copId: this.user.user_details.cop_id,
         },
       };
