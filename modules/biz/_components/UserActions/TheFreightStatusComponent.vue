@@ -54,8 +54,8 @@ export default {
       vatCompliance: false,
       submitted: false,
       approval_state: [
-        { code: true, name: 'Activate' },
-        { code: false, name: 'Deactivate' },
+        { code: 2, name: 'Activate' },
+        { code: 3, name: 'Deactivate' },
       ],
       approval_value: '',
     };
@@ -86,10 +86,11 @@ export default {
       }
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `/cop-freight-approvers/${this.user.user_details.cop_id}`,
+        endpoint: 'freight-status',
         apiKey: false,
         params: {
           freightApprover: this.approval_value,
+          copId: this.user.user_details.cop_id,
         },
       };
 
