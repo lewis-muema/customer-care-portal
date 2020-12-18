@@ -188,6 +188,21 @@
             Reversals & Credit Note
           </a>
         </li>
+        <li
+          v-if="permissions.approve_freight_biz"
+          class="nav-item invoice-item"
+        >
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('freight_status', copID)"
+            :id="`freight_status_${copID}`"
+          >
+            <span class="fa fa-fw fa-toggle-off"></span>
+            Freight Status
+          </a>
+        </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="body-box">
@@ -354,6 +369,14 @@
               :id="copID"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`freight_status_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `freight_status_${copID}`"
+          >
+            <TheFreightStatusComponent :user="user" />
+          </div>
         </div>
       </div>
     </div>
@@ -386,6 +409,8 @@ export default {
     TheFinancingComponent: () => import('./UserActions/AuxilliaryServices'),
     TheReveralsComponent: () =>
       import('../../users/_components/Reversals/TheReveralsComponent'),
+    TheFreightStatusComponent: () =>
+      import('./UserActions/TheFreightStatusComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
