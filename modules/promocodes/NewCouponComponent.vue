@@ -567,7 +567,7 @@ export default {
             maximum_usage_user: Number(this.maxUsageUser),
             max_discount_amount: Number(this.maxDiscountAmount),
             country_code: `${this.country}`,
-            sendy_staff_promo: this.isSendyCoupon ? 1 : 0,
+            sendy_staff_promo: this.isSendyCoupon ? 0 : 1,
             is_targeted: this.is_targeted,
             targeted_group: this.targetedGroup,
             targeted_file: null,
