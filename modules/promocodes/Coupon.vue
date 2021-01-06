@@ -143,6 +143,7 @@ export default {
         { status: 'active', value: 0, title: 'Active' },
         { status: 'inactive', value: 1, title: 'Expired' },
         { status: 'scheduled', value: 2, title: 'Scheduled' },
+        { status: 'scheduled', value: 3, title: 'Scheduled' },
       ];
       return data;
     },
