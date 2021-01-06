@@ -65,7 +65,10 @@
             New Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_custom_invoice_2">
+        <li
+          class="nav-item custom-item"
+          v-if="permissions.approve_custom_invoice_2"
+        >
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -77,7 +80,10 @@
             Reverse Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_reversals_peer">
+        <li
+          class="nav-item custom-item"
+          v-if="permissions.approve_reversals_peer"
+        >
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -87,6 +93,21 @@
           >
             <span class="fa fa-fw fa-history"></span>
             Reversals & Credit Note
+          </a>
+        </li>
+        <li
+          class="nav-item custom-item"
+          v-if="permissions.approve_freight_peer"
+        >
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('freight_status', userID)"
+            :id="`freight_status_${userID}`"
+          >
+            <span class="fa fa-fw fa-toggle-off"></span>
+            Freight Status
           </a>
         </li>
       </ul>
@@ -181,6 +202,14 @@
               :id="userID"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`freight_status_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `freight_status_${userID}`"
+          >
+            <TheFreightStatusComponent :user="user" />
+          </div>
         </div>
       </div>
     </div>
@@ -202,6 +231,8 @@ export default {
       import('./UserActions/TheReverseInvoiceComponent'),
     TheReveralsComponent: () =>
       import('../../users/_components/Reversals/TheReveralsComponent'),
+    TheFreightStatusComponent: () =>
+      import('./UserActions/TheFreightStatusComponent'),
   },
   props: {
     user: {
@@ -311,5 +342,11 @@ export default {
 }
 .custom-width {
   width: 100% !important;
+}
+.invoice-action {
+  width: 98% !important;
+}
+.custom-item {
+  padding-right: 3px !important;
 }
 </style>
