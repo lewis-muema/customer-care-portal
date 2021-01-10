@@ -20,6 +20,14 @@
       </span>
       <span v-else>
         <div class="table-responsive ">
+          <button
+            class="pull-right search-btn"
+            @click="requestCoupons()"
+            v-if="searched"
+          >
+            <i class="fa fa-arrow-left"></i>
+            Back to list
+          </button>
           <table class="table coupon-table">
             <thead>
               <tr>
@@ -42,7 +50,7 @@
               </tr>
               <template v-else>
                 <tr
-                  v-for="(coupon, index) in coupons"
+                  v-for="(coupon, index) in pagedTableData"
                   :key="index"
                   @click="
                     triggerModal(
@@ -97,6 +105,14 @@
               </template>
             </tbody>
           </table>
+          <el-pagination
+            layout="prev, pager, next"
+            :total="this.coupons.length"
+            @current-change="setPage"
+            class="promo-pagination"
+            v-if="coupons.length >= pageSize"
+          >
+          </el-pagination>
         </div>
       </span>
     </div>
@@ -112,6 +128,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/no-unused-vars */
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
@@ -133,10 +150,13 @@ export default {
       coupon: null,
       action: '',
       status: null,
+      page: 1,
+      pageSize: 10,
+      searched: false,
     };
   },
   computed: {
-    ...mapGetters(['getCouponCountry']),
+    ...mapGetters(['getCouponCountry', 'getSearchState', 'getSearchedCoupon']),
 
     couponStatus() {
       const data = [
@@ -147,10 +167,28 @@ export default {
       ];
       return data;
     },
+    pagedTableData() {
+      return this.coupons.slice(
+        this.pageSize * this.page - this.pageSize,
+        this.pageSize * this.page,
+      );
+    },
   },
   watch: {
     couponID(ID) {
       this.requestSingleCoupon(ID);
+    },
+    async getSearchedCoupon(ID) {
+      if (ID !== null) {
+        this.loading = true;
+        this.coupons = null;
+        await this.requestSingleCoupon(ID);
+        this.coupons = this.coupon;
+        this.loading = false;
+      }
+    },
+    getSearchState(status) {
+      this.searched = status;
     },
     getCouponCountry(code) {
       this.country = code;
@@ -165,11 +203,17 @@ export default {
     this.setCountries();
   },
   methods: {
+    ...mapMutations({
+      updateSearchState: 'setSearchState',
+    }),
     ...mapActions([
       'request_coupons',
       'setCountries',
       'request_single_coupons',
     ]),
+    setPage(val) {
+      this.page = val;
+    },
 
     setCouponStatus(status) {
       const data = this.couponStatus.filter(coupon => coupon.value === status);
@@ -179,6 +223,9 @@ export default {
     async requestCoupons() {
       this.loading = true;
       this.requested = true;
+      this.coupons = null;
+      this.updateSearchState(false);
+
       const payload = {
         country: this.country,
       };
@@ -227,7 +274,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .coupon-display {
   background: #fafdff;
   border-radius: 8px;
@@ -279,5 +326,21 @@ export default {
 .disabledLink {
   opacity: 0.3;
   cursor: default;
+}
+.promo-pagination > .btn-prev,
+.promo-pagination > .btn-next {
+  background-color: #fafdfe !important;
+}
+.el-pager,
+.el-pager li {
+  background-color: #fafdfe !important;
+}
+.search-btn {
+  border: none;
+  background: #fafdfe;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: #527cbd;
+  padding: 0 2.5em 1em 0;
 }
 </style>

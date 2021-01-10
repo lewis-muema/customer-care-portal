@@ -211,4 +211,7 @@ export default {
   setCouponCounty(state, val) {
     state.couponCountry = val;
   },
+  setSearchedCoupon(state, val) {
+    state.searchedCoupon = val;
+  },
 };
