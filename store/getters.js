@@ -194,4 +194,7 @@ export default {
   getCouponCountry(state) {
     return state.couponCountry;
   },
+  getSearchedCoupon(state) {
+    return state.searchedCoupon;
+  },
 };

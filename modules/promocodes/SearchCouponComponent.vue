@@ -13,28 +13,25 @@
         @keydown.esc="reset"
         @input="update"
         @click="clear"
+        @blur="reset"
       />
       <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
         <li
           v-for="(item, $item) in items"
           :class="activeClass($item)"
-          @mousedown="hit"
+          @mousedown="hit(item)"
           @mousemove="setActive($item)"
           :key="item.index"
         >
           <span>
-            <strong>{{ item.order_no }}</strong>
+            <strong>{{ item.coupon_name }}</strong>
           </span>
-          <span>Client: {{ item.user_name }}</span>
-          <span>Client phone: {{ item.user_phone }}</span>
-          <span>Rider: {{ item.rider_name }}</span>
-          <span>Date: {{ getFormattedDate(item.date_time, 'LLLL') }}</span>
-          <span>
-            <strong>Pickup: {{ item.pickup }}</strong>
-          </span>
-          <span>
-            <strong>Delivery: {{ item.destination }}</strong>
-          </span>
+          <span
+            >Start Date:
+            {{
+              getFormattedDate(item.coupon_start_date, 'MMM Do,  YYYY')
+            }}</span
+          >
         </li>
       </ul>
     </div>
@@ -52,7 +49,6 @@ export default {
       limit: 10,
       minChars: 1,
       query: '',
-      order: null,
       isActive: true,
     };
   },
@@ -64,45 +60,24 @@ export default {
       return this.query.trim();
     },
     solarBase() {
-      return this.config.SOLR_BASE;
+      return this.config.COUPON_SEARCH;
     },
     solarToken() {
       return this.$env.SOLR_JWT;
     },
     src() {
-      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
+      return `${this.solarBase}select?q=(coupon_id:*${this.query_string}*+OR+coupon_name:*${this.query_string}*+OR+coupon_start_date:*${this.query_string}*)&wt=json&indent=true&row=10&sort=coupon_id%20desc&jwt=${this.solarToken}`;
     },
   },
   methods: {
     ...mapMutations({
-      updateSearchedOrder: 'setSearchedOrder',
       updateSearchState: 'setSearchState',
+      updateSearchedCoupon: 'setSearchedCoupon',
     }),
-    ...mapActions({
-      request_single_order: 'request_single_order',
-    }),
-    async byPassSolrSearch() {
-      this.updateSearchState(true);
-      const orderNo = localStorage.query;
-      await this.singleOrderRequest(orderNo);
-    },
-    async onHit(item) {
+    onHit(item) {
       this.isActive = false;
       this.updateSearchState(true);
-      const orderNo = item.order_no;
-      await this.singleOrderRequest(orderNo);
-    },
-    async singleOrderRequest(orderNo) {
-      orderNo = orderNo.trim();
-      try {
-        const data = await this.request_single_order(orderNo);
-        this.updateSearchedOrder(data);
-        return (this.order = data);
-      } catch {
-        this.errors.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-      }
+      this.updateSearchedCoupon(item.coupon_id);
     },
     prepareResponseData(data) {
       return data.response.docs;
