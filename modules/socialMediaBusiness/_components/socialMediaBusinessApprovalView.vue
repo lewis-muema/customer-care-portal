@@ -3,28 +3,46 @@
     <div class="social-media-tabs">
       <div
         class="social-media-tabs-titles"
-        :class="mode === 'ApprovalView' ? 'active-price-configs-tab' : ''"
-        @click="mode = 'ApprovalView'"
+        :class="mode === 'PendingView' ? 'active-price-configs-tab' : ''"
+        @click="mode = 'PendingView'"
       >
-        Approval
+        Pending
+      </div>
+      <div
+        class="social-media-tabs-titles"
+        :class="mode === 'ApprovedView' ? 'active-price-configs-tab' : ''"
+        @click="mode = 'ApprovedView'"
+      >
+        Approved
+      </div>
+      <div
+        class="social-media-tabs-titles"
+        :class="mode === 'RejectedView' ? 'active-price-configs-tab' : ''"
+        @click="mode = 'RejectedView'"
+      >
+        Rejected
       </div>
     </div>
 
     <div class="social-media-component">
-      <ApprovalView :key="componentKey" v-if="mode === 'ApprovalView'" />
+      <PendingView :key="componentKey" v-if="mode === 'PendingView'" />
+      <ApprovedView :key="componentKey" v-if="mode === 'ApprovedView'" />
+      <RejectedView :key="componentKey" v-if="mode === 'RejectedView'" />
     </div>
   </div>
 </template>
 
 <script>
-import ApprovalView from './ApprovalViewComponent.vue';
+import PendingView from './PendingViewComponent.vue';
+import ApprovedView from './ApprovedViewComponent.vue';
+import RejectedView from './RejectedViewComponent.vue';
 
 export default {
   name: 'socialMediaBusinessApprovalView',
-  components: { ApprovalView },
+  components: { ApprovedView, PendingView, RejectedView },
   data() {
     return {
-      mode: 'ApprovalView',
+      mode: 'PendingView',
       componentKey: 0,
     };
   },
