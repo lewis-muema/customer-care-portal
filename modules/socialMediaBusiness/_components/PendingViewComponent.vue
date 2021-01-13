@@ -128,7 +128,7 @@ import axios from 'axios';
 import Loading from './LoadingComponent.vue';
 
 export default {
-  name: 'PriceConfigComponent',
+  name: 'PendingViewComponent',
   components: { Loading },
   data() {
     return {
@@ -149,7 +149,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      request_social_biz_approvals: 'request_social__media_business',
+      request_social_biz_approvals: 'request_pending_social__media_business',
       approve_social_biz: 'social_media_biz_approval',
     }),
     initiateData() {
