@@ -141,6 +141,7 @@ export default {
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
         { value: 12, name: 'Cash Order', transactionID: 1 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
+        { value: 32, name: 'Rider Bonus', transactionID: 1 },
       ],
       billingType: '',
       refNo: '',
