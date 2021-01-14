@@ -67,10 +67,13 @@ export default {
   methods: {
     ...mapMutations({
       updateSession: 'setSession',
+      setToken: 'setToken',
     }),
     getloggedUser() {
-      const token = this.getAuthenticationToken;
+      const jwtToken = this.getAuthenticationToken;
       const storedToken = localStorage.getItem('jwtToken');
+      this.setToken(jwtToken);
+      const token = this.getAuthenticationToken;
 
       if (token && token !== '' && storedToken !== 'undefined') {
         const partsOfToken = token.split('.');
