@@ -133,13 +133,15 @@
                   }"
                 >
                   <option value="">Select Country</option>
-                  <option
-                    :value="country.country_code"
-                    v-for="(country, index) in getCountries"
-                    :key="index"
-                  >
-                    {{ country.country_name }}
-                  </option>
+                  <template v-for="(country, index) in getCountries">
+                    <option
+                      :value="country.country_code"
+                      :key="index"
+                      v-if="country.status === 1"
+                    >
+                      {{ country.country_name }}
+                    </option>
+                  </template>
                 </select>
                 <div
                   v-if="submitted && !$v.country.required && step === 1"
@@ -256,7 +258,7 @@
                   type="number"
                   v-model="couponAmount"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
@@ -277,7 +279,7 @@
                   type="number"
                   v-model="maxDiscountAmount"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
@@ -299,7 +301,7 @@
                   type="number"
                   v-model="maxUsageUser"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
@@ -319,7 +321,7 @@
                   type="number"
                   v-model="maxTotalUsage"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':

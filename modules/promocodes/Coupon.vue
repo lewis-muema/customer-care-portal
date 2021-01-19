@@ -73,8 +73,18 @@
                     }}
                   </td>
                   <td>{{ coupon.couponType === 1 ? 'Cash' : 'Percentage' }}</td>
-                  <td>{{ coupon.couponAmount }}</td>
-                  <td>{{ coupon.maxDiscountAmount }}</td>
+                  <td>
+                    {{ coupon.couponType === 1 ? coupon.currency : '' }}
+                    {{
+                      coupon.couponType === 1
+                        ? numberWithCommas(coupon.couponAmount)
+                        : `${coupon.couponAmount * 100}%`
+                    }}
+                  </td>
+                  <td>
+                    {{ coupon.currency }}
+                    {{ numberWithCommas(coupon.maxDiscountAmount) }}
+                  </td>
                   <td>{{ coupon.maxUsageUser }}</td>
                   <td>{{ coupon.maxTotalUsage }}</td>
                   <td>
@@ -211,6 +221,9 @@ export default {
       'setCountries',
       'request_single_coupons',
     ]),
+    formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    },
     setPage(val) {
       this.page = val;
     },
