@@ -34,13 +34,18 @@
             <li class="nav-item coupon-nav">
               <a
                 class="nav-link coupon-link"
-                :class="{ active: isActive('first') }"
+                :class="{
+                  active:
+                    isActive('first') ||
+                    isActive('second') ||
+                    isActive('third'),
+                }"
               ></a>
             </li>
             <li class="nav-item">
               <a
                 class="nav-link coupon-link"
-                :class="{ active: isActive('second') }"
+                :class="{ active: isActive('second') || isActive('third') }"
               ></a>
             </li>
             <li class="nav-item">
