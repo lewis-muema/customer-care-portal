@@ -57,7 +57,7 @@
                       $event,
                       'viewCoupon',
                       coupon,
-                      setCouponStatus(coupon.active),
+                      checkEpiry(coupon),
                     )
                   "
                 >
@@ -90,8 +90,8 @@
                   <td>
                     <span
                       class="status-chip"
-                      :class="`status-${setCouponStatus(coupon.active).status}`"
-                      >{{ setCouponStatus(coupon.active).title }}</span
+                      :class="`status-${checkEpiry(coupon)}`"
+                      >{{ checkEpiry(coupon) }}</span
                     >
                   </td>
                   <td>
@@ -315,6 +315,9 @@ export default {
   background: #aee0a8;
 }
 .status-inactive {
+  background: #fcc6c8;
+}
+.status-expired {
   background: #fcc6c8;
 }
 .status-scheduled {

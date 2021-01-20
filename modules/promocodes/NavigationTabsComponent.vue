@@ -51,10 +51,26 @@ export default {
     },
     setPrevious() {
       const previousStep = this.step - 1;
+      let name;
+
+      switch (previousStep) {
+        case 1:
+          name = 'first';
+          break;
+        case 2:
+          name = 'second';
+          break;
+        case 3:
+          name = 'third';
+          break;
+        default:
+          name = 'first';
+          break;
+      }
 
       this.$emit('menuItem', {
         step: previousStep,
-        nextStep: this.previousStep,
+        nextStep: name,
         direction: 'previous',
       });
     },

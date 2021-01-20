@@ -29,8 +29,8 @@
               <span
                 v-if="!loading && coupon !== null && couponStatus !== null"
                 class="status-chip"
-                :class="`status-${couponStatus.status}`"
-                >{{ couponStatus.title }}</span
+                :class="`status-${couponStatus}`"
+                >{{ couponStatus }}</span
               >
             </h6>
           </div>
@@ -87,6 +87,14 @@
                 <label class="view-label"> Maximum Total Usage </label>
                 <p class="view-text ">
                   {{ couponData.maxTotalUsage }}
+                </p>
+              </div>
+            </div>
+            <div class="col-md-12 coupon-hlder" v-if="couponData !== null">
+              <div class="col-md-6">
+                <label class="view-label"> Usage Count </label>
+                <p class="view-text ">
+                  {{ couponData.usageCount }}
                 </p>
               </div>
             </div>
