@@ -282,7 +282,7 @@ export default {
     showFreightApproval() {
       let resp = false;
 
-      if (this.permissions.approve_freight_peer && this.freight_status === 2) {
+      if (this.permissions.approve_freight_peer && this.freight_status === 1) {
         resp = true;
       }
       return resp;
