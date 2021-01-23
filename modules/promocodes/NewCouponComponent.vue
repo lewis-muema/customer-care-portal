@@ -156,41 +156,6 @@
                 </div>
               </div>
               <div class="form-group user-input">
-                <label class="bill">Targeted User Type</label>
-                <select
-                  name="userType"
-                  v-model="userType"
-                  class="form-control"
-                  :class="{
-                    'is-invalid':
-                      submitted &&
-                      $v.userType.$error &&
-                      step === 1 &&
-                      step === 1,
-                  }"
-                >
-                  <option value="">Select User Type</option>
-                  <option
-                    :value="user.userType"
-                    v-for="(user, index) in userTypes"
-                    :key="index"
-                  >
-                    {{ user.title }}
-                  </option>
-                </select>
-                <div
-                  v-if="
-                    submitted &&
-                      !$v.userType.required &&
-                      step === 1 &&
-                      step === 1
-                  "
-                  class="invalid-feedback"
-                >
-                  Targeted User Type is required
-                </div>
-              </div>
-              <div class="form-group user-input">
                 <label class="bill">Is this a Sendy Staff Promo?</label>
                 <select
                   name="isSendyCoupon"
@@ -475,7 +440,6 @@ export default {
         couponStartDate: { required },
         couponEndDate: { required },
         country: { required },
-        userType: { required },
         isSendyCoupon: { required },
       };
       const stepTwoRules = {
