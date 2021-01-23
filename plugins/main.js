@@ -221,10 +221,13 @@ Vue.mixin({
         status = 'active';
       }
 
-      return (status === 'active' || status === 'scheduled') &&
+      const finalStatus =
+        (status === 'active' || status === 'scheduled') &&
         coupon.usageCount >= coupon.maxTotalUsage
-        ? 'expired'
-        : status;
+          ? 'expired'
+          : status;
+
+      return coupon.active === 1 ? 'expired' : finalStatus;
     },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
