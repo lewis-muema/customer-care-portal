@@ -132,6 +132,47 @@ export default {
       perform_order_action: '$_orders/perform_order_action',
       request_cancellation_options: 'request_cancellation_options',
     }),
+    async cancelCoupon() {
+      const notification = [];
+      let actionClass = '';
+
+      const copID =
+        this.order.client_details.corporate_name === ''
+          ? 0
+          : this.order.client_details.client_id;
+      const individualID =
+        this.order.client_details.corporate_name === ''
+          ? this.order.client_details.user_id
+          : this.order.client_details.client_id;
+
+      const payload = {
+        app: 'CUSTOMERS_APP',
+        endpoint: 'use_coupon',
+        apiKey: true,
+        params: {
+          cop_id: copID,
+          individual_id: individualID,
+          coupon_code: '',
+          coupon_amount: 0,
+          is_cancelled: true,
+          coupon_type: 0,
+        },
+      };
+
+      try {
+        const data = await this.perform_order_action(payload);
+        notification.push(data.message);
+        actionClass = this.display_order_action_notification(data.status);
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     async cancelOrder() {
       const notification = [];
       let actionClass = '';
@@ -141,6 +182,7 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+      await this.cancelCoupon();
 
       const payload = {
         app: 'ORDERS_APP',
