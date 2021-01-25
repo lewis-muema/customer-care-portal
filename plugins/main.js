@@ -342,14 +342,5 @@ Vue.mixin({
         return myString;
       }
     },
-    showCity(city) {
-      let cityName;
-      if (city.id === 1 || city.id === 2 || city.id === 3) {
-        cityName = city.name;
-      } else {
-        cityName = 'Other';
-      }
-      return cityName;
-    },
   },
 });
