@@ -120,11 +120,8 @@
               >
                 <i class="fa fa-info"></i>
               </span>
-              <span
-                title="showCity(riderDetails.city_id)"
-                class="badge bg-aqua "
-                >{{ showCity(riderDetails.city_id) }}
-              </span>
+              <span class="badge bg-aqua ">{{ order.city.name }} </span>
+
               <span> &nbsp; </span>
               <span title="Corporate Name" class="badge bg-aqua pull-right">
                 {{ moreData.distance_read }} km</span
