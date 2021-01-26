@@ -295,7 +295,9 @@
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
-                      submitted && $v.maxTotalUsage.$error && step === 2,
+                      submitted &&
+                      ($v.maxTotalUsage.$error || inValidUsage) &&
+                      step === 2,
                   }"
                 />
                 <div
@@ -303,6 +305,10 @@
                   class="invalid-feedback"
                 >
                   Total Maximum Usage is required
+                </div>
+                <div v-if="inValidUsage" class="invalid-feedback">
+                  Total Maximum Usage cannot be less than the Maximum Usage Per
+                  User
                 </div>
               </div>
               <NavigationComponent
@@ -418,6 +424,7 @@ export default {
       isValid: true,
       targetedGroup: [],
       submitted: false,
+      inValidUsage: false,
       userTypes: [
         { userType: 'peer', title: 'Peer User' },
         { userType: 'cop', title: 'Cop User' },
@@ -479,6 +486,16 @@ export default {
   },
   validations() {
     return this.rules;
+  },
+  watch: {
+    maxTotalUsage(data) {
+      if (data < this.maxUsageUser) {
+        this.isValid = true;
+        this.inValidUsage = true;
+      } else {
+        this.inValidUsage = false;
+      }
+    },
   },
   methods: {
     ...mapMutations({
