@@ -144,7 +144,7 @@ const config = {
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehicle/',
     VENDORS: 'https://auth.sendyit.com/vendors/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/owner/',
-    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon',
+    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
     OFFLINE_ORDERS:
