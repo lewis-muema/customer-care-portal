@@ -169,9 +169,6 @@ export default {
         );
         actionClass = 'danger';
       }
-
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     async cancelOrder() {
       const notification = [];
