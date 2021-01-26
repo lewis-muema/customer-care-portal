@@ -24,7 +24,7 @@
         </template>
       </select>
     </div>
-    <div class="col-md-2 col-xs-6">
+    <div class="col-md-2 col-xs-6" v-if="permissions.create_promocode">
       <button
         class="btn btn-primary filter-button pull-right"
         @click="triggerModal($event)"
@@ -45,6 +45,7 @@ export default {
     SearchCouponComponent: () => import('./SearchCouponComponent'),
     NewCouponComponent: () => import('./NewCouponComponent'),
   },
+  props: ['permissions'],
   data() {
     return {
       countries: [],
