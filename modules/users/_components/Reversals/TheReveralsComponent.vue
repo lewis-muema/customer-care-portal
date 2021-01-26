@@ -499,6 +499,12 @@ export default {
           entry_point: 'CC Portal',
         },
       };
+      const cashMethod = {
+        available: true,
+        name: 'Cash',
+        payment_method_id: 5,
+      };
+
       try {
         const data = await this.request_payment_methods(payload);
         const error = !this.status ? data.error : '';
@@ -507,6 +513,8 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
           this.updateClass(actionClass);
           this.updateErrors(notification);
+        } else {
+          data.payment_methods.push(cashMethod);
         }
 
         return (this.paymentMethods = data.payment_methods);

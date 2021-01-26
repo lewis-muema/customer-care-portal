@@ -202,4 +202,13 @@ export default {
   setNPSFilters(state, val) {
     state.npsFilters = val;
   },
+  setCoupons(state, val) {
+    state.npsFilters = val;
+  },
+  setCouponCounty(state, val) {
+    state.couponCountry = val;
+  },
+  setSearchedCoupon(state, val) {
+    state.searchedCoupon = val;
+  },
 };

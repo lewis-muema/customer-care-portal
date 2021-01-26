@@ -98,6 +98,9 @@ export default {
       npsDateRange: null,
       npsMetaData: null,
       npsFilters: null,
+      coupons: null,
+      couponCountry: 'ALL',
+      searchedCoupon: null,
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',
         500: 'Page not found',

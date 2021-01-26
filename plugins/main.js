@@ -203,6 +203,32 @@ Vue.mixin({
       const formattedDate = moment(dt1, 'YYYY.MM.DD').fromNow();
       return formattedDate;
     },
+    checkEpiry(coupon) {
+      const today = moment().format('YYYY-MM-DD');
+      // eslint-disable-next-line prettier/prettier
+      const startDate = this.getFormattedDate(coupon.couponStartDate, 'YYYY-MM-DD');
+      const endDate = this.getFormattedDate(coupon.couponEndDate, 'YYYY-MM-DD');
+
+      let status = 'active';
+      if (moment(startDate).isAfter(today)) {
+        status = 'scheduled';
+      } else if (moment(endDate).isBefore(today)) {
+        status = 'expired';
+      } else if (
+        moment(today).isBefore(endDate) ||
+        moment(today).isSame(endDate)
+      ) {
+        status = 'active';
+      }
+
+      const finalStatus =
+        (status === 'active' || status === 'scheduled') &&
+        coupon.usageCount >= coupon.maxTotalUsage
+          ? 'expired'
+          : status;
+
+      return coupon.active === 1 ? 'expired' : finalStatus;
+    },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },

@@ -19,6 +19,7 @@ const config = {
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
+    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
@@ -39,8 +40,9 @@ const config = {
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
-    ELASTIC_APM_ENVIRONMENT: 'dev',
+    ELASTIC_APM_ENVIRONMENT: 'development',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
   dev: {
     BASE_URL: 'http://localhost:8080/',
@@ -62,6 +64,7 @@ const config = {
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehiclestaging/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/ownerstaging/',
+    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
@@ -80,6 +83,7 @@ const config = {
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
@@ -99,6 +103,7 @@ const config = {
     RIDER_SEARCH: 'https://gate.sendyit.com/solr/ridersstaging/',
     PEER_SEARCH: 'https://gate.sendyit.com/solr/peer_clientsstaging/',
     BIZ_SEARCH: 'https://gate.sendyit.com/solr/cop_clientsstaging/',
+    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
@@ -139,6 +144,7 @@ const config = {
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehicle/',
     VENDORS: 'https://auth.sendyit.com/vendors/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/owner/',
+    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
     OFFLINE_ORDERS:
