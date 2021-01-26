@@ -113,7 +113,7 @@
               <span> Auxiliary services </span></nuxt-link
             >
           </li>
-          <li class="treeview">
+          <li class="treeview" v-if="permissions.view_promocodes">
             <nuxt-link to="/promocodes"
               ><i class="fa fa-tags text-grey"></i>
               <span> Promo Codes </span></nuxt-link

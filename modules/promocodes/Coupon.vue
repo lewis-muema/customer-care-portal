@@ -4,7 +4,7 @@
       <h3 class="box-title">Promo Codes</h3>
       <span>
         <div>
-          <FilterBar />
+          <FilterBar :permissions="permissions" />
         </div>
       </span>
       <span v-if="coupons === null">
@@ -99,6 +99,7 @@
                       class="text-link text-update"
                       @click.stop="triggerModal($event, 'updateCoupon', coupon)"
                       :class="{ disabledLink: coupon.active === 1 }"
+                      v-if="permissions.update_promocode"
                       >Edit</span
                     >
                     <span class="vl"></span>
@@ -108,6 +109,7 @@
                         triggerModal($event, 'deactivateCoupon', coupon)
                       "
                       :class="{ disabledLink: coupon.active === 1 }"
+                      v-if="permissions.deactivate_promocode"
                       >Deactivate</span
                     >
                   </td>
@@ -166,7 +168,11 @@ export default {
     };
   },
   computed: {
+    ...mapState(['userData']),
     ...mapGetters(['getCouponCountry', 'getSearchState', 'getSearchedCoupon']),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
 
     couponStatus() {
       const data = [
