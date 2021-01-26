@@ -81,7 +81,7 @@ const config = {
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
-    ELASTIC_APM_ENVIRONMENT: 'dev',
+    ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
@@ -123,7 +123,6 @@ const config = {
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
-    ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
   production: {
     BASE_URL: 'http://localhost:8080/',

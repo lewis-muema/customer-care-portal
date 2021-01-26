@@ -92,7 +92,8 @@
               <span> Intercounty Configuration </span>
             </a>
           </li>
-          <li class="treeview">
+          <li class="treeview" v-if="permissions.approve_social_media_biz">
+            >
             <a
               class="fancybox fancybox.iframe fancyboxy"
               href="/socialMediaBusiness"
