@@ -50,13 +50,7 @@ no-shadow */
             </td>
             <td>
               {{ riderDetails.default_currency }}
-              {{
-                riderDetails.current_list.length > 0
-                  ? new Intl.NumberFormat().format(
-                      Math.round(riderDetails.current_list[0].rb),
-                    )
-                  : '0'
-              }}
+              {{ new Intl.NumberFormat().format(Math.round(nextTransfer)) }}
             </td>
             <td>
               {{ riderDetails.default_currency }}
@@ -151,6 +145,7 @@ export default {
       loading: false,
       showClass: '',
       showClass1: '',
+      nextTransfer: null,
     };
   },
   computed: {
@@ -173,7 +168,12 @@ export default {
       this.updateErrors(arr);
       await this.requestsingleRdier(this.riderID, 'rider');
     },
+
+    async riderID(newQuestion, oldQuestion) {
+      const balance = this.riderID ? await this.getRunningBalance() : [];
+    },
   },
+
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
@@ -182,6 +182,7 @@ export default {
     }),
     ...mapActions({
       request_single_rider: 'request_single_rider',
+      runningBalance: 'request_nextTransfer',
     }),
     async requestsingleRdier(user) {
       this.opened = [];
@@ -293,6 +294,24 @@ export default {
     },
     forceRerender() {
       this.riderTable += 1;
+    },
+
+    async getRunningBalance() {
+      const payload = {
+        app: 'PARTNERS_APP',
+        endpoint: 'rider_next_transfer',
+        apiKey: true,
+        params: {
+          rider_id: this.riderID,
+        },
+      };
+
+      try {
+        const res = await this.runningBalance(payload);
+        this.nextTransfer = res.amount;
+      } catch (error) {
+        return error;
+      }
     },
   },
 };
