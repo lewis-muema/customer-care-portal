@@ -41,6 +41,9 @@ export default {
     state.searchedUser = val;
   },
   setToken(state, val) {
+    if (val === null && process.client) {
+      val = localStorage.getItem('jwtToken');
+    }
     state.jwtToken = val;
   },
   setRefreshToken(state, val) {
