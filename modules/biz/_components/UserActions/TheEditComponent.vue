@@ -163,7 +163,7 @@
           />
           <span for="" class="exempt-vat-label"> Exempt VAT</span>
         </div>
-        <div class="col-md-7 hide">
+        <div class="col-md-7">
           <input
             value="1"
             name="email_invoice"

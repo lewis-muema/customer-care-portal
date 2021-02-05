@@ -70,10 +70,12 @@ export default {
       setToken: 'setToken',
     }),
     getloggedUser() {
-      const jwtToken = this.getAuthenticationToken;
       const storedToken = localStorage.getItem('jwtToken');
-      this.setToken(jwtToken);
-      const token = this.getAuthenticationToken;
+
+      const token =
+        this.getAuthenticationToken === null
+          ? storedToken
+          : this.getAuthenticationToken;
 
       if (token && token !== '' && storedToken !== 'undefined') {
         const partsOfToken = token.split('.');
