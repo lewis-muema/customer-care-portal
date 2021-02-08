@@ -1553,7 +1553,7 @@ export default {
       return error.response.data;
     }
   },
-  async request_social__media_business({ state, dispatch }) {
+  async request_pending_social__media_business({ state, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
@@ -1564,6 +1564,46 @@ export default {
       },
     };
     const url = `${config.ADONIS_API}social-media-businesses?verified=0`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_approved_social__media_business({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}social-media-businesses?verified=1`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_rejected_social__media_business({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}social-media-businesses?verified=2`;
     try {
       const response = await axios.get(url, param);
       return response.data;
@@ -1633,6 +1673,17 @@ export default {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+    }
+  },
+  async update_freight_status({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
     }
   },
 };
