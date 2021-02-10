@@ -544,6 +544,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
+import { Client } from '@googlemaps/google-maps-services-js';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import SessionMxn from '@/mixins/session_mixin';
 
@@ -787,9 +788,18 @@ export default {
     }),
     // eslint-disable-next-line func-names
     search: _.debounce(function(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
+      const client = new Client({});
+      client
+        .placeAutocomplete(
+          {
+            params: {
+              input: val,
+              fields: 'geometry',
+              key: this.herokuKey,
+            },
+            timeout: 1000, // milliseconds
+          },
+          axios,
         )
         .then(response => {
           this.suggestions = response.data.predictions;
@@ -817,9 +827,17 @@ export default {
       this.searched = true;
       this.suggestions = [];
       const fromPlaceId = placeId;
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=${this.herokuKey}`,
+      const client = new Client({});
+      client
+        .placeDetails(
+          {
+            params: {
+              place_id: fromPlaceId,
+              key: this.herokuKey,
+            },
+            timeout: 1000, // milliseconds
+          },
+          axios,
         )
         .then(response => {
           const fromLatLong = response.data.result.geometry.location;
