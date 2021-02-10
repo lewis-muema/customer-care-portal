@@ -490,6 +490,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
+import { Client } from '@googlemaps/google-maps-services-js';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import SessionMxn from '@/mixins/session_mixin';
 
@@ -626,10 +627,10 @@ export default {
         this.pickUpCoordinates &&
         this.destination &&
         this.destinationCoordinates &&
-        this.partnerFee &&
-        this.serviceCharge &&
-        this.sendyCommission &&
-        this.clientFee
+        (this.partnerFee || this.partnerFee === 0) &&
+        (this.serviceCharge || this.serviceCharge === 0) &&
+        (this.sendyCommission || this.sendyCommission === 0) &&
+        (this.clientFee || this.clientFee === 0)
       ) {
         return true;
       }

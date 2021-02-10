@@ -15,6 +15,9 @@
           <div class="mega" v-if="userType === 'rewards'">
             <RewardsView />
           </div>
+          <div class="mega" v-if="userType === 'refund'">
+            <RefundsView />
+          </div>
         </div>
       </div>
     </div>
@@ -30,6 +33,7 @@ export default {
     TheRiderTable: () => import('~/modules/riders/_components/TheRiderTable'),
     ThePeerTable: () => import('~/modules/peer/_components/ThePeerTable'),
     RewardsView: () => import('~/modules/rewards/_components/RewardsView'),
+    RefundsView: () => import('~/modules/refunds/_components/RefundsView'),
   },
   data() {
     return {
@@ -59,7 +63,7 @@ export default {
       this.searchKey += 1;
     },
     setBackground() {
-      if (this.userType === 'rewards') {
+      if (this.userType === 'rewards' || this.userType === 'refund') {
         return 'invoiceBackground';
       }
       return '';

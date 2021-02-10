@@ -74,13 +74,27 @@
               ><i class="fa fa-bars"></i> <span> Nps </span></nuxt-link
             >
           </li>
+          <li class="treeview" v-if="permissions.approve_permit_refund">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/refund"
+              @click="showModal('refund', $event)"
+              ><i class="fa fa-handshake-o"></i>
+              <span> Permit Refund </span>
+            </a>
+          </li>
 
           <li id="offline_2" class="hidden">
             <a href="#"
               ><i class="fa fa-circle-o text-red"></i> <span>Offline</span></a
             >
           </li>
-
+          <li class="treeview" v-if="permissions.auxilliary_services">
+            <nuxt-link to="/auxilliary"
+              ><i class="fa fa-money text-grey"></i>
+              <span> Auxiliary services </span></nuxt-link
+            >
+          </li>
           <li id="online_2">
             <a href="#"
               ><i class="fa fa-circle-o text-success"></i>

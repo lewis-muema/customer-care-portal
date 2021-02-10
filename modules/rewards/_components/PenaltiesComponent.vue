@@ -239,10 +239,11 @@
               <div class="form-inline expand-logs-section">
                 <div class="form-group col-md-4 expandable-header">
                   <label class="expandable-data">
-                    Orders to penalize for be</label
+                    {{ penalizeLabel(props.row.parameter) }}</label
                   >
                   {{
                     reassignData(
+                      props.row.parameter,
                       props.row.parameter_comp,
                       props.row.parameter_data,
                     )
@@ -649,13 +650,32 @@ export default {
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
-    reassignData(comparator, value) {
+    reassignData(param, comparator, value) {
       let resp = '';
       if (Object.keys(this.comparator).length > 0) {
-        const data = this.comparator.find(
-          location => location.code === comparator,
-        );
-        resp = `${data.name} ${value} orders`;
+        if (param === 'REASSIGNED') {
+          const response = [];
+          const arr = JSON.parse(value);
+          for (let i = 0; i < arr.length; i++) {
+            const extract = this.reasons_data.find(
+              location => location.code === arr[i],
+            );
+            response.push(extract.name);
+            resp = response.toString();
+          }
+        } else {
+          const data = this.comparator.find(
+            location => location.code === comparator,
+          );
+          resp = `${data.name} ${value} orders`;
+        }
+      }
+      return resp;
+    },
+    penalizeLabel(val) {
+      let resp = 'Orders to penalize for be';
+      if (val === 'REASSIGNED') {
+        resp = 'Reassign reasons to penalize for ';
       }
       return resp;
     },
@@ -768,19 +788,19 @@ export default {
 .table-background {
   background: #fff;
 }
-.add_section{
-  background: #FFFFFF;
+.add_section {
+  background: #ffffff;
   border: 1px solid #000000;
-  color: #1F1D1D;
+  color: #1f1d1d;
   margin-left: 2%;
   width: 15% !important;
   margin-bottom: 1%;
 }
 .add_section:focus,
 .add_section:hover {
-  background: #FFFFFF !important;
+  background: #ffffff !important;
   border: 1px solid #000000 !important;
-  color: #1F1D1D;
+  color: #1f1d1d;
   cursor: pointer;
 }
 .form-inline .form-control {
@@ -841,45 +861,45 @@ export default {
   color: #dc3545;
   margin-left: -4% !important;
 }
-.input-with-select{
+.input-with-select {
   margin-left: -6%;
 }
-.add-reward-section{
+.add-reward-section {
   width: 80% !important;
   min-height: 340px;
 }
-.user-textarea{
+.user-textarea {
   margin-right: 9%;
 }
-.message-input{
+.message-input {
   margin-left: -5%;
 }
-.action-button--danger{
+.action-button--danger {
   background-color: #ff4949;
   border-color: #ff4949;
   color: #fff;
 }
-.action-button--active{
+.action-button--active {
   background-color: #13ce66;
   border-color: #13ce66;
   color: #fff;
 }
-.expandable-data{
+.expandable-data {
   width: 100%;
   font-weight: 600;
   font-size: 13px;
   line-height: 19px;
   color: #000000;
-  margin-bottom: 3%!important;
+  margin-bottom: 3% !important;
 }
-.expand-logs-section{
+.expand-logs-section {
   width: 100% !important;
 }
 .expandable-header {
   margin-bottom: 15px;
   width: 20%;
 }
-.action-button--archive{
+.action-button--archive {
   background-color: #3c8dbc;
   border-color: #3c8dbc;
   color: #fff;

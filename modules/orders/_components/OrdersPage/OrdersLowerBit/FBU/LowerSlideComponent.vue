@@ -21,7 +21,7 @@
                   v-if="
                     order.order_details.confirm_status === 0 &&
                       !cancelStatus() &&
-                      hasFreightPermissions()
+                      permissions.freight_actions_assign_rider
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -33,7 +33,11 @@
                   Assign Order
                 </button>
                 <button
-                  v-if="!completeStatus() && !cancelStatus()"
+                  v-if="
+                    order.order_details.confirm_status !== 0 &&
+                      !completeStatus() &&
+                      !cancelStatus()
+                  "
                   class="freight-order-actions-buttons"
                   :class="ActiveTab === 'gps' ? 'active-tab' : 'inactive-tab'"
                   @click="ActiveTab = 'gps'"
@@ -43,24 +47,25 @@
                 </button>
                 <button
                   v-if="
-                    !completeStatus() &&
+                    order.order_details.order_status === 'in transit' &&
+                      !completeStatus() &&
                       !cancelStatus() &&
-                      hasFreightPermissions()
+                      hasAuxilliaryPermissions()
                   "
-                  class="freight-order-actions-buttons"
+                  class="freight-order-actions-buttons freight-button-width-override"
                   :class="
                     ActiveTab === 'finances' ? 'active-tab' : 'inactive-tab'
                   "
                   @click="ActiveTab = 'finances'"
                 >
                   <span class="fa fa-fw fa-usd"></span>
-                  Finances
+                  Auxiliary Services
                 </button>
                 <button
                   v-if="
                     !completeStatus() &&
                       !cancelStatus() &&
-                      hasFreightPermissions()
+                      permissions.freight_actions_order_statuses
                   "
                   class="freight-order-actions-buttons"
                   :class="
@@ -124,52 +129,53 @@
                 </div>
                 <TheTrackerComponent
                   v-if="
-                    ActiveTab === 'gps' &&
-                      (!completeStatus() && !cancelStatus())
+                    ActiveTab === 'gps' && !completeStatus() && !cancelStatus()
                   "
                   :order="order"
                 />
                 <AuxilliaryServices
                   v-if="
                     ActiveTab === 'finances' &&
-                      (!completeStatus() &&
-                        !cancelStatus() &&
-                        hasFreightPermissions())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      hasAuxilliaryPermissions()
                   "
                   :order="order"
                 />
                 <AssignRider
                   v-if="
                     ActiveTab === 'assign' &&
-                      (!completeStatus() &&
-                        !cancelStatus() &&
-                        hasFreightPermissions())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      permissions.freight_actions_assign_rider
                   "
                   :order="order"
                 />
                 <OrderStatuses
                   v-if="
                     ActiveTab === 'status' &&
-                      (!completeStatus() &&
-                        !cancelStatus() &&
-                        hasFreightPermissions())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      permissions.freight_actions_order_statuses
                   "
                   :order="order"
                 />
                 <TheReallocateComponent
                   v-if="
                     ActiveTab === 'reallocate' &&
-                      (order.order_details.confirm_status !== 0 &&
-                        !completeStatus() &&
-                        !cancelStatus() &&
-                        canReallocate())
+                      order.order_details.confirm_status !== 0 &&
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      canReallocate()
                   "
                   :order="order"
                 />
                 <TheCancelComponent
                   v-if="
                     ActiveTab === 'cancel' &&
-                      (!completeStatus() && !cancelStatus() && canCancel())
+                      !completeStatus() &&
+                      !cancelStatus() &&
+                      canCancel()
                   "
                   :order="order"
                 />
@@ -237,6 +243,9 @@ export default {
   },
   computed: {
     ...mapState(['actionErrors', 'actionClass', 'userData']),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
   },
   mounted() {
     const notification = [];
@@ -273,11 +282,14 @@ export default {
       }
       return false;
     },
-    hasFreightPermissions() {
+    hasAuxilliaryPermissions() {
       const privileges = JSON.parse(this.userData.payload.data.privilege);
       if (
-        Object.prototype.hasOwnProperty.call(privileges, 'freight_actions') &&
-        privileges.freight_actions
+        Object.prototype.hasOwnProperty.call(
+          privileges,
+          'auxilliary_services_order',
+        ) &&
+        privileges.auxilliary_services_order
       ) {
         return true;
       }

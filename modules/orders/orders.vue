@@ -23,8 +23,8 @@
   </div>
 </template>
 <script>
-import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
+import order_store from './_store';
 import TheRowComponent from './_components/OrdersPage/OrdersMainBit/TheRowComponent';
 import rabbitMQComponent from '../rabbitMQ/rabbitMQComponent';
 

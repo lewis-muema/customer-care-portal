@@ -1,63 +1,67 @@
 <template>
-  <table
-    id="peer_list"
-    class="table  table-bordered table-hover"
-    :key="peerTable"
-  >
-    <thead>
-      <tr>
-        <th>&nbsp;</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Sign Up Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-if="userID === null">
-        <td colspan="5">Search to view User details.</td>
-      </tr>
-      <template v-else-if="details !== null">
-        <tr v-if="loading">
-          <i class="fa fa-spinner fa-spin loader"></i>
+  <div class="table-responsive">
+    <table
+      id="peer_list"
+      class="table  table-bordered table-hover"
+      :key="peerTable"
+    >
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Sign Up Date</th>
         </tr>
-        <tr
-          v-else
-          @click="toggle('peer')"
-          :class="{ opened: opened.includes('peer') }"
-        >
-          <td>{{ offset }}</td>
-          <td>{{ details.user_name }}</td>
-          <td>{{ details.user_email }}</td>
-          <td>{{ details.user_phone }}</td>
-          <td>
-            {{ getFormattedDate(details.date_signed_up, 'hh.mm a DD/MM/YYYY') }}
-          </td>
+      </thead>
+      <tbody>
+        <tr v-if="userID === null">
+          <td colspan="5">Search to view User details.</td>
         </tr>
-        <tr v-if="opened.includes('peer')">
-          <td colspan="5" class="user-details">
-            <div class="lower_slide_bit" style="" :id="`bumba_${userID}`">
-              <div class="row">
-                <div class="box box-primary peer-main">
-                  <TheUserActionsComponent :user="userInfo" />
-                  <TheUserDetailsComponent :user="userInfo" />
+        <template v-else-if="details !== null">
+          <tr v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i>
+          </tr>
+          <tr
+            v-else
+            @click="toggle('peer')"
+            :class="{ opened: opened.includes('peer') }"
+          >
+            <td>{{ offset }}</td>
+            <td>{{ details.user_name }}</td>
+            <td>{{ details.user_email }}</td>
+            <td>{{ details.user_phone }}</td>
+            <td>
+              {{
+                getFormattedDate(details.date_signed_up, 'hh.mm a DD/MM/YYYY')
+              }}
+            </td>
+          </tr>
+          <tr v-if="opened.includes('peer')">
+            <td colspan="5" class="user-details">
+              <div class="lower_slide_bit" style="" :id="`bumba_${userID}`">
+                <div class="row">
+                  <div class="box box-primary peer-main">
+                    <TheUserActionsComponent :user="userInfo" />
+                    <TheUserDetailsComponent :user="userInfo" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Sign Up Date</th>
         </tr>
-      </template>
-    </tbody>
-    <tfoot>
-      <tr>
-        <th>&nbsp;</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Sign Up Date</th>
-      </tr>
-    </tfoot>
-  </table>
+      </tfoot>
+    </table>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex';

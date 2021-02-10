@@ -398,7 +398,7 @@
                           {{
                             (data.insurance ? data.insurance : 0) +
                               data.service_fee +
-                              data.rider_amount
+                              (data.rider_amount ? data.rider_amount : 0)
                           }}
                         </p>
                       </div>
@@ -544,6 +544,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
+import { Client } from '@googlemaps/google-maps-services-js';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import SessionMxn from '@/mixins/session_mixin';
 
@@ -692,10 +693,10 @@ export default {
         this.emptyReturnCoordinates &&
         this.containerWeight &&
         this.containerSize &&
-        this.partnerFee &&
-        this.serviceCharge &&
-        this.sendyCommission &&
-        this.clientFee
+        (this.partnerFee || this.partnerFee === 0) &&
+        (this.serviceCharge || this.serviceCharge === 0) &&
+        (this.sendyCommission || this.sendyCommission === 0) &&
+        (this.clientFee || this.clientFee === 0)
       ) {
         return true;
       }
@@ -945,7 +946,9 @@ export default {
       this.containerWeight = this.tablePricingData[i].container_weight_tonnes
         ? this.tablePricingData[i].container_weight_tonnes.toString()
         : '0';
-      this.partnerFee = this.tablePricingData[i].rider_amount;
+      this.partnerFee = this.tablePricingData[i].rider_amount
+        ? this.tablePricingData[i].rider_amount
+        : 0;
       this.serviceCharge = this.tablePricingData[i].service_fee;
       this.sendyCommission = this.tablePricingData[i].sendy_commission;
       this.clientFee =
@@ -953,7 +956,9 @@ export default {
           ? this.tablePricingData[i].insurance
           : 0) +
         this.tablePricingData[i].service_fee +
-        this.tablePricingData[i].rider_amount;
+        (this.tablePricingData[i].rider_amount
+          ? this.tablePricingData[i].rider_amount
+          : 0);
       this.editStatus = true;
       this.editedBandIndex = i;
     },
