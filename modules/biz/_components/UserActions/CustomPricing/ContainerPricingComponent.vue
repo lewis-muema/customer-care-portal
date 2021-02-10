@@ -804,18 +804,7 @@ export default {
         .then(response => {
           this.suggestions = response.data.predictions;
           this.visible = true;
-        })
-        .catch(e => {
-          console.log(e);
         });
-      // axios
-      //   .get(
-      //     `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-      //   )
-      //   .then(response => {
-      //     this.suggestions = response.data.predictions;
-      //     this.visible = true;
-      //   });
     }, 500),
     calculateClientFee() {
       const orderAmount =
@@ -838,9 +827,17 @@ export default {
       this.searched = true;
       this.suggestions = [];
       const fromPlaceId = placeId;
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=${this.herokuKey}`,
+      const client = new Client({});
+      client
+        .placeDetails(
+          {
+            params: {
+              place_id: fromPlaceId,
+              key: this.herokuKey,
+            },
+            timeout: 1000, // milliseconds
+          },
+          axios,
         )
         .then(response => {
           const fromLatLong = response.data.result.geometry.location;
