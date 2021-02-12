@@ -777,7 +777,10 @@ export default {
       this.service.getPlacePredictions(
         {
           input: val,
-          types: ['(cities)'],
+          types: [],
+          componentRestrictions: {
+            country: ['ke', 'ug', 'tz'],
+          },
         },
         this.displaySuggestions,
       );
