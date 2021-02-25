@@ -197,4 +197,22 @@ export default {
   getSearchedCoupon(state) {
     return state.searchedCoupon;
   },
+  getProblematicOrderSearched(state) {
+    return state.problematicOrderSearched;
+  },
+  getTypingState(state) {
+    return state.typingState;
+  },
+  getAlertStatus(state) {
+    return state.alertStatus;
+  },
+  getAdminID(state) {
+    return state.adminID;
+  },
+  getActiveLiveOpsVendor(state) {
+    return state.activeLiveOpsVendor;
+  },
+  getLiveOpsRefresh(state) {
+    return state.liveOpsRefresh;
+  },
 };
