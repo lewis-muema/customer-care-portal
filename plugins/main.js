@@ -203,6 +203,29 @@ Vue.mixin({
       const formattedDate = moment(dt1, 'YYYY.MM.DD').fromNow();
       return formattedDate;
     },
+    determineDuration(seconds) {
+      return this.fancyTimeFormat(seconds);
+    },
+    fancyTimeFormat(duration) {
+      // Hours, minutes and seconds
+      // eslint-disable-next-line no-bitwise
+      const hrs = ~~(duration / 3600);
+      // eslint-disable-next-line no-bitwise
+      const mins = ~~((duration % 3600) / 60);
+      // eslint-disable-next-line no-bitwise
+      const secs = ~~duration % 60;
+
+      // Output like "1:01" or "4:03:59" or "123:03:59"
+      let ret = '';
+
+      if (hrs > 0) {
+        ret += `${hrs} : ${mins < 10 ? '0' : ''}`;
+      }
+
+      ret += `${mins} : ${secs < 10 ? '0' : ''}`;
+      ret += `${secs}`;
+      return ret;
+    },
     checkEpiry(coupon) {
       const today = moment().format('YYYY-MM-DD');
       // eslint-disable-next-line prettier/prettier

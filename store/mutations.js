@@ -218,4 +218,25 @@ export default {
   setSearchedCoupon(state, val) {
     state.searchedCoupon = val;
   },
+  setProblematicOrderSearched(state, val) {
+    state.problematicOrderSearched = val;
+  },
+  setAlertStatus(state, val) {
+    state.alertStatus = val;
+  },
+  setAdminID(state, val) {
+    state.adminID = val;
+  },
+  setActiveLiveOpsVendor(state, val) {
+    state.activeLiveOpsVendor = val;
+  },
+  setActiveLiveOpsVendor(state, val) {
+    state.activeLiveOpsVendor = val;
+  },
+  setLiveOpsRefresh(state, val) {
+    state.liveOpsRefresh = val;
+  },
+  setTypingState(state, val) {
+    state.typingState = val;
+  },
 };

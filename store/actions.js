@@ -110,6 +110,65 @@ export default {
       return error.response;
     }
   },
+  async request_helpscoute_patch({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+
+    const authorization = await dispatch('request_helpscout_token');
+    const token = localStorage.getItem('helpscoutAccessToken');
+
+    const customHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    customHeaders.Authorization = `Bearer ${token}`;
+    const config = {
+      headers: customHeaders,
+    };
+
+    const values = JSON.stringify(payload.params);
+
+    try {
+      const response = await axios.patch(
+        `${url}/${payload.conversationID}`,
+        values,
+        config,
+      );
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      return error.response;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async request_helpscoute_get({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+    const authorization = await dispatch('request_helpscout_token');
+    const token = localStorage.getItem('helpscoutAccessToken');
+
+    const customHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    if (authorization) {
+      customHeaders.Authorization = `Bearer ${token}`;
+      delete payload.params.token;
+    }
+    delete payload.params.authorization;
+
+    try {
+      const response = await axios.get(`${url}?email=${payload.params.email}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      return error.response;
+    }
+  },
+
   // eslint-disable-next-line require-await
   async log_cc_action({ rootState, dispatch, commit, state }, payload) {
     const customConfig = state.config;
@@ -1693,6 +1752,38 @@ export default {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+    }
+  },
+  async request_operational_alerts({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+      params: payload,
+    };
+    const url = `${config.STAFF_API}live-ops/orders`;
+    try {
+      const response = await axios.get(url, values);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async assignAlert({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
     }
   },
 };
