@@ -37,30 +37,16 @@
     <div class="filters-holder">
       <div class="col-md-4 columns">
         <label for="admin" class="select-label"></label>
-        <SearchComponent />
+        <SearchComponent @searchedOrder="handleOrderSearch" />
       </div>
       <div class="col-md-8 row columns">
         <div class="col-md-4 col-xs-6" v-if="isAdmin">
           <label for="admin" class="select-label">Filter By Assignee</label>
-          <select name="asignee" v-model="asignee" class="filter-select">
-            <option value="all">All </option>
-            <template v-for="(admin, index) in adminList">
-              <option :value="admin.admin_id" :key="index">
-                {{ admin.name }}
-              </option>
-            </template>
-          </select>
+          <FilterMultiSelect category="admins" :data="adminList" />
         </div>
         <div class="col-md-4 col-xs-6">
           <label for="admin" class="select-label">Filter Alert Type</label>
-          <select name="alertType" v-model="alertType" class="filter-select">
-            <option value="all">All Alerts </option>
-            <template v-for="(alert, index) in alertTypes">
-              <option :value="alert.name" :key="index">
-                {{ alert.title }}
-              </option>
-            </template>
-          </select>
+          <FilterMultiSelect category="alerts" :data="alertTypes" />
         </div>
         <div class="col-md-4 col-xs-6" v-if="isAdmin">
           <label for="admin" class="select-label"></label>
@@ -80,6 +66,7 @@ export default {
   name: 'Filterbar',
   components: {
     SearchComponent: () => import('./filters/SearchComponent'),
+    FilterMultiSelect: () => import('./filters/FilterMultiSelect'),
   },
   props: ['isAdmin', 'filters'],
   data() {
@@ -88,51 +75,85 @@ export default {
       adminList: [],
       alertType: 'all',
       asignee: 'all',
+      loading: false,
+      requested: false,
+      alertTypes: [],
+      orderNo: null,
     };
   },
   computed: {
     ...mapGetters(['getAdmins']),
-    alertTypes() {
-      const data = [
-        {
-          title: 'Offline Partners',
-          name: 'offline-partners',
-        },
-        {
-          title: 'Delayed Delivery',
-          name: 'delayed-delivery',
-        },
-        {
-          title: 'Delayed Pickup',
-          name: 'delayed-pickup',
-        },
-      ];
-      return data;
-    },
   },
   watch: {
     getAdmins(admins) {
-      return (this.adminList = admins);
+      const arr = [];
+
+      const All = {
+        admin_id: null,
+        name: 'All',
+        checked: false,
+      };
+      arr.push(All);
+      for (let i = 0; i < admins.length; i += 1) {
+        admins[i].checked = false;
+        arr.push(admins[i]);
+      }
+      return (this.adminList = arr);
     },
     asignee(adminID) {
       this.updateAdminID(adminID);
     },
+    alertType(alertID) {
+      this.updateAlertType(alertID);
+    },
   },
   async mounted() {
+    this.retrieveAlertTypes();
     await this.setAdmins();
   },
   methods: {
     ...mapMutations({
       updateAlertStatus: 'setAlertStatus',
       updateAdminID: 'setAdminID',
+      updateAlertType: 'setAlertType',
+      updateSelectedOrder: 'setSelectedOrder',
     }),
-    ...mapActions(['setAdmins']),
+    ...mapActions(['setAdmins', 'request_alert_types']),
 
     showSettings() {
       this.$router.push('/liveOperations/settings');
     },
     setStatus(code) {
       this.updateAlertStatus(code);
+    },
+    handleOrderSearch(searchedOrder) {
+      this.$emit('searchedOrder', searchedOrder);
+    },
+    async retrieveAlertTypes() {
+      this.loading = true;
+      this.requested = true;
+
+      try {
+        const response = await this.request_alert_types();
+        const arr = [];
+
+        const All = {
+          id: null,
+          name: 'All',
+          checked: false,
+        };
+        arr.push(All);
+        for (let i = 0; i < response.length; i += 1) {
+          response[i].checked = false;
+          arr.push(response[i]);
+        }
+        this.alertTypes = arr;
+        this.loading = false;
+      } catch (error) {
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
     },
   },
 };

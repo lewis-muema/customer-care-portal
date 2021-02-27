@@ -30,22 +30,25 @@ export default {
       const data = [
         {
           title: 'Problematic Orders',
-          total: this.metaData.total,
+          total: this.metaData === null ? null : this.metaData.total,
           name: 'problematic-orders',
         },
         {
           title: 'Unresolved Orders',
-          total: this.metaData.unresolved,
+          total: this.metaData === null ? null : this.metaData.unresolved,
           name: 'unresolved-orders',
         },
         {
           title: 'Resolved Orders',
-          total: this.metaData.resolved,
+          total: this.metaData === null ? null : this.metaData.resolved,
           name: 'resolved-orders',
         },
         {
           title: 'Avg. Resolution Time',
-          total: this.determineDuration(this.metaData.averageResolutionTime),
+          total:
+            this.metaData === null
+              ? null
+              : this.determineDuration(this.metaData.averageResolutionTime),
           name: 'resolution-time',
         },
       ];
