@@ -239,4 +239,22 @@ export default {
   setTypingState(state, val) {
     state.typingState = val;
   },
+  setAlertType(state, val) {
+    state.alertType = val;
+  },
+  setSelectedVendors(state, val) {
+    state.selectedVendors = val;
+  },
+  setSelectedAdmins(state, val) {
+    state.selectedAdmins = val;
+  },
+  setSelectedAlerts(state, val) {
+    state.selectedAlerts = val;
+  },
+  setSelectedOrder(state, val) {
+    state.selectedOrder = val;
+  },
+  setSearchedOrderStatus(state, val) {
+    state.searchedOrderStatus = val;
+  },
 };

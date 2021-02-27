@@ -2,7 +2,11 @@
   <div>
     <BreadCrumbs />
     <ReportsBar :meta-data="metaData" />
-    <FilterBar :is-admin="isAdmin" :filters="filters" />
+    <FilterBar
+      :is-admin="isAdmin"
+      :filters="filters"
+      @searchedOrder="handleOrderSearch"
+    />
   </div>
 </template>
 
@@ -20,7 +24,7 @@ export default {
       const data = [
         {
           title: 'Problematic Orders',
-          total: this.metaData.total,
+          total: this.metaData === null ? null : this.metaData.total,
           name: 'problematic-orders',
           isFilter: true,
           filterTitle: 'All',
@@ -28,7 +32,7 @@ export default {
         },
         {
           title: 'Unresolved Orders',
-          total: this.metaData.unresolved,
+          total: this.metaData === null ? null : this.metaData.unresolved,
           name: 'unresolved-orders',
           isFilter: true,
           filterTitle: 'Unresolved',
@@ -36,7 +40,7 @@ export default {
         },
         {
           title: 'Resolved Orders',
-          total: this.metaData.resolved,
+          total: this.metaData === null ? null : this.metaData.resolved,
           name: 'resolved-orders',
           isFilter: true,
           filterTitle: 'Resolved',
@@ -58,6 +62,11 @@ export default {
         return report.isFilter;
       });
       return data;
+    },
+  },
+  methods: {
+    handleOrderSearch(searchedOrder) {
+      this.$emit('searchedOrder', searchedOrder);
     },
   },
 };
