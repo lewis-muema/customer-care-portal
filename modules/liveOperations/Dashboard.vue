@@ -80,6 +80,9 @@ export default {
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
     },
+    loggedUser() {
+      return this.userData.payload.data.admin_id;
+    },
     isAdmin() {
       return this.permissions.live_operations_admin;
     },
@@ -179,7 +182,7 @@ export default {
         date_from: startDate,
         date_to: endDate,
         status: this.alertStatus,
-        assignee: this.adminIDs,
+        assignee: this.isAdmin ? this.adminIDs : this.loggedUser,
         alert_type_id: this.alertIDs,
 
         vendor_type_id: this.vendorTypes,
