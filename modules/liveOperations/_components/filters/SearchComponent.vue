@@ -17,22 +17,6 @@
         @click="clear"
       />
     </div>
-=======
-    <input
-      type="text"
-      class="Typeahead__input"
-      placeholder="Search for Order No/ Customer name/ User Phone"
-      autocomplete="off"
-      v-model="query"
-      @keydown.down="down"
-      @keydown.up="up"
-      @keydown.enter="hit"
-      @keydown.esc="reset"
-      @input="update"
-      @click="clear"
-      @blur="reset"
-    />
->>>>>>> 81bf2cefa0766fc8cfdf2d0994abb7f97912a78e
     <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
       <li
         v-for="(item, $item) in items"
