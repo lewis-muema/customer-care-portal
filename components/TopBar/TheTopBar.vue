@@ -1,17 +1,30 @@
 <template>
   <section class="content">
-    <div class="row content-body">
-      <table width="99%;">
-        <tbody>
-          <tr>
-            <TheSearchBar />
-            <TheStatusButtonsBar :orders="storedData" />
-            <TheCitiesBar :orders="storedData" />
-            <TheReorganizeBar />
-            <rabbitMQcomponent @pushedSomething="handlePushInParent" />
-          </tr>
-        </tbody>
-      </table>
+    <div class="row ">
+      <div class="col-4">
+        <TheSearchBar class="" />
+      </div>
+      <div class="row ml-5 marginTop">
+        <div class="">
+          <FilterComponent />
+        </div>
+        <div class="ml-3">
+          <TheCitiesBar />
+        </div>
+        <div class="ml-3">
+          <BusinessUnitFilter />
+        </div>
+      </div>
+    </div>
+    <div class="row mt-1">
+      <div class="ml-4">
+        <TheStatusButtonsBar :orders="storedData" />
+      </div>
+      <div class="col-4"></div>
+      <TheReorganizeBar class="mt-2" />
+    </div>
+    <div>
+      <rabbitMQcomponent @pushedSomething="handlePushInParent" />
     </div>
     <div v-if="searchState" class="search-window">
       <div class="box box-info" id="new_serach_window">
@@ -54,6 +67,8 @@ export default {
     TheStatusButtonsBar,
     TheCitiesBar,
     TheReorganizeBar,
+    BusinessUnitFilter: () => import('./BusinessUnitFilter'),
+    FilterComponent: () => import('./FilterComponent'),
     rabbitMQcomponent,
     TheRowHolder: () => import('@/components/UI/TheRowHolder'),
   },
@@ -124,5 +139,23 @@ export default {
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
+}
+.pass {
+  margin-left: 50px;
+}
+.all {
+  color: #527cbd;
+}
+.pending {
+  color: #ce5642;
+}
+.confirmed {
+  color: #e89f3c;
+}
+.transit {
+  color: #4aa261;
+}
+.marginTop {
+  margin-top: -20px;
 }
 </style>

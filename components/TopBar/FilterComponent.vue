@@ -1,11 +1,11 @@
 <template>
   <div class="">
-    <span class=""> Filter Town </span> <br />
+    <span class=""> Filter Products </span> <br />
     <multiselect
       select-label=""
       selected-label=""
       deselect-label=""
-      v-model="checkedCities"
+      v-model="value"
       :options="options"
       :multiple="true"
       track-by="value"
@@ -14,7 +14,7 @@
       @select="onSelect($event)"
       @remove="onRemove($event)"
       class="multiselect"
-      placeholder="All Towns"
+      placeholder="All Products"
       @input="submitMethod"
     >
       <span
@@ -39,59 +39,30 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
-  name: 'cityBar',
+  name: 'FilterComponent',
   components: {
     Multiselect,
   },
   data() {
     return {
-      options: [{ value: 'all', label: 'All Towns', checked: false }],
-      citiesData: [],
-      cities: null,
-      checkedCities: [],
-      selectedCities: [],
+      value: '',
+      cop_names: [],
+      selected_cop_names: [],
+      options: [
+        { value: 'all', label: 'All Sendy Products', checked: false },
+        { value: 'transportation', label: 'Transportation', checked: false },
+        { value: 'Kiota', label: 'Kiota', checked: false },
+        { value: 'SendyGO', label: 'Sendy GO', checked: false },
+      ],
     };
-  },
-  computed: {
-    ...mapState(['userData']),
-    ...mapGetters(['getCities']),
-    countryCodes() {
-      return this.userData.payload.data.country_codes;
-    },
-  },
-  watch: {
-    getCities(cities) {
-      this.options = [{ value: 'all', label: 'All Towns', checked: false }];
-      this.unitsdata = [];
-      cities.forEach(city => {
-        this.options.push({
-          value: city.city_id,
-          label: city.city_name,
-          checked: false,
-        });
-        this.citiesData.push(city.city_id);
-      });
-    },
-  },
-  mounted() {
-    if (process.client) {
-      const countryCode = JSON.parse(this.countryCodes);
-      this.setCities({
-        params: {
-          code: countryCode,
-        },
-      });
-    }
   },
   methods: {
     ...mapMutations({
-      updateSelectedCities: 'setSelectedCities',
+      updateSelectedCopNames: 'setSelectedCopNames',
     }),
-    ...mapActions(['setCities']),
-
     customLabel(option) {
       return `${option.label}`;
     },
@@ -132,11 +103,16 @@ export default {
     },
     submitMethod() {
       const arr = [];
-      this.checkedCities.forEach(element => {
+      this.value.forEach(element => {
         arr.push(element.value);
       });
-      this.selectedCities = arr.includes('all') ? this.citiesData : arr;
-      this.updateSelectedCities(this.selectedCities);
+      this.cop_names = arr;
+      this.selected_cop_names =
+        this.cop_names.includes('all') ||
+        this.cop_names.includes('transportation')
+          ? ['normal']
+          : this.cop_names;
+      this.updateSelectedCopNames(this.selected_cop_names);
     },
   },
 };

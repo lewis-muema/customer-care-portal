@@ -1,11 +1,11 @@
 <template>
   <div class="">
-    <span class=""> Filter Town </span> <br />
+    <span class=""> Filter Business Unit </span> <br />
     <multiselect
       select-label=""
       selected-label=""
       deselect-label=""
-      v-model="checkedCities"
+      v-model="businessUnits"
       :options="options"
       :multiple="true"
       track-by="value"
@@ -14,7 +14,7 @@
       @select="onSelect($event)"
       @remove="onRemove($event)"
       class="multiselect"
-      placeholder="All Towns"
+      placeholder="All Business Unit"
       @input="submitMethod"
     >
       <span
@@ -39,59 +39,57 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: 'cityBar',
+  name: 'BusinessUnitFilter',
   components: {
     Multiselect,
   },
   data() {
     return {
-      options: [{ value: 'all', label: 'All Towns', checked: false }],
-      citiesData: [],
-      cities: null,
-      checkedCities: [],
-      selectedCities: [],
+      value: '',
+      options: [{ value: 'all', label: 'All Business Units', checked: false }],
+      isCheckAll: true,
+      unitsdata: [],
+      units: [],
+      selectedUnits: [],
+      businessUnits: [],
     };
   },
   computed: {
-    ...mapState(['userData']),
-    ...mapGetters(['getCities']),
-    countryCodes() {
-      return this.userData.payload.data.country_codes;
-    },
+    ...mapGetters(['getBusinessUnits', 'getOrderStatuses']),
   },
   watch: {
-    getCities(cities) {
-      this.options = [{ value: 'all', label: 'All Towns', checked: false }];
+    getBusinessUnits(data) {
+      this.options = [
+        { value: 'all', label: 'All Business Units', checked: false },
+      ];
       this.unitsdata = [];
-      cities.forEach(city => {
+      data.forEach(item => {
         this.options.push({
-          value: city.city_id,
-          label: city.city_name,
+          value: item.abbr,
+          label: item.abbr,
           checked: false,
         });
-        this.citiesData.push(city.city_id);
+        this.unitsdata.push(item.abbr.toLowerCase().trim());
       });
     },
   },
   mounted() {
     if (process.client) {
-      const countryCode = JSON.parse(this.countryCodes);
-      this.setCities({
-        params: {
-          code: countryCode,
-        },
-      });
+      this.requestUnits();
     }
   },
   methods: {
     ...mapMutations({
-      updateSelectedCities: 'setSelectedCities',
+      updateSelectedUnits: 'setSelectedBusinessUnits',
     }),
-    ...mapActions(['setCities']),
-
+    ...mapActions(['setBusinessUnits', 'requestBusinessUnits']),
+    async requestUnits() {
+      const arr = await this.requestBusinessUnits();
+      await this.setBusinessUnits();
+    },
     customLabel(option) {
       return `${option.label}`;
     },
@@ -130,13 +128,28 @@ export default {
     select(data) {
       return data;
     },
-    submitMethod() {
+    productMethod() {
       const arr = [];
-      this.checkedCities.forEach(element => {
+      this.value.forEach(element => {
         arr.push(element.value);
       });
-      this.selectedCities = arr.includes('all') ? this.citiesData : arr;
-      this.updateSelectedCities(this.selectedCities);
+      this.cop_names = arr;
+      this.selected_cop_names =
+        this.cop_names.includes('all') || this.cop_names.includes('logistics')
+          ? ['normal']
+          : this.cop_names;
+      this.updateSelectedCopNames(this.selected_cop_names);
+    },
+    submitMethod() {
+      const arr = [];
+      this.businessUnits.forEach(element => {
+        arr.push(element.value.toLowerCase().trim());
+      });
+      this.units = arr;
+      this.selectedUnits = this.units.includes('all')
+        ? this.unitsdata
+        : this.units;
+      this.updateSelectedUnits(this.selectedUnits);
     },
   },
 };

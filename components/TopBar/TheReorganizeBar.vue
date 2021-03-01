@@ -1,10 +1,10 @@
 <template>
-  <td class="reorganize">
-    <a class=" btn btn-primary request_new_rider_place" @click="reorganize()">
+  <div class="reorganize">
+    <a class=" btn request_new_rider_place blue-color" @click="reorganize()">
       <i class="fa fa-sort-amount-asc"></i>
       <span id="re_organize_me">Re-Organize</span>
     </a>
-  </td>
+  </div>
 </template>
 <script>
 import { mapMutations } from 'vuex';
@@ -21,3 +21,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.blue-color {
+  background: #527cbd !important;
+}
+</style>
