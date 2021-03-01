@@ -87,7 +87,7 @@
                 <span
                   class="action-status view-status mark-resolved"
                   @click.stop="triggerModal($event, 'resolve', data)"
-                  v-if="data.assignee !== null"
+                  v-if="data.status === 0"
                   >Mark as resolved</span
                 >
                 <span
