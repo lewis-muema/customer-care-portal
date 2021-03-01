@@ -1637,6 +1637,3 @@ color: #000000;
 textarea.is-invalid {
   border: 1px solid red;
 }
-.content-wrapper, .right-side {
-  background: #F2F6FC !important;
-}

@@ -1,6 +1,7 @@
 <template>
   <div class="Typeahead">
     <i class="fa fa-spinner fa-spin" v-if="loading"></i>
+<<<<<<< HEAD
     <div class="form-group has-search">
       <span class="fa fa-search form-control-feedback"></span>
       <input
@@ -17,6 +18,22 @@
         @click="clear"
       />
     </div>
+=======
+    <input
+      type="text"
+      class="Typeahead__input"
+      placeholder="Search for Order No/ Customer name/ User Phone"
+      autocomplete="off"
+      v-model="query"
+      @keydown.down="down"
+      @keydown.up="up"
+      @keydown.enter="hit"
+      @keydown.esc="reset"
+      @input="update"
+      @click="clear"
+      @blur="reset"
+    />
+>>>>>>> 81bf2cefa0766fc8cfdf2d0994abb7f97912a78e
     <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
       <li
         v-for="(item, $item) in items"
@@ -78,7 +95,7 @@ export default {
   methods: {
     ...mapMutations({
       updateSearchedOrder: 'setSearchedOrder',
-      updateSearchState: 'setSearchState',
+      updateSearchedOrderStatus: 'setSearchedOrderStatus',
     }),
     ...mapActions({
       request_single_order: 'request_single_order',
@@ -88,23 +105,11 @@ export default {
       const orderNo = localStorage.query;
       await this.singleOrderRequest(orderNo);
     },
-    async onHit(item) {
+    onHit(item) {
       this.isActive = false;
-      this.updateSearchState(true);
+      this.updateSearchedOrderStatus(true);
       const orderNo = item.order_no;
-      await this.singleOrderRequest(orderNo);
-    },
-    async singleOrderRequest(orderNo) {
-      orderNo = orderNo.trim();
-      try {
-        const data = await this.request_single_order(orderNo);
-        this.updateSearchedOrder(data);
-        return (this.order = data);
-      } catch {
-        this.errors.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-      }
+      this.$emit('searchedOrder', orderNo);
     },
     prepareResponseData(data) {
       return data.response.docs;

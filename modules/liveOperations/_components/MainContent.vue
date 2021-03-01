@@ -22,8 +22,14 @@
         </thead>
 
         <tbody>
-          <tr v-if="probelematicData.length === 0">
-            <td colspan="8">No problematic orders found.</td>
+          <tr v-if="probelematicData.length === 0 || probelematicData === null">
+            <td colspan="8">
+              {{
+                availabilityMsg === ''
+                  ? 'No problematic orders found'
+                  : availabilityMsg
+              }}
+            </td>
           </tr>
           <template v-else>
             <tr v-for="(data, index) in probelematicData" :key="index">
@@ -128,7 +134,7 @@ export default {
   components: {
     ActionsModal: () => import('./ActionsModal'),
   },
-  props: ['alerts', 'loading'],
+  props: ['alerts', 'loading', 'availabilityMsg'],
   data() {
     return {
       page: 1,
@@ -139,9 +145,11 @@ export default {
       orderNo: null,
       action: null,
       alert: null,
+      searchedOrderStatus: false,
     };
   },
   computed: {
+    ...mapGetters(['getSearchedOrderStatus']),
     pagedTableData() {
       return this.orders.slice(
         this.pageSize * this.page - this.pageSize,
@@ -152,10 +160,17 @@ export default {
       return this.alerts;
     },
     probelematicData() {
-      return this.alertsData.data;
+      const response = this.alertsData === null ? [] : this.alertsData;
+      return typeof response.data !== 'undefined' ? response.data : response;
     },
     paginationData() {
-      return this.alertsData.pagination;
+      const response = this.alertsData === null ? [] : this.alertsData;
+      return typeof response.data !== 'undefined' ? response.pagination : [];
+    },
+  },
+  watch: {
+    getSearchedOrderStatus(status) {
+      this.searchedOrderStatus = status;
     },
   },
   methods: {

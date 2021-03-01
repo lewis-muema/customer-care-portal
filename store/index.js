@@ -110,6 +110,12 @@ export default {
       adminID: null,
       activeLiveOpsVendor: null,
       liveOpsRefresh: false,
+      alertType: null,
+      selectedVendors: null,
+      selectedAdmins: null,
+      selectedAlerts: null,
+      selectedOrder: null,
+      searchedOrderStatus: false,
 
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',

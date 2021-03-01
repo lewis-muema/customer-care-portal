@@ -12,14 +12,14 @@ const LiveOpsMxn = {
     firstDayOfCurrentMonth() {
       const startOfMonth = moment()
         .startOf('month')
-        .format('YYYY-MM-DD 00:00:00');
-      return this.convertToUTC(startOfMonth);
+        .format('YYYY-MM-DD');
+      return this.formatDate(this.convertToUTC(startOfMonth), 'YYYY-MM-DD');
     },
     lastDayOfCurrentMonth() {
       const endOfMonth = moment()
         .endOf('month')
-        .format('YYYY-MM-DD 00:00:00');
-      return this.convertToUTC(endOfMonth);
+        .format('YYYY-MM-DD');
+      return this.formatDate(this.convertToUTC(endOfMonth), 'YYYY-MM-DD');
     },
     npsDateRange() {
       const startOfMonth = moment()
