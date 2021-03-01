@@ -1,7 +1,6 @@
 <template>
   <div class="Typeahead">
     <i class="fa fa-spinner fa-spin" v-if="loading"></i>
-<<<<<<< HEAD
     <div class="form-group has-search">
       <span class="fa fa-search form-control-feedback"></span>
       <input
