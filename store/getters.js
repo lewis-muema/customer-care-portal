@@ -215,4 +215,22 @@ export default {
   getLiveOpsRefresh(state) {
     return state.liveOpsRefresh;
   },
+  getAlertType(state) {
+    return state.alertType;
+  },
+  getSelectedVendors(state) {
+    return state.selectedVendors;
+  },
+  getSelectedAdmins(state) {
+    return state.selectedAdmins;
+  },
+  getSelectedAlerts(state) {
+    return state.selectedAlerts;
+  },
+  getSelectedOrder(state) {
+    return state.selectedOrder;
+  },
+  getSearchedOrderStatus(state) {
+    return state.searchedOrderStatus;
+  },
 };

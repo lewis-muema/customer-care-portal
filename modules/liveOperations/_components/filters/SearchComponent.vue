@@ -78,7 +78,7 @@ export default {
   methods: {
     ...mapMutations({
       updateSearchedOrder: 'setSearchedOrder',
-      updateSearchState: 'setSearchState',
+      updateSearchedOrderStatus: 'setSearchedOrderStatus',
     }),
     ...mapActions({
       request_single_order: 'request_single_order',
@@ -88,23 +88,11 @@ export default {
       const orderNo = localStorage.query;
       await this.singleOrderRequest(orderNo);
     },
-    async onHit(item) {
+    onHit(item) {
       this.isActive = false;
-      this.updateSearchState(true);
+      this.updateSearchedOrderStatus(true);
       const orderNo = item.order_no;
-      await this.singleOrderRequest(orderNo);
-    },
-    async singleOrderRequest(orderNo) {
-      orderNo = orderNo.trim();
-      try {
-        const data = await this.request_single_order(orderNo);
-        this.updateSearchedOrder(data);
-        return (this.order = data);
-      } catch {
-        this.errors.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
-      }
+      this.$emit('searchedOrder', orderNo);
     },
     prepareResponseData(data) {
       return data.response.docs;

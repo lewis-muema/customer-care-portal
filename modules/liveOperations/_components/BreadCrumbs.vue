@@ -3,7 +3,6 @@
     <div class="col-md-9 col-xs-6">
       <div class="col-md-9 col-xs-6 row">
         <label class="typo__label">Filter Vendor Type:</label>
-
         <multiselect
           select-label=""
           selected-label=""
@@ -13,9 +12,10 @@
           :multiple="true"
           track-by="vendor_type_id"
           :custom-label="customLabel"
-          :close-on-select="false"
+          :close-on-select="true"
           @select="onSelect($event)"
           @remove="onRemove($event)"
+          class="vendor-search"
         >
           <span
             class="checkbox-label"
@@ -59,6 +59,8 @@ export default {
     return {
       value: [],
       vendorTypes: [],
+      resetAfter: true,
+      selectedVendors: [],
     };
   },
   computed: {
@@ -81,11 +83,21 @@ export default {
       }
       this.vendorTypes = arr;
     },
+    value(data) {
+      this.selectedVendors = [];
+      for (let i = 0; i < data.length; i += 1) {
+        this.selectedVendors.push(data[i].vendor_type_id);
+      }
+      this.updateSelectedVendors(this.selectedVendors);
+    },
   },
   async mounted() {
     await this.setVendorTypes();
   },
   methods: {
+    ...mapMutations({
+      updateSelectedVendors: 'setSelectedVendors',
+    }),
     ...mapActions(['setVendorTypes']),
     customLabel(option) {
       return `${option.vendor_disp_name}`;
@@ -124,7 +136,13 @@ export default {
   box-sizing: content-box;
   display: inline-block;
   position: relative;
+  text-transform: capitalize;
+}
+.vendor-search {
   width: 25%;
+}
+.filter-search {
+  width: 100%;
 }
 .filter-bar {
   margin-right: 0px;
@@ -133,5 +151,26 @@ export default {
 .typo__label {
   margin-right: 12px;
   margin-top: 0.5em;
+}
+.multiselect__tag {
+  background-color: #3c8dbc;
+  text-transform: capitalize;
+}
+
+.multiselect__option--highlight {
+  background: #3c8dbc;
+}
+.multiselect__option--selected.multiselect__option--highlight {
+  background: #3f9f4a;
+}
+.multiselect__tag-icon:after {
+  color: #ffffff;
+}
+
+.multiselect__content {
+  text-transform: capitalize;
+}
+.multiselect__option {
+  text-transform: capitalize;
 }
 </style>
