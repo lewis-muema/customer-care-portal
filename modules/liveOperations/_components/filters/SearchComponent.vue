@@ -13,6 +13,7 @@
       @keydown.esc="reset"
       @input="update"
       @click="clear"
+      @blur="reset"
     />
     <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
       <li
