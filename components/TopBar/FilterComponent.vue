@@ -53,7 +53,7 @@ export default {
       selected_cop_names: [],
       options: [
         { value: 'all', label: 'All Sendy Products', checked: false },
-        { value: 'logistics', label: 'Logistics', checked: false },
+        { value: 'transportation', label: 'Transportation', checked: false },
         { value: 'Kiota', label: 'Kiota', checked: false },
         { value: 'SendyGO', label: 'Sendy GO', checked: false },
       ],
@@ -108,7 +108,8 @@ export default {
       });
       this.cop_names = arr;
       this.selected_cop_names =
-        this.cop_names.includes('all') || this.cop_names.includes('logistics')
+        this.cop_names.includes('all') ||
+        this.cop_names.includes('transportation')
           ? ['normal']
           : this.cop_names;
       this.updateSelectedCopNames(this.selected_cop_names);
