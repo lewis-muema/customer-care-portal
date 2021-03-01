@@ -128,6 +128,9 @@ export default {
   },
 };
 </script>
+<style>
+@import './_assets/style/multiselect.css';
+</style>
 <style scoped>
 .fa-search {
   padding: 0 !important;
