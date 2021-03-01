@@ -1,22 +1,19 @@
 <template>
   <div class="Typeahead">
     <i class="fa fa-spinner fa-spin" v-if="loading"></i>
-    <div class="form-group has-search">
-      <span class="fa fa-search form-control-feedback"></span>
-      <input
-        type="text"
-        class="Typeahead__input"
-        placeholder="Search for Order No/ Customer name/ User Phone"
-        autocomplete="off"
-        v-model="query"
-        @keydown.down="down"
-        @keydown.up="up"
-        @keydown.enter="hit"
-        @keydown.esc="reset"
-        @input="update"
-        @click="clear"
-      />
-    </div>
+    <input
+      type="text"
+      class="Typeahead__input"
+      placeholder="Search for Order No/ Customer name/ User Phone"
+      autocomplete="off"
+      v-model="query"
+      @keydown.down="down"
+      @keydown.up="up"
+      @keydown.enter="hit"
+      @keydown.esc="reset"
+      @input="update"
+      @click="clear"
+    />
     <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
       <li
         v-for="(item, $item) in items"
