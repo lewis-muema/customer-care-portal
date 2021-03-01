@@ -6,13 +6,7 @@
       </div>
       <div class="row ml-5 marginTop">
         <div class="">
-          <FilterComponent
-            type="product"
-            title="Filter Products"
-            :items="products"
-            placeholder="All Products"
-            class=""
-          />
+          <FilterComponent />
         </div>
         <div class="ml-3">
           <TheCitiesBar />
@@ -83,26 +77,6 @@ export default {
       order: {},
       storedData: [],
       componentKey: 0,
-      products: [
-        { value: 'all', label: 'All Sendy Products', checked: false },
-        { value: 'logistics', label: 'Logistics', checked: false },
-        { value: 'Kiota', label: 'Kiota', checked: false },
-        { value: 'SendyGO', label: 'Sendy GO', checked: false },
-      ],
-      towns: [
-        { value: 'all', label: 'All Towns', checked: false },
-        { value: 'Nairobi', label: 'Nairobi', checked: false },
-        { value: 'Mombasa', label: 'Mombasa', checked: false },
-        { value: 'Kakamega', label: 'Kakamega', checked: false },
-        { value: 'Nakuru', label: 'Nakuru', checked: false },
-        { value: 'Kericho', label: 'Kericho', checked: false },
-      ],
-      business: [
-        { value: 'all', label: 'All Business Units', checked: false },
-        { value: 'EBU', label: 'EBU', checked: false },
-        { value: 'MBU', label: 'MBU', checked: false },
-        { value: 'FBU', label: 'FBU', checked: false },
-      ],
     };
   },
 
