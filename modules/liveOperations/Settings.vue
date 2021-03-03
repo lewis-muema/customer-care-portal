@@ -7,9 +7,18 @@
         <h4 class="criteria-header">Problematic Orders Criteria</h4>
       </div>
     </div>
-    <div class="settings-bar settings-main-bar">
-      <SideBar />
-      <MainBar />
+    <div
+      class="settings-bar settings-main-ba"
+      v-if="criteria === null && loading"
+    >
+      <div class="text-center">
+        Loading live operations criteria ....
+        <i class="fa fa-spinner fa-spin loader"></i>
+      </div>
+    </div>
+    <div class="settings-bar settings-main-bar" v-else>
+      <SideBar :criteria="criteria" />
+      <MainBar :criteria="criteria" />
     </div>
   </div>
 </template>
@@ -23,13 +32,40 @@ export default {
     SideBar: () => import('./_components/settings/SideBar'),
     MainBar: () => import('./_components/settings/MainBar'),
   },
+  data() {
+    return {
+      response_status: '',
+      error_msg: '',
+      loading: false,
+      criteria: null,
+    };
+  },
   mounted() {
-    this.setBusinessUnits();
+    this.setVendorTypes();
+    this.retrieveCriteria();
   },
   methods: {
-    ...mapActions(['setBusinessUnits']),
+    ...mapActions([
+      'setBusinessUnits',
+      'request_live_ops_criteria',
+      'setVendorTypes',
+    ]),
     back() {
       this.$router.push('/liveOperations');
+    },
+    async retrieveCriteria() {
+      this.loading = true;
+
+      try {
+        const response = await this.request_live_ops_criteria();
+        this.criteria = response;
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
     },
   },
 };
