@@ -1,23 +1,56 @@
 <template>
-  <div class="col-md-9 main-bar">
-    <div class="main-content-holder">
-      <h3 class="main-bar-header">
-        {{ activeVendor === null ? 'Bike' : activeVendor.vendorType }}
-      </h3>
+  <div class="col-md-7 main-bar">
+    <div class="main-content-holder" v-if="activeAlert !== null">
       <h4 class="main-sub-header">
-        {{
-          activeVendor === null
-            ? 'Merchant Business Unit'
-            : activeVendor.businessUnitname
-        }}
+        {{ activeAlert === null ? 'N/A' : activeAlert.alert_type_name }}
       </h4>
-      <div
-        v-for="(setting, index) in criteriaData"
-        :key="index"
-        class="criteria-holder"
-      >
-        <div>{{ setting.criteria }}</div>
-        <div class="criteria-value">{{ setting.value }}</div>
+      <div class="criteria-holder" v-if="activeAlert.times_reallocated">
+        <div>
+          Times Reallocated
+        </div>
+        <div class="criteria-value">{{ activeAlert.times_reallocated }}</div>
+      </div>
+      <div class="criteria-holder" v-if="activeAlert.max_mins_to_arrival">
+        <div>
+          Maximum time to arrival (minutes)
+        </div>
+        <div class="criteria-value">
+          {{ activeAlert.max_mins_to_arrival }}
+        </div>
+      </div>
+      <div class="criteria-holder" v-if="activeAlert.time_since_confirmation">
+        <div>
+          Time since confirmation (minutes)
+        </div>
+        <div class="criteria-value">
+          {{ activeAlert.time_since_confirmation }}
+        </div>
+      </div>
+      <div class="criteria-holder" v-if="activeAlert.pending_time">
+        <div>
+          Pending Time (Minutes)
+        </div>
+        <div class="criteria-value">{{ activeAlert.pending_time }}</div>
+      </div>
+      <div class="criteria-holder">
+        <div>
+          Is this a cash order?
+        </div>
+        <div class="criteria-value">
+          {{ activeAlert.cash_order ? 'Yes' : 'No' }}
+        </div>
+      </div>
+      <div class="criteria-holder" v-if="activeAlert.vendor_types">
+        <div>
+          Associated vendor types
+        </div>
+        <div
+          class="criteria-value"
+          v-for="(vendor, index) in activeAlert.vendor_types"
+          :key="index"
+        >
+          {{ singleVendorType(vendor) }}
+        </div>
       </div>
     </div>
   </div>
@@ -28,14 +61,15 @@ import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
   name: 'SettingsMainBar',
+  props: ['criteria'],
   data() {
     return {
-      activeVendor: null,
+      activeAlert: null,
     };
   },
 
   computed: {
-    ...mapGetters(['getActiveLiveOpsVendor']),
+    ...mapGetters(['getActiveLiveOpsVendor', 'getVendorTypes']),
 
     criteriaData() {
       const data = [
@@ -69,7 +103,22 @@ export default {
   },
   watch: {
     getActiveLiveOpsVendor(data) {
-      this.activeVendor = data;
+      this.activeAlert = data;
+    },
+  },
+  methods: {
+    singleVendorType(id) {
+      // eslint-disable-next-line func-names
+      const vendorType = this.getVendorTypes.filter(function(e) {
+        return e.vendor_type_id === id;
+      });
+      const name =
+        typeof vendorType[0] === 'undefined'
+          ? ''
+          : vendorType[0].vendor_disp_name;
+      return id === 4 || id === 7
+        ? `${vendorType[0].vendor_type_name} ${name}`
+        : name;
     },
   },
 };

@@ -1906,6 +1906,27 @@ export default {
       });
     }
   },
+  async request_live_ops_criteria({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+      params: payload,
+    };
+    const url = `${config.STAFF_API}live-ops/criteria/`;
+    try {
+      const response = await axios.get(url, values);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async request_order_alerts({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
