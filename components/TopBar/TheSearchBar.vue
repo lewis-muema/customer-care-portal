@@ -124,7 +124,7 @@ export default {
 }
 .has-search .form-control {
   padding-left: 2.375rem;
-  width: 350px;
+  width: 22em;
 }
 
 .has-search .form-control-feedback {
@@ -143,6 +143,7 @@ export default {
   border-radius: 8px;
   width: 77%;
   height: 40px;
+  font-size: 14px;
 }
 .Typeahead__input:focus {
   border-color: 2px solid #0097cf;
