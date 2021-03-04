@@ -1,7 +1,7 @@
 <template>
   <section class="content">
     <div class="row ">
-      <div class="col-3">
+      <div class="col-4">
         <TheSearchBar class="" />
       </div>
       <div class="marginTop pl-0 ml-auto mr-2">
@@ -163,16 +163,10 @@ export default {
   margin-top: -20px;
   float: right;
 }
-.ml-6 {
-  margin-left: 13em;
-}
 .float-left {
   float: left;
 }
 .float-right {
   float: right;
-}
-.ml-10 {
-  margin-left: 10em;
 }
 </style>

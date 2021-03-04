@@ -124,7 +124,7 @@ export default {
 }
 .has-search .form-control {
   padding-left: 2.375rem;
-  width: 22em;
+  width: 25em;
 }
 
 .has-search .form-control-feedback {
