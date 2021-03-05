@@ -115,7 +115,8 @@ export default {
       this.retrieveAlerts();
     },
     getSelectedVendors(data) {
-      this.vendorTypes = data.length === 0 ? null : data;
+      this.vendorTypes =
+        data.length === 0 || data.includes('all') ? null : data;
       this.retrieveAlerts();
     },
     getSelectedAdmins(data) {
