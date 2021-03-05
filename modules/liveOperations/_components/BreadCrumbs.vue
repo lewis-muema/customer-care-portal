@@ -69,14 +69,6 @@ export default {
   watch: {
     getVendorTypes(data) {
       const arr = [];
-
-      const All = {
-        vendor_type_id: null,
-        vendor_type_name: 'All',
-        vendor_disp_name: 'All Vendor Types',
-        checked: false,
-      };
-      arr.push(All);
       for (let i = 0; i < data.length; i += 1) {
         data[i].checked = false;
         arr.push(data[i]);
@@ -106,14 +98,26 @@ export default {
       const index = this.vendorTypes.findIndex(
         item => item.vendor_type_id === option.vendor_type_id,
       );
-      this.vendorTypes[index].checked = true;
+      if (index === 0) {
+        this.vendorTypes.forEach(item => {
+          item.checked = true;
+        });
+      } else {
+        this.vendorTypes[index].checked = true;
+      }
     },
 
     onRemove(option) {
       const index = this.vendorTypes.findIndex(
         item => item.vendor_type_id === option.vendor_type_id,
       );
-      this.vendorTypes[index].checked = false;
+      if (index === 0) {
+        this.vendorTypes.forEach(item => {
+          item.checked = false;
+        });
+      } else {
+        this.vendorTypes[index].checked = false;
+      }
     },
     select(data) {
       return data;

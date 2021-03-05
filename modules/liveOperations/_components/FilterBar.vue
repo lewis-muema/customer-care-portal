@@ -88,12 +88,6 @@ export default {
     getAdmins(admins) {
       const arr = [];
 
-      const All = {
-        admin_id: null,
-        name: 'All',
-        checked: false,
-      };
-      arr.push(All);
       for (let i = 0; i < admins.length; i += 1) {
         admins[i].checked = false;
         arr.push(admins[i]);
@@ -137,12 +131,6 @@ export default {
         const response = await this.request_alert_types();
         const arr = [];
 
-        const All = {
-          id: null,
-          name: 'All',
-          checked: false,
-        };
-        arr.push(All);
         for (let i = 0; i < response.length; i += 1) {
           response[i].checked = false;
           arr.push(response[i]);
