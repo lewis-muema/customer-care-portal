@@ -116,6 +116,7 @@ export default {
       selectedAlerts: null,
       selectedOrder: null,
       searchedOrderStatus: false,
+      currentPage: 1,
 
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',

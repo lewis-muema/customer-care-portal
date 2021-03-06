@@ -61,6 +61,7 @@ export default {
       alertIDs: [],
       availabilityMsg: null,
       searchedOrderStatus: false,
+      page: 1,
     };
   },
   computed: {
@@ -76,6 +77,7 @@ export default {
       'getSelectedAlerts',
       'getSelectedOrder',
       'getSearchedOrderStatus',
+      'getCurrentPage',
     ]),
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -93,38 +95,60 @@ export default {
     },
     getAlertStatus(status) {
       this.alertStatus = status;
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
       this.retrieveAlerts();
     },
     getAdminID(adminID) {
       this.adminID = adminID === 'all' ? null : adminID;
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
       this.retrieveAlerts();
     },
     getNPSDateRange(dateRange) {
       this.startDate = dateRange.startDate;
       this.endDate = dateRange.endDate;
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
       this.retrieveAlerts();
     },
     getLiveOpsRefresh(status) {
       if (status) {
         this.retrieveAlerts();
       }
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
       this.updateSearchState(false);
     },
     getAlertType(alertID) {
       this.alertID = alertID === 'all' ? null : alertID;
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
       this.retrieveAlerts();
     },
     getSelectedVendors(data) {
       this.vendorTypes =
         data.length === 0 || data.includes('all') ? null : data;
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
       this.retrieveAlerts();
     },
     getSelectedAdmins(data) {
       this.adminIDs = data.length === 0 ? null : data;
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
       this.retrieveAlerts();
     },
     getSelectedAlerts(data) {
       this.alertIDs = data.length === 0 ? null : data;
+      this.updateCurrentPage(1);
+      localStorage.setItem('currentPage', 1);
+      this.retrieveAlerts();
+    },
+    getCurrentPage(val) {
+      this.page = localStorage.getItem('currentPage')
+        ? localStorage.getItem('currentPage')
+        : val;
       this.retrieveAlerts();
     },
   },
@@ -135,6 +159,7 @@ export default {
     ...mapMutations({
       updateSearchState: 'setLiveOpsRefresh',
       updateSearchedOrderStatus: 'setSearchedOrderStatus',
+      updateCurrentPage: 'setCurrentPage',
     }),
     ...mapActions(['request_operational_alerts', 'request_order_alerts']),
     async retrieveOrderAlerts(orderNo) {
@@ -178,7 +203,7 @@ export default {
       this.requested = true;
 
       const payload = {
-        page: 1,
+        page: this.page,
         limit: 30,
         date_from: startDate,
         date_to: endDate,

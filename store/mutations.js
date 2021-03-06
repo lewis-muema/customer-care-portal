@@ -257,4 +257,7 @@ export default {
   setSearchedOrderStatus(state, val) {
     state.searchedOrderStatus = val;
   },
+  setCurrentPage(state, val) {
+    state.currentPage = val;
+  },
 };
