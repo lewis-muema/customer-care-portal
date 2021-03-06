@@ -233,4 +233,7 @@ export default {
   getSearchedOrderStatus(state) {
     return state.searchedOrderStatus;
   },
+  getCurrentPage(state) {
+    return state.currentPage;
+  },
 };

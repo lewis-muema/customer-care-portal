@@ -107,15 +107,20 @@
           </template>
         </tbody>
       </table>
-      <el-pagination
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="paginationData.total"
-        @current-change="setPage"
-        class="promo-pagination"
-        v-if="paginationData.total >= paginationData.perPage"
-        :page-size="paginationData.perPage"
-      >
-      </el-pagination>
+      <div class="text-center pagination-holder">
+        <el-pagination
+          layout="total, prev, pager, next, jumper"
+          :total="paginationData.total"
+          @current-change="setPage"
+          class="promo-pagination"
+          v-if="paginationData.total >= paginationData.perPage"
+          :page-size="paginationData.perPage"
+          :current-page="Number(page)"
+          background
+          pager-count="15"
+        >
+        </el-pagination>
+      </div>
     </div>
     <ActionsModal
       :alert="alert"
@@ -137,7 +142,9 @@ export default {
   props: ['alerts', 'loading', 'availabilityMsg'],
   data() {
     return {
-      page: 1,
+      page: localStorage.getItem('currentPage')
+        ? localStorage.getItem('currentPage')
+        : 1,
       pageSize: 10,
       AWS_URL:
         'https://s3-eu-west-1.amazonaws.com/sendy-web-apps-assets/staff/team/',
@@ -178,12 +185,15 @@ export default {
       updateSearchedOrder: 'setSearchedOrder',
       updateSearchState: 'setSearchState',
       updateProblematicState: 'setProblematicOrderSearched',
+      updateCurrentPage: 'setCurrentPage',
     }),
     ...mapActions({
       request_single_order: 'request_single_order',
     }),
     setPage(val) {
       this.page = val;
+      this.updateCurrentPage(val);
+      localStorage.setItem('currentPage', val);
     },
     setPhoto(order) {
       return order.admin_img
