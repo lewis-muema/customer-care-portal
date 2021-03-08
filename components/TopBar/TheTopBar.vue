@@ -4,24 +4,25 @@
       <div class="col-4">
         <TheSearchBar class="" />
       </div>
-      <div class="row ml-5 marginTop">
-        <div class="">
-          <FilterComponent />
+      <div class="marginTop pl-0 ml-auto mr-2">
+        <div class="float-right ml-3">
+          <BusinessUnitFilter />
         </div>
-        <div class="ml-3">
+        <div class="float-right ml-3">
           <TheCitiesBar />
         </div>
-        <div class="ml-3">
-          <BusinessUnitFilter />
+        <div class="float-right">
+          <FilterComponent />
         </div>
       </div>
     </div>
-    <div class="row mt-1">
+    <div class="row mt-1  ml-0 pr-0">
       <div class="ml-4">
         <TheStatusButtonsBar :orders="storedData" />
       </div>
-      <div class="col-4"></div>
-      <TheReorganizeBar class="mt-2" />
+      <div class="col-5 ml-auto">
+        <TheReorganizeBar class="float-right" />
+      </div>
     </div>
     <div>
       <rabbitMQcomponent @pushedSomething="handlePushInParent" />
@@ -74,7 +75,6 @@ export default {
   },
   data() {
     return {
-      order: {},
       storedData: [],
       componentKey: 0,
     };
@@ -84,6 +84,9 @@ export default {
     ...mapGetters(['getSearchedOrder', 'getSearchState', 'getHelpScoutToken']),
     searchState() {
       return this.getSearchState;
+    },
+    order() {
+      return this.getSearchedOrder;
     },
   },
   watch: {
@@ -160,5 +163,12 @@ export default {
 }
 .marginTop {
   margin-top: -20px;
+  float: right;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
 }
 </style>
