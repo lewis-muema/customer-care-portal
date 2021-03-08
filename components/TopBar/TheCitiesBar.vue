@@ -10,7 +10,7 @@
       :multiple="true"
       track-by="value"
       :custom-label="customLabel"
-      :close-on-select="false"
+      :close-on-select="true"
       @select="onSelect($event)"
       @remove="onRemove($event)"
       class="multiselect"
