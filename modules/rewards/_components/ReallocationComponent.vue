@@ -164,15 +164,7 @@
                 "
                 @click="handleAction(warning_logs[scope.$index])"
               >
-                {{ actionStatus(warning_logs[scope.$index]['status']) }}
-              </el-button>
-              <el-button
-                v-if="warning_logs[scope.$index]['status'] === 0"
-                size="mini"
-                class="action-button--archive"
-                @click="handleArchive(warning_logs[scope.$index])"
-              >
-                Archive
+                Deactivate
               </el-button>
             </template>
           </el-table-column>
