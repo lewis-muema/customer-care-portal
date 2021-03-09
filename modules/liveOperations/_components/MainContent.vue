@@ -34,7 +34,7 @@
           <template v-else>
             <tr v-for="(data, index) in probelematicData" :key="index">
               <td>
-                <div class="alert-status" :class="`${data.alert_type}`">
+                <div class="alert-status" :class="getStatus(data.alert_type)">
                   &nbsp;
                 </div>
                 {{ data.alert_type }}
@@ -87,7 +87,7 @@
                 <span
                   class="action-status view-status mark-resolved"
                   @click.stop="triggerModal($event, 'resolve', data)"
-                  v-if="data.status === 0"
+                  v-if="data.status === 0 && data.assignee !== null"
                   >Mark as resolved</span
                 >
                 <span
@@ -117,7 +117,6 @@
           :page-size="paginationData.perPage"
           :current-page="Number(page)"
           background
-          pager-count="15"
         >
         </el-pagination>
       </div>
@@ -248,6 +247,35 @@ export default {
           break;
       }
       return alertStatus;
+    },
+    getStatus(alert) {
+      let status = 'default-alert';
+      switch (alert) {
+        case 'Excessive Time to Confirmation - MBU':
+          status = 'delayed-confirmation';
+          break;
+        case 'Pending Orders with More Than 3 Reallocations - SEBU':
+          status = 'excess-reallocations';
+          break;
+        case 'TukTuk orders not confirmed in 10 minutes':
+          status = 'tuktuk-confirmation-delay';
+          break;
+        case 'Excessive time to pickup':
+          status = 'delayed-pickup';
+          break;
+        case 'Excessive time to pickup - SEBU':
+          status = 'delayed-pickup-sebu';
+          break;
+        case 'Kiota orders pending for more than 10 minutes':
+          status = 'kiota-pending-orders';
+          break;
+        case 'Confirmed orders not picked in 5 minutes':
+          status = 'confirmed-orders-5-minutes';
+          break;
+        default:
+          break;
+      }
+      return status;
     },
   },
 };

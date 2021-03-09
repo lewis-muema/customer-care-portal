@@ -131,16 +131,27 @@
     height: 16px;
     display: inline-block;
     margin-right: .4em;
+}
+.default-alert {
     background: #B1A118;
 }
-.offline-partners {
+.kiota-pending-orders {
     background: #2D5C95;
 }
 .delayed-pickup {
+    background: #F29D59;
+}
+.delayed-pickup-sebu {
+    background: #3F9F4A;
+}
+.excess-reallocations {
+    background: #78470A;
+}
+.delayed-confirmation {
     background: #B1A118;
 }
-.delayed-delivery {
-    background: #78470A;
+.confirmed-orders-5-minutes {
+    background: #2D5C95;
 }
 .image-holder {
     height: 24px;
@@ -300,4 +311,7 @@
 }
 .pagination-holder {
     margin-bottom: 3em;
+}
+.resolve-close {
+    opacity: 1;
 }
