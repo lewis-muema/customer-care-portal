@@ -359,14 +359,13 @@ export default {
       this.ordersExist = false;
       this.msg = 'There are no orders fitting these criteria';
       if (!this.isEmpty(copNames)) {
-        if (this.copNames.includes('normal')) {
+        if (this.copNames.includes('all')) {
           this.copNames = null;
         }
         this.sendRequest(this.params);
         this.ordersExist = true;
         this.msg = '';
       }
-
       return (this.copNames = copNames);
     },
   },

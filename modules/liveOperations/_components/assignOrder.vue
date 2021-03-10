@@ -45,12 +45,27 @@
       >
       </textarea>
     </div>
+    <div class="form-group" v-if="action === 'resolve'">
+      <div>
+        Are you sure you want to mark this order as resolved?
+      </div>
+    </div>
     <div class="row text-center actions-holder">
+      <a
+        class="cancel-button close resolve-close"
+        data-dismiss="modal"
+        aria-label="Close"
+        @click="cancel()"
+        v-if="action === 'resolve'"
+      >
+        NO, Take me back
+      </a>
       <a
         class="cancel-button close"
         data-dismiss="modal"
         aria-label="Close"
         @click="cancel()"
+        v-else
       >
         Cancel
       </a>
@@ -67,6 +82,13 @@
         @click="assign()"
       >
         Confirm
+      </button>
+      <button
+        v-if="action === 'resolve'"
+        class="btn btn-primary submit-btn"
+        @click="assign()"
+      >
+        YES, Mark as resolved
       </button>
     </div>
   </div>
@@ -135,11 +157,8 @@ export default {
       this.admin = null;
       this.typingState = status;
     },
-    async action(data) {
+    action(data) {
       this.cancel();
-      if (data === 'resolve') {
-        await this.assign();
-      }
     },
   },
   methods: {

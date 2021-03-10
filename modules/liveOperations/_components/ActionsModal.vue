@@ -5,14 +5,6 @@
         <div class="modal-header view-modal-header">
           <h5 class="modal-title">
             {{ title }}
-            <button
-              type="button"
-              class="close pull-right"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
           </h5>
         </div>
         <div class="modal-body">

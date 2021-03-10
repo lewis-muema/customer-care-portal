@@ -98,13 +98,7 @@ export default {
       const index = this.vendorTypes.findIndex(
         item => item.vendor_type_id === option.vendor_type_id,
       );
-      if (index === 0) {
-        this.vendorTypes.forEach(item => {
-          item.checked = true;
-        });
-      } else {
-        this.vendorTypes[index].checked = true;
-      }
+      this.vendorTypes[index].checked = true;
     },
 
     onRemove(option) {
