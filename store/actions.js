@@ -297,6 +297,7 @@ export default {
       const err = await dispatch('handleHelpScoutErrors', payload, {
         root: true,
       });
+      return res;
     } catch (error) {
       return error;
     }
@@ -321,7 +322,8 @@ export default {
     payload.authorization = true;
     payload.token = token;
     try {
-      await dispatch('ticket_action', payload);
+      const res = await dispatch('ticket_action', payload);
+      return res;
     } catch (error) {
       return error;
     }

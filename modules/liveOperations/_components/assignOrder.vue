@@ -130,15 +130,15 @@ export default {
       return data;
     },
     ticket() {
-      const userName = this.alert.customer_name;
+      const userName = this.alert !== null ? this.alert.customer_name : '';
       const length = 39;
       const trimmedName = userName.substring(0, length);
       const email = 'customersupport@sendyit.com';
-      const phone = this.alert.customer_phone;
+      const phone = this.alert !== null ? this.alert.customer_phone : '';
 
       const data = {
-        id: this.alert.id,
-        title: this.alert.order_no,
+        id: this.alert !== null ? this.alert.id : null,
+        title: this.alert !== null ? this.alert.order_no : '',
         customer: {
           firstName: trimmedName,
           lastName: '.',
@@ -235,7 +235,6 @@ export default {
             break;
         }
         this.submitted = false;
-        this.$router.go(this.$router.currentRoute);
       } catch (error) {
         this.errorMsg = error.response.message;
         notification.push(error.response.message);
@@ -254,6 +253,8 @@ export default {
       };
       try {
         const response = await this.reAssignTicket(payload);
+        this.$router.go(this.$router.currentRoute);
+
         return response;
       } catch (error) {
         return error;
@@ -292,10 +293,11 @@ export default {
         ],
       };
       const data = await this.create_ticket(payload);
-      const helpscoutTicketID = data['resource-id'];
+      const helpscoutTicketID = data.headers['resource-id'];
 
       await this.updateHelpscouteTicket(helpscoutTicketID);
       this.loading = false;
+      this.$router.go(this.$router.currentRoute);
     },
     cancel() {
       this.updateErrors([]);
