@@ -62,7 +62,7 @@ export default {
       return this.$env.SOLR_JWT;
     },
     src() {
-      return `${this.solarBase}select?q=(name:*${this.query_string}*+OR+email:*${this.query_string}*)&wt=json&indent=true&row=10&sort=admin_id%20desc&jwt=${this.solarToken}`;
+      return `${this.solarBase}select?q=(name:*${this.query_string}*+OR+email:*${this.query_string}*)&wt=json&indent=true&row=10&sort=admin_id%20desc&jwt=${this.solarToken}&fq=(status:1)`;
     },
   },
   methods: {
