@@ -131,6 +131,7 @@
     height: 16px;
     display: inline-block;
     margin-right: .4em;
+    background: #B1A118;
 }
 .default-alert {
     background: #B1A118;
@@ -152,6 +153,9 @@
 }
 .confirmed-orders-5-minutes {
     background: #2D5C95;
+}
+.tuktuk-confirmation-delay {
+    background: #B1A118;
 }
 .image-holder {
     height: 24px;
