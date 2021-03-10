@@ -1782,7 +1782,6 @@ export default {
     }
   },
   async assignAlert({ dispatch, commit }, payload) {
-    console.log('mimim', payload);
     try {
       const res = await dispatch('requestAxiosPatch', payload, { root: true });
       return res.data;
