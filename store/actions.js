@@ -453,6 +453,26 @@ export default {
         }
 
         break;
+      case 403:
+        try {
+          // eslint-disable-next-line no-case-declarations
+          const token = await dispatch('request_helpscout_token');
+          commit('setHelpScoutToken', token);
+
+          await localStorage.setItem(
+            'helpscoutAccessToken',
+            token.access_token,
+          );
+          await localStorage.setItem(
+            'helpscoutExpiryTime',
+            token.expiryDatetime,
+          );
+          await dispatch('getHelpscoutUser', payload);
+        } catch (e) {
+          return e;
+        }
+
+        break;
       default:
     }
   },
@@ -1802,6 +1822,10 @@ export default {
     };
     try {
       const res = await dispatch('request_helpscoute_get', values);
+      payload.error = res.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
       return res;
     } catch (error) {
       return error;
@@ -1850,10 +1874,13 @@ export default {
       const response = await axios.get(`${url}?email=${payload.params.email}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      payload.error = response.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
 
       return response;
     } catch (error) {
-      payload.params.error = error.response.status;
       return error.response;
     }
   },
