@@ -98,38 +98,10 @@ export default {
     onSelect(option) {
       const index = this.options.findIndex(item => item.value === option.value);
       this.options[index].checked = true;
-      // switch ('all') {
-      //   case option.value:
-      //     this.options.forEach(item => {
-      //       item.checked = true;
-      //     });
-      //     break;
-      //   default: {
-      //     const index = this.options.findIndex(
-      //       item => item.value === option.value,
-      //     );
-      //     this.options[index].checked = true;
-      //     break;
-      //   }
-      // }
     },
     onRemove(option) {
       const index = this.options.findIndex(item => item.value === option.value);
       this.options[index].checked = false;
-      // switch ('all') {
-      //   case option.value:
-      //     this.options.forEach(item => {
-      //       item.checked = false;
-      //     });
-      //     break;
-      //   default: {
-      //     const index = this.options.findIndex(
-      //       item => item.value === option.value,
-      //     );
-      //     this.options[index].checked = false;
-      //     break;
-      //   }
-      // }
     },
     select(data) {
       return data;
