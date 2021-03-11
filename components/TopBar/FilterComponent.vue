@@ -1,11 +1,11 @@
 <template>
   <div class="">
-    <span class=""> Filter Town </span> <br />
+    <span class=""> Filter Products </span> <br />
     <multiselect
       select-label=""
       selected-label=""
       deselect-label=""
-      v-model="checkedCities"
+      v-model="value"
       :options="options"
       :multiple="true"
       track-by="value"
@@ -14,7 +14,7 @@
       @select="onSelect($event)"
       @remove="onRemove($event)"
       class="multiselect"
-      placeholder="Search Towns"
+      placeholder="Search Products"
       @input="submitMethod"
     >
       <span
@@ -39,59 +39,36 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
-  name: 'cityBar',
+  name: 'FilterComponent',
   components: {
     Multiselect,
   },
   data() {
     return {
-      options: [{ value: 'all', label: 'All Towns', checked: false }],
-      citiesData: [],
-      cities: null,
-      checkedCities: [{ value: 'all', label: 'All Towns', checked: false }],
-      selectedCities: [],
-    };
-  },
-  computed: {
-    ...mapState(['userData']),
-    ...mapGetters(['getCities']),
-    countryCodes() {
-      return this.userData.payload.data.country_codes;
-    },
-  },
-  watch: {
-    getCities(cities) {
-      this.options = [{ value: 'all', label: 'All Towns', checked: true }];
-      this.unitsdata = [];
-      cities.forEach(city => {
-        this.options.push({
-          value: city.city_id,
-          label: city.city_name,
-          checked: false,
-        });
-        this.citiesData.push(city.city_id);
-      });
-    },
-  },
-  mounted() {
-    if (process.client) {
-      const countryCode = JSON.parse(this.countryCodes);
-      this.setCities({
-        params: {
-          code: countryCode,
+      value: [
+        {
+          value: 'all',
+          label: 'All Sendy Products',
+          checked: true,
         },
-      });
-    }
+      ],
+      cop_names: [],
+      selected_cop_names: [],
+      options: [
+        { value: 'all', label: 'All Sendy Products', checked: true },
+        { value: 'normal', label: 'Transportation', checked: false },
+        { value: 'Kiota', label: 'Kiota', checked: false },
+        { value: 'SendyGO', label: 'Sendy GO', checked: false },
+      ],
+    };
   },
   methods: {
     ...mapMutations({
-      updateSelectedCities: 'setSelectedCities',
+      updateSelectedCopNames: 'setSelectedCopNames',
     }),
-    ...mapActions(['setCities']),
-
     customLabel(option) {
       return `${option.label}`;
     },
@@ -106,13 +83,26 @@ export default {
     select(data) {
       return data;
     },
-    submitMethod() {
-      const arr = [];
-      this.checkedCities.forEach(element => {
-        arr.push(element.value);
-      });
-      this.selectedCities = arr.includes('all') ? this.citiesData : arr;
-      this.updateSelectedCities(this.selectedCities);
+    submitMethod(option) {
+      switch (true) {
+        case this.value.length <= 0:
+          this.selected_cop_names = ['all'];
+          break;
+        default: {
+          const arr = [];
+          this.value.forEach(element => {
+            arr.push(element.value);
+          });
+          this.cop_names = arr;
+          this.selected_cop_names = this.cop_names.includes('normal')
+            ? ['normal']
+            : this.cop_names;
+          break;
+        }
+      }
+      this.value =
+        option.length !== 0 && option.value === 'all' ? [option] : this.value;
+      this.updateSelectedCopNames(this.selected_cop_names);
     },
   },
 };

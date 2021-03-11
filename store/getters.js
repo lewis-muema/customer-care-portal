@@ -43,6 +43,9 @@ export default {
   getSelectedBusinessUnits(state) {
     return state.selectedBusinessUnits;
   },
+  getSelectedCopNames(state) {
+    return state.selectedCopNames;
+  },
   getSelectedCities(state) {
     return state.selectedCities;
   },
