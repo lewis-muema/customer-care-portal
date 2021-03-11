@@ -14,7 +14,7 @@
       @select="onSelect($event)"
       @remove="onRemove($event)"
       class="multiselect"
-      placeholder="All Business Unit"
+      placeholder="Search Business Unit"
       @input="submitMethod"
     >
       <span
@@ -49,12 +49,14 @@ export default {
   data() {
     return {
       value: '',
-      options: [{ value: 'all', label: 'All Business Units', checked: false }],
+      options: [{ value: 'all', label: 'All Business Units', checked: true }],
       isCheckAll: true,
       unitsdata: [],
       units: [],
       selectedUnits: [],
-      businessUnits: [],
+      businessUnits: [
+        { value: 'all', label: 'All Business Units', checked: false },
+      ],
     };
   },
   computed: {
@@ -63,7 +65,7 @@ export default {
   watch: {
     getBusinessUnits(data) {
       this.options = [
-        { value: 'all', label: 'All Business Units', checked: false },
+        { value: 'all', label: 'All Business Units', checked: true },
       ];
       this.unitsdata = [];
       data.forEach(item => {
@@ -94,36 +96,12 @@ export default {
       return `${option.label}`;
     },
     onSelect(option) {
-      switch ('all') {
-        case option.value:
-          this.options.forEach(item => {
-            item.checked = true;
-          });
-          break;
-        default: {
-          const index = this.options.findIndex(
-            item => item.value === option.value,
-          );
-          this.options[index].checked = true;
-          break;
-        }
-      }
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = true;
     },
     onRemove(option) {
-      switch ('all') {
-        case option.value:
-          this.options.forEach(item => {
-            item.checked = false;
-          });
-          break;
-        default: {
-          const index = this.options.findIndex(
-            item => item.value === option.value,
-          );
-          this.options[index].checked = false;
-          break;
-        }
-      }
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = false;
     },
     select(data) {
       return data;
@@ -146,9 +124,10 @@ export default {
         arr.push(element.value.toLowerCase().trim());
       });
       this.units = arr;
-      this.selectedUnits = this.units.includes('all')
-        ? this.unitsdata
-        : this.units;
+      this.selectedUnits =
+        this.units.includes('all') || this.units.length <= 0
+          ? this.unitsdata
+          : this.units;
       this.updateSelectedUnits(this.selectedUnits);
     },
   },

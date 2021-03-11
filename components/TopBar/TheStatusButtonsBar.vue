@@ -15,7 +15,7 @@
         value="pending"
         class="mr-2 span-left"
         v-model="status"
-        @change="checkStatus"
+        @change="changeStatus"
       />
       PENDING
       <div class="ml-1 badge-total pending-total text-center ">
@@ -28,7 +28,7 @@
         value="confirmed"
         class="mr-2 span-left"
         v-model="status"
-        @change="checkStatus"
+        @change="changeStatus"
       />
       CONFIRMED
       <div class="ml-1 badge-total confirmed-total text-center">
@@ -41,7 +41,7 @@
         value="transit"
         class="mr-2 span-left"
         v-model="status"
-        @change="checkStatus"
+        @change="changeStatus"
       />
       IN TRANSIT
       <div class="ml-1 badge-total transit-total text-center">
@@ -119,6 +119,10 @@ export default {
     },
     checkAll() {
       this.status = this.isCheckAll ? ['pending', 'confirmed', 'transit'] : [];
+      this.checkStatus();
+    },
+    changeStatus() {
+      this.isCheckAll = false;
       this.checkStatus();
     },
     checkStatus() {
