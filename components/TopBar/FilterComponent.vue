@@ -14,7 +14,7 @@
       @select="onSelect($event)"
       @remove="onRemove($event)"
       class="multiselect"
-      placeholder="All Products"
+      placeholder="Search Products"
       @input="submitMethod"
     >
       <span
@@ -48,11 +48,17 @@ export default {
   },
   data() {
     return {
-      value: '',
+      value: [
+        {
+          value: 'all',
+          label: 'All Sendy Products',
+          checked: true,
+        },
+      ],
       cop_names: [],
       selected_cop_names: [],
       options: [
-        { value: 'all', label: 'All Sendy Products', checked: false },
+        { value: 'all', label: 'All Sendy Products', checked: true },
         { value: 'normal', label: 'Transportation', checked: false },
         { value: 'Kiota', label: 'Kiota', checked: false },
         { value: 'SendyGO', label: 'Sendy GO', checked: false },
@@ -67,49 +73,35 @@ export default {
       return `${option.label}`;
     },
     onSelect(option) {
-      switch ('all') {
-        case option.value:
-          this.options.forEach(item => {
-            item.checked = true;
-          });
-          break;
-        default: {
-          const index = this.options.findIndex(
-            item => item.value === option.value,
-          );
-          this.options[index].checked = true;
-          break;
-        }
-      }
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = true;
     },
     onRemove(option) {
-      switch ('all') {
-        case option.value:
-          this.options.forEach(item => {
-            item.checked = false;
-          });
-          break;
-        default: {
-          const index = this.options.findIndex(
-            item => item.value === option.value,
-          );
-          this.options[index].checked = false;
-          break;
-        }
-      }
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = false;
     },
     select(data) {
       return data;
     },
-    submitMethod() {
-      const arr = [];
-      this.value.forEach(element => {
-        arr.push(element.value);
-      });
-      this.cop_names = arr;
-      this.selected_cop_names = this.cop_names.includes('normal')
-        ? ['normal']
-        : this.cop_names;
+    submitMethod(option) {
+      switch (true) {
+        case this.value.length <= 0:
+          this.selected_cop_names = ['all'];
+          break;
+        default: {
+          const arr = [];
+          this.value.forEach(element => {
+            arr.push(element.value);
+          });
+          this.cop_names = arr;
+          this.selected_cop_names = this.cop_names.includes('normal')
+            ? ['normal']
+            : this.cop_names;
+          break;
+        }
+      }
+      this.value =
+        option.length !== 0 && option.value === 'all' ? [option] : this.value;
       this.updateSelectedCopNames(this.selected_cop_names);
     },
   },
