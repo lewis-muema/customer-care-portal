@@ -261,6 +261,8 @@ export default {
       }
     },
     async submitTicket() {
+      this.helpscoutUserID = await this.retrieveHelpscoutUser(this.admin.email);
+
       const notification = [];
       const actionClass = '';
       const department = 2;
