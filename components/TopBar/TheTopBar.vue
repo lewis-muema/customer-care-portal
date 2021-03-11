@@ -45,7 +45,7 @@
           </div>
         </div>
         <div class="box-body">
-          <TheRowHolder :order="order" :key="componentKey" />
+          <TheRowHolder v-if="order" :order="order" :key="componentKey" />
         </div>
       </div>
     </div>
@@ -77,6 +77,7 @@ export default {
     return {
       storedData: [],
       componentKey: 0,
+      order: this.getSearchedOrder,
     };
   },
 
@@ -84,9 +85,6 @@ export default {
     ...mapGetters(['getSearchedOrder', 'getSearchState', 'getHelpScoutToken']),
     searchState() {
       return this.getSearchState;
-    },
-    order() {
-      return this.getSearchedOrder;
     },
   },
   watch: {

@@ -7,7 +7,7 @@
         <input
           type="text"
           class="form-control Typeahead__input"
-          placeholder="Search for Order No/ Customer name/ User Phone"
+          placeholder="Search Order No/ Customer name/ User Phone"
           autocomplete="off"
           v-model="query"
           @keydown.down="down"
