@@ -245,8 +245,8 @@ export default {
 
     const url = 'HELPSCOUT_REFRESH';
     const grant_type = 'refresh_token';
-    const client_id = this.$env.HELP_SCOUT_CLIENT_ID;
-    const client_secret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const client_id = 'qcqVxzfYpyiXsiykssxuGha8drOeVElu';
+    const client_secret = 'w4mzvqkT1284Ejh7qZZOKeSCoEZDqN7U';
 
     const values = {
       url,
