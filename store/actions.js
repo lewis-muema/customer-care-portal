@@ -206,9 +206,9 @@ export default {
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
     const apiKey = this.$env.HELP_SCOUT_API_KEY;
-    const clientSecret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const clientSecret = 'w4mzvqkT1284Ejh7qZZOKeSCoEZDqN7U';
     const grantType = 'client_credentials';
-    const clientID = this.$env.HELP_SCOUT_CLIENT_ID;
+    const clientID = 'qcqVxzfYpyiXsiykssxuGha8drOeVElu';
     const payload = {
       url,
       params: {
