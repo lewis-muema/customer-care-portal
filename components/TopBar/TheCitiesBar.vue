@@ -14,7 +14,7 @@
       @select="onSelect($event)"
       @remove="onRemove($event)"
       class="multiselect"
-      placeholder="All Towns"
+      placeholder="Search Towns"
       @input="submitMethod"
     >
       <span
@@ -51,7 +51,7 @@ export default {
       options: [{ value: 'all', label: 'All Towns', checked: false }],
       citiesData: [],
       cities: null,
-      checkedCities: [],
+      checkedCities: [{ value: 'all', label: 'All Towns', checked: false }],
       selectedCities: [],
     };
   },
@@ -64,7 +64,7 @@ export default {
   },
   watch: {
     getCities(cities) {
-      this.options = [{ value: 'all', label: 'All Towns', checked: false }];
+      this.options = [{ value: 'all', label: 'All Towns', checked: true }];
       this.unitsdata = [];
       cities.forEach(city => {
         this.options.push({
@@ -96,36 +96,12 @@ export default {
       return `${option.label}`;
     },
     onSelect(option) {
-      switch ('all') {
-        case option.value:
-          this.options.forEach(item => {
-            item.checked = true;
-          });
-          break;
-        default: {
-          const index = this.options.findIndex(
-            item => item.value === option.value,
-          );
-          this.options[index].checked = true;
-          break;
-        }
-      }
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = true;
     },
     onRemove(option) {
-      switch ('all') {
-        case option.value:
-          this.options.forEach(item => {
-            item.checked = false;
-          });
-          break;
-        default: {
-          const index = this.options.findIndex(
-            item => item.value === option.value,
-          );
-          this.options[index].checked = false;
-          break;
-        }
-      }
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = false;
     },
     select(data) {
       return data;

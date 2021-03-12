@@ -206,9 +206,9 @@ export default {
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
     const apiKey = this.$env.HELP_SCOUT_API_KEY;
-    const clientSecret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const clientSecret = 'w4mzvqkT1284Ejh7qZZOKeSCoEZDqN7U';
     const grantType = 'client_credentials';
-    const clientID = this.$env.HELP_SCOUT_CLIENT_ID;
+    const clientID = 'qcqVxzfYpyiXsiykssxuGha8drOeVElu';
     const payload = {
       url,
       params: {
@@ -245,8 +245,8 @@ export default {
 
     const url = 'HELPSCOUT_REFRESH';
     const grant_type = 'refresh_token';
-    const client_id = this.$env.HELP_SCOUT_CLIENT_ID;
-    const client_secret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const client_id = 'qcqVxzfYpyiXsiykssxuGha8drOeVElu';
+    const client_secret = 'w4mzvqkT1284Ejh7qZZOKeSCoEZDqN7U';
 
     const values = {
       url,
@@ -297,6 +297,7 @@ export default {
       const err = await dispatch('handleHelpScoutErrors', payload, {
         root: true,
       });
+      return res;
     } catch (error) {
       return error;
     }
@@ -321,7 +322,8 @@ export default {
     payload.authorization = true;
     payload.token = token;
     try {
-      await dispatch('ticket_action', payload);
+      const res = await dispatch('ticket_action', payload);
+      return res;
     } catch (error) {
       return error;
     }
@@ -446,6 +448,26 @@ export default {
             token.expiryDatetime,
           );
           await dispatch('create_ticket', payload);
+        } catch (e) {
+          return e;
+        }
+
+        break;
+      case 403:
+        try {
+          // eslint-disable-next-line no-case-declarations
+          const token = await dispatch('request_helpscout_token');
+          commit('setHelpScoutToken', token);
+
+          await localStorage.setItem(
+            'helpscoutAccessToken',
+            token.access_token,
+          );
+          await localStorage.setItem(
+            'helpscoutExpiryTime',
+            token.expiryDatetime,
+          );
+          await dispatch('getHelpscoutUser', payload);
         } catch (e) {
           return e;
         }
@@ -1843,6 +1865,10 @@ export default {
     };
     try {
       const res = await dispatch('request_helpscoute_get', values);
+      payload.error = res.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
       return res;
     } catch (error) {
       return error;
@@ -1891,10 +1917,13 @@ export default {
       const response = await axios.get(`${url}?email=${payload.params.email}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      payload.error = response.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
 
       return response;
     } catch (error) {
-      payload.params.error = error.response.status;
       return error.response;
     }
   },

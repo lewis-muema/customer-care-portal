@@ -366,7 +366,6 @@ export default {
         this.ordersExist = true;
         this.msg = '';
       }
-      return (this.copNames = copNames);
     },
   },
   created() {
