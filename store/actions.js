@@ -1253,7 +1253,7 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -1264,10 +1264,53 @@ export default {
       const res = await dispatch('requestAxiosPatch', payload, { root: true });
       return res.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
+    }
+  },
+
+  async add_reallocation_reason({ dispatch, commit }, payload) {
+    try {
+      return await dispatch('requestAxiosPost', payload, { root: true });
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async update_status_state({ dispatch, commit }, payload) {
+    try {
+      return await dispatch('requestAxiosPost', payload, { root: true });
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async fetch_set_reallocation_reason({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}vendor-type-reallocation-reasons`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
     }
   },
 
