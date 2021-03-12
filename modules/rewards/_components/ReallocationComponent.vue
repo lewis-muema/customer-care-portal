@@ -14,7 +14,7 @@
       ></el-button>
       <form
         id="reallocate-form"
-        @submit.prevent="add_reallocation_reason"
+        @submit.prevent="add_custom_reallocation_reason"
         class="form-inline add-reward-section"
         v-if="add_btn"
       >
@@ -51,18 +51,40 @@
             v-model="vendorType"
           >
           </v-select>
-
           <div
             v-if="submitted && !$v.vendorType.required"
             class="rewards_valid"
           >
-            Type of vendor is required
+            Vendor type has to be selected
+          </div>
+        </div>
+
+        <div class="form-group col-md-12 user-input">
+          <label class="vat"> When to display the reallocation reason </label>
+          <v-select
+            :options="when_to_display_Reason"
+            :reduce="name => name.value"
+            label="label"
+            placeholder="Select"
+            class="form-control select user-billing"
+            :id="`value`"
+            v-model="whenToDisplayReason"
+          >
+            <template v-slot:option="option">
+              <div class="option-title">{{ option.label }}</div>
+              <div class="option-description">{{ option.description }}</div>
+            </template>
+          </v-select>
+          <div
+            v-if="submitted && !$v.whenToDisplayReason.required"
+            class="rewards_valid"
+          >
+            When to display reallocation reason is required
           </div>
         </div>
 
         <div class="form-group col-md-12 user-input ">
           <label class="vat">Reallocation reason</label>
-
           <el-input
             v-model="reallocation_reason"
             :id="`message`"
@@ -113,31 +135,49 @@
             Partner reallocation reasons
           </span>
         </div>
-        <el-table :data="warning_logs" size="medium" :border="false">
+        <el-table
+          :data="set_reallocation_reasons"
+          size="medium"
+          :border="false"
+        >
           <el-table-column label="Country" prop="country">
             <template slot-scope="scope">
-              {{ fetchCountry(warning_logs[scope.$index]['country']) }}
+              {{
+                fetchCountry(set_reallocation_reasons[scope.$index]['country'])
+              }}
             </template>
           </el-table-column>
           <el-table-column label="Vendor" prop="vendor_type">
             <template slot-scope="scope">
-              {{ vendor(warning_logs[scope.$index]['vendor_type']) }}
+              {{
+                vendor(set_reallocation_reasons[scope.$index]['vendor_type'])
+              }}
             </template>
           </el-table-column>
           <el-table-column
             label="Reallocation reason"
             width="180"
-            prop="parameter"
+            prop="Reason_description"
+          >
+          </el-table-column>
+          <el-table-column
+            label="When to display"
+            width="180"
+            prop="order_status"
           >
             <template slot-scope="scope">
-              {{ penalizingParams(warning_logs[scope.$index]['parameter']) }}
+              {{
+                formatOrderStatus(
+                  set_reallocation_reasons[scope.$index]['order_status'],
+                )
+              }}
             </template>
           </el-table-column>
-          <el-table-column label="Date added" prop="from_date">
+          <el-table-column label="Date added" prop="date_added">
             <template slot-scope="scope">
               {{
                 getFormattedDate(
-                  warning_logs[scope.$index]['from_date'],
+                  set_reallocation_reasons[scope.$index]['date_added'],
                   'DD/MM/YYYY ',
                 )
               }}
@@ -145,7 +185,9 @@
           </el-table-column>
           <el-table-column label="Status" prop="status">
             <template slot-scope="scope">
-              {{ activeStatus(warning_logs[scope.$index]['status']) }}
+              {{
+                activeStatus(set_reallocation_reasons[scope.$index]['status'])
+              }}
             </template>
           </el-table-column>
           <el-table-column
@@ -158,11 +200,11 @@
               <el-button
                 size="mini"
                 :class="
-                  warning_logs[scope.$index]['status'] === 1
+                  set_reallocation_reasons[scope.$index]['status'] === 1
                     ? 'action-button--danger'
                     : 'action-button--active'
                 "
-                @click="handleAction(warning_logs[scope.$index])"
+                @click="setStatusState(set_reallocation_reasons[scope.$index])"
               >
                 Deactivate
               </el-button>
@@ -177,6 +219,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
+import moment from 'moment';
 import Loading from './LoadingComponent.vue';
 
 export default {
@@ -189,7 +232,7 @@ export default {
       submit_status: false,
       response_status: true,
       sendyEntities: [],
-      warning_logs: [],
+      set_reallocation_reasons: [],
       error_msg: '',
       add_btn: false,
       reallocation_reason: '',
@@ -200,6 +243,21 @@ export default {
       vendor_type: [],
       vendorType: [],
       country: '',
+      when_to_display_Reason: [
+        {
+          label: 'Order has been confirmed',
+          value: 'CONFIRMED',
+          description:
+            '(Order has been confirmed but the partner is yet to get to the pick up location) ',
+        },
+        {
+          label: 'Partner has arrived at the pick up',
+          value: 'ARRIVED_AT_PICK_UP',
+          description:
+            '(Partner has arrived at pick up location but is yet to pick up the order.)',
+        },
+      ],
+      whenToDisplayReason: '',
       submit_state: false,
     };
   },
@@ -207,6 +265,7 @@ export default {
     reallocation_reason: { required },
     vendorType: { required },
     country: { required },
+    whenToDisplayReason: { required },
   },
   computed: {
     ...mapGetters(['getSession']),
@@ -223,10 +282,14 @@ export default {
   methods: {
     ...mapActions({
       request_vendor_types: 'request_vendor_types',
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+      update_status_state: 'update_status_state',
+      add_reallocation_reason: 'add_reallocation_reason',
     }),
     initiateData() {
       this.clearData();
       this.fetchVendorTypes();
+      this.fetchSetReallocationReasons();
     },
     clearData() {
       this.submit_status = false;
@@ -235,6 +298,7 @@ export default {
       this.vendor_type = [];
       this.vendorType = [];
       this.reallocation_reason = '';
+      this.whenToDisplayReason = '';
     },
     showReallocationReasons() {
       let status = false;
@@ -267,10 +331,26 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
+    async fetchSetReallocationReasons() {
+      const notification = [];
+      let actionClass = '';
+      try {
+        const results = await this.fetch_set_reallocation_reason();
+        console.log('>>>>', results.data);
+        this.set_reallocation_reasons = results.data;
+        this.loading_messages = false;
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     checkSubmitStatus() {
       return this.submit_state;
     },
     vendor(id) {
+      if (!id) return '';
       let name = '';
       if (Object.keys(this.vendor_type).length > 0) {
         const data = this.vendor_type.find(location => location.id === id);
@@ -278,11 +358,49 @@ export default {
       }
       return name;
     },
+    activeStatus(status) {
+      return status === 1 ? 'Active' : 'Deactivated';
+    },
+    formatOrderStatus(orderStatus) {
+      if (!orderStatus) return '';
+      return orderStatus === 'CONFIRMED'
+        ? 'Order has been confirmed'
+        : 'Partner has arrived at the pick up';
+    },
     fetchCountry(id) {
+      if (!id) return '';
       const data = this.country_code.find(location => location.code === id);
       return data.name;
     },
-    add_reallocation_reason() {
+    async setStatusState(row) {
+      const data = {
+        id: row.id,
+        status: row.status,
+      };
+
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: `vendor-type-reallocation-reasons/${row.id}`,
+        apiKey: false,
+        params: data,
+      };
+
+      try {
+        const resp = await this.update_status_state(payload);
+
+        if (resp.status === 200) {
+          this.loading_messages = true;
+          this.initiateData();
+        }
+      } catch (error) {
+        this.loading_messages = true;
+        this.initiateData();
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async add_custom_reallocation_reason() {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -304,35 +422,38 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A relocation reason is needed ';
+      } else if (this.whenToDisplayReason === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = ' When to display reallocation reason is required';
       }
 
-      console.log(
-        '>>>',
-        this.country,
-        this.vendorType,
-        this.reallocation_reason,
-      );
-
-      // const payload = {
-      //   app: 'ADONIS_API',
-      //   endpoint: `/warning_messages/${row.id}`,
-      //   apiKey: false,
-      //   params: data,
-      // };
+      const data = {
+        country: this.country,
+        vendor_type: this.vendorType,
+        reason: this.reallocation_reason,
+        order_status: this.whenToDisplayReason,
+      };
+      console.log('PPP', data);
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: `vendor-type-reallocation-reasons`,
+        apiKey: false,
+        params: data,
+      };
 
       try {
-        // const resp = await this.update_reward(payload);
-        const resp = true;
+        const result = await this.add_reallocation_reason(payload);
 
-        if (resp) {
+        if (result.status === 200) {
           setTimeout(() => {
             this.submit_state = false;
             this.loading_messages = true;
             this.initiateData();
           }, 5000);
         } else {
-          // this.loading_messages = true;
-          // this.initiateData();
+          this.loading_messages = true;
+          this.initiateData();
         }
       } catch (error) {
         this.loading_messages = true;
@@ -347,6 +468,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.option-title {
+  font-weight: 600;
+}
 .form-inline .form-control {
   width: 100%;
   border-radius: 0.25rem;
@@ -358,12 +482,6 @@ export default {
 .form-inline .input-group {
   width: 100%;
   border-radius: 0.25rem;
-}
-.select {
-  margin-left: -15px;
-  padding: 0;
-  width: 95%;
-  height: 2%;
 }
 .user-input {
   margin-bottom: 15px;
@@ -469,6 +587,22 @@ export default {
   margin-left: -15px;
   padding: 0;
   width: 95%;
+  height: 2%;
+}
+.v-select
+.vs__dropdown-menu
+.option-description {
+  margin-top: 5px;
+  width: 100%;
+  color: #868080;
+  font-size: 11px;
+  white-space: initial;
+}
+.v-select
+.vs__dropdown-menu
+.vs__dropdown-option--highlight
+.option-description {
+  color: #FFFFFF;
 }
 .user-input {
   margin-bottom: 34px;
