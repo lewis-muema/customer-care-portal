@@ -1225,7 +1225,7 @@ table {
   margin-top: 15px;
 }
 .save-truck-button, .driver-assign-inputs {
-  width: max-content;
+  width: -webkit-fill-available;
 }
 .finances-tab {
   border: 1px solid #bdbdbd;
