@@ -224,11 +224,11 @@ export default {
 
         switch (this.action) {
           case 'assign':
-            this.submitTicket();
+            await this.submitTicket();
             break;
           case 'reassign':
             if (this.alert.helpscout_ticket !== null) {
-              this.updateTicket();
+              await this.updateTicket();
             }
             break;
           default:
@@ -243,6 +243,7 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+      this.$router.go(this.$router.currentRoute);
     },
     async updateTicket() {
       const payload = {
