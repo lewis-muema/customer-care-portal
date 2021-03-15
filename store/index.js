@@ -24,6 +24,7 @@ const apix = new Apix({
     { name: 'admins', url: `admins?status=1` },
     { name: 'surveys', url: `nps/surveys` },
     { name: 'countries', url: `countries` },
+    { name: 'vendorTypes', url: 'vendor-types' },
   ],
 });
 const baseUrl = process.env.baseUrl;
@@ -102,6 +103,20 @@ export default {
       coupons: null,
       couponCountry: 'ALL',
       searchedCoupon: null,
+      searchedAdmin: null,
+      problematicOrderSearched: false,
+      typingState: false,
+      alertStatus: null,
+      adminID: null,
+      activeLiveOpsVendor: null,
+      liveOpsRefresh: false,
+      alertType: null,
+      selectedVendors: null,
+      selectedAdmins: null,
+      selectedAlerts: null,
+      selectedOrder: null,
+      searchedOrderStatus: false,
+      currentPage: 1,
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',
         500: 'Page not found',

@@ -77,7 +77,6 @@ export default {
     return {
       storedData: [],
       componentKey: 0,
-      order: this.getSearchedOrder,
     };
   },
 
@@ -85,6 +84,9 @@ export default {
     ...mapGetters(['getSearchedOrder', 'getSearchState', 'getHelpScoutToken']),
     searchState() {
       return this.getSearchState;
+    },
+    order() {
+      return this.getSearchedOrder;
     },
   },
   watch: {
