@@ -120,7 +120,7 @@
               <span> Promo Codes </span></nuxt-link
             >
           </li>
-          <li class="treeview">
+          <li class="treeview" v-if="permissions.view_live_operations">
             <nuxt-link to="/liveOperations"
               ><i class="fa fa-wifi text-grey"></i>
               <span> Live Operations </span></nuxt-link
