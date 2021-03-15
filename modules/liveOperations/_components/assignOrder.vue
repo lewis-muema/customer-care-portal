@@ -116,10 +116,12 @@ export default {
       searched: false,
       typingState: false,
       cancelEvent: false,
+      actionClass: '',
+      notification: [],
     };
   },
   computed: {
-    ...mapState(['actionErrors', 'actionClass', 'userData']),
+    ...mapState(['actionErrors', 'userData']),
     ...mapGetters(['getAdmins', 'getSearchState', 'getTypingState']),
 
     params() {
@@ -198,9 +200,7 @@ export default {
     // eslint-disable-next-line require-await
     async assign() {
       this.submitted = true;
-      const notification = [];
       const alertID = this.alert.id;
-      let actionClass = '';
       const payload = {
         app: 'STAFF_API',
         endpoint: `live-ops/orders/${alertID}`,
@@ -218,9 +218,9 @@ export default {
 
       try {
         const data = await this.assignAlert(payload);
-        notification.push(data.message);
+        this.notification.push(data.message);
         this.errorMsg = data.message;
-        actionClass = this.display_order_action_notification(data.status);
+        this.actionClass = this.display_order_action_notification(data.status);
 
         switch (this.action) {
           case 'assign':
@@ -241,8 +241,6 @@ export default {
         this.submitted = false;
         return error;
       }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
       this.$router.go(this.$router.currentRoute);
     },
     async updateTicket() {

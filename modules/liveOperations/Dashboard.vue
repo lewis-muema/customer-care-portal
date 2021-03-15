@@ -153,6 +153,8 @@ export default {
     },
   },
   mounted() {
+    this.page = 1;
+    localStorage.setItem('currentPage', 1);
     this.retrieveAlerts();
   },
   methods: {
