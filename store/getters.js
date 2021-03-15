@@ -197,4 +197,43 @@ export default {
   getSearchedCoupon(state) {
     return state.searchedCoupon;
   },
+  getProblematicOrderSearched(state) {
+    return state.problematicOrderSearched;
+  },
+  getTypingState(state) {
+    return state.typingState;
+  },
+  getAlertStatus(state) {
+    return state.alertStatus;
+  },
+  getAdminID(state) {
+    return state.adminID;
+  },
+  getActiveLiveOpsVendor(state) {
+    return state.activeLiveOpsVendor;
+  },
+  getLiveOpsRefresh(state) {
+    return state.liveOpsRefresh;
+  },
+  getAlertType(state) {
+    return state.alertType;
+  },
+  getSelectedVendors(state) {
+    return state.selectedVendors;
+  },
+  getSelectedAdmins(state) {
+    return state.selectedAdmins;
+  },
+  getSelectedAlerts(state) {
+    return state.selectedAlerts;
+  },
+  getSelectedOrder(state) {
+    return state.selectedOrder;
+  },
+  getSearchedOrderStatus(state) {
+    return state.searchedOrderStatus;
+  },
+  getCurrentPage(state) {
+    return state.currentPage;
+  },
 };
