@@ -437,7 +437,7 @@ export default {
       console.log('PPP', data);
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `vendor-type-reallocation-reasons`,
+        endpoint: `reallocation-reasons`,
         apiKey: false,
         params: data,
       };
