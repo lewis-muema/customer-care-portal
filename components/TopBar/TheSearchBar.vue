@@ -4,20 +4,24 @@
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
       <div class="form-group has-search">
         <span class="fa fa-search form-control-feedback "></span>
-        <input
-          type="text"
-          class="form-control Typeahead__input"
-          placeholder="Search Order No/ Customer name/ User Phone"
-          autocomplete="off"
-          v-model="query"
-          @keydown.down="down"
-          @keydown.up="up"
-          @keydown.enter="hit"
-          @keydown.esc="reset"
-          @input="update"
-          @click="clear"
-        />
+        <div class="row ml-1">
+          <input
+            type="text"
+            class="form-control Typeahead__input"
+            placeholder="Search Order No/ Customer name/ User Phone"
+            autocomplete="off"
+            v-model="query"
+            @keydown.down="down"
+            @keydown.up="up"
+            @keydown.enter="hit"
+            @keydown.esc="reset"
+            @input="update"
+            @click="clear"
+          />
+          <i class="fa fa-search" @click="byPassSolrSearch()"></i>
+        </div>
       </div>
+
       <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
         <li
           v-for="(item, $item) in items"
@@ -122,9 +126,13 @@ export default {
 .Typeahead {
   position: relative;
 }
+.Typeahead .pass-solr {
+  margin-top: -3rem;
+  padding-left: 2.375rem;
+  padding-bottom: 0px;
+}
 .has-search .form-control {
   padding-left: 2.375rem;
-  width: 25em;
 }
 
 .has-search .form-control-feedback {
@@ -135,13 +143,14 @@ export default {
   text-align: center;
   pointer-events: none;
   color: #aaa;
+  padding-top: 15px;
 }
 .Typeahead__input {
   background: #ffffff;
   border: 1px solid #c0c4cc;
   box-sizing: border-box;
   border-radius: 8px;
-  width: 77%;
+  width: 85%;
   height: 40px;
   font-size: 14px;
 }
