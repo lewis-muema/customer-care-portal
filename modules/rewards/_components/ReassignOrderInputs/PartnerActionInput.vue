@@ -7,6 +7,7 @@
       <v-select
         :options="reassignment_reason"
         :reduce="name => name.code"
+        multiple
         name="name"
         label="name"
         placeholder="Select "
@@ -32,28 +33,41 @@
         <v-select
           :options="partner_actions_data"
           :reduce="name => name.id"
-          :name="partnerAction.count"
+          :name="partnerAction.partnerActionInput"
           label="display_name"
           placeholder="Select"
           class="form-control select user-billing"
           :id="`name`"
-          v-model="partnerAction.action"
+          @input="actionSelectedChanged(partnerAction)"
+          v-model="partnerAction.action_id"
         >
         </v-select>
         <!--    <div v-if="submitted && !$v.partnerActions.required" class="rewards_valid">-->
         <!--      Partner action is required-->
         <!--    </div>-->
-        <div class="add-input" @click="addNewPartnerAction">
-          + Select another partner action
+        <div class="input-counter">
+          <div class="add-input" @click="addNewPartnerAction">
+            + Select another partner action
+          </div>
+          <div
+            v-if="partnerAction.partnerActionInput !== 0"
+            class="remove-input"
+            @click="removePartnerAction(partnerAction.partnerActionInput)"
+          >
+            x Remove action
+          </div>
         </div>
       </div>
 
       <!--    TODO add for how long field-->
-      <div class="form-group col-md-4 user-input">
+      <div
+        v-if="partnerAction.block_hours_visible"
+        class="form-group col-md-4 user-input"
+      >
         <label class="vat">
           For how long
         </label>
-        <el-input type="number" v-model="duration_blocked">
+        <el-input type="number" v-model="partnerAction.block_hours">
           <template slot="append"
             >hours</template
           >
@@ -67,11 +81,14 @@
       </div>
 
       <!--    TODO add after how long field-->
-      <div class="form-group col-md-4 user-input">
+      <div
+        v-if="partnerAction.after_how_long_visible"
+        class="form-group col-md-4 user-input"
+      >
         <label class="vat">
           After how long
         </label>
-        <el-input type="number" v-model="after_how_long">
+        <el-input type="number" v-model="partnerAction.after_how_long">
           <template slot="append"
             >hours</template
           >
@@ -84,13 +101,16 @@
         <!--      </div>-->
       </div>
 
-      <!--    TODO add amount to charge message-->
-      <div class="form-group col-md-4 user-input">
+      <!--    TODO add charge penalty fee message-->
+      <div
+        v-if="partnerAction.penalty_fee_visible"
+        class="form-group col-md-4 user-input"
+      >
         <label class="vat"> How much </label>
         <el-input
           placeholder="Please input amount"
           type="number"
-          v-model="amount_penalized"
+          v-model="partnerAction.penalty_fee"
         >
         </el-input>
         <!--        <div-->
@@ -108,7 +128,7 @@
           placeholder="Please input"
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 4 }"
-          v-model="messageToPartner"
+          v-model="partnerAction.partner_message"
         >
         </el-input>
         <!--        <div-->
@@ -127,7 +147,19 @@ export default {
   name: 'PartnerAction',
   data() {
     return {
-      partnerAction: { action: null, partnerActionSelect: 0 },
+      partnerAction: {
+        action_id: '',
+        block_hours: null,
+        block_hours_visible: false,
+        after_how_long: null,
+        after_how_long_visible: false,
+        penalty_fee: null,
+        penalty_fee_visible: false,
+        partner_message: '',
+        partnerActionInput: 0,
+      },
+      count: 0,
+      partnerActionInputs: [],
       partnerActions: '',
       partner_actions_data: [
         {
@@ -176,8 +208,6 @@ export default {
           status: 1,
         },
       ],
-      partnerActionInputs: [],
-      count: 0,
       reassignmentReasonPenalize: '',
       reassignment_reason: [
         { code: 3, name: 'Client is not reachable' },
@@ -191,9 +221,9 @@ export default {
         { code: 13, name: 'My Vehicle broke down' },
       ],
       messageToPartner: '',
-      duration_blocked: null,
       after_how_long: null,
       amount_penalized: null,
+      currentInputIndex: null,
     };
   },
   created() {
@@ -203,12 +233,33 @@ export default {
     addNewPartnerAction() {
       this.partnerActionInputs.push({
         ...this.partnerAction,
-        partnerActionSelect: this.count++,
+        partnerActionInput: this.count++,
       });
       console.log('>>>', this.partnerActionInputs);
     },
+    actionSelectedChanged(selectedValue) {
+      console.log('MMMM', selectedValue);
+      const { partnerActionInput, action_id } = selectedValue;
+      const selectedAction = this.partnerActionInputs[partnerActionInput];
+
+      this.inputVisibilityTrigger(action_id, selectedAction);
+      console.log('ZZZ', this.partnerActionInputs);
+    },
+    inputVisibilityTrigger(actionID, inputValuesObject) {
+      if (actionID === 1) {
+        this.$set(inputValuesObject, 'block_hours_visible', true);
+        this.$set(inputValuesObject, 'penalty_fee_visible', false);
+      } else if (actionID === 2) {
+        this.$set(inputValuesObject, 'penalty_fee_visible', true);
+        this.$set(inputValuesObject, 'block_hours_visible', false);
+      } else {
+        this.$set(inputValuesObject, 'block_hours_visible', false);
+        this.$set(inputValuesObject, 'penalty_fee_visible', false);
+      }
+    },
+    changeBlockTimeInput(changeBlockTimeInput) {},
     removePartnerAction(index) {
-      // Vue.delete(this.apartments, index);
+      this.partnerActionInputs.splice(index, 1);
     },
   },
 };
@@ -225,9 +276,18 @@ export default {
   text-align: left;
   display: block;
 }
+.input-counter {
+  display: flex;
+  flex-direction: column;
+}
 .add-input {
   cursor: pointer;
   margin-top: 5px;
+}
+.remove-input {
+  cursor: pointer;
+  margin-top: 5px;
+  color: #777373;
 }
 .input-container {
   width: 100%;
