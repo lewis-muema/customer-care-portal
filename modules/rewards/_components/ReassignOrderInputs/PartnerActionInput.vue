@@ -1,7 +1,7 @@
 <template>
   <div class="input-container">
     <div class="form-group col-md-4 user-input reposition-select-input">
-      <label class="vat repositionTitle">
+      <label class="vat">
         Reassignment reason to penalize
       </label>
       <v-select
@@ -23,27 +23,100 @@
       <!--      </div>-->
     </div>
     <div
-      class="form-group col-md-4 user-input"
+      class="row replica"
       v-for="(partnerAction, index) in partnerActionInputs"
       :key="index"
     >
-      <label class="vat"> Partner action </label>
-      <v-select
-        :options="partner_actions_data"
-        :reduce="name => name.id"
-        :name="partnerAction.count"
-        label="display_name"
-        placeholder="Select"
-        class="form-control select user-billing"
-        :id="`name`"
-        v-model="partnerAction.action"
-      >
-      </v-select>
-      <!--    <div v-if="submitted && !$v.partnerActions.required" class="rewards_valid">-->
-      <!--      Partner action is required-->
-      <!--    </div>-->
-      <div class="add-input" @click="addNewPartnerAction">
-        + Select another partner action
+      <div class="form-group col-md-4 user-input">
+        <label class="vat"> Partner action </label>
+        <v-select
+          :options="partner_actions_data"
+          :reduce="name => name.id"
+          :name="partnerAction.count"
+          label="display_name"
+          placeholder="Select"
+          class="form-control select user-billing"
+          :id="`name`"
+          v-model="partnerAction.action"
+        >
+        </v-select>
+        <!--    <div v-if="submitted && !$v.partnerActions.required" class="rewards_valid">-->
+        <!--      Partner action is required-->
+        <!--    </div>-->
+        <div class="add-input" @click="addNewPartnerAction">
+          + Select another partner action
+        </div>
+      </div>
+
+      <!--    TODO add for how long field-->
+      <div class="form-group col-md-4 user-input">
+        <label class="vat">
+          For how long
+        </label>
+        <el-input type="number" v-model="duration_blocked">
+          <template slot="append"
+            >hours</template
+          >
+        </el-input>
+        <!--      <div-->
+        <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
+        <!--        class="rewards_valid"-->
+        <!--      >-->
+        <!--        Reassignment reason is required-->
+        <!--      </div>-->
+      </div>
+
+      <!--    TODO add after how long field-->
+      <div class="form-group col-md-4 user-input">
+        <label class="vat">
+          After how long
+        </label>
+        <el-input type="number" v-model="after_how_long">
+          <template slot="append"
+            >hours</template
+          >
+        </el-input>
+        <!--      <div-->
+        <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
+        <!--        class="rewards_valid"-->
+        <!--      >-->
+        <!--        Reassignment reason is required-->
+        <!--      </div>-->
+      </div>
+
+      <!--    TODO add amount to charge message-->
+      <div class="form-group col-md-4 user-input">
+        <label class="vat"> How much </label>
+        <el-input
+          placeholder="Please input amount"
+          type="number"
+          v-model="amount_penalized"
+        >
+        </el-input>
+        <!--        <div-->
+        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
+        <!--          class="rewards_valid"-->
+        <!--        >-->
+        <!--          Reassignment reason is required-->
+        <!--        </div>-->
+      </div>
+
+      <!--    TODO add message to show partner message-->
+      <div class="form-group col-md-4 user-input">
+        <label class="vat"> Message to show partner </label>
+        <el-input
+          placeholder="Please input"
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          v-model="messageToPartner"
+        >
+        </el-input>
+        <!--        <div-->
+        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
+        <!--          class="rewards_valid"-->
+        <!--        >-->
+        <!--          Reassignment reason is required-->
+        <!--        </div>-->
       </div>
     </div>
   </div>
@@ -117,6 +190,10 @@ export default {
         { code: 12, name: 'The load cannot fit in my vehicle' },
         { code: 13, name: 'My Vehicle broke down' },
       ],
+      messageToPartner: '',
+      duration_blocked: null,
+      after_how_long: null,
+      amount_penalized: null,
     };
   },
   created() {
@@ -138,13 +215,19 @@ export default {
 </script>
 
 <style scoped>
+.replica {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
 .vat {
   text-align: left;
   display: block;
 }
 .add-input {
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .input-container {
   width: 100%;
@@ -152,15 +235,10 @@ export default {
   flex-wrap: wrap;
 }
 .user-input {
-  margin-bottom: 15px;
+  margin-top: 15px;
 }
 .reposition-select-input {
-  position: relative;
-  top: -23px;
-}
-.repositionTitle {
-  position: relative;
-  top: 15px;
+  right: 15px;
 }
 .v-select {
   padding: 0;
