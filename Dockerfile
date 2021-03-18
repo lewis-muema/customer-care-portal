@@ -1,8 +1,9 @@
-FROM sendy-docker-local.jfrog.io/node:10.19
-RUN useradd -u 3000 sendy
+FROM sendy-docker-local.jfrog.io/node:10.19-alpine AS build-stage
 
-RUN mkdir /cc && \
-    mkdir /home/sendy
+RUN adduser -D sendy
+
+RUN mkdir /cc 
+   
 RUN chown -R sendy:sendy /cc
 RUN chown -R sendy:sendy /home/sendy/
 WORKDIR /cc
