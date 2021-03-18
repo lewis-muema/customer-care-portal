@@ -326,22 +326,18 @@ export default {
       console.log('PARTNER INPUTS', this.partnerActionInputs);
     },
     partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
+      this.$set(inputValuesObject, 'block_hours_visible', false);
+      this.$set(inputValuesObject, 'partner_message_visible', false);
+      this.$set(inputValuesObject, 'penalty_fee_visible', false);
+
       if (actionID === 1) {
         this.$set(inputValuesObject, 'block_hours_visible', true);
         this.$set(inputValuesObject, 'partner_message_visible', true);
-        this.$set(inputValuesObject, 'penalty_fee_visible', false);
       } else if (actionID === 2) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
         this.$set(inputValuesObject, 'partner_message_visible', true);
-        this.$set(inputValuesObject, 'block_hours_visible', false);
       } else if (actionID === 3 || actionID === 4 || actionID === 5) {
         this.$set(inputValuesObject, 'partner_message_visible', true);
-        this.$set(inputValuesObject, 'block_hours_visible', false);
-        this.$set(inputValuesObject, 'penalty_fee_visible', false);
-      } else {
-        this.$set(inputValuesObject, 'block_hours_visible', false);
-        this.$set(inputValuesObject, 'partner_message_visible', false);
-        this.$set(inputValuesObject, 'penalty_fee_visible', false);
       }
     },
     addNewCustomerAction() {
@@ -361,10 +357,9 @@ export default {
       console.log('CUSTOMER INPUTS', this.customerActionInputs);
     },
     customerInputsVisibilityTrigger(actionID, inputValuesObject) {
+      this.$set(inputValuesObject, 'customer_message_visible', false);
       if (actionID === 1) {
         this.$set(inputValuesObject, 'customer_message_visible', true);
-      } else {
-        this.$set(inputValuesObject, 'customer_message_visible', false);
       }
     },
   },
