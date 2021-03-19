@@ -75,7 +75,7 @@
           </div>
         </div>
 
-        <div v-if="penalizing_param === 'REASSIGNED'">
+        <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
           <partner-action />
         </div>
         <div class="remove-margin row" v-else>
@@ -732,6 +732,9 @@ export default {
 .form-inline {
   margin-left: 2%;
 }
+.full-width {
+  width: 100%;
+}
 .remove-margin {
   margin-left: 0;
 }
@@ -819,9 +822,6 @@ export default {
   margin-left: -15px;
   padding: 0;
   width: 95%;
-}
-.user-input {
-  margin-bottom: 15px;
 }
 .form-inline {
   margin-left: 2%;
