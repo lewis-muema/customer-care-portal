@@ -200,7 +200,7 @@
                 "
                 @click="setStatusState(set_reallocation_reasons[scope.$index])"
               >
-                Deactivate
+                {{ setStatusText(set_reallocation_reasons[scope.$index]) }}
               </el-button>
             </template>
           </el-table-column>
@@ -355,6 +355,9 @@ export default {
       if (!id) return '';
       const data = this.country_code.find(location => location.code === id);
       return data.name;
+    },
+    setStatusText(row) {
+      return row.status === 1 ? 'Deactivate' : 'Activate';
     },
     async setStatusState(row) {
       const payload = {
