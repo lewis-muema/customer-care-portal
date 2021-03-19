@@ -147,17 +147,11 @@
               }}
             </template>
           </el-table-column>
-          <el-table-column label="Vendor" prop="vendor_type">
-            <template slot-scope="scope">
-              {{
-                vendor(set_reallocation_reasons[scope.$index]['vendor_type'])
-              }}
-            </template>
-          </el-table-column>
+          <el-table-column label="Vendor" prop="vendor_type"> </el-table-column>
           <el-table-column
             label="Reallocation reason"
             width="180"
-            prop="Reason_description"
+            prop="description"
           >
           </el-table-column>
           <el-table-column
@@ -336,7 +330,6 @@ export default {
       let actionClass = '';
       try {
         const results = await this.fetch_set_reallocation_reason();
-        console.log('>>>>', results.data);
         this.set_reallocation_reasons = results.data;
         this.loading_messages = false;
       } catch (error) {
@@ -348,15 +341,6 @@ export default {
     },
     checkSubmitStatus() {
       return this.submit_state;
-    },
-    vendor(id) {
-      if (!id) return '';
-      let name = '';
-      if (Object.keys(this.vendor_type).length > 0) {
-        const data = this.vendor_type.find(location => location.id === id);
-        name = data.name;
-      }
-      return name;
     },
     activeStatus(status) {
       return status === 1 ? 'Active' : 'Deactivated';
@@ -373,24 +357,17 @@ export default {
       return data.name;
     },
     async setStatusState(row) {
-      const data = {
-        id: row.id,
-        status: row.status,
-      };
-
       const payload = {
-        app: 'ADONIS_API',
-        endpoint: `vendor-type-reallocation-reasons/${row.id}`,
-        apiKey: false,
-        params: data,
+        id: row.id,
+        status: row.status === 1 ? 2 : 1,
       };
 
       try {
         const resp = await this.update_status_state(payload);
 
-        if (resp.status === 200) {
+        if (resp.status) {
           this.loading_messages = true;
-          this.initiateData();
+          await this.initiateData();
         }
       } catch (error) {
         this.loading_messages = true;
@@ -445,12 +422,12 @@ export default {
       try {
         const result = await this.add_reallocation_reason(payload);
 
-        if (result.status === 200) {
+        if (result.status) {
           setTimeout(() => {
             this.submit_state = false;
             this.loading_messages = true;
             this.initiateData();
-          }, 5000);
+          }, 2000);
         } else {
           this.loading_messages = true;
           this.initiateData();
