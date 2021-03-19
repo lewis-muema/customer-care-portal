@@ -12,7 +12,8 @@
           <tr>
             <th class="alert-td">Alert Type</th>
             <th>Order Number</th>
-            <th>Time Occured</th>
+            <th>Date Placed</th>
+            <th>Time Problem Occured</th>
             <th>Resolution Time</th>
             <th>Customer Name</th>
             <th class="assignee-td">Assignee</th>
@@ -40,6 +41,14 @@
                 {{ data.alert_type }}
               </td>
               <td>{{ data.order_no }}</td>
+              <td>
+                {{
+                  getFormattedDate(
+                    data.placement_time,
+                    'MMM Do,  YYYY HH:mm:ss',
+                  )
+                }}
+              </td>
               <td>
                 {{
                   getFormattedDate(data.created_at, 'MMM Do,  YYYY HH:mm:ss')

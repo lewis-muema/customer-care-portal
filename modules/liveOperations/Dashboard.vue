@@ -207,8 +207,8 @@ export default {
       const payload = {
         page: this.page,
         limit: 30,
-        date_from: startDate,
-        date_to: endDate,
+        placed_from: startDate,
+        placed_to: endDate,
         status: this.alertStatus,
         assignee: this.isAdmin ? this.adminIDs : this.loggedUser,
         alert_type_id: this.alertIDs,
