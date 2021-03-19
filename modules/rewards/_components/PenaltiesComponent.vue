@@ -75,131 +75,119 @@
           </div>
         </div>
 
-        <div
-          class="form-group col-md-4 user-input"
-          v-if="penalizing_param === 'REASSIGNED'"
-        >
-          <label class="vat"> Reassigned reason to penalize</label>
-          <el-select
-            v-model="penalizing_reason"
-            multiple
-            class="form-control select user-billing"
-            placeholder="Select"
-          >
-            <el-option
-              v-for="item in reasons_data"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
-            >
-            </el-option>
-          </el-select>
+        <div v-if="penalizing_param === 'REASSIGNED'">
+          <partner-action />
         </div>
-
-        <div class="form-group col-md-4 user-input">
-          <label class="vat"> Orders to penalize for</label>
-          <el-input
-            placeholder="Please input"
-            v-model="penalized_orders"
-            class="input-with-select"
-            min="0"
-            type="number"
-          >
-            <el-select
-              v-model="orders_parameter"
-              slot="prepend"
-              placeholder="Select"
+        <div class="remove-margin row" v-else>
+          <div class="form-group col-md-4 user-input">
+            <label class="vat"> Orders to penalize for</label>
+            <el-input
+              placeholder="Please input"
+              v-model="penalized_orders"
+              class="input-with-select"
+              min="0"
+              type="number"
             >
-              <el-option
-                v-for="value in orderValue()"
-                :key="value.code"
-                :label="value.name"
-                :value="value.code"
+              <el-select
+                v-model="orders_parameter"
+                slot="prepend"
+                placeholder="Select"
               >
-              </el-option>
-            </el-select>
-          </el-input>
-          <div
-            v-if="
-              submitted &&
-                (!$v.penalized_orders.required || !$v.orders_parameter.required)
-            "
-            class="rewards_valid"
-          >
-            Orders to penalize is required
+                <el-option
+                  v-for="value in orderValue()"
+                  :key="value.code"
+                  :label="value.name"
+                  :value="value.code"
+                >
+                </el-option>
+              </el-select>
+            </el-input>
+            <div
+              v-if="
+                submitted &&
+                  (!$v.penalized_orders.required ||
+                    !$v.orders_parameter.required)
+              "
+              class="rewards_valid"
+            >
+              Orders to penalize is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input">
-          <label class="vat"> Number of hours to block on dispatch </label>
+          <div class="form-group col-md-4 user-input">
+            <label class="vat"> Number of hours to block on dispatch </label>
 
-          <input
-            min="0"
-            type="number"
-            step="0.01"
-            name="blocking_hrs"
-            placeholder=""
-            class="form-control config-input"
-            v-model="blocking_hrs"
-          />
-          <div
-            class="rewards_valid"
-            v-if="submitted && !$v.blocking_hrs.required"
-          >
-            Number of hours to block on dispatch is required
+            <input
+              min="0"
+              type="number"
+              step="0.01"
+              name="blocking_hrs"
+              placeholder=""
+              class="form-control config-input"
+              v-model="blocking_hrs"
+            />
+            <div
+              class="rewards_valid"
+              v-if="submitted && !$v.blocking_hrs.required"
+            >
+              Number of hours to block on dispatch is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input start-date--align">
-          <label class="config"> From </label>
+          <div class="form-group col-md-4 user-input start-date--align">
+            <label class="config"> From </label>
 
-          <date-picker
-            v-model="from_date"
-            class="date-input"
-            :input-props="{
-              placeholder: 'Select from date',
-              readonly: true,
-              class: 'form-control config-input ',
-            }"
-            :min-date="new Date()"
-          />
-          <div class="rewards_valid" v-if="submitted && !$v.from_date.required">
-            From Date is required
+            <date-picker
+              v-model="from_date"
+              class="date-input"
+              :input-props="{
+                placeholder: 'Select from date',
+                readonly: true,
+                class: 'form-control config-input ',
+              }"
+              :min-date="new Date()"
+            />
+            <div
+              class="rewards_valid"
+              v-if="submitted && !$v.from_date.required"
+            >
+              From Date is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input start-date--align">
-          <label class="config"> To </label>
+          <div class="form-group col-md-4 user-input start-date--align">
+            <label class="config"> To </label>
 
-          <date-picker
-            v-model="to_date"
-            class="date-input"
-            :input-props="{
-              placeholder: 'Select to date',
-              readonly: true,
-              class: 'form-control config-input ',
-            }"
-            :min-date="new Date()"
-          />
-          <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
-            To Date is required
+            <date-picker
+              v-model="to_date"
+              class="date-input"
+              :input-props="{
+                placeholder: 'Select to date',
+                readonly: true,
+                class: 'form-control config-input ',
+              }"
+              :min-date="new Date()"
+            />
+            <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
+              To Date is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input ">
-          <label class="vat"> Message to show partner</label>
+          <div class="form-group col-md-4 user-input ">
+            <label class="vat"> Message to show partner</label>
 
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            placeholder="Please input"
-            v-model="message"
-            :id="`message`"
-            class="message-input"
-          >
-          </el-input>
-          <div v-if="submitted && !$v.message.required" class="rewards_valid">
-            Message is required
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4 }"
+              placeholder="Please input"
+              v-model="message"
+              :id="`message`"
+              class="message-input"
+            >
+            </el-input>
+            <div v-if="submitted && !$v.message.required" class="rewards_valid">
+              Message is required
+            </div>
           </div>
         </div>
 
@@ -351,13 +339,15 @@ import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import moment from 'moment';
 import Loading from './LoadingComponent.vue';
+import PartnerActionInput from './ReassignOrderInputs/PartnerActionInput';
+import PartnerAction from '@/modules/rewards/_components/ReassignOrderInputs/PartnerActionInput';
 
 Vue.component('calendar', Calendar);
 Vue.component('date-picker', DatePicker);
 
 export default {
   name: 'PenaltiesComponent',
-  components: { Loading },
+  components: { PartnerAction, Loading },
   data() {
     return {
       submitted: false,
@@ -741,6 +731,9 @@ export default {
 }
 .form-inline {
   margin-left: 2%;
+}
+.remove-margin {
+  margin-left: 0;
 }
 .centre-loader {
   display: block;
