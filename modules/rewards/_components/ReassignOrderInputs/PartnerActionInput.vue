@@ -7,7 +7,6 @@
       <v-select
         :options="reassignment_reason"
         :reduce="name => name.code"
-        multiple
         name="name"
         label="name"
         placeholder="Select "
