@@ -38,8 +38,6 @@
           <v-select
             :options="vendor_type"
             :reduce="name => name.id"
-            multiple
-            chips
             name="name"
             label="name"
             placeholder="Select"
@@ -77,7 +75,133 @@
           </div>
         </div>
 
-        <partner-action-input />
+        <div
+          class="form-group col-md-4 user-input"
+          v-if="penalizing_param === 'REASSIGNED'"
+        >
+          <label class="vat"> Reassigned reason to penalize</label>
+          <el-select
+            v-model="penalizing_reason"
+            multiple
+            class="form-control select user-billing"
+            placeholder="Select"
+          >
+            <el-option
+              v-for="item in reasons_data"
+              :key="item.code"
+              :label="item.name"
+              :value="item.code"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div class="form-group col-md-4 user-input">
+          <label class="vat"> Orders to penalize for</label>
+          <el-input
+            placeholder="Please input"
+            v-model="penalized_orders"
+            class="input-with-select"
+            min="0"
+            type="number"
+          >
+            <el-select
+              v-model="orders_parameter"
+              slot="prepend"
+              placeholder="Select"
+            >
+              <el-option
+                v-for="value in orderValue()"
+                :key="value.code"
+                :label="value.name"
+                :value="value.code"
+              >
+              </el-option>
+            </el-select>
+          </el-input>
+          <div
+            v-if="
+              submitted &&
+                (!$v.penalized_orders.required || !$v.orders_parameter.required)
+            "
+            class="rewards_valid"
+          >
+            Orders to penalize is required
+          </div>
+        </div>
+
+        <div class="form-group col-md-4 user-input">
+          <label class="vat"> Number of hours to block on dispatch </label>
+
+          <input
+            min="0"
+            type="number"
+            step="0.01"
+            name="blocking_hrs"
+            placeholder=""
+            class="form-control config-input"
+            v-model="blocking_hrs"
+          />
+          <div
+            class="rewards_valid"
+            v-if="submitted && !$v.blocking_hrs.required"
+          >
+            Number of hours to block on dispatch is required
+          </div>
+        </div>
+
+        <div class="form-group col-md-4 user-input start-date--align">
+          <label class="config"> From </label>
+
+          <date-picker
+            v-model="from_date"
+            class="date-input"
+            :input-props="{
+              placeholder: 'Select from date',
+              readonly: true,
+              class: 'form-control config-input ',
+            }"
+            :min-date="new Date()"
+          />
+          <div class="rewards_valid" v-if="submitted && !$v.from_date.required">
+            From Date is required
+          </div>
+        </div>
+
+        <div class="form-group col-md-4 user-input start-date--align">
+          <label class="config"> To </label>
+
+          <date-picker
+            v-model="to_date"
+            class="date-input"
+            :input-props="{
+              placeholder: 'Select to date',
+              readonly: true,
+              class: 'form-control config-input ',
+            }"
+            :min-date="new Date()"
+          />
+          <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
+            To Date is required
+          </div>
+        </div>
+
+        <div class="form-group col-md-4 user-input ">
+          <label class="vat"> Message to show partner</label>
+
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            placeholder="Please input"
+            v-model="message"
+            :id="`message`"
+            class="message-input"
+          >
+          </el-input>
+          <div v-if="submitted && !$v.message.required" class="rewards_valid">
+            Message is required
+          </div>
+        </div>
 
         <div class="form-group  col-md-12 config-submit">
           <button
@@ -137,7 +261,7 @@
               {{ fetchCountry(penalty_logs[scope.$index]['country']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Vendor type" prop="vendor_type">
+          <el-table-column label="Vendor" prop="vendor_type">
             <template slot-scope="scope">
               {{ vendor(penalty_logs[scope.$index]['vendor_type']) }}
             </template>
@@ -151,16 +275,30 @@
               {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Actions" width="180" prop="parameter">
+          <el-table-column
+            label="Hours blocked on dispatch"
+            width="180"
+            prop="block_hours"
+          >
             <template slot-scope="scope">
-              {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
+              {{ penalty_logs[scope.$index]['block_hours'] }} Hrs
             </template>
           </el-table-column>
-          <el-table-column label="Date Added" prop="from_date">
+          <el-table-column label="From" prop="from_date">
             <template slot-scope="scope">
               {{
                 getFormattedDate(
                   penalty_logs[scope.$index]['from_date'],
+                  'DD/MM/YYYY ',
+                )
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column label="To" prop="to_date">
+            <template slot-scope="scope">
+              {{
+                getFormattedDate(
+                  penalty_logs[scope.$index]['to_date'],
                   'DD/MM/YYYY ',
                 )
               }}
@@ -189,6 +327,14 @@
               >
                 {{ actionStatus(penalty_logs[scope.$index]['status']) }}
               </el-button>
+              <el-button
+                v-if="penalty_logs[scope.$index]['status'] === 0"
+                size="mini"
+                class="action-button--archive"
+                @click="handleArchive(penalty_logs[scope.$index])"
+              >
+                Archive
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -198,15 +344,20 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
+import Calendar from 'v-calendar/lib/components/calendar.umd';
+import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import moment from 'moment';
 import Loading from './LoadingComponent.vue';
-import PartnerActionInput from './ReassignOrderInputs/PartnerActionInput';
+
+Vue.component('calendar', Calendar);
+Vue.component('date-picker', DatePicker);
 
 export default {
   name: 'PenaltiesComponent',
-  components: { Loading, PartnerActionInput },
+  components: { Loading },
   data() {
     return {
       submitted: false,
@@ -217,10 +368,18 @@ export default {
       penalty_logs: [],
       error_msg: '',
       add_btn: false,
+      blocking_hrs: '',
+      from_date: '',
+      to_date: '',
       message: '',
-      showCustomerAction: true,
-      blockedHours: null,
-      blocked_hours: [1, 2, 4, 6, 12],
+      orders_parameter: '',
+      comparator: [
+        { code: 'ET', name: 'Equal to' },
+        { code: 'GT', name: 'Greater than' },
+        { code: 'LT', name: 'Less than' },
+        { code: 'GET', name: 'Greater than or equal to' },
+        { code: 'LET', name: 'Less than or equal to' },
+      ],
       country_code: [
         { code: 'KE', name: 'Kenya' },
         { code: 'UG', name: 'Uganda' },
@@ -231,7 +390,7 @@ export default {
         { code: 'REASSIGNED', name: 'Reassigned orders ' },
       ],
       reasons_data: [
-        { code: 3, name: 'Client is not reachable' },
+        { code: 3, name: 'Client is not reacheable' },
         { code: 5, name: 'I do not have a box' },
         { code: 7, name: `I can't access CBD` },
         { code: 8, name: 'My bike broke-down' },
@@ -241,70 +400,26 @@ export default {
         { code: 12, name: 'The load cannot fit in my vehicle' },
         { code: 13, name: 'My Vehicle broke down' },
       ],
-      partner_actions_data: [
-        {
-          id: 1,
-          action_type: 1,
-          name: 'Block',
-          display_name: 'Block from dispatch',
-          input_datatype: 'Integer',
-          user_type: '[1]',
-          status: 1,
-        },
-        {
-          id: 2,
-          action_type: 1,
-          name: 'Penalty_Fee',
-          display_name: 'Charge a penalty fee',
-          input_datatype: 'Integer',
-          user_type: '[1,2]',
-          status: 1,
-        },
-        {
-          id: 3,
-          action_type: 2,
-          name: 'Reallocation',
-          display_name: 'Allow partner to reallocate',
-          input_datatype: 'Integer',
-          user_type: '[1]',
-          status: 1,
-        },
-        {
-          id: 4,
-          action_type: 2,
-          name: 'Reschedule',
-          display_name: 'Allow customer to reschedule order',
-          input_datatype: 'Integer',
-          user_type: '[2]',
-          status: 1,
-        },
-        {
-          id: 5,
-          action_type: 2,
-          name: 'Notification',
-          display_name: 'Trigger notification alert',
-          input_datatype: 'Integer',
-          user_type: '[1,2]',
-          status: 1,
-        },
-      ],
       completed_comp_id: ['GT', 'GET'],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
       country: '',
       penalizing_reason: [],
-      partnerActions: '',
-      messageToPartner: '',
+      penalized_orders: '',
       submit_state: false,
     };
   },
   validations: {
+    blocking_hrs: { required },
+    from_date: { required },
+    to_date: { required },
+    message: { required },
+    orders_parameter: { required },
     vendorType: { required },
     country: { required },
     penalizing_param: { required },
-    reassignment_reason_penalize: { required },
-    messageToPartner: { required },
+    penalized_orders: { required },
   },
   computed: {
     ...mapGetters(['getSession']),
@@ -322,10 +437,14 @@ export default {
     ...mapActions({
       perform_user_action: 'perform_user_action',
       request_vendor_types: 'request_vendor_types',
+      request_penalties: 'requestPenalties',
+      update_reward: 'update_reward',
+      create_reward: 'create_reward',
     }),
     initiateData() {
       this.clearData();
       this.fetchVendorTypes();
+      this.requestRewards();
     },
     rewardSection() {
       let status = false;
@@ -337,10 +456,21 @@ export default {
     clearData() {
       this.submit_status = false;
       this.add_btn = false;
+      this.parameter = '';
+      this.parameter_comp = '';
+      this.parameter_value = '';
+      this.parameter_data = '';
+      this.block_hours = '';
       this.country = '';
       this.vendor_type = '';
-      this.vendorType = [];
+      this.from_date = '';
+      this.to_date = '';
       this.message = '';
+    },
+    async requestRewards() {
+      const arr = await this.request_penalties();
+      this.penalty_logs = arr.filter(obj => obj.status !== 2);
+      this.loading_penalties = false;
     },
     async fetchVendorTypes() {
       const notification = [];
@@ -357,7 +487,6 @@ export default {
       try {
         const data = await this.request_vendor_types(payload);
         this.vendor_type = data.vendor_types;
-        this.loading_penalties = false;
         return data.vendor_types;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
@@ -369,7 +498,7 @@ export default {
     checkSubmitStatus() {
       return this.submit_state;
     },
-    generate_penalty() {
+    async generate_penalty() {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -390,7 +519,7 @@ export default {
       ) {
         this.submit_state = false;
         this.response_status = 'error';
-        this.error_msg = 'Reassigned reason to penalize is required!';
+        this.error_msg = 'Reasssigned reason to penalize is required!';
       } else if (
         this.orders_parameter === 'ET' &&
         this.penalized_orders > '0'
@@ -424,9 +553,9 @@ export default {
         };
 
         try {
-          const data = true;
+          const data = await this.create_reward(payload);
 
-          if (data) {
+          if (data.status) {
             this.response_status = 'success';
 
             setTimeout(() => {
@@ -437,7 +566,7 @@ export default {
           } else {
             this.submit_state = false;
             this.response_status = 'error';
-            this.error_msg = data;
+            this.error_msg = data.message;
           }
         } catch (error) {
           this.submit_state = false;
@@ -447,10 +576,23 @@ export default {
         }
       }
     },
+    formatReward(text) {
+      return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
+    },
     vendor(id) {
       let name = '';
       if (Object.keys(this.vendor_type).length > 0) {
         const data = this.vendor_type.find(location => location.id === id);
+        name = data.name;
+      }
+      return name;
+    },
+    penalizingParams(id) {
+      let name = '';
+      if (Object.keys(this.penalizing_data).length > 0) {
+        const data = this.penalizing_data.find(
+          location => location.code === id,
+        );
         name = data.name;
       }
       return name;
@@ -473,12 +615,103 @@ export default {
       }
       return status;
     },
+    formatAmount(currency, amount) {
+      return `${currency} ${amount}`;
+    },
+    async handleAction(row) {
+      let data = {};
+      data = row;
+      if (row.status === 1) {
+        data.status = 0;
+        data.from_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
+      } else {
+        data.status = 1;
+        data.from_date = moment(row.from_date).format('YYYY-MM-DD');
+        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
+      }
+
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: `/penalties/${row.id}`,
+        apiKey: false,
+        params: data,
+      };
+
+      try {
+        const resp = await this.update_reward(payload);
+        this.loading_penalties = true;
+        this.initiateData();
+      } catch (error) {
+        this.loading_penalties = true;
+        this.initiateData();
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    reassignData(param, comparator, value) {
+      let resp = '';
+      if (Object.keys(this.comparator).length > 0) {
+        if (param === 'REASSIGNED') {
+          const response = [];
+          const arr = JSON.parse(value);
+          for (let i = 0; i < arr.length; i++) {
+            const extract = this.reasons_data.find(
+              location => location.code === arr[i],
+            );
+            response.push(extract.name);
+            resp = response.toString();
+          }
+        } else {
+          const data = this.comparator.find(
+            location => location.code === comparator,
+          );
+          resp = `${data.name} ${value} orders`;
+        }
+      }
+      return resp;
+    },
     penalizeLabel(val) {
       let resp = 'Orders to penalize for be';
       if (val === 'REASSIGNED') {
         resp = 'Reassign reasons to penalize for ';
       }
       return resp;
+    },
+    async handleArchive(row) {
+      let data = {};
+      data = row;
+
+      data.status = 2;
+      data.from_date = moment(row.from_date).format('YYYY-MM-DD');
+      data.to_date = moment(row.to_date).format('YYYY-MM-DD');
+
+      const payload = {
+        app: 'ADONIS_API',
+        endpoint: `/penalties/${row.id}`,
+        apiKey: false,
+        params: data,
+      };
+
+      try {
+        const resp = await this.update_reward(payload);
+        this.loading_penalties = true;
+        this.initiateData();
+      } catch (error) {
+        this.loading_penalties = true;
+        this.initiateData();
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    orderValue() {
+      const record = this.comparator.filter(i =>
+        this.completed_comp_id.includes(i.code),
+      );
+
+      return record;
     },
   },
 };
@@ -597,17 +830,6 @@ export default {
 .user-input {
   margin-bottom: 15px;
 }
-.customer-action-input {
-  width: 100%;
-}
-.blocked-action-input {
-  width: 100%;
-}
-.blocked-action-input .el-select {
-  position: relative;
-  left: -15px;
-  width: 100%;
-}
 .form-inline {
   margin-left: 2%;
 }
@@ -644,7 +866,7 @@ export default {
 }
 .add-reward-section {
   width: 80% !important;
-  min-height: 260px;
+  min-height: 340px;
 }
 .user-textarea {
   margin-right: 9%;
