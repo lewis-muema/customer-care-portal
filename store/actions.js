@@ -471,8 +471,8 @@ export default {
         } catch (e) {
           return e;
         }
-
         break;
+
       default:
     }
   },
