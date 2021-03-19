@@ -1212,14 +1212,24 @@ export default {
     }
   },
 
-  async update_status_state({ dispatch, commit }, payload) {
+  async update_status_state({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const { id, status } = payload;
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}vendor-type-reallocation-reasons/${id}`;
     try {
-      return await dispatch('requestAxiosPost', payload, { root: true });
+      const response = await axios.put(url, { status }, param);
+      return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
         root: true,
       });
-      return error.response;
     }
   },
 
