@@ -92,7 +92,8 @@
               <span> Intercounty Configuration </span>
             </a>
           </li>
-          <li class="treeview">
+          <li class="treeview" v-if="permissions.approve_social_media_biz">
+            >
             <a
               class="fancybox fancybox.iframe fancyboxy"
               href="/socialMediaBusiness"
@@ -119,7 +120,7 @@
               <span> Promo Codes </span></nuxt-link
             >
           </li>
-          <li class="treeview">
+          <li class="treeview" v-if="permissions.view_live_operations">
             <nuxt-link to="/liveOperations"
               ><i class="fa fa-wifi text-grey"></i>
               <span> Live Operations </span></nuxt-link

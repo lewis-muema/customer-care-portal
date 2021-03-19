@@ -66,7 +66,6 @@ export default {
     }),
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');
-
       const token =
         this.getAuthenticationToken === null
           ? storedToken

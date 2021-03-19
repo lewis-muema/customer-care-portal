@@ -71,12 +71,10 @@ export default {
     }),
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');
-
       const token =
         this.getAuthenticationToken === null
           ? storedToken
           : this.getAuthenticationToken;
-
       if (token && token !== '' && storedToken !== 'undefined') {
         const partsOfToken = token.split('.');
         const middleString = Base64.decode(partsOfToken[1]);
