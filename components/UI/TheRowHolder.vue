@@ -121,7 +121,6 @@
                 <i class="fa fa-info"></i>
               </span>
               <span class="badge bg-aqua ">{{ order.city.name }} </span>
-
               <span> &nbsp; </span>
               <span title="Corporate Name" class="badge bg-aqua pull-right">
                 {{ moreData.distance_read }} km</span
