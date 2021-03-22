@@ -6,9 +6,9 @@
       </label>
       <v-select
         :options="reassignment_reason"
-        :reduce="name => name.code"
+        :reduce="name => name.reallocation_id"
         name="name"
-        label="name"
+        label="description"
         placeholder="Select "
         class="form-control select user-billing"
         :id="`name`"
@@ -205,6 +205,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'PartnerAction',
   data() {
@@ -229,6 +231,7 @@ export default {
       },
       partnerInputCount: 0,
       customerInputCount: 0,
+      partnerActionsSelected: [],
       partnerActionInputs: [],
       customerActionInputs: [],
       partner_actions_data: [
@@ -306,8 +309,18 @@ export default {
   created() {
     this.addNewPartnerAction();
     this.addNewCustomerAction();
+    this.fetchReassignmentReasons();
   },
   methods: {
+    ...mapActions({
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+    }),
+    async fetchReassignmentReasons() {
+      const results = await this.fetch_set_reallocation_reason();
+      this.reassignment_reason = results.data.filter(
+        reason => reason.status === 1,
+      );
+    },
     addNewPartnerAction() {
       this.partnerActionInputs.push({
         ...this.partnerAction,
@@ -320,6 +333,8 @@ export default {
     partnerActionSelectedChanged(selectedValue, inputIndex) {
       const { partner_action_id } = selectedValue;
       const selectedAction = this.partnerActionInputs[inputIndex];
+      console.log('>>>', selectedValue);
+      this.partnerActionsSelected.push(partner_action_id);
 
       this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
       console.log('PARTNER INPUTS', this.partnerActionInputs);
