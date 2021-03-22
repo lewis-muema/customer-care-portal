@@ -459,6 +459,8 @@ export default {
       edit_route: false,
       delete_status: false,
       delete_response_status: true,
+      service: '',
+      placeService: '',
     };
   },
   computed: {
@@ -492,6 +494,7 @@ export default {
   mounted() {
     this.$gmapApiPromiseLazy().then(() => {
       this.mapLoaded = true;
+      this.loadMapScript();
     });
     this.initiateData();
   },
@@ -506,6 +509,35 @@ export default {
     initiateData() {
       this.fetchVendorTypes();
       this.requestDestinationData();
+    },
+    loadMapScript() {
+      if (window.google && window.google.maps) {
+        setTimeout(() => {
+          this.initMap();
+        }, 180);
+      } else {
+        const script = document.createElement('script');
+        script.onload = () => {
+          this.initMap();
+        };
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.herokuKey}`;
+        document.head.appendChild(script);
+      }
+    },
+    initMap() {
+      this.service = new window.google.maps.places.AutocompleteService();
+      this.placeService = new window.google.maps.places.PlacesService(
+        document.createElement('div'),
+      );
+    },
+    displaySuggestions(predictions, status) {
+      if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+        this.suggestions = [];
+        this.visible = false;
+        return;
+      }
+      this.suggestions = predictions;
+      this.visible = true;
     },
     async fetchVendorTypes() {
       const notification = [];
@@ -546,32 +578,31 @@ export default {
     },
     // eslint-disable-next-line func-names
     search: _.debounce(function(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=name,geometry&components=country:ke|country:ug|country:tz&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-          this.visible = true;
-        });
+      this.service.getPlacePredictions(
+        {
+          input: val,
+          componentRestrictions: { country: ['ke', 'ug', 'tz'] },
+        },
+        this.displaySuggestions,
+      );
     }, 500),
     handleSelect(item, input, placeId) {
       this.visible = false;
       this.searched = true;
       this.suggestions = [];
       const fromPlaceId = placeId;
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=${this.herokuKey}`,
-        )
-        .then(response => {
+      this.placeService.getDetails(
+        {
+          placeId: fromPlaceId,
+        },
+        details => {
           this.markers.splice(input, 1);
-          this.locations[input] = response.data.result.name;
-          const collection_marker = response.data.result.geometry;
+          this.locations[input] = details.name;
+          const collection_marker = details.geometry;
           const data = {
             address: this.locations[input],
-            lat: collection_marker.location.lat,
-            long: collection_marker.location.lng,
+            lat: collection_marker.location.lat(),
+            long: collection_marker.location.lng(),
           };
 
           const destination_config = this.destination_config_data;
@@ -602,7 +633,13 @@ export default {
             this.collection_centers.splice(input - 1, 1);
             this.collection_centers.splice(input - 1, 0, data);
           }
-          this.markers.splice(input, 0, response.data.result.geometry);
+          const coordinates = {
+            location: {
+              lng: details.geometry.location.lng(),
+              lat: details.geometry.location.lat(),
+            },
+          };
+          this.markers.splice(input, 0, coordinates);
 
           const map_value = `map${input}`;
           let ref = '';
@@ -614,11 +651,11 @@ export default {
 
           const bounds = new google.maps.LatLngBounds();
 
-          bounds.extend(response.data.result.geometry.location);
-
+          bounds.extend(details.geometry.location);
           ref.$mapObject.fitBounds(bounds);
           ref.$mapObject.setZoom(ref.$mapObject.zoom - 1);
-        });
+        },
+      );
     },
     handleFocus(val, input) {
       this.searched = false;

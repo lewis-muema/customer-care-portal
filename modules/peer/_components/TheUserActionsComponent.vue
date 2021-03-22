@@ -95,10 +95,7 @@
             Reversals & Credit Note
           </a>
         </li>
-        <li
-          class="nav-item custom-item"
-          v-if="permissions.approve_freight_peer"
-        >
+        <li class="nav-item custom-item" v-if="showFreightApproval">
           <a
             class="nav-link action-list invoice-action"
             data-toggle="tab"
@@ -247,6 +244,7 @@ export default {
       show: false,
       active: false,
       category: 'peer',
+      freight_status: 0,
     };
   },
   computed: {
@@ -281,18 +279,52 @@ export default {
       };
       return data;
     },
+    showFreightApproval() {
+      let resp = false;
+
+      if (this.permissions.approve_freight_peer && this.freight_status >= 1) {
+        resp = true;
+      }
+      return resp;
+    },
   },
   mounted() {
     this.clearErrorMessages();
     this.userID = this.user.user_details.user_id;
+    this.checkFreightStatus();
   },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
+    ...mapActions(['request_user_freight_status']),
     viewTab(tab, userID) {
       this.clearErrorMessages();
 
       this.showTab = `${tab}_${userID}`;
       this.active = 'active';
       this.show = 'show';
+    },
+    async checkFreightStatus() {
+      const notification = [];
+      let actionClass = '';
+
+      const payload = {
+        val: `userId=${this.user.user_details.user_id}`,
+      };
+
+      try {
+        const data = await this.request_user_freight_status(payload);
+        this.freight_status = data.freight_status;
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
