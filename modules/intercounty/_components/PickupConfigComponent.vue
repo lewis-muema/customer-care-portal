@@ -440,9 +440,9 @@ export default {
     },
   },
   mounted() {
-    this.loadMapScript();
     this.$gmapApiPromiseLazy().then(() => {
       this.mapLoaded = true;
+      this.loadMapScript();
     });
     this.initiateData();
   },
