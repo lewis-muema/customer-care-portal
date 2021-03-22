@@ -63,7 +63,7 @@
                 }}
               </td>
               <td>{{ data.customer_name }}</td>
-              <td v-if="data.status === 0">
+              <td v-if="data.status === 0 || data.status === 2">
                 <div class="image-holder" v-if="data.assignee !== null">
                   <img
                     :src="`${setPhoto(data)}`"
@@ -83,7 +83,7 @@
                 </div>
                 {{ data.resolved_by === null ? 'N/A' : data.resolved_by_name }}
               </td>
-              <td>
+              <td :class="`${getAlertStatus(data.status)}-td`">
                 <span
                   class="order-status"
                   :class="`${getAlertStatus(data.status)}`"
@@ -103,13 +103,17 @@
                 <span
                   class="action-status view-status"
                   @click.stop="triggerModal($event, 'assign', data)"
-                  v-if="data.assignee === null"
+                  v-if="data.assignee === null && data.status !== 2"
                   >Assign</span
                 >
                 <span
                   class="action-status re-assign-status"
                   @click.stop="triggerModal($event, 'reassign', data)"
-                  v-if="data.assignee !== null && data.status !== 1"
+                  v-if="
+                    data.assignee !== null &&
+                      data.status !== 1 &&
+                      data.status !== 2
+                  "
                   >Reassign</span
                 >
               </td>
@@ -252,6 +256,9 @@ export default {
           break;
         case 0:
           alertStatus = 'unresolved';
+          break;
+        case 2:
+          alertStatus = 'auto-resolved';
           break;
         default:
           break;

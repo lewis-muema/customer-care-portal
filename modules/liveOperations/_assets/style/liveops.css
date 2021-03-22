@@ -184,6 +184,13 @@
 .resolved {
     background: #3F9F4A;
 }
+.auto-resolved {
+    background: #3f9eff;
+    padding: 2px 8px;
+}
+.auto-resolved-td {
+    padding: 16px 10px !important;
+}
 .action-status {
     font-weight: 500;
     font-size: 12px;
