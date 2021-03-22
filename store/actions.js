@@ -394,6 +394,26 @@ export default {
         }
 
         break;
+      case 403:
+        try {
+          // eslint-disable-next-line no-case-declarations
+          const token = await dispatch('request_helpscout_token');
+          commit('setHelpScoutToken', token);
+
+          await localStorage.setItem(
+            'helpscoutAccessToken',
+            token.access_token,
+          );
+          await localStorage.setItem(
+            'helpscoutExpiryTime',
+            token.expiryDatetime,
+          );
+          await dispatch('getHelpscoutUser', payload);
+        } catch (e) {
+          return e;
+        }
+        break;
+
       default:
     }
   },
