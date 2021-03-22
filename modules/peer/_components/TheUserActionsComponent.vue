@@ -51,7 +51,7 @@
           </a>
         </li>
         <li
-          class="nav-item custom_invoice-padding"
+          class="nav-item custom_invoice-padding hide"
           v-if="permissions.approve_custom_invoice_1"
         >
           <a
