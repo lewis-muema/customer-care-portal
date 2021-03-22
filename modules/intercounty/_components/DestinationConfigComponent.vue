@@ -601,8 +601,8 @@ export default {
           const collection_marker = details.geometry;
           const data = {
             address: this.locations[input],
-            lat: collection_marker.location.lat,
-            long: collection_marker.location.lng,
+            lat: collection_marker.location.lat(),
+            long: collection_marker.location.lng(),
           };
 
           const destination_config = this.destination_config_data;
