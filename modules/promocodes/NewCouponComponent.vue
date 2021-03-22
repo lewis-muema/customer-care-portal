@@ -34,13 +34,18 @@
             <li class="nav-item coupon-nav">
               <a
                 class="nav-link coupon-link"
-                :class="{ active: isActive('first') }"
+                :class="{
+                  active:
+                    isActive('first') ||
+                    isActive('second') ||
+                    isActive('third'),
+                }"
               ></a>
             </li>
             <li class="nav-item">
               <a
                 class="nav-link coupon-link"
-                :class="{ active: isActive('second') }"
+                :class="{ active: isActive('second') || isActive('third') }"
               ></a>
             </li>
             <li class="nav-item">
@@ -133,54 +138,21 @@
                   }"
                 >
                   <option value="">Select Country</option>
-                  <option
-                    :value="country.country_code"
-                    v-for="(country, index) in getCountries"
-                    :key="index"
-                  >
-                    {{ country.country_name }}
-                  </option>
+                  <template v-for="(country, index) in getCountries">
+                    <option
+                      :value="country.country_code"
+                      :key="index"
+                      v-if="country.status === 1"
+                    >
+                      {{ country.country_name }}
+                    </option>
+                  </template>
                 </select>
                 <div
                   v-if="submitted && !$v.country.required && step === 1"
                   class="invalid-feedback"
                 >
                   Target Country is required
-                </div>
-              </div>
-              <div class="form-group user-input">
-                <label class="bill">Targeted User Type</label>
-                <select
-                  name="userType"
-                  v-model="userType"
-                  class="form-control"
-                  :class="{
-                    'is-invalid':
-                      submitted &&
-                      $v.userType.$error &&
-                      step === 1 &&
-                      step === 1,
-                  }"
-                >
-                  <option value="">Select User Type</option>
-                  <option
-                    :value="user.userType"
-                    v-for="(user, index) in userTypes"
-                    :key="index"
-                  >
-                    {{ user.title }}
-                  </option>
-                </select>
-                <div
-                  v-if="
-                    submitted &&
-                      !$v.userType.required &&
-                      step === 1 &&
-                      step === 1
-                  "
-                  class="invalid-feedback"
-                >
-                  Targeted User Type is required
                 </div>
               </div>
               <div class="form-group user-input">
@@ -256,7 +228,7 @@
                   type="number"
                   v-model="couponAmount"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
@@ -277,7 +249,7 @@
                   type="number"
                   v-model="maxDiscountAmount"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
@@ -299,7 +271,7 @@
                   type="number"
                   v-model="maxUsageUser"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
@@ -319,11 +291,13 @@
                   type="number"
                   v-model="maxTotalUsage"
                   name="couponName"
-                  placeholder="Eg. XMAS2020"
+                  placeholder=""
                   class="form-control config-input"
                   :class="{
                     'is-invalid':
-                      submitted && $v.maxTotalUsage.$error && step === 2,
+                      submitted &&
+                      ($v.maxTotalUsage.$error || inValidUsage) &&
+                      step === 2,
                   }"
                 />
                 <div
@@ -331,6 +305,10 @@
                   class="invalid-feedback"
                 >
                   Total Maximum Usage is required
+                </div>
+                <div v-if="inValidUsage" class="invalid-feedback">
+                  Total Maximum Usage cannot be less than the Maximum Usage Per
+                  User
                 </div>
               </div>
               <NavigationComponent
@@ -446,6 +424,7 @@ export default {
       isValid: true,
       targetedGroup: [],
       submitted: false,
+      inValidUsage: false,
       userTypes: [
         { userType: 'peer', title: 'Peer User' },
         { userType: 'cop', title: 'Cop User' },
@@ -468,7 +447,6 @@ export default {
         couponStartDate: { required },
         couponEndDate: { required },
         country: { required },
-        userType: { required },
         isSendyCoupon: { required },
       };
       const stepTwoRules = {
@@ -508,6 +486,16 @@ export default {
   },
   validations() {
     return this.rules;
+  },
+  watch: {
+    maxTotalUsage(data) {
+      if (data < this.maxUsageUser) {
+        this.isValid = true;
+        this.inValidUsage = true;
+      } else {
+        this.inValidUsage = false;
+      }
+    },
   },
   methods: {
     ...mapMutations({
@@ -567,7 +555,7 @@ export default {
             maximum_usage_user: Number(this.maxUsageUser),
             max_discount_amount: Number(this.maxDiscountAmount),
             country_code: `${this.country}`,
-            sendy_staff_promo: this.isSendyCoupon ? 1 : 0,
+            sendy_staff_promo: this.isSendyCoupon ? 0 : 1,
             is_targeted: this.is_targeted,
             targeted_group: this.targetedGroup,
             targeted_file: null,

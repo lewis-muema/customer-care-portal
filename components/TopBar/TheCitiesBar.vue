@@ -1,48 +1,79 @@
 <template>
-  <td class="city-class">
-    <span v-for="city in cities" :key="city.city_id">
-      {{ city.city_name }}
-      <input
-        type="checkbox"
-        :value="city.city_id"
-        v-model="checkedCities"
-        @change="updateCheckall()"
-      />
-    </span>
-  </td>
+  <div class="">
+    <span class=""> Filter Town </span> <br />
+    <multiselect
+      select-label=""
+      selected-label=""
+      deselect-label=""
+      v-model="checkedCities"
+      :options="options"
+      :multiple="true"
+      track-by="value"
+      :custom-label="customLabel"
+      :close-on-select="true"
+      @select="onSelect($event)"
+      @remove="onRemove($event)"
+      class="multiselect"
+      placeholder="Search Towns"
+      @input="submitMethod"
+    >
+      <span
+        class="checkbox-label"
+        slot="option"
+        slot-scope="scope"
+        @click.self="select(scope.option)"
+      >
+        <input
+          class="test"
+          type="checkbox"
+          v-model="scope.option.checked"
+          @focus.prevent
+        />
+        <span class="ml-4">
+          {{ scope.option.label }}
+        </span>
+      </span>
+    </multiselect>
+  </div>
 </template>
+
 <script>
-import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import Multiselect from 'vue-multiselect';
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: 'TheCitiesBar',
+  name: 'cityBar',
+  components: {
+    Multiselect,
+  },
   data() {
     return {
+      options: [{ value: 'all', label: 'All Towns', checked: false }],
       citiesData: [],
       cities: null,
-      checkedCities: [],
+      checkedCities: [{ value: 'all', label: 'All Towns', checked: false }],
       selectedCities: [],
     };
   },
   computed: {
     ...mapState(['userData']),
     ...mapGetters(['getCities']),
-
     countryCodes() {
       return this.userData.payload.data.country_codes;
     },
   },
   watch: {
     getCities(cities) {
-      this.checkedCities = [];
-      for (let i = 0; i < cities.length; i += 1) {
-        this.citiesData.push(cities[i].city_id);
-      }
-      // eslint-disable-next-line guard-for-in
-      for (const key in this.citiesData) {
-        this.checkedCities.push(this.citiesData[key]);
-      }
-      return (this.cities = cities);
+      this.options = [{ value: 'all', label: 'All Towns', checked: true }];
+      this.unitsdata = [];
+      cities.forEach(city => {
+        this.options.push({
+          value: city.city_id,
+          label: city.city_name,
+          checked: false,
+        });
+        this.citiesData.push(city.city_id);
+      });
     },
   },
   mounted() {
@@ -60,23 +91,54 @@ export default {
       updateSelectedCities: 'setSelectedCities',
     }),
     ...mapActions(['setCities']),
-    updateCheckall() {
-      if (this.checkedCities.length === this.citiesData.length) {
-        this.isCheckAll = true;
-      } else {
-        this.isCheckAll = false;
-      }
-      this.printValues();
+
+    customLabel(option) {
+      return `${option.label}`;
     },
-    printValues() {
-      this.selectedCities = [];
-      // eslint-disable-next-line guard-for-in
-      for (const key in this.checkedCities) {
-        // this.selectedCities += `${this.checkedCities[key]}, `;
-        this.selectedCities.push(this.checkedCities[key]);
-      }
+    onSelect(option) {
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = true;
+    },
+    onRemove(option) {
+      const index = this.options.findIndex(item => item.value === option.value);
+      this.options[index].checked = false;
+    },
+    select(data) {
+      return data;
+    },
+    submitMethod() {
+      const arr = [];
+      this.checkedCities.forEach(element => {
+        arr.push(element.value);
+      });
+      this.selectedCities = arr.includes('all') ? this.citiesData : arr;
       this.updateSelectedCities(this.selectedCities);
     },
   },
 };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
+<style scoped>
+.input-text {
+  width: 166px;
+  left: 16px;
+  top: 8px;
+  bottom: 8px;
+  background: #ffffff;
+  border: 1px solid #c0c4cc;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+.span-left {
+  margin-left: 18px;
+}
+.multiselect {
+  width: 196px;
+}
+.test {
+  position: absolute;
+  left: 1vw;
+}
+</style>

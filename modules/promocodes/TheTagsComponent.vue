@@ -36,7 +36,7 @@ export default {
       success: false,
       fail: false,
       mounted: false,
-      placeholderText: 'Enter Email Addresses',
+      placeholderText: 'Enter Email Addresses (Press "enter" after each email)',
       emails: null,
       valid: true,
       reg: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
@@ -114,8 +114,9 @@ export default {
 .vue-tags-input {
   background: #ffffff !important;
   cursor: pointer;
-  max-width: 100%;
+  max-width: 100% !important;
   margin-left: 5px;
+  width: 100% !important;
 }
 .ti-input {
   border: none !important;
@@ -139,7 +140,7 @@ export default {
   min-width: 200px !important;
 }
 .ti-new-tag-input-wrapper input::placeholder {
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.25px;
   color: #606266;
 }

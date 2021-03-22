@@ -520,6 +520,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
+import { Client } from '@googlemaps/google-maps-services-js';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import SessionMxn from '@/mixins/session_mixin';
 
@@ -572,6 +573,7 @@ export default {
       vendorTypes: [],
       opened: [],
       tablePricingData: [],
+      service: '',
     };
   },
   computed: {
@@ -710,6 +712,7 @@ export default {
     },
   },
   async mounted() {
+    this.loadMapScript();
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
     this.defaultCurrency = this.user.user_details.default_currency;
@@ -743,16 +746,44 @@ export default {
       deactivate_distance_pricing_configs:
         'deactivate_distance_pricing_configs',
     }),
+    loadMapScript() {
+      if (window.google && window.google.maps) {
+        setTimeout(() => {
+          this.initMap();
+        }, 180);
+      } else {
+        const script = document.createElement('script');
+        script.onload = () => {
+          this.initMap();
+        };
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.herokuKey}`;
+        document.head.appendChild(script);
+      }
+    },
+    initMap() {
+      this.service = new window.google.maps.places.AutocompleteService();
+    },
+    displaySuggestions(predictions, status) {
+      if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+        this.suggestions = [];
+        this.visible = false;
+        return;
+      }
+      this.suggestions = predictions;
+      this.visible = true;
+    },
     // eslint-disable-next-line func-names
     search: _.debounce(function(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-          this.visible = true;
-        });
+      this.service.getPlacePredictions(
+        {
+          input: val,
+          types: [],
+          componentRestrictions: {
+            country: ['ke', 'ug', 'tz'],
+          },
+        },
+        this.displaySuggestions,
+      );
     }, 500),
     async triggerInsuranceCurrencyCheck(val) {
       await this.fetchVendorTypes(val);

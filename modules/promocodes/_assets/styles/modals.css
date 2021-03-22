@@ -51,7 +51,7 @@
   cursor: default;
 }
 .modal-dialog {
-    max-width: 442px !important;
+    max-width: 500px !important;
   }
   .modal-content,
   .modal-body {

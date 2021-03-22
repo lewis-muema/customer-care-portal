@@ -544,6 +544,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
+import { Client } from '@googlemaps/google-maps-services-js';
 import PricingConfigsMxn from '@/mixins/pricing_configs_mixin';
 import SessionMxn from '@/mixins/session_mixin';
 
@@ -606,6 +607,8 @@ export default {
       vendorTypes: [],
       opened: [],
       tablePricingData: [],
+      service: '',
+      placeService: '',
     };
   },
   computed: {
@@ -752,6 +755,7 @@ export default {
     },
   },
   async mounted() {
+    this.loadMapScript();
     await this.setAdmins();
     this.currency = this.user.user_details.default_currency;
     this.defaultCurrency = this.user.user_details.default_currency;
@@ -785,16 +789,47 @@ export default {
       deactivate_distance_pricing_configs:
         'deactivate_distance_pricing_configs',
     }),
+    loadMapScript() {
+      if (window.google && window.google.maps) {
+        setTimeout(() => {
+          this.initMap();
+        }, 180);
+      } else {
+        const script = document.createElement('script');
+        script.onload = () => {
+          this.initMap();
+        };
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.herokuKey}`;
+        document.head.appendChild(script);
+      }
+    },
+    initMap() {
+      this.service = new window.google.maps.places.AutocompleteService();
+      this.placeService = new window.google.maps.places.PlacesService(
+        document.createElement('div'),
+      );
+    },
+    displaySuggestions(predictions, status) {
+      if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+        this.suggestions = [];
+        this.visible = false;
+        return;
+      }
+      this.suggestions = predictions;
+      this.visible = true;
+    },
     // eslint-disable-next-line func-names
     search: _.debounce(function(val) {
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${val}&fields=geometry&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          this.suggestions = response.data.predictions;
-          this.visible = true;
-        });
+      this.service.getPlacePredictions(
+        {
+          input: val,
+          types: [],
+          componentRestrictions: {
+            country: ['ke', 'ug', 'tz'],
+          },
+        },
+        this.displaySuggestions,
+      );
     }, 500),
     calculateClientFee() {
       const orderAmount =
@@ -817,19 +852,13 @@ export default {
       this.searched = true;
       this.suggestions = [];
       const fromPlaceId = placeId;
-      axios
-        .get(
-          `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${fromPlaceId}&key=${this.herokuKey}`,
-        )
-        .then(response => {
-          const fromLatLong = response.data.result.geometry.location;
-          const coordinatesArray = Object.keys(fromLatLong).map(
-            key => fromLatLong[key],
-          );
-          [coordinatesArray[0], coordinatesArray[1]] = [
-            parseFloat(coordinatesArray[1].toFixed(6)),
-            parseFloat(coordinatesArray[0].toFixed(6)),
-          ];
+      this.placeService.getDetails(
+        {
+          placeId: fromPlaceId,
+        },
+        details => {
+          const fromLatLong = details.geometry.location;
+          const coordinatesArray = [fromLatLong.lng(), fromLatLong.lat()];
           if (input === 1) {
             this.pickUpCoordinates = {
               coordinates: coordinatesArray,
@@ -846,7 +875,8 @@ export default {
               type: 'Point',
             };
           }
-        });
+        },
+      );
     },
     handleFocus(val, input) {
       this.searched = false;

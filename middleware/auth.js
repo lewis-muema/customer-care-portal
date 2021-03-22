@@ -1,5 +1,10 @@
 export default function(context) {
   if (!context.store.getters.isAuthenticated) {
-    context.redirect('/login');
+    if (
+      process.client &&
+      typeof localStorage.getItem('jwtToken') === 'undefined'
+    ) {
+      context.redirect('/login');
+    }
   }
 }

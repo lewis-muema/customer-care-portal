@@ -1,25 +1,16 @@
 <template>
   <section class="content-header" v-if="typeof pageBreadCrumbs !== 'undefined'">
-    <h1>
+    <h1 v-if="route !== 'orders'">
       {{ pageBreadCrumbs.name }}
       <small> {{ pageBreadCrumbs.description }} </small>
     </h1>
-    <FilterComponent v-if="route === 'orders'" />
-    <div class="breadcrumb business-units" v-if="route === 'orders'">
-      <span>
-        <input type="checkbox" @click="checkAll()" v-model="isCheckAll" />
-        All
-      </span>
-      <span v-for="unit in units" :key="unit.index">
-        <input
-          type="checkbox"
-          :value="unit.abbr"
-          v-model="businessUnits"
-          @change="updateCheckall()"
-        />{{ unit.abbr }}
-      </span>
+    <div v-if="route === 'orders'" class="">
+      <small class="color-orders ml-2">
+        {{ pageBreadCrumbs.description }}
+      </small>
+      <h1 class="name">{{ pageBreadCrumbs.name }}</h1>
     </div>
-    <ol class="breadcrumb">
+    <ol class="breadcrumb" v-if="route !== 'orders'">
       <li>
         <a href="#"
           ><i class="fa fa-dashboard"></i> {{ pageBreadCrumbs.mainName }}</a
@@ -32,13 +23,9 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import FilterComponent from './FilterComponent';
 
 export default {
   name: 'TheBreadCrumbView',
-  components: {
-    FilterComponent,
-  },
   props: ['route'],
   data() {
     return {
@@ -182,5 +169,11 @@ export default {
 }
 .business-units > span {
   padding-left: 26px;
+}
+.color-orders {
+  color: #527cbd;
+}
+.name {
+  margin-top: -5px;
 }
 </style>

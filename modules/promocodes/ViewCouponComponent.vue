@@ -29,8 +29,8 @@
               <span
                 v-if="!loading && coupon !== null && couponStatus !== null"
                 class="status-chip"
-                :class="`status-${couponStatus.status}`"
-                >{{ couponStatus.title }}</span
+                :class="`status-${couponStatus}`"
+                >{{ couponStatus }}</span
               >
             </h6>
           </div>
@@ -60,15 +60,19 @@
               <div class="col-md-6">
                 <label class="view-label"> Discount Amount </label>
                 <p class="view-text ">
-                  {{ couponData.couponType == 1 ? couponData.currency : '' }}
-                  {{ couponData.couponAmount }}
+                  {{ couponData.couponType === 1 ? couponData.currency : '' }}
+                  {{
+                    couponData.couponType === 1
+                      ? this.numberWithCommas(couponData.couponAmount)
+                      : `${couponData.couponAmount * 100}% `
+                  }}
                 </p>
               </div>
               <div class="col-md-6">
                 <label class="view-label"> Maximum Discount Amount </label>
                 <p class="view-text ">
-                  {{ couponData.couponType == 1 ? couponData.currency : '' }}
-                  {{ couponData.maxDiscountAmount }}
+                  {{ couponData.currency }}
+                  {{ this.numberWithCommas(couponData.maxDiscountAmount) }}
                 </p>
               </div>
             </div>
@@ -87,14 +91,25 @@
               </div>
             </div>
             <div class="col-md-12 coupon-hlder" v-if="couponData !== null">
+              <div class="col-md-6">
+                <label class="view-label"> Usage Count </label>
+                <p class="view-text ">
+                  {{ couponData.usageCount }}
+                </p>
+              </div>
+            </div>
+            <div class="col-md-12 coupon-hlder" v-if="couponData !== null">
               <div class="col-md-12">
                 <label class="view-label"> Targeted Group </label>
-                <div class="target-holder">
+                <div class="target-holder" v-if="targetGroups.length !== 0">
                   <template v-for="(targetGroup, index) in targetGroups">
                     <p class="view-text col-md-6 link-text " :key="index">
-                      {{ isEmpty(targetGroup) ? 'None' : targetGroup.email }}
+                      {{ isEmpty(targetGroup) ? 'N/A' : targetGroup.email }}
                     </p>
                   </template>
+                </div>
+                <div class="" v-else>
+                  N/A
                 </div>
               </div>
             </div>
@@ -127,8 +142,10 @@ export default {
     },
     subheader() {
       return this.couponData.couponType === 1
-        ? `${this.couponData.currency} ${this.couponData.couponAmount} | Cash | `
-        : `${this.couponData.couponAmount}% | Percentage | `;
+        ? `${this.couponData.currency} ${this.numberWithCommas(
+            this.couponData.couponAmount,
+          )} | Cash | `
+        : `${this.couponData.couponAmount * 100}% | Percentage | `;
     },
     targetGroups() {
       return this.couponData !== null ||

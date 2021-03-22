@@ -13,18 +13,20 @@
         @change="setCountryFilter"
       >
         <option value="ALL">All Countries </option>
-        <option
-          :value="country.country_code"
-          v-for="(country, index) in getCountries"
-          :key="index"
-        >
-          {{ country.country_name }}
-        </option>
+        <template v-for="(country, index) in getCountries">
+          <option
+            :value="country.country_code"
+            :key="index"
+            v-if="country.status === 1"
+          >
+            {{ country.country_name }}
+          </option>
+        </template>
       </select>
     </div>
-    <div class="col-md-2 col-xs-6">
+    <div class="col-md-2 col-xs-6" v-if="permissions.create_promocode">
       <button
-        class="btn btn-primary action-button filter-button pull-right"
+        class="btn btn-primary filter-button pull-right"
         @click="triggerModal($event)"
       >
         Create New Promo Code
@@ -43,6 +45,7 @@ export default {
     SearchCouponComponent: () => import('./SearchCouponComponent'),
     NewCouponComponent: () => import('./NewCouponComponent'),
   },
+  props: ['permissions'],
   data() {
     return {
       countries: [],
@@ -94,7 +97,7 @@ export default {
   padding: 10px;
 }
 .filter-button {
-  padding: 4px 16px;
+  padding: 4px 8px;
   background: #527cbd;
   border-radius: 8px;
   font-weight: 600;

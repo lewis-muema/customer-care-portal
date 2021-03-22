@@ -4,7 +4,7 @@
       <h3 class="box-title">Promo Codes</h3>
       <span>
         <div>
-          <FilterBar />
+          <FilterBar :permissions="permissions" />
         </div>
       </span>
       <span v-if="coupons === null">
@@ -20,6 +20,14 @@
       </span>
       <span v-else>
         <div class="table-responsive ">
+          <button
+            class="pull-right search-btn"
+            @click="requestCoupons()"
+            v-if="searched"
+          >
+            <i class="fa fa-arrow-left"></i>
+            Back to list
+          </button>
           <table class="table coupon-table">
             <thead>
               <tr>
@@ -42,14 +50,14 @@
               </tr>
               <template v-else>
                 <tr
-                  v-for="(coupon, index) in coupons"
+                  v-for="(coupon, index) in pagedTableData"
                   :key="index"
                   @click="
                     triggerModal(
                       $event,
                       'viewCoupon',
                       coupon,
-                      setCouponStatus(coupon.active),
+                      checkEpiry(coupon),
                     )
                   "
                 >
@@ -65,15 +73,25 @@
                     }}
                   </td>
                   <td>{{ coupon.couponType === 1 ? 'Cash' : 'Percentage' }}</td>
-                  <td>{{ coupon.couponAmount }}</td>
-                  <td>{{ coupon.maxDiscountAmount }}</td>
+                  <td>
+                    {{ coupon.couponType === 1 ? coupon.currency : '' }}
+                    {{
+                      coupon.couponType === 1
+                        ? numberWithCommas(coupon.couponAmount)
+                        : `${coupon.couponAmount * 100}%`
+                    }}
+                  </td>
+                  <td>
+                    {{ coupon.currency }}
+                    {{ numberWithCommas(coupon.maxDiscountAmount) }}
+                  </td>
                   <td>{{ coupon.maxUsageUser }}</td>
                   <td>{{ coupon.maxTotalUsage }}</td>
                   <td>
                     <span
                       class="status-chip"
-                      :class="`status-${setCouponStatus(coupon.active).status}`"
-                      >{{ setCouponStatus(coupon.active).title }}</span
+                      :class="`status-${checkEpiry(coupon)}`"
+                      >{{ checkEpiry(coupon) }}</span
                     >
                   </td>
                   <td>
@@ -81,6 +99,7 @@
                       class="text-link text-update"
                       @click.stop="triggerModal($event, 'updateCoupon', coupon)"
                       :class="{ disabledLink: coupon.active === 1 }"
+                      v-if="permissions.update_promocode"
                       >Edit</span
                     >
                     <span class="vl"></span>
@@ -90,6 +109,7 @@
                         triggerModal($event, 'deactivateCoupon', coupon)
                       "
                       :class="{ disabledLink: coupon.active === 1 }"
+                      v-if="permissions.deactivate_promocode"
                       >Deactivate</span
                     >
                   </td>
@@ -97,6 +117,14 @@
               </template>
             </tbody>
           </table>
+          <el-pagination
+            layout="prev, pager, next"
+            :total="this.coupons.length"
+            @current-change="setPage"
+            class="promo-pagination"
+            v-if="coupons.length >= pageSize"
+          >
+          </el-pagination>
         </div>
       </span>
     </div>
@@ -112,6 +140,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/no-unused-vars */
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
@@ -133,23 +162,49 @@ export default {
       coupon: null,
       action: '',
       status: null,
+      page: 1,
+      pageSize: 10,
+      searched: false,
     };
   },
   computed: {
-    ...mapGetters(['getCouponCountry']),
+    ...mapState(['userData']),
+    ...mapGetters(['getCouponCountry', 'getSearchState', 'getSearchedCoupon']),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
 
     couponStatus() {
       const data = [
         { status: 'active', value: 0, title: 'Active' },
         { status: 'inactive', value: 1, title: 'Expired' },
         { status: 'scheduled', value: 2, title: 'Scheduled' },
+        { status: 'scheduled', value: 3, title: 'Scheduled' },
       ];
       return data;
+    },
+    pagedTableData() {
+      return this.coupons.slice(
+        this.pageSize * this.page - this.pageSize,
+        this.pageSize * this.page,
+      );
     },
   },
   watch: {
     couponID(ID) {
       this.requestSingleCoupon(ID);
+    },
+    async getSearchedCoupon(ID) {
+      if (ID !== null) {
+        this.loading = true;
+        this.coupons = null;
+        await this.requestSingleCoupon(ID);
+        this.coupons = this.coupon;
+        this.loading = false;
+      }
+    },
+    getSearchState(status) {
+      this.searched = status;
     },
     getCouponCountry(code) {
       this.country = code;
@@ -164,11 +219,20 @@ export default {
     this.setCountries();
   },
   methods: {
+    ...mapMutations({
+      updateSearchState: 'setSearchState',
+    }),
     ...mapActions([
       'request_coupons',
       'setCountries',
       'request_single_coupons',
     ]),
+    formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    },
+    setPage(val) {
+      this.page = val;
+    },
 
     setCouponStatus(status) {
       const data = this.couponStatus.filter(coupon => coupon.value === status);
@@ -178,6 +242,9 @@ export default {
     async requestCoupons() {
       this.loading = true;
       this.requested = true;
+      this.coupons = null;
+      this.updateSearchState(false);
+
       const payload = {
         country: this.country,
       };
@@ -226,7 +293,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .coupon-display {
   background: #fafdff;
   border-radius: 8px;
@@ -256,6 +323,9 @@ export default {
 .status-inactive {
   background: #fcc6c8;
 }
+.status-expired {
+  background: #fcc6c8;
+}
 .status-scheduled {
   background: #c8e8fc;
 }
@@ -278,5 +348,21 @@ export default {
 .disabledLink {
   opacity: 0.3;
   cursor: default;
+}
+.promo-pagination > .btn-prev,
+.promo-pagination > .btn-next {
+  background-color: #fafdfe !important;
+}
+.el-pager,
+.el-pager li {
+  background-color: #fafdfe !important;
+}
+.search-btn {
+  border: none;
+  background: #fafdfe;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: #527cbd;
+  padding: 0 2.5em 1em 0;
 }
 </style>
