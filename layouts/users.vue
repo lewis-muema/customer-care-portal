@@ -62,6 +62,7 @@ export default {
   methods: {
     ...mapMutations({
       updateSession: 'setSession',
+      setToken: 'setToken',
     }),
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');

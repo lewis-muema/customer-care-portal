@@ -188,10 +188,7 @@
             Reversals & Credit Note
           </a>
         </li>
-        <li
-          v-if="permissions.approve_freight_biz"
-          class="nav-item invoice-item"
-        >
+        <li v-if="showFreightApproval" class="nav-item invoice-item">
           <a
             class="nav-link action-list invoice-action"
             data-toggle="tab"
@@ -433,6 +430,7 @@ export default {
       distancePricingTableData: [],
       locationPricingTableData: [],
       activeStatus: false,
+      freight_status: 0,
     };
   },
   computed: {
@@ -464,6 +462,15 @@ export default {
       };
       return data;
     },
+
+    showFreightApproval() {
+      let resp = false;
+
+      if (this.permissions.approve_freight_biz && this.freight_status >= 1) {
+        resp = true;
+      }
+      return resp;
+    },
   },
   watch: {
     getCopTypes(types) {
@@ -477,13 +484,14 @@ export default {
     this.copID = this.user.user_details.cop_id;
     await this.setCopTypes();
     await this.setAdmins();
+    this.checkFreightStatus();
   },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
     }),
-    ...mapActions(['setCopTypes', 'setAdmins']),
+    ...mapActions(['setCopTypes', 'setAdmins', 'request_user_freight_status']),
 
     clearErrorMessages() {
       const notification = [];
@@ -510,6 +518,26 @@ export default {
         }
       }
       return approve_billing;
+    },
+    async checkFreightStatus() {
+      const notification = [];
+      let actionClass = '';
+
+      const payload = {
+        val: `copId=${this.user.user_details.cop_id}`,
+      };
+
+      try {
+        const data = await this.request_user_freight_status(payload);
+        this.freight_status = data.freight_status;
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };

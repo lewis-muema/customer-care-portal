@@ -111,6 +111,65 @@ export default {
       return error.response;
     }
   },
+  async request_helpscoute_patch({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+
+    const authorization = await dispatch('request_helpscout_token');
+    const token = localStorage.getItem('helpscoutAccessToken');
+
+    const customHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    customHeaders.Authorization = `Bearer ${token}`;
+    const config = {
+      headers: customHeaders,
+    };
+
+    const values = JSON.stringify(payload.params);
+
+    try {
+      const response = await axios.patch(
+        `${url}/${payload.conversationID}`,
+        values,
+        config,
+      );
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      return error.response;
+    }
+  },
+  // eslint-disable-next-line require-await
+  async request_helpscoute_get({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+    const authorization = await dispatch('request_helpscout_token');
+    const token = localStorage.getItem('helpscoutAccessToken');
+
+    const customHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    if (authorization) {
+      customHeaders.Authorization = `Bearer ${token}`;
+      delete payload.params.token;
+    }
+    delete payload.params.authorization;
+
+    try {
+      const response = await axios.get(`${url}?email=${payload.params.email}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      return error.response;
+    }
+  },
+
   // eslint-disable-next-line require-await
   async log_cc_action({ rootState, dispatch, commit, state }, payload) {
     const customConfig = state.config;
@@ -147,9 +206,9 @@ export default {
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
     const apiKey = this.$env.HELP_SCOUT_API_KEY;
-    const clientSecret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const clientSecret = 'w4mzvqkT1284Ejh7qZZOKeSCoEZDqN7U';
     const grantType = 'client_credentials';
-    const clientID = this.$env.HELP_SCOUT_CLIENT_ID;
+    const clientID = 'qcqVxzfYpyiXsiykssxuGha8drOeVElu';
     const payload = {
       url,
       params: {
@@ -186,8 +245,8 @@ export default {
 
     const url = 'HELPSCOUT_REFRESH';
     const grant_type = 'refresh_token';
-    const client_id = this.$env.HELP_SCOUT_CLIENT_ID;
-    const client_secret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const client_id = 'qcqVxzfYpyiXsiykssxuGha8drOeVElu';
+    const client_secret = 'w4mzvqkT1284Ejh7qZZOKeSCoEZDqN7U';
 
     const values = {
       url,
@@ -1709,6 +1768,26 @@ export default {
       return error.response;
     }
   },
+  async request_user_freight_status({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}freight-status?${payload.val}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async request_operational_alerts({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1724,7 +1803,6 @@ export default {
       },
     };
     const url = `${config.STAFF_API}live-ops/orders`;
-
     try {
       const response = await axios.get(url, values);
       return response.data;
