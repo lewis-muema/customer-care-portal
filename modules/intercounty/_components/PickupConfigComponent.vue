@@ -581,8 +581,8 @@ export default {
           const collection_marker = details.geometry;
           const data = {
             address: this.locations[input],
-            lat: collection_marker.location.lat,
-            long: collection_marker.location.lng,
+            lat: collection_marker.location.lat(),
+            long: collection_marker.location.lng(),
           };
           if (this.pickup_config_data !== null) {
             const resp = this.pickup_config_data[input].collection_centers.find(
