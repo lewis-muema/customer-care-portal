@@ -464,7 +464,6 @@ export default {
         }
       }
       this.partner_actions_inputs = partnerActionInputs;
-      console.log('CLEAN PARTNER', partnerActionInputs);
     },
     sanitizeCustomerInputs(customerActionInputs) {
       customerActionInputs.forEach((customerAction, index) => {
@@ -478,7 +477,6 @@ export default {
         }
       });
       this.customer_actions_inputs = customerActionInputs;
-      console.log('CLEAN CUSTOMER', customerActionInputs);
     },
     rewardSection() {
       let status = false;
