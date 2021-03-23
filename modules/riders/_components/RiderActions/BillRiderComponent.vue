@@ -83,12 +83,12 @@
           Reference No is required
         </div>
       </div>
-      <div class="form-group col-md-12 bill-check">
+      <div class="form-group col-md-12 bill-check hide">
         <input
           value="1"
           id="checkbox>"
           type="checkbox"
-          class=""
+          :class="`${hide}`"
           v-model="ischecked"
         />
         <label for="" class="charge_commission--label">Credit Client</label>

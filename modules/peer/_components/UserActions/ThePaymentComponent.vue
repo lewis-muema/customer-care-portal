@@ -139,7 +139,7 @@
         </tr>
       </table>
 
-      <div class="form-group col-md-3 bill-check">
+      <div class="form-group col-md-3 bill-check hide">
         <input
           value="1"
           type="checkbox"
