@@ -31,7 +31,7 @@
       <div class="form-group col-md-4 user-input">
         <label class="vat"> Partner action </label>
         <v-select
-          :options="partner_actions_data"
+          :options="partner_actions_filtered_data"
           :reduce="name => name.id"
           :name="partnerAction.partnerActionInput"
           label="display_name"
@@ -42,11 +42,12 @@
           v-model="partnerAction.partner_action_id"
         >
         </v-select>
-        <!--    <div v-if="submitted && !$v.partnerActions.required" class="rewards_valid">-->
-        <!--      Partner action is required-->
-        <!--    </div>-->
         <div class="input-counter">
-          <div class="add-input" @click="addNewPartnerAction">
+          <div
+            v-if="partnerAction.partnerActionInput !== 4"
+            class="add-input"
+            @click="addNewPartnerAction"
+          >
             + Select another partner action
           </div>
           <div
@@ -67,7 +68,7 @@
         <label class="vat">
           For how long
         </label>
-        <el-input type="number" v-model="partnerAction.block_hours">
+        <el-input type="number" min="1" v-model="partnerAction.block_hours">
           <template slot="append"
             >hours</template
           >
@@ -88,7 +89,7 @@
         <label class="vat">
           After how long
         </label>
-        <el-input type="number" v-model="partnerAction.after_how_long">
+        <el-input type="number" min="1" v-model="partnerAction.after_how_long">
           <template slot="append"
             >hours</template
           >
@@ -110,6 +111,7 @@
         <el-input
           placeholder="Please input amount"
           type="number"
+          min="1"
           v-model="partnerAction.penalty_fee"
         >
         </el-input>
@@ -231,7 +233,7 @@ export default {
       },
       partnerInputCount: 0,
       customerInputCount: 0,
-      partnerActionsSelected: [],
+      partnerActionsSelected: {},
       partnerActionInputs: [],
       customerActionInputs: [],
       partner_actions_data: [
@@ -281,6 +283,7 @@ export default {
           status: 1,
         },
       ],
+      partner_actions_filtered_data: [],
       customer_actions_data: [
         {
           id: 1,
@@ -293,28 +296,23 @@ export default {
         },
       ],
       reassignmentReasonPenalize: '',
-      reassignment_reason: [
-        { code: 3, name: 'Client is not reachable' },
-        { code: 5, name: 'I do not have a box' },
-        { code: 7, name: `I can't access CBD` },
-        { code: 8, name: 'My bike broke-down' },
-        { code: 9, name: 'Police arrest' },
-        { code: 10, name: 'My Vehicle is Open' },
-        { code: 11, name: 'My Vehicle is Closed' },
-        { code: 12, name: 'The load cannot fit in my vehicle' },
-        { code: 13, name: 'My Vehicle broke down' },
-      ],
+      reassignment_reason: [],
+      actionsCodesArray: [],
     };
   },
   created() {
-    this.addNewPartnerAction();
-    this.addNewCustomerAction();
-    this.fetchReassignmentReasons();
+    this.initData();
   },
   methods: {
     ...mapActions({
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
     }),
+    initData() {
+      this.addNewPartnerAction();
+      this.addNewCustomerAction();
+      this.fetchReassignmentReasons();
+      this.partner_actions_filtered_data = this.partner_actions_data;
+    },
     async fetchReassignmentReasons() {
       const results = await this.fetch_set_reallocation_reason();
       this.reassignment_reason = results.data.filter(
@@ -328,16 +326,43 @@ export default {
       });
     },
     removePartnerAction(inputIndex) {
+      this.restoreActionOption(inputIndex);
       this.partnerActionInputs.splice(inputIndex, 1);
+    },
+    restoreActionOption(inputIndex) {
+      const actionId = this.partnerActionInputs[inputIndex].partner_action_id;
+      if (actionId === null) return;
+      const actionOption = this.partner_actions_data.filter(
+        option => option.id === actionId,
+      );
+      this.partner_actions_filtered_data = [
+        ...this.partner_actions_filtered_data,
+        ...actionOption,
+      ];
+      const indexPosition = this.actionsCodesArray.indexOf(inputIndex);
+      this.actionsCodesArray.splice(indexPosition, 1);
+      // console.log(
+      //   'XXX',
+      //   this.partner_actions_filtered_data,
+      //   this.actionsCodesArray,
+      // );
     },
     partnerActionSelectedChanged(selectedValue, inputIndex) {
       const { partner_action_id } = selectedValue;
       const selectedAction = this.partnerActionInputs[inputIndex];
-      console.log('>>>', selectedValue);
-      this.partnerActionsSelected.push(partner_action_id);
-
       this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
+      this.trackPartnerActionsSelected(selectedValue);
+      this.sanitizePartnerInputs(this.partnerActionInputs);
       console.log('PARTNER INPUTS', this.partnerActionInputs);
+    },
+    sanitizePartnerInputs(partnerActionInputs) {
+      partnerActionInputs.forEach(partnerAction => {
+        for (const key in partnerAction) {
+          if (partnerAction[key] === null || !partnerAction[key]) {
+            delete partnerAction[key];
+          }
+        }
+      });
     },
     partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'block_hours_visible', false);
@@ -354,6 +379,35 @@ export default {
         this.$set(inputValuesObject, 'partner_message_visible', true);
       }
     },
+    trackPartnerActionsSelected(selectedValue) {
+      const { partner_action_id, partnerActionInput } = selectedValue;
+
+      this.partnerActionsSelected[partnerActionInput] = partner_action_id;
+      // console.log('AAA', this.partnerActionsSelected);
+      this.actionsCodesArray = Object.values(this.partnerActionsSelected);
+      // console.log('KEY', this.actionsCodesArray);
+      this.filterOutPartnerActionsOptions(this.actionsCodesArray);
+    },
+    filterOutPartnerActionsOptions(actionsCodesArray) {
+      const createNewArray = (codesArray, dataArray) => {
+        // console.log('---', codesArray, dataArray);
+        if (
+          codesArray === null ||
+          codesArray === undefined ||
+          !codesArray.length
+        )
+          return;
+
+        const newArray = dataArray.filter(
+          action => action.id !== codesArray[0],
+        );
+        codesArray.shift();
+        this.partner_actions_filtered_data = newArray;
+
+        createNewArray(codesArray, newArray);
+      };
+      createNewArray(actionsCodesArray, this.partner_actions_data);
+    },
     addNewCustomerAction() {
       this.customerActionInputs.push({
         ...this.customerAction,
@@ -368,7 +422,18 @@ export default {
       const selectedAction = this.customerActionInputs[inputIndex];
 
       this.customerInputsVisibilityTrigger(customer_action_id, selectedAction);
+      this.sanitizeCustomerInputs(this.customerActionInputs);
       console.log('CUSTOMER INPUTS', this.customerActionInputs);
+    },
+    sanitizeCustomerInputs(customerActionInputs) {
+      customerActionInputs.forEach(customerAction => {
+        if (customerAction.customer_action_id === null) {
+          this.customerActionInputs.splice(
+            customerAction.customerActionInput,
+            1,
+          );
+        }
+      });
     },
     customerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'customer_message_visible', false);
