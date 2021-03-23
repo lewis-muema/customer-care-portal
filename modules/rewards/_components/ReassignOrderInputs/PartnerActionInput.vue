@@ -351,16 +351,12 @@ export default {
     },
     trackPartnerActionsSelected(selectedValue) {
       const { partner_action_id, partnerActionInput } = selectedValue;
-
       this.partnerActionsSelected[partnerActionInput] = partner_action_id;
-      // console.log('AAA', this.partnerActionsSelected);
       this.actionsCodesArray = Object.values(this.partnerActionsSelected);
-      // console.log('KEY', this.actionsCodesArray);
       this.filterOutPartnerActionsOptions(this.actionsCodesArray);
     },
     filterOutPartnerActionsOptions(actionsCodesArray) {
       const createNewArray = (codesArray, dataArray) => {
-        // console.log('---', codesArray, dataArray);
         if (
           codesArray === null ||
           codesArray === undefined ||
