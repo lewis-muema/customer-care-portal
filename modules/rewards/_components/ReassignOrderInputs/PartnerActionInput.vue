@@ -68,38 +68,18 @@
         <label class="vat">
           For how long
         </label>
-        <el-input type="number" min="1" v-model="partnerAction.block_hours">
+        <el-input
+          type="number"
+          min="1"
+          v-model="partnerAction.block_hours"
+          @input="
+            updatePartnerActionInputChanged(partnerAction, 'block_hours', index)
+          "
+        >
           <template slot="append"
             >hours</template
           >
         </el-input>
-        <!--      <div-->
-        <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--        class="rewards_valid"-->
-        <!--      >-->
-        <!--        Reassignment reason is required-->
-        <!--      </div>-->
-      </div>
-
-      <!--    TODO add after how long field-->
-      <div
-        v-if="partnerAction.after_how_long_visible"
-        class="form-group col-md-4 user-input"
-      >
-        <label class="vat">
-          After how long
-        </label>
-        <el-input type="number" min="1" v-model="partnerAction.after_how_long">
-          <template slot="append"
-            >hours</template
-          >
-        </el-input>
-        <!--      <div-->
-        <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--        class="rewards_valid"-->
-        <!--      >-->
-        <!--        Reassignment reason is required-->
-        <!--      </div>-->
       </div>
 
       <!--    TODO add charge penalty fee message-->
@@ -113,14 +93,11 @@
           type="number"
           min="1"
           v-model="partnerAction.penalty_fee"
+          @input="
+            updatePartnerActionInputChanged(partnerAction, 'penalty_fee', index)
+          "
         >
         </el-input>
-        <!--        <div-->
-        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--          class="rewards_valid"-->
-        <!--        >-->
-        <!--          Reassignment reason is required-->
-        <!--        </div>-->
       </div>
 
       <!--    TODO add message to show partner-->
@@ -134,14 +111,15 @@
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 4 }"
           v-model="partnerAction.partner_message"
+          @input="
+            updatePartnerActionInputChanged(
+              partnerAction,
+              'partner_message',
+              index,
+            )
+          "
         >
         </el-input>
-        <!--        <div-->
-        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--          class="rewards_valid"-->
-        <!--        >-->
-        <!--          Reassignment reason is required-->
-        <!--        </div>-->
       </div>
     </div>
 
@@ -165,9 +143,6 @@
           v-model="customerAction.customer_action_id"
         >
         </v-select>
-        <!--    <div v-if="submitted && !$v.partnerActions.required" class="rewards_valid">-->
-        <!--      Partner action is required-->
-        <!--    </div>-->
         <div class="input-counter">
           <div class="add-input" @click="addNewCustomerAction">
             + Select another customer action
@@ -193,14 +168,15 @@
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 4 }"
           v-model="customerAction.customer_message"
+          @input="
+            updateCustomerActionInputChanged(
+              customerAction,
+              'customer_message',
+              index,
+            )
+          "
         >
         </el-input>
-        <!--        <div-->
-        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--          class="rewards_valid"-->
-        <!--        >-->
-        <!--          Reassignment reason is required-->
-        <!--        </div>-->
       </div>
     </div>
   </div>
@@ -341,28 +317,21 @@ export default {
       ];
       const indexPosition = this.actionsCodesArray.indexOf(inputIndex);
       this.actionsCodesArray.splice(indexPosition, 1);
-      // console.log(
-      //   'XXX',
-      //   this.partner_actions_filtered_data,
-      //   this.actionsCodesArray,
-      // );
+    },
+    updatePartnerActionInputChanged(updatedValue, field, inputIndex) {
+      const currentObject = this.partnerActionInputs[inputIndex];
+      this.$set(currentObject, field, updatedValue[field]);
+
+      this.$emit('actionValues', {
+        partner_actions: this.partnerActionInputs,
+        customer_actions: this.customerActionInputs,
+      });
     },
     partnerActionSelectedChanged(selectedValue, inputIndex) {
       const { partner_action_id } = selectedValue;
       const selectedAction = this.partnerActionInputs[inputIndex];
       this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
       this.trackPartnerActionsSelected(selectedValue);
-      this.sanitizePartnerInputs(this.partnerActionInputs);
-      console.log('PARTNER INPUTS', this.partnerActionInputs);
-    },
-    sanitizePartnerInputs(partnerActionInputs) {
-      partnerActionInputs.forEach(partnerAction => {
-        for (const key in partnerAction) {
-          if (partnerAction[key] === null || !partnerAction[key]) {
-            delete partnerAction[key];
-          }
-        }
-      });
     },
     partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'block_hours_visible', false);
@@ -422,17 +391,18 @@ export default {
       const selectedAction = this.customerActionInputs[inputIndex];
 
       this.customerInputsVisibilityTrigger(customer_action_id, selectedAction);
-      this.sanitizeCustomerInputs(this.customerActionInputs);
-      console.log('CUSTOMER INPUTS', this.customerActionInputs);
+      this.$emit('actionValues', {
+        partner_actions: this.partnerActionInputs,
+        customer_actions: this.customerActionInputs,
+      });
     },
-    sanitizeCustomerInputs(customerActionInputs) {
-      customerActionInputs.forEach(customerAction => {
-        if (customerAction.customer_action_id === null) {
-          this.customerActionInputs.splice(
-            customerAction.customerActionInput,
-            1,
-          );
-        }
+    updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
+      const currentObject = this.customerActionInputs[inputIndex];
+      this.$set(currentObject, field, updatedValue[field]);
+
+      this.$emit('actionValues', {
+        partner_actions: this.partnerActionInputs,
+        customer_actions: this.customerActionInputs,
       });
     },
     customerInputsVisibilityTrigger(actionID, inputValuesObject) {

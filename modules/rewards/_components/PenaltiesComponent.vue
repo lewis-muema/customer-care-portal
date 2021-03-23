@@ -76,7 +76,7 @@
         </div>
 
         <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
-          <partner-action />
+          <partner-action @actionValues="getActionValues" />
         </div>
         <div class="remove-margin row" v-else>
           <div class="form-group col-md-4 user-input">
@@ -398,6 +398,8 @@ export default {
       penalizing_reason: [],
       penalized_orders: '',
       submit_state: false,
+      partner_actions_inputs: [],
+      customer_actions_inputs: [],
     };
   },
   validations: {
@@ -435,6 +437,35 @@ export default {
       this.clearData();
       this.fetchVendorTypes();
       this.requestRewards();
+    },
+    getActionValues(value) {
+      console.log('GGG', value);
+      this.sanitizePartnerInputs(value.partner_actions);
+      this.sanitizeCustomerInputs(value.customer_actions);
+    },
+    sanitizePartnerInputs(partnerActionInputs) {
+      partnerActionInputs.forEach(partnerAction => {
+        for (const key in partnerAction) {
+          if (partnerAction[key] === null || !partnerAction[key]) {
+            delete partnerAction[key];
+          }
+        }
+      });
+      this.partner_actions_inputs = partnerActionInputs;
+      console.log('CLEAN PARTNER', partnerActionInputs);
+    },
+    sanitizeCustomerInputs(customerActionInputs) {
+      customerActionInputs.forEach(customerAction => {
+        if (customerAction.customer_action_id === null) {
+          if (customerActionInputs.length === 1) {
+            this.customer_actions_inputs = [];
+            return;
+          }
+          customerActionInputs.splice(customerAction.customerActionInput, 1);
+        }
+      });
+      this.customer_actions_inputs = customerActionInputs;
+      console.log('CLEAN CUSTOMER', customerActionInputs);
     },
     rewardSection() {
       let status = false;
