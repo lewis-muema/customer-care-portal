@@ -88,7 +88,7 @@ Vue.mixin({
       return momentTimezone.tz.guess();
     },
   },
-  created() {
+  mounted() {
     this.fetchReassignmentReasons();
   },
   methods: {
@@ -100,9 +100,15 @@ Vue.mixin({
       updateClass: 'setActionClass',
     }),
     fetchReassignmentReasons() {
-      this.fetch_set_reallocation_reason().then(results => {
-        this.customerInfo = results.data.filter(reason => reason.status === 1);
-      });
+      this.fetch_set_reallocation_reason()
+        .then(results => {
+          this.customerInfo = results.data.filter(
+            reason => reason.status === 1,
+          );
+        })
+        .catch(err => {
+          console.error('Error occurred: ', err);
+        });
     },
     isSendyStaff(name) {
       let isStaff;
