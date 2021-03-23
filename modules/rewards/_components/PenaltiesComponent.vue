@@ -439,7 +439,6 @@ export default {
       this.requestRewards();
     },
     getActionValues(value) {
-      console.log('GGG', value);
       const {
         reassignment_reason_penalize,
         partner_actions,
