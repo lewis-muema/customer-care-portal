@@ -26,9 +26,9 @@
         <v-select
           v-else
           :options="customerInfo"
-          :reduce="reason => reason.code"
-          name="reason"
-          label="reason"
+          :reduce="name => name.reallocation_id"
+          name="name"
+          label="description"
           placeholder="Select reallocation reason .."
           class="form-control proximity-point"
           :id="`reallocate_reason_${orderNo}`"

@@ -58,12 +58,7 @@ Vue.mixin({
         11: 'fa-envelope bg-blue',
         14: 'fa-envelope bg-red',
       },
-      customerInfo: [
-        { code: '1', reason: 'More information' },
-        { code: '2', reason: 'Delivery delay' },
-        { code: '3', reason: 'Customer not reachable' },
-        { code: '4', reason: 'Customer feedback' },
-      ],
+      customerInfo: [],
       freightReallocationInfo: [
         { code: '14', reason: `Partner won't meet ETA` },
         { code: '15', reason: 'Truck will fulfil transit order' },
@@ -93,11 +88,22 @@ Vue.mixin({
       return momentTimezone.tz.guess();
     },
   },
+  created() {
+    this.fetchReassignmentReasons();
+  },
   methods: {
+    ...mapActions({
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+    }),
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
     }),
+    fetchReassignmentReasons() {
+      this.fetch_set_reallocation_reason().then(results => {
+        this.customerInfo = results.data.filter(reason => reason.status === 1);
+      });
+    },
     isSendyStaff(name) {
       let isStaff;
       if (name === null || name === '') {
@@ -117,7 +123,6 @@ Vue.mixin({
       }
       return false;
     },
-
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
@@ -318,7 +323,6 @@ Vue.mixin({
       amount = Number(amount).toLocaleString('en');
       return `${orderCurrency} ${amount}`;
     },
-
     display_conditional_amounts(orderDetails, amount) {
       let displayAmount = 0;
       const convertedAmount = this.showCurrencyBasedAmounts(
