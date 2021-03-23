@@ -339,7 +339,6 @@ import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import moment from 'moment';
 import Loading from './LoadingComponent.vue';
-import PartnerActionInput from './ReassignOrderInputs/PartnerActionInput';
 import PartnerAction from '@/modules/rewards/_components/ReassignOrderInputs/PartnerActionInput';
 
 Vue.component('calendar', Calendar);
@@ -400,6 +399,7 @@ export default {
       submit_state: false,
       partner_actions_inputs: [],
       customer_actions_inputs: [],
+      reassignment_reason_penalize: '',
     };
   },
   validations: {
@@ -440,8 +440,14 @@ export default {
     },
     getActionValues(value) {
       console.log('GGG', value);
-      this.sanitizePartnerInputs(value.partner_actions);
-      this.sanitizeCustomerInputs(value.customer_actions);
+      const {
+        reassignment_reason_penalize,
+        partner_actions,
+        customer_actions,
+      } = value;
+      this.reassignment_reason_penalize = reassignment_reason_penalize;
+      this.sanitizePartnerInputs(partner_actions);
+      this.sanitizeCustomerInputs(customer_actions);
     },
     sanitizePartnerInputs(partnerActionInputs) {
       partnerActionInputs.forEach(partnerAction => {
@@ -451,17 +457,24 @@ export default {
           }
         }
       });
+
+      if (partnerActionInputs.length === 1) {
+        if (!Object.keys(partnerActionInputs[0]).length) {
+          partnerActionInputs = [];
+        }
+      }
       this.partner_actions_inputs = partnerActionInputs;
       console.log('CLEAN PARTNER', partnerActionInputs);
     },
     sanitizeCustomerInputs(customerActionInputs) {
-      customerActionInputs.forEach(customerAction => {
-        if (customerAction.customer_action_id === null) {
-          if (customerActionInputs.length === 1) {
-            this.customer_actions_inputs = [];
-            return;
-          }
-          customerActionInputs.splice(customerAction.customerActionInput, 1);
+      customerActionInputs.forEach((customerAction, index) => {
+        if (
+          customerAction.customer_action_id === null &&
+          customerActionInputs.length === 1
+        ) {
+          customerActionInputs = [];
+        } else if (customerAction.customer_action_id === null) {
+          customerActionInputs.splice(index, 1);
         }
       });
       this.customer_actions_inputs = customerActionInputs;
@@ -521,6 +534,11 @@ export default {
     },
     async generate_penalty() {
       this.submitted = true;
+
+      if (this.penalizing_param === 'REASSIGNED') {
+        await this.generate_penalty_actions();
+        return;
+      }
       this.$v.$touch();
       if (this.$v.$invalid) {
         return;
@@ -559,6 +577,7 @@ export default {
           app: 'ADONIS_API',
           endpoint: '/penalties',
           apiKey: false,
+          penalizing_param: this.penalizing_param,
           params: {
             parameter: this.penalizing_param,
             parameter_comp: this.orders_parameter,
@@ -572,6 +591,77 @@ export default {
             message: this.message,
           },
         };
+
+        try {
+          const data = await this.create_reward(payload);
+
+          if (data.status) {
+            this.response_status = 'success';
+
+            setTimeout(() => {
+              this.loading_penalties = true;
+              this.submit_state = false;
+              this.initiateData();
+            }, 5000);
+          } else {
+            this.submit_state = false;
+            this.response_status = 'error';
+            this.error_msg = data.message;
+          }
+        } catch (error) {
+          this.submit_state = false;
+          this.response_status = 'error';
+          this.error_msg =
+            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        }
+      }
+    },
+    async generate_penalty_actions() {
+      this.submitted = true;
+
+      this.$v.$touch();
+      this.submit_status = true;
+      this.response_status = true;
+      this.submit_state = true;
+
+      if (this.country === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Country is required!';
+      } else if (this.vendor_type === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Vendor type is required !';
+      } else if (this.reassignment_reason_penalize === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Reassignment reason to penalize is required !';
+      } else if (
+        !this.partner_actions_inputs.length &&
+        !this.customer_actions_inputs.length
+      ) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg =
+          'At least one Partner or Customer action is required !';
+      } else {
+        const actions = {
+          partner_actions: this.partner_actions_inputs,
+          customer_actions: this.customer_actions_inputs,
+        };
+        const payload = {
+          app: 'ADONIS_API',
+          endpoint: '/penalties',
+          apiKey: false,
+          penalizing_param: this.penalizing_param,
+          params: {
+            country: this.country,
+            vendor_type: parseInt(this.vendorType, 10),
+            reassignment_reason_penalize: this.reassignment_reason_penalize,
+            actions,
+          },
+        };
+        console.log('MMM', payload);
 
         try {
           const data = await this.create_reward(payload);

@@ -12,6 +12,7 @@
         placeholder="Select "
         class="form-control select user-billing"
         :id="`name`"
+        @input="reassignmentReasonChanged()"
         v-model="reassignmentReasonPenalize"
       >
       </v-select>
@@ -45,7 +46,7 @@
             + Select another partner action
           </div>
           <div
-            v-if="partnerAction.partnerActionInput !== 0"
+            v-if="partnerActionInputs.length > 1"
             class="remove-input"
             @click="removePartnerAction(index)"
           >
@@ -64,7 +65,9 @@
         </label>
         <el-input
           type="number"
-          min="1"
+          min="0"
+          value="0.01"
+          step="0.01"
           v-model="partnerAction.block_hours"
           @input="
             updatePartnerActionInputChanged(partnerAction, 'block_hours', index)
@@ -312,15 +315,17 @@ export default {
       const indexPosition = this.actionsCodesArray.indexOf(inputIndex);
       this.actionsCodesArray.splice(indexPosition, 1);
     },
-    updatePartnerActionInputChanged(updatedValue, field, inputIndex) {
-      const currentObject = this.partnerActionInputs[inputIndex];
-      this.$set(currentObject, field, updatedValue[field]);
-
+    reassignmentReasonChanged() {
       this.$emit('actionValues', {
         reassignment_reason_penalize: this.reassignmentReasonPenalize,
         partner_actions: this.partnerActionInputs,
         customer_actions: this.customerActionInputs,
       });
+    },
+    updatePartnerActionInputChanged(updatedValue, field, inputIndex) {
+      const currentObject = this.partnerActionInputs[inputIndex];
+      this.$set(currentObject, field, updatedValue[field]);
+      this.emitAllInputValues();
     },
     partnerActionSelectedChanged(selectedValue, inputIndex) {
       const { partner_action_id } = selectedValue;
@@ -332,6 +337,7 @@ export default {
       this.$set(inputValuesObject, 'block_hours_visible', false);
       this.$set(inputValuesObject, 'partner_message_visible', false);
       this.$set(inputValuesObject, 'penalty_fee_visible', false);
+      this.$set(inputValuesObject, 'partner_message_visible', false);
 
       if (actionID === 1) {
         this.$set(inputValuesObject, 'block_hours_visible', true);
@@ -339,7 +345,7 @@ export default {
       } else if (actionID === 2) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
         this.$set(inputValuesObject, 'partner_message_visible', true);
-      } else if (actionID === 3 || actionID === 4 || actionID === 5) {
+      } else if (actionID === 4 || actionID === 5) {
         this.$set(inputValuesObject, 'partner_message_visible', true);
       }
     },
@@ -384,28 +390,26 @@ export default {
     customerActionSelectedChanged(selectedValue, inputIndex) {
       const { customer_action_id } = selectedValue;
       const selectedAction = this.customerActionInputs[inputIndex];
-
       this.customerInputsVisibilityTrigger(customer_action_id, selectedAction);
-      this.$emit('actionValues', {
-        reassignment_reason_penalize: this.reassignmentReasonPenalize,
-        partner_actions: this.partnerActionInputs,
-        customer_actions: this.customerActionInputs,
-      });
+      this.emitAllInputValues();
     },
     updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
       const currentObject = this.customerActionInputs[inputIndex];
       this.$set(currentObject, field, updatedValue[field]);
-
-      this.$emit('actionValues', {
-        partner_actions: this.partnerActionInputs,
-        customer_actions: this.customerActionInputs,
-      });
+      this.emitAllInputValues();
     },
     customerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'customer_message_visible', false);
       if (actionID === 1) {
         this.$set(inputValuesObject, 'customer_message_visible', true);
       }
+    },
+    emitAllInputValues() {
+      this.$emit('actionValues', {
+        reassignment_reason_penalize: this.reassignmentReasonPenalize,
+        partner_actions: this.partnerActionInputs,
+        customer_actions: this.customerActionInputs,
+      });
     },
   },
 };
