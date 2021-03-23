@@ -15,12 +15,6 @@
         v-model="reassignmentReasonPenalize"
       >
       </v-select>
-      <!--      <div-->
-      <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-      <!--        class="rewards_valid"-->
-      <!--      >-->
-      <!--        Reassignment reason is required-->
-      <!--      </div>-->
     </div>
     <!--    TODO partner action dropdown-->
     <div
@@ -323,6 +317,7 @@ export default {
       this.$set(currentObject, field, updatedValue[field]);
 
       this.$emit('actionValues', {
+        reassignment_reason_penalize: this.reassignmentReasonPenalize,
         partner_actions: this.partnerActionInputs,
         customer_actions: this.customerActionInputs,
       });
@@ -392,6 +387,7 @@ export default {
 
       this.customerInputsVisibilityTrigger(customer_action_id, selectedAction);
       this.$emit('actionValues', {
+        reassignment_reason_penalize: this.reassignmentReasonPenalize,
         partner_actions: this.partnerActionInputs,
         customer_actions: this.customerActionInputs,
       });
