@@ -76,7 +76,10 @@
         </div>
 
         <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
-          <partner-action @actionValues="getActionValues" />
+          <partner-action
+            :vendor-Id="vendorTypeID"
+            @actionValues="getActionValues"
+          />
         </div>
         <div class="remove-margin row" v-else>
           <div class="form-group col-md-4 user-input">
@@ -393,6 +396,7 @@ export default {
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
+      vendorTypeID: null,
       country: '',
       penalizing_reason: [],
       penalized_orders: '',
@@ -419,6 +423,10 @@ export default {
   watch: {
     getSession(session) {
       return session;
+    },
+    vendorType(vendorValueID) {
+      console.log('WWW', vendorValueID);
+      this.vendorTypeID = vendorValueID;
     },
   },
   mounted() {
@@ -655,6 +663,7 @@ export default {
             vendor_type: parseInt(this.vendorType, 10),
             parameter_comp: 'ET',
             parameter_value: 1,
+            admin_id: this.getSession.payload.data.admin_id,
             reassignment_reason_penalize: this.reassignment_reason_penalize,
             actions,
           },
