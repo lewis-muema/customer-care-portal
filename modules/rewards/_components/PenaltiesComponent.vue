@@ -424,7 +424,6 @@ export default {
   mounted() {
     this.initiateData();
   },
-
   methods: {
     ...mapActions({
       perform_user_action: 'perform_user_action',
