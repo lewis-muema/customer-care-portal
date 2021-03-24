@@ -654,6 +654,8 @@ export default {
           params: {
             country: this.country,
             vendor_type: parseInt(this.vendorType, 10),
+            parameter_comp: 'ET',
+            parameter_value: 1,
             reassignment_reason_penalize: this.reassignment_reason_penalize,
             actions,
           },
