@@ -6,22 +6,16 @@
       </label>
       <v-select
         :options="reassignment_reason"
-        :reduce="name => name.code"
-        multiple
+        :reduce="name => name.reallocation_id"
         name="name"
-        label="name"
+        label="description"
         placeholder="Select "
         class="form-control select user-billing"
         :id="`name`"
+        @input="reassignmentReasonChanged()"
         v-model="reassignmentReasonPenalize"
       >
       </v-select>
-      <!--      <div-->
-      <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-      <!--        class="rewards_valid"-->
-      <!--      >-->
-      <!--        Reassignment reason is required-->
-      <!--      </div>-->
     </div>
     <!--    TODO partner action dropdown-->
     <div
@@ -32,7 +26,7 @@
       <div class="form-group col-md-4 user-input">
         <label class="vat"> Partner action </label>
         <v-select
-          :options="partner_actions_data"
+          :options="partner_actions_filtered_data"
           :reduce="name => name.id"
           :name="partnerAction.partnerActionInput"
           label="display_name"
@@ -43,15 +37,16 @@
           v-model="partnerAction.partner_action_id"
         >
         </v-select>
-        <!--    <div v-if="submitted && !$v.partnerActions.required" class="rewards_valid">-->
-        <!--      Partner action is required-->
-        <!--    </div>-->
         <div class="input-counter">
-          <div class="add-input" @click="addNewPartnerAction">
+          <div
+            v-if="partnerAction.partnerActionInput !== 4"
+            class="add-input"
+            @click="addNewPartnerAction"
+          >
             + Select another partner action
           </div>
           <div
-            v-if="partnerAction.partnerActionInput !== 0"
+            v-if="partnerActionInputs.length > 1"
             class="remove-input"
             @click="removePartnerAction(index)"
           >
@@ -68,38 +63,20 @@
         <label class="vat">
           For how long
         </label>
-        <el-input type="number" v-model="partnerAction.block_hours">
+        <el-input
+          type="number"
+          min="0"
+          value="0.01"
+          step="0.01"
+          v-model="partnerAction.block_hours"
+          @input="
+            updatePartnerActionInputChanged(partnerAction, 'block_hours', index)
+          "
+        >
           <template slot="append"
             >hours</template
           >
         </el-input>
-        <!--      <div-->
-        <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--        class="rewards_valid"-->
-        <!--      >-->
-        <!--        Reassignment reason is required-->
-        <!--      </div>-->
-      </div>
-
-      <!--    TODO add after how long field-->
-      <div
-        v-if="partnerAction.after_how_long_visible"
-        class="form-group col-md-4 user-input"
-      >
-        <label class="vat">
-          After how long
-        </label>
-        <el-input type="number" v-model="partnerAction.after_how_long">
-          <template slot="append"
-            >hours</template
-          >
-        </el-input>
-        <!--      <div-->
-        <!--        v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--        class="rewards_valid"-->
-        <!--      >-->
-        <!--        Reassignment reason is required-->
-        <!--      </div>-->
       </div>
 
       <!--    TODO add charge penalty fee message-->
@@ -111,15 +88,13 @@
         <el-input
           placeholder="Please input amount"
           type="number"
+          min="1"
           v-model="partnerAction.penalty_fee"
+          @input="
+            updatePartnerActionInputChanged(partnerAction, 'penalty_fee', index)
+          "
         >
         </el-input>
-        <!--        <div-->
-        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--          class="rewards_valid"-->
-        <!--        >-->
-        <!--          Reassignment reason is required-->
-        <!--        </div>-->
       </div>
 
       <!--    TODO add message to show partner-->
@@ -133,14 +108,15 @@
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 4 }"
           v-model="partnerAction.partner_message"
+          @input="
+            updatePartnerActionInputChanged(
+              partnerAction,
+              'partner_message',
+              index,
+            )
+          "
         >
         </el-input>
-        <!--        <div-->
-        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--          class="rewards_valid"-->
-        <!--        >-->
-        <!--          Reassignment reason is required-->
-        <!--        </div>-->
       </div>
     </div>
 
@@ -164,9 +140,6 @@
           v-model="customerAction.customer_action_id"
         >
         </v-select>
-        <!--    <div v-if="submitted && !$v.partnerActions.required" class="rewards_valid">-->
-        <!--      Partner action is required-->
-        <!--    </div>-->
         <div class="input-counter">
           <div class="add-input" @click="addNewCustomerAction">
             + Select another customer action
@@ -192,20 +165,23 @@
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 4 }"
           v-model="customerAction.customer_message"
+          @input="
+            updateCustomerActionInputChanged(
+              customerAction,
+              'customer_message',
+              index,
+            )
+          "
         >
         </el-input>
-        <!--        <div-->
-        <!--          v-if="submitted && !$v.reassignment_reason_penalize.required"-->
-        <!--          class="rewards_valid"-->
-        <!--        >-->
-        <!--          Reassignment reason is required-->
-        <!--        </div>-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'PartnerAction',
   data() {
@@ -230,6 +206,7 @@ export default {
       },
       partnerInputCount: 0,
       customerInputCount: 0,
+      partnerActionsSelected: {},
       partnerActionInputs: [],
       customerActionInputs: [],
       partner_actions_data: [
@@ -279,6 +256,7 @@ export default {
           status: 1,
         },
       ],
+      partner_actions_filtered_data: [],
       customer_actions_data: [
         {
           id: 1,
@@ -291,24 +269,29 @@ export default {
         },
       ],
       reassignmentReasonPenalize: '',
-      reassignment_reason: [
-        { code: 3, name: 'Client is not reachable' },
-        { code: 5, name: 'I do not have a box' },
-        { code: 7, name: `I can't access CBD` },
-        { code: 8, name: 'My bike broke-down' },
-        { code: 9, name: 'Police arrest' },
-        { code: 10, name: 'My Vehicle is Open' },
-        { code: 11, name: 'My Vehicle is Closed' },
-        { code: 12, name: 'The load cannot fit in my vehicle' },
-        { code: 13, name: 'My Vehicle broke down' },
-      ],
+      reassignment_reason: [],
+      actionsCodesArray: [],
     };
   },
   created() {
-    this.addNewPartnerAction();
-    this.addNewCustomerAction();
+    this.initData();
   },
   methods: {
+    ...mapActions({
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+    }),
+    initData() {
+      this.addNewPartnerAction();
+      this.addNewCustomerAction();
+      this.fetchReassignmentReasons();
+      this.partner_actions_filtered_data = this.partner_actions_data;
+    },
+    async fetchReassignmentReasons() {
+      const results = await this.fetch_set_reallocation_reason();
+      this.reassignment_reason = results.data.filter(
+        reason => reason.status === 1,
+      );
+    },
     addNewPartnerAction() {
       this.partnerActionInputs.push({
         ...this.partnerAction,
@@ -316,19 +299,45 @@ export default {
       });
     },
     removePartnerAction(inputIndex) {
+      this.restoreActionOption(inputIndex);
       this.partnerActionInputs.splice(inputIndex, 1);
+    },
+    restoreActionOption(inputIndex) {
+      const actionId = this.partnerActionInputs[inputIndex].partner_action_id;
+      if (actionId === null) return;
+      const actionOption = this.partner_actions_data.filter(
+        option => option.id === actionId,
+      );
+      this.partner_actions_filtered_data = [
+        ...this.partner_actions_filtered_data,
+        ...actionOption,
+      ];
+      const indexPosition = this.actionsCodesArray.indexOf(inputIndex);
+      this.actionsCodesArray.splice(indexPosition, 1);
+    },
+    reassignmentReasonChanged() {
+      this.$emit('actionValues', {
+        reassignment_reason_penalize: this.reassignmentReasonPenalize,
+        partner_actions: this.partnerActionInputs,
+        customer_actions: this.customerActionInputs,
+      });
+    },
+    updatePartnerActionInputChanged(updatedValue, field, inputIndex) {
+      const currentObject = this.partnerActionInputs[inputIndex];
+      this.$set(currentObject, field, updatedValue[field]);
+      this.emitAllInputValues();
     },
     partnerActionSelectedChanged(selectedValue, inputIndex) {
       const { partner_action_id } = selectedValue;
       const selectedAction = this.partnerActionInputs[inputIndex];
-
       this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
-      console.log('PARTNER INPUTS', this.partnerActionInputs);
+      this.trackPartnerActionsSelected(selectedValue);
     },
     partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'block_hours_visible', false);
       this.$set(inputValuesObject, 'partner_message_visible', false);
       this.$set(inputValuesObject, 'penalty_fee_visible', false);
+      this.$set(inputValuesObject, 'partner_message_visible', false);
 
       if (actionID === 1) {
         this.$set(inputValuesObject, 'block_hours_visible', true);
@@ -336,9 +345,34 @@ export default {
       } else if (actionID === 2) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
         this.$set(inputValuesObject, 'partner_message_visible', true);
-      } else if (actionID === 3 || actionID === 4 || actionID === 5) {
+      } else if (actionID === 4 || actionID === 5) {
         this.$set(inputValuesObject, 'partner_message_visible', true);
       }
+    },
+    trackPartnerActionsSelected(selectedValue) {
+      const { partner_action_id, partnerActionInput } = selectedValue;
+      this.partnerActionsSelected[partnerActionInput] = partner_action_id;
+      this.actionsCodesArray = Object.values(this.partnerActionsSelected);
+      this.filterOutPartnerActionsOptions(this.actionsCodesArray);
+    },
+    filterOutPartnerActionsOptions(actionsCodesArray) {
+      const createNewArray = (codesArray, dataArray) => {
+        if (
+          codesArray === null ||
+          codesArray === undefined ||
+          !codesArray.length
+        )
+          return;
+
+        const newArray = dataArray.filter(
+          action => action.id !== codesArray[0],
+        );
+        codesArray.shift();
+        this.partner_actions_filtered_data = newArray;
+
+        createNewArray(codesArray, newArray);
+      };
+      createNewArray(actionsCodesArray, this.partner_actions_data);
     },
     addNewCustomerAction() {
       this.customerActionInputs.push({
@@ -352,15 +386,26 @@ export default {
     customerActionSelectedChanged(selectedValue, inputIndex) {
       const { customer_action_id } = selectedValue;
       const selectedAction = this.customerActionInputs[inputIndex];
-
       this.customerInputsVisibilityTrigger(customer_action_id, selectedAction);
-      console.log('CUSTOMER INPUTS', this.customerActionInputs);
+      this.emitAllInputValues();
+    },
+    updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
+      const currentObject = this.customerActionInputs[inputIndex];
+      this.$set(currentObject, field, updatedValue[field]);
+      this.emitAllInputValues();
     },
     customerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'customer_message_visible', false);
       if (actionID === 1) {
         this.$set(inputValuesObject, 'customer_message_visible', true);
       }
+    },
+    emitAllInputValues() {
+      this.$emit('actionValues', {
+        reassignment_reason_penalize: this.reassignmentReasonPenalize,
+        partner_actions: this.partnerActionInputs,
+        customer_actions: this.customerActionInputs,
+      });
     },
   },
 };

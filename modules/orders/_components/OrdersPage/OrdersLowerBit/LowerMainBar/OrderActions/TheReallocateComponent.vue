@@ -25,10 +25,10 @@
         </v-select>
         <v-select
           v-else
-          :options="customerInfo"
-          :reduce="reason => reason.code"
+          :options="reassignment_reason"
+          :reduce="name => name.reallocation_id"
           name="reason"
-          label="reason"
+          abel="description"
           placeholder="Select reallocation reason .."
           class="form-control proximity-point"
           :id="`reallocate_reason_${orderNo}`"
