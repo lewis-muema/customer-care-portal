@@ -77,7 +77,7 @@
 
         <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
           <partner-action
-            :vendor-Id="vendorTypeID"
+            :vendor-type="vendorName"
             @actionValues="getActionValues"
           />
         </div>
@@ -381,22 +381,11 @@ export default {
         { code: 'DELAYED_AT_DELIVERY', name: 'Delayed at delivery ' },
         { code: 'REASSIGNED', name: 'Reassigned orders ' },
       ],
-      reasons_data: [
-        { code: 3, name: 'Client is not reacheable' },
-        { code: 5, name: 'I do not have a box' },
-        { code: 7, name: `I can't access CBD` },
-        { code: 8, name: 'My bike broke-down' },
-        { code: 9, name: 'Police arrest' },
-        { code: 10, name: 'My Vehicle is Open' },
-        { code: 11, name: 'My Vehicle is Closed' },
-        { code: 12, name: 'The load cannot fit in my vehicle' },
-        { code: 13, name: 'My Vehicle broke down' },
-      ],
       completed_comp_id: ['GT', 'GET'],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
-      vendorTypeID: null,
+      vendorName: '',
       country: '',
       penalizing_reason: [],
       penalized_orders: '',
@@ -424,9 +413,8 @@ export default {
     getSession(session) {
       return session;
     },
-    vendorType(vendorValueID) {
-      console.log('WWW', vendorValueID);
-      this.vendorTypeID = vendorValueID;
+    vendorType(vendorId) {
+      this.vendorName = this.vendor(vendorId);
     },
   },
   mounted() {
