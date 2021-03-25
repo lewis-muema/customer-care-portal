@@ -228,7 +228,10 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <div class="form-inline expand-logs-section">
-                <div class="form-group col-md-4 expandable-header">
+                <div
+                  v-if="props.row.parameter"
+                  class="form-group col-md-4 expandable-header"
+                >
                   <label class="expandable-data">
                     {{ penalizeLabel(props.row.parameter) }}</label
                   >
@@ -240,9 +243,27 @@
                     )
                   }}
                 </div>
-                <div class="form-group col-md-4 expandable-header">
+                <div
+                  v-if="props.row.message"
+                  class="form-group col-md-4 expandable-header"
+                >
                   <label class="expandable-data"> Penalty message</label>
                   {{ props.row.message }}
+                </div>
+
+                <div
+                  v-if="props.row.from_date"
+                  class="form-group col-md-4 expandable-header"
+                >
+                  <label class="expandable-data"> From</label>
+                  {{ getFormattedDate(props.row.from_date, 'DD/MM/YYYY ') }}
+                </div>
+                <div
+                  v-if="props.row.to_date"
+                  class="form-group col-md-4 expandable-header"
+                >
+                  <label class="expandable-data"> To</label>
+                  {{ getFormattedDate(props.row.to_date, 'DD/MM/YYYY ') }}
                 </div>
               </div>
             </template>
@@ -252,7 +273,7 @@
               {{ fetchCountry(penalty_logs[scope.$index]['country']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Vendor" prop="vendor_type">
+          <el-table-column label="Vendor type" prop="vendor_type">
             <template slot-scope="scope">
               {{ vendor(penalty_logs[scope.$index]['vendor_type']) }}
             </template>
@@ -266,30 +287,16 @@
               {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
             </template>
           </el-table-column>
-          <el-table-column
-            label="Hours blocked on dispatch"
-            width="180"
-            prop="block_hours"
-          >
+          <el-table-column label="Action" width="180" prop="block_hours">
             <template slot-scope="scope">
-              {{ penalty_logs[scope.$index]['block_hours'] }} Hrs
+              {{ mapActionsId(penalty_logs[scope.$index]['action_id']) }}
             </template>
           </el-table-column>
-          <el-table-column label="From" prop="from_date">
+          <el-table-column label="Date Added" prop="updated_at">
             <template slot-scope="scope">
               {{
                 getFormattedDate(
-                  penalty_logs[scope.$index]['from_date'],
-                  'DD/MM/YYYY ',
-                )
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column label="To" prop="to_date">
-            <template slot-scope="scope">
-              {{
-                getFormattedDate(
-                  penalty_logs[scope.$index]['to_date'],
+                  penalty_logs[scope.$index]['updated_at'],
                   'DD/MM/YYYY ',
                 )
               }}
@@ -336,7 +343,7 @@
 
 <script>
 import Vue from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
@@ -393,6 +400,34 @@ export default {
       partner_actions_inputs: [],
       customer_actions_inputs: [],
       reassignment_reason_penalize: '',
+      reasons_data: [],
+      map_actions_data: [
+        {
+          id: 1,
+          name: 'Block',
+          display_name: 'Block from dispatch',
+        },
+        {
+          id: 2,
+          name: 'Penalty_Fee',
+          display_name: 'Charge a penalty fee',
+        },
+        {
+          id: 3,
+          name: 'Reallocation',
+          display_name: 'Allow partner to reallocate',
+        },
+        {
+          id: 4,
+          name: 'Reschedule',
+          display_name: 'Allow customer to reschedule order',
+        },
+        {
+          id: 5,
+          name: 'Notification',
+          display_name: 'Trigger notification alert',
+        },
+      ],
     };
   },
   validations: {
@@ -427,11 +462,17 @@ export default {
       request_penalties: 'requestPenalties',
       update_reward: 'update_reward',
       create_reward: 'create_reward',
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
     }),
     initiateData() {
       this.clearData();
+      this.fetchReassignmentReasons();
       this.fetchVendorTypes();
       this.requestRewards();
+    },
+    async fetchReassignmentReasons() {
+      const results = await this.fetch_set_reallocation_reason();
+      this.reasons_data = results.data;
     },
     getActionValues(value) {
       const {
@@ -470,6 +511,19 @@ export default {
           customerActionInputs.splice(index, 1);
         }
       });
+
+      if (!customerActionInputs.length) {
+        customerActionInputs = [];
+        this.customer_actions_inputs = customerActionInputs;
+        return;
+      }
+      customerActionInputs.forEach(customerAction => {
+        for (const key in customerAction) {
+          if (customerAction[key] === null || !customerAction[key]) {
+            delete customerAction[key];
+          }
+        }
+      });
       this.customer_actions_inputs = customerActionInputs;
     },
     rewardSection() {
@@ -492,6 +546,13 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
+    },
+    mapActionsId(actionId) {
+      if (!actionId) return '';
+      const actionInfo = this.map_actions_data.filter(
+        action => action.id === actionId,
+      );
+      return actionInfo[0].display_name;
     },
     async requestRewards() {
       const arr = await this.request_penalties();
@@ -764,7 +825,7 @@ export default {
           const arr = JSON.parse(value);
           for (let i = 0; i < arr.length; i++) {
             const extract = this.reasons_data.find(
-              location => location.code === arr[i],
+              location => location.id === arr[i],
             );
             response.push(extract.name);
             resp = response.toString();
@@ -813,11 +874,9 @@ export default {
       }
     },
     orderValue() {
-      const record = this.comparator.filter(i =>
+      return this.comparator.filter(i =>
         this.completed_comp_id.includes(i.code),
       );
-
-      return record;
     },
   },
 };

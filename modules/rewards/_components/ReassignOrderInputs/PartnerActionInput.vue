@@ -289,7 +289,7 @@ export default {
       ],
       customer_actions_data: [
         {
-          id: 1,
+          id: 5,
           action_type: 1,
           name: 'trigger_notification',
           display_name: 'Trigger a notification to the customer',
@@ -404,7 +404,7 @@ export default {
     customerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'customer_message_visible', false);
       this.$set(inputValuesObject, 'reschedule_hours_visible', false);
-      if (actionID === 1) {
+      if (actionID === 5) {
         this.$set(inputValuesObject, 'customer_message_visible', true);
       } else if (actionID === 4) {
         this.$set(inputValuesObject, 'customer_message_visible', true);
