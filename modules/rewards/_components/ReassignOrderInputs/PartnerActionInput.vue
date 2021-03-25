@@ -26,7 +26,7 @@
       <div class="form-group col-md-4 user-input">
         <label class="vat"> Partner action </label>
         <v-select
-          :options="partner_actions_filtered_data"
+          :options="partner_actions_data"
           :reduce="name => name.id"
           :name="partnerAction.partnerActionInput"
           label="display_name"
@@ -287,7 +287,6 @@ export default {
           status: 1,
         },
       ],
-      partner_actions_filtered_data: [],
       customer_actions_data: [
         {
           id: 1,
@@ -314,7 +313,7 @@ export default {
     };
   },
   watch: {
-    vendorType(vendorValue) {
+    vendorType() {
       this.fetchReassignmentReasons();
     },
   },
@@ -329,14 +328,11 @@ export default {
       this.addNewPartnerAction();
       this.addNewCustomerAction();
       this.fetchReassignmentReasons();
-      this.partner_actions_filtered_data = [...this.partner_actions_data];
     },
     filterReassignmentReasons(reasons) {
-      console.log('ZZZ', reasons);
       this.reassignment_reason = reasons.filter(
         reason => reason.vendor_type === this.vendorType.toLowerCase(),
       );
-      console.log('XXX', this.reassignment_reason);
     },
     async fetchReassignmentReasons() {
       const results = await this.fetch_set_reallocation_reason();
@@ -350,21 +346,7 @@ export default {
       });
     },
     removePartnerAction(inputIndex) {
-      this.restoreActionOption(inputIndex);
       this.partnerActionInputs.splice(inputIndex, 1);
-    },
-    restoreActionOption(inputIndex) {
-      const actionId = this.partnerActionInputs[inputIndex].partner_action_id;
-      if (actionId === null) return;
-      const actionOption = this.partner_actions_data.filter(
-        option => option.id === actionId,
-      );
-      this.partner_actions_filtered_data = [
-        ...this.partner_actions_filtered_data,
-        ...actionOption,
-      ];
-      const indexPosition = this.actionsCodesArray.indexOf(inputIndex);
-      this.actionsCodesArray.splice(indexPosition, 1);
     },
     reassignmentReasonChanged() {
       this.$emit('actionValues', {
@@ -382,7 +364,6 @@ export default {
       const { partner_action_id } = selectedValue;
       const selectedAction = this.partnerActionInputs[inputIndex];
       this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
-      this.trackPartnerActionsSelected(selectedValue);
     },
     partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'block_hours_visible', false);
@@ -399,31 +380,6 @@ export default {
       } else if (actionID === 5) {
         this.$set(inputValuesObject, 'partner_message_visible', true);
       }
-    },
-    trackPartnerActionsSelected(selectedValue) {
-      const { partner_action_id, partnerActionInput } = selectedValue;
-      this.partnerActionsSelected[partnerActionInput] = partner_action_id;
-      this.actionsCodesArray = Object.values(this.partnerActionsSelected);
-      this.filterOutPartnerActionsOptions(this.actionsCodesArray);
-    },
-    filterOutPartnerActionsOptions(actionsCodesArray) {
-      const createNewArray = (codesArray, dataArray) => {
-        if (
-          codesArray === null ||
-          codesArray === undefined ||
-          !codesArray.length
-        )
-          return;
-
-        const newArray = dataArray.filter(
-          action => action.id !== codesArray[0],
-        );
-        codesArray.shift();
-        this.partner_actions_filtered_data = newArray;
-
-        createNewArray(codesArray, newArray);
-      };
-      createNewArray(actionsCodesArray, this.partner_actions_data);
     },
     addNewCustomerAction() {
       this.customerActionInputs.push({
