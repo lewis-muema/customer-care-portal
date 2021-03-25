@@ -230,7 +230,7 @@
               <div class="form-inline expand-logs-section">
                 <div
                   v-if="props.row.parameter"
-                  class="form-group col-md-4 expandable-header"
+                  class="form-group col-md-3 expandable-header"
                 >
                   <label class="expandable-data">
                     {{ penalizeLabel(props.row.parameter) }}</label
@@ -244,23 +244,35 @@
                   }}
                 </div>
                 <div
-                  v-if="props.row.message"
-                  class="form-group col-md-4 expandable-header"
+                  v-if="props.row.parameter === 'REASSIGNED'"
+                  class="form-group col-md-3 expandable-header"
                 >
-                  <label class="expandable-data"> Penalty message</label>
+                  <label class="expandable-data">
+                    {{ actionType(props.row.action_id) }}
+                  </label>
+                  {{ mapActionsId(props.row.action_id) }}
+                  {{ actionPenalty(props.row) }}
+                </div>
+                <div
+                  v-if="props.row.message"
+                  class="form-group col-md-3 expandable-header"
+                >
+                  <label class="expandable-data">
+                    {{ mapActionsId(props.row.action_id) }} message</label
+                  >
                   {{ props.row.message }}
                 </div>
 
                 <div
                   v-if="props.row.from_date"
-                  class="form-group col-md-4 expandable-header"
+                  class="form-group col-md-3 expandable-header"
                 >
                   <label class="expandable-data"> From</label>
                   {{ getFormattedDate(props.row.from_date, 'DD/MM/YYYY ') }}
                 </div>
                 <div
                   v-if="props.row.to_date"
-                  class="form-group col-md-4 expandable-header"
+                  class="form-group col-md-3 expandable-header"
                 >
                   <label class="expandable-data"> To</label>
                   {{ getFormattedDate(props.row.to_date, 'DD/MM/YYYY ') }}
@@ -287,7 +299,7 @@
               {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Action" width="180" prop="block_hours">
+          <el-table-column label="Action" width="250" prop="block_hours">
             <template slot-scope="scope">
               {{ mapActionsId(penalty_logs[scope.$index]['action_id']) }}
             </template>
@@ -546,6 +558,25 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
+    },
+    actionType(actionId) {
+      if (actionId <= 3) {
+        return 'Partner action';
+      } else if (actionId === 4) {
+        return 'Customer action';
+      } else if (actionId === 5) {
+        return 'Partner action / Customer action';
+      }
+    },
+    actionPenalty(action) {
+      if (action.action_id === 1) {
+        return `for ${action.block_hours} hours`;
+      } else if (action.action_id === 2) {
+        const currency = action.currency === null ? '' : action.currency;
+        return `of ${currency} ${action.penalty_fee}`;
+      } else {
+        return '';
+      }
     },
     mapActionsId(actionId) {
       if (!actionId) return '';
@@ -843,7 +874,7 @@ export default {
     penalizeLabel(val) {
       let resp = 'Orders to penalize for be';
       if (val === 'REASSIGNED') {
-        resp = 'Reassign reasons to penalize for ';
+        resp = 'Reassign reasons to penalize';
       }
       return resp;
     },
