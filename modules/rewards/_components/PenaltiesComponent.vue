@@ -229,7 +229,9 @@
             <template slot-scope="props">
               <div class="form-inline expand-logs-section">
                 <div
-                  v-if="props.row.parameter"
+                  v-if="
+                    props.row.parameter && props.row.parameter !== 'REASSIGNED'
+                  "
                   class="form-group col-md-3 expandable-header"
                 >
                   <label class="expandable-data">
@@ -244,6 +246,15 @@
                   }}
                 </div>
                 <div
+                  v-if="props.row.message"
+                  class="form-group col-md-3 expandable-header"
+                >
+                  <label class="expandable-data">
+                    {{ mapActionsId(props.row.action_id) }} message</label
+                  >
+                  {{ props.row.message }}
+                </div>
+                <div
                   v-if="props.row.parameter === 'REASSIGNED'"
                   class="form-group col-md-3 expandable-header"
                 >
@@ -252,15 +263,6 @@
                   </label>
                   {{ mapActionsId(props.row.action_id) }}
                   {{ actionPenalty(props.row) }}
-                </div>
-                <div
-                  v-if="props.row.message"
-                  class="form-group col-md-3 expandable-header"
-                >
-                  <label class="expandable-data">
-                    {{ mapActionsId(props.row.action_id) }} message</label
-                  >
-                  {{ props.row.message }}
                 </div>
 
                 <div
@@ -296,7 +298,20 @@
             prop="parameter"
           >
             <template slot-scope="scope">
-              {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
+              <span
+                v-if="penalty_logs[scope.$index]['parameter'] !== 'REASSIGNED'"
+              >
+                {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
+              </span>
+              <span v-else>
+                {{
+                  reassignData(
+                    penalty_logs[scope.$index]['parameter'],
+                    penalty_logs[scope.$index]['parameter_comp'],
+                    penalty_logs[scope.$index]['parameter_data'],
+                  )
+                }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column label="Action" width="250" prop="block_hours">
@@ -748,7 +763,6 @@ export default {
             actions,
           },
         };
-        console.log('MMM', payload);
 
         try {
           const data = await this.create_reward(payload);
