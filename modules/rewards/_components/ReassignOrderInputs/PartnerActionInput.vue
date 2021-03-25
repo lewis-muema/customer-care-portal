@@ -216,6 +216,12 @@ import { mapActions } from 'vuex';
 
 export default {
   name: 'PartnerAction',
+  props: {
+    vendorType: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       partnerAction: {
@@ -307,6 +313,11 @@ export default {
       actionsCodesArray: [],
     };
   },
+  watch: {
+    vendorType(vendorValue) {
+      this.fetchReassignmentReasons();
+    },
+  },
   created() {
     this.initData();
   },
@@ -320,11 +331,17 @@ export default {
       this.fetchReassignmentReasons();
       this.partner_actions_filtered_data = [...this.partner_actions_data];
     },
+    filterReassignmentReasons(reasons) {
+      console.log('ZZZ', reasons);
+      this.reassignment_reason = reasons.filter(
+        reason => reason.vendor_type === this.vendorType.toLowerCase(),
+      );
+      console.log('XXX', this.reassignment_reason);
+    },
     async fetchReassignmentReasons() {
       const results = await this.fetch_set_reallocation_reason();
-      this.reassignment_reason = results.data.filter(
-        reason => reason.status === 1,
-      );
+      const reasons = results.data.filter(reason => reason.status === 1);
+      this.filterReassignmentReasons(reasons);
     },
     addNewPartnerAction() {
       this.partnerActionInputs.push({
