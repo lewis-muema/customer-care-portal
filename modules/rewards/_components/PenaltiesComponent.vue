@@ -824,10 +824,11 @@ export default {
           const response = [];
           const arr = JSON.parse(value);
           for (let i = 0; i < arr.length; i++) {
-            const extract = this.reasons_data.find(
+            const reallocationData = this.reasons_data.find(
               location => location.id === arr[i],
             );
-            response.push(extract.name);
+            if (reallocationData === undefined) return 'Not found!';
+            response.push(reallocationData.description);
             resp = response.toString();
           }
         } else {
