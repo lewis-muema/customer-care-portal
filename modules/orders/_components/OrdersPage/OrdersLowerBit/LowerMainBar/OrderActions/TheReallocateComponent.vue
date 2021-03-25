@@ -25,7 +25,7 @@
         </v-select>
         <v-select
           v-else
-          :options="reassignment_reason"
+          :options="customerInfo"
           :reduce="name => name.reallocation_id"
           name="reason"
           abel="description"
@@ -88,11 +88,15 @@ export default {
       reason: '',
       description: '',
       submitted: false,
+      customerInfo: [],
     };
   },
   validations: {
     reason: { required },
     description: { required },
+  },
+  mounted() {
+    this.fetchReassignmentReasons();
   },
   methods: {
     ...mapMutations({
@@ -102,7 +106,19 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
       tracker_status: '$_orders/tracker_status',
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
     }),
+    fetchReassignmentReasons() {
+      this.fetch_set_reallocation_reason()
+        .then(results => {
+          this.customerInfo = results.data.filter(
+            reason => reason.status === 1,
+          );
+        })
+        .catch(err => {
+          console.error('Error occurred: ', err);
+        });
+    },
     async checkTrackerStatus() {
       if (this.vendorType === 25 || this.vendorType === 20) {
         const notification = [];

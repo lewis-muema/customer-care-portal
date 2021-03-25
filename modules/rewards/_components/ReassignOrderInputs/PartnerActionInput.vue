@@ -17,7 +17,7 @@
       >
       </v-select>
     </div>
-    <!--    TODO partner action dropdown-->
+    <!--    partner action dropdown-->
     <div
       class="row replica"
       v-for="(partnerAction, index) in partnerActionInputs"
@@ -26,7 +26,7 @@
       <div class="form-group col-md-4 user-input">
         <label class="vat"> Partner action </label>
         <v-select
-          :options="partner_actions_filtered_data"
+          :options="partner_actions_data"
           :reduce="name => name.id"
           :name="partnerAction.partnerActionInput"
           label="display_name"
@@ -39,7 +39,7 @@
         </v-select>
         <div class="input-counter">
           <div
-            v-if="partnerAction.partnerActionInput !== 4"
+            v-if="partnerAction.partnerActionInput !== 3"
             class="add-input"
             @click="addNewPartnerAction"
           >
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <!--    TODO add for how long field-->
+      <!--    how long field-->
       <div
         v-if="partnerAction.block_hours_visible"
         class="form-group col-md-4 user-input"
@@ -79,7 +79,7 @@
         </el-input>
       </div>
 
-      <!--    TODO add charge penalty fee message-->
+      <!--    charge penalty fee message-->
       <div
         v-if="partnerAction.penalty_fee_visible"
         class="form-group col-md-4 user-input"
@@ -97,7 +97,7 @@
         </el-input>
       </div>
 
-      <!--    TODO add message to show partner-->
+      <!--    message to show partner-->
       <div
         v-if="partnerAction.partner_message_visible"
         class="form-group col-md-4 user-input"
@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <!--    TODO customer action dropdown-->
+    <!--    customer action dropdown-->
     <div
       class="row replica"
       v-for="(customerAction, index) in customerActionInputs"
@@ -141,7 +141,11 @@
         >
         </v-select>
         <div class="input-counter">
-          <div class="add-input" @click="addNewCustomerAction">
+          <div
+            v-if="customerAction.customerActionInput !== 1"
+            class="add-input"
+            @click="addNewCustomerAction"
+          >
             + Select another customer action
           </div>
           <div
@@ -154,7 +158,35 @@
         </div>
       </div>
 
-      <!--    TODO add message to show customer-->
+      <!--    how long field-->
+      <div
+        v-if="customerAction.reschedule_hours_visible"
+        class="form-group col-md-4 user-input"
+      >
+        <label class="vat">
+          For how long
+        </label>
+        <el-input
+          type="number"
+          min="0"
+          value="0.01"
+          step="0.01"
+          v-model="customerAction.reschedule_hours"
+          @input="
+            updateCustomerActionInputChanged(
+              customerAction,
+              'reschedule_hours',
+              index,
+            )
+          "
+        >
+          <template slot="append"
+            >hours</template
+          >
+        </el-input>
+      </div>
+
+      <!--   message to show customer-->
       <div
         v-if="customerAction.customer_message_visible"
         class="form-group col-md-4 user-input"
@@ -184,6 +216,12 @@ import { mapActions } from 'vuex';
 
 export default {
   name: 'PartnerAction',
+  props: {
+    vendorType: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       partnerAction: {
@@ -202,6 +240,8 @@ export default {
         customer_action_id: null,
         customer_message_visible: false,
         customer_message: '',
+        reschedule_hours_visible: false,
+        reschedule_hours: null,
         customerActionInput: 0,
       },
       partnerInputCount: 0,
@@ -238,15 +278,6 @@ export default {
           status: 1,
         },
         {
-          id: 4,
-          action_type: 2,
-          name: 'Reschedule',
-          display_name: 'Allow customer to reschedule order',
-          input_datatype: 'Integer',
-          user_type: '[2]',
-          status: 1,
-        },
-        {
           id: 5,
           action_type: 2,
           name: 'Notification',
@@ -256,7 +287,6 @@ export default {
           status: 1,
         },
       ],
-      partner_actions_filtered_data: [],
       customer_actions_data: [
         {
           id: 1,
@@ -267,11 +297,25 @@ export default {
           user_type: '[1]',
           status: 1,
         },
+        {
+          id: 4,
+          action_type: 2,
+          name: 'Reschedule',
+          display_name: 'Allow customer to reschedule order',
+          input_datatype: 'Integer',
+          user_type: '[2]',
+          status: 1,
+        },
       ],
       reassignmentReasonPenalize: '',
       reassignment_reason: [],
       actionsCodesArray: [],
     };
+  },
+  watch: {
+    vendorType() {
+      this.fetchReassignmentReasons();
+    },
   },
   created() {
     this.initData();
@@ -284,13 +328,16 @@ export default {
       this.addNewPartnerAction();
       this.addNewCustomerAction();
       this.fetchReassignmentReasons();
-      this.partner_actions_filtered_data = this.partner_actions_data;
+    },
+    filterReassignmentReasons(reasons) {
+      this.reassignment_reason = reasons.filter(
+        reason => reason.vendor_type === this.vendorType.toLowerCase(),
+      );
     },
     async fetchReassignmentReasons() {
       const results = await this.fetch_set_reallocation_reason();
-      this.reassignment_reason = results.data.filter(
-        reason => reason.status === 1,
-      );
+      const reasons = results.data.filter(reason => reason.status === 1);
+      this.filterReassignmentReasons(reasons);
     },
     addNewPartnerAction() {
       this.partnerActionInputs.push({
@@ -299,21 +346,7 @@ export default {
       });
     },
     removePartnerAction(inputIndex) {
-      this.restoreActionOption(inputIndex);
       this.partnerActionInputs.splice(inputIndex, 1);
-    },
-    restoreActionOption(inputIndex) {
-      const actionId = this.partnerActionInputs[inputIndex].partner_action_id;
-      if (actionId === null) return;
-      const actionOption = this.partner_actions_data.filter(
-        option => option.id === actionId,
-      );
-      this.partner_actions_filtered_data = [
-        ...this.partner_actions_filtered_data,
-        ...actionOption,
-      ];
-      const indexPosition = this.actionsCodesArray.indexOf(inputIndex);
-      this.actionsCodesArray.splice(indexPosition, 1);
     },
     reassignmentReasonChanged() {
       this.$emit('actionValues', {
@@ -331,7 +364,6 @@ export default {
       const { partner_action_id } = selectedValue;
       const selectedAction = this.partnerActionInputs[inputIndex];
       this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
-      this.trackPartnerActionsSelected(selectedValue);
     },
     partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'block_hours_visible', false);
@@ -345,34 +377,9 @@ export default {
       } else if (actionID === 2) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
         this.$set(inputValuesObject, 'partner_message_visible', true);
-      } else if (actionID === 4 || actionID === 5) {
+      } else if (actionID === 5) {
         this.$set(inputValuesObject, 'partner_message_visible', true);
       }
-    },
-    trackPartnerActionsSelected(selectedValue) {
-      const { partner_action_id, partnerActionInput } = selectedValue;
-      this.partnerActionsSelected[partnerActionInput] = partner_action_id;
-      this.actionsCodesArray = Object.values(this.partnerActionsSelected);
-      this.filterOutPartnerActionsOptions(this.actionsCodesArray);
-    },
-    filterOutPartnerActionsOptions(actionsCodesArray) {
-      const createNewArray = (codesArray, dataArray) => {
-        if (
-          codesArray === null ||
-          codesArray === undefined ||
-          !codesArray.length
-        )
-          return;
-
-        const newArray = dataArray.filter(
-          action => action.id !== codesArray[0],
-        );
-        codesArray.shift();
-        this.partner_actions_filtered_data = newArray;
-
-        createNewArray(codesArray, newArray);
-      };
-      createNewArray(actionsCodesArray, this.partner_actions_data);
     },
     addNewCustomerAction() {
       this.customerActionInputs.push({
@@ -396,8 +403,12 @@ export default {
     },
     customerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'customer_message_visible', false);
+      this.$set(inputValuesObject, 'reschedule_hours_visible', false);
       if (actionID === 1) {
         this.$set(inputValuesObject, 'customer_message_visible', true);
+      } else if (actionID === 4) {
+        this.$set(inputValuesObject, 'customer_message_visible', true);
+        this.$set(inputValuesObject, 'reschedule_hours_visible', true);
       }
     },
     emitAllInputValues() {

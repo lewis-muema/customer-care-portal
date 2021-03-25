@@ -76,7 +76,10 @@
         </div>
 
         <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
-          <partner-action @actionValues="getActionValues" />
+          <partner-action
+            :vendor-type="vendorName"
+            @actionValues="getActionValues"
+          />
         </div>
         <div class="remove-margin row" v-else>
           <div class="form-group col-md-4 user-input">
@@ -378,21 +381,11 @@ export default {
         { code: 'DELAYED_AT_DELIVERY', name: 'Delayed at delivery ' },
         { code: 'REASSIGNED', name: 'Reassigned orders ' },
       ],
-      reasons_data: [
-        { code: 3, name: 'Client is not reacheable' },
-        { code: 5, name: 'I do not have a box' },
-        { code: 7, name: `I can't access CBD` },
-        { code: 8, name: 'My bike broke-down' },
-        { code: 9, name: 'Police arrest' },
-        { code: 10, name: 'My Vehicle is Open' },
-        { code: 11, name: 'My Vehicle is Closed' },
-        { code: 12, name: 'The load cannot fit in my vehicle' },
-        { code: 13, name: 'My Vehicle broke down' },
-      ],
       completed_comp_id: ['GT', 'GET'],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
+      vendorName: '',
       country: '',
       penalizing_reason: [],
       penalized_orders: '',
@@ -420,11 +413,13 @@ export default {
     getSession(session) {
       return session;
     },
+    vendorType(vendorId) {
+      this.vendorName = this.vendor(vendorId);
+    },
   },
   mounted() {
     this.initiateData();
   },
-
   methods: {
     ...mapActions({
       perform_user_action: 'perform_user_action',
@@ -574,12 +569,12 @@ export default {
           app: 'ADONIS_API',
           endpoint: '/penalties',
           apiKey: false,
-          penalizing_param: this.penalizing_param,
           params: {
             parameter: this.penalizing_param,
             parameter_comp: this.orders_parameter,
             parameter_value: parseInt(this.penalized_orders, 10),
             parameter_data: this.penalizing_reason,
+            penalizing_param: this.penalizing_param,
             block_hours: parseInt(this.blocking_hrs, 10),
             country: this.country,
             vendor_type: parseInt(this.vendorType, 10),
@@ -650,10 +645,13 @@ export default {
           app: 'ADONIS_API',
           endpoint: '/penalties',
           apiKey: false,
-          penalizing_param: this.penalizing_param,
           params: {
             country: this.country,
             vendor_type: parseInt(this.vendorType, 10),
+            parameter_comp: 'ET',
+            parameter_value: 1,
+            penalizing_param: this.penalizing_param,
+            admin_id: this.getSession.payload.data.admin_id,
             reassignment_reason_penalize: this.reassignment_reason_penalize,
             actions,
           },
