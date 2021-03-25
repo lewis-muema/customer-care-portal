@@ -701,7 +701,7 @@ export default {
               this.loading_penalties = true;
               this.submit_state = false;
               this.initiateData();
-            }, 2000);
+            }, 5000);
           } else {
             this.submit_state = false;
             this.response_status = 'error';
@@ -774,7 +774,7 @@ export default {
               this.loading_penalties = true;
               this.submit_state = false;
               this.initiateData();
-            }, 2000);
+            }, 5000);
           } else {
             this.submit_state = false;
             this.response_status = 'error';
