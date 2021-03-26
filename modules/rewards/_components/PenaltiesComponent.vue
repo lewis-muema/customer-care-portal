@@ -77,7 +77,7 @@
 
         <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
           <partner-action
-            :vendor-type="vendorName"
+            :vendor-type="vendorId"
             @actionValues="getActionValues"
           />
         </div>
@@ -420,6 +420,7 @@ export default {
       vendor_type: [],
       vendorType: '',
       vendorName: '',
+      vendorId: '',
       country: '',
       penalizing_reason: [],
       penalized_orders: '',
@@ -477,6 +478,7 @@ export default {
     },
     vendorType(vendorId) {
       this.vendorName = this.vendor(vendorId);
+      this.vendorId = vendorId;
     },
   },
   mounted() {

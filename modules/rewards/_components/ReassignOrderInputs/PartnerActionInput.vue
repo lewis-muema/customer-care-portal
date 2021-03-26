@@ -218,8 +218,8 @@ export default {
   name: 'PartnerAction',
   props: {
     vendorType: {
-      type: String,
-      default: '',
+      type: Number,
+      default: 0,
     },
   },
   data() {
@@ -331,7 +331,7 @@ export default {
     },
     filterReassignmentReasons(reasons) {
       this.reassignment_reason = reasons.filter(
-        reason => reason.vendor_type === this.vendorType.toLowerCase(),
+        reason => reason.vendor_type_id === this.vendorType,
       );
     },
     async fetchReassignmentReasons() {
