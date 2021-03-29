@@ -142,14 +142,17 @@
         </v-select>
         <div class="input-counter">
           <div
-            v-if="customerAction.customerActionInput !== 1"
+            v-if="
+              customerActionInputs.length >= 1 &&
+                customerAction.customerActionInput !== 1
+            "
             class="add-input"
             @click="addNewCustomerAction"
           >
             + Select another customer action
           </div>
           <div
-            v-if="customerAction.customerActionInput !== 0"
+            v-if="customerActionInputs.length > 1"
             class="remove-input"
             @click="removeCustomerAction(index)"
           >
@@ -285,7 +288,7 @@ export default {
           id: 4,
           action_type: 2,
           name: 'Reschedule',
-          display_name: 'Allow customer to reschedule order',
+          display_name: 'Automatically reschedule the order',
           user_type: '[2]',
         },
       ],
