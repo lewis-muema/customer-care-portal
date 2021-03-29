@@ -212,16 +212,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'PartnerAction',
-  props: {
-    vendorType: {
-      type: Number,
-      default: 0,
-    },
-  },
   data() {
     return {
       partnerAction: {
@@ -255,36 +249,28 @@ export default {
           action_type: 1,
           name: 'Block',
           display_name: 'Block from dispatch',
-          input_datatype: 'Integer',
           user_type: '[1]',
-          status: 1,
         },
         {
           id: 2,
           action_type: 1,
           name: 'Penalty_Fee',
           display_name: 'Charge a penalty fee',
-          input_datatype: 'Integer',
           user_type: '[1,2]',
-          status: 1,
         },
         {
           id: 3,
           action_type: 2,
           name: 'Reallocation',
           display_name: 'Allow partner to reallocate',
-          input_datatype: 'Integer',
           user_type: '[1]',
-          status: 1,
         },
         {
           id: 5,
           action_type: 2,
           name: 'Notification',
           display_name: 'Trigger notification alert',
-          input_datatype: 'Integer',
           user_type: '[1,2]',
-          status: 1,
         },
       ],
       customer_actions_data: [
@@ -293,18 +279,14 @@ export default {
           action_type: 1,
           name: 'trigger_notification',
           display_name: 'Trigger a notification to the customer',
-          input_datatype: 'Integer',
           user_type: '[1]',
-          status: 1,
         },
         {
           id: 4,
           action_type: 2,
           name: 'Reschedule',
           display_name: 'Allow customer to reschedule order',
-          input_datatype: 'Integer',
           user_type: '[2]',
-          status: 1,
         },
       ],
       reassignmentReasonPenalize: '',
@@ -312,32 +294,29 @@ export default {
       actionsCodesArray: [],
     };
   },
+  computed: {
+    ...mapGetters({
+      reallocationReasons: 'getReallocationReasons',
+    }),
+  },
   watch: {
-    vendorType() {
-      this.fetchReassignmentReasons();
+    reallocationReasons() {
+      this.filterReassignmentReasons();
     },
   },
   created() {
     this.initData();
   },
   methods: {
-    ...mapActions({
-      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
-    }),
     initData() {
       this.addNewPartnerAction();
       this.addNewCustomerAction();
-      this.fetchReassignmentReasons();
+      this.filterReassignmentReasons();
     },
-    filterReassignmentReasons(reasons) {
-      this.reassignment_reason = reasons.filter(
-        reason => reason.vendor_type_id === this.vendorType,
+    filterReassignmentReasons() {
+      this.reassignment_reason = this.reallocationReasons.filter(
+        reason => reason.status === 1,
       );
-    },
-    async fetchReassignmentReasons() {
-      const results = await this.fetch_set_reallocation_reason();
-      const reasons = results.data.filter(reason => reason.status === 1);
-      this.filterReassignmentReasons(reasons);
     },
     addNewPartnerAction() {
       this.partnerActionInputs.push({
