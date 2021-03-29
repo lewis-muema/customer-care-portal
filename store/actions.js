@@ -1354,6 +1354,28 @@ export default {
     }
   },
 
+  async fetch_all_reallocation_reason({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vendor-type-reallocation-reasons`;
+    try {
+      const response = await axios.get(url, headers);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 
