@@ -106,10 +106,10 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
       tracker_status: '$_orders/tracker_status',
-      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+      fetch_all_reallocation_reason: 'fetch_all_reallocation_reason',
     }),
     fetchReassignmentReasons() {
-      this.fetch_set_reallocation_reason()
+      this.fetch_all_reallocation_reason()
         .then(results => {
           this.customerInfo = results.data.filter(
             reason => reason.status === 1,

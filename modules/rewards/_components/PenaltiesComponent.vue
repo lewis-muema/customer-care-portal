@@ -426,6 +426,7 @@ export default {
       customer_actions_inputs: [],
       reassignment_reason_penalize: '',
       reasons_data: [],
+      all_reasons_data: [],
       map_actions_data: [
         {
           id: 1,
@@ -493,12 +494,18 @@ export default {
       update_reward: 'update_reward',
       create_reward: 'create_reward',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+      fetch_all_reallocation_reason: 'fetch_all_reallocation_reason',
     }),
     initiateData() {
       this.clearData();
       this.fetchReassignmentReasons();
+      this.fetchAllReassignmentReasons();
       this.fetchVendorTypes();
       this.requestRewards();
+    },
+    async fetchAllReassignmentReasons() {
+      const results = await this.fetch_all_reallocation_reason();
+      this.all_reasons_data = results.data;
     },
     async fetchReassignmentReasons() {
       const results = await this.fetch_set_reallocation_reason();
@@ -576,8 +583,8 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
-      this.$store.commit('setSelectedVendorType', null);
       this.$store.commit('setSelectedCountryCode', null);
+      this.$store.commit('setSelectedVendorType', null);
     },
     actionType(actionId) {
       if (actionId <= 3) {
@@ -874,8 +881,8 @@ export default {
           const response = [];
           const arr = JSON.parse(value);
           for (let i = 0; i < arr.length; i++) {
-            const reallocationData = this.reasons_data.find(
-              location => location.id === arr[i],
+            const reallocationData = this.all_reasons_data.find(
+              location => location.reallocation_id === arr[i],
             );
             if (reallocationData === undefined) return 'Not found!';
             response.push(reallocationData.description);
