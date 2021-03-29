@@ -582,8 +582,8 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
-      this.$store.commit('setSelectedVendorType', null);
       this.$store.commit('setSelectedCountryCode', null);
+      this.$store.commit('setSelectedVendorType', null);
     },
     actionType(actionId) {
       if (actionId <= 3) {
@@ -881,7 +881,7 @@ export default {
           const arr = JSON.parse(value);
           for (let i = 0; i < arr.length; i++) {
             const reallocationData = this.all_reasons_data.find(
-              location => location.id === arr[i],
+              location => location.reallocation_id === arr[i],
             );
             if (reallocationData === undefined) return 'Not found!';
             response.push(reallocationData.description);
