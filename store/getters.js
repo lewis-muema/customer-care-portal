@@ -236,4 +236,7 @@ export default {
   getCurrentPage(state) {
     return state.currentPage;
   },
+  getReallocationReasons(state) {
+    return state.reallocationReasons;
+  },
 };

@@ -1325,19 +1325,27 @@ export default {
     }
   },
 
-  async fetch_set_reallocation_reason({ state, dispatch }) {
+  async fetch_set_reallocation_reason({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
+    const headers = {
       headers: {
         'Content-Type': 'text/plain',
         Accept: 'application/json',
         Authorization: jwtToken,
       },
     };
-    const url = `${config.ADONIS_API}vendor-type-reallocation-reasons`;
+
+    const vendor_type = state.selectedVendorType;
+    const country = state.selectedCountryCode;
+
+    const url =
+      country === null
+        ? `${config.ADONIS_API}vendor-type-reallocation-reasons`
+        : `${config.ADONIS_API}vendor-type-reallocation-reasons?vendor_type=${vendor_type}&country=${country}`;
     try {
-      const response = await axios.get(url, param);
+      const response = await axios.get(url, headers);
+      commit('setReallocationReasons', response.data.data);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {

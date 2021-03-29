@@ -76,10 +76,7 @@
         </div>
 
         <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
-          <partner-action
-            :vendor-type="vendorId"
-            @actionValues="getActionValues"
-          />
+          <partner-action @actionValues="getActionValues" />
         </div>
         <div class="remove-margin row" v-else>
           <div class="form-group col-md-4 user-input">
@@ -477,8 +474,12 @@ export default {
       return session;
     },
     vendorType(vendorId) {
-      this.vendorName = this.vendor(vendorId);
-      this.vendorId = vendorId;
+      this.$store.commit('setSelectedVendorType', vendorId);
+      this.fetchReassignmentReasons();
+    },
+    country(countryCode) {
+      this.$store.commit('setSelectedCountryCode', countryCode);
+      this.fetchReassignmentReasons();
     },
   },
   mounted() {
@@ -575,6 +576,8 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
+      this.$store.commit('setSelectedVendorType', null);
+      this.$store.commit('setSelectedCountryCode', null);
     },
     actionType(actionId) {
       if (actionId <= 3) {
