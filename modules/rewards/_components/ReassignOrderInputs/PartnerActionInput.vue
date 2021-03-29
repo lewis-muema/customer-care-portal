@@ -212,16 +212,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'PartnerAction',
-  props: {
-    vendorType: {
-      type: String,
-      default: '',
-    },
-  },
   data() {
     return {
       partnerAction: {
@@ -300,32 +294,29 @@ export default {
       actionsCodesArray: [],
     };
   },
+  computed: {
+    ...mapGetters({
+      reallocationReasons: 'getReallocationReasons',
+    }),
+  },
   watch: {
-    vendorType() {
-      this.fetchReassignmentReasons();
+    reallocationReasons() {
+      this.filterReassignmentReasons();
     },
   },
   created() {
     this.initData();
   },
   methods: {
-    ...mapActions({
-      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
-    }),
     initData() {
       this.addNewPartnerAction();
       this.addNewCustomerAction();
-      this.fetchReassignmentReasons();
+      this.filterReassignmentReasons();
     },
-    filterReassignmentReasons(reasons) {
-      this.reassignment_reason = reasons.filter(
-        reason => reason.vendor_type === this.vendorType.toLowerCase(),
+    filterReassignmentReasons() {
+      this.reassignment_reason = this.reallocationReasons.filter(
+        reason => reason.status === 1,
       );
-    },
-    async fetchReassignmentReasons() {
-      const results = await this.fetch_set_reallocation_reason();
-      const reasons = results.data.filter(reason => reason.status === 1);
-      this.filterReassignmentReasons(reasons);
     },
     addNewPartnerAction() {
       this.partnerActionInputs.push({

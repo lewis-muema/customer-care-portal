@@ -202,4 +202,64 @@ export default {
   setNPSFilters(state, val) {
     state.npsFilters = val;
   },
+  setCoupons(state, val) {
+    state.npsFilters = val;
+  },
+  setCouponCounty(state, val) {
+    state.couponCountry = val;
+  },
+  setSearchedCoupon(state, val) {
+    state.searchedCoupon = val;
+  },
+  setProblematicOrderSearched(state, val) {
+    state.problematicOrderSearched = val;
+  },
+  setAlertStatus(state, val) {
+    state.alertStatus = val;
+  },
+  setAdminID(state, val) {
+    state.adminID = val;
+  },
+  setActiveLiveOpsVendor(state, val) {
+    state.activeLiveOpsVendor = val;
+  },
+  setActiveLiveOpsVendor(state, val) {
+    state.activeLiveOpsVendor = val;
+  },
+  setLiveOpsRefresh(state, val) {
+    state.liveOpsRefresh = val;
+  },
+  setTypingState(state, val) {
+    state.typingState = val;
+  },
+  setAlertType(state, val) {
+    state.alertType = val;
+  },
+  setSelectedVendors(state, val) {
+    state.selectedVendors = val;
+  },
+  setSelectedAdmins(state, val) {
+    state.selectedAdmins = val;
+  },
+  setSelectedAlerts(state, val) {
+    state.selectedAlerts = val;
+  },
+  setSelectedOrder(state, val) {
+    state.selectedOrder = val;
+  },
+  setSearchedOrderStatus(state, val) {
+    state.searchedOrderStatus = val;
+  },
+  setCurrentPage(state, val) {
+    state.currentPage = val;
+  },
+  setSelectedVendorType(state, val) {
+    state.selectedVendorType = val;
+  },
+  setSelectedCountryCode(state, val) {
+    state.selectedCountryCode = val;
+  },
+  setReallocationReasons(state, val) {
+    state.reallocationReasons = val;
+  },
 };
