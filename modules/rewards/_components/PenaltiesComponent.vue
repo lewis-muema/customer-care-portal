@@ -507,8 +507,7 @@ export default {
       this.all_reasons_data = results.data;
     },
     async fetchReassignmentReasons() {
-      const results = await this.fetch_set_reallocation_reason();
-      this.reasons_data = results.data;
+      await this.fetch_set_reallocation_reason();
     },
     getActionValues(value) {
       const {
