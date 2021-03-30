@@ -80,9 +80,9 @@ export default {
           return data.vendor_types;
         })
         .catch(error => {
-          console.error(error);
           notification.push('Something went wrong. Please try again.');
           actionClass = 'danger';
+          throw error;
         });
       this.updateClass(actionClass);
       this.updateErrors(notification);
