@@ -172,6 +172,9 @@ export default {
         24: 'Standard Bike',
         25: 'Freight',
       },
+      selectedVendorType: null,
+      selectedCountryCode: null,
+      reallocationReasons: [],
     };
   },
 

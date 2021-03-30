@@ -259,4 +259,13 @@ export default {
   setCurrentPage(state, val) {
     state.currentPage = val;
   },
+  setSelectedVendorType(state, val) {
+    state.selectedVendorType = val;
+  },
+  setSelectedCountryCode(state, val) {
+    state.selectedCountryCode = val;
+  },
+  setReallocationReasons(state, val) {
+    state.reallocationReasons = val;
+  },
 };

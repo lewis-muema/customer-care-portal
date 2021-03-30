@@ -88,9 +88,9 @@
           >
             <el-option
               v-for="item in reasons_data"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
+              :key="item.id"
+              :label="item.description"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -299,7 +299,7 @@
 
 <script>
 import Vue from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
@@ -342,17 +342,7 @@ export default {
         { code: 'DELAYED_AT_DELIVERY', name: 'Orders delayed at delivery ' },
         { code: 'REASSIGNED', name: 'Reassigned orders ' },
       ],
-      reasons_data: [
-        { code: 3, name: 'Client is not reacheable' },
-        { code: 5, name: 'I do not have a box' },
-        { code: 7, name: `I can't access CBD` },
-        { code: 8, name: 'My bike broke-down' },
-        { code: 9, name: 'Police arrest' },
-        { code: 10, name: 'My Vehicle is Open' },
-        { code: 11, name: 'My Vehicle is Closed' },
-        { code: 12, name: 'The load cannot fit in my vehicle' },
-        { code: 13, name: 'My Vehicle broke down' },
-      ],
+      reasons_data: [],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
@@ -374,11 +364,22 @@ export default {
     penalized_orders: { required },
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      reallocationReasons: 'getReallocationReasons',
+    }),
   },
   watch: {
     getSession(session) {
       return session;
+    },
+    vendorType(vendorId) {
+      this.$store.commit('setSelectedVendorType', vendorId);
+      this.fetchReassignmentReasons();
+    },
+    country(countryCode) {
+      this.$store.commit('setSelectedCountryCode', countryCode);
+      this.fetchReassignmentReasons();
     },
   },
   mounted() {
@@ -392,13 +393,25 @@ export default {
       request_vendor_types: 'request_vendor_types',
       request_penalties: 'requestPenalties',
       request_messages: 'requestWarningMessages',
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       update_reward: 'update_reward',
       create_reward: 'create_reward',
     }),
+    async fetchReassignmentReasons() {
+      await this.fetch_set_reallocation_reason();
+      this.filterReassignmentReasons();
+    },
+    filterReassignmentReasons() {
+      this.reasons_data = this.reallocationReasons.filter(
+        reason => reason.status === 1,
+      );
+    },
     initiateData() {
       this.clearData();
       this.fetchVendorTypes();
       this.requestRewards();
+      this.fetchReassignmentReasons();
+      this.filterReassignmentReasons();
     },
     clearData() {
       this.submit_status = false;
@@ -412,6 +425,8 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
+      this.$store.commit('setSelectedCountryCode', null);
+      this.$store.commit('setSelectedVendorType', null);
     },
     rewardSection() {
       let status = false;
@@ -642,11 +657,9 @@ export default {
       }
     },
     delayValue() {
-      const record = this.comparator.filter(i =>
+      return this.comparator.filter(i =>
         this.completed_comp_id.includes(i.code),
       );
-
-      return record;
     },
   },
 };
