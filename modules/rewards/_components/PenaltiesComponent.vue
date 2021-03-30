@@ -345,9 +345,7 @@ export default {
   methods: {
     ...mapActions({
       perform_user_action: 'perform_user_action',
-      request_vendor_types: 'request_vendor_types',
       request_penalties: 'requestPenalties',
-      update_reward: 'update_reward',
       create_reward: 'create_reward',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       fetchNonPenalizingData: 'fetch_non_penalizing_data',
