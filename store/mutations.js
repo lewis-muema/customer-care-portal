@@ -19,6 +19,9 @@ export default {
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;
   },
+  setSelectedCopNames(state, SelectedCopNames) {
+    state.selectedCopNames = SelectedCopNames;
+  },
   setSelectedCities(state, selectedCities) {
     state.selectedCities = selectedCities;
   },
@@ -41,6 +44,9 @@ export default {
     state.searchedUser = val;
   },
   setToken(state, val) {
+    if (val === null && process.client) {
+      val = localStorage.getItem('jwtToken');
+    }
     state.jwtToken = val;
   },
   setRefreshToken(state, val) {

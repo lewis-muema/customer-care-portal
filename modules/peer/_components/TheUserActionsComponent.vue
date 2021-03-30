@@ -51,7 +51,7 @@
           </a>
         </li>
         <li
-          class="nav-item custom_invoice-padding"
+          class="nav-item custom_invoice-padding hide"
           v-if="permissions.approve_custom_invoice_1"
         >
           <a
@@ -65,7 +65,10 @@
             New Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_custom_invoice_2">
+        <li
+          class="nav-item custom-item"
+          v-if="permissions.approve_custom_invoice_2"
+        >
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -77,7 +80,10 @@
             Reverse Invoice
           </a>
         </li>
-        <li class="nav-item" v-if="permissions.approve_reversals_peer">
+        <li
+          class="nav-item custom-item"
+          v-if="permissions.approve_reversals_peer"
+        >
           <a
             class="nav-link action-list custom-width"
             data-toggle="tab"
@@ -87,6 +93,18 @@
           >
             <span class="fa fa-fw fa-history"></span>
             Reversals & Credit Note
+          </a>
+        </li>
+        <li class="nav-item custom-item" v-if="showFreightApproval">
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('freight_status', userID)"
+            :id="`freight_status_${userID}`"
+          >
+            <span class="fa fa-fw fa-toggle-off"></span>
+            Freight Status
           </a>
         </li>
       </ul>
@@ -181,6 +199,14 @@
               :id="userID"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`freight_status_${userID}`"
+            role="tabpanel"
+            v-if="showTab === `freight_status_${userID}`"
+          >
+            <TheFreightStatusComponent :user="user" />
+          </div>
         </div>
       </div>
     </div>
@@ -202,6 +228,8 @@ export default {
       import('./UserActions/TheReverseInvoiceComponent'),
     TheReveralsComponent: () =>
       import('../../users/_components/Reversals/TheReveralsComponent'),
+    TheFreightStatusComponent: () =>
+      import('./UserActions/TheFreightStatusComponent'),
   },
   props: {
     user: {
@@ -216,6 +244,7 @@ export default {
       show: false,
       active: false,
       category: 'peer',
+      freight_status: 0,
     };
   },
   computed: {
@@ -250,18 +279,52 @@ export default {
       };
       return data;
     },
+    showFreightApproval() {
+      let resp = false;
+
+      if (this.permissions.approve_freight_peer && this.freight_status >= 1) {
+        resp = true;
+      }
+      return resp;
+    },
   },
   mounted() {
     this.clearErrorMessages();
     this.userID = this.user.user_details.user_id;
+    this.checkFreightStatus();
   },
   methods: {
+    ...mapMutations({
+      updateErrors: 'setActionErrors',
+      updateClass: 'setActionClass',
+    }),
+    ...mapActions(['request_user_freight_status']),
     viewTab(tab, userID) {
       this.clearErrorMessages();
 
       this.showTab = `${tab}_${userID}`;
       this.active = 'active';
       this.show = 'show';
+    },
+    async checkFreightStatus() {
+      const notification = [];
+      let actionClass = '';
+
+      const payload = {
+        val: `userId=${this.user.user_details.user_id}`,
+      };
+
+      try {
+        const data = await this.request_user_freight_status(payload);
+        this.freight_status = data.freight_status;
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
@@ -311,5 +374,11 @@ export default {
 }
 .custom-width {
   width: 100% !important;
+}
+.invoice-action {
+  width: 98% !important;
+}
+.custom-item {
+  padding-right: 3px !important;
 }
 </style>

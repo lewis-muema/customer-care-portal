@@ -62,7 +62,7 @@
               :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
               :src="
-                  `${s3Path}${image}`,              
+                  `${s3Path}${image}`,
               "
             />
           </div>

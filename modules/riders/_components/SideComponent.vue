@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     googleApiKey() {
-      return this.$env.GOOGL_API_KEY;
+      return this.$env.GOOGLE_API_KEY;
     },
     photo() {
       return this.details.photo

@@ -120,7 +120,10 @@ Vue.mixin({
     deliveryStatus(order, notesStatus) {
       const details = order.order_details;
       // eslint-disable-next-line prettier/prettier
-      const verification = typeof details.values === 'undefined' ? details.delivery_verification : details.values.delivery_verification;
+      const verification =
+        typeof details.values === 'undefined'
+          ? details.delivery_verification
+          : details.values.delivery_verification;
 
       let status = 'delivered';
       if (notesStatus === 'Approved' || !notesStatus) {
@@ -192,6 +195,55 @@ Vue.mixin({
       const dt1 = this.convertToLocalTime(date);
       const formattedDate = moment(dt1, 'YYYY.MM.DD').fromNow();
       return formattedDate;
+    },
+    determineDuration(seconds) {
+      return this.fancyTimeFormat(seconds);
+    },
+    fancyTimeFormat(duration) {
+      // Hours, minutes and seconds
+      // eslint-disable-next-line no-bitwise
+      const hrs = ~~(duration / 3600);
+      // eslint-disable-next-line no-bitwise
+      const mins = ~~((duration % 3600) / 60);
+      // eslint-disable-next-line no-bitwise
+      const secs = ~~duration % 60;
+
+      // Output like "1:01" or "4:03:59" or "123:03:59"
+      let ret = '';
+
+      if (hrs > 0) {
+        ret += `${hrs} : ${mins < 10 ? '0' : ''}`;
+      }
+
+      ret += `${mins} : ${secs < 10 ? '0' : ''}`;
+      ret += `${secs}`;
+      return ret;
+    },
+    checkEpiry(coupon) {
+      const today = moment().format('YYYY-MM-DD');
+      // eslint-disable-next-line prettier/prettier
+      const startDate = this.getFormattedDate(coupon.couponStartDate, 'YYYY-MM-DD');
+      const endDate = this.getFormattedDate(coupon.couponEndDate, 'YYYY-MM-DD');
+
+      let status = 'active';
+      if (moment(startDate).isAfter(today)) {
+        status = 'scheduled';
+      } else if (moment(endDate).isBefore(today)) {
+        status = 'expired';
+      } else if (
+        moment(today).isBefore(endDate) ||
+        moment(today).isSame(endDate)
+      ) {
+        status = 'active';
+      }
+
+      const finalStatus =
+        (status === 'active' || status === 'scheduled') &&
+        coupon.usageCount >= coupon.maxTotalUsage
+          ? 'expired'
+          : status;
+
+      return coupon.active === 1 ? 'expired' : finalStatus;
     },
     jsUcfirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -330,15 +382,6 @@ Vue.mixin({
       } else {
         return myString;
       }
-    },
-    showCity(city) {
-      let cityName;
-      if (city.id === 1 || city.id === 2 || city.id === 3) {
-        cityName = city.name;
-      } else {
-        cityName = 'Other';
-      }
-      return cityName;
     },
   },
 });

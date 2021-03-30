@@ -58,8 +58,7 @@ export default {
           ? this.order.delivery_details.delivery_images
           : null;
       // eslint-disable-next-line prettier/prettier
-      const lastArray =
-        deliveryArray ? deliveryArray.slice(-1)[0] : null;
+      const lastArray = deliveryArray ? deliveryArray.slice(-1)[0] : null;
       return lastArray ? lastArray.name : null;
     },
   },
