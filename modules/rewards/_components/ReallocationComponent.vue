@@ -414,7 +414,6 @@ export default {
         reason: this.reallocation_reason,
         order_status: this.whenToDisplayReason,
       };
-      console.log('PPP', data);
       const payload = {
         app: 'ADONIS_API',
         endpoint: `reallocation-reasons`,
