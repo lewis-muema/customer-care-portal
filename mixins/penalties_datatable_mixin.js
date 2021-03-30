@@ -93,7 +93,7 @@ export default {
           this.all_reasons_data = results.data;
         })
         .catch(error => {
-          console.error(error);
+          throw error;
         });
     },
     reassignData(param, comparator, value) {
