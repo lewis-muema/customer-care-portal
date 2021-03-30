@@ -232,7 +232,7 @@
             label="Non-penalizing Actions Data"
             name="nonPenalizingActionsData"
           >
-            <non-penalizing-data-table />
+            <non-penalizing-data-table :penalties-data="penaltiesData" />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -309,6 +309,7 @@ export default {
       customer_actions_inputs: [],
       reassignment_reason_penalize: '',
       reasons_data: [],
+      penaltiesData: [],
     };
   },
   validations: {
@@ -349,14 +350,27 @@ export default {
       update_reward: 'update_reward',
       create_reward: 'create_reward',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+      fetchNonPenalizingData: 'fetch_non_penalizing_data',
     }),
     initiateData() {
       this.clearData();
       this.fetchReassignmentReasons();
       this.requestRewards();
+      this.getNonPenalizingData();
     },
     async fetchReassignmentReasons() {
       await this.fetch_set_reallocation_reason();
+    },
+    filterOutStatus(nonPenalizingActions) {
+      const reasonOneRemoved = nonPenalizingActions.filter(
+        action => action.action_id !== 1,
+      );
+      return reasonOneRemoved.filter(action => action.action_id !== 2);
+    },
+    async getNonPenalizingData() {
+      const results = await this.fetchNonPenalizingData();
+      if (results.status)
+        this.penaltiesData = this.filterOutStatus(results.data);
     },
     getActionValues(value) {
       const {
