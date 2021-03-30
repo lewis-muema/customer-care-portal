@@ -118,6 +118,15 @@ export default {
       }
       return resp;
     },
+    reallocationReasonMap(reallocation_id) {
+      const response = [];
+      const reallocationData = this.all_reasons_data.find(
+        location => location.reallocation_id === reallocation_id,
+      );
+      if (reallocationData === undefined) return 'Not found!';
+      response.push(reallocationData.description);
+      return response.toString();
+    },
     penalizeLabel(val) {
       let resp = 'Orders to penalize for be';
       if (val === 'REASSIGNED') {
@@ -126,6 +135,7 @@ export default {
       return resp;
     },
     fetchCountry(id) {
+      if (!id) return '';
       const data = this.country_code.find(location => location.code === id);
       return data.name;
     },
@@ -137,11 +147,11 @@ export default {
       }
       return name;
     },
-    penalizingParams(id) {
+    penalizingParams(code) {
       let name = '';
       if (Object.keys(this.penalizing_data).length > 0) {
         const data = this.penalizing_data.find(
-          location => location.code === id,
+          location => location.code === code,
         );
         name = data.name;
       }
