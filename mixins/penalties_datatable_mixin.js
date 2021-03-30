@@ -200,6 +200,10 @@ export default {
     },
     async handleAction(row) {
       let data = {};
+
+      if (!row.from_date) row.from_date = Date.now();
+      if (!row.to_date) row.to_date = Date.now();
+
       data = row;
 
       if (row.status === 1) {
@@ -214,49 +218,63 @@ export default {
 
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `penalties/${row.id}`,
+        endpoint: `/penalties/${row.id}`,
         apiKey: false,
         params: data,
       };
 
       try {
         await this.update_reward(payload);
-        this.loading_penalties = true;
-        this.initiateData();
+        const initData = {
+          loading_penalties: true,
+        };
+        this.initiateData(initData);
       } catch (error) {
-        this.loading_penalties = true;
-        this.initiateData();
-        this.response_status = 'error';
-        this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        const initData = {
+          loading_penalties: true,
+          response_status: 'error',
+          error_msg:
+            'Internal Server Error. Kindly refresh the page. If error persists contact tech support',
+        };
+        this.initiateData(initData);
       }
     },
     async handleArchive(row) {
       let data = {};
-      data = row;
 
+      if (!row.from_date) row.from_date = Date.now();
+      if (!row.to_date) row.to_date = Date.now();
+
+      data = row;
       data.status = 2;
       data.from_date = moment(row.from_date).format('YYYY-MM-DD');
       data.to_date = moment(row.to_date).format('YYYY-MM-DD');
 
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `penalties/${row.id}`,
+        endpoint: `/penalties/${row.id}`,
         apiKey: false,
         params: data,
       };
 
       try {
         await this.update_reward(payload);
-        this.loading_penalties = true;
-        this.initiateData();
+        const initData = {
+          loading_penalties: true,
+        };
+        this.initiateData(initData);
       } catch (error) {
-        this.loading_penalties = true;
-        this.initiateData();
-        this.response_status = 'error';
-        this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        const initData = {
+          loading_penalties: true,
+          response_status: 'error',
+          error_msg:
+            'Internal Server Error. Kindly refresh the page. If error persists contact tech support',
+        };
+        this.initiateData(initData);
       }
+    },
+    initiateData(intiData) {
+      this.$emit('initiateData', intiData);
     },
   },
 };

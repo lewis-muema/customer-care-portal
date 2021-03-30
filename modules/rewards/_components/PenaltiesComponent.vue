@@ -226,13 +226,19 @@
             label="Penalizing Actions Data"
             name="penalizingActionsData"
           >
-            <penalizing-data-table :penalty-logs="penalty_logs" />
+            <penalizing-data-table
+              @initiateData="initiateTableData"
+              :penalty-logs="penalty_logs"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="Non-penalizing Actions Data"
             name="nonPenalizingActionsData"
           >
-            <non-penalizing-data-table :penalties-data="penaltiesData" />
+            <non-penalizing-data-table
+              @initiateData="initiateTableData"
+              :penalties-data="penaltiesData"
+            />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -355,6 +361,12 @@ export default {
       this.fetchReassignmentReasons();
       this.requestRewards();
       this.getNonPenalizingData();
+    },
+    initiateTableData(data) {
+      this.initiateData();
+      this.loading_penalties = data.loading_penalties;
+      this.response_status = data.response_status;
+      this.error_msg = data.error_msg;
     },
     async fetchReassignmentReasons() {
       await this.fetch_set_reallocation_reason();
