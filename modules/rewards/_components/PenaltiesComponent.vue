@@ -352,12 +352,14 @@ export default {
     ...mapActions({
       perform_user_action: 'perform_user_action',
       request_penalties: 'requestPenalties',
+      request_vendor_types: 'request_vendor_types',
       create_reward: 'create_reward',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       fetchNonPenalizingData: 'fetch_non_penalizing_data',
     }),
     initiateData() {
       this.clearData();
+      this.fetchVendorTypes();
       this.fetchReassignmentReasons();
       this.requestRewards();
       this.getNonPenalizingData();
@@ -367,6 +369,32 @@ export default {
       this.loading_penalties = data.loading_penalties;
       this.response_status = data.response_status;
       this.error_msg = data.error_msg;
+    },
+    fetchVendorTypes() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'VENDORS',
+        endpoint: 'types',
+        apiKey: false,
+        params: {
+          pickup_country_code: 'KE',
+          dropoff_country_code: 'KE',
+        },
+      };
+
+      this.request_vendor_types(payload)
+        .then(data => {
+          this.vendor_type = data.vendor_types;
+          return data.vendor_types;
+        })
+        .catch(error => {
+          notification.push('Something went wrong. Please try again.');
+          actionClass = 'danger';
+          throw error;
+        });
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     async fetchReassignmentReasons() {
       await this.fetch_set_reallocation_reason();
