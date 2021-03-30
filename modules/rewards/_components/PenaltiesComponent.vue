@@ -221,145 +221,20 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-        <el-table :data="penalty_logs" size="medium" :border="false">
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <div class="form-inline expand-logs-section">
-                <div
-                  v-if="
-                    props.row.parameter && props.row.parameter !== 'REASSIGNED'
-                  "
-                  class="form-group col-md-3 expandable-header"
-                >
-                  <label class="expandable-data">
-                    {{ penalizeLabel(props.row.parameter) }}</label
-                  >
-                  {{
-                    reassignData(
-                      props.row.parameter,
-                      props.row.parameter_comp,
-                      props.row.parameter_data,
-                    )
-                  }}
-                </div>
-                <div
-                  v-if="props.row.message"
-                  class="form-group col-md-3 expandable-header"
-                >
-                  <label class="expandable-data">
-                    {{ mapActionsId(props.row.action_id) }} message</label
-                  >
-                  {{ props.row.message }}
-                </div>
-                <div
-                  v-if="props.row.parameter === 'REASSIGNED'"
-                  class="form-group col-md-3 expandable-header"
-                >
-                  <label class="expandable-data">
-                    {{ actionType(props.row.action_id) }}
-                  </label>
-                  {{ mapActionsId(props.row.action_id) }}
-                  {{ actionPenalty(props.row) }}
-                </div>
-
-                <div
-                  v-if="props.row.from_date"
-                  class="form-group col-md-3 expandable-header"
-                >
-                  <label class="expandable-data"> From</label>
-                  {{ getFormattedDate(props.row.from_date, 'DD/MM/YYYY ') }}
-                </div>
-                <div
-                  v-if="props.row.to_date"
-                  class="form-group col-md-3 expandable-header"
-                >
-                  <label class="expandable-data"> To</label>
-                  {{ getFormattedDate(props.row.to_date, 'DD/MM/YYYY ') }}
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="Country" prop="country">
-            <template slot-scope="scope">
-              {{ fetchCountry(penalty_logs[scope.$index]['country']) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Vendor type" prop="vendor_type">
-            <template slot-scope="scope">
-              {{ vendor(penalty_logs[scope.$index]['vendor_type']) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Penalizing parameter"
-            width="180"
-            prop="parameter"
+        <el-tabs v-model="activeTab">
+          <el-tab-pane
+            label="Penalizing Actions Data"
+            name="penalizingActionsData"
           >
-            <template slot-scope="scope">
-              <span
-                v-if="penalty_logs[scope.$index]['parameter'] !== 'REASSIGNED'"
-              >
-                {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
-              </span>
-              <span v-else>
-                {{
-                  reassignData(
-                    penalty_logs[scope.$index]['parameter'],
-                    penalty_logs[scope.$index]['parameter_comp'],
-                    penalty_logs[scope.$index]['parameter_data'],
-                  )
-                }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="Action" width="250" prop="block_hours">
-            <template slot-scope="scope">
-              {{ mapActionsId(penalty_logs[scope.$index]['action_id']) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Date Added" prop="updated_at">
-            <template slot-scope="scope">
-              {{
-                getFormattedDate(
-                  penalty_logs[scope.$index]['updated_at'],
-                  'DD/MM/YYYY ',
-                )
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Status" prop="status">
-            <template slot-scope="scope">
-              {{ activeStatus(penalty_logs[scope.$index]['status']) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Actions"
-            prop="status"
-            class="data"
-            width="200"
+            <penalizing-data-table :penalty-logs="penalty_logs" />
+          </el-tab-pane>
+          <el-tab-pane
+            label="Non-penalizing Actions Data"
+            name="nonPenalizingActionsData"
           >
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                :class="
-                  penalty_logs[scope.$index]['status'] === 1
-                    ? 'action-button--danger'
-                    : 'action-button--active'
-                "
-                @click="handleAction(penalty_logs[scope.$index])"
-              >
-                {{ actionStatus(penalty_logs[scope.$index]['status']) }}
-              </el-button>
-              <el-button
-                v-if="penalty_logs[scope.$index]['status'] === 0"
-                size="mini"
-                class="action-button--archive"
-                @click="handleArchive(penalty_logs[scope.$index])"
-              >
-                Archive
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            Config
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </div>
   </div>
@@ -374,15 +249,17 @@ import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import moment from 'moment';
 import Loading from './LoadingComponent.vue';
 import PartnerAction from '@/modules/rewards/_components/ReassignOrderInputs/PartnerActionInput';
+import PenalizingDataTable from '@/modules/rewards/_components/PenalizingDataTables/PenalizingDataTable';
 
 Vue.component('calendar', Calendar);
 Vue.component('date-picker', DatePicker);
 
 export default {
   name: 'PenaltiesComponent',
-  components: { PartnerAction, Loading },
+  components: { PartnerAction, PenalizingDataTable, Loading },
   data() {
     return {
+      activeTab: 'penalizingActionsData',
       submitted: false,
       loading_penalties: true,
       submit_status: false,
@@ -425,34 +302,6 @@ export default {
       customer_actions_inputs: [],
       reassignment_reason_penalize: '',
       reasons_data: [],
-      all_reasons_data: [],
-      map_actions_data: [
-        {
-          id: 1,
-          name: 'Block',
-          display_name: 'Block from dispatch',
-        },
-        {
-          id: 2,
-          name: 'Penalty_Fee',
-          display_name: 'Charge a penalty fee',
-        },
-        {
-          id: 3,
-          name: 'Reallocation',
-          display_name: 'Allow partner to reallocate',
-        },
-        {
-          id: 4,
-          name: 'Reschedule',
-          display_name: 'Allow customer to reschedule order',
-        },
-        {
-          id: 5,
-          name: 'Notification',
-          display_name: 'Trigger notification alert',
-        },
-      ],
     };
   },
   validations: {
@@ -493,18 +342,11 @@ export default {
       update_reward: 'update_reward',
       create_reward: 'create_reward',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
-      fetch_all_reallocation_reason: 'fetch_all_reallocation_reason',
     }),
     initiateData() {
       this.clearData();
       this.fetchReassignmentReasons();
-      this.fetchAllReassignmentReasons();
-      this.fetchVendorTypes();
       this.requestRewards();
-    },
-    async fetchAllReassignmentReasons() {
-      const results = await this.fetch_all_reallocation_reason();
-      this.all_reasons_data = results.data;
     },
     async fetchReassignmentReasons() {
       await this.fetch_set_reallocation_reason();
@@ -584,59 +426,10 @@ export default {
       this.$store.commit('setSelectedCountryCode', null);
       this.$store.commit('setSelectedVendorType', null);
     },
-    actionType(actionId) {
-      if (actionId <= 3) {
-        return 'Partner action';
-      } else if (actionId === 4) {
-        return 'Customer action';
-      } else if (actionId === 5) {
-        return 'Partner action / Customer action';
-      }
-    },
-    actionPenalty(action) {
-      if (action.action_id === 1) {
-        return `for ${action.block_hours} hours`;
-      } else if (action.action_id === 2) {
-        const currency = action.currency === null ? '' : action.currency;
-        return `of ${currency} ${action.penalty_fee}`;
-      } else {
-        return '';
-      }
-    },
-    mapActionsId(actionId) {
-      if (!actionId) return '';
-      const actionInfo = this.map_actions_data.filter(
-        action => action.id === actionId,
-      );
-      return actionInfo[0].display_name;
-    },
     async requestRewards() {
       const arr = await this.request_penalties();
       this.penalty_logs = arr.filter(obj => obj.status !== 2);
       this.loading_penalties = false;
-    },
-    async fetchVendorTypes() {
-      const notification = [];
-      let actionClass = '';
-      const payload = {
-        app: 'VENDORS',
-        endpoint: 'types',
-        apiKey: false,
-        params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
-        },
-      };
-      try {
-        const data = await this.request_vendor_types(payload);
-        this.vendor_type = data.vendor_types;
-        return data.vendor_types;
-      } catch (error) {
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
-      }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     checkSubmitStatus() {
       return this.submit_state;
@@ -809,125 +602,8 @@ export default {
       }
       return name;
     },
-    penalizingParams(id) {
-      let name = '';
-      if (Object.keys(this.penalizing_data).length > 0) {
-        const data = this.penalizing_data.find(
-          location => location.code === id,
-        );
-        name = data.name;
-      }
-      return name;
-    },
-    fetchCountry(id) {
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
-    },
-    activeStatus(state) {
-      let status = 'Deactivated';
-      if (state === 1) {
-        status = 'Active';
-      }
-      return status;
-    },
-    actionStatus(state) {
-      let status = 'Activate';
-      if (state === 1) {
-        status = 'Deactivate';
-      }
-      return status;
-    },
     formatAmount(currency, amount) {
       return `${currency} ${amount}`;
-    },
-    async handleAction(row) {
-      let data = {};
-      data = row;
-      if (row.status === 1) {
-        data.status = 0;
-        data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
-      } else {
-        data.status = 1;
-        data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
-      }
-
-      const payload = {
-        app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
-        apiKey: false,
-        params: data,
-      };
-
-      try {
-        const resp = await this.update_reward(payload);
-        this.loading_penalties = true;
-        this.initiateData();
-      } catch (error) {
-        this.loading_penalties = true;
-        this.initiateData();
-        this.response_status = 'error';
-        this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
-      }
-    },
-    reassignData(param, comparator, value) {
-      let resp = '';
-      if (Object.keys(this.comparator).length > 0) {
-        if (param === 'REASSIGNED') {
-          const response = [];
-          const arr = JSON.parse(value);
-          for (let i = 0; i < arr.length; i++) {
-            const reallocationData = this.all_reasons_data.find(
-              location => location.reallocation_id === arr[i],
-            );
-            if (reallocationData === undefined) return 'Not found!';
-            response.push(reallocationData.description);
-            resp = response.toString();
-          }
-        } else {
-          const data = this.comparator.find(
-            location => location.code === comparator,
-          );
-          resp = `${data.name} ${value} orders`;
-        }
-      }
-      return resp;
-    },
-    penalizeLabel(val) {
-      let resp = 'Orders to penalize for be';
-      if (val === 'REASSIGNED') {
-        resp = 'Reassign reasons to penalize';
-      }
-      return resp;
-    },
-    async handleArchive(row) {
-      let data = {};
-      data = row;
-
-      data.status = 2;
-      data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-      data.to_date = moment(row.to_date).format('YYYY-MM-DD');
-
-      const payload = {
-        app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
-        apiKey: false,
-        params: data,
-      };
-
-      try {
-        const resp = await this.update_reward(payload);
-        this.loading_penalties = true;
-        this.initiateData();
-      } catch (error) {
-        this.loading_penalties = true;
-        this.initiateData();
-        this.response_status = 'error';
-        this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
-      }
     },
     orderValue() {
       return this.comparator.filter(i =>
@@ -1097,35 +773,5 @@ export default {
 }
 .message-input {
   margin-left: -5%;
-}
-.action-button--danger {
-  background-color: #ff4949;
-  border-color: #ff4949;
-  color: #fff;
-}
-.action-button--active {
-  background-color: #13ce66;
-  border-color: #13ce66;
-  color: #fff;
-}
-.expandable-data {
-  width: 100%;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 19px;
-  color: #000000;
-  margin-bottom: 3% !important;
-}
-.expand-logs-section {
-  width: 100% !important;
-}
-.expandable-header {
-  margin-bottom: 15px;
-  width: 20%;
-}
-.action-button--archive {
-  background-color: #3c8dbc;
-  border-color: #3c8dbc;
-  color: #fff;
 }
 </style>
