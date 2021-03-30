@@ -53,6 +53,7 @@ module.exports = {
     'no-param-reassign': 'off',
     'import/no-unresolved': 'off',
     'vue/html-quotes': 'off',
+    'vue/no-multiple-template-root':'off',
     'no-plusplus': 'off',
     'vue/no-template-shadow': 'off',
     'vue/no-v-html': 'off',  

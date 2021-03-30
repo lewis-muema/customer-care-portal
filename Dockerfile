@@ -1,4 +1,4 @@
-FROM node:10.15
+FROM sendy-docker-local.jfrog.io/node:10.19
 RUN useradd -u 3000 sendy
 
 RUN mkdir /cc && \

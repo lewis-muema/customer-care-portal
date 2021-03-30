@@ -1,0 +1,146 @@
+.coupon-display {
+  background: #fafdff;
+  border-radius: 8px;
+  padding: 32px 24px;
+}
+
+.coupon-holder {
+  padding: 24px;
+  background: #f2f6fc;
+}
+.coupon-table > tbody > tr > td {
+  padding: 16px;
+}
+.status-chip {
+  padding: 6px 12px;
+  border-radius: 116px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fafdff;
+}
+.status-active {
+  background: #aee0a8;
+}
+.status-inactive {
+  background: #fcc6c8;
+}
+.status-scheduled {
+  background: #c8e8fc;
+}
+.vl {
+  border-left: 1px solid #dcdfe6;
+  height: 500px;
+  margin: 0 10px;
+}
+.text-link {
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+}
+.text-update {
+  color: #527cbd;
+}
+.text-deactivate {
+  color: #d2212a;
+}
+.disabledLink {
+  opacity: 0.3;
+  cursor: default;
+}
+.modal-dialog {
+    max-width: 500px !important;
+  }
+  .modal-content,
+  .modal-body {
+    background: #ffffff;
+    min-height: auto;
+  }
+  .modal-header {
+    border-bottom: none;
+    padding: 1rem;
+  }
+  .modal-title {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 140%;
+    letter-spacing: 0.02em;
+    color: #606266;
+  }
+  .invoice_valid {
+    font-size: 10px !important;
+    color: #dc3545;
+  }
+  .is-invalid > .config-input {
+    border: 2px solid red;
+  }
+  .is-invalid input {
+    border: 2px solid red;
+  }
+  .radio-holder {
+    display: inline-flex;
+  }
+  .coupon-radio {
+    width: 30%;
+    font-size: 4px;
+  }
+  .btn-upload {
+    line-height: 16px;
+    text-decoration-line: underline;
+    color: #c0c4cc;
+    margin: 0 26px 1em;
+    cursor: pointer;
+  }
+  .upload-icon {
+    color: #7ba3d7;
+    font-size: 23px;
+    margin-left: 5px;
+  }
+  .nav-link.active {
+    background: #dc3545;
+  }
+  .coupon-link {
+    margin-left: 1em;
+    background: #f2f6fc;
+    border-radius: 60px;
+    height: 8px;
+    padding: 3px;
+    cursor: default;
+  }
+  .coupon-link.active {
+    border-top-color: #7ba3d7;
+    border-left-color: #7ba3d7;
+    border-left-color: #7ba3d7;
+    border-right-color: #7ba3d7;
+    background-color: #7ba3d7;
+  }
+  .new-btn {
+    float: none !important;
+    margin: auto !important;
+  }
+  .coupon-link:hover {
+    background-color: #7ba3d7 !important;
+  }
+  textarea.is-invalid {
+    border: 1px solid red;
+  }
+  .coupon-reason {
+    padding: 8px 16px;
+    width: 360px;
+    border: 1px solid #c0c4cc;
+    border-radius: 8px;
+  }
+  .cancel-button {
+    width: auto;
+    margin-right: 16px;
+  }
+  .submit-btn {
+    background: #527cbd;
+    border-radius: 8px;
+    height: 40px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }

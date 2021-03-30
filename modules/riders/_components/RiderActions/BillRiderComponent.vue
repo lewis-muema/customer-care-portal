@@ -83,12 +83,12 @@
           Reference No is required
         </div>
       </div>
-      <div class="form-group col-md-12 bill-check">
+      <div class="form-group col-md-12 bill-check hide">
         <input
           value="1"
           id="checkbox>"
           type="checkbox"
-          class=""
+          :class="`${hide}`"
           v-model="ischecked"
         />
         <label for="" class="charge_commission--label">Credit Client</label>
@@ -142,16 +142,12 @@ export default {
       peer: null,
       hide: '',
       billingTypes: [
-        { value: 1, name: 'Extra Miles', transactionID: 1 },
-        { value: 2, name: 'Waiting Time', transactionID: 1 },
-        { value: 4, name: 'Return Trip', transactionID: 1 },
-        { value: 5, name: 'Extra Stops', transactionID: 1 },
-        { value: 8, name: 'Cancellation Fee', transactionID: 1 },
-        { value: 9, name: 'Offloading Charges', transactionID: 1 },
-        { value: 10, name: 'Loaders', transactionID: 1 },
-        { value: 11, name: 'Top Up', transactionID: 1 },
-        { value: 12, name: 'Cash Order', transactionID: 1 },
-        { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
+        { value: 26, name: 'Rider Penalty', transactionID: 1 },
+        { value: 27, name: 'Loss of package', transactionID: 1 },
+        { value: 28, name: 'Damage of items', transactionID: 1 },
+        { value: 29, name: 'Proximity billings', transactionID: 1 },
+        { value: 30, name: 'Sky Garden payment', transactionID: 1 },
+        { value: 31, name: 'Dedicated accounts deduction', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
       submit_status: false,

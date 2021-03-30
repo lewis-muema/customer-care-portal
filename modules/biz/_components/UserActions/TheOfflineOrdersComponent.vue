@@ -459,6 +459,9 @@ export default {
     actionUser() {
       return this.session.payload.data.name;
     },
+    vat_exempt() {
+      return this.user.cop_details.vat_exempt;
+    },
   },
   watch: {
     elements: {
@@ -540,7 +543,7 @@ export default {
           this.baseAmount = this.billingAmount;
         }
 
-        const vat_rate = this.vat_rate;
+        const vat_rate = this.vat_exempt ? 0 : this.vat_rate;
 
         this.vatAmount = vat_rate * this.billingAmount;
         this.totalAmount = (1 + vat_rate) * this.billingAmount;
@@ -678,6 +681,7 @@ export default {
                 currency: this.currency,
                 business_unit: parseInt(this.businessUnit, 10),
                 pay_from_sendy_entity: this.isChargeEntity,
+                vat_exempt: this.vat_exempt ? 1 : 0,
               },
               request_id: '1611',
               action_user: this.actionUser,

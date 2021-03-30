@@ -1,24 +1,27 @@
 <template>
-  <td class="search-td">
+  <div class="">
     <div class="Typeahead">
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
-      <template v-else>
-        <i class="fa fa-search" @click="byPassSolrSearch()"></i>
-      </template>
+      <div class="form-group has-search">
+        <span class="fa fa-search form-control-feedback "></span>
+        <div class="row ml-1">
+          <input
+            type="text"
+            class="form-control Typeahead__input"
+            placeholder="Search Order No/ Customer name/ User Phone"
+            autocomplete="off"
+            v-model="query"
+            @keydown.down="down"
+            @keydown.up="up"
+            @keydown.enter="hit"
+            @keydown.esc="reset"
+            @input="update"
+            @click="clear"
+          />
+          <i class="fa fa-search" @click="byPassSolrSearch()"></i>
+        </div>
+      </div>
 
-      <input
-        type="text"
-        class="Typeahead__input"
-        placeholder="Search for Order No/ Customer name/ User Phone"
-        autocomplete="off"
-        v-model="query"
-        @keydown.down="down"
-        @keydown.up="up"
-        @keydown.enter="hit"
-        @keydown.esc="reset"
-        @input="update"
-        @click="clear"
-      />
       <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
         <li
           v-for="(item, $item) in items"
@@ -43,7 +46,7 @@
         </li>
       </ul>
     </div>
-  </td>
+  </div>
 </template>
 
 <script>
@@ -123,21 +126,33 @@ export default {
 .Typeahead {
   position: relative;
 }
+.Typeahead .pass-solr {
+  margin-top: -3rem;
+  padding-left: 2.375rem;
+  padding-bottom: 0px;
+}
+.has-search .form-control {
+  padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+  padding-top: 15px;
+}
 .Typeahead__input {
-  width: 90%;
-  font-size: 14px;
-  color: #2c3e50;
-  line-height: 1.42857143;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
-  -webkit-transition: border-color ease-in-out 0.15s,
-    -webkit-box-shadow ease-in-out 0.15s;
-  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-  font-weight: 300;
-  padding: 12px 26px;
-  border: none;
-  border-radius: 22px;
-  letter-spacing: 1px;
+  background: #ffffff;
+  border: 1px solid #c0c4cc;
   box-sizing: border-box;
+  border-radius: 8px;
+  width: 85%;
+  height: 40px;
+  font-size: 14px;
 }
 .Typeahead__input:focus {
   border-color: 2px solid #0097cf;
