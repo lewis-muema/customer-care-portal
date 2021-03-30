@@ -1,4 +1,4 @@
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
 
 export default {
@@ -51,9 +51,17 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters(['getSession']),
+  },
   created() {
     this.fetchVendorTypes();
     this.fetchAllReassignmentReasons();
+  },
+  watch: {
+    getSession(session) {
+      return session;
+    },
   },
   methods: {
     ...mapActions({
@@ -203,6 +211,7 @@ export default {
 
       if (!row.from_date) row.from_date = Date.now();
       if (!row.to_date) row.to_date = Date.now();
+      row.admin_id = this.getSession.payload.data.admin_id;
 
       data = row;
 
@@ -249,6 +258,7 @@ export default {
 
       if (!row.from_date) row.from_date = Date.now();
       if (!row.to_date) row.to_date = Date.now();
+      row.admin_id = this.getSession.payload.data.admin_id;
 
       data = row;
       data.status = 2;
