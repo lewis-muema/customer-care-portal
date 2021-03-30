@@ -1179,6 +1179,111 @@ export default {
     }
   },
 
+  async add_reallocation_reason({ dispatch, commit }, payload) {
+    try {
+      return await dispatch('requestAxiosPost', payload, { root: true });
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async update_status_state({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const { id, status } = payload;
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}vendor-type-reallocation-reasons/${id}`;
+    try {
+      const response = await axios.put(url, { status }, param);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
+  async fetch_set_reallocation_reason({ state, dispatch, commit }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const vendor_type = state.selectedVendorType;
+    const country = state.selectedCountryCode;
+
+    const url =
+      country === null
+        ? `${config.ADONIS_API}vendor-type-reallocation-reasons`
+        : `${config.ADONIS_API}vendor-type-reallocation-reasons?vendor_type=${vendor_type}&country=${country}`;
+    try {
+      const response = await axios.get(url, headers);
+      commit('setReallocationReasons', response.data.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
+  async fetch_all_reallocation_reason({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vendor-type-reallocation-reasons`;
+    try {
+      const response = await axios.get(url, headers);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
+  async fetch_non_penalizing_data({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}order-reallocation-actions`;
+    try {
+      const response = await axios.get(url, headers);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 
