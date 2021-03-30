@@ -68,7 +68,7 @@
               ? 'action-button--danger'
               : 'action-button--active'
           "
-          @click="handleAction(penaltiesData[scope.$index])"
+          @click="handleAction(penaltiesData[scope.$index], 'nonpenalizing')"
         >
           {{ actionStatus(penaltiesData[scope.$index]['status']) }}
         </el-button>
@@ -76,7 +76,7 @@
           v-if="penaltiesData[scope.$index]['status'] === 0"
           size="mini"
           class="action-button--archive"
-          @click="handleArchive(penaltiesData[scope.$index])"
+          @click="handleArchive(penaltiesData[scope.$index], 'nonpenalizing')"
         >
           Archive
         </el-button>

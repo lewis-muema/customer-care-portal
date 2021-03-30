@@ -198,7 +198,7 @@ export default {
       }
       return status;
     },
-    async handleAction(row) {
+    async handleAction(row, type) {
       let data = {};
 
       if (!row.from_date) row.from_date = Date.now();
@@ -216,9 +216,14 @@ export default {
         data.to_date = moment(row.to_date).format('YYYY-MM-DD');
       }
 
+      const url =
+        type === 'penalizing'
+          ? `/penalties/${row.id}`
+          : `/order-reallocation-actions/${row.id}`;
+
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
+        endpoint: url,
         apiKey: false,
         params: data,
       };
@@ -239,7 +244,7 @@ export default {
         this.initiateData(initData);
       }
     },
-    async handleArchive(row) {
+    async handleArchive(row, type) {
       let data = {};
 
       if (!row.from_date) row.from_date = Date.now();
@@ -250,9 +255,14 @@ export default {
       data.from_date = moment(row.from_date).format('YYYY-MM-DD');
       data.to_date = moment(row.to_date).format('YYYY-MM-DD');
 
+      const url =
+        type === 'penalizing'
+          ? `/penalties/${row.id}`
+          : `/order-reallocation-actions/${row.id}`;
+
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
+        endpoint: url,
         apiKey: false,
         params: data,
       };
