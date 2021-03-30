@@ -57,6 +57,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      update_reward: 'update_reward',
       request_vendor_types: 'request_vendor_types',
       fetch_all_reallocation_reason: 'fetch_all_reallocation_reason',
     }),
@@ -200,6 +201,7 @@ export default {
     async handleAction(row) {
       let data = {};
       data = row;
+
       if (row.status === 1) {
         data.status = 0;
         data.from_date = moment(row.from_date).format('YYYY-MM-DD');
@@ -212,13 +214,13 @@ export default {
 
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
+        endpoint: `penalties/${row.id}`,
         apiKey: false,
         params: data,
       };
 
       try {
-        const resp = await this.update_reward(payload);
+        await this.update_reward(payload);
         this.loading_penalties = true;
         this.initiateData();
       } catch (error) {
@@ -239,13 +241,13 @@ export default {
 
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
+        endpoint: `penalties/${row.id}`,
         apiKey: false,
         params: data,
       };
 
       try {
-        const resp = await this.update_reward(payload);
+        await this.update_reward(payload);
         this.loading_penalties = true;
         this.initiateData();
       } catch (error) {
