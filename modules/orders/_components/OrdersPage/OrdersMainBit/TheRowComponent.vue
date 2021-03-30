@@ -40,7 +40,7 @@
               :id="`order_indicator_${order.order_no}`"
               :class="`label ${order.order_status.toLowerCase()}_ind`"
             >
-              {{ order.order_status }}
+              {{ orderStatus(order) }}
             </span>
           </span>
         </td>
@@ -64,7 +64,7 @@
           </span>
         </td>
         <td>
-          {{ order.rider_name }}
+          {{ orderRider(order) }}
           <span style="float:right;">
             <span>
               {{ vendorLabels[order.vendor_type_id]
@@ -89,12 +89,17 @@
           >
           </span>
         </td>
-        <td v-html="smartify_display(order.from_name, 30)"></td>
+        <td
+          v-html="smartify_display(order.from_name.replace(/,\s*$/, ''), 30)"
+        ></td>
         <td
           v-if="freightLabel(order) === '-C'"
           v-html="smartify_display(container_destination(order), 30)"
         ></td>
-        <td v-else v-html="smartify_display(order.to_name, 30)"></td>
+        <td
+          v-else
+          v-html="smartify_display(order.to_name.replace(/,\s*$/, ''), 30)"
+        ></td>
         <td>
           {{
             displayAmount(
@@ -107,7 +112,17 @@
             )
           }}
         </td>
-        <td>
+        <td v-if="order.vendor_type_id === 26">
+          N/A
+          <span
+            data-toggle="tooltip"
+            title="No rider amount to be displayed for intercounty orders"
+            class="badge bg-info"
+          >
+            <i class="fa fa-info"></i>
+          </span>
+        </td>
+        <td v-else>
           {{
             displayAmount(
               order.order_currency,
@@ -213,6 +228,7 @@ export default {
       msg: '',
       returned: false,
       companyUnits: [],
+      copNames: null,
     };
   },
   computed: {
@@ -220,6 +236,7 @@ export default {
       'getOrders',
       'getOrderStatuses',
       'getSelectedBusinessUnits',
+      'getSelectedCopNames',
       'getSelectedCities',
       'getReorganizeStatus',
       'getOrderCount',
@@ -265,12 +282,13 @@ export default {
       const business_unit = this.businessUnits;
       const status = this.statusArray;
       const country_code = this.countryCode;
-
+      const cop_name = this.copNames;
       const params = {
         business_unit,
         status,
         city,
         country_code,
+        cop_name,
       };
       for (const param in params) {
         if (params[param] === null || params[param] === undefined) {
@@ -335,6 +353,20 @@ export default {
       }
       return (this.businessUnits = units);
     },
+    getSelectedCopNames(copNames) {
+      this.orders = [];
+      this.copNames = copNames;
+      this.ordersExist = false;
+      this.msg = 'There are no orders fitting these criteria';
+      if (!this.isEmpty(copNames)) {
+        if (this.copNames.includes('all')) {
+          this.copNames = null;
+        }
+        this.sendRequest(this.params);
+        this.ordersExist = true;
+        this.msg = '';
+      }
+    },
   },
   created() {
     if (process.client) {
@@ -372,6 +404,34 @@ export default {
       ) {
         return '-C';
       }
+    },
+    orderStatus(order) {
+      let resp = order.order_status;
+      if (order.vendor_type_id === 26) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            order,
+            'inter_county_order_details',
+          )
+        ) {
+          resp = order.inter_county_order_details.status;
+        }
+      }
+      return resp;
+    },
+    orderRider(order) {
+      let resp = order.rider_name;
+      if (order.vendor_type_id === 26) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            order,
+            'inter_county_order_details',
+          )
+        ) {
+          resp = 'Intercounty Order';
+        }
+      }
+      return resp;
     },
     container_destination(order) {
       if (Object.prototype.hasOwnProperty.call(order, 'path')) {
@@ -428,7 +488,13 @@ export default {
     },
 
     // eslint-disable-next-line prettier/prettier
-    determineAmounts(amount, vendor_type_id, fixed_cost,  customer_min_amount,confirm_status,  ) {
+    determineAmounts(
+      amount,
+      vendor_type_id,
+      fixed_cost,
+      customer_min_amount,
+      confirm_status,
+    ) {
       if (vendor_type_id === 20 && fixed_cost !== true) {
         if (confirm_status < 1) {
           amount = customer_min_amount;
@@ -437,9 +503,22 @@ export default {
       return amount;
     },
     // eslint-disable-next-line prettier/prettier
-    displayAmount(currency, amount, vendor_type_id,fixed_cost, customer_min_amount,confirm_status,) {
+    displayAmount(
+      currency,
+      amount,
+      vendor_type_id,
+      fixed_cost,
+      customer_min_amount,
+      confirm_status,
+    ) {
       // eslint-disable-next-line prettier/prettier
-      const computedAmount = this.determineAmounts(amount, vendor_type_id, fixed_cost, customer_min_amount, confirm_status,);
+      const computedAmount = this.determineAmounts(
+        amount,
+        vendor_type_id,
+        fixed_cost,
+        customer_min_amount,
+        confirm_status,
+      );
       currency = currency || '';
       amount = this.numberWithCommas(computedAmount);
       let amountString = `${currency} ${amount}`;

@@ -63,7 +63,7 @@
           </a>
         </li>
         <li
-          class="nav-item custom-padding"
+          class="nav-item custom-padding hide"
           v-if="permissions.approve_custom_invoice_3"
         >
           <a
@@ -78,7 +78,7 @@
           </a>
         </li>
         <li
-          class="nav-item custom-padding"
+          class="nav-item custom-padding hide"
           v-if="permissions.approve_custom_invoice_4"
         >
           <a
@@ -186,6 +186,18 @@
           >
             <span class="fa fa-fw fa-clipboard"></span>
             Reversals & Credit Note
+          </a>
+        </li>
+        <li v-if="showFreightApproval" class="nav-item invoice-item">
+          <a
+            class="nav-link action-list invoice-action"
+            data-toggle="tab"
+            aria-expanded="false"
+            @click="viewTab('freight_status', copID)"
+            :id="`freight_status_${copID}`"
+          >
+            <span class="fa fa-fw fa-toggle-off"></span>
+            Freight Status
           </a>
         </li>
       </ul>
@@ -354,6 +366,14 @@
               :id="copID"
             />
           </div>
+          <div
+            :class="`tab-pane fade ${show} ${active}`"
+            :id="`freight_status_${copID}`"
+            role="tabpanel"
+            v-if="showTab === `freight_status_${copID}`"
+          >
+            <TheFreightStatusComponent :user="user" />
+          </div>
         </div>
       </div>
     </div>
@@ -386,6 +406,8 @@ export default {
     TheFinancingComponent: () => import('./UserActions/AuxilliaryServices'),
     TheReveralsComponent: () =>
       import('../../users/_components/Reversals/TheReveralsComponent'),
+    TheFreightStatusComponent: () =>
+      import('./UserActions/TheFreightStatusComponent'),
   },
   mixins: [PricingConfigsMxn],
   props: {
@@ -408,6 +430,7 @@ export default {
       distancePricingTableData: [],
       locationPricingTableData: [],
       activeStatus: false,
+      freight_status: 0,
     };
   },
   computed: {
@@ -439,6 +462,15 @@ export default {
       };
       return data;
     },
+
+    showFreightApproval() {
+      let resp = false;
+
+      if (this.permissions.approve_freight_biz && this.freight_status >= 1) {
+        resp = true;
+      }
+      return resp;
+    },
   },
   watch: {
     getCopTypes(types) {
@@ -452,13 +484,14 @@ export default {
     this.copID = this.user.user_details.cop_id;
     await this.setCopTypes();
     await this.setAdmins();
+    this.checkFreightStatus();
   },
   methods: {
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
     }),
-    ...mapActions(['setCopTypes', 'setAdmins']),
+    ...mapActions(['setCopTypes', 'setAdmins', 'request_user_freight_status']),
 
     clearErrorMessages() {
       const notification = [];
@@ -485,6 +518,26 @@ export default {
         }
       }
       return approve_billing;
+    },
+    async checkFreightStatus() {
+      const notification = [];
+      let actionClass = '';
+
+      const payload = {
+        val: `copId=${this.user.user_details.cop_id}`,
+      };
+
+      try {
+        const data = await this.request_user_freight_status(payload);
+        this.freight_status = data.freight_status;
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };

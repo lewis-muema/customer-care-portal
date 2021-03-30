@@ -3,6 +3,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import Cookie from 'js-cookie';
+import qs from 'qs';
 
 export default {
   initAuth({ state, commit }, req) {
@@ -237,6 +238,7 @@ export default {
       const err = await dispatch('handleHelpScoutErrors', payload, {
         root: true,
       });
+      return res;
     } catch (error) {
       return error;
     }
@@ -261,7 +263,8 @@ export default {
     payload.authorization = true;
     payload.token = token;
     try {
-      await dispatch('ticket_action', payload);
+      const res = await dispatch('ticket_action', payload);
+      return res;
     } catch (error) {
       return error;
     }
@@ -391,6 +394,26 @@ export default {
         }
 
         break;
+      case 403:
+        try {
+          // eslint-disable-next-line no-case-declarations
+          const token = await dispatch('request_helpscout_token');
+          commit('setHelpScoutToken', token);
+
+          await localStorage.setItem(
+            'helpscoutAccessToken',
+            token.access_token,
+          );
+          await localStorage.setItem(
+            'helpscoutExpiryTime',
+            token.expiryDatetime,
+          );
+          await dispatch('getHelpscoutUser', payload);
+        } catch (e) {
+          return e;
+        }
+        break;
+
       default:
     }
   },
@@ -920,8 +943,18 @@ export default {
     }
   },
   async request_vendor_types({ dispatch }, payload) {
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      const res = await dispatch('requestAxiosPost', payload, param, {
+        root: true,
+      });
       return res.data;
     } catch (error) {
       return error.response;
@@ -1178,6 +1211,28 @@ export default {
       return error.response;
     }
   },
+  async create_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async update_reward({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
 
   async add_reallocation_reason({ dispatch, commit }, payload) {
     try {
@@ -1389,29 +1444,6 @@ export default {
       return error.response;
     }
   },
-  async create_reward({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-  async update_reward({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPatch', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-
   async request_refund_data({ dispatch }, payload) {
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
@@ -1480,6 +1512,527 @@ export default {
       }
 
       return err;
+    }
+  },
+  async request_intercounty_destination_configs({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/destinations`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_intercounty_pickup_configs({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/pickups`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_pickup_cities({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/cities`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async create_pickup_config({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response.data;
+    }
+  },
+  async request_route_data({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/routes`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async remove_intercounty_record({ state, dispatch }, payload) {
+    const config = state.config;
+    const userData = state.userData;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+      data: {
+        _user_email: userData.payload.data.email,
+        _user_id: parseInt(userData.payload.data.admin_id, 10),
+        action_user: userData.payload.data.name,
+      },
+    };
+
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/${payload.route}/${payload.id}`;
+    try {
+      const response = await axios.delete(url, values);
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  async update_intercounty_record({ state, dispatch }, payload) {
+    const config = state.config;
+    const userData = state.userData;
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    payload.params._user_email = userData.payload.data.email;
+    payload.params._user_id = parseInt(userData.payload.data.admin_id, 10);
+    payload.params.action_user = userData.payload.data.name;
+
+    const values = JSON.stringify(payload.params);
+
+    const url = `${config.PRICING_SERVICE}pricing/inter_county_config/${payload.route}/${payload.id}`;
+    try {
+      const response = await axios.put(url, values, param);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async update_intercounty_delivery_state({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const values = JSON.stringify(payload.params);
+
+    const url = `${config.ORDERS_APP}v1/inter_county/${payload.route}`;
+    try {
+      const response = await axios.post(url, values, param);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  async request_pending_social__media_business({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}social-media-businesses?verified=0`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_approved_social__media_business({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}social-media-businesses?verified=1`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_rejected_social__media_business({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}social-media-businesses?verified=2`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async social_media_biz_approval({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async update_freight_status({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async request_coupons({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.CUSTOMERS_APP}get_all_coupons?country=${payload.country}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_single_coupons({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.CUSTOMERS_APP}get_coupon?id=${payload.id}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async update_freight_status({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async request_operational_alerts({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+      params: payload,
+      paramsSerializer: params => {
+        return qs.stringify(params, { arrayFormat: 'repeat' });
+      },
+    };
+    const url = `${config.STAFF_API}live-ops/orders`;
+
+    try {
+      const response = await axios.get(url, values);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async assignAlert({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+  async getHelpscoutUser({ state, dispatch, commit }, payload) {
+    const url = 'HELPSCOUT_USERS';
+    payload.authorization = true;
+
+    const values = {
+      url,
+      params: payload,
+    };
+    try {
+      const res = await dispatch('request_helpscoute_get', values);
+      payload.error = res.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  },
+  async reAssignTicket({ state, dispatch, commit }, payload) {
+    const url = 'HELPSCOUT_CONVERSATIONS';
+    const values = {
+      url,
+      params: {
+        op: payload.op,
+        path: payload.path,
+        value: payload.value,
+      },
+      conversationID: payload.conversationID,
+    };
+    try {
+      const res = await dispatch('request_helpscoute_patch', values);
+      payload.error = res.status;
+      // eslint-disable-next-line prettier/prettier
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  },
+  async request_helpscoute_get({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+    const authorization = await dispatch('request_helpscout_token');
+    const token = localStorage.getItem('helpscoutAccessToken');
+
+    const customHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    if (authorization) {
+      customHeaders.Authorization = `Bearer ${token}`;
+      delete payload.params.token;
+    }
+    delete payload.params.authorization;
+
+    try {
+      const response = await axios.get(`${url}?email=${payload.params.email}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      payload.error = response.status;
+      const err = await dispatch('handleHelpScoutErrors', payload, {
+        root: true,
+      });
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  async request_helpscoute_patch({ state, commit, dispatch }, payload) {
+    const customConfig = state.config;
+    const url = customConfig[payload.url];
+
+    const authorization = await dispatch('request_helpscout_token');
+    const token = localStorage.getItem('helpscoutAccessToken');
+
+    const customHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    customHeaders.Authorization = `Bearer ${token}`;
+    const config = {
+      headers: customHeaders,
+    };
+
+    const values = JSON.stringify(payload.params);
+
+    try {
+      const response = await axios.patch(
+        `${url}/${payload.conversationID}`,
+        values,
+        config,
+      );
+      return response;
+    } catch (error) {
+      payload.params.error = error.response.status;
+      return error.response;
+    }
+  },
+  async request_alert_types({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+      params: payload,
+    };
+    const url = `${config.STAFF_API}live-ops/alerts/`;
+    try {
+      const response = await axios.get(url, values);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_live_ops_criteria({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+      params: payload,
+    };
+    const url = `${config.STAFF_API}live-ops/criteria/`;
+    try {
+      const response = await axios.get(url, values);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async request_order_alerts({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const values = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.STAFF_API}live-ops/orders/${payload.orderNo}`;
+    try {
+      const response = await axios.get(url, values);
+      return response;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error;
+    }
+  },
+  async request_user_freight_status({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}freight-status?${payload.val}`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
     }
   },
 };

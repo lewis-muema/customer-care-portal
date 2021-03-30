@@ -83,6 +83,25 @@
               <span> Permit Refund </span>
             </a>
           </li>
+          <li class="treeview" v-if="permissions.intercounty_price_config">
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/intercounty"
+              @click="showModal('intercounty', $event)"
+              ><i class="fa fa-cogs"></i>
+              <span> Intercounty Configuration </span>
+            </a>
+          </li>
+          <li class="treeview" v-if="permissions.approve_social_media_biz">
+            >
+            <a
+              class="fancybox fancybox.iframe fancyboxy"
+              href="/socialMediaBusiness"
+              @click="showModal('socialMediaBusiness', $event)"
+              ><i class="fa fa-instagram"></i>
+              <span> Social Media Biz Approval</span>
+            </a>
+          </li>
 
           <li id="offline_2" class="hidden">
             <a href="#"
@@ -95,6 +114,19 @@
               <span> Auxiliary services </span></nuxt-link
             >
           </li>
+          <li class="treeview" v-if="permissions.view_promocodes">
+            <nuxt-link to="/promocodes"
+              ><i class="fa fa-tags text-grey"></i>
+              <span> Promo Codes </span></nuxt-link
+            >
+          </li>
+          <li class="treeview" v-if="permissions.view_live_operations">
+            <nuxt-link to="/liveOperations"
+              ><i class="fa fa-wifi text-grey"></i>
+              <span> Live Operations </span></nuxt-link
+            >
+          </li>
+
           <li id="online_2">
             <a href="#"
               ><i class="fa fa-circle-o text-success"></i>
@@ -109,7 +141,7 @@
   </span>
 </template>
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'TheSidenav',
@@ -128,6 +160,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['getSession']),
+
     photo() {
       const image = this.user.payload.data.pic;
       return `${this.userImage}${image}`;

@@ -156,21 +156,6 @@
         <label>Account Details to Transfer</label>
         <TheSearchUserComponent @userID="searchedUser" :user="userType" />
       </div>
-      <div class="col-md-12 vat-check" v-if="!isReverseTransaction">
-        <div class="form-group col-md-3 bill-check">
-          <input
-            value="1"
-            name="charge_biz_vat"
-            id="charge_biz_vat"
-            type="checkbox"
-            class=""
-            @click="check($event)"
-            v-model="isVAT"
-            checked
-          />
-          <label for="" class="charge_vat--label">Charge VAT</label>
-        </div>
-      </div>
       <div class="form-group  col-md-12 bill-peer">
         <button
           class="btn btn-primary action-button"
@@ -240,10 +225,8 @@ export default {
         { value: 5, name: 'Extra Stops', transactionID: 1 },
         { value: 8, name: 'Cancellation Fee', transactionID: 1 },
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
-        { value: 12, name: 'Cash Order', transactionID: 1 },
         { value: 14, name: 'Customer Coupon', transactionID: 1 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
-        { value: 21, name: 'Deduction', transactionID: 6 },
       ],
       noTransactiodIDTypes: [6, 9, 14],
       display_billing_info: true,
@@ -255,7 +238,6 @@ export default {
         phone_no: '',
         rider_id: 0,
       },
-      isVAT: true,
       submit_status: false,
       businessUnits: [
         { value: 1, name: 'Merchant Business Units - MBU' },
@@ -392,7 +374,6 @@ export default {
           transaction_id: this.transactionID,
           is_peer,
           creditor_id: creditor_details,
-          is_VAT: this.isVAT,
           business_unit: parseInt(this.businessUnit, 10),
         };
 
