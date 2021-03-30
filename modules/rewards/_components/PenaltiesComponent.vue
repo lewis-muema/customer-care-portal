@@ -232,7 +232,7 @@
             label="Non-penalizing Actions Data"
             name="nonPenalizingActionsData"
           >
-            Config
+            <non-penalizing-data-table />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -250,13 +250,19 @@ import moment from 'moment';
 import Loading from './LoadingComponent.vue';
 import PartnerAction from '@/modules/rewards/_components/ReassignOrderInputs/PartnerActionInput';
 import PenalizingDataTable from '@/modules/rewards/_components/PenalizingDataTables/PenalizingDataTable';
+import NonPenalizingDataTable from '@/modules/rewards/_components/PenalizingDataTables/NonPenalizingDataTable';
 
 Vue.component('calendar', Calendar);
 Vue.component('date-picker', DatePicker);
 
 export default {
   name: 'PenaltiesComponent',
-  components: { PartnerAction, PenalizingDataTable, Loading },
+  components: {
+    PartnerAction,
+    PenalizingDataTable,
+    NonPenalizingDataTable,
+    Loading,
+  },
   data() {
     return {
       activeTab: 'penalizingActionsData',
