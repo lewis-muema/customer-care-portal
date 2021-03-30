@@ -1178,28 +1178,6 @@ export default {
       return error.response;
     }
   },
-  async create_reward({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
-  async update_reward({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPatch', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
-    }
-  },
 
   async add_reallocation_reason({ dispatch, commit }, payload) {
     try {
