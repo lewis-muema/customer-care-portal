@@ -558,7 +558,8 @@ export default {
         const data = this.penalizing_data.find(
           location => location.code === id,
         );
-        return data.name;
+        if (!data || !Object.keys(data).length) return 'Not found';
+        return data.name
       }
     },
     fetchCountry(id) {
