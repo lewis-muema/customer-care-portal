@@ -28,7 +28,7 @@
           :options="customerInfo"
           :reduce="name => name.reallocation_id"
           name="reason"
-          abel="description"
+          label="description"
           placeholder="Select reallocation reason .."
           class="form-control proximity-point"
           :id="`reallocate_reason_${orderNo}`"
