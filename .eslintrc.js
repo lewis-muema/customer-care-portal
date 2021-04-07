@@ -9,7 +9,6 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
-    
     'plugin:prettier/recommended',
     '@nuxtjs',
     'prettier',
@@ -56,7 +55,7 @@ module.exports = {
     'vue/no-multiple-template-root':'off',
     'no-plusplus': 'off',
     'vue/no-template-shadow': 'off',
-    'vue/no-v-html': 'off',  
+    'vue/no-v-html': 'off',
     'radix': 'off',
     "prettier/prettier": ["error", { "singleQuote": true }],
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
