@@ -197,6 +197,10 @@
           <td>Carrier type</td>
           <td>{{ display_carrier_type(moreData.carrier_type) }}</td>
         </tr>
+        <tr v-if="!freightOrder">
+          <td>Delivery item</td>
+          <td>{{ display_delivery_item(orderDetails.loader_details) }}</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -278,6 +282,13 @@ export default {
         type = 'Box';
       }
       return type;
+    },
+    display_delivery_item(loaderDetails) {
+      let delivery_item = 'Not set';
+      if (loaderDetails && loaderDetails.delivery_item) {
+        delivery_item = loaderDetails.delivery_item;
+      }
+      return delivery_item;
     },
   },
 };
