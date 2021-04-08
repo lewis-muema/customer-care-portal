@@ -219,10 +219,7 @@
               {{ fetchCountry(warning_logs[scope.$index]['country']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Vendor" prop="vendor_type">
-            <template slot-scope="scope">
-              {{ vendor(warning_logs[scope.$index]['vendor_type']) }}
-            </template>
+          <el-table-column label="Vendor" prop="vendor_type_name">
           </el-table-column>
           <el-table-column
             label="Warning parameter"
@@ -556,14 +553,14 @@ export default {
       return name;
     },
     penalizingParams(id) {
-      let name = '';
+      if (!id) return 'Not found';
       if (Object.keys(this.penalizing_data).length > 0) {
         const data = this.penalizing_data.find(
           location => location.code === id,
         );
-        name = data.name;
+        if (!data || !Object.keys(data).length) return 'Not found';
+        return data.name
       }
-      return name;
     },
     fetchCountry(id) {
       const data = this.country_code.find(location => location.code === id);

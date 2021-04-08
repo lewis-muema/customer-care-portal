@@ -157,14 +157,14 @@ export default {
       return name;
     },
     penalizingParams(code) {
-      let name = '';
+      if (!code) return 'Not found';
       if (Object.keys(this.penalizing_data).length > 0) {
         const data = this.penalizing_data.find(
           location => location.code === code,
         );
-        name = data.name;
+        if (!data || !Object.keys(data).length) return 'Not found';
+        return data.name
       }
-      return name;
     },
     actionType(actionId) {
       if (actionId <= 3) {
