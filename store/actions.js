@@ -269,6 +269,15 @@ export default {
       return error;
     }
   },
+  async createTicket({ rootState, dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
+
   async requestAxiosPost({ state, commit, dispatch }, payload) {
     let endpoint = payload.endpoint;
     const app = payload.app;
