@@ -1640,4 +1640,7 @@ textarea.is-invalid {
 .content-wrapper, .right-side {
   background: #F2F6FC !important;
 }
+.ticket-select > .vs__dropdown-toggle {
+  border: none !important;
+}
 

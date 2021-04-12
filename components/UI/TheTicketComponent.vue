@@ -85,8 +85,8 @@
     </div>
 
     <div class="form-group">
-      <button class="btn btn-primary action-button">
-        Ticket
+      <button class="btn btn-primary action-button" :disabled="loading">
+        Create Ticket
         <span v-if="loading">
           <i class="fa fa-spinner fa-spin loader"></i
         ></span>
@@ -146,9 +146,11 @@ export default {
     ...mapMutations({
       updateErrors: 'setActionErrors',
       updateClass: 'setActionClass',
+      updateSuccess: 'setUserActionSuccess',
     }),
+
     ...mapActions({
-      create_ticket: 'create_ticket',
+      createTicket: 'createTicket',
     }),
     async submitTicket() {
       this.submitted = true;
@@ -156,39 +158,55 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+
       this.loading = true;
       const notification = [];
-      const actionClass = '';
+      let actionClass = '';
       const department = 2;
 
       const loggedUser = this.userData.payload.data.name;
-      const msg = `${this.params.message} <br /> <code class="pull-right">Created By : ${loggedUser}</code>`;
+      const msg = `${this.params.message} <br /> <code class="pull-right">Raised By : ${loggedUser} from CC Portal</code>`;
+
+      const filteredReason = this.customerInfo.filter(reason => {
+        return reason.code === this.params.reason;
+      });
 
       const payload = {
-        subject: `${this.params.reason} - ${this.ticket.title}`,
-        mailboxId: 43421,
-        mailboxname: 'Support',
-        isDraft: false,
-        type: 'phone',
-        status: 'active',
-        customer: this.ticket.customer,
-        threads: [
-          {
-            type: 'phone',
-            to: [],
-            cc: [],
-            bcc: [],
-            attachments: [],
-            status: 'active',
-            customer: {
-              email: this.ticket.customer.email,
-            },
-            text: msg,
-          },
-        ],
+        app: 'STAFF_API',
+        endpoint: 'freshdesk/tickets',
+        apiKey: false,
+        params: {
+          name: this.ticket.customer.firstName,
+          email: this.ticket.customer.email,
+          subject: `${filteredReason[0].reason} - ${this.ticket.title}`,
+          description: msg,
+          status: 3, // pending status
+          priority: 1, // low priority
+          group_id: 67000438215, // customer support group id
+        },
       };
-      const data = await this.create_ticket(payload);
+
+      try {
+        const data = await this.createTicket(payload);
+        const errorMsg = data.message;
+        if (!data.status && data.data) {
+          notification.push(errorMsg);
+          const errors = data.data.errors;
+          for (let i = 0; i < errors.length; i += 1) {
+            notification.push(`${errors[i].field} - ${errors[i].message}`);
+          }
+        } else {
+          notification.push('Ticket created successfully on fresh desk');
+        }
+        const status = typeof data.status === 'boolean' ? data.status : false;
+        actionClass = this.display_order_action_notification(status);
+      } catch (error) {
+        notification.push(error.response.message);
+        actionClass = 'danger';
+      }
       this.loading = false;
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
   },
 };
@@ -198,5 +216,9 @@ export default {
   color: #f8f9fa;
   font-weight: 700;
   font-size: 15px;
+}
+.form-control[readonly] {
+  background-color: #e9ecef !important;
+  opacity: 1;
 }
 </style>
