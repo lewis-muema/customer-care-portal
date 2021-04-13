@@ -163,7 +163,7 @@ export default {
           location => location.code === code,
         );
         if (!data || !Object.keys(data).length) return 'Not found';
-        return data.name
+        return data.name;
       }
     },
     actionType(actionId) {

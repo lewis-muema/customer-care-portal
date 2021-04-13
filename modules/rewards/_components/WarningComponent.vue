@@ -559,7 +559,7 @@ export default {
           location => location.code === id,
         );
         if (!data || !Object.keys(data).length) return 'Not found';
-        return data.name
+        return data.name;
       }
     },
     fetchCountry(id) {
