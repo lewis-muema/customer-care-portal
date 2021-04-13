@@ -106,14 +106,14 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link action-list"
+            class="nav-link action-list invoice-action"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('ticket', copID)"
             :id="`ticket_${copID}`"
           >
             <span class="fa fa-fw fa-envelope"></span>
-            Ticket
+            Create Ticket
           </a>
         </li>
         <li class="nav-item">

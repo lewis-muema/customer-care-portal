@@ -58,6 +58,12 @@ Vue.mixin({
         11: 'fa-envelope bg-blue',
         14: 'fa-envelope bg-red',
       },
+      customerInfo: [
+        { code: '1', reason: 'More information' },
+        { code: '2', reason: 'Delivery delay' },
+        { code: '3', reason: 'Customer not reachable' },
+        { code: '4', reason: 'Customer feedback' },
+      ],
       freightReallocationInfo: [
         { code: '14', reason: `Partner won't meet ETA` },
         { code: '15', reason: 'Truck will fulfil transit order' },

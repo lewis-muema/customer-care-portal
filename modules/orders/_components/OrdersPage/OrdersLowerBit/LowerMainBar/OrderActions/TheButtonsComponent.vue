@@ -105,7 +105,7 @@
           :id="`ticket_${orderNo}`"
         >
           <span class="fa fa-fw fa-envelope"></span>
-          Ticket
+          Create Ticket
         </a>
       </li>
       <li
