@@ -397,10 +397,7 @@
               {{ fetchCountry(reward_logs[scope.$index]['country']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Vendor" prop="vendor_type">
-            <template slot-scope="scope">
-              {{ vendor(reward_logs[scope.$index]['vendor_type']) }}
-            </template>
+          <el-table-column label="Vendor" prop="vendor_type_name">
           </el-table-column>
           <el-table-column
             label="Completed orders to reward for"

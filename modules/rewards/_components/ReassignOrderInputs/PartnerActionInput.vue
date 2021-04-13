@@ -73,9 +73,7 @@
             updatePartnerActionInputChanged(partnerAction, 'block_hours', index)
           "
         >
-          <template slot="append"
-            >hours</template
-          >
+          <template slot="append">hours</template>
         </el-input>
       </div>
 
@@ -183,9 +181,7 @@
             )
           "
         >
-          <template slot="append"
-            >hours</template
-          >
+          <template slot="append">hours</template>
         </el-input>
       </div>
 

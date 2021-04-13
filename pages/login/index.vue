@@ -56,7 +56,7 @@ export default {
 
       this.$router.push('/orders');
     },
-    // eslint-disable-next-line handle-callback-err
+    // eslint-disable-next-line handle-callback-err,node/handle-callback-err
     signInError(error) {
       this.setLoginErrors(
         'Sorry, your details could not match.<br /> Please make sure you are using your Sendy email.',

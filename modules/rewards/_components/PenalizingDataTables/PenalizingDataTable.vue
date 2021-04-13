@@ -60,10 +60,7 @@
         {{ fetchCountry(penaltyLogs[scope.$index]['country']) }}
       </template>
     </el-table-column>
-    <el-table-column label="Vendor type" prop="vendor_type">
-      <template slot-scope="scope">
-        {{ vendor(penaltyLogs[scope.$index]['vendor_type']) }}
-      </template>
+    <el-table-column label="Vendor type" prop="vendor_type_name">
     </el-table-column>
     <el-table-column label="Penalizing parameter" width="180" prop="parameter">
       <template slot-scope="scope">
