@@ -516,12 +516,12 @@ export default {
   align-items: center;
   margin-bottom: 20px;
 }
-.table-content-info i{
- font-size: 25px;
- color: #969393;
+.table-content-info i {
+  font-size: 25px;
+  color: #969393;
   margin-right: 20px;
 }
-.table-content-info span{
+.table-content-info span {
   font-size: 20px;
   font-weight: 500;
 }
@@ -568,9 +568,7 @@ export default {
   width: 95%;
   height: 2%;
 }
-.v-select
-.vs__dropdown-menu
-.option-description {
+.v-select .vs__dropdown-menu .option-description {
   margin-top: 5px;
   width: 100%;
   color: #868080;
@@ -578,10 +576,10 @@ export default {
   white-space: initial;
 }
 .v-select
-.vs__dropdown-menu
-.vs__dropdown-option--highlight
-.option-description {
-  color: #FFFFFF;
+  .vs__dropdown-menu
+  .vs__dropdown-option--highlight
+  .option-description {
+  color: #ffffff;
 }
 .user-input {
   margin-bottom: 34px;

@@ -253,10 +253,10 @@ import { required } from 'vuelidate/lib/validators';
 import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import moment from 'moment';
-import Loading from './LoadingComponent.vue';
 import PartnerAction from '@/modules/rewards/_components/ReassignOrderInputs/PartnerActionInput';
 import PenalizingDataTable from '@/modules/rewards/_components/PenalizingDataTables/PenalizingDataTable';
 import NonPenalizingDataTable from '@/modules/rewards/_components/PenalizingDataTables/NonPenalizingDataTable';
+import Loading from './LoadingComponent.vue';
 
 Vue.component('calendar', Calendar);
 Vue.component('date-picker', DatePicker);
