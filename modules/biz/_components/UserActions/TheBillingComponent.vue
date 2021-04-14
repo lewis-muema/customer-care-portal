@@ -25,7 +25,9 @@
         </div>
 
         <div class="form-group col-md-6 bill-div user-input">
-          <label class="amount-align">Amount</label>
+          <label class="amount-align"
+            >Amount ( <strong>Exclusive of Vat</strong>)</label
+          >
           <div class="input-group amount-align">
             <div class="input-group-icon">
               <span> {{ currency }}</span>
@@ -168,7 +170,7 @@
           :user="userType"
         />
       </div>
-      <div class="row col-md-12" v-if="!isReverseTransaction">
+      <div class="row col-md-12 d-none" v-if="!isReverseTransaction">
         <div class="form-group col-md-3 bill-check" v-if="!isTransferOrder">
           <input
             value="1"
@@ -251,7 +253,6 @@ export default {
         { value: 5, name: 'Extra Stops', transactionID: 1 },
         { value: 8, name: 'Cancellation Fee', transactionID: 1 },
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
-        { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
