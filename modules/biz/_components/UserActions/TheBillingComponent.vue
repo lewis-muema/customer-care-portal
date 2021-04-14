@@ -170,6 +170,23 @@
           :user="userType"
         />
       </div>
+      <div class="row col-md-12 d-none" v-if="!isReverseTransaction">
+        <div class="form-group col-md-3 bill-check" v-if="!isTransferOrder">
+          <input
+            value="1"
+            name="charge_biz_commission"
+            id="charge_biz_commission>"
+            type="checkbox"
+            class=""
+            @click="check($event)"
+            v-model="checked"
+            checked
+          />
+          <label for="" class="charge_commission--label"
+            >Charge Commission</label
+          >
+        </div>
+      </div>
       <button
         class="btn btn-primary action-button"
         :disabled="checkSubmitStatus()"
