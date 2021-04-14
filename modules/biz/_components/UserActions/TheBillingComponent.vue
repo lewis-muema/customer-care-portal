@@ -25,7 +25,9 @@
         </div>
 
         <div class="form-group col-md-6 bill-div user-input">
-          <label class="amount-align">Amount</label>
+          <label class="amount-align"
+            >Amount ( <strong>Exclusive of Vat</strong>)</label
+          >
           <div class="input-group amount-align">
             <div class="input-group-icon">
               <span> {{ currency }}</span>
@@ -168,23 +170,6 @@
           :user="userType"
         />
       </div>
-      <div class="row col-md-12" v-if="!isReverseTransaction">
-        <div class="form-group col-md-3 bill-check" v-if="!isTransferOrder">
-          <input
-            value="1"
-            name="charge_biz_commission"
-            id="charge_biz_commission>"
-            type="checkbox"
-            class=""
-            @click="check($event)"
-            v-model="checked"
-            checked
-          />
-          <label for="" class="charge_commission--label"
-            >Charge Commission</label
-          >
-        </div>
-      </div>
       <button
         class="btn btn-primary action-button"
         :disabled="checkSubmitStatus()"
@@ -251,7 +236,6 @@ export default {
         { value: 5, name: 'Extra Stops', transactionID: 1 },
         { value: 8, name: 'Cancellation Fee', transactionID: 1 },
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
-        { value: 14, name: 'Customer Support Coupon', transactionID: 2 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 7, 14],
