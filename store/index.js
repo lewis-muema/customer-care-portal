@@ -175,6 +175,7 @@ export default {
       selectedVendorType: null,
       selectedCountryCode: null,
       reallocationReasons: [],
+      disabledStatus: false,
     };
   },
 
