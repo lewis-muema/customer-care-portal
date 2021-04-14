@@ -6,6 +6,7 @@
         class="mr-2 span-left"
         v-model="isCheckAll"
         @change="checkAll"
+        :disabled="getDisabledStatus"
       />
       ALL
     </span>
@@ -16,6 +17,7 @@
         class="mr-2 span-left"
         v-model="status"
         @change="changeStatus"
+        :disabled="getDisabledStatus"
       />
       PENDING
       <div class="ml-1 badge-total pending-total text-center ">
@@ -29,6 +31,7 @@
         class="mr-2 span-left"
         v-model="status"
         @change="changeStatus"
+        :disabled="getDisabledStatus"
       />
       CONFIRMED
       <div class="ml-1 badge-total confirmed-total text-center">
@@ -42,6 +45,7 @@
         class="mr-2 span-left"
         v-model="status"
         @change="changeStatus"
+        :disabled="getDisabledStatus"
       />
       IN TRANSIT
       <div class="ml-1 badge-total transit-total text-center">
@@ -74,7 +78,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getOrderCount']),
+    ...mapGetters(['getOrderCount', 'getDisabledStatus']),
     allOrders() {
       const data = this.orderDetails;
       return data;
@@ -107,6 +111,7 @@ export default {
   methods: {
     ...mapMutations({
       updateOrderStatuses: 'setOrderStatuses',
+      setDisabledStatus: 'setDisabledStatus',
     }),
     objectLength(obj) {
       let result = 0;
@@ -127,6 +132,7 @@ export default {
     },
     checkStatus() {
       this.updateOrderStatuses(this.status);
+      this.setDisabledStatus(true);
     },
   },
 };
