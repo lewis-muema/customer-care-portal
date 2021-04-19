@@ -239,7 +239,4 @@ export default {
   getReallocationReasons(state) {
     return state.reallocationReasons;
   },
-  getDisabledStatus(state) {
-    return state.disabledStatus;
-  },
 };
