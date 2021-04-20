@@ -8,7 +8,7 @@
       </el-table-column>
       <el-table-column label="Vendor" prop="vendor_type"> </el-table-column>
       <el-table-column
-        label="Reallocation reason"
+        label="Cancellation reason"
         width="180"
         prop="description"
       >

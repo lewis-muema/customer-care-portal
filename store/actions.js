@@ -1407,6 +1407,17 @@ export default {
     }
   },
 
+  async add_cancellation_reason({ dispatch, commit }, payload) {
+    try {
+      return await dispatch('requestAxiosPost', payload, { root: true });
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 

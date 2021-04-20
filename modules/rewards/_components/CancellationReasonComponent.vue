@@ -64,6 +64,8 @@
           <v-select
             :options="when_to_display_Reason"
             :reduce="name => name.value"
+            multiple
+            chips
             label="label"
             name="label"
             placeholder="Select"
@@ -128,7 +130,7 @@
       <el-tabs id="cancellation-table" type="card">
         <el-tab-pane label="Active reasons">
           <active-cancellations-data-table
-            :set-reallocation-reasons="setReallocationReasons"
+            :set-reallocation-reasons="setCancellationReasons"
           />
         </el-tab-pane>
         <el-tab-pane label="Deactivated reasons">Config</el-tab-pane>
@@ -167,23 +169,28 @@ export default {
       when_to_display_Reason: [
         {
           label: 'Before an order has been confirmed',
-          value: 'Before an order has been confirmed',
+          reason: 'BEFORE_CONFIRMATION',
+          value: 1,
         },
         {
-          label: 'Between order confirmation & pick up',
-          value: 'Between order confirmation & pick up',
+          label: 'After order confirmation & pick up',
+          reason: 'AFTER_CONFIRMATION',
+          value: 2,
         },
         {
           label: 'After arrival at pick up location',
-          value: 'After arrival at pick up location',
+          reason: 'AFTER_ARRIVAL_AT_PICK_UP',
+          value: 3,
         },
         {
           label: 'Display at all times',
-          value: 'Display at all times',
+          reason: 'ALL',
+          value: 4,
         },
       ],
       whenToDisplayReason: '',
       submit_state: false,
+      setCancellationReasons: [],
     };
   },
   validations: {
@@ -203,13 +210,12 @@ export default {
   mounted() {
     this.initiateData();
   },
-
   methods: {
     ...mapActions({
       request_vendor_types: 'request_vendor_types',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       update_status_state: 'update_status_state',
-      add_reallocation_reason: 'add_reallocation_reason',
+      add_cancellation_reason: 'add_cancellation_reason',
     }),
     initiateData() {
       this.clearData();
@@ -222,7 +228,7 @@ export default {
       this.country = '';
       this.vendor_type = [];
       this.vendorType = [];
-      this.reallocation_reason = '';
+      this.cancellation_reason = '';
       this.whenToDisplayReason = '';
     },
     showCancellationReasons() {
@@ -329,31 +335,34 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'Vendor type has to be selected!';
-      } else if (this.reallocation_reason === '') {
+      } else if (this.cancellation_reason === '') {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A cancellation reason is needed ';
-      } else if (this.whenToDisplayReason === '') {
+      } else if (!this.whenToDisplayReason.length) {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
       }
 
       const data = {
-        country: this.country,
-        vendor_type: this.vendorType,
-        reason: this.reallocation_reason,
-        order_status: this.whenToDisplayReason,
+        country_code: this.country,
+        vendor_type_ids: this.vendorType,
+        cancel_reason: this.cancellation_reason,
+        applicable_order_status: this.whenToDisplayReason,
+        admin_id: this.getSession.payload.data.admin_id,
+        priority_key: 18,
+        allow_platform: ['CC', 'CUSTOMER'],
       };
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `reallocation-reasons`,
+        endpoint: `cancellation-reasons`,
         apiKey: false,
         params: data,
       };
 
       try {
-        const result = await this.add_reallocation_reason(payload);
+        const result = await this.add_cancellation_reason(payload);
 
         if (result.status) {
           setTimeout(() => {
