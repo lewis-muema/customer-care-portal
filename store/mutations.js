@@ -268,7 +268,4 @@ export default {
   setReallocationReasons(state, val) {
     state.reallocationReasons = val;
   },
-  setDisabledStatus(state, val) {
-    state.disabledStatus = val;
-  },
 };

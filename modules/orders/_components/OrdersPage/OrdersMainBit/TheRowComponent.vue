@@ -308,7 +308,6 @@ export default {
       const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      this.setDisabledStatus(false);
       this.orders = newOrders;
       return this.updateOrderCount(this.orderCount);
     },
@@ -318,7 +317,6 @@ export default {
     getOrderStatuses(statusArray) {
       this.orders = [];
       this.statusArray = statusArray;
-      this.setDisabledStatus(true);
       this.sendRequest(this.params);
       return (this.statusArray = statusArray);
     },
@@ -394,7 +392,6 @@ export default {
       setOrderCount: 'setOrderCount',
       updateReorganizeStatus: 'setReorganizeStatus',
       updateOrderCount: 'setOrderCount',
-      setDisabledStatus: 'setDisabledStatus',
     }),
     ...mapActions(['setOrders']),
     initialOrderRequest() {
