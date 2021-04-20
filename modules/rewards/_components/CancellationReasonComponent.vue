@@ -6,15 +6,15 @@
     <div v-else class="outline-inner-data">
       <el-button
         type="primary"
-        @click="showReallocationReasons"
+        @click="showCancellationReasons"
         class="add_section"
-        >Add reallocation reason<i
+        >Add cancellation reason<i
           :class="add_btn ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
         ></i
       ></el-button>
       <form
         id="reallocate-form"
-        @submit.prevent="add_custom_reallocation_reason"
+        @submit.prevent="add_custom_cancellation_reason"
         class="form-inline add-reward-section"
         v-if="add_btn"
       >
@@ -60,42 +60,39 @@
         </div>
 
         <div class="form-group col-md-12 user-input">
-          <label class="vat"> When to display the reallocation reason </label>
+          <label class="vat"> When to display the cancellation reason </label>
           <v-select
             :options="when_to_display_Reason"
             :reduce="name => name.value"
             label="label"
+            name="label"
             placeholder="Select"
             class="form-control select user-billing"
             :id="`value`"
             v-model="whenToDisplayReason"
           >
-            <template v-slot:option="option">
-              <div class="option-title">{{ option.label }}</div>
-              <div class="option-description">{{ option.description }}</div>
-            </template>
           </v-select>
           <div
             v-if="submitted && !$v.whenToDisplayReason.required"
             class="rewards_valid"
           >
-            When to display reallocation reason is required
+            When to display cancellation reason is required
           </div>
         </div>
 
         <div class="form-group col-md-12 user-input ">
-          <label class="vat">Reallocation reason</label>
+          <label class="vat">Cancellation reason</label>
           <el-input
-            v-model="reallocation_reason"
+            v-model="cancellation_reason"
             :id="`message`"
             class="message-input"
           >
           </el-input>
           <div
-            v-if="submitted && !$v.reallocation_reason.required"
+            v-if="submitted && !$v.cancellation_reason.required"
             class="rewards_valid"
           >
-            Reallocation reason is required
+            Cancellation reason is required
           </div>
         </div>
 
@@ -118,7 +115,7 @@
           <i
             class="fa fa-check-circle invoice-loader--align submit-success"
           ></i>
-          Reallocation reason created !
+          Cancellation reason created !
         </p>
         <p class="response-text" v-else>
           <i
@@ -128,84 +125,14 @@
         </p>
       </div>
 
-      <div class="body-box col-md-12 table-content">
-        <div class="table-content-info">
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
-          <span class="table-content-info-text">
-            Partner reallocation reasons
-          </span>
-        </div>
-        <el-table
-          :data="set_reallocation_reasons"
-          size="medium"
-          :border="false"
-        >
-          <el-table-column label="Country" prop="country">
-            <template slot-scope="scope">
-              {{
-                fetchCountry(set_reallocation_reasons[scope.$index]['country'])
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Vendor" prop="vendor_type"> </el-table-column>
-          <el-table-column
-            label="Reallocation reason"
-            width="180"
-            prop="description"
-          >
-          </el-table-column>
-          <el-table-column
-            label="When to display"
-            width="180"
-            prop="order_status"
-          >
-            <template slot-scope="scope">
-              {{
-                formatOrderStatus(
-                  set_reallocation_reasons[scope.$index]['order_status'],
-                )
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Date added" prop="date_added">
-            <template slot-scope="scope">
-              {{
-                getFormattedDate(
-                  set_reallocation_reasons[scope.$index]['date_added'],
-                  'DD/MM/YYYY ',
-                )
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Status" prop="status">
-            <template slot-scope="scope">
-              {{
-                activeStatus(set_reallocation_reasons[scope.$index]['status'])
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Actions"
-            prop="status"
-            class="data"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                :class="
-                  set_reallocation_reasons[scope.$index]['status'] === 1
-                    ? 'action-button--danger'
-                    : 'action-button--active'
-                "
-                @click="setStatusState(set_reallocation_reasons[scope.$index])"
-              >
-                {{ setStatusText(set_reallocation_reasons[scope.$index]) }}
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+      <el-tabs id="cancellation-table" type="card">
+        <el-tab-pane label="Active reasons">
+          <active-cancellations-data-table
+            :set-reallocation-reasons="setReallocationReasons"
+          />
+        </el-tab-pane>
+        <el-tab-pane label="Deactivated reasons">Config</el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -213,12 +140,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
-import moment from 'moment';
 import Loading from './LoadingComponent.vue';
+import ActiveCancellationsDataTable from './CancellationReasonsDataTables/ActiveCancellationsDataTable';
 
 export default {
-  name: 'PenaltiesComponent',
-  components: { Loading },
+  name: 'CancellationReasonComponent',
+  components: { Loading, ActiveCancellationsDataTable },
   data() {
     return {
       submitted: false,
@@ -229,7 +156,7 @@ export default {
       set_reallocation_reasons: [],
       error_msg: '',
       add_btn: false,
-      reallocation_reason: '',
+      cancellation_reason: '',
       country_code: [
         { code: 'KE', name: 'Kenya' },
         { code: 'UG', name: 'Uganda' },
@@ -239,16 +166,20 @@ export default {
       country: '',
       when_to_display_Reason: [
         {
-          label: 'Order has been confirmed',
-          value: 'CONFIRMED',
-          description:
-            '(Order has been confirmed but the partner is yet to get to the pick up location) ',
+          label: 'Before an order has been confirmed',
+          value: 'Before an order has been confirmed',
         },
         {
-          label: 'Partner has arrived at the pick up',
-          value: 'ARRIVED_AT_PICK_UP',
-          description:
-            '(Partner has arrived at pick up location but is yet to pick up the order.)',
+          label: 'Between order confirmation & pick up',
+          value: 'Between order confirmation & pick up',
+        },
+        {
+          label: 'After arrival at pick up location',
+          value: 'After arrival at pick up location',
+        },
+        {
+          label: 'Display at all times',
+          value: 'Display at all times',
         },
       ],
       whenToDisplayReason: '',
@@ -256,7 +187,7 @@ export default {
     };
   },
   validations: {
-    reallocation_reason: { required },
+    cancellation_reason: { required },
     vendorType: { required },
     country: { required },
     whenToDisplayReason: { required },
@@ -294,7 +225,7 @@ export default {
       this.reallocation_reason = '';
       this.whenToDisplayReason = '';
     },
-    showReallocationReasons() {
+    showCancellationReasons() {
       let status = false;
       if (!this.add_btn) {
         status = true;
@@ -380,7 +311,7 @@ export default {
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
       }
     },
-    async add_custom_reallocation_reason() {
+    async add_custom_cancellation_reason() {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -401,11 +332,11 @@ export default {
       } else if (this.reallocation_reason === '') {
         this.submit_state = false;
         this.response_status = 'error';
-        this.error_msg = 'A relocation reason is needed ';
+        this.error_msg = 'A cancellation reason is needed ';
       } else if (this.whenToDisplayReason === '') {
         this.submit_state = false;
         this.response_status = 'error';
-        this.error_msg = ' When to display reallocation reason is required';
+        this.error_msg = ' When to display cancellation reason is required';
       }
 
       const data = {
@@ -445,6 +376,22 @@ export default {
   },
 };
 </script>
+
+<style>
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+  border-bottom: none;
+  border-top: 3px solid #c4c4c4;
+  border-right: solid 1px #c4c4c4;
+  border-left: solid 1px #c4c4c4;
+}
+.el-tabs--card > .el-tabs__header {
+  //border-bottom: solid 1px #dad6d6;
+}
+#cancellation-table .el-tabs__item.is-active {
+  font-size: 16px;
+  color: #000000;
+}
+</style>
 
 <style lang="css" scoped>
 .option-title {
@@ -633,19 +580,8 @@ export default {
 .message-input {
   margin-left: -5%;
 }
-.action-button--danger {
-  background-color: #ff4949;
-  border-color: #ff4949;
-  color: #fff;
-}
-.action-button--active {
-  background-color: #13ce66;
-  border-color: #13ce66;
-  color: #fff;
-}
-.action-button--archive {
-  background-color: #3c8dbc;
-  border-color: #3c8dbc;
-  color: #fff;
+#cancellation-table {
+  margin-left: 10px;
+  margin-top: 50px;
 }
 </style>

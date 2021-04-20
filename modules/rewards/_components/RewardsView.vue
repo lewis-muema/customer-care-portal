@@ -16,6 +16,9 @@
       <el-tab-pane label="Reallocation Reasons" name="reallocation">
         <Reallocation :key="componentKey" />
       </el-tab-pane>
+      <el-tab-pane label="Cancellation Reasons" name="cancellation">
+        <cancellation-reason-component :key="componentKey" />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -26,10 +29,17 @@ import Rewards from './RewardsComponent.vue';
 import Penalties from './PenaltiesComponent.vue';
 import Warning from './WarningComponent.vue';
 import Reallocation from './ReallocationComponent.vue';
+import CancellationReasonComponent from './CancellationReasonComponent';
 
 export default {
   name: 'RewardsView',
-  components: { Rewards, Penalties, Warning, Reallocation },
+  components: {
+    Rewards,
+    Penalties,
+    Warning,
+    Reallocation,
+    CancellationReasonComponent,
+  },
   data() {
     return {
       activeName: 'rewards',
