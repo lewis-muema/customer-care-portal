@@ -42,7 +42,7 @@ export default {
     headers() {
       const params = {
         login: this.config.BROKER_USER,
-        passcode: this.config.BROKER_PASS,
+        passcode: process.env.BROKER_PASS,
       };
       return params;
     },
