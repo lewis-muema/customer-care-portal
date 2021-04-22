@@ -35,8 +35,7 @@ const config = {
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
-    RABBITMQ_URL:
-      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:8443/ws',
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
@@ -79,8 +78,7 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL:
-      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:8443/ws',
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
@@ -122,8 +120,7 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL:
-      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:8443/ws',
     BROKER_USER: 'staging',
     BROKER_PASS: '0FAHmQQmjfsIXdro',
 
