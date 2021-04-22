@@ -1418,6 +1418,34 @@ export default {
     }
   },
 
+  async fetch_set_cancellation_reason({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const vendor_type = 1; // TODO REMOVE, COZ NOT NEEDED
+    const country = 'KE';
+    const order_status = 1; // TODO REMOVE, COZ NOT NEEDED
+    const status = 1;
+
+    const url = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${status}&vendor_type=${vendor_type}&order_status=${order_status}`;
+
+    try {
+      const response = await axios.get(url, headers);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 

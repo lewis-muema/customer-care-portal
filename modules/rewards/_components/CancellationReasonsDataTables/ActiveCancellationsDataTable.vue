@@ -1,32 +1,46 @@
 <template>
   <div class="table-container">
-    <el-table :data="setReallocationReasons" size="medium" :border="false">
+    <el-table :data="setCancellationReasons" size="medium" :border="false">
       <el-table-column label="Country" prop="country">
         <template slot-scope="scope">
-          {{ fetchCountry(setReallocationReasons[scope.$index]['country']) }}
+          {{
+            fetchCountry(setCancellationReasons[scope.$index]['country_code'])
+          }}
         </template>
       </el-table-column>
-      <el-table-column label="Vendor" prop="vendor_type"> </el-table-column>
-      <el-table-column
-        label="Cancellation reason"
-        width="180"
-        prop="description"
-      >
-      </el-table-column>
-      <el-table-column label="When to display" width="180" prop="order_status">
+      <el-table-column label="Vendor" prop="vendor_type_names">
         <template slot-scope="scope">
           {{
-            formatOrderStatus(
-              setReallocationReasons[scope.$index]['order_status'],
+            formatVendorTypeNames(
+              setCancellationReasons[scope.$index]['vendor_type_names'],
             )
           }}
         </template>
       </el-table-column>
-      <el-table-column label="Date added" prop="date_added">
+      <el-table-column
+        label="Cancellation reason"
+        width="180"
+        prop="cancellation_reason"
+      >
+      </el-table-column>
+      <el-table-column
+        label="When to display"
+        width="180"
+        prop="order_status_names"
+      >
+        <template slot-scope="scope">
+          {{
+            formatOrderStatus(
+              setCancellationReasons[scope.$index]['order_status_names'],
+            )
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Date added" prop="date_created">
         <template slot-scope="scope">
           {{
             getFormattedDate(
-              setReallocationReasons[scope.$index]['date_added'],
+              setCancellationReasons[scope.$index]['date_created'],
               'DD/MM/YYYY ',
             )
           }}
@@ -34,7 +48,7 @@
       </el-table-column>
       <el-table-column label="Status" prop="status">
         <template slot-scope="scope">
-          {{ activeStatus(setReallocationReasons[scope.$index]['status']) }}
+          {{ activeStatus(setCancellationReasons[scope.$index]['status']) }}
         </template>
       </el-table-column>
       <el-table-column label="Actions" prop="status" class="data" width="200">
@@ -42,27 +56,98 @@
           <el-button
             size="mini"
             :class="
-              setReallocationReasons[scope.$index]['status'] === 1
+              setCancellationReasons[scope.$index]['status'] === 1
                 ? 'action-button--danger'
                 : 'action-button--active'
             "
-            @click="setStatusState(setReallocationReasons[scope.$index])"
+            @click="setStatusState(setCancellationReasons[scope.$index])"
           >
-            {{ setStatusText(setReallocationReasons[scope.$index]) }}
+            {{ setStatusText(setCancellationReasons[scope.$index]) }}
+          </el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="openEditDialog(setCancellationReasons[scope.$index])"
+          >
+            Edit
           </el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <el-dialog
+      title="Edit Cancellation Reason"
+      :visible.sync="dialogFormVisible"
+      append-to-body
+    >
+      <cancellation-reasons-form
+        @showDialog="closeDialog"
+        :form-data-type="formData"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import CancellationReasonsForm from '@/modules/rewards/_components/CancellationReasonsForm';
+
 export default {
   name: 'ActiveCancellationsDataTable',
+  components: {
+    CancellationReasonsForm,
+  },
   props: {
-    setReallocationReasons: {
+    setCancellationReasons: {
       type: Array,
       default: () => [],
+    },
+  },
+  data() {
+    return {
+      dialogFormVisible: false,
+      country_code: [
+        { code: 'KE', name: 'Kenya' },
+        { code: 'UG', name: 'Uganda' },
+      ],
+      formData: {},
+    };
+  },
+  methods: {
+    fetchCountry(id) {
+      if (!id) return '';
+      const data = this.country_code.find(location => location.code === id);
+      return data.name;
+    },
+    formatOrderStatus(orderStatus) {
+      if (!orderStatus.length) return '';
+      const formattedStatus = orderStatus.map(status => {
+        return ` ${status}`;
+      });
+      return formattedStatus.toString();
+    },
+    formatVendorTypeNames(vendorNamesArray) {
+      if (!vendorNamesArray.length) return '';
+      const formattedNames = vendorNamesArray.map(vendor => {
+        return ` ${vendor}`;
+      });
+      return formattedNames.toString();
+    },
+    activeStatus(status) {
+      return status === 1 ? 'Active' : 'Deactivated';
+    },
+    setStatusText(row) {
+      return row.status === 1 ? 'Deactivate' : 'Activate';
+    },
+    openEditDialog(row) {
+      this.dialogFormVisible = true;
+      this.recordData = row;
+      this.formData = {
+        data: row,
+        operation: 'edit',
+      };
+    },
+    closeDialog(showDialog) {
+      this.dialogFormVisible = showDialog;
     },
   },
 };
