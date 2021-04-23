@@ -1350,7 +1350,7 @@ export default {
     }
   },
 
-  async fetch_set_cancellation_reasons({ state, dispatch, commit }) {
+  async fetch_set_cancellation_reasons({ state, dispatch, commit }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = {
@@ -1361,7 +1361,7 @@ export default {
       },
     };
 
-    const country = 'KE';
+    const country = payload;
     const activatedStatus = 1;
     const deactivatedStatus = 2;
     const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${activatedStatus}`;
