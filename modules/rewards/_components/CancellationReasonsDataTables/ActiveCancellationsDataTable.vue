@@ -159,6 +159,9 @@ export default {
       this.dialogFormVisible = showDialog;
     },
     async setStatusState(row) {
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      const countryCode = countryCodeArray.split('"')[1];
+
       const payload = {
         country_code: row.country_code,
         vendor_type_ids: row.vendor_type_ids,
@@ -166,6 +169,7 @@ export default {
         admin_id: this.getSession.payload.data.admin_id,
         status: row.status === 1 ? 2 : 1,
         cancellation_reason_id: row.cancellation_reason_id,
+        country_filter: countryCode,
       };
       await this.update_cancellation_status(payload);
     },
