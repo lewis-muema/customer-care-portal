@@ -1383,7 +1383,7 @@ export default {
   async update_cancellation_reason({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
-    const { cancellation_reason_id } = payload;
+    const { cancellation_reason_id, country_filter } = payload;
     const param = {
       headers: {
         'Content-Type': 'application/json',
@@ -1393,7 +1393,7 @@ export default {
     const url = `${config.ADONIS_API}cancellation-reasons/${cancellation_reason_id}`;
     try {
       const response = await axios.patch(url, payload, param);
-      dispatch('fetch_set_cancellation_reasons');
+      dispatch('fetch_set_cancellation_reasons', country_filter);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {

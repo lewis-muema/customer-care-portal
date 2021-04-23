@@ -399,6 +399,9 @@ export default {
         this.error_msg = ' When to display cancellation reason is required';
       }
 
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      const countryCode = countryCodeArray.split('"')[1];
+
       const payload = {
         country_code: this.country,
         vendor_type_ids: this.vendorsSelected,
@@ -407,6 +410,7 @@ export default {
         admin_id: this.getSession.payload.data.admin_id,
         status: this.formDataType.data.status,
         cancellation_reason_id: this.formDataType.data.cancellation_reason_id,
+        country_filter: countryCode,
       };
 
       try {
