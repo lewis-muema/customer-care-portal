@@ -1407,6 +1407,69 @@ export default {
     }
   },
 
+  async add_cancellation_reason({ dispatch, commit }, payload) {
+    try {
+      return await dispatch('requestAxiosPost', payload, { root: true });
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async fetch_set_cancellation_reasons({ state, dispatch, commit }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const country = payload;
+    const activatedStatus = 1;
+    const deactivatedStatus = 2;
+    const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${activatedStatus}`;
+    const deactivatedUrl = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${deactivatedStatus}`;
+
+    try {
+      const response = await axios.get(activatedUrl, headers);
+      commit('setActiveCancellationReasons', response.data.data);
+
+      const results = await axios.get(deactivatedUrl, headers);
+      commit('setDeactivatedCancellationReasons', results.data.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
+  async update_cancellation_reason({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const { cancellation_reason_id, country_filter } = payload;
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cancellation-reasons/${cancellation_reason_id}`;
+    try {
+      const response = await axios.patch(url, payload, param);
+      dispatch('fetch_set_cancellation_reasons', country_filter);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 

@@ -176,6 +176,8 @@ export default {
       selectedCountryCode: null,
       reallocationReasons: [],
       disabledStatus: false,
+      activeCancellationReasons: [],
+      deactivatedCancellationReasons: [],
     };
   },
 
