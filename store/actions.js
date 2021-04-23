@@ -1418,7 +1418,7 @@ export default {
     }
   },
 
-  async fetch_set_cancellation_reason({ state, dispatch }) {
+  async fetch_set_cancellation_reasons({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = {
@@ -1429,15 +1429,39 @@ export default {
       },
     };
 
-    const vendor_type = 1; // TODO REMOVE, COZ NOT NEEDED
     const country = 'KE';
-    const order_status = 1; // TODO REMOVE, COZ NOT NEEDED
-    const status = 1;
-
-    const url = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${status}&vendor_type=${vendor_type}&order_status=${order_status}`;
+    const activatedStatus = 1;
+    const deactivatedStatus = 2;
+    const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${activatedStatus}`;
+    const deactivatedUrl = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${deactivatedStatus}`;
 
     try {
-      const response = await axios.get(url, headers);
+      const response = await axios.get(activatedUrl, headers);
+      commit('setActiveCancellationReasons', response.data.data);
+
+      const results = await axios.get(deactivatedUrl, headers);
+      commit('setDeactivatedCancellationReasons', results.data.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
+  async update_cancellation_reason({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const { cancellation_reason_id } = payload;
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cancellation-reasons/${cancellation_reason_id}`;
+    try {
+      const response = await axios.patch(url, payload, param);
+      dispatch('fetch_set_cancellation_reasons');
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {

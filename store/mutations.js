@@ -271,4 +271,12 @@ export default {
   setDisabledStatus(state, val) {
     state.disabledStatus = val;
   },
+
+  setActiveCancellationReasons(state, val) {
+    state.activeCancellationReasons = val;
+  },
+
+  setDeactivatedCancellationReasons(state, val) {
+    state.deactivatedCancellationReasons = val;
+  },
 };
