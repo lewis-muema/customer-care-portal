@@ -225,7 +225,6 @@ export default {
     },
     populateFormFields() {
       const cancellationData = this.formDataType.data;
-      console.log('data:', cancellationData);
 
       this.country = cancellationData.country_code;
       this.cancellation_reason = cancellationData.cancellation_reason;
