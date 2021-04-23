@@ -93,7 +93,7 @@ import CancellationReasonsForm from '@/modules/rewards/_components/CancellationR
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: 'ActiveCancellationsDataTable',
+  name: 'DeactivatedCancellationsDataTable',
   components: {
     CancellationReasonsForm,
   },
@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      setCancellationReasons: 'getActiveCancellationReasons',
+      setCancellationReasons: 'getDeactivatedCancellationReasons',
       getSession: 'getSession',
     }),
   },

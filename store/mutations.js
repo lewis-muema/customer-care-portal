@@ -268,4 +268,15 @@ export default {
   setReallocationReasons(state, val) {
     state.reallocationReasons = val;
   },
+  setDisabledStatus(state, val) {
+    state.disabledStatus = val;
+  },
+
+  setActiveCancellationReasons(state, val) {
+    state.activeCancellationReasons = val;
+  },
+
+  setDeactivatedCancellationReasons(state, val) {
+    state.deactivatedCancellationReasons = val;
+  },
 };

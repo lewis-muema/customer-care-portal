@@ -1,8 +1,7 @@
 <template>
   <section>
     <form
-      id="reallocate-form"
-      @submit.prevent="add_custom_cancellation_reason"
+      @submit.prevent="submitFormData"
       class="form-inline add-reward-section"
       :class="{ 'full-width': this.formDataType.operation === 'edit' }"
     >
@@ -42,10 +41,13 @@
           placeholder="Select"
           class="form-control select user-billing"
           :id="`name`"
-          v-model="vendorType"
+          v-model="vendorsSelected"
         >
         </v-select>
-        <div v-if="submitted && !$v.vendorType.required" class="rewards_valid">
+        <div
+          v-if="submitted && !$v.vendorsSelected.required"
+          class="rewards_valid"
+        >
           Vendor type has to be selected
         </div>
       </div>
@@ -83,7 +85,6 @@
         <label class="vat">Cancellation reason</label>
         <el-input
           v-model="cancellation_reason"
-          :id="`message`"
           class="message-input"
           :class="{
             'reduce-message-input': this.formDataType.operation === 'edit',
@@ -153,7 +154,7 @@ export default {
         { code: 'UG', name: 'Uganda' },
       ],
       vendor_type: [],
-      vendorType: [],
+      vendorsSelected: [],
       country: '',
       when_to_display_Reason: [
         {
@@ -183,7 +184,7 @@ export default {
   },
   validations: {
     cancellation_reason: { required },
-    vendorType: { required },
+    vendorsSelected: { required },
     country: { required },
     whenToDisplayReason: { required },
   },
@@ -196,6 +197,7 @@ export default {
     },
     formDataType(dataValues) {
       if (dataValues.operation === 'edit') this.populateFormFields();
+      this.submit_status = false;
     },
   },
   mounted() {
@@ -204,6 +206,7 @@ export default {
   methods: {
     ...mapActions({
       request_vendor_types: 'request_vendor_types',
+      update_cancellation_reason: 'update_cancellation_reason',
       add_cancellation_reason: 'add_cancellation_reason',
     }),
     initiateData() {
@@ -216,27 +219,21 @@ export default {
     clearData() {
       this.submit_status = false;
       this.country = '';
-      this.vendor_type = [];
-      this.vendorType = [];
+      this.vendorsSelected = [];
       this.cancellation_reason = '';
-      this.whenToDisplayReason = '';
-    },
-    fetchCountry(code) {
-      if (!code) return '';
-      const data = this.country_code.find(location => location.code === code);
-      return data.name;
+      this.whenToDisplayReason = [];
     },
     populateFormFields() {
       const cancellationData = this.formDataType.data;
+      console.log('data:', cancellationData);
 
-      this.country = this.fetchCountry(cancellationData.country_code);
+      this.country = cancellationData.country_code;
       this.cancellation_reason = cancellationData.cancellation_reason;
-      this.vendorType = cancellationData.vendor_type_names;
-      const reasonsValuesArray = this.convertStringToNumArray(
-        cancellationData.applicable_order_status,
+      this.vendorsSelected = this.convertStringToNumArray(
+        cancellationData.vendor_type_ids,
       );
-      this.whenToDisplayReason = this.mapCancellationReasons(
-        reasonsValuesArray,
+      this.whenToDisplayReason = this.convertStringToNumArray(
+        cancellationData.applicable_order_status,
       );
     },
     convertStringToNumArray(arrayAsString) {
@@ -245,18 +242,19 @@ export default {
 
       for (let i = 0; i < initArr.length; i++) {
         if (i === 0) {
-          const firstValue = initArr[0].split('')[1];
+          const firstValue = initArr[0].split('[')[1];
           finalArray.push(parseInt(firstValue));
         } else if (i === initArr.length - 1) {
-          const lastValue = initArr[i].split('')[0];
+          const lastValue = initArr[i].split(']')[0];
           finalArray.push(parseInt(lastValue));
         } else {
           finalArray.push(parseInt(initArr[i]));
         }
       }
-      return finalArray;
+
+      return [...new Set(finalArray)];
     },
-    mapCancellationReasons(reasonsValuesArray) {
+    mapCancellationReasonsToValues(reasonsValuesArray) {
       const resultsArray = [];
       reasonsValuesArray.map(value => {
         const results = this.when_to_display_Reason.filter(reason => {
@@ -266,6 +264,19 @@ export default {
       });
       return resultsArray;
     },
+    mapOrderReasonsToId(whenToDisplayReasons) {
+      if (!whenToDisplayReasons.length) return;
+      const IdArray = [];
+      whenToDisplayReasons.map(reason => {
+        if (typeof reason === 'object' && reason !== null) {
+          IdArray.push(reason.value);
+        } else {
+          IdArray.push(reason);
+        }
+      });
+      return IdArray;
+    },
+    mapVendorsNameToVendorId() {},
     async fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
@@ -293,6 +304,11 @@ export default {
     checkSubmitStatus() {
       return this.submit_state;
     },
+    async submitFormData() {
+      this.formDataType.operation === 'add'
+        ? await this.add_custom_cancellation_reason()
+        : await this.edit_custom_cancellation_reason();
+    },
     async add_custom_cancellation_reason() {
       this.submitted = true;
       this.$v.$touch();
@@ -307,7 +323,7 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A country selection is required!';
-      } else if (!this.vendorType.length) {
+      } else if (!this.vendorsSelected.length) {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'Vendor type has to be selected!';
@@ -323,7 +339,7 @@ export default {
 
       const data = {
         country_code: this.country,
-        vendor_type_ids: this.vendorType,
+        vendor_type_ids: this.vendorsSelected,
         cancel_reason: this.cancellation_reason,
         applicable_order_status: this.whenToDisplayReason,
         admin_id: this.getSession.payload.data.admin_id,
@@ -340,20 +356,73 @@ export default {
       try {
         const result = await this.add_cancellation_reason(payload);
 
-        if (result.status) {
+        if (result.status === 201) {
           setTimeout(() => {
             this.submit_state = false;
             this.loading_messages = true;
-            this.initiateData();
+            this.clearData();
             this.$emit('showDialog', false);
           }, 2000);
-        } else {
-          this.loading_messages = true;
-          this.initiateData();
         }
       } catch (error) {
         this.loading_messages = true;
         this.initiateData();
+        this.response_status = 'error';
+        this.error_msg =
+          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+      }
+    },
+    async edit_custom_cancellation_reason() {
+      this.submitted = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
+      }
+      this.submit_status = true;
+      this.response_status = true;
+      this.submit_state = true;
+
+      if (this.country === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'A country selection is required!';
+      } else if (!this.vendorsSelected.length) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Vendor type has to be selected!';
+      } else if (this.cancellation_reason === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'A cancellation reason is needed ';
+      } else if (!this.whenToDisplayReason.length) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = ' When to display cancellation reason is required';
+      }
+
+      const payload = {
+        country_code: this.country,
+        vendor_type_ids: this.vendorsSelected,
+        cancel_reason: this.cancellation_reason,
+        applicable_order_status: this.whenToDisplayReason,
+        admin_id: this.getSession.payload.data.admin_id,
+        status: this.formDataType.data.status,
+        cancellation_reason_id: this.formDataType.data.cancellation_reason_id,
+      };
+
+      try {
+        const result = await this.update_cancellation_reason(payload);
+
+        if (result.status === 201) {
+          setTimeout(() => {
+            this.submit_state = false;
+            this.loading_messages = true;
+            this.clearData();
+            this.$emit('showDialog', false);
+          }, 2000);
+        }
+      } catch (error) {
+        this.loading_messages = true;
         this.response_status = 'error';
         this.error_msg =
           'Internal Server Error. Kindly refresh the page. If error persists contact tech support';

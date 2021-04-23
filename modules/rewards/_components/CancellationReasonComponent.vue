@@ -16,11 +16,11 @@
 
       <el-tabs id="cancellation-table" type="card">
         <el-tab-pane label="Active reasons">
-          <active-cancellations-data-table
-            :set-cancellation-reasons="setCancellationReasons"
-          />
+          <active-cancellations-data-table />
         </el-tab-pane>
-        <el-tab-pane label="Deactivated reasons">Config</el-tab-pane>
+        <el-tab-pane label="Deactivated reasons">
+          <deactivated-cancellations-data-table />
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -29,6 +29,7 @@
 <script>
 import { mapActions } from 'vuex';
 import CancellationReasonsForm from '@/modules/rewards/_components/CancellationReasonsForm';
+import DeactivatedCancellationsDataTable from '@/modules/rewards/_components/CancellationReasonsDataTables/DeactivatedCancellationsDataTable';
 import Loading from './LoadingComponent.vue';
 import ActiveCancellationsDataTable from './CancellationReasonsDataTables/ActiveCancellationsDataTable';
 
@@ -38,6 +39,7 @@ export default {
     Loading,
     CancellationReasonsForm,
     ActiveCancellationsDataTable,
+    DeactivatedCancellationsDataTable,
   },
   data() {
     return {
@@ -55,7 +57,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetch_set_cancellation_reason: 'fetch_set_cancellation_reason',
+      fetch_set_cancellation_reasons: 'fetch_set_cancellation_reasons',
       update_status_state: 'update_status_state',
     }),
     initiateData() {
@@ -72,9 +74,7 @@ export default {
       const notification = [];
       let actionClass = '';
       try {
-        const results = await this.fetch_set_cancellation_reason();
-        console.log('>>>', results);
-        this.setCancellationReasons = results.data;
+        await this.fetch_set_cancellation_reasons();
         this.loading_messages = false;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
