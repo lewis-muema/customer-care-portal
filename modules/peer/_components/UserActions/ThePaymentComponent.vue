@@ -240,8 +240,15 @@ export default {
           this.updateClass(actionClass);
           this.updateErrors(notification);
         }
-
-        return (this.paymentMethods = data.payment_methods);
+        const methods = data.payment_methods;
+        // eslint-disable-next-line func-names
+        const index = methods.findIndex(
+          method => method.payment_method_id === 3,
+        );
+        if (index > -1) {
+          methods.splice(index, 1);
+        }
+        return (this.paymentMethods = methods);
       } catch (error) {
         this.status = false;
       }
