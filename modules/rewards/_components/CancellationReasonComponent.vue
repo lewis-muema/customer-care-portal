@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import CancellationReasonsForm from '@/modules/rewards/_components/CancellationReasonsForm';
 import DeactivatedCancellationsDataTable from '@/modules/rewards/_components/CancellationReasonsDataTables/DeactivatedCancellationsDataTable';
 import Loading from './LoadingComponent.vue';
@@ -52,6 +52,14 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapGetters(['getSession']),
+  },
+  watch: {
+    getSession(session) {
+      return session;
+    },
+  },
   mounted() {
     this.initiateData();
   },
@@ -73,8 +81,11 @@ export default {
     async fetchSetCancellationReasons() {
       const notification = [];
       let actionClass = '';
+
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      const countryCode = countryCodeArray.split('"')[1];
       try {
-        await this.fetch_set_cancellation_reasons();
+        await this.fetch_set_cancellation_reasons(countryCode);
         this.loading_messages = false;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
