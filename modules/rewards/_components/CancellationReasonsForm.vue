@@ -3,11 +3,11 @@
     <form
       @submit.prevent="submitFormData"
       class="form-inline add-reward-section"
-      :class="{ 'full-width': this.formDataType.operation === 'edit' }"
+      :class="{ 'full-width': isEditForm }"
     >
       <div
         class="form-group col-md-12 user-input"
-        :class="{ 'full-width': this.formDataType.operation === 'edit' }"
+        :class="{ 'full-width': isEditForm }"
       >
         <label class="vat"> Country </label>
         <v-select
@@ -28,7 +28,7 @@
 
       <div
         class="form-group col-md-12 user-input"
-        :class="{ 'full-width': this.formDataType.operation === 'edit' }"
+        :class="{ 'full-width': isEditForm }"
       >
         <label class="vat"> Vendor Type </label>
         <v-select
@@ -54,7 +54,7 @@
 
       <div
         class="form-group col-md-12 user-input"
-        :class="{ 'full-width': this.formDataType.operation === 'edit' }"
+        :class="{ 'full-width': isEditForm }"
       >
         <label class="vat"> When to display the cancellation reason </label>
         <v-select
@@ -79,8 +79,9 @@
       </div>
 
       <div
+        v-if="!isEditForm"
         class="form-group col-md-12 user-input"
-        :class="{ 'full-width': this.formDataType.operation === 'edit' }"
+        :class="{ 'full-width': isEditForm }"
       >
         <label class="vat">Cancellation reason</label>
         <el-input
@@ -190,6 +191,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getSession']),
+    isEditForm() {
+      return this.formDataType.operation === 'edit';
+    },
   },
   watch: {
     getSession(session) {
