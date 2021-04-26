@@ -163,7 +163,7 @@ export default {
           value: 1,
         },
         {
-          label: 'After order confirmation & pick up',
+          label: 'Before arrival at pickup location',
           reason: 'AFTER_CONFIRMATION',
           value: 2,
         },
