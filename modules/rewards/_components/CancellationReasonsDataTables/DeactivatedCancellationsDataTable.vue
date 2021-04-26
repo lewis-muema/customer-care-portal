@@ -1,6 +1,11 @@
 <template>
   <div class="table-container">
-    <el-table :data="setCancellationReasons" size="medium" :border="false">
+    <el-table
+      :data="setCancellationReasons"
+      height="500"
+      size="medium"
+      :border="false"
+    >
       <el-table-column label="Country" prop="country">
         <template slot-scope="scope">
           {{
@@ -63,13 +68,6 @@
             @click="setStatusState(setCancellationReasons[scope.$index])"
           >
             {{ setStatusText(setCancellationReasons[scope.$index]) }}
-          </el-button>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="openEditDialog(setCancellationReasons[scope.$index])"
-          >
-            Edit
           </el-button>
         </template>
       </el-table-column>
@@ -146,14 +144,6 @@ export default {
     },
     setStatusText(row) {
       return row.status === 1 ? 'Deactivate' : 'Activate';
-    },
-    openEditDialog(row) {
-      this.dialogFormVisible = true;
-      this.recordData = row;
-      this.formData = {
-        data: row,
-        operation: 'edit',
-      };
     },
     closeDialog(showDialog) {
       this.dialogFormVisible = showDialog;
