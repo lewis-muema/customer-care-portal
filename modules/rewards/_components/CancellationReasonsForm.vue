@@ -60,7 +60,6 @@
         <v-select
           :options="when_to_display_Reason"
           :reduce="name => name.value"
-          multiple
           chips
           label="label"
           name="label"
@@ -79,7 +78,6 @@
       </div>
 
       <div
-        v-if="!isEditForm"
         class="form-group col-md-12 user-input"
         :class="{ 'full-width': isEditForm }"
       >
@@ -87,6 +85,7 @@
         <el-input
           v-model="cancellation_reason"
           class="message-input"
+          :disabled="isEditForm"
           :class="{
             'reduce-message-input': this.formDataType.operation === 'edit',
           }"

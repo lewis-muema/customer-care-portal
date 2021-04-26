@@ -1,6 +1,11 @@
 <template>
   <div class="table-container">
-    <el-table :data="setCancellationReasons" size="medium" :border="false">
+    <el-table
+      :data="setCancellationReasons"
+      height="500"
+      size="medium"
+      :border="false"
+    >
       <el-table-column label="Country" prop="country">
         <template slot-scope="scope">
           {{
