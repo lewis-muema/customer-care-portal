@@ -158,14 +158,34 @@ export default {
     closeDialog(showDialog) {
       this.dialogFormVisible = showDialog;
     },
+    convertStringToNumArray(arrayAsString) {
+      const finalArray = [];
+      const initArr = arrayAsString.split(',');
+
+      for (let i = 0; i < initArr.length; i++) {
+        if (i === 0) {
+          const firstValue = initArr[0].split('[')[1];
+          finalArray.push(parseInt(firstValue));
+        } else if (i === initArr.length - 1) {
+          const lastValue = initArr[i].split(']')[0];
+          finalArray.push(parseInt(lastValue));
+        } else {
+          finalArray.push(parseInt(initArr[i]));
+        }
+      }
+
+      return [...new Set(finalArray)];
+    },
     async setStatusState(row) {
       const countryCodeArray = this.getSession.payload.data.country_codes;
       const countryCode = countryCodeArray.split('"')[1];
 
       const payload = {
         country_code: row.country_code,
-        vendor_type_ids: row.vendor_type_ids,
-        applicable_order_status: row.applicable_order_status,
+        vendor_type_ids: this.convertStringToNumArray(row.vendor_type_ids),
+        applicable_order_status: this.convertStringToNumArray(
+          row.applicable_order_status,
+        ),
         admin_id: this.getSession.payload.data.admin_id,
         status: row.status === 1 ? 2 : 1,
         cancellation_reason_id: row.cancellation_reason_id,
