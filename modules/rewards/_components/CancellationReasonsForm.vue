@@ -253,16 +253,6 @@ export default {
 
       return [...new Set(finalArray)];
     },
-    mapCancellationReasonsToValues(reasonsValuesArray) {
-      const resultsArray = [];
-      reasonsValuesArray.map(value => {
-        const results = this.when_to_display_Reason.filter(reason => {
-          return reason.value === value;
-        });
-        resultsArray.push(...results);
-      });
-      return resultsArray;
-    },
     mapOrderReasonsToId(whenToDisplayReasons) {
       if (!whenToDisplayReasons.length) return;
       const IdArray = [];
@@ -335,6 +325,8 @@ export default {
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
       }
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      const countryCode = countryCodeArray.split('"')[1];
 
       const data = {
         country_code: this.country,
@@ -350,12 +342,13 @@ export default {
         endpoint: `cancellation-reasons`,
         apiKey: false,
         params: data,
+        country_filter: countryCode,
       };
 
       try {
         const result = await this.add_cancellation_reason(payload);
 
-        if (result.status === 201) {
+        if (result.status === 201 || result.status === 200) {
           setTimeout(() => {
             this.submit_state = false;
             this.loading_messages = true;
@@ -409,14 +402,14 @@ export default {
         applicable_order_status: this.whenToDisplayReason,
         admin_id: this.getSession.payload.data.admin_id,
         status: this.formDataType.data.status,
-        cancellation_reason_id: this.formDataType.data.cancellation_reason_id,
+        cancellation_reason_id: this.formDataType.data.id,
         country_filter: countryCode,
       };
 
       try {
         const result = await this.update_cancellation_reason(payload);
 
-        if (result.status === 201) {
+        if (result.status) {
           setTimeout(() => {
             this.submit_state = false;
             this.loading_messages = true;
@@ -425,6 +418,7 @@ export default {
           }, 2000);
         }
       } catch (error) {
+        this.submit_state = false;
         this.loading_messages = true;
         this.response_status = 'error';
         this.error_msg =
@@ -526,6 +520,11 @@ export default {
 .invoice-loader--align {
   margin-left: 2%;
   margin-right: 1%;
+}
+.rewards_valid {
+  font-size: 14px !important;
+  color: #dc3545;
+  margin-left: -4% !important;
 }
 .submit-success {
   color: #00ae55;
