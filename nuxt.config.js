@@ -1,6 +1,7 @@
 require('isomorphic-fetch');
 
 const bodyParser = require('body-parser');
+const cheerio = require('cheerio');
 
 if (process.env.APP_ENV !== 'production' || process.env.APP_ENV !== 'staging') {
   // eslint-disable-next-line global-require
@@ -14,6 +15,15 @@ module.exports = {
     port: 8080, // default: 3000
   },
   debug: true,
+  hooks: {
+    'render:route': (url, result) => {
+      this.$ = cheerio.load(result.html,{decodeEntities: false});
+      //Since window.__nuxt__ is always located in the first script in the body,
+      //So I removed the first script tag in the body
+      this.$(`body script`).eq(0).remove();
+      result.html = this.$.html()
+    }
+  },
   /*
    ** Headers of the page
    */
@@ -109,7 +119,7 @@ module.exports = {
         sizes: '48x48',
         type: 'image/x-icon',
         href:
-          'https://images.sendyit.com/web_platform/appicons/SendyAppIcon_120px.png',
+          'https://images.sendyit.com/web_platform/logo/logo_192.png',
       },
       {
         rel: 'stylesheet',
