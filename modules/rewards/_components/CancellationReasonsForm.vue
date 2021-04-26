@@ -253,16 +253,6 @@ export default {
 
       return [...new Set(finalArray)];
     },
-    mapCancellationReasonsToValues(reasonsValuesArray) {
-      const resultsArray = [];
-      reasonsValuesArray.map(value => {
-        const results = this.when_to_display_Reason.filter(reason => {
-          return reason.value === value;
-        });
-        resultsArray.push(...results);
-      });
-      return resultsArray;
-    },
     mapOrderReasonsToId(whenToDisplayReasons) {
       if (!whenToDisplayReasons.length) return;
       const IdArray = [];
