@@ -1341,7 +1341,11 @@ export default {
 
   async add_cancellation_reason({ dispatch, commit }, payload) {
     try {
-      return await dispatch('requestAxiosPost', payload, { root: true });
+      const response = await dispatch('requestAxiosPost', payload, {
+        root: true,
+      });
+      dispatch('fetch_set_cancellation_reasons', payload.country_filter);
+      return response;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
         root: true,

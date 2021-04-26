@@ -188,7 +188,7 @@ export default {
         ),
         admin_id: this.getSession.payload.data.admin_id,
         status: row.status === 1 ? 2 : 1,
-        cancellation_reason_id: row.cancellation_reason_id,
+        cancellation_reason_id: row.id,
         country_filter: countryCode,
       };
       await this.update_cancellation_status(payload);
