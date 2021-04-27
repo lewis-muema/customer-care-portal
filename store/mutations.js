@@ -229,9 +229,6 @@ export default {
   setActiveLiveOpsVendor(state, val) {
     state.activeLiveOpsVendor = val;
   },
-  setActiveLiveOpsVendor(state, val) {
-    state.activeLiveOpsVendor = val;
-  },
   setLiveOpsRefresh(state, val) {
     state.liveOpsRefresh = val;
   },
@@ -270,5 +267,13 @@ export default {
   },
   setDisabledStatus(state, val) {
     state.disabledStatus = val;
+  },
+
+  setActiveCancellationReasons(state, val) {
+    state.activeCancellationReasons = val;
+  },
+
+  setDeactivatedCancellationReasons(state, val) {
+    state.deactivatedCancellationReasons = val;
   },
 };

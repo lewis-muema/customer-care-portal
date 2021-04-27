@@ -1028,6 +1028,30 @@ export default {
       return error.response;
     }
   },
+  async get_all_countries({ state, dispatch, commit }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}countries`;
+    try {
+      const response = await axios.get(url, headers);
+      const activeCountries = response.data.filter(
+        country => country.status === 1,
+      );
+      commit('setActiveCountries', activeCountries);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async getCity({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1399,6 +1423,78 @@ export default {
     const url = `${config.ADONIS_API}order-reallocation-actions`;
     try {
       const response = await axios.get(url, headers);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
+  async add_cancellation_reason({ dispatch, commit }, payload) {
+    try {
+      const response = await dispatch('requestAxiosPost', payload, {
+        root: true,
+      });
+      dispatch('fetch_set_cancellation_reasons', payload.country_filter);
+      return response;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
+
+  async fetch_set_cancellation_reasons({ state, dispatch, commit }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const countryArray = [];
+    payload.forEach(country => {
+      countryArray.push(`&country=${country}`);
+    });
+    const countryQuery = countryArray.toString();
+
+    const activatedStatus = 1;
+    const deactivatedStatus = 2;
+    const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=${activatedStatus}${countryQuery}`;
+    const deactivatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=${deactivatedStatus}${countryQuery}`;
+
+    try {
+      const response = await axios.get(activatedUrl, headers);
+      commit('setActiveCancellationReasons', response.data.data);
+
+      const results = await axios.get(deactivatedUrl, headers);
+      commit('setDeactivatedCancellationReasons', results.data.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
+  async update_cancellation_reason({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const { cancellation_reason_id, country_filter } = payload;
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cancellation-reasons/${cancellation_reason_id}`;
+    try {
+      const response = await axios.patch(url, payload, param);
+      dispatch('fetch_set_cancellation_reasons', country_filter);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
