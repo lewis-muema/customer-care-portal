@@ -1,6 +1,11 @@
 <template>
   <div class="table-container">
-    <el-table :data="setCancellationReasons" size="medium" :border="false">
+    <el-table
+      :data="setCancellationReasons"
+      height="500"
+      size="medium"
+      :border="false"
+    >
       <el-table-column label="Country" prop="country">
         <template slot-scope="scope">
           {{
@@ -100,16 +105,13 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       formData: {},
     };
   },
   computed: {
     ...mapGetters({
       setCancellationReasons: 'getActiveCancellationReasons',
+      active_countries: 'getActiveCountries',
       getSession: 'getSession',
     }),
   },
@@ -122,10 +124,12 @@ export default {
     ...mapActions({
       update_cancellation_status: 'update_cancellation_reason',
     }),
-    fetchCountry(id) {
-      if (!id) return '';
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     formatOrderStatus(orderStatus) {
       if (!orderStatus.length) return '';
@@ -176,10 +180,11 @@ export default {
 
       return [...new Set(finalArray)];
     },
-    async setStatusState(row) {
+    getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
-      const countryCode = countryCodeArray.split('"')[1];
-
+      return countryCodeArray.split('"')[1];
+    },
+    async setStatusState(row) {
       const payload = {
         country_code: row.country_code,
         vendor_type_ids: this.convertStringToNumArray(row.vendor_type_ids),
@@ -189,7 +194,7 @@ export default {
         admin_id: this.getSession.payload.data.admin_id,
         status: row.status === 1 ? 2 : 1,
         cancellation_reason_id: row.id,
-        country_filter: countryCode,
+        country_filter: this.getCurrentUsersCountryCode(),
       };
       await this.update_cancellation_status(payload);
     },

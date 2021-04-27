@@ -1,6 +1,11 @@
 <template>
   <div class="table-container">
-    <el-table :data="setCancellationReasons" size="medium" :border="false">
+    <el-table
+      :data="setCancellationReasons"
+      height="500"
+      size="medium"
+      :border="false"
+    >
       <el-table-column label="Country" prop="country">
         <template slot-scope="scope">
           {{
@@ -64,13 +69,6 @@
           >
             {{ setStatusText(setCancellationReasons[scope.$index]) }}
           </el-button>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="openEditDialog(setCancellationReasons[scope.$index])"
-          >
-            Edit
-          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -100,16 +98,13 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       formData: {},
     };
   },
   computed: {
     ...mapGetters({
       setCancellationReasons: 'getDeactivatedCancellationReasons',
+      active_countries: 'getActiveCountries',
       getSession: 'getSession',
     }),
   },
@@ -122,10 +117,12 @@ export default {
     ...mapActions({
       update_cancellation_status: 'update_cancellation_reason',
     }),
-    fetchCountry(id) {
-      if (!id) return '';
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     formatOrderStatus(orderStatus) {
       if (!orderStatus.length) return '';
@@ -146,14 +143,6 @@ export default {
     },
     setStatusText(row) {
       return row.status === 1 ? 'Deactivate' : 'Activate';
-    },
-    openEditDialog(row) {
-      this.dialogFormVisible = true;
-      this.recordData = row;
-      this.formData = {
-        data: row,
-        operation: 'edit',
-      };
     },
     closeDialog(showDialog) {
       this.dialogFormVisible = showDialog;
