@@ -67,9 +67,11 @@ export default {
     ...mapActions({
       fetch_set_cancellation_reasons: 'fetch_set_cancellation_reasons',
       update_status_state: 'update_status_state',
+      get_all_countries: 'get_all_countries',
     }),
     initiateData() {
       this.fetchSetCancellationReasons();
+      this.fetchCountries();
     },
     showCancellationReasons() {
       let status = false;
@@ -77,6 +79,18 @@ export default {
         status = true;
       }
       this.add_btn = status;
+    },
+    async fetchCountries() {
+      const notification = [];
+      let actionClass = '';
+      try {
+        await this.get_all_countries();
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
     },
     async fetchSetCancellationReasons() {
       const notification = [];

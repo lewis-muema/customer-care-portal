@@ -67,7 +67,14 @@
             "
             @click="setStatusState(setCancellationReasons[scope.$index])"
           >
-            {{ setStatusText(setCancellationReasons[scope.$index]) }}
+            {{
+              loading(
+                setCancellationReasons[scope.$index]['id'],
+                selectedCancellationReason,
+              )
+                ? 'Processing...'
+                : setStatusText(setCancellationReasons[scope.$index])
+            }}
           </el-button>
           <el-button
             type="primary"
@@ -104,6 +111,7 @@ export default {
   },
   data() {
     return {
+      selectedCancellationReason: null,
       dialogFormVisible: false,
       formData: {},
     };
@@ -184,7 +192,11 @@ export default {
       const countryCodeArray = this.getSession.payload.data.country_codes;
       return countryCodeArray.split('"')[1];
     },
+    loading(currentRow, selectedRow) {
+      return currentRow === selectedRow;
+    },
     async setStatusState(row) {
+      this.selectedCancellationReason = row.id;
       const payload = {
         country_code: row.country_code,
         vendor_type_ids: this.convertStringToNumArray(row.vendor_type_ids),
@@ -196,7 +208,11 @@ export default {
         cancellation_reason_id: row.id,
         country_filter: this.getCurrentUsersCountryCode(),
       };
+
       await this.update_cancellation_status(payload);
+      setTimeout(() => {
+        this.selectedCancellationReason = null;
+      }, 3000);
     },
   },
 };
