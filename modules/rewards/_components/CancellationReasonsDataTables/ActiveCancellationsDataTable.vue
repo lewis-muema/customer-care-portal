@@ -180,10 +180,11 @@ export default {
 
       return [...new Set(finalArray)];
     },
-    async setStatusState(row) {
+    getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
-      const countryCode = countryCodeArray.split('"')[1];
-
+      return countryCodeArray.split('"')[1];
+    },
+    async setStatusState(row) {
       const payload = {
         country_code: row.country_code,
         vendor_type_ids: this.convertStringToNumArray(row.vendor_type_ids),
@@ -193,7 +194,7 @@ export default {
         admin_id: this.getSession.payload.data.admin_id,
         status: row.status === 1 ? 2 : 1,
         cancellation_reason_id: row.id,
-        country_filter: countryCode,
+        country_filter: this.getCurrentUsersCountryCode(),
       };
       await this.update_cancellation_status(payload);
     },
