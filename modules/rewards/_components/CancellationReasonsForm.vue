@@ -207,7 +207,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      get_all_countries: 'get_all_countries',
       request_vendor_types: 'request_vendor_types',
       update_cancellation_reason: 'update_cancellation_reason',
       add_cancellation_reason: 'add_cancellation_reason',
@@ -274,18 +273,6 @@ export default {
     getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
       return countryCodeArray.split('"')[1];
-    },
-    async fetchCountries() {
-      const notification = [];
-      let actionClass = '';
-      try {
-        await this.get_all_countries();
-      } catch (error) {
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
-      }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     async fetchVendorTypes() {
       const notification = [];
