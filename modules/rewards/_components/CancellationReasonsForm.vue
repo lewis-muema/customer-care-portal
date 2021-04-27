@@ -215,8 +215,6 @@ export default {
       this.formDataType.operation === 'add'
         ? this.clearData()
         : this.populateFormFields();
-
-      this.fetchCountries();
       this.fetchVendorTypes();
     },
     clearData() {
