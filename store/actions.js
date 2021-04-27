@@ -1457,11 +1457,16 @@ export default {
       },
     };
 
-    const country = payload;
+    const countryArray = [];
+    payload.forEach(country => {
+      countryArray.push(`&country=${country}`);
+    });
+    const countryQuery = countryArray.toString();
+
     const activatedStatus = 1;
     const deactivatedStatus = 2;
-    const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${activatedStatus}`;
-    const deactivatedUrl = `${config.ADONIS_API}cancellation-reasons/?country=${country}&status=${deactivatedStatus}`;
+    const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=${activatedStatus}${countryQuery}`;
+    const deactivatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=${deactivatedStatus}${countryQuery}`;
 
     try {
       const response = await axios.get(activatedUrl, headers);
