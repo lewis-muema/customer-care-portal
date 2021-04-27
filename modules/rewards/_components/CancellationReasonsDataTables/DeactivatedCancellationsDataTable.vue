@@ -175,7 +175,7 @@ export default {
     },
     getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
-      return countryCodeArray.split('"')[1];
+      return JSON.parse(countryCodeArray);
     },
     loading(currentRow, selectedRow) {
       return currentRow === selectedRow;
