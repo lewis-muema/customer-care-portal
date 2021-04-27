@@ -11,10 +11,10 @@
       >
         <label class="vat"> Country </label>
         <v-select
-          :options="country_code"
-          :reduce="name => name.code"
-          name="name"
-          label="name"
+          :options="active_countries"
+          :reduce="name => name.country_code"
+          name="country_name"
+          label="country_name"
           placeholder="Select "
           class="form-control select user-billing"
           :id="`name`"
@@ -149,10 +149,6 @@ export default {
       response_status: true,
       error_msg: '',
       cancellation_reason: '',
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       vendor_type: [],
       vendorsSelected: [],
       country: '',
@@ -189,7 +185,10 @@ export default {
     whenToDisplayReason: { required },
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      active_countries: 'getActiveCountries',
+    }),
     isEditForm() {
       return this.formDataType.operation === 'edit';
     },
@@ -208,6 +207,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      get_all_countries: 'get_all_countries',
       request_vendor_types: 'request_vendor_types',
       update_cancellation_reason: 'update_cancellation_reason',
       add_cancellation_reason: 'add_cancellation_reason',
@@ -217,9 +217,11 @@ export default {
         ? this.clearData()
         : this.populateFormFields();
 
+      this.fetchCountries();
       this.fetchVendorTypes();
     },
     clearData() {
+      this.submitted = false;
       this.submit_status = false;
       this.country = '';
       this.vendorsSelected = [];
@@ -269,6 +271,22 @@ export default {
       return IdArray;
     },
     mapVendorsNameToVendorId() {},
+    getCurrentUsersCountryCode() {
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      return countryCodeArray.split('"')[1];
+    },
+    async fetchCountries() {
+      const notification = [];
+      let actionClass = '';
+      try {
+        await this.get_all_countries();
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
     async fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
@@ -277,8 +295,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
+          pickup_country_code: this.getCurrentUsersCountryCode(),
+          dropoff_country_code: this.getCurrentUsersCountryCode(),
         },
       };
       try {
@@ -323,19 +341,17 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A cancellation reason is needed ';
-      } else if (!this.whenToDisplayReason.length) {
+      } else if (this.whenToDisplayReason === '') {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
       }
-      const countryCodeArray = this.getSession.payload.data.country_codes;
-      const countryCode = countryCodeArray.split('"')[1];
 
       const data = {
         country_code: this.country,
         vendor_type_ids: this.vendorsSelected,
         cancel_reason: this.cancellation_reason,
-        applicable_order_status: this.whenToDisplayReason,
+        applicable_order_status: [this.whenToDisplayReason],
         admin_id: this.getSession.payload.data.admin_id,
         priority_key: 18,
         allow_platform: ['CC', 'CUSTOMER'],
@@ -345,7 +361,7 @@ export default {
         endpoint: `cancellation-reasons`,
         apiKey: false,
         params: data,
-        country_filter: countryCode,
+        country_filter: this.getCurrentUsersCountryCode(),
       };
 
       try {
@@ -357,7 +373,7 @@ export default {
             this.loading_messages = true;
             this.clearData();
             this.$emit('showDialog', false);
-          }, 2000);
+          }, 3000);
         }
       } catch (error) {
         this.loading_messages = true;
@@ -389,14 +405,11 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A cancellation reason is needed ';
-      } else if (!this.whenToDisplayReason.length) {
+      } else if (this.whenToDisplayReason === '') {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
       }
-
-      const countryCodeArray = this.getSession.payload.data.country_codes;
-      const countryCode = countryCodeArray.split('"')[1];
 
       const payload = {
         country_code: this.country,
@@ -406,7 +419,7 @@ export default {
         admin_id: this.getSession.payload.data.admin_id,
         status: this.formDataType.data.status,
         cancellation_reason_id: this.formDataType.data.id,
-        country_filter: countryCode,
+        country_filter: this.getCurrentUsersCountryCode(),
       };
 
       try {
@@ -418,7 +431,7 @@ export default {
             this.loading_messages = true;
             this.clearData();
             this.$emit('showDialog', false);
-          }, 2000);
+          }, 3000);
         }
       } catch (error) {
         this.submit_state = false;

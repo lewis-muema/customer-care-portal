@@ -229,9 +229,6 @@ export default {
   setActiveLiveOpsVendor(state, val) {
     state.activeLiveOpsVendor = val;
   },
-  setActiveLiveOpsVendor(state, val) {
-    state.activeLiveOpsVendor = val;
-  },
   setLiveOpsRefresh(state, val) {
     state.liveOpsRefresh = val;
   },
