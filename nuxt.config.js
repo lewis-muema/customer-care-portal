@@ -1,7 +1,6 @@
 require('isomorphic-fetch');
 
 const bodyParser = require('body-parser');
-const cheerio = require('cheerio');
 
 if (process.env.APP_ENV !== 'production' || process.env.APP_ENV !== 'staging') {
   // eslint-disable-next-line global-require
@@ -15,15 +14,6 @@ module.exports = {
     port: 8080, // default: 3000
   },
   debug: true,
-  hooks: {
-    'render:route': (url, result) => {
-      this.$ = cheerio.load(result.html,{decodeEntities: false});
-      //Since window.__nuxt__ is always located in the first script in the body,
-      //So I removed the first script tag in the body
-      this.$(`body script`).eq(0).remove();
-      result.html = this.$.html()
-    }
-  },
   /*
    ** Headers of the page
    */
@@ -183,21 +173,6 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
-    [
-      'nuxt-env',
-      {
-        keys: [
-          'GOOGLE_API_KEY',
-          'HEROKU_GOOGLE_API_KEY',
-          'GOOGLE_CLIENT_ID',
-          'BACKEND_KEY',
-          'SOLR_JWT',
-          'APP_ENV',
-          'BROKER_USER',
-          'BROKER_PASS',
-        ],
-      },
-    ],
   ],
   stripe: {
     version: 'v3',
@@ -211,12 +186,31 @@ module.exports = {
     baseUrl: process.env.BASE_URL || 'http://localhost:8080',
     credentials: false,
   },
+  privateRuntimeConfig: {
+    solrJwt: process.env.SOLR_JWT,
+    googleApiKey: process.env.GOOGLE_API_KEY,
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+    herokuGoogleApiKey: process.env.HEROKU_GOOGLE_API_KEY,
+    backendKey: process.env.BACKEND_KEY,
+    brokerPass:  process.env.BROKER_PASS,
+    helpCountApiKey:  process.env.HELP_SCOUT_API_KEY ,
+    helpCountSecretKey:  process.env.HELP_SCOUT_SECRET_KEY,
+    helpCountClientId:  process.env.HELP_SCOUT_CLIENT_ID ,
+    
+  
+  },
+  publicRuntimeConfig: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:8080',
+    APP_ENV: process.env.APP_ENV,
+    googleClientId: process.env.GOOGLE_CLIENT_ID
+  },
+  /*
   /*
    ** Build configuration
    */
   env: {
-    APP_ENV: process.env.APP_ENV,
-  },
+    APP_ENV: process.env.APP_ENV,},
+    
   build: {
     /**
     /*
