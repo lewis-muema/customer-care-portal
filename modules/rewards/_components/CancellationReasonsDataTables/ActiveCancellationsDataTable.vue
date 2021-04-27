@@ -105,16 +105,13 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       formData: {},
     };
   },
   computed: {
     ...mapGetters({
       setCancellationReasons: 'getActiveCancellationReasons',
+      active_countries: 'getActiveCountries',
       getSession: 'getSession',
     }),
   },
@@ -127,10 +124,12 @@ export default {
     ...mapActions({
       update_cancellation_status: 'update_cancellation_reason',
     }),
-    fetchCountry(id) {
-      if (!id) return '';
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     formatOrderStatus(orderStatus) {
       if (!orderStatus.length) return '';

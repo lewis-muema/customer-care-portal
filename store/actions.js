@@ -960,6 +960,30 @@ export default {
       return error.response;
     }
   },
+  async get_all_countries({ state, dispatch, commit }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}countries`;
+    try {
+      const response = await axios.get(url, headers);
+      const activeCountries = response.data.filter(
+        country => country.status === 1,
+      );
+      commit('setActiveCountries', activeCountries);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async getCity({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
