@@ -71,6 +71,7 @@ export default {
     }),
     initiateData() {
       this.fetchSetCancellationReasons();
+      this.getCurrentUsersCountryCode();
       this.fetchCountries();
     },
     showCancellationReasons() {
@@ -92,14 +93,17 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
+    getCurrentUsersCountryCode() {
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      return JSON.parse(countryCodeArray);
+    },
     async fetchSetCancellationReasons() {
       const notification = [];
       let actionClass = '';
+      const countryCodes = this.getCurrentUsersCountryCode();
 
-      const countryCodeArray = this.getSession.payload.data.country_codes;
-      const countryCode = countryCodeArray.split('"')[1];
       try {
-        await this.fetch_set_cancellation_reasons(countryCode);
+        await this.fetch_set_cancellation_reasons(countryCodes);
         this.loading_messages = false;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');

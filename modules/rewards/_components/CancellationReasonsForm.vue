@@ -66,6 +66,7 @@
           placeholder="Select"
           class="form-control select user-billing"
           :id="`value`"
+          @input="setDisplayReasonValue"
           v-model="whenToDisplayReason"
         >
         </v-select>
@@ -118,7 +119,7 @@
       </p>
       <p class="response-text" v-else-if="response_status === 'success'">
         <i class="fa fa-check-circle invoice-loader--align submit-success"></i>
-        Cancellation reason created !
+        Cancellation reason {{ isEditForm ? 'edited !' : 'created !' }}
       </p>
       <p class="response-text" v-else>
         <i
@@ -270,7 +271,7 @@ export default {
     mapVendorsNameToVendorId() {},
     getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
-      return countryCodeArray.split('"')[1];
+      return JSON.parse(countryCodeArray);
     },
     async fetchVendorTypes() {
       const notification = [];
@@ -280,8 +281,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: this.getCurrentUsersCountryCode(),
-          dropoff_country_code: this.getCurrentUsersCountryCode(),
+          pickup_country_code: this.getCurrentUsersCountryCode()[0],
+          dropoff_country_code: this.getCurrentUsersCountryCode()[0],
         },
       };
       try {
@@ -298,6 +299,9 @@ export default {
     },
     checkSubmitStatus() {
       return this.submit_state;
+    },
+    setDisplayReasonValue(reasonID) {
+      this.whenToDisplayReason = [reasonID];
     },
     async submitFormData() {
       this.formDataType.operation === 'add'
@@ -326,7 +330,7 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A cancellation reason is needed ';
-      } else if (this.whenToDisplayReason === '') {
+      } else if (!this.whenToDisplayReason.length) {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
@@ -336,7 +340,7 @@ export default {
         country_code: this.country,
         vendor_type_ids: this.vendorsSelected,
         cancel_reason: this.cancellation_reason,
-        applicable_order_status: [this.whenToDisplayReason],
+        applicable_order_status: this.whenToDisplayReason,
         admin_id: this.getSession.payload.data.admin_id,
         priority_key: 18,
         allow_platform: ['CC', 'CUSTOMER'],
@@ -353,6 +357,7 @@ export default {
         const result = await this.add_cancellation_reason(payload);
 
         if (result.status === 201 || result.status === 200) {
+          this.response_status = 'success';
           setTimeout(() => {
             this.submit_state = false;
             this.loading_messages = true;
@@ -390,7 +395,7 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A cancellation reason is needed ';
-      } else if (this.whenToDisplayReason === '') {
+      } else if (!this.whenToDisplayReason.length) {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
@@ -409,8 +414,8 @@ export default {
 
       try {
         const result = await this.update_cancellation_reason(payload);
-
         if (result.status) {
+          this.response_status = 'success';
           setTimeout(() => {
             this.submit_state = false;
             this.loading_messages = true;
