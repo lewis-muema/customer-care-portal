@@ -1461,7 +1461,7 @@ export default {
     payload.forEach(country => {
       countryArray.push(`&country=${country}`);
     });
-    const countryQuery = countryArray.toString();
+    const countryQuery = countryArray.join('');
 
     const activatedStatus = 1;
     const deactivatedStatus = 2;
