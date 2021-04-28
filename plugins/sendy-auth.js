@@ -7,9 +7,10 @@ import config from '~/config/configs';
 export default ({ app }) => {
   Vue.use(SendyAuth, {
     authUrl: config.CONFIG.LOGIN_URL,
+
     configs: {
       google: {
-        clientId: app.$config.googleClientId,
+        clientId: app.$env.GOOGLE_CLIENT_ID,
       },
     },
   });
