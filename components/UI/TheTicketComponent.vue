@@ -182,7 +182,6 @@ export default {
           description: msg,
           status: 3, // pending status
           priority: 1, // low priority
-          group_id: 67000438215, // customer support group id
           agentEmail: this.userData.payload.data.email,
         },
       };
