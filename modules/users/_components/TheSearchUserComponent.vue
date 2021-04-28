@@ -97,7 +97,7 @@ export default {
       return this.config[userSearch];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.$config.SOLR_JWT;
     },
     src() {
       let searchString = '';
