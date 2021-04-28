@@ -119,7 +119,7 @@ export default {
       return this.config[userSearch];
     },
     solarToken() {
-      return this.$config.SOLR_JWT;
+      return this.$env.SOLR_JWT;
     },
     src() {
       const searchString = `${this.solarBase}select?q=(phone:*${this.query_string}*+OR+phone:*${this.query_string_phone}*)&wt=json&indent=true&row=10&sort=id%20desc&jwt=${this.solarToken}`;
