@@ -176,6 +176,7 @@ export default {
           status: 3,
           priority: 1,
           group_id: 67000438215, // customer support group id
+          agentEmail: this.userData.payload.data.email,
         },
       };
 
