@@ -18,6 +18,7 @@
           placeholder="Select "
           class="form-control select user-billing"
           :id="`name`"
+          @input="getSelectedCountryCode"
           v-model="country"
         >
         </v-select>
@@ -60,13 +61,13 @@
         <v-select
           :options="when_to_display_Reason"
           :reduce="name => name.value"
+          multiple
           chips
           label="label"
           name="label"
           placeholder="Select"
           class="form-control select user-billing"
           :id="`value`"
-          @input="setDisplayReasonValue"
           v-model="whenToDisplayReason"
         >
         </v-select>
@@ -86,7 +87,6 @@
         <el-input
           v-model="cancellation_reason"
           class="message-input"
-          :disabled="isEditForm"
           :class="{
             'reduce-message-input': this.formDataType.operation === 'edit',
           }"
@@ -231,30 +231,10 @@ export default {
 
       this.country = cancellationData.country_code;
       this.cancellation_reason = cancellationData.cancellation_reason;
-      this.vendorsSelected = this.convertStringToNumArray(
-        cancellationData.vendor_type_ids,
-      );
-      this.whenToDisplayReason = this.convertStringToNumArray(
+      this.vendorsSelected = JSON.parse(cancellationData.vendor_type_ids);
+      this.whenToDisplayReason = JSON.parse(
         cancellationData.applicable_order_status,
       );
-    },
-    convertStringToNumArray(arrayAsString) {
-      const finalArray = [];
-      const initArr = arrayAsString.split(',');
-
-      for (let i = 0; i < initArr.length; i++) {
-        if (i === 0) {
-          const firstValue = initArr[0].split('[')[1];
-          finalArray.push(parseInt(firstValue));
-        } else if (i === initArr.length - 1) {
-          const lastValue = initArr[i].split(']')[0];
-          finalArray.push(parseInt(lastValue));
-        } else {
-          finalArray.push(parseInt(initArr[i]));
-        }
-      }
-
-      return [...new Set(finalArray)];
     },
     mapOrderReasonsToId(whenToDisplayReasons) {
       if (!whenToDisplayReasons.length) return;
@@ -268,10 +248,12 @@ export default {
       });
       return IdArray;
     },
-    mapVendorsNameToVendorId() {},
     getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
       return JSON.parse(countryCodeArray);
+    },
+    getSelectedCountryCode() {
+      this.fetchVendorTypes();
     },
     async fetchVendorTypes() {
       const notification = [];
@@ -281,8 +263,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: this.getCurrentUsersCountryCode()[0],
-          dropoff_country_code: this.getCurrentUsersCountryCode()[0],
+          pickup_country_code: this.country,
+          dropoff_country_code: this.country,
         },
       };
       try {
@@ -363,7 +345,7 @@ export default {
             this.loading_messages = true;
             this.clearData();
             this.$emit('showDialog', false);
-          }, 3000);
+          }, 2000);
         }
       } catch (error) {
         this.loading_messages = true;
@@ -421,7 +403,7 @@ export default {
             this.loading_messages = true;
             this.clearData();
             this.$emit('showDialog', false);
-          }, 3000);
+          }, 2000);
         }
       } catch (error) {
         this.submit_state = false;
