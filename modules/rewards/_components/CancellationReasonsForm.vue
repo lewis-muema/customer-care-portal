@@ -169,11 +169,6 @@ export default {
           reason: 'AFTER_ARRIVAL_AT_PICK_UP',
           value: 3,
         },
-        {
-          label: 'Display at all times',
-          reason: 'ALL',
-          value: 4,
-        },
       ],
       whenToDisplayReason: [],
       submit_state: false,
