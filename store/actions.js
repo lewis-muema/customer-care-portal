@@ -205,10 +205,10 @@ export default {
   // eslint-disable-next-line require-await
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
-    const apiKey = this.$env.HELP_SCOUT_API_KEY;
-    const clientSecret = this.$env.HELP_SCOUT_SECRET_KEY;
+    const apiKey = this.$config.helpCountApiKey;
+    const clientSecret = this.$config.helpCountSecretKey;
     const grantType = 'client_credentials';
-    const clientID = this.$env.HELP_SCOUT_CLIENT_ID;
+    const clientID = this.$config.helpCountClientId;
     const payload = {
       url,
       params: {
