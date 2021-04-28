@@ -109,7 +109,7 @@ module.exports = {
         sizes: '48x48',
         type: 'image/x-icon',
         href:
-          'https://images.sendyit.com/web_platform/appicons/SendyAppIcon_120px.png',
+          'https://images.sendyit.com/web_platform/logo/logo_192.png',
       },
       {
         rel: 'stylesheet',
@@ -173,21 +173,6 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
-    [
-      'nuxt-env',
-      {
-        keys: [
-          'GOOGLE_API_KEY',
-          'HEROKU_GOOGLE_API_KEY',
-          'GOOGLE_CLIENT_ID',
-          'BACKEND_KEY',
-          'SOLR_JWT',
-          'APP_ENV',
-          'BROKER_USER',
-          'BROKER_PASS',
-        ],
-      },
-    ],
   ],
   stripe: {
     version: 'v3',
@@ -201,12 +186,31 @@ module.exports = {
     baseUrl: process.env.BASE_URL || 'http://localhost:8080',
     credentials: false,
   },
+  privateRuntimeConfig: {
+    solrJwt: process.env.SOLR_JWT,
+    googleApiKey: process.env.GOOGLE_API_KEY,
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+    herokuGoogleApiKey: process.env.HEROKU_GOOGLE_API_KEY,
+    backendKey: process.env.BACKEND_KEY,
+    brokerPass:  process.env.BROKER_PASS,
+    helpCountApiKey:  process.env.HELP_SCOUT_API_KEY ,
+    helpCountSecretKey:  process.env.HELP_SCOUT_SECRET_KEY,
+    helpCountClientId:  process.env.HELP_SCOUT_CLIENT_ID ,
+    
+  
+  },
+  publicRuntimeConfig: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:8080',
+    APP_ENV: process.env.APP_ENV,
+    googleClientId: process.env.GOOGLE_CLIENT_ID
+  },
+  /*
   /*
    ** Build configuration
    */
   env: {
-    APP_ENV: process.env.APP_ENV,
-  },
+    APP_ENV: process.env.APP_ENV,},
+    
   build: {
     /**
     /*
