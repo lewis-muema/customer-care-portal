@@ -70,7 +70,7 @@ export default {
     }),
     checkappRoute() {
       let app = 'webapptest';
-      if (this.$env.APP_ENV === 'production') {
+      if (process.env.APP_ENV === 'production') {
         app = 'app';
       }
       this.app_route = app;

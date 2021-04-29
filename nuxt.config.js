@@ -186,30 +186,24 @@ module.exports = {
     baseUrl: process.env.BASE_URL || 'http://localhost:8080',
     credentials: false,
   },
-  privateRuntimeConfig: {
-    solrJwt: process.env.SOLR_JWT,
-    googleApiKey: process.env.GOOGLE_API_KEY,
-    googleClientId: process.env.GOOGLE_CLIENT_ID,
-    herokuGoogleApiKey: process.env.HEROKU_GOOGLE_API_KEY,
-    backendKey: process.env.BACKEND_KEY,
-    brokerPass:  process.env.BROKER_PASS,
-    helpCountApiKey:  process.env.HELP_SCOUT_API_KEY ,
-    helpCountSecretKey:  process.env.HELP_SCOUT_SECRET_KEY,
-    helpCountClientId:  process.env.HELP_SCOUT_CLIENT_ID ,
-    
-  
-  },
-  publicRuntimeConfig: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:8080',
-    APP_ENV: process.env.APP_ENV,
-    googleClientId: process.env.GOOGLE_CLIENT_ID
-  },
-  /*
+   /*
   /*
    ** Build configuration
    */
   env: {
-    APP_ENV: process.env.APP_ENV,},
+    APP_ENV: process.env.APP_ENV,
+    SOLR_JWT: process.env.SOLR_JWT,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+    HEROKU_GOOGLE_API_KEY : process.env.HEROKU_GOOGLE_API_KEY,
+    BACKEND_KEY: process.env.BACKEND_KEY,
+    BROKER_PASS:  process.env.BROKER_PASS,
+    HELP_SCOUT_API_KEY :  process.env.HELP_SCOUT_API_KEY ,
+    HELP_SCOUT_SECRET_KEY:  process.env.HELP_SCOUT_SECRET_KEY,
+    HELP_SCOUT_CLIENT_ID :  process.env.HELP_SCOUT_CLIENT_ID ,
+
+
+  },
     
   build: {
     /**

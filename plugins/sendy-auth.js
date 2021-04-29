@@ -9,7 +9,7 @@ export default ({ app }) => {
     authUrl: config.CONFIG.LOGIN_URL,
     configs: {
       google: {
-        clientId: app.$config.googleClientId,
+        clientId: process.env.GOOGLE_CLIENT_ID,
       },
     },
   });
