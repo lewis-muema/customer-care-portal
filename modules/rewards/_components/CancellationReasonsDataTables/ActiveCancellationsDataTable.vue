@@ -205,6 +205,7 @@ export default {
         ),
         admin_id: this.getSession.payload.data.admin_id,
         status: row.status === 1 ? 2 : 1,
+        cancel_reason: row.cancellation_reason,
         cancellation_reason_id: row.id,
         country_filter: this.getCurrentUsersCountryCode(),
       };
