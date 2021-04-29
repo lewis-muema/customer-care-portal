@@ -37,6 +37,7 @@
     "express": "^4.17.1",
     "install": "^0.13.0",
     "isomorphic-fetch": "^2.2.1",
+    "jquery": "^3.5.1",
     "js-base64": "^2.5.1",
     "js-cookie": "^2.2.1",
     "js-sha1": "^0.6.0",

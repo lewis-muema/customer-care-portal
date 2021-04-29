@@ -63,7 +63,7 @@ export default {
       return this.config.COUPON_SEARCH;
     },
     solarToken() {
-      return process.env.SOLR_JWT;
+      return this.$env.SOLR_JWT;
     },
     src() {
       return `${this.solarBase}select?q=(coupon_id:*${this.query_string}*+OR+coupon_name:*${this.query_string}*+OR+coupon_start_date:*${this.query_string}*)&wt=json&indent=true&row=10&sort=coupon_id%20desc&jwt=${this.solarToken}`;

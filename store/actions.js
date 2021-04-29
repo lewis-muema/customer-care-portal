@@ -205,10 +205,10 @@ export default {
   // eslint-disable-next-line require-await
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
-    const apiKey = process.env.HELP_SCOUT_API_KEY;
-    const clientSecret = process.env.HELP_SCOUT_SECRET_KEY;
+    const apiKey = this.$env.HELP_SCOUT_API_KEY;
+    const clientSecret = this.$env.HELP_SCOUT_SECRET_KEY;
     const grantType = 'client_credentials';
-    const clientID = process.env.HELP_SCOUT_CLIENT_ID;
+    const clientID = this.$env.HELP_SCOUT_CLIENT_ID;
     const payload = {
       url,
       params: {
@@ -358,8 +358,8 @@ export default {
       },
     };
 
-    if (process.env.APP_ENV !== 'production' && payload.apiKey) {
-      backendKey = process.env.BACKEND_KEY;
+    if (this.$env.APP_ENV !== 'production' && payload.apiKey) {
+      backendKey = this.$env.BACKEND_KEY;
       endpoint = `${endpoint}?apikey=${backendKey}`;
     }
 
