@@ -205,10 +205,10 @@ export default {
   // eslint-disable-next-line require-await
   async request_helpscout_token({ rootState, dispatch, commit }) {
     const url = 'HELPSCOUT_TOKEN';
-    const apiKey = this.$config.helpCountApiKey;
-    const clientSecret = this.$config.helpCountSecretKey;
+    const apiKey = process.env.HELP_SCOUT_API_KEY;
+    const clientSecret = process.env.HELP_SCOUT_SECRET_KEY;
     const grantType = 'client_credentials';
-    const clientID = this.$config.helpCountClientId;
+    const clientID = process.env.HELP_SCOUT_CLIENT_ID;
     const payload = {
       url,
       params: {
@@ -1461,7 +1461,7 @@ export default {
     payload.forEach(country => {
       countryArray.push(`&country=${country}`);
     });
-    const countryQuery = countryArray.toString();
+    const countryQuery = countryArray.join('');
 
     const activatedStatus = 1;
     const deactivatedStatus = 2;
