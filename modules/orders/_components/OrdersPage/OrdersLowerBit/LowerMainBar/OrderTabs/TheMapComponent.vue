@@ -140,7 +140,6 @@ export default {
         params: { rider_id: riderArray },
       };
       let data = null;
-
       try {
         const lastPosition = await this.request_partner_last_position(payload);
         data = lastPosition.data;

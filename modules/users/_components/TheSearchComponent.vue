@@ -99,7 +99,7 @@ export default {
       return placeholderArray[currentUser];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return process.env.SOLR_JWT;
     },
     src() {
       let searchString = '';

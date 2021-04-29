@@ -5,7 +5,7 @@ export default ({ app }) => {
   Vue.use(VueGoogleMaps, {
     load: {
       libraries: ['places', 'geometry'],
-      key: app.$env.GOOGLE_API_KEY,
+      key: process.env.GOOGLE_API_KEY,
     },
   });
 };

@@ -467,7 +467,7 @@ export default {
     ...mapState(['userData']),
 
     herokuKey() {
-      return this.$env.HEROKU_GOOGLE_API_KEY;
+      return process.env.HEROKU_GOOGLE_API_KEY;
     },
     allow_add_collection() {
       return this.markers.length > 1;

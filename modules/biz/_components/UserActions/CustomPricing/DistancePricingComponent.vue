@@ -587,7 +587,7 @@ export default {
       getCustomPricingDetails: 'getCustomPricingDetails',
     }),
     herokuKey() {
-      return this.$env.HEROKU_GOOGLE_API_KEY;
+      return process.env.HEROKU_GOOGLE_API_KEY;
     },
     vendor() {
       return this.vendorTypes.find(op => {
