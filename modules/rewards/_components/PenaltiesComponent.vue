@@ -18,13 +18,14 @@
         <div class="form-group col-md-4 user-input">
           <label class="vat"> Country </label>
           <v-select
-            :options="country_code"
-            :reduce="name => name.code"
-            name="name"
-            label="name"
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
             placeholder="Select "
             class="form-control select user-billing"
             :id="`name`"
+            @input="getSelectedCountryCode"
             v-model="country"
           >
           </v-select>
@@ -292,10 +293,6 @@ export default {
         { code: 'GET', name: 'Greater than or equal to' },
         { code: 'LET', name: 'Less than or equal to' },
       ],
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       penalizing_data: [
         { code: 'DELAYED_AT_PICKUP', name: 'Delayed at pick up' },
         { code: 'DELAYED_AT_DELIVERY', name: 'Delayed at delivery ' },
@@ -329,7 +326,10 @@ export default {
     penalized_orders: { required },
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      active_countries: 'getActiveCountries',
+    }),
   },
   watch: {
     getSession(session) {
@@ -355,9 +355,11 @@ export default {
       create_reward: 'create_reward',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       fetchNonPenalizingData: 'fetch_non_penalizing_data',
+      get_active_countries: 'get_all_countries',
     }),
     initiateData() {
       this.clearData();
+      this.fetchCountries();
       this.fetchVendorTypes();
       this.fetchReassignmentReasons();
       this.requestRewards();
@@ -369,6 +371,21 @@ export default {
       this.response_status = data.response_status;
       this.error_msg = data.error_msg;
     },
+    async fetchCountries() {
+      const notification = [];
+      let actionClass = '';
+      try {
+        await this.get_active_countries();
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    getSelectedCountryCode() {
+      this.fetchVendorTypes();
+    },
     fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
@@ -377,8 +394,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
+          pickup_country_code: this.country,
+          dropoff_country_code: this.country,
         },
       };
 
