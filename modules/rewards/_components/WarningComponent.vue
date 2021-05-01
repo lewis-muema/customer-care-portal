@@ -18,13 +18,14 @@
         <div class="form-group col-md-4 user-input">
           <label class="vat"> Country </label>
           <v-select
-            :options="country_code"
-            :reduce="name => name.code"
-            name="name"
-            label="name"
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
             placeholder="Select "
             class="form-control select user-billing"
             :id="`name`"
+            @input="getSelectedCountryCode"
             v-model="country"
           >
           </v-select>
@@ -330,10 +331,6 @@ export default {
         { code: 'GET', name: 'Greater than or equal to' },
         { code: 'LET', name: 'Less than or equal to' },
       ],
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       penalizing_data: [
         { code: 'DELAYED_AT_PICKUP', name: 'Orders delayed at pick up' },
         { code: 'DELAYED_AT_DELIVERY', name: 'Orders delayed at delivery ' },
@@ -363,6 +360,7 @@ export default {
   computed: {
     ...mapGetters({
       getSession: 'getSession',
+      active_countries: 'getActiveCountries',
       reallocationReasons: 'getReallocationReasons',
     }),
   },
@@ -393,6 +391,7 @@ export default {
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       update_reward: 'update_reward',
       create_reward: 'create_reward',
+      get_active_countries: 'get_all_countries',
     }),
     async fetchReassignmentReasons() {
       await this.fetch_set_reallocation_reason();
@@ -405,6 +404,7 @@ export default {
     },
     initiateData() {
       this.clearData();
+      this.fetchCountries();
       this.fetchVendorTypes();
       this.requestRewards();
       this.fetchReassignmentReasons();
@@ -437,6 +437,21 @@ export default {
       this.warning_logs = arr.filter(obj => obj.status !== 2);
       this.loading_messages = false;
     },
+    async fetchCountries() {
+      const notification = [];
+      let actionClass = '';
+      try {
+        await this.get_active_countries();
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    getSelectedCountryCode() {
+      this.fetchVendorTypes();
+    },
     async fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
@@ -445,8 +460,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
+          pickup_country_code: this.country,
+          dropoff_country_code: this.country,
         },
       };
       try {
@@ -463,7 +478,6 @@ export default {
     checkSubmitStatus() {
       return this.submit_state;
     },
-
     async generate_warning_msg() {
       this.submitted = true;
       this.$v.$touch();
@@ -544,14 +558,6 @@ export default {
     formatReward(text) {
       return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
     },
-    vendor(id) {
-      let name = '';
-      if (Object.keys(this.vendor_type).length > 0) {
-        const data = this.vendor_type.find(location => location.id === id);
-        name = data.name;
-      }
-      return name;
-    },
     penalizingParams(id) {
       if (!id) return 'Not found';
       if (Object.keys(this.penalizing_data).length > 0) {
@@ -562,9 +568,12 @@ export default {
         return data.name;
       }
     },
-    fetchCountry(id) {
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     activeStatus(state) {
       let status = 'Deactivated';
