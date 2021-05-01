@@ -12,10 +12,6 @@ export default {
         { code: 'LET', name: 'Less than or equal to' },
       ],
       all_reasons_data: [],
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       vendor_type: [],
       penalizing_data: [
         { code: 'DELAYED_AT_PICKUP', name: 'Delayed at pick up' },
@@ -52,10 +48,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      active_countries: 'getActiveCountries',
+    }),
   },
   created() {
-    this.fetchVendorTypes();
     this.fetchAllReassignmentReasons();
   },
   watch: {
@@ -69,32 +67,6 @@ export default {
       request_vendor_types: 'request_vendor_types',
       fetch_all_reallocation_reason: 'fetch_all_reallocation_reason',
     }),
-    fetchVendorTypes() {
-      const notification = [];
-      let actionClass = '';
-      const payload = {
-        app: 'VENDORS',
-        endpoint: 'types',
-        apiKey: false,
-        params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
-        },
-      };
-
-      this.request_vendor_types(payload)
-        .then(data => {
-          this.vendor_type = data.vendor_types;
-          return data.vendor_types;
-        })
-        .catch(error => {
-          notification.push('Something went wrong. Please try again.');
-          actionClass = 'danger';
-          throw error;
-        });
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
-    },
     fetchAllReassignmentReasons() {
       this.fetch_all_reallocation_reason()
         .then(results => {
@@ -143,18 +115,12 @@ export default {
       }
       return resp;
     },
-    fetchCountry(id) {
-      if (!id) return '';
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
-    },
-    vendor(id) {
-      let name = '';
-      if (Object.keys(this.vendor_type).length > 0) {
-        const data = this.vendor_type.find(location => location.id === id);
-        name = data.name;
-      }
-      return name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     penalizingParams(code) {
       if (!code) return 'Not found';

@@ -277,9 +277,6 @@ export default {
     checkSubmitStatus() {
       return this.submit_state;
     },
-    setDisplayReasonValue(reasonID) {
-      this.whenToDisplayReason = [reasonID];
-    },
     async submitFormData() {
       this.formDataType.operation === 'add'
         ? await this.add_custom_cancellation_reason()
