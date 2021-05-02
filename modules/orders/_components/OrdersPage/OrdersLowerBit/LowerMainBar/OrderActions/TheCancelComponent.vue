@@ -10,34 +10,10 @@
       <form id="cancel-form" @submit.prevent="cancelOrder">
         <div class="form-group">
           <v-select
-            v-if="
-              order.order_details.order_no !==
-                order.order_details.parent_order_no &&
-                Object.prototype.hasOwnProperty.call(
-                  order,
-                  'freight_details',
-                ) &&
-                order.freight_details
-            "
-            :options="freightOptions"
-            :reduce="cancel_reason => cancel_reason.cancel_reason_id"
-            name="cancel_reason"
-            label="cancel_reason"
-            placeholder="Select cancellation reason .."
-            class="form-control proximity-point"
-            :id="`cancel_reason_${orderNo}`"
-            v-model="cancel_reason"
-            :class="{
-              'is-invalid': submitted && $v.cancel_reason.$error,
-            }"
-          >
-          </v-select>
-          <v-select
-            v-else
-            :options="options"
-            :reduce="cancel_reason => cancel_reason.cancel_reason_id"
-            name="cancel_reason"
-            label="cancel_reason"
+            :options="cancellation_options"
+            :reduce="cancelReason => cancelReason.cancellation_reason_id"
+            name="cancellation_reason"
+            label="cancellation_reason"
             placeholder="Select cancellation reason .."
             class="form-control proximity-point"
             :id="`cancel_reason_${orderNo}`"
@@ -82,7 +58,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 
 export default {
@@ -92,16 +68,37 @@ export default {
       type: Object,
       required: true,
     },
+    orderDetails: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       orderNo: this.order.order_details.order_no,
       errors: [],
       notifications: '',
-      options: [],
+      cancellation_options: [],
       freightOptions: [
         { cancel_reason_id: 9, cancel_reason: 'Customs hold' },
         { cancel_reason_id: 10, cancel_reason: `Partner won't meet ETA` },
+      ],
+      order_status: [
+        {
+          label: 'Before an order has been confirmed',
+          status: 'pending',
+          value: 1,
+        },
+        {
+          label: 'Before arrival at pickup location',
+          status: 'confirmed',
+          value: 2,
+        },
+        {
+          label: 'After arrival at pick up location',
+          status: 'in transit',
+          value: 3,
+        },
       ],
       cancel_reason: '',
       description: '',
@@ -115,13 +112,15 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
-
+    ...mapGetters({
+      cancellationReasons: 'getActiveCancellationReasons',
+    }),
     getSelectorPlaceholder() {
       return this.placeholderItem;
     },
   },
   mounted() {
-    this.fetchCancellationOptions();
+    this.fetchSetCancellationReasons();
   },
   methods: {
     ...mapMutations({
@@ -131,6 +130,7 @@ export default {
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
       request_cancellation_options: 'request_cancellation_options',
+      fetch_set_cancellation_reasons: 'fetch_set_cancellation_reasons',
     }),
     async cancelCoupon() {
       const notification = [];
@@ -205,26 +205,51 @@ export default {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    async fetchCancellationOptions() {
+    async fetchSetCancellationReasons() {
       const notification = [];
       let actionClass = '';
+      const countryCodes = [this.orderDetails.countryCode.toUpperCase()];
+
       try {
-        const data = await this.request_cancellation_options();
-        actionClass = this.display_order_action_notification(data.status);
-        if (data.status) {
-          data.data.forEach(res => {
-            this.options.push(res);
-          });
-        }
-        this.loading_cancellation_reasons = false;
+        await this.fetch_set_cancellation_reasons(countryCodes);
+        this.filterVendorTypeCancellationReasons();
       } catch (error) {
-        notification.push(
-          'Something went wrong. Try again or contact Tech Support',
-        );
+        notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
+    },
+    mapOrderStatusToValue() {
+      const mappedValue = this.order_status.filter(
+        status => status.status === this.orderDetails.orderStatus,
+      );
+      return mappedValue[0];
+    },
+    filterVendorTypeCancellationReasons() {
+      const filteredCancellationReasons = [];
+      this.cancellationReasons.forEach(reason => {
+        const vendorIDs = JSON.parse(reason.vendor_type_ids);
+        const found = vendorIDs.indexOf(this.orderDetails.vendorID) !== -1;
+        if (found) {
+          filteredCancellationReasons.push(reason);
+        }
+      });
+      this.filterByCancellationStatus(filteredCancellationReasons);
+    },
+    filterByCancellationStatus(cancellationReasonsArray) {
+      const reasonsArray = [];
+      cancellationReasonsArray.forEach(reason => {
+        const orderStatus = JSON.parse(reason.applicable_order_status);
+        const statusValue = this.mapOrderStatusToValue();
+
+        const found = orderStatus.indexOf(statusValue.value) !== -1;
+        if (found) {
+          reasonsArray.push(reason);
+        }
+      });
+      this.loading_cancellation_reasons = false;
+      this.cancellation_options = reasonsArray;
     },
   },
 };
