@@ -557,5 +557,5 @@ export default {
 </script>
 
 <style lang="css">
-@import "./../../../assets/style/intercounty-config.css";
+@import './../../../assets/style/intercounty-config.css';
 </style>

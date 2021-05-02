@@ -433,7 +433,10 @@ export default {
         { type: 1, title: 'Cash' },
         { type: 2, title: 'Percentage' },
       ],
-      operators: [{ value: true, title: 'Yes' }, { value: false, title: 'No' }],
+      operators: [
+        { value: true, title: 'Yes' },
+        { value: false, title: 'No' },
+      ],
     };
   },
   computed: {

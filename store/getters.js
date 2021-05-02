@@ -239,4 +239,13 @@ export default {
   getReallocationReasons(state) {
     return state.reallocationReasons;
   },
+  getDisabledStatus(state) {
+    return state.disabledStatus;
+  },
+  getActiveCancellationReasons(state) {
+    return state.activeCancellationReasons;
+  },
+  getDeactivatedCancellationReasons(state) {
+    return state.deactivatedCancellationReasons;
+  },
 };
