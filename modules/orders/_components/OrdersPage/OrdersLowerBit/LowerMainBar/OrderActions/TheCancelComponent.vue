@@ -10,6 +10,30 @@
       <form id="cancel-form" @submit.prevent="cancelOrder">
         <div class="form-group">
           <v-select
+            v-if="
+              order.order_details.order_no !==
+                order.order_details.parent_order_no &&
+                Object.prototype.hasOwnProperty.call(
+                  order,
+                  'freight_details',
+                ) &&
+                order.freight_details
+            "
+            :options="freightOptions"
+            :reduce="cancelReason => cancelReason.cancel_reason_id"
+            name="cancel_reason"
+            label="cancel_reason"
+            placeholder="Select cancellation reason .."
+            class="form-control proximity-point"
+            :id="`cancel_reason_${orderNo}`"
+            v-model="cancel_reason"
+            :class="{
+              'is-invalid': submitted && $v.cancel_reason.$error,
+            }"
+          >
+          </v-select>
+          <v-select
+            v-else
             :options="cancellation_options"
             :reduce="cancelReason => cancelReason.cancellation_reason_id"
             name="cancellation_reason"
