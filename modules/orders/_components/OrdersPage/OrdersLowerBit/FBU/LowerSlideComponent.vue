@@ -228,7 +228,7 @@ export default {
   },
   props: {
     orderno: {
-      type: Object,
+      type: String,
       required: true,
     },
   },

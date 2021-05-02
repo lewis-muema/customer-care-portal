@@ -167,7 +167,7 @@
         :key="`details_${order.order_no}_${order.order_status}`"
         :id="`child_row_${order.order_no}`"
       >
-        <TheLowerSlideComponent :orderno="order.order_no" />
+        <TheLowerSlideComponent :full-order="order" />
       </tr>
       <tr
         class="order_row_home_lower"
