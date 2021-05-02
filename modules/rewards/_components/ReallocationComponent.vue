@@ -279,11 +279,9 @@ export default {
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       update_status_state: 'update_status_state',
       add_reallocation_reason: 'add_reallocation_reason',
-      get_active_countries: 'get_all_countries',
     }),
     initiateData() {
       this.clearData();
-      this.fetchCountries();
       this.fetchVendorTypes();
       this.fetchSetReallocationReasons();
     },
@@ -295,18 +293,6 @@ export default {
       this.vendorType = [];
       this.reallocation_reason = '';
       this.whenToDisplayReason = '';
-    },
-    async fetchCountries() {
-      const notification = [];
-      let actionClass = '';
-      try {
-        await this.get_active_countries();
-      } catch (error) {
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
-      }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     showReallocationReasons() {
       let status = false;

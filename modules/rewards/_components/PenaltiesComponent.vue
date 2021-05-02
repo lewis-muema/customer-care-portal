@@ -355,11 +355,9 @@ export default {
       create_reward: 'create_reward',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       fetchNonPenalizingData: 'fetch_non_penalizing_data',
-      get_active_countries: 'get_all_countries',
     }),
     initiateData() {
       this.clearData();
-      this.fetchCountries();
       this.fetchVendorTypes();
       this.fetchReassignmentReasons();
       this.requestRewards();
@@ -370,18 +368,6 @@ export default {
       this.loading_penalties = data.loading_penalties;
       this.response_status = data.response_status;
       this.error_msg = data.error_msg;
-    },
-    async fetchCountries() {
-      const notification = [];
-      let actionClass = '';
-      try {
-        await this.get_active_countries();
-      } catch (error) {
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
-      }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     getSelectedCountryCode() {
       this.fetchVendorTypes();
@@ -668,14 +654,6 @@ export default {
     },
     formatReward(text) {
       return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
-    },
-    vendor(id) {
-      let name = '';
-      if (Object.keys(this.vendor_type).length > 0) {
-        const data = this.vendor_type.find(location => location.id === id);
-        name = data.name;
-      }
-      return name;
     },
     formatAmount(currency, amount) {
       return `${currency} ${amount}`;
