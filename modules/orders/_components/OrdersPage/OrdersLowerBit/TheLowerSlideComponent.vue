@@ -15,7 +15,7 @@
           <TheSideComponent :order="order" />
         </div>
         <div class="col-md-8">
-          <TheMainComponent :order="order" />
+          <TheMainComponent :order-details="orderDetails" :order="order" />
         </div>
       </div>
     </div>
@@ -37,20 +37,22 @@ export default {
     TheNotificationsComponent,
   },
   props: {
-    orderno: {
-      type: String,
+    fullOrder: {
+      type: Object,
       required: true,
     },
   },
   data() {
     return {
-      orderNo: this.orderno,
+      orderNo: this.fullOrder.order_no,
       order: null,
       errors: [],
+      orderDetails: {},
     };
   },
   created() {
     this.singleOrderRequest();
+    this.getOrderDetails();
   },
   mounted() {
     const notification = [];
@@ -71,6 +73,13 @@ export default {
     ...mapActions({
       request_single_order: 'request_single_order',
     }),
+    getOrderDetails() {
+      this.orderDetails = {
+        countryCode: this.fullOrder.country_code,
+        vendorID: this.fullOrder.vendor_type_id,
+        orderStatus: this.fullOrder.order_status,
+      };
+    },
     async singleOrderRequest() {
       try {
         const data = await this.request_single_order(this.orderNo);
