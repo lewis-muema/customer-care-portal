@@ -177,6 +177,7 @@
                       !cancelStatus() &&
                       canCancel()
                   "
+                  :order-details="orderDetails"
                   :order="order"
                 />
                 <TheTicketComponent
@@ -189,7 +190,7 @@
               </div>
             </div>
             <div class="col-md-12">
-              <TheMainComponent :order="order" />
+              <TheMainComponent :order-details="orderDetails" :order="order" />
             </div>
           </div>
         </div>
@@ -228,7 +229,11 @@ export default {
   },
   props: {
     orderno: {
-      type: String,
+      type: Object,
+      required: true,
+    },
+    fullOrder: {
+      type: Object,
       required: true,
     },
   },
@@ -239,6 +244,7 @@ export default {
       GPS: false,
       Assign: false,
       ActiveTab: 'assign',
+      orderDetails: {},
     };
   },
   computed: {
@@ -255,6 +261,7 @@ export default {
     this.updateErrors(notification);
     this.updateNotification(actionClass);
     this.ActiveTabStatus();
+    this.getOrderDetails();
   },
   methods: {
     ...mapMutations({
@@ -311,6 +318,13 @@ export default {
         return true;
       }
       return false;
+    },
+    getOrderDetails() {
+      this.orderDetails = {
+        countryCode: this.fullOrder.country_code,
+        vendorID: this.fullOrder.vendor_type_id,
+        orderStatus: this.fullOrder.order_status,
+      };
     },
   },
 };

@@ -175,7 +175,7 @@
         :key="`details_${order.order_no}_${order.order_status}`"
         :id="`child_row_${order.order_no}`"
       >
-        <DashboardComponent :orderno="order.order_no" />
+        <DashboardComponent :full-order="order" :orderno="order.order_no" />
       </tr>
     </template>
     <tr v-if="!returned">
