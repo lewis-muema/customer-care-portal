@@ -74,8 +74,11 @@ export default {
       request_single_order: 'request_single_order',
     }),
     getOrderDetails() {
+      const countryCode = this.fullOrder.country_code
+        ? this.fullOrder.country_code
+        : this.fullOrder.orderCountryCode[0];
       this.orderDetails = {
-        countryCode: this.fullOrder.country_code,
+        countryCode: countryCode,
         vendorID: this.fullOrder.vendor_type_id,
         orderStatus: this.fullOrder.order_status,
       };
