@@ -9,7 +9,7 @@
     <div class="lower_slide_bit" :id="`bumba_${orderNo}`">
       <div class="row" v-if="order === null">
         loading ....
-      </div>g
+      </div>
       <div class="row" v-else>
         <div class="col-md-4">
           <TheSideComponent :order="order" />
