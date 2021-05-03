@@ -78,7 +78,7 @@ export default {
         ? this.fullOrder.country_code
         : this.fullOrder.orderCountryCode[0];
       this.orderDetails = {
-        countryCode: countryCode,
+        countryCode,
         vendorID: this.fullOrder.vendor_type_id,
         orderStatus: this.fullOrder.order_status,
       };
