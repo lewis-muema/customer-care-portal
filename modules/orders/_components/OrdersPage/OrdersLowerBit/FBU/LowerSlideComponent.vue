@@ -320,8 +320,11 @@ export default {
       return false;
     },
     getOrderDetails() {
+      const countryCode = this.fullOrder.country_code
+        ? this.fullOrder.country_code
+        : this.fullOrder.orderCountryCode[0];
       this.orderDetails = {
-        countryCode: this.fullOrder.country_code,
+        countryCode,
         vendorID: this.fullOrder.vendor_type_id,
         orderStatus: this.fullOrder.order_status,
       };
