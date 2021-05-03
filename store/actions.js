@@ -707,9 +707,7 @@ export default {
     };
     try {
       const response = await axios.get(url, param);
-      const data = await response;
-      const orderDetails = data.data;
-      return orderDetails;
+      return response.data;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
