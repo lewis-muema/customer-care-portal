@@ -242,4 +242,10 @@ export default {
   getDisabledStatus(state) {
     return state.disabledStatus;
   },
+  getActiveCancellationReasons(state) {
+    return state.activeCancellationReasons;
+  },
+  getDeactivatedCancellationReasons(state) {
+    return state.deactivatedCancellationReasons;
+  },
 };

@@ -2,7 +2,7 @@
   <div class="box box-primary order-main-lowerslide ">
     <div class="body-box lower_slide_body">
       <!-- <div class="tabs custom_more"> -->
-      <TheButtonsComponent :order="order" />
+      <TheButtonsComponent :order-details="orderDetails" :order="order" />
       <!-- </div> -->
     </div>
   </div>
@@ -17,6 +17,10 @@ export default {
   },
   props: {
     order: {
+      type: Object,
+      required: true,
+    },
+    orderDetails: {
       type: Object,
       required: true,
     },

@@ -21,13 +21,14 @@
         <div class="form-group col-md-12 user-input">
           <label class="vat"> Country </label>
           <v-select
-            :options="country_code"
-            :reduce="name => name.code"
-            name="name"
-            label="name"
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
             placeholder="Select "
             class="form-control select user-billing"
             :id="`name`"
+            @input="getSelectedCountryCode"
             v-model="country"
           >
           </v-select>
@@ -230,10 +231,6 @@ export default {
       error_msg: '',
       add_btn: false,
       reallocation_reason: '',
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       vendor_type: [],
       vendorType: [],
       country: '',
@@ -262,7 +259,10 @@ export default {
     whenToDisplayReason: { required },
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      active_countries: 'getActiveCountries',
+    }),
   },
   watch: {
     getSession(session) {
@@ -301,6 +301,9 @@ export default {
       }
       this.add_btn = status;
     },
+    getSelectedCountryCode() {
+      this.fetchVendorTypes();
+    },
     async fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
@@ -309,8 +312,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
+          pickup_country_code: this.country,
+          dropoff_country_code: this.country,
         },
       };
       try {
@@ -351,10 +354,12 @@ export default {
         ? 'Order has been confirmed'
         : 'Partner has arrived at the pick up';
     },
-    fetchCountry(id) {
-      if (!id) return '';
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     setStatusText(row) {
       return row.status === 1 ? 'Deactivate' : 'Activate';
@@ -414,7 +419,6 @@ export default {
         reason: this.reallocation_reason,
         order_status: this.whenToDisplayReason,
       };
-      console.log('PPP', data);
       const payload = {
         app: 'ADONIS_API',
         endpoint: `reallocation-reasons`,

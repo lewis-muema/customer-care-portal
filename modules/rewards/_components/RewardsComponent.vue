@@ -18,13 +18,14 @@
         <div class="form-group col-md-4 user-input">
           <label class="vat"> Country </label>
           <v-select
-            :options="country_code"
-            :reduce="name => name.code"
-            name="name"
-            label="name"
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
             placeholder="Select "
             class="form-control select user-billing"
             :id="`name`"
+            @input="getSelectedCountryCode"
             v-model="country"
           >
           </v-select>
@@ -533,10 +534,6 @@ export default {
         { code: 'KES', name: 'KES' },
         { code: 'USD', name: 'USD' },
       ],
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       completed_comp_id: ['GT', 'GET'],
       delays_comp_id: ['LT', 'LET'],
       country: '',
@@ -570,7 +567,10 @@ export default {
     country: { required },
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      active_countries: 'getActiveCountries',
+    }),
   },
   watch: {
     getSession(session) {
@@ -589,9 +589,11 @@ export default {
       request_rewards: 'requestRewards',
       create_reward: 'create_reward',
       update_reward: 'update_reward',
+      get_active_countries: 'get_all_countries',
     }),
     initiateData() {
       this.clearData();
+      this.fetchCountries();
       this.fetchVendorTypes();
       this.requestRewards();
     },
@@ -623,6 +625,21 @@ export default {
       this.message = '';
       this.congratulatory_message = '';
     },
+    async fetchCountries() {
+      const notification = [];
+      let actionClass = '';
+      try {
+        await this.get_active_countries();
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    getSelectedCountryCode() {
+      this.fetchVendorTypes();
+    },
     async fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
@@ -631,8 +648,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
+          pickup_country_code: this.country,
+          dropoff_country_code: this.country,
         },
       };
       try {
@@ -736,14 +753,6 @@ export default {
     formatReward(text) {
       return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
     },
-    vendor(id) {
-      let name = '';
-      if (Object.keys(this.vendor_type).length > 0) {
-        const data = this.vendor_type.find(location => location.id === id);
-        name = data.name;
-      }
-      return name;
-    },
     pickupDelay(comparator, value) {
       let resp = '';
       if (Object.keys(this.comparator).length > 0) {
@@ -774,9 +783,12 @@ export default {
       }
       return resp;
     },
-    fetchCountry(id) {
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     activeStatus(state) {
       let status = 'Deactivated';
