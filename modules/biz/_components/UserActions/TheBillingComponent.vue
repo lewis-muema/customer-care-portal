@@ -170,7 +170,7 @@
           :user="userType"
         />
       </div>
-      <div class="row col-md-12 d-none" v-if="!isReverseTransaction">
+      <div class="row col-md-12" v-if="!isReverseTransaction">
         <div class="form-group col-md-3 bill-check" v-if="!isTransferOrder">
           <input
             value="1"
