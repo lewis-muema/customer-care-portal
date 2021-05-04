@@ -153,7 +153,6 @@ export default {
     }),
     ...mapActions({
       perform_order_action: '$_orders/perform_order_action',
-      request_cancellation_options: 'request_cancellation_options',
       fetch_set_cancellation_reasons: 'fetch_set_cancellation_reasons',
     }),
     async cancelCoupon() {
@@ -189,7 +188,7 @@ export default {
         actionClass = this.display_order_action_notification(data.status);
       } catch (error) {
         notification.push(
-          'Something went wrong. Try again or contact Tech Support',
+          'Something went wrong cancelling coupon. Try again or contact Tech Support',
         );
         actionClass = 'danger';
       }
@@ -222,7 +221,7 @@ export default {
         actionClass = this.display_order_action_notification(data.status);
       } catch (error) {
         notification.push(
-          'Something went wrong. Try again or contact Tech Support',
+          'Something went wrong cancelling order. Try again or contact Tech Support',
         );
         actionClass = 'danger';
       }
@@ -238,7 +237,9 @@ export default {
         await this.fetch_set_cancellation_reasons(countryCodes);
         this.filterVendorTypeCancellationReasons();
       } catch (error) {
-        notification.push('Something went wrong. Please try again.');
+        notification.push(
+          'Error occurred fetching cancellation reasons. Please try again.',
+        );
         actionClass = 'danger';
       }
       this.updateClass(actionClass);
@@ -246,9 +247,9 @@ export default {
     },
     mapOrderStatusToValue() {
       const mappedValue = this.order_status.filter(
-        status => status.status === this.orderDetails.orderStatus,
+        status => status.status === this.orderDetails.orderStatus.toLowerCase(),
       );
-      return mappedValue[0];
+      return mappedValue[0].value;
     },
     filterVendorTypeCancellationReasons() {
       const filteredCancellationReasons = [];
@@ -265,12 +266,10 @@ export default {
       const reasonsArray = [];
       cancellationReasonsArray.forEach(reason => {
         const orderStatus = JSON.parse(reason.applicable_order_status);
-        const statusValue = this.mapOrderStatusToValue();
+        const orderStatusValue = this.mapOrderStatusToValue();
 
-        const found = orderStatus.indexOf(statusValue.value) !== -1;
-        if (found) {
-          reasonsArray.push(reason);
-        }
+        const found = orderStatus.indexOf(orderStatusValue) !== -1;
+        if (found) reasonsArray.push(reason);
       });
       this.loading_cancellation_reasons = false;
       this.cancellation_options = reasonsArray;
