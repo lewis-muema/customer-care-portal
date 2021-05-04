@@ -338,25 +338,32 @@ export default {
       return (this.admin_list = admins);
     },
     approveStatus() {
-      this.approveStatus = this.approveStatus;
+      const temp = this.approveStatus;
+      this.approveStatus = temp;
     },
     payOption() {
-      this.payOption = this.payOption;
+      const temp = this.payOption;
+      this.payOption = temp;
     },
     companyType() {
-      this.companyType = this.companyType;
+      const temp = this.companyType;
+      this.companyType = temp;
     },
     admin() {
-      this.admin = this.admin;
+      const temp = this.admin;
+      this.admin = temp;
     },
     riderType() {
-      this.riderType = this.riderType;
+      const temp = this.riderType;
+      this.riderType = temp;
     },
     category() {
-      this.category = this.category;
+      const temp = this.category;
+      this.category = temp;
     },
     period() {
-      this.period = this.period;
+      const temp = this.period;
+      this.period = temp;
     },
   },
   async mounted() {

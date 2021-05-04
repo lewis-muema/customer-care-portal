@@ -162,8 +162,8 @@
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
 import VueTypeahead from 'vue-typeahead';
 
-import order_store from './_store';
 import RegisterStoreModule from '@/mixins/register_store_module';
+import order_store from './_store';
 import pending from './pending';
 import overview from './overview';
 import declined from './declined';
