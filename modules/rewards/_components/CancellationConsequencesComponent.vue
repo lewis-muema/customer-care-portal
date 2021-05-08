@@ -12,7 +12,10 @@
           :class="add_btn ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
         ></i
       ></el-button>
-      <cancellation-consequences-form v-if="add_btn" />
+      <cancellation-consequences-form
+        @countryChanged="getCountryValue"
+        v-if="add_btn"
+      />
 
       <el-tabs id="cancellation-table" type="card">
         <el-tab-pane label="Active reasons">
@@ -45,11 +48,6 @@ export default {
     return {
       loading_messages: true,
       add_btn: false,
-      setCancellationReasons: [],
-      formData: {
-        data: null,
-        operation: 'add',
-      },
     };
   },
   computed: {
@@ -69,8 +67,8 @@ export default {
       update_status_state: 'update_status_state',
     }),
     initiateData() {
-      this.fetchSetCancellationReasons();
-      this.getCurrentUsersCountryCode();
+      const countryCodes = this.getCurrentUsersCountryCode();
+      this.fetchSetCancellationReasons(countryCodes);
     },
     showCancellationConsequencesForm() {
       let status = false;
@@ -79,14 +77,17 @@ export default {
       }
       this.add_btn = status;
     },
+    getCountryValue(countryCode) {
+      const countryCodes = [countryCode];
+      this.fetchSetCancellationReasons(countryCodes);
+    },
     getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
       return JSON.parse(countryCodeArray);
     },
-    async fetchSetCancellationReasons() {
+    async fetchSetCancellationReasons(countryCodes) {
       const notification = [];
       let actionClass = '';
-      const countryCodes = this.getCurrentUsersCountryCode();
 
       try {
         await this.fetch_set_cancellation_reasons(countryCodes);
@@ -97,27 +98,6 @@ export default {
       }
       this.updateClass(actionClass);
       this.updateErrors(notification);
-    },
-    async setStatusState(row) {
-      const payload = {
-        id: row.id,
-        status: row.status === 1 ? 2 : 1,
-      };
-
-      try {
-        const resp = await this.update_status_state(payload);
-
-        if (resp.status) {
-          this.loading_messages = true;
-          await this.initiateData();
-        }
-      } catch (error) {
-        this.loading_messages = true;
-        this.initiateData();
-        this.response_status = 'error';
-        this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
-      }
     },
   },
 };

@@ -71,6 +71,8 @@
         </div>
       </section>
 
+      <cancellation-action-input />
+
       <div class="form-group  col-md-12 config-submit">
         <button
           class="btn btn-primary action-button"
@@ -103,9 +105,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
+import CancellationActionInput from './CanellationConsequenceActionInputs/CancellationActionInput';
 
 export default {
   name: 'CancellationConsequencesForm',
+  components: {
+    CancellationActionInput,
+  },
   data() {
     return {
       submitted: false,
@@ -178,6 +184,7 @@ export default {
       return JSON.parse(countryCodeArray);
     },
     getSelectedCountryCode() {
+      this.$emit('countryChanged', this.country);
       this.fetchVendorTypes();
     },
     async fetchVendorTypes() {
@@ -332,7 +339,7 @@ export default {
 }
 .user-input {
   margin-bottom: 34px;
-  width: 30%;
+  width: 34%;
 }
 .full-width {
   width: 100% !important;
