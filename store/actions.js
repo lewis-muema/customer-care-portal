@@ -1433,6 +1433,30 @@ export default {
     }
   },
 
+  async fetch_cancellation_actions({ state, dispatch, commit }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}cancellation-actions`;
+
+    try {
+      const response = await axios.get(url, headers);
+      console.log('>>>', response.data.data);
+      return response.data.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 
