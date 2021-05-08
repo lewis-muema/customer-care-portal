@@ -105,7 +105,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
-import CancellationActionInput from './CanellationConsequenceActionInputs/CancellationActionInput';
+import CancellationActionInput from './CanellationConsequenceActionInputs/CancellationConsequenceActionInput';
 
 export default {
   name: 'CancellationConsequencesForm',
@@ -151,6 +151,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      fetch_set_cancellation_reasons: 'fetch_set_cancellation_reasons',
       request_vendor_types: 'request_vendor_types',
       update_cancellation_reason: 'update_cancellation_reason',
       add_cancellation_reason: 'add_cancellation_reason',
@@ -184,7 +185,7 @@ export default {
       return JSON.parse(countryCodeArray);
     },
     getSelectedCountryCode() {
-      this.$emit('countryChanged', this.country);
+      this.fetchSetCancellationReasons([this.country]);
       this.fetchVendorTypes();
     },
     async fetchVendorTypes() {
@@ -204,6 +205,20 @@ export default {
         this.vendor_type = data.vendor_types;
         this.loading_messages = false;
         return data.vendor_types;
+      } catch (error) {
+        notification.push('Something went wrong. Please try again.');
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    async fetchSetCancellationReasons(countryCodes) {
+      const notification = [];
+      let actionClass = '';
+
+      try {
+        await this.fetch_set_cancellation_reasons(countryCodes);
+        this.$emit('showLoader', false);
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';

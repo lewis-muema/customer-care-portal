@@ -1,15 +1,15 @@
 <template>
   <div class="input-container">
-    <!--    partner action dropdown-->
+    <!--    action dropdown-->
     <div
       class="row replica"
       v-for="(partnerAction, index) in partnerActionInputs"
       :key="`partnerAction-${index}`"
     >
       <div class="form-group col-md-4 user-input">
-        <label class="vat"> Partner action </label>
+        <label class="vat"> Action </label>
         <v-select
-          :options="partner_actions_data"
+          :options="actions_data"
           :reduce="name => name.id"
           :name="partnerAction.partnerActionInput"
           label="display_name"
@@ -104,10 +104,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: 'CancellationActionInput',
+  name: 'CancellationConsequenceActionInput',
   data() {
     return {
       partnerAction: {
@@ -125,36 +125,7 @@ export default {
       partnerInputCount: 0,
       partnerActionsSelected: {},
       partnerActionInputs: [],
-      partner_actions_data: [
-        {
-          id: 1,
-          action_type: 1,
-          name: 'Block',
-          display_name: 'Block from dispatch',
-          user_type: '[1]',
-        },
-        {
-          id: 2,
-          action_type: 1,
-          name: 'Penalty_Fee',
-          display_name: 'Charge a penalty fee',
-          user_type: '[1,2]',
-        },
-        {
-          id: 3,
-          action_type: 2,
-          name: 'Reallocation',
-          display_name: 'Allow partner to reallocate',
-          user_type: '[1]',
-        },
-        {
-          id: 5,
-          action_type: 2,
-          name: 'Notification',
-          display_name: 'Trigger notification alert',
-          user_type: '[1,2]',
-        },
-      ],
+      actions_data: [],
       reassignmentReasonPenalize: '',
       reassignment_reason: [],
       actionsCodesArray: [],
@@ -174,9 +145,16 @@ export default {
     this.initData();
   },
   methods: {
+    ...mapActions({
+      fetch_cancellation_actions: 'fetch_cancellation_actions',
+    }),
     initData() {
       this.addNewPartnerAction();
       this.filterReassignmentReasons();
+      this.getActionValues();
+    },
+    async getActionValues() {
+      this.actions_data = await this.fetch_cancellation_actions();
     },
     filterReassignmentReasons() {
       this.reassignment_reason = this.reallocationReasons.filter(

@@ -1,9 +1,10 @@
 <template lang="html">
   <div class="row">
-    <div v-if="loading_messages" class="centre-loader">
-      <Loading />
-    </div>
-    <div v-else class="outline-inner-data">
+    <!--    TODO return page loader to wait for table data load-->
+    <!--    <div v-if="loading_messages" class="centre-loader">-->
+    <!--      <Loading />-->
+    <!--    </div>-->
+    <div class="outline-inner-data">
       <el-button
         type="primary"
         @click="showCancellationConsequencesForm"
@@ -12,10 +13,7 @@
           :class="add_btn ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
         ></i
       ></el-button>
-      <cancellation-consequences-form
-        @countryChanged="getCountryValue"
-        v-if="add_btn"
-      />
+      <cancellation-consequences-form v-if="add_btn" />
 
       <el-tabs id="cancellation-table" type="card">
         <el-tab-pane label="Active reasons">
@@ -30,7 +28,6 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import DeactivatedCancellationsDataTable from './CancellationReasonsDataTables/DeactivatedCancellationsDataTable';
 import CancellationConsequencesForm from './CancellationConsequencesForm';
 import Loading from './LoadingComponent.vue';
@@ -39,7 +36,7 @@ import ActiveCancellationsDataTable from './CancellationReasonsDataTables/Active
 export default {
   name: 'CancellationConsequencesComponent',
   components: {
-    Loading,
+    // Loading,
     CancellationConsequencesForm,
     ActiveCancellationsDataTable,
     DeactivatedCancellationsDataTable,
@@ -50,26 +47,7 @@ export default {
       add_btn: false,
     };
   },
-  computed: {
-    ...mapGetters(['getSession']),
-  },
-  watch: {
-    getSession(session) {
-      return session;
-    },
-  },
-  mounted() {
-    this.initiateData();
-  },
   methods: {
-    ...mapActions({
-      fetch_set_cancellation_reasons: 'fetch_set_cancellation_reasons',
-      update_status_state: 'update_status_state',
-    }),
-    initiateData() {
-      const countryCodes = this.getCurrentUsersCountryCode();
-      this.fetchSetCancellationReasons(countryCodes);
-    },
     showCancellationConsequencesForm() {
       let status = false;
       if (!this.add_btn) {
@@ -77,27 +55,8 @@ export default {
       }
       this.add_btn = status;
     },
-    getCountryValue(countryCode) {
-      const countryCodes = [countryCode];
-      this.fetchSetCancellationReasons(countryCodes);
-    },
-    getCurrentUsersCountryCode() {
-      const countryCodeArray = this.getSession.payload.data.country_codes;
-      return JSON.parse(countryCodeArray);
-    },
-    async fetchSetCancellationReasons(countryCodes) {
-      const notification = [];
-      let actionClass = '';
-
-      try {
-        await this.fetch_set_cancellation_reasons(countryCodes);
-        this.loading_messages = false;
-      } catch (error) {
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
-      }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
+    showLoader(loaderState) {
+      this.loading_messages = loaderState;
     },
   },
 };
