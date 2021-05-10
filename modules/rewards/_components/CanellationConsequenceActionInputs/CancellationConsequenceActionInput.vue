@@ -3,98 +3,138 @@
     <!--    action dropdown-->
     <div
       class="row replica"
-      v-for="(partnerAction, index) in partnerActionInputs"
-      :key="`partnerAction-${index}`"
+      v-for="(customerAction, index) in customerActionInputs"
+      :key="`customerAction-${index}`"
     >
-      <div class="form-group col-md-4 user-input">
+      <div class="form-group col-md-3 user-input">
         <label class="vat"> Action </label>
         <v-select
           :options="actions_data"
           :reduce="name => name.id"
-          :name="partnerAction.partnerActionInput"
+          :name="customerAction.customerActionInput"
           label="display_name"
           placeholder="Select"
           class="form-control select user-billing"
           :id="`name`"
-          @input="partnerActionSelectedChanged(partnerAction, index)"
-          v-model="partnerAction.partner_action_id"
+          @input="customerActionSelectedChanged(customerAction, index)"
+          v-model="customerAction.action_id"
         >
         </v-select>
         <div class="input-counter">
           <div
-            v-if="partnerAction.partnerActionInput !== 3"
+            v-if="customerAction.customerActionInput !== 3"
             class="add-input"
-            @click="addNewPartnerAction"
+            @click="addNewCustomerAction"
           >
             + Select another partner action
           </div>
           <div
-            v-if="partnerActionInputs.length > 1"
+            v-if="customerActionInputs.length > 1"
             class="remove-input"
-            @click="removePartnerAction(index)"
+            @click="removeCustomerAction(index)"
           >
             x Remove action
           </div>
         </div>
       </div>
 
-      <!--    how long field-->
-      <div
-        v-if="partnerAction.block_hours_visible"
-        class="form-group col-md-4 user-input"
-      >
-        <label class="vat">
-          For how long
-        </label>
-        <el-input
-          type="number"
-          min="0"
-          value="0.01"
-          step="0.01"
-          v-model="partnerAction.block_hours"
-          @input="
-            updatePartnerActionInputChanged(partnerAction, 'block_hours', index)
-          "
-        >
-          <template slot="append">hours</template>
-        </el-input>
-      </div>
-
       <!--    charge penalty fee message-->
       <div
-        v-if="partnerAction.penalty_fee_visible"
-        class="form-group col-md-4 user-input"
+        v-if="customerAction.penalty_fee_visible"
+        class="form-group col-md-3 user-input"
+        id="penalty-fee-input"
       >
-        <label class="vat"> How much </label>
+        <label class="vat"> How much is the cancellation fee? </label>
         <el-input
           placeholder="Please input amount"
           type="number"
           min="1"
-          v-model="partnerAction.penalty_fee"
+          v-model="customerAction.penalty_fee"
           @input="
-            updatePartnerActionInputChanged(partnerAction, 'penalty_fee', index)
+            updateCustomerActionInputChanged(
+              customerAction,
+              'penalty_fee',
+              index,
+            )
           "
         >
+          <template slot="prepend">{{ selectedCountryCurrency }}</template>
         </el-input>
       </div>
 
-      <!--    message to show partner-->
+      <!--      order status field-->
       <div
-        v-if="partnerAction.partner_message_visible"
-        class="form-group col-md-4 user-input"
+        v-if="customerAction.order_status_visible"
+        class="form-group col-md-3 user-input"
       >
-        <label class="vat"> Message to show partner </label>
+        <label class="vat">
+          What status of the order should we apply the cancellation fee?
+        </label>
+        <v-select
+          :options="order_status_data"
+          :reduce="name => name.value"
+          chips
+          label="label"
+          name="label"
+          placeholder="Select"
+          class="form-control select user-billing"
+          :id="`value`"
+          v-model="order_status"
+        >
+        </v-select>
+      </div>
+
+      <!--    how long field-->
+      <div
+        v-if="customerAction.apply_time_visible"
+        class="form-group col-md-3 user-input"
+        id="apply-duration-select"
+      >
+        <label class="vat">
+          When to apply the cancellation fee
+        </label>
+        <el-input
+          type="number"
+          min="0"
+          v-model="customerAction.apply_time"
+          @input="
+            updateCustomerActionInputChanged(
+              customerAction,
+              'apply_time',
+              index,
+            )
+          "
+        >
+          <el-select
+            v-model="customerAction.when_to_apply_duration"
+            slot="prepend"
+            placeholder="Select"
+          >
+            <el-option
+              v-for="value in comparison_Values"
+              :key="value.code"
+              :label="value.name"
+              :value="value.code"
+            >
+            </el-option>
+          </el-select>
+          <template slot="append">Mins</template>
+        </el-input>
+      </div>
+
+      <!--    message to show customer-->
+      <div
+        v-if="customerAction.message_visible"
+        class="form-group col-md-3 user-input"
+      >
+        <label class="vat"> Message to display to customer </label>
         <el-input
           placeholder="Please input"
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 4 }"
-          v-model="partnerAction.partner_message"
+          v-model="customerAction.message"
           @input="
-            updatePartnerActionInputChanged(
-              partnerAction,
-              'partner_message',
-              index,
-            )
+            updateCustomerActionInputChanged(customerAction, 'message', index)
           "
         >
         </el-input>
@@ -108,27 +148,67 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'CancellationConsequenceActionInput',
+  props: {
+    selectedCountryCurrency: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
-      partnerAction: {
-        partner_action_id: null,
-        block_hours: null,
-        block_hours_visible: false,
-        after_how_long: null,
-        after_how_long_visible: false,
+      customerAction: {
+        action_id: null,
+        apply_time: null,
+        apply_time_visible: false,
+        when_to_apply_duration: null,
         penalty_fee: null,
         penalty_fee_visible: false,
-        partner_message_visible: false,
-        partner_message: '',
-        partnerActionInput: 0,
+        message_visible: false,
+        message: '',
+        order_status_visible: false,
+        order_status: null,
+        customerActionInput: 0,
       },
-      partnerInputCount: 0,
-      partnerActionsSelected: {},
-      partnerActionInputs: [],
+      inputCount: 0,
+      customerActionsSelected: {},
+      customerActionInputs: [],
       actions_data: [],
       reassignmentReasonPenalize: '',
       reassignment_reason: [],
       actionsCodesArray: [],
+      order_status_data: [
+        {
+          label: 'Before an order has been confirmed',
+          reason: 'BEFORE_CONFIRMATION',
+          value: 1,
+        },
+        {
+          label: 'Before arrival at pickup location',
+          reason: 'AFTER_CONFIRMATION',
+          value: 2,
+        },
+        {
+          label: 'After arrival at pick up location',
+          reason: 'AFTER_ARRIVAL_AT_PICK_UP',
+          value: 3,
+        },
+      ],
+      order_status: [],
+      when_to_apply_duration: '',
+      comparison_Values: [
+        {
+          name: 'Less than',
+          code: 0,
+        },
+        {
+          name: 'More than',
+          code: 1,
+        },
+        {
+          name: 'Immediately',
+          code: 2,
+        },
+      ],
     };
   },
   computed: {
@@ -149,7 +229,7 @@ export default {
       fetch_cancellation_actions: 'fetch_cancellation_actions',
     }),
     initData() {
-      this.addNewPartnerAction();
+      this.addNewCustomerAction();
       this.filterReassignmentReasons();
       this.getActionValues();
     },
@@ -161,52 +241,52 @@ export default {
         reason => reason.status === 1,
       );
     },
-    addNewPartnerAction() {
-      this.partnerActionInputs.push({
-        ...this.partnerAction,
-        partnerActionInput: this.partnerInputCount++,
+    addNewCustomerAction() {
+      this.customerActionInputs.push({
+        ...this.customerAction,
+        customerActionInput: this.inputCount++,
       });
     },
-    removePartnerAction(inputIndex) {
-      this.partnerActionInputs.splice(inputIndex, 1);
+    removeCustomerAction(inputIndex) {
+      this.customerActionInputs.splice(inputIndex, 1);
     },
     reassignmentReasonChanged() {
       this.$emit('actionValues', {
         reassignment_reason_penalize: this.reassignmentReasonPenalize,
-        partner_actions: this.partnerActionInputs,
+        partner_actions: this.customerActionInputs,
         customer_actions: this.customerActionInputs,
       });
     },
-    updatePartnerActionInputChanged(updatedValue, field, inputIndex) {
-      const currentObject = this.partnerActionInputs[inputIndex];
+    updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
+      const currentObject = this.customerActionInputs[inputIndex];
       this.$set(currentObject, field, updatedValue[field]);
       this.emitAllInputValues();
     },
-    partnerActionSelectedChanged(selectedValue, inputIndex) {
-      const { partner_action_id } = selectedValue;
-      const selectedAction = this.partnerActionInputs[inputIndex];
-      this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
+    customerActionSelectedChanged(selectedValue, inputIndex) {
+      const { action_id } = selectedValue;
+      const selectedAction = this.customerActionInputs[inputIndex];
+      this.inputsVisibilityTrigger(action_id, selectedAction);
     },
-    partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
-      this.$set(inputValuesObject, 'block_hours_visible', false);
-      this.$set(inputValuesObject, 'partner_message_visible', false);
+    inputsVisibilityTrigger(actionID, inputValuesObject) {
+      this.$set(inputValuesObject, 'apply_time_visible', false);
+      this.$set(inputValuesObject, 'message_visible', false);
       this.$set(inputValuesObject, 'penalty_fee_visible', false);
-      this.$set(inputValuesObject, 'partner_message_visible', false);
+      this.$set(inputValuesObject, 'order_status_visible', false);
 
       if (actionID === 1) {
-        this.$set(inputValuesObject, 'block_hours_visible', true);
-        this.$set(inputValuesObject, 'partner_message_visible', true);
+        this.$set(inputValuesObject, 'message_visible', true);
       } else if (actionID === 2) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
-        this.$set(inputValuesObject, 'partner_message_visible', true);
+        this.$set(inputValuesObject, 'order_status_visible', true);
+        this.$set(inputValuesObject, 'apply_time_visible', true);
       } else if (actionID === 5) {
-        this.$set(inputValuesObject, 'partner_message_visible', true);
+        this.$set(inputValuesObject, 'message_visible', true);
       }
     },
     emitAllInputValues() {
       this.$emit('actionValues', {
         reassignment_reason_penalize: this.reassignmentReasonPenalize,
-        partner_actions: this.partnerActionInputs,
+        partner_actions: this.customerActionInputs,
       });
     },
   },
@@ -223,6 +303,7 @@ export default {
 .vat {
   text-align: left;
   display: block;
+  margin-bottom: 3px;
 }
 .input-counter {
   display: flex;
@@ -250,5 +331,19 @@ export default {
 }
 .v-select {
   padding: 0;
+}
+.input-with-select {
+  margin-left: -6%;
+}
+</style>
+
+<style>
+#apply-duration-select > .el-input .el-input-group__prepend {
+  width: 45%;
+  padding: 0 15px 0 10px;
+}
+#penalty-fee-input > .el-input .el-input-group__prepend {
+  width: 30%;
+  padding: 0 15px 0 10px;
 }
 </style>
