@@ -5,7 +5,7 @@
       class="form-inline add-reward-section"
     >
       <section class="row full-width">
-        <div class="form-group col-md-4 user-input">
+        <div class="form-group col-md-3 user-input">
           <label class="vat"> Country </label>
           <v-select
             :options="active_countries"
@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <div class="form-group col-md-4 user-input">
+        <div class="form-group col-md-3 user-input">
           <label class="vat"> Vendor Type </label>
           <v-select
             :options="vendor_type"
@@ -47,7 +47,7 @@
           </div>
         </div>
 
-        <div class="form-group col-md-4 user-input">
+        <div class="form-group col-md-3 user-input">
           <label class="vat"> Cancellation Reason </label>
           <v-select
             :options="setCancellationReasons"
@@ -71,7 +71,9 @@
         </div>
       </section>
 
-      <cancellation-action-input />
+      <cancellation-action-input
+        :selected-country-currency="country_currency"
+      />
 
       <div class="form-group  col-md-12 config-submit">
         <button
@@ -122,6 +124,7 @@ export default {
       vendor_type: [],
       vendorsSelected: [],
       country: '',
+      country_currency: 'KES',
       submit_state: false,
     };
   },
@@ -184,8 +187,15 @@ export default {
       const countryCodeArray = this.getSession.payload.data.country_codes;
       return JSON.parse(countryCodeArray);
     },
+    getCurrencyOfSelectedCountry(selectedCountry) {
+      const countryData = this.active_countries.find(
+        country => country.country_code === selectedCountry,
+      );
+      this.country_currency = countryData.currency_code;
+    },
     getSelectedCountryCode() {
       this.fetchSetCancellationReasons([this.country]);
+      this.getCurrencyOfSelectedCountry(this.country);
       this.fetchVendorTypes();
     },
     async fetchVendorTypes() {
@@ -300,7 +310,7 @@ export default {
 
 <style scoped>
 .add-reward-section {
-  width: 80% !important;
+  width: 95% !important;
   min-height: 340px;
 }
 .form-inline {
