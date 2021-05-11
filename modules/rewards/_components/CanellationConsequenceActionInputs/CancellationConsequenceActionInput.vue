@@ -22,7 +22,9 @@
         </v-select>
         <div class="input-counter">
           <div
-            v-if="customerAction.customerActionInput !== 3"
+            v-if="
+              customerAction.customerActionInput !== actions_data.length - 1
+            "
             class="add-input"
             @click="addNewCustomerAction"
           >
@@ -91,7 +93,53 @@
         </v-select>
       </div>
 
-      <!--    how long field-->
+      <!--    time duration field (before showing message)-->
+      <div
+        v-if="customerAction.show_message_time_visible"
+        class="form-group col-md-3 user-input"
+        id="time-duration-select"
+      >
+        <label class="vat">
+          When to show the message (minutes)
+        </label>
+        <el-input
+          type="number"
+          min="0"
+          :disabled="customerAction.when_to_apply === 'immediately'"
+          v-model="customerAction.show_message_time"
+          @input="
+            updateCustomerActionInputChanged(
+              customerAction,
+              'show_message_time',
+              index,
+            )
+          "
+        >
+          <el-select
+            v-model="customerAction.when_to_apply"
+            slot="prepend"
+            placeholder="Select"
+            @input="
+              updateCustomerActionInputChanged(
+                customerAction,
+                'when_to_apply',
+                index,
+              )
+            "
+          >
+            <el-option
+              v-for="param in comparison_parameters"
+              :key="param.value"
+              :label="param.name"
+              :value="param.value"
+            >
+            </el-option>
+          </el-select>
+          <template slot="append">Mins</template>
+        </el-input>
+      </div>
+
+      <!--    time duration field (before charging fees)-->
       <div
         v-if="customerAction.apply_fees_time_visible"
         class="form-group col-md-3 user-input"
@@ -137,12 +185,12 @@
         </el-input>
       </div>
 
-      <!--    message to show customer-->
+      <!--    message to show-->
       <div
         v-if="customerAction.message_visible"
         class="form-group col-md-3 user-input"
       >
-        <label class="vat"> Message to display to customer </label>
+        <label class="vat"> Message to display </label>
         <el-input
           placeholder="Please input"
           type="textarea"
@@ -159,7 +207,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'CancellationConsequenceActionInput',
@@ -175,7 +223,9 @@ export default {
         action_id: null,
         apply_fees_time: null,
         apply_fees_time_visible: false,
-        when_to_apply_fees: null,
+        show_message_time: null,
+        show_message_time_visible: false,
+        when_to_apply: null,
         penalty_fee: null,
         penalty_fee_visible: false,
         message_visible: false,
@@ -247,15 +297,16 @@ export default {
     removeCustomerAction(inputIndex) {
       this.customerActionInputs.splice(inputIndex, 1);
     },
-    resetCancellationFeesInput(currentObject, fieldValue) {
+    resetTimeInput(currentObject, fieldValue) {
       if (fieldValue === 'immediately') {
         this.$set(currentObject, 'apply_fees_time', 0);
+        this.$set(currentObject, 'show_message_time', 0);
       }
     },
     updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
       const currentObject = this.customerActionInputs[inputIndex];
-      if (field === 'when_to_apply_fees') {
-        this.resetCancellationFeesInput(currentObject, updatedValue[field]);
+      if (field === 'when_to_apply') {
+        this.resetTimeInput(currentObject, updatedValue[field]);
       }
 
       this.$set(currentObject, field, updatedValue[field]);
@@ -269,16 +320,20 @@ export default {
     inputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'apply_fees_time_visible', false);
       this.$set(inputValuesObject, 'message_visible', false);
+      this.$set(inputValuesObject, 'show_message_time_visible', false);
       this.$set(inputValuesObject, 'penalty_fee_visible', false);
       this.$set(inputValuesObject, 'order_status_visible', false);
 
       if (actionID === 1) {
         this.$set(inputValuesObject, 'message_visible', true);
-      } else if (actionID === 2) {
+      } else if (actionID === 2 || actionID === 3) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
         this.$set(inputValuesObject, 'order_status_visible', true);
         this.$set(inputValuesObject, 'apply_fees_time_visible', true);
+      } else if (actionID === 4) {
+        this.$set(inputValuesObject, 'message_visible', true);
       } else if (actionID === 5) {
+        this.$set(inputValuesObject, 'show_message_time_visible', true);
         this.$set(inputValuesObject, 'message_visible', true);
       }
     },
@@ -338,6 +393,10 @@ export default {
 </style>
 
 <style>
+#time-duration-select > .el-input .el-input-group__prepend {
+  width: 45%;
+  padding: 0 15px 0 10px;
+}
 #apply-duration-select > .el-input .el-input-group__prepend {
   width: 45%;
   padding: 0 15px 0 10px;

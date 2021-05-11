@@ -1537,8 +1537,6 @@ export default {
 
     try {
       const response = await axios.get(url, headers);
-      // TODO remove console log below
-      console.log('>>>', response.data.data);
       return response.data.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
