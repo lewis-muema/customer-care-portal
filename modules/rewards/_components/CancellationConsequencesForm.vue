@@ -73,6 +73,7 @@
 
       <cancellation-action-input
         :selected-country-currency="country_currency"
+        @actionInputValues="sanitizeValues"
       />
 
       <div class="form-group  col-md-12 config-submit">
@@ -125,6 +126,7 @@ export default {
       vendorsSelected: [],
       country: '',
       country_currency: 'KES',
+      actonDataValues: [],
       submit_state: false,
     };
   },
@@ -238,6 +240,30 @@ export default {
     },
     checkSubmitStatus() {
       return this.submit_state;
+    },
+    sanitizeValues(actionData) {
+      // DEEP CLONE ARRAY
+      const actionValues = JSON.parse(JSON.stringify(actionData));
+
+      this.actonDataValues = actionValues.map(action => {
+        // eslint-disable-next-line guard-for-in
+        for (const key in action) {
+          const found = key.includes('_visible');
+          if (found) delete action[key];
+
+          const exists = key.includes('customerActionInput');
+          if (exists) delete action[key];
+
+          if (action[key] === null) delete action[key];
+
+          if (action['action_id'] === 2) delete action['show_message_time'];
+
+          if (action['action_id'] === 5) delete action['apply_fees_time'];
+        }
+        return action;
+      });
+
+      console.log('CCC', this.actonDataValues);
     },
     async add_cancellation_consequences() {
       this.submitted = true;

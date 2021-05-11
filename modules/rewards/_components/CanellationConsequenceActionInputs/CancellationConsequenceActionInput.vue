@@ -151,7 +151,7 @@
         <el-input
           type="number"
           min="0"
-          :disabled="customerAction.when_to_apply_fees === 'immediately'"
+          :disabled="customerAction.when_to_apply === 'immediately'"
           v-model="customerAction.apply_fees_time"
           @input="
             updateCustomerActionInputChanged(
@@ -162,13 +162,13 @@
           "
         >
           <el-select
-            v-model="customerAction.when_to_apply_fees"
+            v-model="customerAction.when_to_apply"
             slot="prepend"
             placeholder="Select"
             @input="
               updateCustomerActionInputChanged(
                 customerAction,
-                'when_to_apply_fees',
+                'when_to_apply',
                 index,
               )
             "
@@ -229,7 +229,7 @@ export default {
         penalty_fee: null,
         penalty_fee_visible: false,
         message_visible: false,
-        message: '',
+        message: null,
         order_status_visible: false,
         order_status: null,
         customerActionInput: 0,
@@ -338,11 +338,7 @@ export default {
       }
     },
     emitAllInputValues() {
-      const inputValues = {
-        customer_actions: this.customerActionInputs,
-      };
-      console.log('III', inputValues);
-      this.$emit('actionInputValues', inputValues);
+      this.$emit('actionInputValues', this.customerActionInputs);
     },
   },
 };
