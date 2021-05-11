@@ -103,6 +103,7 @@
         <el-input
           type="number"
           min="0"
+          :disabled="customerAction.when_to_apply_fees === 'immediately'"
           v-model="customerAction.apply_fees_time"
           @input="
             updateCustomerActionInputChanged(
@@ -187,8 +188,6 @@ export default {
       customerActionsSelected: {},
       customerActionInputs: [],
       actions_data: [],
-      reassignmentReasonPenalize: '',
-      reassignment_reason: [],
       actionsCodesArray: [],
       order_status_data: [
         {
@@ -225,16 +224,6 @@ export default {
       ],
     };
   },
-  computed: {
-    ...mapGetters({
-      reallocationReasons: 'getReallocationReasons',
-    }),
-  },
-  watch: {
-    reallocationReasons() {
-      this.filterReassignmentReasons();
-    },
-  },
   created() {
     this.initData();
   },
@@ -244,16 +233,10 @@ export default {
     }),
     initData() {
       this.addNewCustomerAction();
-      this.filterReassignmentReasons();
       this.getActionValues();
     },
     async getActionValues() {
       this.actions_data = await this.fetch_cancellation_actions();
-    },
-    filterReassignmentReasons() {
-      this.reassignment_reason = this.reallocationReasons.filter(
-        reason => reason.status === 1,
-      );
     },
     addNewCustomerAction() {
       this.customerActionInputs.push({
@@ -264,15 +247,17 @@ export default {
     removeCustomerAction(inputIndex) {
       this.customerActionInputs.splice(inputIndex, 1);
     },
-    reassignmentReasonChanged() {
-      this.$emit('actionValues', {
-        reassignment_reason_penalize: this.reassignmentReasonPenalize,
-        partner_actions: this.customerActionInputs,
-        customer_actions: this.customerActionInputs,
-      });
+    resetCancellationFeesInput(currentObject, fieldValue) {
+      if (fieldValue === 'immediately') {
+        this.$set(currentObject, 'apply_fees_time', 0);
+      }
     },
     updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
       const currentObject = this.customerActionInputs[inputIndex];
+      if (field === 'when_to_apply_fees') {
+        this.resetCancellationFeesInput(currentObject, updatedValue[field]);
+      }
+
       this.$set(currentObject, field, updatedValue[field]);
       this.emitAllInputValues();
     },
@@ -299,11 +284,10 @@ export default {
     },
     emitAllInputValues() {
       const inputValues = {
-        reassignment_reason_penalize: this.reassignmentReasonPenalize,
         customer_actions: this.customerActionInputs,
       };
       console.log('III', inputValues);
-      this.$emit('actionValues', inputValues);
+      this.$emit('actionInputValues', inputValues);
     },
   },
 };
