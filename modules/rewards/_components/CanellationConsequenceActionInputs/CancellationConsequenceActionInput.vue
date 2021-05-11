@@ -68,7 +68,7 @@
         class="form-group col-md-3 user-input"
       >
         <label class="vat">
-          What status of the order should we apply the cancellation fee?
+          Status of order to apply the cancellation fee
         </label>
         <v-select
           :options="order_status_data"
@@ -79,42 +79,56 @@
           placeholder="Select"
           class="form-control select user-billing"
           :id="`value`"
-          v-model="order_status"
+          v-model="customerAction.order_status"
+          @input="
+            updateCustomerActionInputChanged(
+              customerAction,
+              'order_status',
+              index,
+            )
+          "
         >
         </v-select>
       </div>
 
       <!--    how long field-->
       <div
-        v-if="customerAction.apply_time_visible"
+        v-if="customerAction.apply_fees_time_visible"
         class="form-group col-md-3 user-input"
         id="apply-duration-select"
       >
         <label class="vat">
-          When to apply the cancellation fee
+          When to apply the cancellation fee (minutes)
         </label>
         <el-input
           type="number"
           min="0"
-          v-model="customerAction.apply_time"
+          v-model="customerAction.apply_fees_time"
           @input="
             updateCustomerActionInputChanged(
               customerAction,
-              'apply_time',
+              'apply_fees_time',
               index,
             )
           "
         >
           <el-select
-            v-model="customerAction.when_to_apply_duration"
+            v-model="customerAction.when_to_apply_fees"
             slot="prepend"
             placeholder="Select"
+            @input="
+              updateCustomerActionInputChanged(
+                customerAction,
+                'when_to_apply_fees',
+                index,
+              )
+            "
           >
             <el-option
-              v-for="value in comparison_Values"
-              :key="value.code"
-              :label="value.name"
-              :value="value.code"
+              v-for="param in comparison_parameters"
+              :key="param.value"
+              :label="param.name"
+              :value="param.value"
             >
             </el-option>
           </el-select>
@@ -158,9 +172,9 @@ export default {
     return {
       customerAction: {
         action_id: null,
-        apply_time: null,
-        apply_time_visible: false,
-        when_to_apply_duration: null,
+        apply_fees_time: null,
+        apply_fees_time_visible: false,
+        when_to_apply_fees: null,
         penalty_fee: null,
         penalty_fee_visible: false,
         message_visible: false,
@@ -195,18 +209,18 @@ export default {
       ],
       order_status: [],
       when_to_apply_duration: '',
-      comparison_Values: [
+      comparison_parameters: [
         {
           name: 'Less than',
-          code: 0,
+          value: 'less_than',
         },
         {
           name: 'More than',
-          code: 1,
+          value: 'more_than',
         },
         {
           name: 'Immediately',
-          code: 2,
+          value: 'immediately',
         },
       ],
     };
@@ -268,7 +282,7 @@ export default {
       this.inputsVisibilityTrigger(action_id, selectedAction);
     },
     inputsVisibilityTrigger(actionID, inputValuesObject) {
-      this.$set(inputValuesObject, 'apply_time_visible', false);
+      this.$set(inputValuesObject, 'apply_fees_time_visible', false);
       this.$set(inputValuesObject, 'message_visible', false);
       this.$set(inputValuesObject, 'penalty_fee_visible', false);
       this.$set(inputValuesObject, 'order_status_visible', false);
@@ -278,16 +292,18 @@ export default {
       } else if (actionID === 2) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
         this.$set(inputValuesObject, 'order_status_visible', true);
-        this.$set(inputValuesObject, 'apply_time_visible', true);
+        this.$set(inputValuesObject, 'apply_fees_time_visible', true);
       } else if (actionID === 5) {
         this.$set(inputValuesObject, 'message_visible', true);
       }
     },
     emitAllInputValues() {
-      this.$emit('actionValues', {
+      const inputValues = {
         reassignment_reason_penalize: this.reassignmentReasonPenalize,
-        partner_actions: this.customerActionInputs,
-      });
+        customer_actions: this.customerActionInputs,
+      };
+      console.log('III', inputValues);
+      this.$emit('actionValues', inputValues);
     },
   },
 };
