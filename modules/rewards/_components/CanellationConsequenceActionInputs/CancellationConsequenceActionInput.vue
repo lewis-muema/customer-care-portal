@@ -62,6 +62,12 @@
         >
           <template slot="prepend">{{ selectedCountryCurrency }}</template>
         </el-input>
+        <div
+          v-if="validateInputs(customerAction, 'penalty_fee', index)"
+          class="error"
+        >
+          Penalty fee value required!
+        </div>
       </div>
 
       <!--      order status field-->
@@ -91,6 +97,12 @@
           "
         >
         </v-select>
+        <div
+          v-if="validateInputs(customerAction, 'order_status', index)"
+          class="error"
+        >
+          Order status value required!
+        </div>
       </div>
 
       <!--    time duration field (before showing message)-->
@@ -105,7 +117,7 @@
         <el-input
           type="number"
           min="0"
-          :disabled="customerAction.when_to_apply === 'immediately'"
+          :disabled="customerAction.time_when_to_apply === 'immediately'"
           v-model="customerAction.show_message_time"
           @input="
             updateCustomerActionInputChanged(
@@ -116,13 +128,13 @@
           "
         >
           <el-select
-            v-model="customerAction.when_to_apply"
+            v-model="customerAction.time_when_to_apply"
             slot="prepend"
             placeholder="Select"
             @input="
               updateCustomerActionInputChanged(
                 customerAction,
-                'when_to_apply',
+                'time_when_to_apply',
                 index,
               )
             "
@@ -137,6 +149,18 @@
           </el-select>
           <template slot="append">Mins</template>
         </el-input>
+        <div
+          v-if="validateInputs(customerAction, 'time_when_to_apply', index)"
+          class="error"
+        >
+          Time when to apply value required!
+        </div>
+        <div
+          v-if="validateInputs(customerAction, 'show_message_time', index)"
+          class="error"
+        >
+          Minutes time value required!
+        </div>
       </div>
 
       <!--    time duration field (before charging fees)-->
@@ -151,7 +175,7 @@
         <el-input
           type="number"
           min="0"
-          :disabled="customerAction.when_to_apply === 'immediately'"
+          :disabled="customerAction.time_when_to_apply === 'immediately'"
           v-model="customerAction.apply_fees_time"
           @input="
             updateCustomerActionInputChanged(
@@ -162,13 +186,13 @@
           "
         >
           <el-select
-            v-model="customerAction.when_to_apply"
+            v-model="customerAction.time_when_to_apply"
             slot="prepend"
             placeholder="Select"
             @input="
               updateCustomerActionInputChanged(
                 customerAction,
-                'when_to_apply',
+                'time_when_to_apply',
                 index,
               )
             "
@@ -183,6 +207,18 @@
           </el-select>
           <template slot="append">Mins</template>
         </el-input>
+        <div
+          v-if="validateInputs(customerAction, 'time_when_to_apply', index)"
+          class="error"
+        >
+          Time when to apply value required!
+        </div>
+        <div
+          v-if="validateInputs(customerAction, 'apply_fees_time', index)"
+          class="error"
+        >
+          Minutes time value required!
+        </div>
       </div>
 
       <!--    message to show-->
@@ -201,6 +237,12 @@
           "
         >
         </el-input>
+        <div
+          v-if="validateInputs(customerAction, 'message', index)"
+          class="error"
+        >
+          Message is required!
+        </div>
       </div>
     </div>
   </div>
@@ -225,7 +267,7 @@ export default {
         apply_fees_time_visible: false,
         show_message_time: null,
         show_message_time_visible: false,
-        when_to_apply: null,
+        time_when_to_apply: null,
         penalty_fee: null,
         penalty_fee_visible: false,
         message_visible: false,
@@ -305,7 +347,7 @@ export default {
     },
     updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
       const currentObject = this.customerActionInputs[inputIndex];
-      if (field === 'when_to_apply') {
+      if (field === 'time_when_to_apply') {
         this.resetTimeInput(currentObject, updatedValue[field]);
       }
 
@@ -324,21 +366,68 @@ export default {
       this.$set(inputValuesObject, 'penalty_fee_visible', false);
       this.$set(inputValuesObject, 'order_status_visible', false);
 
-      if (actionID === 1) {
+      if (actionID === 1 || actionID === 4) {
         this.$set(inputValuesObject, 'message_visible', true);
       } else if (actionID === 2 || actionID === 3) {
         this.$set(inputValuesObject, 'penalty_fee_visible', true);
         this.$set(inputValuesObject, 'order_status_visible', true);
         this.$set(inputValuesObject, 'apply_fees_time_visible', true);
-      } else if (actionID === 4) {
-        this.$set(inputValuesObject, 'message_visible', true);
       } else if (actionID === 5) {
         this.$set(inputValuesObject, 'show_message_time_visible', true);
         this.$set(inputValuesObject, 'message_visible', true);
       }
     },
+    validateInputs(updatedValue, field, inputIndex) {
+      const currentObject = this.customerActionInputs[inputIndex];
+      return currentObject[field] === '' || currentObject[field] === null;
+    },
+    sanitizeValues(actionData) {
+      // DEEP CLONE ARRAY
+      const actionValues = JSON.parse(JSON.stringify(actionData));
+
+      const actonDataValues = actionValues.map(action => {
+        // eslint-disable-next-line guard-for-in
+        for (const key in action) {
+          const found = key.includes('_visible');
+          if (found) delete action[key];
+
+          const exists = key.includes('customerActionInput');
+          if (exists) delete action[key];
+
+          if (action[key] === null) delete action[key];
+
+          if (action['action_id'] === 2) delete action['show_message_time'];
+
+          if (action['action_id'] === 5) delete action['apply_fees_time'];
+        }
+        return action;
+      });
+
+      console.log('CCC', actonDataValues);
+      return this.removeInvalidObjects(actonDataValues);
+    },
+    removeInvalidObjects(valuesArray) {
+      const cleanedArray = [];
+      valuesArray.forEach(value => {
+        if (value.action_id === 1 || value.action_id === 4) {
+          if (Object.keys(value).length >= 2) cleanedArray.push(value);
+        }
+
+        if (value.action_id === 2 || value.action_id === 3) {
+          if (Object.keys(value).length >= 5) cleanedArray.push(value);
+        }
+
+        if (value.action_id === 5) {
+          if (Object.keys(value).length >= 4) cleanedArray.push(value);
+        }
+      });
+      return cleanedArray;
+    },
     emitAllInputValues() {
-      this.$emit('actionInputValues', this.customerActionInputs);
+      let values = [];
+      values = this.customerActionInputs;
+      const actionValues = this.sanitizeValues(values);
+      this.$emit('actionInputValues', actionValues);
     },
   },
 };
@@ -385,6 +474,9 @@ export default {
 }
 .input-with-select {
   margin-left: -6%;
+}
+.error {
+  color: red;
 }
 </style>
 
