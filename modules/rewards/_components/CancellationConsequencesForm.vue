@@ -52,8 +52,6 @@
           <v-select
             :options="setCancellationReasons"
             :reduce="value => value.cancellation_reason_id"
-            multiple
-            chips
             label="cancellation_reason"
             name="id"
             placeholder="Select"
@@ -172,6 +170,7 @@ export default {
       this.vendorsSelected = [];
       this.cancellation_reason = '';
       this.whenToDisplayReason = [];
+      this.actonDataValues = [];
     },
     mapOrderReasonsToId(whenToDisplayReasons) {
       if (!whenToDisplayReasons.length) return;
@@ -243,14 +242,12 @@ export default {
     },
     setActionValues(actionData) {
       this.actonDataValues = actionData;
-      console.log('values', this.actonDataValues);
     },
     async add_cancellation_consequences() {
       this.submitted = true;
       this.$v.$touch();
-      if (this.$v.$invalid) {
-        return;
-      }
+      if (this.$v.$invalid) return;
+
       this.submit_status = true;
       this.response_status = true;
       this.submit_state = true;
@@ -267,21 +264,20 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'A cancellation reason is needed ';
-      } else if (!this.whenToDisplayReason.length) {
+      } else if (!this.actonDataValues.length) {
         this.submit_state = false;
         this.response_status = 'error';
-        this.error_msg = ' When to display cancellation reason is required';
+        this.error_msg = ' Please fill in all action input values required';
+        return;
       }
 
       const data = {
         country_code: this.country,
         vendor_type_ids: this.vendorsSelected,
         cancel_reason: this.cancellation_reason,
-        applicable_order_status: this.whenToDisplayReason,
-        admin_id: this.getSession.payload.data.admin_id,
-        priority_key: 18,
-        allow_platform: ['CC', 'CUSTOMER'],
+        actions_data: this.actonDataValues,
       };
+      console.log('FORM DATA', data);
       const payload = {
         app: 'ADONIS_API',
         endpoint: `cancellation-reasons`,
@@ -299,7 +295,6 @@ export default {
             this.submit_state = false;
             this.loading_messages = true;
             this.clearData();
-            this.$emit('showDialog', false);
           }, 2000);
         }
       } catch (error) {

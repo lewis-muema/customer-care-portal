@@ -402,8 +402,6 @@ export default {
         }
         return action;
       });
-
-      console.log('CCC', actonDataValues);
       return this.removeInvalidObjects(actonDataValues);
     },
     removeInvalidObjects(valuesArray) {
@@ -424,9 +422,7 @@ export default {
       return cleanedArray;
     },
     emitAllInputValues() {
-      let values = [];
-      values = this.customerActionInputs;
-      const actionValues = this.sanitizeValues(values);
+      const actionValues = this.sanitizeValues(this.customerActionInputs);
       this.$emit('actionInputValues', actionValues);
     },
   },
