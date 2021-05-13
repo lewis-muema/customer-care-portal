@@ -1,7 +1,7 @@
 <template>
   <section>
     <form
-      @submit.prevent="add_cancellation_consequences"
+      @submit.prevent="add_cancellation_consequences_actions"
       class="form-inline add-reward-section"
     >
       <section class="row full-width">
@@ -157,7 +157,7 @@ export default {
       fetch_set_cancellation_reasons: 'fetch_set_cancellation_reasons',
       request_vendor_types: 'request_vendor_types',
       update_cancellation_reason: 'update_cancellation_reason',
-      add_cancellation_reason: 'add_cancellation_reason',
+      add_cancellation_consequences: 'add_cancellation_consequences',
     }),
     initiateData() {
       this.clearData();
@@ -243,7 +243,7 @@ export default {
     setActionValues(actionData) {
       this.actonDataValues = actionData;
     },
-    async add_cancellation_consequences() {
+    async add_cancellation_consequences_actions() {
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) return;
@@ -287,9 +287,8 @@ export default {
         params: data,
         country_filter: this.getCurrentUsersCountryCode(),
       };
-      console.log('FORM DATA', payload);
       try {
-        const result = await this.add_cancellation_reason(payload);
+        const result = await this.add_cancellation_consequences(payload);
 
         if (result.status === 201 || result.status === 200) {
           this.response_status = 'success';
