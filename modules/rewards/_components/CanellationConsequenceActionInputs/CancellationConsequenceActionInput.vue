@@ -17,7 +17,7 @@
           class="form-control select user-billing"
           :id="`name`"
           @input="customerActionSelectedChanged(customerAction, index)"
-          v-model="customerAction.action_id"
+          v-model="customerAction.action_type"
         >
         </v-select>
         <div class="input-counter">
@@ -42,7 +42,7 @@
 
       <!--    charge penalty fee message-->
       <div
-        v-if="customerAction.penalty_fee_visible"
+        v-if="customerAction.cancellation_fee_visible"
         class="form-group col-md-3 user-input"
         id="penalty-fee-input"
       >
@@ -51,11 +51,11 @@
           placeholder="Please input amount"
           type="number"
           min="1"
-          v-model="customerAction.penalty_fee"
+          v-model="customerAction.cancellation_fee"
           @input="
             updateCustomerActionInputChanged(
               customerAction,
-              'penalty_fee',
+              'cancellation_fee',
               index,
             )
           "
@@ -63,7 +63,7 @@
           <template slot="prepend">{{ selectedCountryCurrency }}</template>
         </el-input>
         <div
-          v-if="validateInputs(customerAction, 'penalty_fee', index)"
+          v-if="validateInputs(customerAction, 'cancellation_fee', index)"
           class="error"
         >
           Penalty fee value required!
@@ -107,7 +107,7 @@
 
       <!--    time duration field (before showing message)-->
       <div
-        v-if="customerAction.show_message_time_visible"
+        v-if="customerAction.message_duration_visible"
         class="form-group col-md-3 user-input"
         id="time-duration-select"
       >
@@ -117,24 +117,24 @@
         <el-input
           type="number"
           min="0"
-          :disabled="customerAction.time_when_to_apply === 'immediately'"
-          v-model="customerAction.show_message_time"
+          :disabled="customerAction.comparator === 0"
+          v-model="customerAction.message_duration"
           @input="
             updateCustomerActionInputChanged(
               customerAction,
-              'show_message_time',
+              'message_duration',
               index,
             )
           "
         >
           <el-select
-            v-model="customerAction.time_when_to_apply"
+            v-model="customerAction.comparator"
             slot="prepend"
             placeholder="Select"
             @input="
               updateCustomerActionInputChanged(
                 customerAction,
-                'time_when_to_apply',
+                'comparator',
                 index,
               )
             "
@@ -150,13 +150,13 @@
           <template slot="append">Mins</template>
         </el-input>
         <div
-          v-if="validateInputs(customerAction, 'time_when_to_apply', index)"
+          v-if="validateInputs(customerAction, 'comparator', index)"
           class="error"
         >
           Time when to apply value required!
         </div>
         <div
-          v-if="validateInputs(customerAction, 'show_message_time', index)"
+          v-if="validateInputs(customerAction, 'message_duration', index)"
           class="error"
         >
           Minutes time value required!
@@ -165,7 +165,7 @@
 
       <!--    time duration field (before charging fees)-->
       <div
-        v-if="customerAction.apply_fees_time_visible"
+        v-if="customerAction.fees_duration_visible"
         class="form-group col-md-3 user-input"
         id="apply-duration-select"
       >
@@ -175,24 +175,24 @@
         <el-input
           type="number"
           min="0"
-          :disabled="customerAction.time_when_to_apply === 'immediately'"
-          v-model="customerAction.apply_fees_time"
+          :disabled="customerAction.comparator === 0"
+          v-model="customerAction.fees_duration"
           @input="
             updateCustomerActionInputChanged(
               customerAction,
-              'apply_fees_time',
+              'fees_duration',
               index,
             )
           "
         >
           <el-select
-            v-model="customerAction.time_when_to_apply"
+            v-model="customerAction.comparator"
             slot="prepend"
             placeholder="Select"
             @input="
               updateCustomerActionInputChanged(
                 customerAction,
-                'time_when_to_apply',
+                'comparator',
                 index,
               )
             "
@@ -208,13 +208,13 @@
           <template slot="append">Mins</template>
         </el-input>
         <div
-          v-if="validateInputs(customerAction, 'time_when_to_apply', index)"
+          v-if="validateInputs(customerAction, 'comparator', index)"
           class="error"
         >
           Time when to apply value required!
         </div>
         <div
-          v-if="validateInputs(customerAction, 'apply_fees_time', index)"
+          v-if="validateInputs(customerAction, 'fees_duration', index)"
           class="error"
         >
           Minutes time value required!
@@ -262,14 +262,14 @@ export default {
   data() {
     return {
       customerAction: {
-        action_id: null,
-        apply_fees_time: null,
-        apply_fees_time_visible: false,
-        show_message_time: null,
-        show_message_time_visible: false,
-        time_when_to_apply: null,
-        penalty_fee: null,
-        penalty_fee_visible: false,
+        action_type: null,
+        fees_duration: null,
+        fees_duration_visible: false,
+        message_duration: null,
+        message_duration_visible: false,
+        comparator: null,
+        cancellation_fee: null,
+        cancellation_fee_visible: false,
         message_visible: false,
         message: null,
         order_status_visible: false,
@@ -301,18 +301,9 @@ export default {
       order_status: [],
       when_to_apply_duration: '',
       comparison_parameters: [
-        {
-          name: 'Less than',
-          value: 'less_than',
-        },
-        {
-          name: 'More than',
-          value: 'more_than',
-        },
-        {
-          name: 'Immediately',
-          value: 'immediately',
-        },
+        { name: 'Less than', value: 1 },
+        { name: 'More than', value: 2 },
+        { name: 'Immediately', value: 0 },
       ],
     };
   },
@@ -340,14 +331,14 @@ export default {
       this.customerActionInputs.splice(inputIndex, 1);
     },
     resetTimeInput(currentObject, fieldValue) {
-      if (fieldValue === 'immediately') {
-        this.$set(currentObject, 'apply_fees_time', 0);
-        this.$set(currentObject, 'show_message_time', 0);
+      if (fieldValue === 0) {
+        this.$set(currentObject, 'fees_duration', 0);
+        this.$set(currentObject, 'message_duration', 0);
       }
     },
     updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
       const currentObject = this.customerActionInputs[inputIndex];
-      if (field === 'time_when_to_apply') {
+      if (field === 'comparator') {
         this.resetTimeInput(currentObject, updatedValue[field]);
       }
 
@@ -355,25 +346,25 @@ export default {
       this.emitAllInputValues();
     },
     customerActionSelectedChanged(selectedValue, inputIndex) {
-      const { action_id } = selectedValue;
+      const { action_type } = selectedValue;
       const selectedAction = this.customerActionInputs[inputIndex];
-      this.inputsVisibilityTrigger(action_id, selectedAction);
+      this.inputsVisibilityTrigger(action_type, selectedAction);
     },
     inputsVisibilityTrigger(actionID, inputValuesObject) {
-      this.$set(inputValuesObject, 'apply_fees_time_visible', false);
+      this.$set(inputValuesObject, 'fees_duration_visible', false);
       this.$set(inputValuesObject, 'message_visible', false);
-      this.$set(inputValuesObject, 'show_message_time_visible', false);
-      this.$set(inputValuesObject, 'penalty_fee_visible', false);
+      this.$set(inputValuesObject, 'message_duration_visible', false);
+      this.$set(inputValuesObject, 'cancellation_fee_visible', false);
       this.$set(inputValuesObject, 'order_status_visible', false);
 
       if (actionID === 1 || actionID === 4) {
         this.$set(inputValuesObject, 'message_visible', true);
       } else if (actionID === 2 || actionID === 3) {
-        this.$set(inputValuesObject, 'penalty_fee_visible', true);
+        this.$set(inputValuesObject, 'cancellation_fee_visible', true);
         this.$set(inputValuesObject, 'order_status_visible', true);
-        this.$set(inputValuesObject, 'apply_fees_time_visible', true);
+        this.$set(inputValuesObject, 'fees_duration_visible', true);
       } else if (actionID === 5) {
-        this.$set(inputValuesObject, 'show_message_time_visible', true);
+        this.$set(inputValuesObject, 'message_duration_visible', true);
         this.$set(inputValuesObject, 'message_visible', true);
       }
     },
@@ -396,9 +387,9 @@ export default {
 
           if (action[key] === null) delete action[key];
 
-          if (action['action_id'] === 2) delete action['show_message_time'];
+          if (action['action_type'] === 2) delete action['message_duration'];
 
-          if (action['action_id'] === 5) delete action['apply_fees_time'];
+          if (action['action_type'] === 5) delete action['fees_duration'];
         }
         return action;
       });
@@ -407,15 +398,15 @@ export default {
     removeInvalidObjects(valuesArray) {
       const cleanedArray = [];
       valuesArray.forEach(value => {
-        if (value.action_id === 1 || value.action_id === 4) {
+        if (value.action_type === 1 || value.action_type === 4) {
           if (Object.keys(value).length >= 2) cleanedArray.push(value);
         }
 
-        if (value.action_id === 2 || value.action_id === 3) {
+        if (value.action_type === 2 || value.action_type === 3) {
           if (Object.keys(value).length >= 5) cleanedArray.push(value);
         }
 
-        if (value.action_id === 5) {
+        if (value.action_type === 5) {
           if (Object.keys(value).length >= 4) cleanedArray.push(value);
         }
       });
@@ -461,6 +452,7 @@ export default {
 }
 .user-input {
   margin-top: 15px;
+  position: relative;
 }
 .reposition-select-input {
   right: 15px;
