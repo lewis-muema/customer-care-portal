@@ -274,18 +274,20 @@ export default {
       const data = {
         country_code: this.country,
         vendor_type_ids: this.vendorsSelected,
-        cancel_reason: this.cancellation_reason,
+        cancel_reason_id: this.cancellation_reason,
+        currency: this.country_currency,
+        created_by: this.getSession.payload.data.admin_id,
         actions_data: this.actonDataValues,
       };
-      console.log('FORM DATA', data);
+
       const payload = {
         app: 'ADONIS_API',
-        endpoint: `cancellation-reasons`,
+        endpoint: `cancellation-consequences`,
         apiKey: false,
         params: data,
         country_filter: this.getCurrentUsersCountryCode(),
       };
-
+      console.log('FORM DATA', payload);
       try {
         const result = await this.add_cancellation_reason(payload);
 
@@ -366,6 +368,7 @@ export default {
 .user-input {
   margin-bottom: 34px;
   width: 34%;
+  position: relative;
 }
 .full-width {
   width: 100% !important;
@@ -405,7 +408,9 @@ export default {
 .rewards_valid {
   font-size: 14px !important;
   color: #dc3545;
-  margin-left: -4% !important;
+  position: absolute;
+  top: 70px;
+  left: 0;
 }
 .submit-success {
   color: #00ae55;
