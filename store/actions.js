@@ -1433,7 +1433,7 @@ export default {
     }
   },
 
-  async fetch_cancellation_actions({ state, dispatch, commit }) {
+  async fetch_cancellation_actions({ state, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = {
@@ -1453,6 +1453,21 @@ export default {
       await dispatch('handleErrors', error.response.status, {
         root: true,
       });
+    }
+  },
+
+  async add_cancellation_consequences({ dispatch, commit }, payload) {
+    try {
+      const response = await dispatch('requestAxiosPost', payload, {
+        root: true,
+      });
+      dispatch('fetch_set_cancellation_reasons', payload.country_filter);
+      return response;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
     }
   },
 
