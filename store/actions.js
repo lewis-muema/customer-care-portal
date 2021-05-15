@@ -1430,7 +1430,7 @@ export default {
     }
   },
 
-  async fetch_cancellation_actions({ state, dispatch }) {
+  async fetch_cancellation_actions({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = {
@@ -1445,7 +1445,7 @@ export default {
 
     try {
       const response = await axios.get(url, headers);
-      return response.data.data;
+      commit('setCancellationActions', response.data.data);
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
         root: true,
@@ -1492,7 +1492,6 @@ export default {
 
     try {
       const response = await axios.get(activatedUrl, headers);
-      console.log('RRR', response);
       commit('setActiveCancellationConsequences', response.data.data);
 
       const results = await axios.get(deactivatedUrl, headers);

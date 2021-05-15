@@ -180,6 +180,7 @@ export default {
       deactivatedCancellationReasons: [],
       activeCancellationConsequences: [],
       deactivatedCancellationConsequences: [],
+      cancellationActions: [],
     };
   },
 

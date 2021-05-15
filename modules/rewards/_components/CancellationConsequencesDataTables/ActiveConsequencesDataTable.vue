@@ -1,7 +1,7 @@
 <template>
   <div class="table-container">
     <el-table
-      :data="setCancellationConsequences"
+      :data="activeCancellationConsequences"
       height="500"
       size="medium"
       :border="false"
@@ -10,7 +10,7 @@
         <template slot-scope="scope">
           {{
             fetchCountry(
-              setCancellationConsequences[scope.$index]['country_code'],
+              activeCancellationConsequences[scope.$index]['country_code'],
             )
           }}
         </template>
@@ -19,26 +19,22 @@
         <template slot-scope="scope">
           {{
             formatVendorTypeNames(
-              setCancellationConsequences[scope.$index]['vendor_type_names'],
+              activeCancellationConsequences[scope.$index]['vendor_type_names'],
             )
           }}
         </template>
       </el-table-column>
       <el-table-column
         label="Cancellation reason"
-        width="180"
-        prop="cancellation_reason"
+        width="200"
+        prop="cancellation_reason_name"
       >
       </el-table-column>
-      <el-table-column
-        label="When to display"
-        width="180"
-        prop="order_status_names"
-      >
+      <el-table-column label="Actions" width="200" prop="actions">
         <template slot-scope="scope">
           {{
-            formatOrderStatus(
-              setCancellationConsequences[scope.$index]['order_status_names'],
+            getActionTypes(
+              activeCancellationConsequences[scope.$index]['actions'],
             )
           }}
         </template>
@@ -47,7 +43,7 @@
         <template slot-scope="scope">
           {{
             getFormattedDate(
-              setCancellationConsequences[scope.$index]['date_created'],
+              activeCancellationConsequences[scope.$index]['date_created'],
               'DD/MM/YYYY ',
             )
           }}
@@ -56,28 +52,30 @@
       <el-table-column label="Status" prop="status">
         <template slot-scope="scope">
           {{
-            activeStatus(setCancellationConsequences[scope.$index]['status'])
+            activeStatus(activeCancellationConsequences[scope.$index]['status'])
           }}
         </template>
       </el-table-column>
-      <el-table-column label="Actions" prop="status" class="data" width="200">
+      <el-table-column label="Actions" prop="status" class="data" width="150">
         <template slot-scope="scope">
           <el-button
             size="mini"
             :class="
-              setCancellationConsequences[scope.$index]['status'] === 1
+              activeCancellationConsequences[scope.$index]['status'] === 1
                 ? 'action-button--danger'
                 : 'action-button--active'
             "
-            @click="setStatusState(setCancellationConsequences[scope.$index])"
+            @click="
+              setStatusState(activeCancellationConsequences[scope.$index])
+            "
           >
             {{
               loading(
-                setCancellationConsequences[scope.$index]['id'],
-                setCancellationConsequences,
+                activeCancellationConsequences[scope.$index]['id'],
+                activeCancellationConsequences,
               )
                 ? 'Processing...'
-                : setStatusText(setCancellationConsequences[scope.$index])
+                : setStatusText(activeCancellationConsequences[scope.$index])
             }}
           </el-button>
         </template>
@@ -101,15 +99,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      setCancellationConsequences: 'getActiveCancellationConsequences',
-      active_countries: 'getActiveCountries',
       getSession: 'getSession',
+      activeCancellationConsequences: 'getActiveCancellationConsequences',
+      active_countries: 'getActiveCountries',
+      actions_data: 'getCancellationActions',
     }),
   },
   watch: {
     getSession(session) {
       return session;
     },
+  },
+  created() {
+    console.log('TABLE ', this.activeCancellationConsequences);
   },
   methods: {
     ...mapActions({
@@ -122,12 +124,27 @@ export default {
       );
       return data.country_name;
     },
-    formatOrderStatus(orderStatus) {
-      if (!orderStatus.length) return '';
-      const formattedStatus = orderStatus.map(status => {
-        return ` ${status}`;
+    getActionTypes(actionsArray) {
+      const actionTypeArray = [];
+      actionsArray.forEach(action => actionTypeArray.push(action.action_type));
+      const duplicateCleanArray = [...new Set(actionTypeArray)];
+      const actionData = this.mapActionTypesToAction(duplicateCleanArray);
+
+      const actionName = actionData.map(action => {
+        return action.display_name;
       });
-      return formattedStatus.toString();
+
+      return actionName.toString();
+    },
+    mapActionTypesToAction(actionsIdArray) {
+      const dataArray = [];
+      actionsIdArray.map(actionType => {
+        const data = this.actions_data.filter(
+          action => action.id === actionType,
+        );
+        dataArray.push(...data);
+      });
+      return dataArray;
     },
     formatVendorTypeNames(vendorNamesArray) {
       if (!vendorNamesArray.length) return '';
@@ -141,35 +158,6 @@ export default {
     },
     setStatusText(row) {
       return row.status === 1 ? 'Deactivate' : 'Activate';
-    },
-    openEditDialog(row) {
-      this.dialogFormVisible = true;
-      this.recordData = row;
-      this.formData = {
-        data: row,
-        operation: 'edit',
-      };
-    },
-    closeDialog(showDialog) {
-      this.dialogFormVisible = showDialog;
-    },
-    convertStringToNumArray(arrayAsString) {
-      const finalArray = [];
-      const initArr = arrayAsString.split(',');
-
-      for (let i = 0; i < initArr.length; i++) {
-        if (i === 0) {
-          const firstValue = initArr[0].split('[')[1];
-          finalArray.push(parseInt(firstValue));
-        } else if (i === initArr.length - 1) {
-          const lastValue = initArr[i].split(']')[0];
-          finalArray.push(parseInt(lastValue));
-        } else {
-          finalArray.push(parseInt(initArr[i]));
-        }
-      }
-
-      return [...new Set(finalArray)];
     },
     getCurrentUsersCountryCode() {
       const countryCodeArray = this.getSession.payload.data.country_codes;

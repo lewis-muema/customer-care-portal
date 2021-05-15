@@ -277,6 +277,10 @@ export default {
     state.deactivatedCancellationReasons = val;
   },
 
+  setCancellationActions(state, val) {
+    state.cancellationActions = val;
+  },
+
   setActiveCancellationConsequences(state, val) {
     state.activeCancellationConsequences = val;
   },

@@ -248,6 +248,9 @@ export default {
   getDeactivatedCancellationReasons(state) {
     return state.deactivatedCancellationReasons;
   },
+  getCancellationActions(state) {
+    return state.cancellationActions;
+  },
   getActiveCancellationConsequences(state) {
     return state.activeCancellationConsequences;
   },
