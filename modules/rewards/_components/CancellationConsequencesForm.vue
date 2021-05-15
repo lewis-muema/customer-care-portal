@@ -267,7 +267,8 @@ export default {
       } else if (!this.actonDataValues.length) {
         this.submit_state = false;
         this.response_status = 'error';
-        this.error_msg = ' Please fill in all action input values required';
+        this.error_msg =
+          'Please fill in all action inputs required or remove duplicate actions';
         return;
       }
 

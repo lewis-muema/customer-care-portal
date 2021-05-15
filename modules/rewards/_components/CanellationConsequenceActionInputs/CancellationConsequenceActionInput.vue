@@ -198,7 +198,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'CancellationConsequenceActionInput',
@@ -226,7 +226,6 @@ export default {
       inputCount: 0,
       customerActionsSelected: {},
       customerActionInputs: [],
-      actions_data: [],
       actionsCodesArray: [],
       order_status_data: [
         {
@@ -253,6 +252,11 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters({
+      actions_data: 'getCancellationActions',
+    }),
+  },
   created() {
     this.initData();
   },
@@ -261,11 +265,11 @@ export default {
       fetch_cancellation_actions: 'fetch_cancellation_actions',
     }),
     initData() {
-      this.addNewCustomerAction();
       this.getActionValues();
+      this.addNewCustomerAction();
     },
     async getActionValues() {
-      this.actions_data = await this.fetch_cancellation_actions();
+      await this.fetch_cancellation_actions();
     },
     addNewCustomerAction() {
       this.customerActionInputs.push({
@@ -336,21 +340,28 @@ export default {
       return this.removeInvalidObjects(actonDataValues);
     },
     removeInvalidObjects(valuesArray) {
-      const cleanedArray = [];
+      let duplicateActionFound = false;
+      let validatedArray = [];
       valuesArray.forEach(value => {
         if (value.action_type === 1 || value.action_type === 4) {
-          if (Object.keys(value).length >= 2) cleanedArray.push(value);
+          if (Object.keys(value).length >= 2) validatedArray.push(value);
         }
 
         if (value.action_type === 2 || value.action_type === 3) {
-          if (Object.keys(value).length >= 5) cleanedArray.push(value);
+          if (Object.keys(value).length >= 5) validatedArray.push(value);
         }
 
         if (value.action_type === 5) {
-          if (Object.keys(value).length >= 4) cleanedArray.push(value);
+          if (Object.keys(value).length >= 4) validatedArray.push(value);
         }
+
+        duplicateActionFound = validatedArray.some(
+          action => action.action_type === value.action_type,
+        );
       });
-      return cleanedArray;
+
+      if (duplicateActionFound) validatedArray = [];
+      return validatedArray;
     },
     emitAllInputValues() {
       const actionValues = this.sanitizeValues(this.customerActionInputs);

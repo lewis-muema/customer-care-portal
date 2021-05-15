@@ -15,10 +15,10 @@
       <cancellation-consequences-form v-if="add_btn" />
 
       <el-tabs id="cancellation-table" type="card">
-        <el-tab-pane label="Active reasons">
+        <el-tab-pane label="Active consequences">
           <active-consequences-data-table />
         </el-tab-pane>
-        <el-tab-pane label="Deactivated reasons">
+        <el-tab-pane label="Deactivated consequences">
           <deactivated-consequences-data-table />
         </el-tab-pane>
       </el-tabs>
