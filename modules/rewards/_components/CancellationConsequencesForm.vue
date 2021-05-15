@@ -274,10 +274,11 @@ export default {
       const data = {
         country_code: this.country,
         vendor_type_ids: this.vendorsSelected,
-        cancel_reason_id: this.cancellation_reason,
+        cancellation_reason_id: this.cancellation_reason,
         currency: this.country_currency,
         created_by: this.getSession.payload.data.admin_id,
-        actions_data: this.actonDataValues,
+        status: 1,
+        actions: this.actonDataValues,
       };
 
       const payload = {

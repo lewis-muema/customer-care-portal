@@ -72,7 +72,7 @@
 
       <!--      order status field-->
       <div
-        v-if="customerAction.order_status_visible"
+        v-if="customerAction.applicable_order_status_visible"
         class="form-group col-md-3 user-input"
       >
         <label class="vat">
@@ -82,43 +82,50 @@
           :options="order_status_data"
           :reduce="name => name.value"
           chips
+          multiple
           label="label"
           name="label"
           placeholder="Select"
           class="form-control select user-billing"
           :id="`value`"
-          v-model="customerAction.order_status"
+          v-model="customerAction.applicable_order_status"
           @input="
             updateCustomerActionInputChanged(
               customerAction,
-              'order_status',
+              'applicable_order_status',
               index,
             )
           "
         >
         </v-select>
         <div
-          v-if="validateInputs(customerAction, 'order_status', index)"
+          v-if="
+            validateInputs(customerAction, 'applicable_order_status', index)
+          "
           class="error"
         >
           Order status value required!
         </div>
       </div>
 
-      <!--    time duration field (before showing message)-->
+      <!--    time duration field (before showing message/charging fee)-->
       <div
-        v-if="customerAction.message_duration_visible"
+        v-if="customerAction.duration_visible"
         class="form-group col-md-3 user-input"
         id="time-duration-select"
       >
         <label class="vat">
-          When to show the message (minutes)
+          {{
+            customerAction.action_type === 5
+              ? 'When to show the message (minutes)'
+              : 'When to apply the cancellation fee (minutes)'
+          }}
         </label>
         <el-input
           type="number"
           min="0"
           :disabled="customerAction.comparator === 0"
-          v-model="customerAction.message_duration"
+          v-model="customerAction.duration"
           @input="
             updateCustomerActionInputChanged(
               customerAction,
@@ -156,65 +163,7 @@
           Time when to apply value required!
         </div>
         <div
-          v-if="validateInputs(customerAction, 'message_duration', index)"
-          class="error"
-        >
-          Minutes time value required!
-        </div>
-      </div>
-
-      <!--    time duration field (before charging fees)-->
-      <div
-        v-if="customerAction.fees_duration_visible"
-        class="form-group col-md-3 user-input"
-        id="apply-duration-select"
-      >
-        <label class="vat">
-          When to apply the cancellation fee (minutes)
-        </label>
-        <el-input
-          type="number"
-          min="0"
-          :disabled="customerAction.comparator === 0"
-          v-model="customerAction.fees_duration"
-          @input="
-            updateCustomerActionInputChanged(
-              customerAction,
-              'fees_duration',
-              index,
-            )
-          "
-        >
-          <el-select
-            v-model="customerAction.comparator"
-            slot="prepend"
-            placeholder="Select"
-            @input="
-              updateCustomerActionInputChanged(
-                customerAction,
-                'comparator',
-                index,
-              )
-            "
-          >
-            <el-option
-              v-for="param in comparison_parameters"
-              :key="param.value"
-              :label="param.name"
-              :value="param.value"
-            >
-            </el-option>
-          </el-select>
-          <template slot="append">Mins</template>
-        </el-input>
-        <div
-          v-if="validateInputs(customerAction, 'comparator', index)"
-          class="error"
-        >
-          Time when to apply value required!
-        </div>
-        <div
-          v-if="validateInputs(customerAction, 'fees_duration', index)"
+          v-if="validateInputs(customerAction, 'duration', index)"
           class="error"
         >
           Minutes time value required!
@@ -263,17 +212,15 @@ export default {
     return {
       customerAction: {
         action_type: null,
-        fees_duration: null,
-        fees_duration_visible: false,
-        message_duration: null,
-        message_duration_visible: false,
+        duration: null,
+        duration_visible: false,
         comparator: null,
         cancellation_fee: null,
         cancellation_fee_visible: false,
         message_visible: false,
         message: null,
-        order_status_visible: false,
-        order_status: null,
+        applicable_order_status_visible: false,
+        applicable_order_status: null,
         customerActionInput: 0,
       },
       inputCount: 0,
@@ -298,7 +245,6 @@ export default {
           value: 3,
         },
       ],
-      order_status: [],
       when_to_apply_duration: '',
       comparison_parameters: [
         { name: 'Less than', value: 1 },
@@ -332,8 +278,7 @@ export default {
     },
     resetTimeInput(currentObject, fieldValue) {
       if (fieldValue === 0) {
-        this.$set(currentObject, 'fees_duration', 0);
-        this.$set(currentObject, 'message_duration', 0);
+        this.$set(currentObject, 'duration', 0);
       }
     },
     updateCustomerActionInputChanged(updatedValue, field, inputIndex) {
@@ -351,20 +296,19 @@ export default {
       this.inputsVisibilityTrigger(action_type, selectedAction);
     },
     inputsVisibilityTrigger(actionID, inputValuesObject) {
-      this.$set(inputValuesObject, 'fees_duration_visible', false);
       this.$set(inputValuesObject, 'message_visible', false);
-      this.$set(inputValuesObject, 'message_duration_visible', false);
+      this.$set(inputValuesObject, 'duration_visible', false);
       this.$set(inputValuesObject, 'cancellation_fee_visible', false);
-      this.$set(inputValuesObject, 'order_status_visible', false);
+      this.$set(inputValuesObject, 'applicable_order_status_visible', false);
 
       if (actionID === 1 || actionID === 4) {
         this.$set(inputValuesObject, 'message_visible', true);
       } else if (actionID === 2 || actionID === 3) {
         this.$set(inputValuesObject, 'cancellation_fee_visible', true);
-        this.$set(inputValuesObject, 'order_status_visible', true);
-        this.$set(inputValuesObject, 'fees_duration_visible', true);
+        this.$set(inputValuesObject, 'applicable_order_status_visible', true);
+        this.$set(inputValuesObject, 'duration_visible', true);
       } else if (actionID === 5) {
-        this.$set(inputValuesObject, 'message_duration_visible', true);
+        this.$set(inputValuesObject, 'duration_visible', true);
         this.$set(inputValuesObject, 'message_visible', true);
       }
     },
@@ -386,10 +330,6 @@ export default {
           if (exists) delete action[key];
 
           if (action[key] === null) delete action[key];
-
-          if (action['action_type'] === 2) delete action['message_duration'];
-
-          if (action['action_type'] === 5) delete action['fees_duration'];
         }
         return action;
       });
