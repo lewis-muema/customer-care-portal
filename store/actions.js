@@ -1481,11 +1481,8 @@ export default {
       countryArray.push(`&country=${country}`);
     });
     const countryQuery = countryArray.join('');
-
-    const activatedStatus = 1;
-    const deactivatedStatus = 2;
-    const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=${activatedStatus}${countryQuery}`;
-    const deactivatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=${deactivatedStatus}${countryQuery}`;
+    const activatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=1${countryQuery}`;
+    const deactivatedUrl = `${config.ADONIS_API}cancellation-reasons/?status=2${countryQuery}`;
 
     try {
       const response = await axios.get(activatedUrl, headers);
@@ -1557,6 +1554,42 @@ export default {
         root: true,
       });
       return error.response;
+    }
+  },
+
+  async fetch_set_cancellation_consequences(
+    { state, dispatch, commit },
+    payload,
+  ) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const countryArray = [];
+    payload.forEach(country => {
+      countryArray.push(`&country=${country}`);
+    });
+    const countryQuery = countryArray.join('');
+    const activatedUrl = `${config.ADONIS_API}cancellation-consequences?status=1${countryQuery}`;
+    const deactivatedUrl = `${config.ADONIS_API}cancellation-consequences/?status=2${countryQuery}`;
+
+    try {
+      const response = await axios.get(activatedUrl, headers);
+      console.log('RRR', response);
+      commit('setActiveCancellationConsequences', response.data.data);
+
+      const results = await axios.get(deactivatedUrl, headers);
+      commit('setDeactivatedCancellationConsequences', results.data.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
     }
   },
 

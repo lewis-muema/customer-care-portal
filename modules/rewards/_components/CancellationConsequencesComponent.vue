@@ -1,9 +1,8 @@
 <template lang="html">
   <div class="row">
-    <!--    TODO return page loader to wait for table data load-->
-    <!--    <div v-if="loading_messages" class="centre-loader">-->
-    <!--      <Loading />-->
-    <!--    </div>-->
+    <div v-if="loading_messages" class="centre-loader">
+      <Loading />
+    </div>
     <div class="outline-inner-data">
       <el-button
         type="primary"
@@ -17,10 +16,10 @@
 
       <el-tabs id="cancellation-table" type="card">
         <el-tab-pane label="Active reasons">
-          <active-cancellations-data-table />
+          <active-consequences-data-table />
         </el-tab-pane>
         <el-tab-pane label="Deactivated reasons">
-          <deactivated-cancellations-data-table />
+          <deactivated-consequences-data-table />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -28,18 +27,19 @@
 </template>
 
 <script>
-import DeactivatedCancellationsDataTable from './CancellationReasonsDataTables/DeactivatedCancellationsDataTable';
+import { mapActions, mapGetters } from 'vuex';
+import DeactivatedConsequencesDataTable from './CancellationConsequencesDataTables/DeactivatedConsequencesDataTable';
 import CancellationConsequencesForm from './CancellationConsequencesForm';
 import Loading from './LoadingComponent.vue';
-import ActiveCancellationsDataTable from './CancellationReasonsDataTables/ActiveCancellationsDataTable';
+import ActiveConsequencesDataTable from './CancellationConsequencesDataTables/ActiveConsequencesDataTable';
 
 export default {
   name: 'CancellationConsequencesComponent',
   components: {
-    // Loading,
+    Loading,
     CancellationConsequencesForm,
-    ActiveCancellationsDataTable,
-    DeactivatedCancellationsDataTable,
+    ActiveConsequencesDataTable,
+    DeactivatedConsequencesDataTable,
   },
   data() {
     return {
@@ -47,7 +47,28 @@ export default {
       add_btn: false,
     };
   },
+  computed: {
+    ...mapGetters({
+      getSession: 'getSession',
+    }),
+  },
+  watch: {
+    getSession(session) {
+      return session;
+    },
+  },
+  created() {
+    this.getAllCancellationConsequences();
+  },
   methods: {
+    ...mapActions({
+      fetch_set_cancellation_consequences:
+        'fetch_set_cancellation_consequences',
+    }),
+    getCurrentUsersCountryCode() {
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      return JSON.parse(countryCodeArray);
+    },
     showCancellationConsequencesForm() {
       let status = false;
       if (!this.add_btn) {
@@ -57,6 +78,16 @@ export default {
     },
     showLoader(loaderState) {
       this.loading_messages = loaderState;
+    },
+    async getAllCancellationConsequences() {
+      const countryCodes = this.getCurrentUsersCountryCode();
+      try {
+        await this.fetch_set_cancellation_consequences(countryCodes);
+        this.loading_messages = false;
+      } catch (err) {
+        this.loading_messages = false;
+        throw err;
+      }
     },
   },
 };
