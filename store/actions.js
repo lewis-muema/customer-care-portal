@@ -1458,7 +1458,7 @@ export default {
       const response = await dispatch('requestAxiosPost', payload, {
         root: true,
       });
-      dispatch('fetch_set_cancellation_reasons', payload.country_filter);
+      dispatch('fetch_set_cancellation_consequences', payload.country_filter);
       return response;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -1488,7 +1488,7 @@ export default {
     });
     const countryQuery = countryArray.join('');
     const activatedUrl = `${config.ADONIS_API}cancellation-consequences?status=1${countryQuery}`;
-    const deactivatedUrl = `${config.ADONIS_API}cancellation-consequences/?status=2${countryQuery}`;
+    const deactivatedUrl = `${config.ADONIS_API}cancellation-consequences/?status=0${countryQuery}`;
 
     try {
       const response = await axios.get(activatedUrl, headers);
