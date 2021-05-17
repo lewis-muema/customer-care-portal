@@ -261,15 +261,8 @@ export default {
     this.initData();
   },
   methods: {
-    ...mapActions({
-      fetch_cancellation_actions: 'fetch_cancellation_actions',
-    }),
     initData() {
-      this.getActionValues();
       this.addNewCustomerAction();
-    },
-    async getActionValues() {
-      await this.fetch_cancellation_actions();
     },
     addNewCustomerAction() {
       this.customerActionInputs.push({
@@ -341,8 +334,13 @@ export default {
     },
     removeInvalidObjects(valuesArray) {
       let duplicateActionFound = false;
-      let validatedArray = [];
+      const validatedArray = [];
       valuesArray.forEach(value => {
+        duplicateActionFound = validatedArray.some(
+          action => action.action_type === value.action_type,
+        );
+        if (duplicateActionFound) return;
+
         if (value.action_type === 1 || value.action_type === 4) {
           if (Object.keys(value).length >= 2) validatedArray.push(value);
         }
@@ -354,13 +352,8 @@ export default {
         if (value.action_type === 5) {
           if (Object.keys(value).length >= 4) validatedArray.push(value);
         }
-
-        duplicateActionFound = validatedArray.some(
-          action => action.action_type === value.action_type,
-        );
       });
 
-      if (duplicateActionFound) validatedArray = [];
       return validatedArray;
     },
     emitAllInputValues() {
