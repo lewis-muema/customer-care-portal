@@ -147,7 +147,7 @@ export default {
       return session;
     },
   },
-  mounted() {
+  created() {
     this.initiateData();
   },
   methods: {
