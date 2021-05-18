@@ -4,6 +4,28 @@ export default {
   data() {
     return {
       selectedCancellationConsequence: null,
+      order_status_data: [
+        {
+          label: 'Before an order has been confirmed',
+          reason: 'BEFORE_CONFIRMATION',
+          value: 1,
+        },
+        {
+          label: 'Before arrival at pickup location',
+          reason: 'AFTER_CONFIRMATION',
+          value: 2,
+        },
+        {
+          label: 'After arrival at pick up location',
+          reason: 'AFTER_ARRIVAL_AT_PICK_UP',
+          value: 3,
+        },
+      ],
+      comparison_parameters: [
+        { name: 'Less than', value: 1 },
+        { name: 'More than', value: 2 },
+        { name: 'Immediately', value: 0 },
+      ],
     };
   },
   computed: {
@@ -57,6 +79,24 @@ export default {
         dataArray.push(data.display_name);
       });
       return dataArray;
+    },
+    mapActionNames(actionType) {
+      const { display_name } = this.actions_data.find(
+        action => action.id === actionType,
+      );
+      return display_name;
+    },
+    mapComparator(comparator) {
+      const { name } = this.comparison_parameters.find(
+        parameter => parameter.value === comparator,
+      );
+      return name;
+    },
+    mapOrderStatus(statusCode) {
+      const { label } = this.order_status_data.find(
+        status => status.value === statusCode,
+      );
+      return `${label}.`;
     },
     formatVendorTypeNames(vendorNamesArray) {
       if (!vendorNamesArray.length) return '';
