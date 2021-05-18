@@ -49,13 +49,6 @@
                         {{ mapOrderStatus(status) }}
                       </li>
                     </ul>
-                    <!--                    <span-->
-                    <!--                      class="order-status"-->
-                    <!--                      v-for="(status, index) in action.applicable_order_status"-->
-                    <!--                      :key="index"-->
-                    <!--                    >-->
-                    <!--                      {{ mapOrderStatus(status) }}-->
-                    <!--                    </span>-->
                   </div>
                 </div>
               </div>
@@ -209,18 +202,18 @@ export default {
   font-weight: 600;
 }
 .expandable-header span {
-  font-weight: 300;
+  font-weight: 400;
   margin-left: 1px;
 }
 .expandable-header span:first-child {
   margin-left: 5px;
-  font-weight: 300;
+  font-weight: 400;
 }
 .expandable-header .order-status {
   margin-left: 10px;
 }
 .expandable-header .order-status ul {
   padding: 0;
-  font-weight: 300;
+  font-weight: 400;
 }
 </style>

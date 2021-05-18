@@ -6,6 +6,56 @@
       size="medium"
       :border="false"
     >
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <div class="form-inline expand-logs-section">
+            <div class="actions" v-if="props.row.actions.length">
+              <div
+                class="action-info"
+                v-for="(action, index) in props.row.actions"
+                :key="index"
+              >
+                <div v-if="action.action_type" class="expandable-header">
+                  <label class="expandable-data">
+                    {{ mapActionNames(action.action_type) }}</label
+                  >
+                </div>
+                <div v-if="action.cancellation_fee" class="expandable-header">
+                  Charge fee:
+                  <span>
+                    {{ action.currency }} {{ action.cancellation_fee }}
+                  </span>
+                </div>
+                <div v-if="action.comparator !== ''" class="expandable-header">
+                  Time: <span>{{ mapComparator(action.comparator) }}</span>
+                  <span v-if="action.comparator">
+                    {{ action.duration }} Minutes
+                  </span>
+                </div>
+                <div v-if="action.message" class="expandable-header">
+                  Message:
+                  <span>{{ action.message }}</span>
+                </div>
+                <div class="expandable-header">
+                  Order status:
+                  <div class="order-status">
+                    <ul>
+                      <li
+                        class="order-status"
+                        v-for="(status,
+                        index) in action.applicable_order_status"
+                        :key="index"
+                      >
+                        {{ mapOrderStatus(status) }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="Country" prop="country">
         <template slot-scope="scope">
           {{
@@ -132,5 +182,43 @@ export default {
   word-break: break-word;
   position: relative;
   bottom: 10px;
+}
+.actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.action-info {
+  margin-right: 25px;
+}
+.expandable-data {
+  font-weight: 600;
+  font-size: 15px;
+  color: #000000;
+  margin-bottom: 3px;
+}
+.expand-logs-section {
+  width: 100% !important;
+}
+.expandable-header {
+  display: flex;
+  flex-direction: row;
+  max-width: 300px;
+  font-weight: 600;
+}
+.expandable-header span {
+  font-weight: 400;
+  margin-left: 1px;
+}
+.expandable-header span:first-child {
+  margin-left: 5px;
+  font-weight: 400;
+}
+.expandable-header .order-status {
+  margin-left: 10px;
+}
+.expandable-header .order-status ul {
+  padding: 0;
+  font-weight: 400;
 }
 </style>
