@@ -87,10 +87,7 @@
             "
           >
             {{
-              loading(
-                deactivatedCancellationConsequences[scope.$index]['id'],
-                deactivatedCancellationConsequences,
-              )
+              loading(deactivatedCancellationConsequences[scope.$index]['id'])
                 ? 'Processing...'
                 : setStatusText(
                     deactivatedCancellationConsequences[scope.$index],
