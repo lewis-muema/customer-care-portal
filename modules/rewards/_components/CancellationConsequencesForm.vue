@@ -70,6 +70,7 @@
       </section>
 
       <cancellation-action-input
+        :key="componentKey"
         :selected-country-currency="country_currency"
         @actionInputValues="setActionValues"
       />
@@ -91,7 +92,7 @@
       </p>
       <p class="response-text" v-else-if="response_status === 'success'">
         <i class="fa fa-check-circle invoice-loader--align submit-success"></i>
-        Cancellation reason {{ isEditForm ? 'edited !' : 'created !' }}
+        Cancellation consequence created
       </p>
       <p class="response-text" v-else>
         <i
@@ -126,6 +127,7 @@ export default {
       country_currency: 'KES',
       actonDataValues: [],
       submit_state: false,
+      componentKey: 0,
     };
   },
   validations: {
@@ -143,10 +145,6 @@ export default {
   watch: {
     getSession(session) {
       return session;
-    },
-    formDataType(dataValues) {
-      if (dataValues.operation === 'edit') this.populateFormFields();
-      this.submit_status = false;
     },
   },
   mounted() {
@@ -171,6 +169,7 @@ export default {
       this.cancellation_reason = '';
       this.whenToDisplayReason = [];
       this.actonDataValues = [];
+      this.componentKey += 1;
     },
     mapOrderReasonsToId(whenToDisplayReasons) {
       if (!whenToDisplayReasons.length) return;
