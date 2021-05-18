@@ -76,7 +76,7 @@
         class="form-group col-md-3 user-input"
       >
         <label class="vat">
-          Status of order to apply the cancellation fee
+          Status of the order
         </label>
         <v-select
           :options="order_status_data"
@@ -198,7 +198,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'CancellationConsequenceActionInput',
@@ -299,6 +299,7 @@ export default {
       this.$set(inputValuesObject, 'applicable_order_status_visible', false);
 
       if (actionID === 1 || actionID === 4) {
+        this.$set(inputValuesObject, 'applicable_order_status_visible', true);
         this.$set(inputValuesObject, 'message_visible', true);
       } else if (actionID === 2 || actionID === 3) {
         this.$set(inputValuesObject, 'cancellation_fee_visible', true);
@@ -306,6 +307,7 @@ export default {
         this.$set(inputValuesObject, 'duration_visible', true);
       } else if (actionID === 5) {
         this.$set(inputValuesObject, 'duration_visible', true);
+        this.$set(inputValuesObject, 'applicable_order_status_visible', true);
         this.$set(inputValuesObject, 'message_visible', true);
       }
     },
