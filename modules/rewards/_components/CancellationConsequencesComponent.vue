@@ -3,7 +3,7 @@
     <div v-if="loading_messages" class="centre-loader">
       <Loading />
     </div>
-    <div class="outline-inner-data">
+    <div v-else class="outline-inner-data">
       <el-button
         type="primary"
         @click="showCancellationConsequencesForm"
