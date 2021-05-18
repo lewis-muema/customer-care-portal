@@ -20,17 +20,18 @@ export default {
   },
   created() {
     this.getActionValues();
-    console.log('TABLE ', this.activeCancellationConsequences);
   },
   methods: {
     ...mapActions({
       fetch_cancellation_actions: 'fetch_cancellation_actions',
-      update_cancellation_status: 'update_cancellation_reason',
+      update_cancellation_consequences: 'update_cancellation_consequences',
     }),
     getActionValues() {
-      this.fetch_cancellation_actions().then(data => {
-        console.log(data);
-      });
+      this.fetch_cancellation_actions()
+        .then()
+        .catch(err => {
+          throw err;
+        });
     },
     fetchCountry(code) {
       if (!code) return '';
@@ -74,19 +75,21 @@ export default {
       const countryCodeArray = this.getSession.payload.data.country_codes;
       return JSON.parse(countryCodeArray);
     },
-    loading(currentRow, selectedRow) {
-      return currentRow === selectedRow;
+    loading(currentRow) {
+      return currentRow === this.selectedCancellationConsequence;
     },
     async setStatusState(row) {
       this.selectedCancellationConsequence = row.id;
       const payload = {
         ...row,
+        vendor_type_ids: JSON.parse(row.vendor_type_ids),
         admin_id: this.getSession.payload.data.admin_id,
+        admin_name: this.getSession.payload.data.name,
         status: row.status === 1 ? 0 : 1,
         country_filter: this.getCurrentUsersCountryCode(),
       };
 
-      await this.update_cancellation_status(payload);
+      await this.update_cancellation_consequences(payload);
       setTimeout(() => {
         this.selectedCancellationConsequence = null;
       }, 3000);

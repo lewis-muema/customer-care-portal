@@ -1503,6 +1503,27 @@ export default {
     }
   },
 
+  async update_cancellation_consequences({ state, dispatch }, payload) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const { id, country_filter } = payload;
+    const param = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cancellation-consequences/${id}`;
+    try {
+      await axios.patch(url, payload, param);
+      dispatch('fetch_set_cancellation_consequences', country_filter);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+
   async request_tax_rates({ state }) {
     const config = state.config;
 
