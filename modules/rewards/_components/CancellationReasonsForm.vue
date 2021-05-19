@@ -83,6 +83,32 @@
         class="form-group col-md-12 user-input"
         :class="{ 'full-width': isEditForm }"
       >
+        <label class="vat"> Platform for cancellation </label>
+        <v-select
+          :options="platform"
+          :reduce="name => name.value"
+          multiple
+          chips
+          label="label"
+          name="label"
+          placeholder="Select"
+          class="form-control select user-billing"
+          :id="`value`"
+          v-model="allowPlatform"
+        >
+        </v-select>
+        <div
+          v-if="submitted && !$v.allowPlatform.required"
+          class="rewards_valid"
+        >
+          Platform for cancellation reason is required
+        </div>
+      </div>
+
+      <div
+        class="form-group col-md-12 user-input"
+        :class="{ 'full-width': isEditForm }"
+      >
         <label class="vat">Cancellation reason</label>
         <el-input
           v-model="cancellation_reason"
@@ -172,6 +198,11 @@ export default {
       ],
       whenToDisplayReason: [],
       submit_state: false,
+      platform: [
+        { label: 'CC Portal', value: 'CC' },
+        { label: 'Customer', value: 'CUSTOMER' },
+      ],
+      allowPlatform: [],
     };
   },
   validations: {
@@ -179,6 +210,7 @@ export default {
     vendorsSelected: { required },
     country: { required },
     whenToDisplayReason: { required },
+    allowPlatform: { required },
   },
   computed: {
     ...mapGetters({
@@ -230,6 +262,7 @@ export default {
       this.whenToDisplayReason = JSON.parse(
         cancellationData.applicable_order_status,
       );
+      this.allowPlatform = JSON.parse(cancellationData.allow_platform);
     },
     mapOrderReasonsToId(whenToDisplayReasons) {
       if (!whenToDisplayReasons.length) return;
@@ -308,6 +341,10 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
+      } else if (!this.allowPlatform.length) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = ' Platform for cancellation reason is required';
       }
 
       const data = {
@@ -317,7 +354,7 @@ export default {
         applicable_order_status: this.whenToDisplayReason,
         admin_id: this.getSession.payload.data.admin_id,
         priority_key: 18,
-        allow_platform: ['CC', 'CUSTOMER'],
+        allow_platform: this.allowPlatform,
       };
       const payload = {
         app: 'ADONIS_API',
@@ -373,6 +410,10 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
+      } else if (!this.allowPlatform.length) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = ' Platform for cancellation reason is required';
       }
 
       const payload = {
@@ -380,6 +421,7 @@ export default {
         vendor_type_ids: this.vendorsSelected,
         cancel_reason: this.cancellation_reason,
         applicable_order_status: this.whenToDisplayReason,
+        allow_platform: this.allowPlatform,
         admin_id: this.getSession.payload.data.admin_id,
         status: this.formDataType.data.status,
         cancellation_reason_id: this.formDataType.data.id,
@@ -396,6 +438,11 @@ export default {
             this.clearData();
             this.$emit('showDialog', false);
           }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.submit_state = false;
+          this.loading_messages = true;
+          this.error_msg = result.data;
         }
       } catch (error) {
         this.submit_state = false;
