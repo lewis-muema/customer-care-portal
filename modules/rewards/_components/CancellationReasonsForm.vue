@@ -5,124 +5,126 @@
       class="form-inline add-reward-section"
       :class="{ 'full-width': isEditForm }"
     >
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat"> Country </label>
-        <v-select
-          :options="active_countries"
-          :reduce="name => name.country_code"
-          name="country_name"
-          label="country_name"
-          placeholder="Select "
-          class="form-control select user-billing"
-          :id="`name`"
-          @input="getSelectedCountryCode"
-          v-model="country"
-        >
-        </v-select>
-        <div v-if="submitted && !$v.country.required" class="rewards_valid">
-          Country is required
-        </div>
-      </div>
-
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat"> Vendor Type </label>
-        <v-select
-          :options="vendor_type"
-          :reduce="name => name.id"
-          multiple
-          chips
-          name="name"
-          label="name"
-          placeholder="Select"
-          class="form-control select user-billing"
-          :id="`name`"
-          v-model="vendorsSelected"
-        >
-        </v-select>
+      <div class="row">
         <div
-          v-if="submitted && !$v.vendorsSelected.required"
-          class="rewards_valid"
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
         >
-          Vendor type has to be selected
+          <label class="vat"> Country </label>
+          <v-select
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
+            placeholder="Select "
+            class="form-control select user-billing"
+            :id="`name`"
+            @input="getSelectedCountryCode"
+            v-model="country"
+          >
+          </v-select>
+          <div v-if="submitted && !$v.country.required" class="rewards_valid">
+            Country is required
+          </div>
         </div>
-      </div>
 
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat"> When to display the cancellation reason </label>
-        <v-select
-          :options="when_to_display_Reason"
-          :reduce="name => name.value"
-          multiple
-          chips
-          label="label"
-          name="label"
-          placeholder="Select"
-          class="form-control select user-billing"
-          :id="`value`"
-          v-model="whenToDisplayReason"
-        >
-        </v-select>
         <div
-          v-if="submitted && !$v.whenToDisplayReason.required"
-          class="rewards_valid"
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
         >
-          When to display cancellation reason is required
+          <label class="vat"> Vendor Type </label>
+          <v-select
+            :options="vendor_type"
+            :reduce="name => name.id"
+            multiple
+            chips
+            name="name"
+            label="name"
+            placeholder="Select"
+            class="form-control select user-billing"
+            :id="`name`"
+            v-model="vendorsSelected"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.vendorsSelected.required"
+            class="rewards_valid"
+          >
+            Vendor type has to be selected
+          </div>
         </div>
-      </div>
 
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat"> Platform for cancellation </label>
-        <v-select
-          :options="platform"
-          :reduce="name => name.value"
-          multiple
-          chips
-          label="label"
-          name="label"
-          placeholder="Select"
-          class="form-control select user-billing"
-          :id="`value`"
-          v-model="allowPlatform"
-        >
-        </v-select>
         <div
-          v-if="submitted && !$v.allowPlatform.required"
-          class="rewards_valid"
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
         >
-          Platform for cancellation reason is required
+          <label class="vat"> When to display the cancellation reason </label>
+          <v-select
+            :options="when_to_display_Reason"
+            :reduce="name => name.value"
+            multiple
+            chips
+            label="label"
+            name="label"
+            placeholder="Select"
+            class="form-control select user-billing"
+            :id="`value`"
+            v-model="whenToDisplayReason"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.whenToDisplayReason.required"
+            class="rewards_valid"
+          >
+            When to display cancellation reason is required
+          </div>
         </div>
-      </div>
 
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat">Cancellation reason</label>
-        <el-input
-          v-model="cancellation_reason"
-          class="message-input"
-          :class="{
-            'reduce-message-input': this.formDataType.operation === 'edit',
-          }"
-        >
-        </el-input>
         <div
-          v-if="submitted && !$v.cancellation_reason.required"
-          class="rewards_valid"
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
         >
-          Cancellation reason is required
+          <label class="vat"> Platform for cancellation reason</label>
+          <v-select
+            :options="platform"
+            :reduce="name => name.value"
+            multiple
+            chips
+            label="label"
+            name="label"
+            placeholder="Select"
+            class="form-control select user-billing"
+            :id="`value`"
+            v-model="allowPlatform"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.allowPlatform.required"
+            class="rewards_valid"
+          >
+            Platform for cancellation reason is required
+          </div>
+        </div>
+
+        <div
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
+        >
+          <label class="vat">Cancellation reason</label>
+          <el-input
+            v-model="cancellation_reason"
+            class="message-input"
+            :class="{
+              'reduce-message-input': this.formDataType.operation === 'edit',
+            }"
+          >
+          </el-input>
+          <div
+            v-if="submitted && !$v.cancellation_reason.required"
+            class="rewards_valid"
+          >
+            Cancellation reason is required
+          </div>
         </div>
       </div>
 
@@ -138,7 +140,11 @@
       </div>
     </form>
 
-    <div v-if="submit_status" class="response-section">
+    <div
+      v-if="submit_status"
+      class="response-section"
+      :class="{ 'remove-margin': isEditForm }"
+    >
       <p class="response-text" v-if="response_status === true">
         <i class="fa fa-spinner fa-spin loader invoice-loader--align"></i>
         Processing your request ....
@@ -461,6 +467,9 @@ export default {
   width: 80% !important;
   min-height: 340px;
 }
+.add-reward-section div {
+  margin-left: -5px;
+}
 .form-inline {
   margin-left: 2%;
   margin-top: 15px;
@@ -479,7 +488,6 @@ export default {
 }
 .vat {
   width: 100%;
-  margin-left: -15px;
 }
 .vat-inline {
   max-width: 72% !important;
@@ -487,14 +495,12 @@ export default {
 .form-inline label {
   align-items: center;
   justify-content: left;
-  margin-bottom: 0;
   font-size: small;
 }
 .select {
   margin-left: -15px;
   padding: 0;
   width: 95%;
-  height: 2%;
 }
 .v-select .vs__dropdown-menu .option-description {
   margin-top: 5px;
@@ -511,7 +517,6 @@ export default {
 }
 .user-input {
   margin-bottom: 34px;
-  width: 30%;
 }
 .full-width {
   width: 100% !important;
@@ -529,7 +534,7 @@ export default {
   border: 2px solid #00ae55;
   box-sizing: border-box;
   border-radius: 4px;
-  margin-left: 2%;
+  margin-left: 15px;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -551,12 +556,14 @@ export default {
 .rewards_valid {
   font-size: 14px !important;
   color: #dc3545;
-  margin-left: -4% !important;
 }
 .submit-success {
   color: #00ae55;
 }
 .submit-error {
   color: #ff0000;
+}
+.remove-margin {
+  margin-left: 0;
 }
 </style>
