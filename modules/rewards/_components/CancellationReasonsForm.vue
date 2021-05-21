@@ -468,7 +468,7 @@ export default {
   min-height: 340px;
 }
 .add-reward-section div {
-  margin-left: -5px;
+  margin-left: -4px;
 }
 .form-inline {
   margin-left: 2%;

@@ -26,7 +26,10 @@
                     {{ action.currency }} {{ action.cancellation_fee }}
                   </span>
                 </div>
-                <div v-if="action.comparator !== ''" class="expandable-header">
+                <div
+                  v-if="action.comparator !== undefined"
+                  class="expandable-header"
+                >
                   Time: <span>{{ mapComparator(action.comparator) }}</span>
                   <span v-if="action.comparator">
                     {{ action.duration }} Minutes
@@ -121,7 +124,7 @@
           }}
         </template>
       </el-table-column>
-      <el-table-column label="Actions" prop="status" class="data" width="150">
+      <el-table-column label="Actions" prop="status" class="data" width="200">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -140,23 +143,63 @@
                 : setStatusText(activeCancellationConsequences[scope.$index])
             }}
           </el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="
+              openEditDialog(activeCancellationConsequences[scope.$index])
+            "
+          >
+            Edit
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <el-dialog
+      id="cancellation-consequences-edit"
+      title="Edit Cancellation Consequences"
+      :visible.sync="dialogFormVisible"
+      append-to-body
+    >
+      <cancellation-consequences-edit
+        @showDialog="closeDialog"
+        :consequence-data="consequences"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import cancellation_consequences_table_mixin from '@/mixins/cancellation_consequences_table_mixin';
 import { mapGetters } from 'vuex';
+import CancellationConsequencesEdit from '../CancellationConsequencesEdit';
 
 export default {
   name: 'ActiveConsequencesDataTable',
+  components: {
+    CancellationConsequencesEdit,
+  },
   mixins: [cancellation_consequences_table_mixin],
+  data() {
+    return {
+      dialogFormVisible: false,
+      consequences: {},
+    };
+  },
   computed: {
     ...mapGetters({
       activeCancellationConsequences: 'getActiveCancellationConsequences',
     }),
+  },
+  methods: {
+    openEditDialog(row) {
+      this.dialogFormVisible = true;
+      this.consequences = row;
+    },
+    closeDialog(showDialog) {
+      this.dialogFormVisible = showDialog;
+    },
   },
 };
 </script>
@@ -215,5 +258,11 @@ export default {
 .expandable-header .order-status ul {
   padding: 0;
   font-weight: 400;
+}
+</style>
+<style>
+#cancellation-consequences-edit .el-dialog {
+  width: 70% !important;
+  min-height: 350px;
 }
 </style>
