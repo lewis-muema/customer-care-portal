@@ -73,6 +73,7 @@ export default {
       return actionName.toString();
     },
     mapActionTypesToAction(actionsIdArray) {
+      if (!actionsIdArray.length) return;
       const dataArray = [];
       actionsIdArray.map(actionType => {
         const data = this.actions_data.find(action => action.id === actionType);
@@ -87,6 +88,7 @@ export default {
       return display_name;
     },
     mapComparator(comparator) {
+      if (comparator === undefined) return;
       const { name } = this.comparison_parameters.find(
         parameter => parameter.value === comparator,
       );
