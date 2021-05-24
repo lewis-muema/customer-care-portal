@@ -21,7 +21,7 @@
                   >
                 </div>
                 <div v-if="action.cancellation_fee" class="expandable-header">
-                  Charge fee:
+                  Cancellation fee:
                   <span>
                     {{ action.currency }} {{ action.cancellation_fee }}
                   </span>
