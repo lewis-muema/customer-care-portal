@@ -19,6 +19,13 @@
             type="number"
             min="1"
             v-model="action.cancellation_fee"
+            @input="
+              updateInputValue(
+                index,
+                'cancellation_fee',
+                action.cancellation_fee,
+              )
+            "
           >
             <template slot="prepend">{{ country_currency }}</template>
           </el-input>
@@ -43,6 +50,13 @@
             placeholder="Select"
             class="form-control select user-billing"
             v-model="action.applicable_order_status"
+            @input="
+              updateInputValue(
+                index,
+                'applicable_order_status',
+                action.applicable_order_status,
+              )
+            "
           >
           </v-select>
           <div
@@ -75,12 +89,14 @@
             min="0"
             :disabled="action.comparator === 0"
             v-model="action.duration"
+            @input="updateInputValue(index, 'duration', action.duration)"
           >
             <el-select
               v-model="action.comparator"
               :reduce="name => name.value"
               slot="prepend"
               placeholder="Select"
+              @input="updateInputValue(index, 'comparator', action.comparator)"
             >
               <el-option
                 v-for="param in comparison_parameters"
@@ -115,6 +131,7 @@
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 4 }"
             v-model="action.message"
+            @input="updateInputValue(index, 'message', action.message)"
           >
           </el-input>
           <div v-if="validateInputs(action.message)" class="error">
@@ -127,11 +144,28 @@
     <el-button type="primary" @click="editActions">
       Save Changes
     </el-button>
+
+    <div v-if="submit_status" class="response-section">
+      <p class="response-text" v-if="response_status === true">
+        <i class="fa fa-spinner fa-spin loader invoice-loader--align"></i>
+        Processing your request ....
+      </p>
+      <p class="response-text" v-else-if="response_status === 'success'">
+        <i class="fa fa-check-circle invoice-loader--align submit-success"></i>
+        Consequence actions edited
+      </p>
+      <p class="response-text" v-else>
+        <i
+          class="fa fa-exclamation-circle invoice-loader--align submit-error"
+        ></i>
+        {{ error_msg }}
+      </p>
+    </div>
   </section>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'CancellationConsequencesEdit',
@@ -166,6 +200,10 @@ export default {
         { name: 'Immediately', value: 0 },
       ],
       country_currency: null,
+      submit_status: false,
+      response_status: true,
+      error_msg: '',
+      inputErrors: [],
     };
   },
   computed: {
@@ -180,15 +218,16 @@ export default {
       return session;
     },
     consequenceData(newData) {
-      console.log('>>>', newData);
       this.getCurrencyOfSelectedCountry(newData.country_code);
     },
   },
   created() {
-    console.log('>>>', this.consequenceData);
     this.getCurrencyOfSelectedCountry(this.consequenceData.country_code);
   },
   methods: {
+    ...mapActions({
+      update_cancellation_consequences: 'update_cancellation_consequences',
+    }),
     validateInputs(inputValue) {
       if (Array.isArray(inputValue)) return !inputValue.length;
       return inputValue === null || inputValue === '';
@@ -216,8 +255,70 @@ export default {
       );
       return name;
     },
-    editActions() {
-      console.log('yeeey');
+    resetTimeInput(currentObject, inputValue) {
+      if (inputValue === 0) {
+        currentObject['duration'] = 0;
+      }
+    },
+    updateInputValue(arrayIndex, input, inputValue) {
+      const actionsArray = this.consequenceData.actions;
+      const actionObject = actionsArray[arrayIndex];
+
+      if (input === 'comparator') {
+        this.resetTimeInput(actionObject, inputValue);
+      }
+      actionObject[input] = inputValue;
+    },
+    validateInputErrors() {
+      this.inputErrors = [];
+      const actionsArray = this.consequenceData.actions;
+      actionsArray.map(action => {
+        // eslint-disable-next-line guard-for-in
+        for (const key in action) {
+          const found = key.includes('applicable_order_status');
+          if (found) {
+            if (!action[key].length) this.inputErrors.push('error');
+          }
+
+          if (action[key] === '') {
+            this.inputErrors.push('error');
+          }
+        }
+      });
+    },
+    async editActions() {
+      this.validateInputErrors();
+      if (this.inputErrors.length) {
+        this.submit_status = true;
+        this.response_status = 'error';
+        this.error_msg = 'Please fill in all the required values!';
+        return;
+      }
+
+      const { vendor_type_ids } = this.consequenceData;
+      const editedData = {
+        ...this.consequenceData,
+        vendor_type_ids: JSON.parse(vendor_type_ids),
+        admin_name: this.getSession.payload.data.name,
+        admin_id: this.getSession.payload.data.admin_id,
+        country_filter: this.getCurrentUsersCountryCode(),
+      };
+      console.log('zzz', editedData);
+
+      this.submit_status = true;
+      this.response_status = true;
+
+      try {
+        await this.update_cancellation_consequences(editedData);
+        this.response_status = 'success';
+        setTimeout(() => {
+          this.submit_status = false;
+          this.$emit('showDialog', false);
+        }, 2000);
+      } catch (err) {
+        this.response_status = 'error';
+        this.error_msg = err;
+      }
     },
   },
 };
@@ -233,7 +334,7 @@ export default {
   justify-content: flex-start;
   align-items: flex-start;
 }
-.v-select .form-control {
+.v-select {
   height: auto;
   padding: 0;
 }
@@ -248,6 +349,29 @@ export default {
 }
 button {
   margin-top: 25px;
+}
+.response-section {
+  width: 95.5%;
+  height: 55px;
+  background: rgba(255, 255, 255, 0.91);
+  border: 2px solid #00ae55;
+  box-sizing: border-box;
+  border-radius: 4px;
+  margin-top: 2%;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 28px;
+  padding-left: 10px;
+}
+.response-text {
+  margin-top: 1%;
+}
+.submit-success {
+  color: #00ae55;
+}
+.submit-error {
+  color: #ff0000;
 }
 </style>
 <style>

@@ -195,7 +195,8 @@ export default {
   methods: {
     openEditDialog(row) {
       this.dialogFormVisible = true;
-      this.consequences = row;
+      // DEEP CLONE ARRAY
+      this.consequences = JSON.parse(JSON.stringify(row));
     },
     closeDialog(showDialog) {
       this.dialogFormVisible = showDialog;
