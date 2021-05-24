@@ -303,7 +303,6 @@ export default {
         admin_id: this.getSession.payload.data.admin_id,
         country_filter: this.getCurrentUsersCountryCode(),
       };
-      console.log('zzz', editedData);
 
       this.submit_status = true;
       this.response_status = true;
