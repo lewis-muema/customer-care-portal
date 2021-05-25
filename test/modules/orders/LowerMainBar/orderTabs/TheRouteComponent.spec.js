@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import TheRouteComponent from '../../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderTabs/TheRouteComponent.vue';
+import TheRouteComponent from '../../../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderTabs/TheRouteComponent.vue';
 
 describe('TheRouteComponent', () => {
   const wrapper = shallowMount(TheRouteComponent, {
