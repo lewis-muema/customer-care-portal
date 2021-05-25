@@ -13,11 +13,10 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: '<rootDir>/coverage',
   collectCoverageFrom: [
+    '!**/node_modules/**',
     '<rootDir>/components/**/*.vue',
     '<rootDir>/pages/**/*.vue',
     '<rootDir>/modules/**/*.vue',
-    '<rootDir>/modules/**/**/*.vue',
-    '<rootDir>/modules/**/**/**/*.vue',
   ],
   testEnvironment: 'jsdom',
 };
