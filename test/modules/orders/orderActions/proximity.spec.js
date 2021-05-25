@@ -1,12 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
-import TheProximityComponent from '../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderActions/TheProximityComponent.vue';
+import Vue from 'vue';
+import vSelect from 'vue-select';
+import TheProximityComponent from '../../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderActions/TheProximityComponent.vue';
 
-const expect = require('chai').expect;
-const assert = require('chai').assert;
+Vue.component('v-select', vSelect);
 
 describe('TheProximityComponent', () => {
   const wrapper = shallowMount(TheProximityComponent, {
-    attachToDocument: true,
     propsData: {
       order: {
         order_details: {
@@ -20,9 +20,9 @@ describe('TheProximityComponent', () => {
     },
   });
   it('checks the component button name ', () => {
-    expect(wrapper.find('button').text()).to.equal('Submit');
+    expect(wrapper.find('button').text()).toBe('Submit');
   });
   it('has a root element with class form-group', () => {
-    expect(wrapper.is('.form-group')).to.equal(true);
+    expect(wrapper.find('form').classes()).toContain('form-group');
   });
 });
