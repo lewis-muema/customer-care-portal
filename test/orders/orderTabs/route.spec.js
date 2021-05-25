@@ -1,9 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
-import TheRouteComponent from '../../../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderTabs/TheRouteComponent.vue';
+import TheRouteComponent from '../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderTabs/TheRouteComponent.vue';
 
 describe('TheRouteComponent', () => {
   const wrapper = shallowMount(TheRouteComponent, {
-    attachToDocument: true,
     propsData: {
       order: [
         {
@@ -26,9 +25,11 @@ describe('TheRouteComponent', () => {
     },
   });
   it('displays items from the list ', () => {
-    const Constructor = Vue.extend(TheRouteComponent);
-    const ListComponent = new Constructor().$mount();
-    // console.log('ListComponent', ListComponent.$el);
-    expect(ListComponent.$el.textContent).to.contain('Building');
+    expect(
+      wrapper
+        .findAll('th')
+        .at(2)
+        .text(),
+    ).toBe('Building');
   });
 });
