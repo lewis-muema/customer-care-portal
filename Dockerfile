@@ -27,11 +27,15 @@ ENV APP_ENV=$APP_ENV
 
 COPY package.json ./
 
+<<<<<<< HEAD
 RUN npm install --only=production
 <<<<<<< HEAD
 >>>>>>> 5a24be66 (Have docker only install packages needed for production)
 =======
 >>>>>>> 5a24be66 (Have docker only install packages needed for production)
+=======
+RUN npm install --only=production && npm cache clean --force
+>>>>>>> b8a2bb35 (Have docker only install clean packages needed for production)
 
 COPY --chown=sendy:sendy . .
 ARG APP_ENV
