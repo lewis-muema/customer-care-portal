@@ -12,7 +12,7 @@ ENV APP_ENV=$APP_ENV
 
 COPY package.json ./
 
-RUN npm install --only=production
+RUN npm install --only=production && npm cache clean --force
 
 COPY --chown=sendy:sendy . .
 
