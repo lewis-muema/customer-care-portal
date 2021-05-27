@@ -20,6 +20,7 @@
     "@googlemaps/google-maps-services-js": "^3.1.16",
     "@johmun/vue-tags-input": "^2.1.0",
     "@nuxtjs/axios": "^5.6.0",
+    "@nuxtjs/eslint-module": "^0.0.1",
     "@sendyit/auth": "^0.1.5",
     "@stomp/stompjs": "^5.4.2",
     "aos": "^3.0.0-beta.6",
@@ -89,7 +90,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@nuxtjs/eslint-module": "^0.0.1",
+=======
+>>>>>>> b3ae60a3 (Have docker only install clean packages needed for production)
 =======
 >>>>>>> b3ae60a3 (Have docker only install clean packages needed for production)
     "@vue/test-utils": "^1.0.0-beta.29",
