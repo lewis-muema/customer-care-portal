@@ -332,8 +332,18 @@ export default {
       return this.removeInvalidObjects(actonDataValues);
     },
     removeInvalidObjects(valuesArray) {
+      let invalid = false;
+      let duplicateActionFound = false;
       const validatedArray = [];
       valuesArray.forEach(value => {
+        duplicateActionFound = validatedArray.some(
+          action => action.action_type === value.action_type,
+        );
+        if (duplicateActionFound) {
+          invalid = duplicateActionFound;
+          return;
+        }
+
         if (value.action_type === 1 || value.action_type === 4) {
           if (Object.keys(value).length >= 2) validatedArray.push(value);
         }
@@ -347,6 +357,7 @@ export default {
         }
       });
 
+      this.$emit('invalidInputValues', invalid);
       return validatedArray;
     },
     emitAllInputValues() {

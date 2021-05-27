@@ -72,6 +72,7 @@
       <cancellation-action-input
         :key="componentKey"
         :selected-country-currency="country_currency"
+        @invalidInputValues="actionsValidityCheck"
         @actionInputValues="setActionValues"
       />
 
@@ -128,6 +129,7 @@ export default {
       actonDataValues: [],
       submit_state: false,
       componentKey: 0,
+      actionInputsInvalid: false,
     };
   },
   validations: {
@@ -256,6 +258,9 @@ export default {
     checkSubmitStatus() {
       return this.submit_state;
     },
+    actionsValidityCheck(invalidInputs) {
+      this.actionInputsInvalid = invalidInputs;
+    },
     setActionValues(actionData) {
       this.actonDataValues = actionData;
     },
@@ -284,6 +289,11 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'Please fill in all action inputs required';
+        return;
+      } else if (this.actionInputsInvalid) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Remove duplicate actions';
         return;
       }
 
