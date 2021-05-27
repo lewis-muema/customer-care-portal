@@ -2,26 +2,23 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    node: true
+    node: true,
   },
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'babel-eslint',
   },
   extends: [
     'airbnb-base',
-    
     'plugin:prettier/recommended',
     '@nuxtjs',
     'prettier',
-    'prettier/vue'
+    'prettier/vue',
   ],
-  plugins: [
-    'prettier'
-  ],
+  plugins: ['prettier'],
   // add your custom rules here
   rules: {
     'max-len': 'off',
-    'camelcase': 'off',
+    camelcase: 'off',
     'no-undef': 'off',
     'no-dupe-keys': 'off',
     'vue/no-dupe-keys': 'off',
@@ -30,7 +27,7 @@ module.exports = {
     'array-callback-return': 'off',
     'no-else-return': 'off',
     'arrow-parens': 'off',
-    'indent': 'off',
+    indent: 'off',
     'dot-notation': 'off',
     'prefer-destructuring': 'off',
     'no-restricted-syntax': 'off',
@@ -53,20 +50,24 @@ module.exports = {
     'no-param-reassign': 'off',
     'import/no-unresolved': 'off',
     'vue/html-quotes': 'off',
-    'vue/no-multiple-template-root':'off',
+    'vue/no-multiple-template-root': 'off',
     'no-plusplus': 'off',
     'vue/no-template-shadow': 'off',
-    'vue/no-v-html': 'off',  
-    'radix': 'off',
-    "prettier/prettier": ["error", { "singleQuote": true }],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
-    "import/extensions": ["error", "ignorePackages", {
-      "js": "never",
-      "jsx": "never",
-      "ts": "never",
-      "tsx": "never",
-      "mjs": "never",
-      "": "never"
-    }]
-  }
+    'vue/no-v-html': 'off',
+    radix: 'off',
+    'prettier/prettier': ['error', { singleQuote: true }],
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+        mjs: 'never',
+        '': 'never',
+      },
+    ],
+  },
 };

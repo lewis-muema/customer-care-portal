@@ -109,7 +109,7 @@ module.exports = {
         sizes: '48x48',
         type: 'image/x-icon',
         href:
-          'https://images.sendyit.com/web_platform/appicons/SendyAppIcon_120px.png',
+          'https://images.sendyit.com/web_platform/logo/logo_192.png',
       },
       {
         rel: 'stylesheet',
@@ -185,9 +185,6 @@ module.exports = {
           'APP_ENV',
           'BROKER_USER',
           'BROKER_PASS',
-          'HELP_SCOUT_API_KEY',
-          'HELP_SCOUT_CLIENT_ID',
-          'HELP_SCOUT_SECRET_KEY',
         ],
       },
     ],

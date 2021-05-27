@@ -3,7 +3,7 @@
     <TheOrderDetailsComponent :order="order" />
   </span>
   <span v-else>
-    <TheOrderActionsComponent :order="order" />
+    <TheOrderActionsComponent :order-details="orderDetails" :order="order" />
     <TheOrderDetailsComponent :order="order" />
   </span>
 </template>
@@ -22,6 +22,10 @@ export default {
   },
   props: {
     order: {
+      type: Object,
+      required: true,
+    },
+    orderDetails: {
       type: Object,
       required: true,
     },

@@ -236,4 +236,25 @@ export default {
   getCurrentPage(state) {
     return state.currentPage;
   },
+  getReallocationReasons(state) {
+    return state.reallocationReasons;
+  },
+  getDisabledStatus(state) {
+    return state.disabledStatus;
+  },
+  getActiveCancellationReasons(state) {
+    return state.activeCancellationReasons;
+  },
+  getDeactivatedCancellationReasons(state) {
+    return state.deactivatedCancellationReasons;
+  },
+  getCancellationActions(state) {
+    return state.cancellationActions;
+  },
+  getActiveCancellationConsequences(state) {
+    return state.activeCancellationConsequences;
+  },
+  getDeactivatedCancellationConsequences(state) {
+    return state.deactivatedCancellationConsequences;
+  },
 };

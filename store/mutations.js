@@ -47,7 +47,6 @@ export default {
     if (val === null && process.client) {
       val = localStorage.getItem('jwtToken');
     }
-
     state.jwtToken = val;
   },
   setRefreshToken(state, val) {
@@ -230,9 +229,6 @@ export default {
   setActiveLiveOpsVendor(state, val) {
     state.activeLiveOpsVendor = val;
   },
-  setActiveLiveOpsVendor(state, val) {
-    state.activeLiveOpsVendor = val;
-  },
   setLiveOpsRefresh(state, val) {
     state.liveOpsRefresh = val;
   },
@@ -259,5 +255,37 @@ export default {
   },
   setCurrentPage(state, val) {
     state.currentPage = val;
+  },
+  setSelectedVendorType(state, val) {
+    state.selectedVendorType = val;
+  },
+  setSelectedCountryCode(state, val) {
+    state.selectedCountryCode = val;
+  },
+  setReallocationReasons(state, val) {
+    state.reallocationReasons = val;
+  },
+  setDisabledStatus(state, val) {
+    state.disabledStatus = val;
+  },
+
+  setActiveCancellationReasons(state, val) {
+    state.activeCancellationReasons = val;
+  },
+
+  setDeactivatedCancellationReasons(state, val) {
+    state.deactivatedCancellationReasons = val;
+  },
+
+  setCancellationActions(state, val) {
+    state.cancellationActions = val;
+  },
+
+  setActiveCancellationConsequences(state, val) {
+    state.activeCancellationConsequences = val;
+  },
+
+  setDeactivatedCancellationConsequences(state, val) {
+    state.deactivatedCancellationConsequences = val;
   },
 };

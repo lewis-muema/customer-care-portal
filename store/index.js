@@ -117,7 +117,6 @@ export default {
       selectedOrder: null,
       searchedOrderStatus: false,
       currentPage: 1,
-
       errorCodes: {
         403: 'Your access token has expired. Please logout and login again',
         500: 'Page not found',
@@ -173,6 +172,15 @@ export default {
         24: 'Standard Bike',
         25: 'Freight',
       },
+      selectedVendorType: null,
+      selectedCountryCode: null,
+      reallocationReasons: [],
+      disabledStatus: false,
+      activeCancellationReasons: [],
+      deactivatedCancellationReasons: [],
+      activeCancellationConsequences: [],
+      deactivatedCancellationConsequences: [],
+      cancellationActions: [],
     };
   },
 

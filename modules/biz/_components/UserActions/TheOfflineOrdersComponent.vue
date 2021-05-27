@@ -298,7 +298,7 @@
                 Billing Amount is required
               </div>
             </div>
-            <div class="form-group entity-checkbox">
+            <div class="form-group entity-checkbox d-none">
               <input
                 value="1"
                 type="checkbox"

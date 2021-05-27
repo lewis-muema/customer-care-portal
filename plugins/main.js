@@ -117,7 +117,6 @@ Vue.mixin({
       }
       return false;
     },
-
     clearErrorMessages() {
       const notification = [];
       const actionClass = '';
@@ -370,7 +369,6 @@ Vue.mixin({
       amount = Number(amount).toLocaleString('en');
       return `${orderCurrency} ${amount}`;
     },
-
     display_conditional_amounts(orderDetails, amount) {
       let displayAmount = 0;
       const convertedAmount = this.showCurrencyBasedAmounts(

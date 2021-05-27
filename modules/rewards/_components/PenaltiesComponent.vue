@@ -18,13 +18,14 @@
         <div class="form-group col-md-4 user-input">
           <label class="vat"> Country </label>
           <v-select
-            :options="country_code"
-            :reduce="name => name.code"
-            name="name"
-            label="name"
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
             placeholder="Select "
             class="form-control select user-billing"
             :id="`name`"
+            @input="getSelectedCountryCode"
             v-model="country"
           >
           </v-select>
@@ -75,131 +76,119 @@
           </div>
         </div>
 
-        <div
-          class="form-group col-md-4 user-input"
-          v-if="penalizing_param === 'REASSIGNED'"
-        >
-          <label class="vat"> Reassigned reason to penalize</label>
-          <el-select
-            v-model="penalizing_reason"
-            multiple
-            class="form-control select user-billing"
-            placeholder="Select"
-          >
-            <el-option
-              v-for="item in reasons_data"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
-            >
-            </el-option>
-          </el-select>
+        <div class="full-width" v-if="penalizing_param === 'REASSIGNED'">
+          <partner-action @actionValues="getActionValues" />
         </div>
-
-        <div class="form-group col-md-4 user-input">
-          <label class="vat"> Orders to penalize for</label>
-          <el-input
-            placeholder="Please input"
-            v-model="penalized_orders"
-            class="input-with-select"
-            min="0"
-            type="number"
-          >
-            <el-select
-              v-model="orders_parameter"
-              slot="prepend"
-              placeholder="Select"
+        <div class="remove-margin row" v-else>
+          <div class="form-group col-md-4 user-input">
+            <label class="vat"> Orders to penalize for</label>
+            <el-input
+              placeholder="Please input"
+              v-model="penalized_orders"
+              class="input-with-select"
+              min="0"
+              type="number"
             >
-              <el-option
-                v-for="value in orderValue()"
-                :key="value.code"
-                :label="value.name"
-                :value="value.code"
+              <el-select
+                v-model="orders_parameter"
+                slot="prepend"
+                placeholder="Select"
               >
-              </el-option>
-            </el-select>
-          </el-input>
-          <div
-            v-if="
-              submitted &&
-                (!$v.penalized_orders.required || !$v.orders_parameter.required)
-            "
-            class="rewards_valid"
-          >
-            Orders to penalize is required
+                <el-option
+                  v-for="value in orderValue()"
+                  :key="value.code"
+                  :label="value.name"
+                  :value="value.code"
+                >
+                </el-option>
+              </el-select>
+            </el-input>
+            <div
+              v-if="
+                submitted &&
+                  (!$v.penalized_orders.required ||
+                    !$v.orders_parameter.required)
+              "
+              class="rewards_valid"
+            >
+              Orders to penalize is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input">
-          <label class="vat"> Number of hours to block on dispatch </label>
+          <div class="form-group col-md-4 user-input">
+            <label class="vat"> Number of hours to block on dispatch </label>
 
-          <input
-            min="0"
-            type="number"
-            step="0.01"
-            name="blocking_hrs"
-            placeholder=""
-            class="form-control config-input"
-            v-model="blocking_hrs"
-          />
-          <div
-            class="rewards_valid"
-            v-if="submitted && !$v.blocking_hrs.required"
-          >
-            Number of hours to block on dispatch is required
+            <input
+              min="0"
+              type="number"
+              step="0.01"
+              name="blocking_hrs"
+              placeholder=""
+              class="form-control config-input"
+              v-model="blocking_hrs"
+            />
+            <div
+              class="rewards_valid"
+              v-if="submitted && !$v.blocking_hrs.required"
+            >
+              Number of hours to block on dispatch is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input start-date--align">
-          <label class="config"> From </label>
+          <div class="form-group col-md-4 user-input start-date--align">
+            <label class="config"> From </label>
 
-          <date-picker
-            v-model="from_date"
-            class="date-input"
-            :input-props="{
-              placeholder: 'Select from date',
-              readonly: true,
-              class: 'form-control config-input ',
-            }"
-            :min-date="new Date()"
-          />
-          <div class="rewards_valid" v-if="submitted && !$v.from_date.required">
-            From Date is required
+            <date-picker
+              v-model="from_date"
+              class="date-input"
+              :input-props="{
+                placeholder: 'Select from date',
+                readonly: true,
+                class: 'form-control config-input ',
+              }"
+              :min-date="new Date()"
+            />
+            <div
+              class="rewards_valid"
+              v-if="submitted && !$v.from_date.required"
+            >
+              From Date is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input start-date--align">
-          <label class="config"> To </label>
+          <div class="form-group col-md-4 user-input start-date--align">
+            <label class="config"> To </label>
 
-          <date-picker
-            v-model="to_date"
-            class="date-input"
-            :input-props="{
-              placeholder: 'Select to date',
-              readonly: true,
-              class: 'form-control config-input ',
-            }"
-            :min-date="new Date()"
-          />
-          <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
-            To Date is required
+            <date-picker
+              v-model="to_date"
+              class="date-input"
+              :input-props="{
+                placeholder: 'Select to date',
+                readonly: true,
+                class: 'form-control config-input ',
+              }"
+              :min-date="new Date()"
+            />
+            <div class="rewards_valid" v-if="submitted && !$v.to_date.required">
+              To Date is required
+            </div>
           </div>
-        </div>
 
-        <div class="form-group col-md-4 user-input ">
-          <label class="vat"> Message to show partner</label>
+          <div class="form-group col-md-4 user-input ">
+            <label class="vat"> Message to show partner</label>
 
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            placeholder="Please input"
-            v-model="message"
-            :id="`message`"
-            class="message-input"
-          >
-          </el-input>
-          <div v-if="submitted && !$v.message.required" class="rewards_valid">
-            Message is required
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4 }"
+              placeholder="Please input"
+              v-model="message"
+              :id="`message`"
+              class="message-input"
+            >
+            </el-input>
+            <div v-if="submitted && !$v.message.required" class="rewards_valid">
+              Message is required
+            </div>
           </div>
         </div>
 
@@ -233,111 +222,26 @@
       </div>
 
       <div class="body-box col-md-12 table-content">
-        <el-table :data="penalty_logs" size="medium" :border="false">
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <div class="form-inline expand-logs-section">
-                <div class="form-group col-md-4 expandable-header">
-                  <label class="expandable-data">
-                    {{ penalizeLabel(props.row.parameter) }}</label
-                  >
-                  {{
-                    reassignData(
-                      props.row.parameter,
-                      props.row.parameter_comp,
-                      props.row.parameter_data,
-                    )
-                  }}
-                </div>
-                <div class="form-group col-md-4 expandable-header">
-                  <label class="expandable-data"> Penalty message</label>
-                  {{ props.row.message }}
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="Country" prop="country">
-            <template slot-scope="scope">
-              {{ fetchCountry(penalty_logs[scope.$index]['country']) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Vendor" prop="vendor_type">
-            <template slot-scope="scope">
-              {{ vendor(penalty_logs[scope.$index]['vendor_type']) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Penalizing parameter"
-            width="180"
-            prop="parameter"
+        <el-tabs v-model="activeTab">
+          <el-tab-pane
+            label="Penalizing Actions Data"
+            name="penalizingActionsData"
           >
-            <template slot-scope="scope">
-              {{ penalizingParams(penalty_logs[scope.$index]['parameter']) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Hours blocked on dispatch"
-            width="180"
-            prop="block_hours"
+            <penalizing-data-table
+              @initiateData="initiateTableData"
+              :penalty-logs="penalty_logs"
+            />
+          </el-tab-pane>
+          <el-tab-pane
+            label="Non-penalizing Actions Data"
+            name="nonPenalizingActionsData"
           >
-            <template slot-scope="scope">
-              {{ penalty_logs[scope.$index]['block_hours'] }} Hrs
-            </template>
-          </el-table-column>
-          <el-table-column label="From" prop="from_date">
-            <template slot-scope="scope">
-              {{
-                getFormattedDate(
-                  penalty_logs[scope.$index]['from_date'],
-                  'DD/MM/YYYY ',
-                )
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column label="To" prop="to_date">
-            <template slot-scope="scope">
-              {{
-                getFormattedDate(
-                  penalty_logs[scope.$index]['to_date'],
-                  'DD/MM/YYYY ',
-                )
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Status" prop="status">
-            <template slot-scope="scope">
-              {{ activeStatus(penalty_logs[scope.$index]['status']) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Actions"
-            prop="status"
-            class="data"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                :class="
-                  penalty_logs[scope.$index]['status'] === 1
-                    ? 'action-button--danger'
-                    : 'action-button--active'
-                "
-                @click="handleAction(penalty_logs[scope.$index])"
-              >
-                {{ actionStatus(penalty_logs[scope.$index]['status']) }}
-              </el-button>
-              <el-button
-                v-if="penalty_logs[scope.$index]['status'] === 0"
-                size="mini"
-                class="action-button--archive"
-                @click="handleArchive(penalty_logs[scope.$index])"
-              >
-                Archive
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <non-penalizing-data-table
+              @initiateData="initiateTableData"
+              :penalties-data="penaltiesData"
+            />
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </div>
   </div>
@@ -345,11 +249,14 @@
 
 <script>
 import Vue from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import moment from 'moment';
+import PartnerAction from '@/modules/rewards/_components/ReassignOrderInputs/PartnerActionInput';
+import PenalizingDataTable from '@/modules/rewards/_components/PenalizingDataTables/PenalizingDataTable';
+import NonPenalizingDataTable from '@/modules/rewards/_components/PenalizingDataTables/NonPenalizingDataTable';
 import Loading from './LoadingComponent.vue';
 
 Vue.component('calendar', Calendar);
@@ -357,9 +264,15 @@ Vue.component('date-picker', DatePicker);
 
 export default {
   name: 'PenaltiesComponent',
-  components: { Loading },
+  components: {
+    PartnerAction,
+    PenalizingDataTable,
+    NonPenalizingDataTable,
+    Loading,
+  },
   data() {
     return {
+      activeTab: 'penalizingActionsData',
       submitted: false,
       loading_penalties: true,
       submit_status: false,
@@ -380,34 +293,26 @@ export default {
         { code: 'GET', name: 'Greater than or equal to' },
         { code: 'LET', name: 'Less than or equal to' },
       ],
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       penalizing_data: [
         { code: 'DELAYED_AT_PICKUP', name: 'Delayed at pick up' },
         { code: 'DELAYED_AT_DELIVERY', name: 'Delayed at delivery ' },
         { code: 'REASSIGNED', name: 'Reassigned orders ' },
       ],
-      reasons_data: [
-        { code: 3, name: 'Client is not reacheable' },
-        { code: 5, name: 'I do not have a box' },
-        { code: 7, name: `I can't access CBD` },
-        { code: 8, name: 'My bike broke-down' },
-        { code: 9, name: 'Police arrest' },
-        { code: 10, name: 'My Vehicle is Open' },
-        { code: 11, name: 'My Vehicle is Closed' },
-        { code: 12, name: 'The load cannot fit in my vehicle' },
-        { code: 13, name: 'My Vehicle broke down' },
-      ],
       completed_comp_id: ['GT', 'GET'],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
+      vendorName: '',
+      vendorId: '',
       country: '',
       penalizing_reason: [],
       penalized_orders: '',
       submit_state: false,
+      partner_actions_inputs: [],
+      customer_actions_inputs: [],
+      reassignment_reason_penalize: '',
+      reasons_data: [],
+      penaltiesData: [],
     };
   },
   validations: {
@@ -422,29 +327,143 @@ export default {
     penalized_orders: { required },
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      active_countries: 'getActiveCountries',
+    }),
   },
   watch: {
     getSession(session) {
       return session;
     },
+    vendorType(vendorId) {
+      this.$store.commit('setSelectedVendorType', vendorId);
+      this.fetchReassignmentReasons();
+    },
+    country(countryCode) {
+      this.$store.commit('setSelectedCountryCode', countryCode);
+      this.fetchReassignmentReasons();
+    },
   },
   mounted() {
     this.initiateData();
   },
-
   methods: {
     ...mapActions({
       perform_user_action: 'perform_user_action',
-      request_vendor_types: 'request_vendor_types',
       request_penalties: 'requestPenalties',
-      update_reward: 'update_reward',
+      request_vendor_types: 'request_vendor_types',
       create_reward: 'create_reward',
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
+      fetchNonPenalizingData: 'fetch_non_penalizing_data',
     }),
     initiateData() {
       this.clearData();
       this.fetchVendorTypes();
+      this.fetchReassignmentReasons();
       this.requestRewards();
+      this.getNonPenalizingData();
+    },
+    initiateTableData(data) {
+      this.initiateData();
+      this.loading_penalties = data.loading_penalties;
+      this.response_status = data.response_status;
+      this.error_msg = data.error_msg;
+    },
+    getSelectedCountryCode() {
+      this.fetchVendorTypes();
+    },
+    fetchVendorTypes() {
+      const notification = [];
+      let actionClass = '';
+      const payload = {
+        app: 'VENDORS',
+        endpoint: 'types',
+        apiKey: false,
+        params: {
+          pickup_country_code: this.country,
+          dropoff_country_code: this.country,
+        },
+      };
+
+      this.request_vendor_types(payload)
+        .then(data => {
+          this.vendor_type = data.vendor_types;
+          return data.vendor_types;
+        })
+        .catch(error => {
+          notification.push('Something went wrong. Please try again.');
+          actionClass = 'danger';
+          throw error;
+        });
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+    async fetchReassignmentReasons() {
+      await this.fetch_set_reallocation_reason();
+    },
+    filterOutStatus(nonPenalizingActions) {
+      const reasonOneRemoved = nonPenalizingActions.filter(
+        action => action.action_id !== 1,
+      );
+      return reasonOneRemoved.filter(action => action.action_id !== 2);
+    },
+    async getNonPenalizingData() {
+      const results = await this.fetchNonPenalizingData();
+      if (results.status)
+        this.penaltiesData = this.filterOutStatus(results.data);
+    },
+    getActionValues(value) {
+      const {
+        reassignment_reason_penalize,
+        partner_actions,
+        customer_actions,
+      } = value;
+      this.reassignment_reason_penalize = reassignment_reason_penalize;
+      this.sanitizePartnerInputs(partner_actions);
+      this.sanitizeCustomerInputs(customer_actions);
+    },
+    sanitizePartnerInputs(partnerActionInputs) {
+      partnerActionInputs.forEach(partnerAction => {
+        for (const key in partnerAction) {
+          if (partnerAction[key] === null || !partnerAction[key]) {
+            delete partnerAction[key];
+          }
+        }
+      });
+
+      if (partnerActionInputs.length === 1) {
+        if (!Object.keys(partnerActionInputs[0]).length) {
+          partnerActionInputs = [];
+        }
+      }
+      this.partner_actions_inputs = partnerActionInputs;
+    },
+    sanitizeCustomerInputs(customerActionInputs) {
+      customerActionInputs.forEach((customerAction, index) => {
+        if (
+          customerAction.customer_action_id === null &&
+          customerActionInputs.length === 1
+        ) {
+          customerActionInputs = [];
+        } else if (customerAction.customer_action_id === null) {
+          customerActionInputs.splice(index, 1);
+        }
+      });
+
+      if (!customerActionInputs.length) {
+        customerActionInputs = [];
+        this.customer_actions_inputs = customerActionInputs;
+        return;
+      }
+      customerActionInputs.forEach(customerAction => {
+        for (const key in customerAction) {
+          if (customerAction[key] === null || !customerAction[key]) {
+            delete customerAction[key];
+          }
+        }
+      });
+      this.customer_actions_inputs = customerActionInputs;
     },
     rewardSection() {
       let status = false;
@@ -466,40 +485,24 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
+      this.$store.commit('setSelectedCountryCode', null);
+      this.$store.commit('setSelectedVendorType', null);
     },
     async requestRewards() {
       const arr = await this.request_penalties();
       this.penalty_logs = arr.filter(obj => obj.status !== 2);
       this.loading_penalties = false;
     },
-    async fetchVendorTypes() {
-      const notification = [];
-      let actionClass = '';
-      const payload = {
-        app: 'VENDORS',
-        endpoint: 'types',
-        apiKey: false,
-        params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
-        },
-      };
-      try {
-        const data = await this.request_vendor_types(payload);
-        this.vendor_type = data.vendor_types;
-        return data.vendor_types;
-      } catch (error) {
-        notification.push('Something went wrong. Please try again.');
-        actionClass = 'danger';
-      }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
-    },
     checkSubmitStatus() {
       return this.submit_state;
     },
     async generate_penalty() {
       this.submitted = true;
+
+      if (this.penalizing_param === 'REASSIGNED') {
+        await this.generate_penalty_actions();
+        return;
+      }
       this.$v.$touch();
       if (this.$v.$invalid) {
         return;
@@ -543,6 +546,7 @@ export default {
             parameter_comp: this.orders_parameter,
             parameter_value: parseInt(this.penalized_orders, 10),
             parameter_data: this.penalizing_reason,
+            penalizing_param: this.penalizing_param,
             block_hours: parseInt(this.blocking_hrs, 10),
             country: this.country,
             vendor_type: parseInt(this.vendorType, 10),
@@ -576,142 +580,89 @@ export default {
         }
       }
     },
+    async generate_penalty_actions() {
+      this.submitted = true;
+
+      this.$v.$touch();
+      this.submit_status = true;
+      this.response_status = true;
+      this.submit_state = true;
+
+      if (this.country === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Country is required!';
+      } else if (this.vendor_type === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Vendor type is required !';
+      } else if (this.reassignment_reason_penalize === '') {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Reassignment reason to penalize is required !';
+      } else if (
+        !this.partner_actions_inputs.length &&
+        !this.customer_actions_inputs.length
+      ) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg =
+          'At least one Partner or Customer action is required !';
+      } else {
+        const actions = {
+          partner_actions: this.partner_actions_inputs,
+          customer_actions: this.customer_actions_inputs,
+        };
+        const payload = {
+          app: 'ADONIS_API',
+          endpoint: '/penalties',
+          apiKey: false,
+          params: {
+            country: this.country,
+            vendor_type: parseInt(this.vendorType, 10),
+            parameter_comp: 'ET',
+            parameter_value: 1,
+            penalizing_param: this.penalizing_param,
+            admin_id: this.getSession.payload.data.admin_id,
+            reassignment_reason_penalize: this.reassignment_reason_penalize,
+            actions,
+          },
+        };
+
+        try {
+          const data = await this.create_reward(payload);
+
+          if (data.status) {
+            this.response_status = 'success';
+
+            setTimeout(() => {
+              this.loading_penalties = true;
+              this.submit_state = false;
+              this.initiateData();
+            }, 5000);
+          } else {
+            this.submit_state = false;
+            this.response_status = 'error';
+            this.error_msg = data.message;
+          }
+        } catch (error) {
+          this.submit_state = false;
+          this.response_status = 'error';
+          this.error_msg =
+            'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
+        }
+      }
+    },
     formatReward(text) {
       return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
-    },
-    vendor(id) {
-      let name = '';
-      if (Object.keys(this.vendor_type).length > 0) {
-        const data = this.vendor_type.find(location => location.id === id);
-        name = data.name;
-      }
-      return name;
-    },
-    penalizingParams(id) {
-      let name = '';
-      if (Object.keys(this.penalizing_data).length > 0) {
-        const data = this.penalizing_data.find(
-          location => location.code === id,
-        );
-        name = data.name;
-      }
-      return name;
-    },
-    fetchCountry(id) {
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
-    },
-    activeStatus(state) {
-      let status = 'Deactivated';
-      if (state === 1) {
-        status = 'Active';
-      }
-      return status;
-    },
-    actionStatus(state) {
-      let status = 'Activate';
-      if (state === 1) {
-        status = 'Deactivate';
-      }
-      return status;
     },
     formatAmount(currency, amount) {
       return `${currency} ${amount}`;
     },
-    async handleAction(row) {
-      let data = {};
-      data = row;
-      if (row.status === 1) {
-        data.status = 0;
-        data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
-      } else {
-        data.status = 1;
-        data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-        data.to_date = moment(row.to_date).format('YYYY-MM-DD');
-      }
-
-      const payload = {
-        app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
-        apiKey: false,
-        params: data,
-      };
-
-      try {
-        const resp = await this.update_reward(payload);
-        this.loading_penalties = true;
-        this.initiateData();
-      } catch (error) {
-        this.loading_penalties = true;
-        this.initiateData();
-        this.response_status = 'error';
-        this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
-      }
-    },
-    reassignData(param, comparator, value) {
-      let resp = '';
-      if (Object.keys(this.comparator).length > 0) {
-        if (param === 'REASSIGNED') {
-          const response = [];
-          const arr = JSON.parse(value);
-          for (let i = 0; i < arr.length; i++) {
-            const extract = this.reasons_data.find(
-              location => location.code === arr[i],
-            );
-            response.push(extract.name);
-            resp = response.toString();
-          }
-        } else {
-          const data = this.comparator.find(
-            location => location.code === comparator,
-          );
-          resp = `${data.name} ${value} orders`;
-        }
-      }
-      return resp;
-    },
-    penalizeLabel(val) {
-      let resp = 'Orders to penalize for be';
-      if (val === 'REASSIGNED') {
-        resp = 'Reassign reasons to penalize for ';
-      }
-      return resp;
-    },
-    async handleArchive(row) {
-      let data = {};
-      data = row;
-
-      data.status = 2;
-      data.from_date = moment(row.from_date).format('YYYY-MM-DD');
-      data.to_date = moment(row.to_date).format('YYYY-MM-DD');
-
-      const payload = {
-        app: 'ADONIS_API',
-        endpoint: `/penalties/${row.id}`,
-        apiKey: false,
-        params: data,
-      };
-
-      try {
-        const resp = await this.update_reward(payload);
-        this.loading_penalties = true;
-        this.initiateData();
-      } catch (error) {
-        this.loading_penalties = true;
-        this.initiateData();
-        this.response_status = 'error';
-        this.error_msg =
-          'Internal Server Error. Kindly refresh the page. If error persists contact tech support';
-      }
-    },
     orderValue() {
-      const record = this.comparator.filter(i =>
+      return this.comparator.filter(i =>
         this.completed_comp_id.includes(i.code),
       );
-
-      return record;
     },
   },
 };
@@ -741,6 +692,12 @@ export default {
 }
 .form-inline {
   margin-left: 2%;
+}
+.full-width {
+  width: 100%;
+}
+.remove-margin {
+  margin-left: 0;
 }
 .centre-loader {
   display: block;
@@ -827,9 +784,6 @@ export default {
   padding: 0;
   width: 95%;
 }
-.user-input {
-  margin-bottom: 15px;
-}
 .form-inline {
   margin-left: 2%;
 }
@@ -873,35 +827,5 @@ export default {
 }
 .message-input {
   margin-left: -5%;
-}
-.action-button--danger {
-  background-color: #ff4949;
-  border-color: #ff4949;
-  color: #fff;
-}
-.action-button--active {
-  background-color: #13ce66;
-  border-color: #13ce66;
-  color: #fff;
-}
-.expandable-data {
-  width: 100%;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 19px;
-  color: #000000;
-  margin-bottom: 3% !important;
-}
-.expand-logs-section {
-  width: 100% !important;
-}
-.expandable-header {
-  margin-bottom: 15px;
-  width: 20%;
-}
-.action-button--archive {
-  background-color: #3c8dbc;
-  border-color: #3c8dbc;
-  color: #fff;
 }
 </style>

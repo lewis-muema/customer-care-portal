@@ -18,13 +18,14 @@
         <div class="form-group col-md-4 user-input">
           <label class="vat"> Country </label>
           <v-select
-            :options="country_code"
-            :reduce="name => name.code"
-            name="name"
-            label="name"
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
             placeholder="Select "
             class="form-control select user-billing"
             :id="`name`"
+            @input="getSelectedCountryCode"
             v-model="country"
           >
           </v-select>
@@ -88,9 +89,9 @@
           >
             <el-option
               v-for="item in reasons_data"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
+              :key="item.id"
+              :label="item.description"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -219,10 +220,7 @@
               {{ fetchCountry(warning_logs[scope.$index]['country']) }}
             </template>
           </el-table-column>
-          <el-table-column label="Vendor" prop="vendor_type">
-            <template slot-scope="scope">
-              {{ vendor(warning_logs[scope.$index]['vendor_type']) }}
-            </template>
+          <el-table-column label="Vendor" prop="vendor_type_name">
           </el-table-column>
           <el-table-column
             label="Warning parameter"
@@ -299,7 +297,7 @@
 
 <script>
 import Vue from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
@@ -333,26 +331,12 @@ export default {
         { code: 'GET', name: 'Greater than or equal to' },
         { code: 'LET', name: 'Less than or equal to' },
       ],
-      country_code: [
-        { code: 'KE', name: 'Kenya' },
-        { code: 'UG', name: 'Uganda' },
-      ],
       penalizing_data: [
         { code: 'DELAYED_AT_PICKUP', name: 'Orders delayed at pick up' },
         { code: 'DELAYED_AT_DELIVERY', name: 'Orders delayed at delivery ' },
         { code: 'REASSIGNED', name: 'Reassigned orders ' },
       ],
-      reasons_data: [
-        { code: 3, name: 'Client is not reacheable' },
-        { code: 5, name: 'I do not have a box' },
-        { code: 7, name: `I can't access CBD` },
-        { code: 8, name: 'My bike broke-down' },
-        { code: 9, name: 'Police arrest' },
-        { code: 10, name: 'My Vehicle is Open' },
-        { code: 11, name: 'My Vehicle is Closed' },
-        { code: 12, name: 'The load cannot fit in my vehicle' },
-        { code: 13, name: 'My Vehicle broke down' },
-      ],
+      reasons_data: [],
       penalizing_param: '',
       vendor_type: [],
       vendorType: '',
@@ -374,11 +358,23 @@ export default {
     penalized_orders: { required },
   },
   computed: {
-    ...mapGetters(['getSession']),
+    ...mapGetters({
+      getSession: 'getSession',
+      active_countries: 'getActiveCountries',
+      reallocationReasons: 'getReallocationReasons',
+    }),
   },
   watch: {
     getSession(session) {
       return session;
+    },
+    vendorType(vendorId) {
+      this.$store.commit('setSelectedVendorType', vendorId);
+      this.fetchReassignmentReasons();
+    },
+    country(countryCode) {
+      this.$store.commit('setSelectedCountryCode', countryCode);
+      this.fetchReassignmentReasons();
     },
   },
   mounted() {
@@ -392,13 +388,25 @@ export default {
       request_vendor_types: 'request_vendor_types',
       request_penalties: 'requestPenalties',
       request_messages: 'requestWarningMessages',
+      fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
       update_reward: 'update_reward',
       create_reward: 'create_reward',
     }),
+    async fetchReassignmentReasons() {
+      await this.fetch_set_reallocation_reason();
+      this.filterReassignmentReasons();
+    },
+    filterReassignmentReasons() {
+      this.reasons_data = this.reallocationReasons.filter(
+        reason => reason.status === 1,
+      );
+    },
     initiateData() {
       this.clearData();
       this.fetchVendorTypes();
       this.requestRewards();
+      this.fetchReassignmentReasons();
+      this.filterReassignmentReasons();
     },
     clearData() {
       this.submit_status = false;
@@ -412,6 +420,8 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
+      this.$store.commit('setSelectedCountryCode', null);
+      this.$store.commit('setSelectedVendorType', null);
     },
     rewardSection() {
       let status = false;
@@ -425,6 +435,9 @@ export default {
       this.warning_logs = arr.filter(obj => obj.status !== 2);
       this.loading_messages = false;
     },
+    getSelectedCountryCode() {
+      this.fetchVendorTypes();
+    },
     async fetchVendorTypes() {
       const notification = [];
       let actionClass = '';
@@ -433,8 +446,8 @@ export default {
         endpoint: 'types',
         apiKey: false,
         params: {
-          pickup_country_code: 'KE',
-          dropoff_country_code: 'KE',
+          pickup_country_code: this.country,
+          dropoff_country_code: this.country,
         },
       };
       try {
@@ -451,7 +464,6 @@ export default {
     checkSubmitStatus() {
       return this.submit_state;
     },
-
     async generate_warning_msg() {
       this.submitted = true;
       this.$v.$touch();
@@ -532,27 +544,22 @@ export default {
     formatReward(text) {
       return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
     },
-    vendor(id) {
-      let name = '';
-      if (Object.keys(this.vendor_type).length > 0) {
-        const data = this.vendor_type.find(location => location.id === id);
-        name = data.name;
-      }
-      return name;
-    },
     penalizingParams(id) {
-      let name = '';
+      if (!id) return 'Not found';
       if (Object.keys(this.penalizing_data).length > 0) {
         const data = this.penalizing_data.find(
           location => location.code === id,
         );
-        name = data.name;
+        if (!data || !Object.keys(data).length) return 'Not found';
+        return data.name;
       }
-      return name;
     },
-    fetchCountry(id) {
-      const data = this.country_code.find(location => location.code === id);
-      return data.name;
+    fetchCountry(code) {
+      if (!code) return '';
+      const data = this.active_countries.find(
+        location => location.country_code === code,
+      );
+      return data.country_name;
     },
     activeStatus(state) {
       let status = 'Deactivated';
@@ -642,11 +649,9 @@ export default {
       }
     },
     delayValue() {
-      const record = this.comparator.filter(i =>
+      return this.comparator.filter(i =>
         this.completed_comp_id.includes(i.code),
       );
-
-      return record;
     },
   },
 };

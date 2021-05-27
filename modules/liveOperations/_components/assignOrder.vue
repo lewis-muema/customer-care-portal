@@ -179,23 +179,9 @@ export default {
     ]),
     async searchedAdmin(adminData) {
       this.adminID = adminData.admin_id;
-      this.helpscoutUserID = await this.retrieveHelpscoutUser(adminData.email);
-      this.updateSearchState(false);
-      this.updateLiveRefresh(true);
+      await this.updateSearchState(false);
+      await this.updateLiveRefresh(true);
       return (this.admin = adminData);
-    },
-    async retrieveHelpscoutUser(email) {
-      const payload = {
-        email,
-      };
-      try {
-        const response = await this.getHelpscoutUser(payload);
-        // eslint-disable-next-line prettier/prettier
-        const data = response.status === 200 ? response.data._embedded.users : null;
-        return data.length === 0 ? null : data[0].id;
-      } catch (error) {
-        return error;
-      }
     },
     // eslint-disable-next-line require-await
     async assign() {
@@ -221,19 +207,6 @@ export default {
         this.notification.push(data.message);
         this.errorMsg = data.message;
         this.actionClass = this.display_order_action_notification(data.status);
-
-        switch (this.action) {
-          case 'assign':
-            await this.submitTicket();
-            break;
-          case 'reassign':
-            if (this.alert.helpscout_ticket !== null) {
-              await this.updateTicket();
-            }
-            break;
-          default:
-            break;
-        }
         this.submitted = false;
       } catch (error) {
         this.errorMsg = error.response.message;
@@ -243,89 +216,12 @@ export default {
       }
       this.$router.go(this.$router.currentRoute);
     },
-    async updateTicket() {
-      const payload = {
-        op: 'replace',
-        path: '/assignTo',
-        value: this.helpscoutUserID,
-        conversationID: this.alert.helpscout_ticket,
-      };
-      try {
-        const response = await this.reAssignTicket(payload);
-        this.$router.go(this.$router.currentRoute);
-
-        return response;
-      } catch (error) {
-        return error;
-      }
-    },
-    async submitTicket() {
-      this.helpscoutUserID = await this.retrieveHelpscoutUser(this.admin.email);
-
-      const notification = [];
-      const actionClass = '';
-      const department = 2;
-
-      const loggedUser = this.userData.payload.data.name;
-      const msg = `${this.params.message} <br /> <code class="pull-right">Assigned By : ${loggedUser}</code>`;
-
-      const payload = {
-        subject: `${this.params.reason} - ${this.ticket.title}`,
-        mailboxId: 43421,
-        assignTo: this.helpscoutUserID,
-        mailboxname: 'Support',
-        isDraft: false,
-        type: 'phone',
-        status: 'active',
-        customer: this.ticket.customer,
-        threads: [
-          {
-            type: 'phone',
-            to: [],
-            cc: [],
-            bcc: [],
-            attachments: [],
-            status: 'active',
-            customer: {
-              email: this.ticket.customer.email,
-            },
-            text: msg,
-          },
-        ],
-      };
-      const data = await this.create_ticket(payload);
-      const helpscoutTicketID = data.headers['resource-id'];
-
-      await this.updateHelpscouteTicket(helpscoutTicketID);
-      this.loading = false;
-      this.$router.go(this.$router.currentRoute);
-    },
     cancel() {
       this.updateErrors([]);
       this.errorMsg = '';
       this.cancelEvent = true;
       this.$emit('cancelEvent', this.cancelEvent);
       this.cancelEvent = false;
-    },
-    async updateHelpscouteTicket(ticketID) {
-      const payload = {
-        app: 'STAFF_API',
-        endpoint: `live-ops/orders/${this.alert.id}`,
-        apiKey: false,
-        params: {
-          helpscoutTicket: ticketID,
-          staffEmail: this.userData.payload.data.email,
-          adminID: this.userData.payload.data.admin_id,
-          staffName: this.userData.payload.data.name,
-          app: 'CC Portal',
-        },
-      };
-      try {
-        const data = await this.assignAlert(payload);
-        return data;
-      } catch (error) {
-        return error;
-      }
     },
   },
 };
