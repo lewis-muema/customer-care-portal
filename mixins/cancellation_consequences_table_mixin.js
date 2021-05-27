@@ -65,8 +65,7 @@ export default {
     getActionTypes(actionsArray) {
       const actionTypeArray = [];
       actionsArray.forEach(action => actionTypeArray.push(action.action_type));
-      const duplicateCleanArray = [...new Set(actionTypeArray)];
-      const actionData = this.mapActionTypesToAction(duplicateCleanArray);
+      const actionData = this.mapActionTypesToAction(actionTypeArray);
       const actionName = actionData.map(action => {
         return ` ${action}`;
       });
