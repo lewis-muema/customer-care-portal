@@ -258,6 +258,7 @@ export default {
       this.vendorsSelected = [];
       this.cancellation_reason = '';
       this.whenToDisplayReason = [];
+      this.allowPlatform = [];
     },
     populateFormFields() {
       const cancellationData = this.formDataType.data;
