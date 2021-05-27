@@ -50,7 +50,7 @@
         <div class="form-group col-md-3 user-input">
           <label class="vat"> Cancellation Reason </label>
           <v-select
-            :options="setCancellationReasons"
+            :options="filteredCancellationReasons"
             :reduce="value => value.cancellation_reason_id"
             label="cancellation_reason"
             name="id"
@@ -141,6 +141,22 @@ export default {
       active_countries: 'getActiveCountries',
       setCancellationReasons: 'getActiveCancellationReasons',
     }),
+    filteredCancellationReasons() {
+      if (this.vendorsSelected.length) {
+        const filteredReasonsArray = [];
+
+        this.vendorsSelected.forEach(vendorId => {
+          this.setCancellationReasons.map(reason => {
+            const found = JSON.parse(reason.vendor_type_ids).some(
+              id => id === vendorId,
+            );
+            if (found) filteredReasonsArray.push(reason);
+          });
+        });
+        return [...new Set(filteredReasonsArray)];
+      }
+      return [];
+    },
   },
   watch: {
     getSession(session) {
@@ -313,7 +329,7 @@ export default {
 
 <style scoped>
 .add-reward-section {
-  width: 95% !important;
+  width: 100% !important;
   min-height: 340px;
 }
 .form-inline {
