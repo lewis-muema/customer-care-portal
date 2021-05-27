@@ -10,9 +10,12 @@ RUN adduser -D sendy
 WORKDIR /cc
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 5a24be66 (Have docker only install packages needed for production)
 =======
 >>>>>>> 5a24be66 (Have docker only install packages needed for production)
+=======
+>>>>>>> e15e5217 (Have docker only install clean packages needed for production)
 RUN chown -R sendy:sendy /cc
 RUN chown -R sendy:sendy /home/sendy/
 WORKDIR /cc
@@ -28,6 +31,7 @@ ENV APP_ENV=$APP_ENV
 COPY package.json ./
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 RUN npm install --only=production
 <<<<<<< HEAD
 >>>>>>> 5a24be66 (Have docker only install packages needed for production)
@@ -36,6 +40,9 @@ RUN npm install --only=production
 =======
 RUN npm install --only=production && npm cache clean --force
 >>>>>>> b8a2bb35 (Have docker only install clean packages needed for production)
+=======
+RUN npm install  --only=production && npm cache clean --force
+>>>>>>> e15e5217 (Have docker only install clean packages needed for production)
 
 COPY --chown=sendy:sendy . .
 ARG APP_ENV
@@ -77,6 +84,9 @@ EXPOSE 8080
 
 CMD [ "dumb-init", "npm", "start" ]
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 5a24be66 (Have docker only install packages needed for production)
 =======
 >>>>>>> 5a24be66 (Have docker only install packages needed for production)
+=======
+>>>>>>> e15e5217 (Have docker only install clean packages needed for production)
