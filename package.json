@@ -88,7 +88,10 @@
     "@nuxt/types": "^2.15.4",
     "@nuxtjs/eslint-config": "^0.0.1",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@nuxtjs/eslint-module": "^0.0.1",
+=======
+>>>>>>> b3ae60a3 (Have docker only install clean packages needed for production)
     "@vue/test-utils": "^1.0.0-beta.29",
 =======
     "@vue/test-utils": "^1.2.0",
