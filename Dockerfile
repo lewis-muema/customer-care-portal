@@ -3,7 +3,7 @@ FROM sendy-docker-local.jfrog.io/node:10.19-alpine AS build-stage
 RUN adduser -D sendy
 
 WORKDIR /cc
-   
+
 RUN chown -R sendy:sendy /cc
 RUN chown -R sendy:sendy /home/sendy/
 
@@ -12,7 +12,7 @@ ENV APP_ENV=$APP_ENV
 
 COPY package.json ./
 
-RUN npm install
+RUN npm install  --only=production && npm cache clean --force
 
 COPY --chown=sendy:sendy . .
 
@@ -22,12 +22,12 @@ USER sendy:sendy
 
 
 ########
-FROM sendy-docker-local.jfrog.io/node:10.19-alpine 
+FROM sendy-docker-local.jfrog.io/node:10.19-alpine
 
 RUN adduser -D sendy
 
 WORKDIR /cc
-    
+
 RUN chown -R sendy:sendy /cc
 RUN chown -R sendy:sendy /home/sendy/
 
