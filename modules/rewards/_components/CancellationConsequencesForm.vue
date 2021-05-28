@@ -72,7 +72,6 @@
       <cancellation-action-input
         :key="componentKey"
         :selected-country-currency="country_currency"
-        @invalidInputValues="actionsValidityCheck"
         @actionInputValues="setActionValues"
       />
 
@@ -286,8 +285,7 @@ export default {
       } else if (!this.actonDataValues.length) {
         this.submit_state = false;
         this.response_status = 'error';
-        this.error_msg =
-          'Please fill in all action inputs required';
+        this.error_msg = 'Please fill in all action inputs required';
         return;
       }
 
