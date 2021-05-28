@@ -72,6 +72,7 @@
       <cancellation-action-input
         :key="componentKey"
         :selected-country-currency="country_currency"
+        @invalidInputValues="actionsValidityCheck"
         @actionInputValues="setActionValues"
       />
 
@@ -161,6 +162,9 @@ export default {
   watch: {
     getSession(session) {
       return session;
+    },
+    vendorsSelected(vendor) {
+      this.cancellation_reason = '';
     },
   },
   created() {
@@ -283,7 +287,7 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg =
-          'Please fill in all action inputs required or remove duplicate actions';
+          'Please fill in all action inputs required';
         return;
       }
 

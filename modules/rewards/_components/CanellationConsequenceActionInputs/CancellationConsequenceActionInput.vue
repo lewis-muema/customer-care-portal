@@ -272,6 +272,7 @@ export default {
     },
     removeCustomerAction(inputIndex) {
       this.customerActionInputs.splice(inputIndex, 1);
+      this.emitAllInputValues();
     },
     resetTimeInput(currentObject, fieldValue) {
       if (fieldValue === 0) {
@@ -335,13 +336,8 @@ export default {
       return this.removeInvalidObjects(actonDataValues);
     },
     removeInvalidObjects(valuesArray) {
-      let duplicateActionFound = false;
       const validatedArray = [];
       valuesArray.forEach(value => {
-        duplicateActionFound = validatedArray.some(
-          action => action.action_type === value.action_type,
-        );
-        if (duplicateActionFound) return;
 
         if (value.action_type === 1 || value.action_type === 4) {
           if (Object.keys(value).length >= 2) validatedArray.push(value);
