@@ -72,7 +72,6 @@
       <cancellation-action-input
         :key="componentKey"
         :selected-country-currency="country_currency"
-        @invalidInputValues="actionsValidityCheck"
         @actionInputValues="setActionValues"
       />
 

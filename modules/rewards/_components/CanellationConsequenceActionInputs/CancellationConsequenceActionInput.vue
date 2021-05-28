@@ -334,7 +334,6 @@ export default {
     removeInvalidObjects(valuesArray) {
       const validatedArray = [];
       valuesArray.forEach(value => {
-
         if (value.action_type === 1 || value.action_type === 4) {
           if (Object.keys(value).length >= 2) validatedArray.push(value);
         }
