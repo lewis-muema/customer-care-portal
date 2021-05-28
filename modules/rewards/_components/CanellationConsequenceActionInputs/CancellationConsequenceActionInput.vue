@@ -21,13 +21,7 @@
         >
         </v-select>
         <div class="input-counter">
-          <div
-            v-if="
-              customerAction.customerActionInput !== actions_data.length - 1
-            "
-            class="add-input"
-            @click="addNewCustomerAction"
-          >
+          <div class="add-input" @click="addNewCustomerAction">
             + Select another partner action
           </div>
           <div
@@ -314,7 +308,9 @@ export default {
     },
     validateInputs(updatedValue, field, inputIndex) {
       const currentObject = this.customerActionInputs[inputIndex];
-      return currentObject[field] === '' || currentObject[field] === null;
+      const inputValue = currentObject[field];
+      if (Array.isArray(inputValue)) return !inputValue.length;
+      return inputValue === null || inputValue === '';
     },
     sanitizeValues(actionData) {
       // DEEP CLONE ARRAY
@@ -338,7 +334,6 @@ export default {
     removeInvalidObjects(valuesArray) {
       const validatedArray = [];
       valuesArray.forEach(value => {
-
         if (value.action_type === 1 || value.action_type === 4) {
           if (Object.keys(value).length >= 2) validatedArray.push(value);
         }
