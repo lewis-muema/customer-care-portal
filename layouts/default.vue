@@ -82,7 +82,11 @@ export default {
         this.setSession(payload);
         this.updateSession(payload);
 
-        const userData = payload.payload.data;
+        const userData =
+          typeof payload.payload.data === 'undefined'
+            ? payload.payload
+            : payload.payload.data;
+
         this.$apm.setUserContext({
           id: userData.admin_id,
           username: userData.name,
