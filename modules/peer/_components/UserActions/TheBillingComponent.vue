@@ -30,7 +30,7 @@
         class="form-group col-md-4 bill-div user-input"
         v-if="!isReverseTransaction"
       >
-        <label>Amount</label>
+        <label> Amount ( <strong>Exclusive of Vat</strong> )</label>
         <div class="input-group">
           <div class="input-group-icon">
             <span> {{ currency }}</span>
@@ -225,7 +225,6 @@ export default {
         { value: 5, name: 'Extra Stops', transactionID: 1 },
         { value: 8, name: 'Cancellation Fee', transactionID: 1 },
         { value: 9, name: 'Offloading Charges', transactionID: 1 },
-        { value: 14, name: 'Customer Coupon', transactionID: 1 },
         { value: 15, name: 'Transfer Orders', transactionID: 1 },
       ],
       noTransactiodIDTypes: [6, 9, 14],

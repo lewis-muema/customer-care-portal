@@ -239,7 +239,6 @@ export default {
       'getSelectedCopNames',
       'getSelectedCities',
       'getReorganizeStatus',
-      'getOrderCount',
       'getBusinessUnits',
     ]),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev', 'userData']),
@@ -260,14 +259,6 @@ export default {
       return this.orders.filter(el => {
         return el.order_status.toLowerCase() === 'in transit';
       });
-    },
-    orderCount() {
-      const confirmedCount = this.confirmedOrders.length;
-      const count = {};
-      count.confirmed = this.confirmedOrders.length;
-      count.transit = this.transitOrders.length;
-      count.pending = this.pendingOrders.length;
-      return count;
     },
     sessionData() {
       const data = this.userData.payload.data;
@@ -309,7 +300,7 @@ export default {
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
       this.orders = newOrders;
-      return this.updateOrderCount(this.orderCount);
+      return this.orders;
     },
     getBusinessUnits(units) {
       return (this.companyUnits = units);
@@ -389,9 +380,7 @@ export default {
     ...mapMutations({
       setOrdersObject: '$_orders/setOrdersObject',
       setDBUpdatedStatus: 'setDBUpdatedStatus',
-      setOrderCount: 'setOrderCount',
       updateReorganizeStatus: 'setReorganizeStatus',
-      updateOrderCount: 'setOrderCount',
     }),
     ...mapActions(['setOrders']),
     initialOrderRequest() {
