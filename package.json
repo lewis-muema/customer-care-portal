@@ -88,12 +88,7 @@
     "@babel/core": "^7.5.5",
     "@nuxt/types": "^2.15.4",
     "@nuxtjs/eslint-config": "^0.0.1",
-<<<<<<< HEAD
-    "@vue/test-utils": "^1.2.0",
-    "babel-core": "^7.0.0-bridge.0",
-=======
     "@vue/test-utils": "^1.0.0-beta.29",
->>>>>>> 3080697f77bd49efdfb6f1bd26b2c128677f104b
     "babel-eslint": "^10.0.3",
     "chai": "*",
     "cross-env": "^5.2.0",
@@ -104,7 +99,7 @@
     "eslint-loader": "^3.0.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jest": ">=22.3.0",
-    "eslint-plugin-node": ">=8.0.1",
+    "eslint-plugin-node": ">=8.0.1",:
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-promise": ">=4.0.1",
