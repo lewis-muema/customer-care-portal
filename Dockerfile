@@ -1,5 +1,4 @@
-FROM sendy-docker-local.jfrog.io/node:10.19
-RUN useradd -u 3000 sendy
+FROM sendy-docker-local.jfrog.io/node:10.19-alpine AS build-stage
 
 RUN adduser -D sendy
 
@@ -7,8 +6,6 @@ WORKDIR /cc
 
 RUN chown -R sendy:sendy /cc
 RUN chown -R sendy:sendy /home/sendy/
-WORKDIR /cc
-ADD package.json .
 
 ARG APP_ENV
 ENV APP_ENV=$APP_ENV
@@ -18,9 +15,7 @@ COPY package.json ./
 RUN npm install --only=production && npm cache clean --force
 
 COPY --chown=sendy:sendy . .
-ARG APP_ENV
 
-ENV APP_ENV=$APP_ENV
 RUN npm run build
 
 USER sendy:sendy
