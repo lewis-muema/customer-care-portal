@@ -5,7 +5,7 @@
       class="form-inline add-reward-section"
       :class="{ 'full-width': isEditForm }"
     >
-      <div class="row">
+      <div class="row full-width">
         <div
           class="form-group col-md-4 user-input"
           :class="{ 'full-width col-md-12': isEditForm }"
@@ -79,7 +79,8 @@
             When to display cancellation reason is required
           </div>
         </div>
-
+      </div>
+      <div class="row full-width">
         <div
           class="form-group col-md-4 user-input"
           :class="{ 'full-width col-md-12': isEditForm }"
@@ -498,6 +499,10 @@ export default {
   justify-content: left;
   font-size: small;
 }
+.v-select {
+  height: auto;
+  padding: 0;
+}
 .select {
   margin-left: -15px;
   padding: 0;
@@ -566,5 +571,8 @@ export default {
 }
 .remove-margin {
   margin-left: 0;
+}
+.full-width {
+  width: 100%;
 }
 </style>
