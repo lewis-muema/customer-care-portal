@@ -1,14 +1,5 @@
-<<<<<<< HEAD:test/orders/orderTabs/route-test.js
-import { shallowMount, mount } from '@vue/test-utils';
-import Vue from 'vue';
-import TheRouteComponent from '../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderTabs/TheRouteComponent.vue';
-
-const expect = require('chai').expect;
-const assert = require('chai').assert;
-=======
 import { shallowMount } from '@vue/test-utils';
 import TheRouteComponent from '../../../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderTabs/TheRouteComponent.vue';
->>>>>>> 2620258f (improved renaming of the components for structure clarity):test/orders/LowerMainBar/orderTabs/TheRouteComponent.spec.js
 
 describe('TheRouteComponent', () => {
   const wrapper = shallowMount(TheRouteComponent, {
