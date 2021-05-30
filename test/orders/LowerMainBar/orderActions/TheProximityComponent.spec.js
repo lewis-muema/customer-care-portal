@@ -1,11 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-<<<<<<< HEAD:test/orders/orderActions/proximity-test.js
-import TheProximityComponent from '../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderActions/TheProximityComponent.vue';
-=======
 import Vue from 'vue';
 import vSelect from 'vue-select';
 import TheProximityComponent from '../../../../../modules/orders/_components/OrdersPage/OrdersLowerBit/LowerMainBar/OrderActions/TheProximityComponent.vue';
->>>>>>> 2620258f (improved renaming of the components for structure clarity):test/orders/LowerMainBar/orderActions/TheProximityComponent.spec.js
 
 const expect = require('chai').expect;
 const assert = require('chai').assert;
