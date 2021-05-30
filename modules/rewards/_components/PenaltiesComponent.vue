@@ -312,6 +312,7 @@ export default {
       reassignment_reason_penalize: '',
       reasons_data: [],
       penaltiesData: [],
+      invalidActions: false,
     };
   },
   validations: {
@@ -417,52 +418,12 @@ export default {
         reassignment_reason_penalize,
         partner_actions,
         customer_actions,
+        invalid_action_fields,
       } = value;
       this.reassignment_reason_penalize = reassignment_reason_penalize;
-      this.sanitizePartnerInputs(partner_actions);
-      this.sanitizeCustomerInputs(customer_actions);
-    },
-    sanitizePartnerInputs(partnerActionInputs) {
-      partnerActionInputs.forEach(partnerAction => {
-        for (const key in partnerAction) {
-          if (partnerAction[key] === null || !partnerAction[key]) {
-            delete partnerAction[key];
-          }
-        }
-      });
-
-      if (partnerActionInputs.length === 1) {
-        if (!Object.keys(partnerActionInputs[0]).length) {
-          partnerActionInputs = [];
-        }
-      }
-      this.partner_actions_inputs = partnerActionInputs;
-    },
-    sanitizeCustomerInputs(customerActionInputs) {
-      customerActionInputs.forEach((customerAction, index) => {
-        if (
-          customerAction.customer_action_id === null &&
-          customerActionInputs.length === 1
-        ) {
-          customerActionInputs = [];
-        } else if (customerAction.customer_action_id === null) {
-          customerActionInputs.splice(index, 1);
-        }
-      });
-
-      if (!customerActionInputs.length) {
-        customerActionInputs = [];
-        this.customer_actions_inputs = customerActionInputs;
-        return;
-      }
-      customerActionInputs.forEach(customerAction => {
-        for (const key in customerAction) {
-          if (customerAction[key] === null || !customerAction[key]) {
-            delete customerAction[key];
-          }
-        }
-      });
-      this.customer_actions_inputs = customerActionInputs;
+      this.partner_actions_inputs = partner_actions;
+      this.customer_actions_inputs = customer_actions;
+      this.invalidActions = invalid_action_fields;
     },
     rewardSection() {
       let status = false;
@@ -484,6 +445,7 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
+      this.invalidActions = false;
       this.$store.commit('setSelectedCountryCode', null);
       this.$store.commit('setSelectedVendorType', null);
     },
@@ -599,6 +561,10 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = 'Reassignment reason to penalize is required !';
+      } else if (this.invalidActions) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = 'Please fill in all required action values !';
       } else if (
         !this.partner_actions_inputs.length &&
         !this.customer_actions_inputs.length
