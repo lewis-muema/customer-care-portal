@@ -178,6 +178,9 @@ export default {
       disabledStatus: false,
       activeCancellationReasons: [],
       deactivatedCancellationReasons: [],
+      activeCancellationConsequences: [],
+      deactivatedCancellationConsequences: [],
+      cancellationActions: [],
     };
   },
 

@@ -482,7 +482,7 @@
 
 <script>
 import Vue from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
@@ -577,10 +577,9 @@ export default {
       return session;
     },
   },
-  mounted() {
+  created() {
     this.initiateData();
   },
-
   methods: {
     ...mapActions({
       request_invoice_data: 'request_invoice_data',
@@ -866,18 +865,12 @@ export default {
       }
     },
     orderValue() {
-      const record = this.comparator.filter(i =>
+      return this.comparator.filter(i =>
         this.completed_comp_id.includes(i.code),
       );
-
-      return record;
     },
     delayValue() {
-      const record = this.comparator.filter(i =>
-        this.delays_comp_id.includes(i.code),
-      );
-
-      return record;
+      return this.comparator.filter(i => this.delays_comp_id.includes(i.code));
     },
   },
 };

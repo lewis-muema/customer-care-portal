@@ -75,6 +75,12 @@
         >
           <template slot="append">hours</template>
         </el-input>
+        <div
+          v-if="validateInputs('partnerAction', 'block_hours', index)"
+          class="error"
+        >
+          Time value required!
+        </div>
       </div>
 
       <!--    charge penalty fee message-->
@@ -93,6 +99,12 @@
           "
         >
         </el-input>
+        <div
+          v-if="validateInputs('partnerAction', 'penalty_fee', index)"
+          class="error"
+        >
+          Fee value required!
+        </div>
       </div>
 
       <!--    message to show partner-->
@@ -115,6 +127,12 @@
           "
         >
         </el-input>
+        <div
+          v-if="validateInputs('partnerAction', 'partner_message', index)"
+          class="error"
+        >
+          Message is required!
+        </div>
       </div>
     </div>
 
@@ -183,6 +201,12 @@
         >
           <template slot="append">hours</template>
         </el-input>
+        <div
+          v-if="validateInputs('customerAction', 'reschedule_hours', index)"
+          class="error"
+        >
+          Time value required!
+        </div>
       </div>
 
       <!--   message to show customer-->
@@ -205,6 +229,12 @@
           "
         >
         </el-input>
+        <div
+          v-if="validateInputs('customerAction', 'customer_message', index)"
+          class="error"
+        >
+          Message is required!
+        </div>
       </div>
     </div>
   </div>
@@ -291,6 +321,7 @@ export default {
       reassignmentReasonPenalize: '',
       reassignment_reason: [],
       actionsCodesArray: [],
+      invalidInputs: {},
     };
   },
   computed: {
@@ -300,6 +331,7 @@ export default {
   },
   watch: {
     reallocationReasons() {
+      this.reassignmentReasonPenalize = '';
       this.filterReassignmentReasons();
     },
   },
@@ -311,6 +343,16 @@ export default {
       this.addNewPartnerAction();
       this.addNewCustomerAction();
       this.filterReassignmentReasons();
+    },
+    validateInputs(inputType, field, inputIndex) {
+      const currentObject =
+        inputType === 'partnerAction'
+          ? this.partnerActionInputs[inputIndex]
+          : this.customerActionInputs[inputIndex];
+
+      const inputValue = currentObject[field];
+      if (Array.isArray(inputValue)) return !inputValue.length;
+      return inputValue === null || inputValue === '';
     },
     filterReassignmentReasons() {
       this.reassignmentReasonPenalize = '';
@@ -325,14 +367,12 @@ export default {
       });
     },
     removePartnerAction(inputIndex) {
+      this.removeInputValidation(inputIndex, 'partner');
       this.partnerActionInputs.splice(inputIndex, 1);
+      this.emitAllInputValues();
     },
     reassignmentReasonChanged() {
-      this.$emit('actionValues', {
-        reassignment_reason_penalize: this.reassignmentReasonPenalize,
-        partner_actions: this.partnerActionInputs,
-        customer_actions: this.customerActionInputs,
-      });
+      this.emitAllInputValues();
     },
     updatePartnerActionInputChanged(updatedValue, field, inputIndex) {
       const currentObject = this.partnerActionInputs[inputIndex];
@@ -343,6 +383,7 @@ export default {
       const { partner_action_id } = selectedValue;
       const selectedAction = this.partnerActionInputs[inputIndex];
       this.partnerInputsVisibilityTrigger(partner_action_id, selectedAction);
+      this.emitAllInputValues();
     },
     partnerInputsVisibilityTrigger(actionID, inputValuesObject) {
       this.$set(inputValuesObject, 'block_hours_visible', false);
@@ -367,7 +408,22 @@ export default {
       });
     },
     removeCustomerAction(inputIndex) {
+      this.removeInputValidation(inputIndex, 'customer');
       this.customerActionInputs.splice(inputIndex, 1);
+      this.emitAllInputValues();
+    },
+    removeInputValidation(inputIndex, actionType) {
+      let action = {};
+      let actionKey = null;
+      if (actionType === 'customer') {
+        action = this.customerActionInputs[inputIndex];
+        actionKey = action.customer_action_id;
+      } else {
+        action = this.partnerActionInputs[inputIndex];
+        actionKey = action.partner_action_id;
+      }
+
+      delete this.invalidInputs[actionKey];
     },
     customerActionSelectedChanged(selectedValue, inputIndex) {
       const { customer_action_id } = selectedValue;
@@ -390,11 +446,139 @@ export default {
         this.$set(inputValuesObject, 'reschedule_hours_visible', true);
       }
     },
+    sanitizeActionValues(partnerActions, customerActions) {
+      const partnerInputs = this.sanitizePartnerInputs(partnerActions);
+      const customerInputs = this.sanitizeCustomerInputs(customerActions);
+      return {
+        partner_actions: partnerInputs,
+        customer_actions: customerInputs,
+      };
+    },
+    sanitizePartnerInputs(partnerActionInputs) {
+      partnerActionInputs.forEach((partnerAction, index) => {
+        // eslint-disable-next-line guard-for-in
+        for (const key in partnerAction) {
+          if (partnerAction[key] === null || !partnerAction[key]) {
+            delete partnerAction[key];
+          }
+          const found = key.includes('_visible');
+          if (found) delete partnerAction[key];
+
+          const present = key.includes('partnerActionInput');
+          if (present) delete partnerAction[key];
+        }
+
+        if (
+          partnerAction.partner_action_id === 1 ||
+          partnerAction.partner_action_id === 2
+        ) {
+          if (Object.keys(partnerAction).length !== 3) {
+            partnerActionInputs.splice(index, 1);
+            this.invalidInputs[partnerAction.partner_action_id] = true;
+          } else {
+            this.invalidInputs[partnerAction.partner_action_id] = false;
+          }
+        }
+
+        if (
+          partnerAction.partner_action_id === 4 ||
+          partnerAction.partner_action_id === 5
+        ) {
+          if (Object.keys(partnerAction).length !== 2) {
+            partnerActionInputs.splice(index, 1);
+            this.invalidInputs[partnerAction.partner_action_id] = true;
+          } else {
+            this.invalidInputs[partnerAction.partner_action_id] = false;
+          }
+        }
+
+        if (partnerAction.partner_action_id === undefined) {
+          partnerActionInputs.splice(index, 1);
+        }
+      });
+
+      if (partnerActionInputs.length === 1) {
+        if (!Object.keys(partnerActionInputs[0]).length) {
+          partnerActionInputs = [];
+        }
+      }
+
+      return partnerActionInputs;
+    },
+    sanitizeCustomerInputs(customerActionInputs) {
+      customerActionInputs.forEach((customerAction, index) => {
+        // eslint-disable-next-line guard-for-in
+        for (const key in customerAction) {
+          if (customerAction[key] === null || !customerAction[key]) {
+            delete customerAction[key];
+          }
+          const found = key.includes('_visible');
+          if (found) delete customerAction[key];
+
+          const present = key.includes('customerActionInput');
+          if (present) delete customerAction[key];
+        }
+
+        if (customerAction.customer_action_id === null) {
+          customerActionInputs.splice(index, 1);
+        }
+
+        if (customerAction.customer_action_id === 4) {
+          if (Object.keys(customerAction).length !== 3) {
+            customerActionInputs.splice(index, 1);
+            this.invalidInputs[customerAction.customer_action_id] = true;
+          } else {
+            this.invalidInputs[customerAction.customer_action_id] = false;
+          }
+        }
+
+        if (customerAction.customer_action_id === 5) {
+          if (Object.keys(customerAction).length !== 2) {
+            customerActionInputs.splice(index, 1);
+            this.invalidInputs[customerAction.customer_action_id] = true;
+          } else {
+            this.invalidInputs[customerAction.customer_action_id] = false;
+          }
+        }
+
+        if (customerAction.customer_action_id === undefined) {
+          customerActionInputs.splice(index, 1);
+        }
+      });
+
+      if (customerActionInputs.length === 1) {
+        if (!Object.keys(customerActionInputs[0]).length) {
+          customerActionInputs = [];
+        }
+      }
+
+      return customerActionInputs;
+    },
+    checkInvalidActionInputs() {
+      const invalidActionInputs = Object.values(this.invalidInputs);
+      return invalidActionInputs.some(inputInvalid => inputInvalid === true);
+    },
     emitAllInputValues() {
+      // DEEP CLONE ARRAY
+      const partnerActionInputs = JSON.parse(
+        JSON.stringify(this.partnerActionInputs),
+      );
+      const customerActionInputs = JSON.parse(
+        JSON.stringify(this.customerActionInputs),
+      );
+
+      const { partner_actions, customer_actions } = this.sanitizeActionValues(
+        partnerActionInputs,
+        customerActionInputs,
+      );
+
+      const invalid_action_fields = this.checkInvalidActionInputs();
+
       this.$emit('actionValues', {
         reassignment_reason_penalize: this.reassignmentReasonPenalize,
-        partner_actions: this.partnerActionInputs,
-        customer_actions: this.customerActionInputs,
+        partner_actions,
+        customer_actions,
+        invalid_action_fields,
       });
     },
   },
@@ -438,5 +622,8 @@ export default {
 }
 .v-select {
   padding: 0;
+}
+.error {
+  color: red;
 }
 </style>
