@@ -477,7 +477,7 @@ export default {
       default:
     }
   },
-  async requestBusinessUnits({ state, commit, dispatch }) {
+  async setBusinessUnits({ state, commit, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
@@ -491,48 +491,6 @@ export default {
     try {
       const response = await axios.get(url, param);
       commit('setBusinessUnits', response.data);
-      return response.data;
-    } catch (error) {
-      await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
-  async setOrders({ state, commit, dispatch }) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.ADONIS_API}orders`;
-    try {
-      const response = await axios.get(url, param);
-      commit('setOrders', response.data);
-      console.log('setOrders>>>', response.data);
-      return response.data;
-    } catch (error) {
-      await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
-  async requestOrdersMetaData({ state, dispatch }) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.ADONIS_API}/orders/meta`;
-    try {
-      const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -555,7 +513,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -1110,6 +1068,90 @@ export default {
     try {
       const response = await axios.get(url, param);
       commit('setCities', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async getExchangeRates({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}exchange-rates`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setExchangeRates', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setCopTypes({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cop-types`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setCopTypes', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setAdmins({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}admins?status=1`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setAdmins', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setSurveys({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}nps/surveys`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setSurveys', response.data);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {

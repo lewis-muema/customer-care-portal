@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      request_partner_last_position: '$_orders/request_partner_last_position',
+      request_partner_last_position: 'orders/request_partner_last_position',
     }),
     determine_class(deliveryStatus, confirmStatus) {
       let displayClass = '';

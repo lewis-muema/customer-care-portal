@@ -84,8 +84,8 @@ export default {
     this.ordersMeta = await this.requestOrdersMetaData();
   },
   methods: {
-    ...mapActions(['requestOrdersMetaData']),
-    ...mapMutations({
+    ...mapActions('orders', ['requestOrdersMetaData']),
+    ...mapMutations('orders', {
       updateOrderStatuses: 'setOrderStatuses',
     }),
     objectLength(obj) {

@@ -343,7 +343,7 @@ export default {
       updateNotification: 'setNotification',
     }),
     ...mapActions({
-      request_order_eta: '$_orders/request_order_eta',
+      request_order_eta: 'orders/request_order_eta',
     }),
     async requestETAs() {
       const payload = {
