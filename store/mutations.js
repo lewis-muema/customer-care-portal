@@ -191,8 +191,14 @@ export default {
   setNPSCommentStatus(state, val) {
     state.commentStatus = val;
   },
+  setCountries(state, countries) {
+    state.countries = countries;
+  },
   setActiveCountries(state, val) {
     state.activeCountries = val;
+  },
+  setVendorTypes(state, vendorTypes) {
+    state.vendorTypes = vendorTypes;
   },
   setActiveAccountTypes(state, val) {
     state.activeAccountTypes = val;
