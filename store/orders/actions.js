@@ -1,18 +1,19 @@
 import { axiosConfig } from '~/middleware/axios';
 
 export default {
-  async setOrders({ rootState, commit, dispatch }, payload) {
+  async setOrders({ rootState, commit, dispatch }) {
     const config = rootState.config;
-    const { page, params } = payload;
-    const countryArray = [];
-    params.country_code.forEach(country => {
-      countryArray.push(`&country_code=${country}`);
-    });
-    const countryQuery = countryArray.join('');
-    const url = `${config.ADONIS_API}orders?page=${page}${countryQuery}`;
-
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}orders`;
     try {
-      const response = await axiosConfig.get(url);
+      const response = await axios.get(url, param);
       commit('setOrders', response.data);
       return response.data;
     } catch (error) {
@@ -23,9 +24,17 @@ export default {
   },
   async requestOrdersMetaData({ rootState, dispatch }) {
     const config = rootState.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
     const url = `${config.ADONIS_API}/orders/meta`;
     try {
-      const response = await axiosConfig.get(url);
+      const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
