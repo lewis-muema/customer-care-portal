@@ -1,6 +1,4 @@
 export default {
-  // ...apix.getMutations(),
-
   setbreadcrumbs(state, breadcrumbs) {
     state.breadcrumbs = breadcrumbs;
   },
@@ -15,6 +13,15 @@ export default {
   },
   setActionClass(state, val) {
     state.actionClass = val;
+  },
+  setCities(state, cities) {
+    state.cities = cities;
+  },
+  setOrders(state, orders) {
+    state.orders = orders;
+  },
+  setBusinessUnits(state, businessUnits) {
+    state.businessUnits = businessUnits;
   },
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;

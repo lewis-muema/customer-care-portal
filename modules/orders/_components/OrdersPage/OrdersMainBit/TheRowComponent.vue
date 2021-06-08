@@ -370,17 +370,11 @@ export default {
   },
   mounted() {
     if (process.client) {
-      this.setOrders({
-        page: 1,
-        params: {
-          country_code: this.countryCode,
-        },
-      });
+      this.setOrders();
     }
   },
   methods: {
     ...mapMutations({
-      setOrdersObject: '$_orders/setOrdersObject',
       setDBUpdatedStatus: 'setDBUpdatedStatus',
       updateReorganizeStatus: 'setReorganizeStatus',
       setDisabledStatus: 'setDisabledStatus',
