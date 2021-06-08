@@ -1011,7 +1011,7 @@ export default {
       return error.response;
     }
   },
-  async get_all_countries({ state, dispatch, commit }) {
+  async setCountries({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = {
@@ -1025,7 +1025,38 @@ export default {
     const url = `${config.ADONIS_API}countries`;
     try {
       const response = await axios.get(url, headers);
-      const activeCountries = response.data.filter(
+      commit('setCountries', response.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setVendorTypes({ state, dispatch, commit }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vendor-types`;
+    try {
+      const response = await axios.get(url, headers);
+      commit('setVendorTypes', response.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async get_all_countries({ state, dispatch, commit }) {
+    try {
+      await dispatch('setCountries');
+      const activeCountries = state.countries.filter(
         country => country.status === 1,
       );
       commit('setActiveCountries', activeCountries);
@@ -1413,7 +1444,6 @@ export default {
       return error.response;
     }
   },
-
   async add_reallocation_reason({ dispatch, commit }, payload) {
     try {
       return await dispatch('requestAxiosPost', payload, { root: true });
@@ -1424,7 +1454,6 @@ export default {
       return error.response;
     }
   },
-
   async update_status_state({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1445,7 +1474,6 @@ export default {
       });
     }
   },
-
   async fetch_set_reallocation_reason({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1474,7 +1502,6 @@ export default {
       });
     }
   },
-
   async fetch_all_reallocation_reason({ state, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1496,7 +1523,6 @@ export default {
       });
     }
   },
-
   async fetch_non_penalizing_data({ state, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1518,7 +1544,6 @@ export default {
       });
     }
   },
-
   async add_cancellation_reason({ dispatch, commit }, payload) {
     try {
       const response = await dispatch('requestAxiosPost', payload, {
@@ -1533,7 +1558,6 @@ export default {
       return error.response;
     }
   },
-
   async fetch_set_cancellation_reasons({ state, dispatch, commit }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1565,7 +1589,6 @@ export default {
       });
     }
   },
-
   async update_cancellation_reason({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1587,7 +1610,6 @@ export default {
       });
     }
   },
-
   async fetch_cancellation_actions({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1610,7 +1632,6 @@ export default {
       });
     }
   },
-
   async add_cancellation_consequences({ dispatch, commit }, payload) {
     try {
       const response = await dispatch('requestAxiosPost', payload, {
@@ -1625,7 +1646,6 @@ export default {
       return error.response;
     }
   },
-
   async fetch_set_cancellation_consequences(
     { state, dispatch, commit },
     payload,
@@ -1660,7 +1680,6 @@ export default {
       });
     }
   },
-
   async update_cancellation_consequences({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1681,7 +1700,6 @@ export default {
       });
     }
   },
-
   async request_tax_rates({ state, dispatch }) {
     const config = state.config;
 
@@ -1705,37 +1723,30 @@ export default {
       return error.response;
     }
   },
-
   async request_invoice_logs({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
   },
-
   async request_invoice_data({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
   },
-
   async create_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async confirm_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async pair_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async pick_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async complete_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;

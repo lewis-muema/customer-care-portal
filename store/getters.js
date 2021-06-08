@@ -170,8 +170,14 @@ export default {
   getNPSCommentStatus(state) {
     return state.commentStatus;
   },
+  getCountries(state) {
+    return state.countries;
+  },
   getActiveCountries(state) {
     return state.activeCountries;
+  },
+  getVendorTypes(state) {
+    return state.vendorTypes;
   },
   getActiveAccountTypes(state) {
     return state.activeAccountTypes;
