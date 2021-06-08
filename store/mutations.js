@@ -17,6 +17,9 @@ export default {
   setCities(state, cities) {
     state.cities = cities;
   },
+  setOrders(state, orders) {
+    state.orders = orders;
+  },
   setBusinessUnits(state, businessUnits) {
     state.businessUnits = businessUnits;
   },

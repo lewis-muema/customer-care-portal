@@ -1,14 +1,8 @@
 export default {
-  setOrders(state, orders) {
-    state.orders = orders;
+  setOrders(state, val) {
+    state.orders = val;
   },
   setOrderDetails(state, val) {
     state.orderDetails = val;
-  },
-  setOrderStatuses(state, selectedStatus) {
-    state.selectedStatus = selectedStatus;
-  },
-  setDisabledStatus(state, disabledStatus) {
-    state.disabledStatus = disabledStatus;
   },
 };
