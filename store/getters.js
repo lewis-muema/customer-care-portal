@@ -1,6 +1,4 @@
 export default {
-  // ...apix.getGetters(),
-
   breadcrumbs(state) {
     return state.breadcrumbs;
   },
@@ -39,6 +37,15 @@ export default {
   },
   getSearchState(state) {
     return state.searchState;
+  },
+  getBusinessUnits(state) {
+    return state.businessUnits;
+  },
+  getCities(state) {
+    return state.cities;
+  },
+  getOrders(state) {
+    return state.orders;
   },
   getSelectedBusinessUnits(state) {
     return state.selectedBusinessUnits;
@@ -123,10 +130,6 @@ export default {
   },
   getActionClass(state) {
     return state.actionClass;
-  },
-
-  getloginErrors(state) {
-    return state.loginErrors;
   },
   getOrderAmount(state) {
     return state.orderAmount;
