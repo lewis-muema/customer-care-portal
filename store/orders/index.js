@@ -4,9 +4,11 @@ import getters from './getters';
 import mutations from './mutations';
 
 const state = () => ({
-  order: null,
+  orders: null,
   order_request_object: null,
   actionErrors: [],
+  selectedStatus: [],
+  disabledStatus: false,
 });
 
 export { state, getters, mutations, actions };

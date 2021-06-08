@@ -1,6 +1,47 @@
 import axios from 'axios';
 
 export default {
+  async setOrders({ rootState, commit, dispatch }) {
+    const config = rootState.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}orders`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setOrders', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestOrdersMetaData({ rootState, dispatch }) {
+    const config = rootState.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}/orders/meta`;
+    try {
+      const response = await axios.get(url, param);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async request_single_order({ rootState }, orderNo) {
     const config = rootState.config;
     const url = `${config.ADONIS_API}orders/${orderNo}`;

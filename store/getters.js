@@ -32,20 +32,23 @@ export default {
   getSession(state) {
     return state.userData;
   },
-  getOrderStatuses(state) {
-    return state.selectedStatus;
-  },
   getSearchState(state) {
     return state.searchState;
+  },
+  getCopTypes(state) {
+    return state.copTypes;
+  },
+  getAdmins(state) {
+    return state.admins;
+  },
+  getSurveys(state) {
+    return state.surveys;
   },
   getBusinessUnits(state) {
     return state.businessUnits;
   },
   getCities(state) {
     return state.cities;
-  },
-  getOrders(state) {
-    return state.orders;
   },
   getSelectedBusinessUnits(state) {
     return state.selectedBusinessUnits;
