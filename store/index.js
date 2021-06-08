@@ -66,6 +66,7 @@ const state = () => ({
   npsRequest: false,
   activeGroup: [],
   commentStatus: null,
+  countries: null,
   activeCountries: null,
   activeAccountTypes: null,
   activeBusinessUnits: null,
@@ -156,5 +157,6 @@ const state = () => ({
   activeCancellationConsequences: [],
   deactivatedCancellationConsequences: [],
   cancellationActions: [],
+  vendorTypes: null,
 });
 export { state, getters, mutations, actions };

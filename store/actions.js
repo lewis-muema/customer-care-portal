@@ -806,7 +806,7 @@ export default {
     const config = state.config;
     const url = `${config.ADONIS_API}countries`;
     try {
-      const response = await axiosConfig.get(url);
+      const response = await axios.get(url, headers);
       commit('setCountries', response.data);
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -816,9 +816,18 @@ export default {
   },
   async setVendorTypes({ state, dispatch, commit }) {
     const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
     const url = `${config.ADONIS_API}vendor-types`;
     try {
-      const response = await axiosConfig.get(url);
+      const response = await axios.get(url, headers);
       commit('setVendorTypes', response.data);
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
