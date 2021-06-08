@@ -15,8 +15,7 @@ export default {
   },
   async request_quotes_list({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
@@ -27,16 +26,14 @@ export default {
   },
   async request_partner_last_position({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
   },
   async request_order_eta({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
