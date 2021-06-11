@@ -47,7 +47,6 @@ describe('WarningComponent', () => {
       store,
       localVue,
     });
-    Vue.nextTick();
   });
 
   it('Resetting country code & vendor type', () => {
