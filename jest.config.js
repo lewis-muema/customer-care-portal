@@ -19,4 +19,5 @@ module.exports = {
     '<rootDir>/modules/**/*.vue',
   ],
   testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/test/mocks.js'],
 };

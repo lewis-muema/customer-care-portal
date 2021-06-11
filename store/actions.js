@@ -42,7 +42,7 @@ export default {
     localStorage.clear();
     commit('setHelpScoutToken', null);
   },
-  async logout({ commit, state, dispatch }) {
+  async logout({ state, dispatch }) {
     const customConfig = state.config;
     const url = customConfig.AUTH;
     const endpoint = 'logout';
@@ -55,7 +55,7 @@ export default {
       await dispatch('clearCache');
       return response;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       await dispatch('clearCache');
@@ -115,7 +115,7 @@ export default {
     const customConfig = state.config;
     const url = customConfig[payload.url];
 
-    const authorization = await dispatch('request_helpscout_token');
+    await dispatch('request_helpscout_token');
     const token = localStorage.getItem('helpscoutAccessToken');
 
     const customHeaders = {
@@ -130,12 +130,11 @@ export default {
     const values = JSON.stringify(payload.params);
 
     try {
-      const response = await axios.patch(
+      return await axios.patch(
         `${url}/${payload.conversationID}`,
         values,
         config,
       );
-      return response;
     } catch (error) {
       payload.params.error = error.response.status;
       return error.response;
@@ -159,11 +158,9 @@ export default {
     delete payload.params.authorization;
 
     try {
-      const response = await axios.get(`${url}?email=${payload.params.email}`, {
+      return await axios.get(`${url}?email=${payload.params.email}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      return response;
     } catch (error) {
       payload.params.error = error.response.status;
       return error.response;
@@ -195,8 +192,7 @@ export default {
     const values = JSON.stringify(payload);
 
     try {
-      const response = await axios.post(`${url}`, values, params);
-      return response;
+      return await axios.post(`${url}`, values, params);
     } catch (error) {
       payload.params.error = error.response.status;
       return error.response;
@@ -233,7 +229,7 @@ export default {
       localStorage.setItem('helpscoutTokenRequested', 1);
       localStorage.setItem('helpscoutAccessToken', token.access_token);
       localStorage.setItem('helpscoutExpiryTime', expiryDatetime);
-      return res.data;
+      return token;
     } catch (error) {
       return error;
     }
@@ -266,10 +262,9 @@ export default {
 
         const token = res.data;
         const expiresIn = token.expires_in;
-        const expiryDatetime = moment()
+        token.expiryDatetime = moment()
           .add(expiresIn, 'seconds')
           .format('LLLL');
-        token.expiryDatetime = expiryDatetime;
         commit('setHelpScoutToken', token);
         localStorage.setItem('helpscoutAccessToken', token.access_token);
         localStorage.setItem('helpscoutrefreshToken', token.refresh_token);
@@ -294,7 +289,7 @@ export default {
     try {
       const res = await dispatch('request_helpscoute_post', values);
       payload.error = res.status;
-      const err = await dispatch('handleHelpScoutErrors', payload, {
+      await dispatch('handleHelpScoutErrors', payload, {
         root: true,
       });
       return res;
@@ -322,8 +317,7 @@ export default {
     payload.authorization = true;
     payload.token = token;
     try {
-      const res = await dispatch('ticket_action', payload);
-      return res;
+      return await dispatch('ticket_action', payload);
     } catch (error) {
       return error;
     }
@@ -366,10 +360,9 @@ export default {
     const values = JSON.stringify(payload.params);
 
     try {
-      const response = await axios.post(`${url}${endpoint}`, values, config);
-      return response;
+      return await axios.post(`${url}${endpoint}`, values, config);
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
 
@@ -405,10 +398,9 @@ export default {
     const values = JSON.stringify(payload.params);
 
     try {
-      const response = await axios.patch(`${url}${endpoint}`, values, config);
-      return response;
+      return await axios.patch(`${url}${endpoint}`, values, config);
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
 
@@ -485,7 +477,7 @@ export default {
       default:
     }
   },
-  async requestBusinessUnits({ state, dispatch }) {
+  async setBusinessUnits({ state, commit, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
@@ -498,29 +490,10 @@ export default {
     const url = `${config.ADONIS_API}business-units`;
     try {
       const response = await axios.get(url, param);
+      commit('setBusinessUnits', response.data);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
-  async requestOrdersMetaData({ state, dispatch }) {
-    const config = state.config;
-    const jwtToken = localStorage.getItem('jwtToken');
-    const param = {
-      headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        Authorization: jwtToken,
-      },
-    };
-    const url = `${config.ADONIS_API}/orders/meta`;
-    try {
-      const response = await axios.get(url, param);
-      return response.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -541,7 +514,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -561,7 +534,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -581,12 +554,12 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
   },
-  async explorer({ state }, payload) {
+  async explorer({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
@@ -601,7 +574,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -623,10 +596,9 @@ export default {
     const url = `${config.ADONIS_API}users/${userType}/${userID}`;
     try {
       const response = await axios.get(url, param);
-      const userDetails = response.data;
-      return userDetails;
+      return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -640,7 +612,7 @@ export default {
       return error.response;
     }
   },
-  async request_single_rider({ state }, payload) {
+  async request_single_rider({ state, dispatch }, payload) {
     const config = state.config;
     const riderID = payload.riderID;
 
@@ -656,16 +628,15 @@ export default {
     const url = `${config.ADONIS_API}riders/${riderID}`;
     try {
       const response = await axios.get(url, param);
-      const rider_details = response.data;
-      return rider_details;
+      return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
     }
   },
-  async request_single_vehicle({ state }, payload) {
+  async request_single_vehicle({ state, dispatch }, payload) {
     const config = state.config;
     const vehicleID = payload.vehicleID;
 
@@ -681,16 +652,15 @@ export default {
     const url = `${config.ADONIS_API}vehicles/${vehicleID}`;
     try {
       const response = await axios.get(url, param);
-      const vehicle_details = response.data;
-      return vehicle_details;
+      return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
     }
   },
-  async request_single_owner({ state }, payload) {
+  async request_single_owner({ state, dispatch }, payload) {
     const config = state.config;
     const ownerID = payload.ownerID;
 
@@ -706,10 +676,9 @@ export default {
     const url = `${config.ADONIS_API}owners/${ownerID}`;
     try {
       const response = await axios.get(url, param);
-      const owner_details = response.data;
-      return owner_details;
+      return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -730,7 +699,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.message;
@@ -760,7 +729,7 @@ export default {
       return error.response;
     }
   },
-  async fuel_history_order({ state }, payload) {
+  async fuel_history_order({ state, dispatch }, payload) {
     const config = state.config;
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -777,12 +746,12 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
   },
-  async fuel_types({ state }) {
+  async fuel_types({ state, dispatch }) {
     const config = state.config;
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -798,12 +767,12 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
   },
-  async fuel_stations({ state }) {
+  async fuel_stations({ state, dispatch }) {
     const config = state.config;
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -819,7 +788,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -894,7 +863,7 @@ export default {
       return error.response.data;
     }
   },
-  async fuel_history_cop({ state }, payload) {
+  async fuel_history_cop({ state, dispatch }, payload) {
     const config = state.config;
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -911,7 +880,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -950,8 +919,7 @@ export default {
     try {
       const response = await axios.post(url, payload.payload, param);
       const data = await response;
-      const orderDetails = data.data;
-      return orderDetails;
+      return data.data;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
@@ -961,24 +929,21 @@ export default {
   },
   async allocate_rider_vehicle({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
   },
   async allocate_order({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
   },
   async change_order_status({ state, dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
@@ -1003,8 +968,7 @@ export default {
   },
   async request_loan_types({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
@@ -1029,6 +993,12 @@ export default {
       });
     }
   },
+  resetSelectedVendorType({ commit }) {
+    commit('setSelectedVendorType', null);
+  },
+  resetSelectedCountryCode({ commit }) {
+    commit('setSelectedCountryCode', null);
+  },
   async request_vendor_types({ dispatch }, payload) {
     const jwtToken = localStorage.getItem('jwtToken');
     const param = {
@@ -1047,7 +1017,7 @@ export default {
       return error.response;
     }
   },
-  async get_all_countries({ state, dispatch, commit }) {
+  async setCountries({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = {
@@ -1061,7 +1031,38 @@ export default {
     const url = `${config.ADONIS_API}countries`;
     try {
       const response = await axios.get(url, headers);
-      const activeCountries = response.data.filter(
+      commit('setCountries', response.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setVendorTypes({ state, dispatch, commit }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.ADONIS_API}vendor-types`;
+    try {
+      const response = await axios.get(url, headers);
+      commit('setVendorTypes', response.data);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async get_all_countries({ state, dispatch, commit }) {
+    try {
+      await dispatch('setCountries');
+      const activeCountries = state.countries.filter(
         country => country.status === 1,
       );
       commit('setActiveCountries', activeCountries);
@@ -1086,7 +1087,112 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setCities({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cities`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setCities', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async getExchangeRates({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}exchange-rates`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setExchangeRates', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setCopTypes({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}cop-types`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setCopTypes', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setAdmins({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}admins?status=1`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setAdmins', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async setSurveys({ state, commit, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const param = {
+      headers: {
+        'Content-Type': 'text/plain',
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+    const url = `${config.ADONIS_API}nps/surveys`;
+    try {
+      const response = await axios.get(url, param);
+      commit('setSurveys', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -1316,7 +1422,7 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -1344,7 +1450,6 @@ export default {
       return error.response;
     }
   },
-
   async add_reallocation_reason({ dispatch, commit }, payload) {
     try {
       return await dispatch('requestAxiosPost', payload, { root: true });
@@ -1355,7 +1460,6 @@ export default {
       return error.response;
     }
   },
-
   async update_status_state({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1376,7 +1480,6 @@ export default {
       });
     }
   },
-
   async fetch_set_reallocation_reason({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1405,7 +1508,6 @@ export default {
       });
     }
   },
-
   async fetch_all_reallocation_reason({ state, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1427,7 +1529,6 @@ export default {
       });
     }
   },
-
   async fetch_non_penalizing_data({ state, dispatch }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1449,7 +1550,6 @@ export default {
       });
     }
   },
-
   async add_cancellation_reason({ dispatch, commit }, payload) {
     try {
       const response = await dispatch('requestAxiosPost', payload, {
@@ -1464,7 +1564,6 @@ export default {
       return error.response;
     }
   },
-
   async fetch_set_cancellation_reasons({ state, dispatch, commit }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1496,7 +1595,6 @@ export default {
       });
     }
   },
-
   async update_cancellation_reason({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1518,7 +1616,6 @@ export default {
       });
     }
   },
-
   async fetch_cancellation_actions({ state, dispatch, commit }) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1541,7 +1638,6 @@ export default {
       });
     }
   },
-
   async add_cancellation_consequences({ dispatch, commit }, payload) {
     try {
       const response = await dispatch('requestAxiosPost', payload, {
@@ -1556,7 +1652,6 @@ export default {
       return error.response;
     }
   },
-
   async fetch_set_cancellation_consequences(
     { state, dispatch, commit },
     payload,
@@ -1591,7 +1686,6 @@ export default {
       });
     }
   },
-
   async update_cancellation_consequences({ state, dispatch }, payload) {
     const config = state.config;
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1612,8 +1706,7 @@ export default {
       });
     }
   },
-
-  async request_tax_rates({ state }) {
+  async request_tax_rates({ state, dispatch }) {
     const config = state.config;
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1630,43 +1723,36 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
     }
   },
-
   async request_invoice_logs({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
   },
-
   async request_invoice_data({ dispatch }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res;
   },
-
   async create_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async confirm_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async pair_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async pick_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
   },
-
   async complete_offline_order({ dispatch, commit }, payload) {
     const res = await dispatch('requestAxiosPost', payload, { root: true });
     return res.data;
@@ -1687,15 +1773,14 @@ export default {
 
     const values = JSON.stringify(payload.params);
     try {
-      const response = await axios.patch(`${url}${endpoint}`, values, config);
-      return response;
+      return await axios.patch(`${url}${endpoint}`, values, config);
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
   },
-  async request_cancellation_options({ state }) {
+  async request_cancellation_options({ state, dispatch }) {
     const config = state.config;
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -1712,7 +1797,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -1745,7 +1830,7 @@ export default {
       return error;
     }
   },
-  async requestTransactions({ rootState }, payload) {
+  async requestTransactions({ rootState, dispatch }, payload) {
     const config = rootState.config;
     const jwtToken = localStorage.getItem('jwtToken');
     const endpoint =
@@ -1763,14 +1848,13 @@ export default {
     const url = `${config.CUSTOMERS_APP}${endpoint}/?${searchkey}=${payload.referenceNumber}`;
     try {
       const response = await axios.get(url, param);
-      const data = await response;
-      return data;
+      return await response;
     } catch (error) {
       let err;
       switch (error.response.status) {
         case 403:
           // eslint-disable-next-line no-case-declarations
-          err = await dispatch('handleErrors', error.response.status, {
+          await dispatch('handleErrors', error.response.status, {
             root: true,
           });
           break;
@@ -1803,7 +1887,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -1823,7 +1907,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -1843,7 +1927,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -1874,7 +1958,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -1900,8 +1984,7 @@ export default {
 
     const url = `${config.PRICING_SERVICE}pricing/inter_county_config/${payload.route}/${payload.id}`;
     try {
-      const response = await axios.delete(url, values);
-      return response;
+      return await axios.delete(url, values);
     } catch (error) {
       return error.response.data;
     }
@@ -1927,8 +2010,7 @@ export default {
 
     const url = `${config.PRICING_SERVICE}pricing/inter_county_config/${payload.route}/${payload.id}`;
     try {
-      const response = await axios.put(url, values, param);
-      return response;
+      return await axios.put(url, values, param);
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,
@@ -1970,7 +2052,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -1990,7 +2072,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -2010,7 +2092,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -2020,7 +2102,7 @@ export default {
       const res = await dispatch('requestAxiosPatch', payload, { root: true });
       return res.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -2031,7 +2113,7 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -2052,7 +2134,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -2072,20 +2154,9 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
-    }
-  },
-  async update_freight_status({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res.data;
-    } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-      return error.response;
     }
   },
   async request_user_freight_status({ state, dispatch }, payload) {
@@ -2103,7 +2174,7 @@ export default {
       const response = await axios.get(url, param);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -2127,7 +2198,7 @@ export default {
       const response = await axios.get(url, values);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -2137,7 +2208,7 @@ export default {
       const res = await dispatch('requestAxiosPatch', payload, { root: true });
       return res.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -2154,7 +2225,7 @@ export default {
     try {
       const res = await dispatch('request_helpscoute_get', values);
       payload.error = res.status;
-      const err = await dispatch('handleHelpScoutErrors', payload, {
+      await dispatch('handleHelpScoutErrors', payload, {
         root: true,
       });
       return res;
@@ -2177,72 +2248,12 @@ export default {
       const res = await dispatch('request_helpscoute_patch', values);
       payload.error = res.status;
       // eslint-disable-next-line prettier/prettier
-      const err = await dispatch('handleHelpScoutErrors', payload, {
+      await dispatch('handleHelpScoutErrors', payload, {
         root: true,
       });
       return res;
     } catch (error) {
       return error;
-    }
-  },
-  async request_helpscoute_get({ state, commit, dispatch }, payload) {
-    const customConfig = state.config;
-    const url = customConfig[payload.url];
-    const authorization = await dispatch('request_helpscout_token');
-    const token = localStorage.getItem('helpscoutAccessToken');
-
-    const customHeaders = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    };
-    if (authorization) {
-      customHeaders.Authorization = `Bearer ${token}`;
-      delete payload.params.token;
-    }
-    delete payload.params.authorization;
-
-    try {
-      const response = await axios.get(`${url}?email=${payload.params.email}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      payload.error = response.status;
-      const err = await dispatch('handleHelpScoutErrors', payload, {
-        root: true,
-      });
-
-      return response;
-    } catch (error) {
-      return error.response;
-    }
-  },
-  async request_helpscoute_patch({ state, commit, dispatch }, payload) {
-    const customConfig = state.config;
-    const url = customConfig[payload.url];
-
-    const authorization = await dispatch('request_helpscout_token');
-    const token = localStorage.getItem('helpscoutAccessToken');
-
-    const customHeaders = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    };
-    customHeaders.Authorization = `Bearer ${token}`;
-    const config = {
-      headers: customHeaders,
-    };
-
-    const values = JSON.stringify(payload.params);
-
-    try {
-      const response = await axios.patch(
-        `${url}/${payload.conversationID}`,
-        values,
-        config,
-      );
-      return response;
-    } catch (error) {
-      payload.params.error = error.response.status;
-      return error.response;
     }
   },
   async request_alert_types({ state, dispatch }, payload) {
@@ -2261,7 +2272,7 @@ export default {
       const response = await axios.get(url, values);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -2282,7 +2293,7 @@ export default {
       const response = await axios.get(url, values);
       return response.data;
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
     }
@@ -2299,8 +2310,7 @@ export default {
     };
     const url = `${config.STAFF_API}live-ops/orders/${payload.orderNo}`;
     try {
-      const response = await axios.get(url, values);
-      return response;
+      return await axios.get(url, values);
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
         root: true,

@@ -386,6 +386,8 @@ export default {
       request_invoice_data: 'request_invoice_data',
       perform_user_action: 'perform_user_action',
       request_vendor_types: 'request_vendor_types',
+      resetSelectedVendorType: 'resetSelectedVendorType',
+      resetSelectedCountryCode: 'resetSelectedCountryCode',
       request_penalties: 'requestPenalties',
       request_messages: 'requestWarningMessages',
       fetch_set_reallocation_reason: 'fetch_set_reallocation_reason',
@@ -420,8 +422,8 @@ export default {
       this.from_date = '';
       this.to_date = '';
       this.message = '';
-      this.$store.commit('setSelectedCountryCode', null);
-      this.$store.commit('setSelectedVendorType', null);
+      this.resetSelectedVendorType();
+      this.resetSelectedCountryCode();
     },
     rewardSection() {
       let status = false;
@@ -453,13 +455,11 @@ export default {
       try {
         const data = await this.request_vendor_types(payload);
         this.vendor_type = data.vendor_types;
-        return data.vendor_types;
+        return this.vendor_type;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }
-      this.updateClass(actionClass);
-      this.updateErrors(notification);
     },
     checkSubmitStatus() {
       return this.submit_state;

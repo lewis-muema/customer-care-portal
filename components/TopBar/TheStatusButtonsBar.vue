@@ -89,8 +89,8 @@ export default {
   },
 
   methods: {
-    ...mapActions(['requestOrdersMetaData']),
-    ...mapMutations({
+    ...mapActions('orders', ['requestOrdersMetaData']),
+    ...mapMutations('orders', {
       updateOrderStatuses: 'setOrderStatuses',
       setDisabledStatus: 'setDisabledStatus',
     }),
