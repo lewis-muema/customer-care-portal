@@ -35,7 +35,6 @@ describe('WarningComponent', () => {
     WarningComponent.methods,
     'requestRewards',
   );
-  const spyFetchCountry = jest.spyOn(WarningComponent.methods, 'fetchCountry');
 
   beforeEach(() => {
     wrapper = mount(WarningComponent, {
