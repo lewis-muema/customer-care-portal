@@ -15,7 +15,6 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@agog/apix": "0.0.5-beta.2",
     "@elastic/apm-rum-vue": "^0.1.0",
     "@googlemaps/google-maps-services-js": "^3.1.16",
     "@johmun/vue-tags-input": "^2.1.0",
@@ -43,7 +42,7 @@
     "js-base64": "^2.5.1",
     "js-cookie": "^2.2.1",
     "js-sha1": "^0.6.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "mixpanel": "^0.11.0",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.28",

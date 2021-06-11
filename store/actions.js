@@ -362,7 +362,7 @@ export default {
     try {
       return await axios.post(`${url}${endpoint}`, values, config);
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
 
@@ -991,6 +991,12 @@ export default {
         root: true,
       });
     }
+  },
+  resetSelectedVendorType({ commit }) {
+    commit('setSelectedVendorType', null);
+  },
+  resetSelectedCountryCode({ commit }) {
+    commit('setSelectedCountryCode', null);
   },
   async request_vendor_types({ dispatch }, payload) {
     const jwtToken = localStorage.getItem('jwtToken');
