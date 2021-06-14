@@ -10,6 +10,7 @@
         class="myclass tags-input"
         :placeholder="placeholderText"
         @tags-changed="newTags => (tags = newTags)"
+        @before-deleting-tag="updateDeleted"
       />
       <div class="text-right">
         <i class="fa fa-spinner fa-spin loader spinner" v-if="posted"></i>
@@ -87,6 +88,12 @@ export default {
     isEmailValid(email) {
       // eslint-disable-next-line no-nested-ternary
       return this.reg.test(email);
+    },
+    updateDeleted(val) {
+      this.$emit('deleteEmail', {
+        data: val.tag.text,
+      });
+      val.deleteTag();
     },
   },
 };
