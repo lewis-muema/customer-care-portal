@@ -326,7 +326,7 @@ export default {
     },
     bottom(bottom) {
       const params = this.isEmpty(this.params) ? '' : this.params;
-      if (bottom && this.ordersExist) {
+      if (bottom && this.ordersExist && this.nextPage) {
         this.returned = false;
         this.setOrders({
           page: this.nextPage,
