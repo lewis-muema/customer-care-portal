@@ -71,12 +71,10 @@ export default {
     }),
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');
-
       const token =
         this.getAuthenticationToken === null
           ? storedToken
           : this.getAuthenticationToken;
-
       if (token && token !== '' && storedToken !== 'undefined') {
         const partsOfToken = token.split('.');
         const middleString = Base64.decode(partsOfToken[1]);
@@ -84,7 +82,11 @@ export default {
         this.setSession(payload);
         this.updateSession(payload);
 
-        const userData = payload.payload.data;
+        const userData =
+          typeof payload.payload.data === 'undefined'
+            ? payload.payload
+            : payload.payload.data;
+
         this.$apm.setUserContext({
           id: userData.admin_id,
           username: userData.name,

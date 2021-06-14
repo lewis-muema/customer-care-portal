@@ -104,5 +104,6 @@ export default {
   font-size: 14px;
   line-height: 32px;
   letter-spacing: 0.04em;
+  color: #ffffff;
 }
 </style>

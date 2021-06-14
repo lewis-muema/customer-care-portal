@@ -105,7 +105,7 @@
           :id="`ticket_${orderNo}`"
         >
           <span class="fa fa-fw fa-envelope"></span>
-          Ticket
+          Create Ticket
         </a>
       </li>
       <li
@@ -264,7 +264,7 @@
           role="tabpanel"
           v-if="showTab === `cancel_${orderNo}`"
         >
-          <TheCancelComponent :order="order" />
+          <TheCancelComponent :order-details="orderDetails" :order="order" />
         </div>
         <div
           :class="`tab-pane fade ${show} ${active}`"
@@ -401,6 +401,10 @@ export default {
   },
   props: {
     order: {
+      type: Object,
+      required: true,
+    },
+    orderDetails: {
       type: Object,
       required: true,
     },

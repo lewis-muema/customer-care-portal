@@ -34,10 +34,12 @@
           order.order_details.order_no !== order.order_details.parent_order_no
       "
     >
-      <span class=""><LowerSlideComponent :orderno="order"/></span>
+      <span class=""
+        ><LowerSlideComponent :full-order="fullOrder" :orderno="order"
+      /></span>
     </div>
     <div v-else>
-      <span class=""><TheLowerSlideComponent :orderno="orderno"/></span>
+      <span class=""><TheLowerSlideComponent :full-order="fullOrder"/></span>
     </div>
   </td>
 </template>
@@ -55,6 +57,10 @@ export default {
   props: {
     orderno: {
       type: String,
+      required: true,
+    },
+    fullOrder: {
+      type: Object,
       required: true,
     },
   },
@@ -99,7 +105,7 @@ export default {
     }),
     ...mapActions({
       request_single_order: 'request_single_order',
-      setExchangeRates: 'setExchangeRates',
+      setExchangeRates: 'getExchangeRates',
     }),
     viewTab(tab, orderNo) {
       this.showTab = `${tab}_${orderNo}`;

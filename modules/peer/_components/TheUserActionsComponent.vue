@@ -28,14 +28,14 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link action-list"
+            class="nav-link action-list ticket-width"
             data-toggle="tab"
             aria-expanded="false"
             @click="viewTab('ticket', userID)"
             :id="`ticket_${userID}`"
           >
             <span class="fa fa-fw fa-envelope"></span>
-            Ticket
+            Create Ticket
           </a>
         </li>
         <li class="nav-item" v-if="permissions.approve_vat_configs_peer">
@@ -51,7 +51,7 @@
           </a>
         </li>
         <li
-          class="nav-item custom_invoice-padding"
+          class="nav-item custom_invoice-padding hide"
           v-if="permissions.approve_custom_invoice_1"
         >
           <a
@@ -380,5 +380,8 @@ export default {
 }
 .custom-item {
   padding-right: 3px !important;
+}
+.ticket-width {
+  width: 98% !important;
 }
 </style>

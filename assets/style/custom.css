@@ -1225,7 +1225,7 @@ table {
   margin-top: 15px;
 }
 .save-truck-button, .driver-assign-inputs {
-  width: max-content;
+  width: -webkit-fill-available;
 }
 .finances-tab {
   border: 1px solid #bdbdbd;
@@ -1637,3 +1637,10 @@ color: #000000;
 textarea.is-invalid {
   border: 1px solid red;
 }
+.content-wrapper, .right-side {
+  background: #F2F6FC !important;
+}
+.ticket-select > .vs__dropdown-toggle {
+  border: none !important;
+}
+

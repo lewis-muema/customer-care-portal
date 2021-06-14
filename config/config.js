@@ -31,10 +31,6 @@ const config = {
       'https://cors-anywhere.herokuapp.com/https://pricingtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API: 'https://authtest.sendyit.com/rider/admin_partner_api/v5/',
-    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
-    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
     BROKER_USER: 'staging',
@@ -74,10 +70,6 @@ const config = {
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API:
       'https://autht.staging.sendyit.com/rider/admin_partner_api/v5/',
-    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
-    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
@@ -86,7 +78,7 @@ const config = {
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
-    ELASTIC_APM_ENVIRONMENT: 'dev',
+    ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
@@ -117,10 +109,6 @@ const config = {
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
     AUTH: 'https://auth.staging.sendyit.com/',
-    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
-    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
     RABBITMQ_URL:
       'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
@@ -131,7 +119,6 @@ const config = {
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
-    ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
   },
   production: {
     BASE_URL: 'http://localhost:8080/',
@@ -153,7 +140,7 @@ const config = {
     VEHICLE_SEARCH: 'https://gate.sendyit.com/solr/vehicle/',
     VENDORS: 'https://auth.sendyit.com/vendors/',
     OWNER_SEARCH: 'https://gate.sendyit.com/solr/owner/',
-    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon',
+    COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon/',
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff/',
     STAFF_API: 'https://auth.sendyit.com/staffapi/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
@@ -164,10 +151,6 @@ const config = {
       'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
-    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
-    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
-    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',

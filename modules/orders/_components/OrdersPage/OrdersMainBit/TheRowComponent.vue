@@ -167,7 +167,7 @@
         :key="`details_${order.order_no}_${order.order_status}`"
         :id="`child_row_${order.order_no}`"
       >
-        <TheLowerSlideComponent :orderno="order.order_no" />
+        <TheLowerSlideComponent :full-order="order" />
       </tr>
       <tr
         class="order_row_home_lower"
@@ -175,7 +175,7 @@
         :key="`details_${order.order_no}_${order.order_status}`"
         :id="`child_row_${order.order_no}`"
       >
-        <DashboardComponent :orderno="order.order_no" />
+        <DashboardComponent :full-order="order" :orderno="order.order_no" />
       </tr>
     </template>
     <tr v-if="!returned">
@@ -232,16 +232,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'getOrders',
-      'getOrderStatuses',
-      'getSelectedBusinessUnits',
-      'getSelectedCopNames',
-      'getSelectedCities',
-      'getReorganizeStatus',
-      'getOrderCount',
-      'getBusinessUnits',
-    ]),
+    ...mapGetters({
+      getOrders: 'orders/getOrders',
+      getOrderStatuses: 'orders/getOrderStatuses',
+      getSelectedBusinessUnits: 'getSelectedBusinessUnits',
+      getSelectedCopNames: 'getSelectedCopNames',
+      getSelectedCities: 'getSelectedCities',
+      getReorganizeStatus: 'getReorganizeStatus',
+      getBusinessUnits: 'getBusinessUnits',
+    }),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev', 'userData']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
@@ -260,14 +259,6 @@ export default {
       return this.orders.filter(el => {
         return el.order_status.toLowerCase() === 'in transit';
       });
-    },
-    orderCount() {
-      const confirmedCount = this.confirmedOrders.length;
-      const count = {};
-      count.confirmed = this.confirmedOrders.length;
-      count.transit = this.transitOrders.length;
-      count.pending = this.pendingOrders.length;
-      return count;
     },
     sessionData() {
       const data = this.userData.payload.data;
@@ -308,8 +299,9 @@ export default {
       const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
+      this.setDisabledStatus(false);
       this.orders = newOrders;
-      return this.updateOrderCount(this.orderCount);
+      return this.orders;
     },
     getBusinessUnits(units) {
       return (this.companyUnits = units);
@@ -317,6 +309,7 @@ export default {
     getOrderStatuses(statusArray) {
       this.orders = [];
       this.statusArray = statusArray;
+      this.setDisabledStatus(true);
       this.sendRequest(this.params);
       return (this.statusArray = statusArray);
     },
@@ -377,23 +370,16 @@ export default {
   },
   mounted() {
     if (process.client) {
-      this.setOrders({
-        page: 1,
-        params: {
-          country_code: this.countryCode,
-        },
-      });
+      this.setOrders();
     }
   },
   methods: {
     ...mapMutations({
-      setOrdersObject: '$_orders/setOrdersObject',
       setDBUpdatedStatus: 'setDBUpdatedStatus',
-      setOrderCount: 'setOrderCount',
       updateReorganizeStatus: 'setReorganizeStatus',
-      updateOrderCount: 'setOrderCount',
+      setDisabledStatus: 'orders/setDisabledStatus',
     }),
-    ...mapActions(['setOrders']),
+    ...mapActions('orders', ['setOrders']),
     initialOrderRequest() {
       this.setOrders();
     },
@@ -477,7 +463,7 @@ export default {
     determineOrderColor(date, push_order) {
       const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
       const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
-      let colorClass = 'tetst';
+      let colorClass = 'test';
       if (orderDate < currentDate) {
         colorClass = 'pull_attention';
       }

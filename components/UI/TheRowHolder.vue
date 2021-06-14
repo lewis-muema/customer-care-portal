@@ -142,7 +142,10 @@
                     <TheSideComponent :order="order" />
                   </div>
                   <div class="col-md-8">
-                    <TheMainComponent :order="order" />
+                    <TheMainComponent
+                      :order-details="orderDetails"
+                      :order="order"
+                    />
                   </div>
                 </div>
               </div>
@@ -152,7 +155,7 @@
             v-if="opened.includes(orderNo) && vendorTypeId === 25"
             class="order_view_lower_cell"
           >
-            <DashboardComponent :orderno="orderNo" />
+            <DashboardComponent :full-order="mainDetails" :orderno="orderNo" />
           </tr>
         </template>
         <tr v-else>
@@ -165,7 +168,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'TheRowHolder',
@@ -192,6 +195,17 @@ export default {
       riderDetails: this.order.rider_details,
       paymentDetails: this.order.payment_details,
       images: this.order.delivery_details,
+      orderDetails: {
+        countryCode: this.order.country_code,
+        orderStatus: this.order.order_details.order_status,
+        vendorID: this.order.rider_details.vendor_type_id,
+      },
+      mainDetails: {
+        country_code: this.order.country_code,
+        vendor_type_id: this.order.rider_details.vendor_type_id,
+        order_status: this.order.order_details.order_status,
+        order_no: this.order.order_details.order_no,
+      },
     };
   },
   computed: {
