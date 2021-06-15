@@ -78,7 +78,6 @@ export default {
         subCategory: '',
       },
     };
-    const routeName = $nuxt.$route.name;
     commit('setbreadcrumbs', breadcrumbsObject.peer);
   },
   // eslint-disable-next-line require-await
@@ -99,8 +98,7 @@ export default {
     const values = JSON.stringify(payload.params);
 
     try {
-      const response = await axiosConfig.post(`${url}`, values);
-      return response;
+      return await axiosConfig.post(`${url}`, values);
     } catch (error) {
       payload.params.error = error.response.status;
       return error.response;
@@ -784,7 +782,7 @@ export default {
     const config = state.config;
     const url = `${config.ADONIS_API}version`;
     try {
-      const response = await axiosConfig.get(url, param);
+      const response = await axiosConfig.get(url);
       return response.data;
     } catch (error) {
       const err = await dispatch('handleErrors', error.response.status, {
@@ -900,7 +898,7 @@ export default {
     const config = state.config;
     const url = `${config.ADONIS_API}admins?status=1`;
     try {
-      const response = await axiosConfig.get(url, param);
+      const response = await axiosConfig.get(url);
       commit('setAdmins', response.data);
       return response.data;
     } catch (error) {
@@ -1657,7 +1655,7 @@ export default {
     const config = state.config;
     const url = `${config.CUSTOMERS_APP}get_coupon?id=${payload.id}`;
     try {
-      const response = await axiosConfig.get(url, param);
+      const response = await axiosConfig.get(url);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -1785,7 +1783,7 @@ export default {
     try {
       return await axiosConfig.get(url);
     } catch (error) {
-      const err = await dispatch('handleErrors', error.response.status, {
+      await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error;
