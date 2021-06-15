@@ -139,7 +139,7 @@ export default {
       updateClass: 'setActionClass',
     }),
     ...mapActions({
-      perform_order_action: '$_orders/perform_order_action',
+      perform_order_action: 'orders/perform_order_action',
       log_cc_action: 'log_cc_action',
     }),
     triggerDnotesModal(image, e) {
