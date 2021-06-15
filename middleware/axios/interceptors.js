@@ -1,19 +1,19 @@
+// import store from '@/store';
+
 /**
  * Add request interceptor to axios
  * @method addRequestInterceptor
- * @param  {Object} axiosConfig axios base configs
+ * @param  {Object} api axios base configs
  */
-const addRequestInterceptor = axiosConfig => {
-  return axiosConfig.interceptors.request.use(
+const addRequestInterceptor = api => {
+  return api.interceptors.request.use(
     config => {
       const authToken =
-        process.client && typeof window !== 'undefined'
-          ? localStorage.getItem('jwtToken')
-          : null;
+        typeof window !== 'undefined' ? localStorage.getItem('jwtToken') : null;
+      // const tokenObj = JSON.parse(authToken);
       if (authToken) {
         config.headers = {
           Authorization: authToken,
-          'Content-Type': 'application/json',
         };
       }
       return config;
@@ -25,14 +25,13 @@ const addRequestInterceptor = axiosConfig => {
 /**
  * Add response interceptor to axios
  * @method addResponseInterceptor
- * @param  {Object} axiosConfig axios base configs
+ * @param  {Object} api axios base configs
  */
-const addResponseInterceptor = axiosConfig => {
+const addResponseInterceptor = api => {
   const authToken =
-    process.client && typeof window !== 'undefined'
-      ? localStorage.getItem('jwtToken')
-      : null;
-  return axiosConfig.interceptors.response.use(
+    typeof window !== 'undefined' ? localStorage.getItem('jwtToken') : null;
+  // const tokenObj = JSON.parse(authToken);
+  return api.interceptors.response.use(
     response => {
       return response;
     },
@@ -40,14 +39,11 @@ const addResponseInterceptor = axiosConfig => {
       if (
         authToken &&
         error.response &&
-        (error.response.status === 400 ||
-          error.response.status === 401 ||
-          error.response.status === 403)
+        (error.response.status === 401 || error.response.status === 400)
       ) {
-        if (process.client && typeof window !== 'undefined') {
-          localStorage.clear();
-          window.location.reload();
-        }
+        // store.dispatch('auth/removeToken');
+        // TODO redirect user to login page
+        window.location.reload();
       }
       return Promise.reject(error);
     },
