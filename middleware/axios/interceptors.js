@@ -13,6 +13,7 @@ const addRequestInterceptor = axiosConfig => {
       if (authToken) {
         config.headers = {
           Authorization: authToken,
+          'Content-Type': 'application/json',
         };
       }
       return config;
