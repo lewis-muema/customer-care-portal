@@ -4,9 +4,7 @@ export default {
   async setOrders({ rootState, commit, dispatch }, payload) {
     const config = rootState.config;
     const { page, params } = payload;
-    const url = `${
-      config.ADONIS_API
-    }orders?page=${page}&country_code=${JSON.parse(params.country_code)}`;
+    const url = `${config.ADONIS_API}orders?page=${page}&country_code=${country_code}`;
 
     try {
       const response = await axiosConfig.get(url);
