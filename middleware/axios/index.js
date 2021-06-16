@@ -10,13 +10,12 @@ const commonHeaders = {
   'Content-Type': 'application/json',
 };
 
-const api = axios.create({
-  baseURL: process.env.API_URL,
+const axiosConfig = axios.create({
   headers: commonHeaders,
 });
 
-interceptor.addRequestInterceptor(api);
-interceptor.addResponseInterceptor(api);
+interceptor.addRequestInterceptor(axiosConfig);
+interceptor.addResponseInterceptor(axiosConfig);
 
 // eslint-disable-next-line import/prefer-default-export
-export { api };
+export { axiosConfig };

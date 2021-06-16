@@ -1,16 +1,15 @@
-// import store from '@/store';
-
 /**
  * Add request interceptor to axios
  * @method addRequestInterceptor
- * @param  {Object} api axios base configs
+ * @param  {Object} axiosConfig axios base configs
  */
-const addRequestInterceptor = api => {
-  return api.interceptors.request.use(
+const addRequestInterceptor = axiosConfig => {
+  return axiosConfig.interceptors.request.use(
     config => {
       const authToken =
-        typeof window !== 'undefined' ? localStorage.getItem('jwtToken') : null;
-      // const tokenObj = JSON.parse(authToken);
+        process.client && typeof window !== 'undefined'
+          ? localStorage.getItem('jwtToken')
+          : null;
       if (authToken) {
         config.headers = {
           Authorization: authToken,
@@ -25,13 +24,14 @@ const addRequestInterceptor = api => {
 /**
  * Add response interceptor to axios
  * @method addResponseInterceptor
- * @param  {Object} api axios base configs
+ * @param  {Object} axiosConfig axios base configs
  */
-const addResponseInterceptor = api => {
+const addResponseInterceptor = axiosConfig => {
   const authToken =
-    typeof window !== 'undefined' ? localStorage.getItem('jwtToken') : null;
-  // const tokenObj = JSON.parse(authToken);
-  return api.interceptors.response.use(
+    process.client && typeof window !== 'undefined'
+      ? localStorage.getItem('jwtToken')
+      : null;
+  return axiosConfig.interceptors.response.use(
     response => {
       return response;
     },
@@ -39,11 +39,14 @@ const addResponseInterceptor = api => {
       if (
         authToken &&
         error.response &&
-        (error.response.status === 401 || error.response.status === 400)
+        (error.response.status === 400 ||
+          error.response.status === 401 ||
+          error.response.status === 403)
       ) {
-        // store.dispatch('auth/removeToken');
-        // TODO redirect user to login page
-        window.location.reload();
+        if (process.client && typeof window !== 'undefined') {
+          localStorage.clear();
+          window.location.reload();
+        }
       }
       return Promise.reject(error);
     },
