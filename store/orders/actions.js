@@ -1,9 +1,10 @@
 import { axiosConfig } from '~/middleware/axios';
 
 export default {
-  async setOrders({ rootState, commit, dispatch }) {
+  async setOrders({ rootState, commit, dispatch }, payload) {
     const config = rootState.config;
-    const url = `${config.ADONIS_API}orders`;
+    const { page, params } = payload;
+    const url = `${config.ADONIS_API}orders?page=${page}&country_code=${params.country_code}`;
     try {
       const response = await axiosConfig.get(url);
       commit('setOrders', response.data);
