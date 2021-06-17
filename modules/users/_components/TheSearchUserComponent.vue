@@ -113,9 +113,7 @@ export default {
       return searchString;
     },
     userCountries() {
-      const staffCountry = [];
-      const userData = JSON.parse(this.country.payload.data.country_codes);
-      staffCountry.push(userData);
+      const staffCountry = JSON.parse(this.country.payload.data.country_codes);
       return staffCountry;
     },
   },
@@ -142,7 +140,7 @@ export default {
     prepareResponseData(data) {
       const response = data.response.docs;
       const filtered = response.filter(item =>
-        item.country_code.includes(this.userCountries),
+        this.userCountries.includes(item.country_code),
       );
       return filtered;
     },
