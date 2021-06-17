@@ -81,7 +81,10 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-
+    ...mapGetters(['getSession']),
+    country() {
+      return this.getSession;
+    },
     query_string() {
       localStorage.setItem('query', this.query);
       const q = this.query;
@@ -112,6 +115,12 @@ export default {
       }
       return searchString;
     },
+    userCountries() {
+      const staffCountry = [];
+      const userData = JSON.parse(this.country.payload.data.country_codes);
+      staffCountry.push(userData);
+      return staffCountry;
+    },
   },
   methods: {
     ...mapMutations({
@@ -123,7 +132,11 @@ export default {
       request_single_biz_user: 'request_single_biz_user',
     }),
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        item.country_code.includes(this.userCountries),
+      );
+      return filtered;
     },
     searchBiz(param) {
       const account_no = param.trim().toLowerCase();

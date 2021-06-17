@@ -78,6 +78,10 @@ export default {
 
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getSession']),
+    country() {
+      return this.getSession;
+    },
     placeholder() {
       return 'Select account to transfer';
     },
@@ -108,6 +112,12 @@ export default {
       }
       return searchString;
     },
+    userCountries() {
+      const staffCountry = [];
+      const userData = JSON.parse(this.country.payload.data.country_codes);
+      staffCountry.push(userData);
+      return staffCountry;
+    },
   },
   watch: {
     user(val) {
@@ -130,7 +140,11 @@ export default {
       this.searchInput += 1;
     },
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        item.country_code.includes(this.userCountries),
+      );
+      return filtered;
     },
     onHit(item) {
       const display =
