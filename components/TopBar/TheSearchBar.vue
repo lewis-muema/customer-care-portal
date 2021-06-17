@@ -66,7 +66,10 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-
+    ...mapGetters(['getSession']),
+    country() {
+      return this.getSession;
+    },
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query.trim();
@@ -79,6 +82,12 @@ export default {
     },
     src() {
       return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
+    },
+    userCountries() {
+      const staffCountry = JSON.parse(
+        this.country.payload.data.country_codes.toLowerCase(),
+      );
+      return staffCountry;
     },
   },
   methods: {
@@ -113,7 +122,11 @@ export default {
       }
     },
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
     clear() {
       this.isActive = true;
