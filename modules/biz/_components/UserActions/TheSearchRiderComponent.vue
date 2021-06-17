@@ -74,10 +74,12 @@ export default {
       solr: {
         riders: 'RIDER_SEARCH',
       },
+      userCountries: '',
     };
   },
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getSession']),
     placeholder() {
       return this.category;
     },
@@ -101,6 +103,10 @@ export default {
       return searchString;
     },
   },
+  mounted() {
+    const session = this.getSession;
+    this.userCountries = JSON.parse(session.payload.data.country_codes);
+  },
   methods: {
     trigger() {
       this.rider = null;
@@ -111,8 +117,10 @@ export default {
     prepareResponseData(data) {
       const results = data.response.docs;
       results.splice(0, 0, this.arr);
-
-      return results;
+      const filtered = results.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
     onHit(item) {
       this.hide = 'hide';
