@@ -276,4 +276,8 @@ export default {
   setDeactivatedCancellationReasons(state, val) {
     state.deactivatedCancellationReasons = val;
   },
+  setEnvironmentVariables(state, val) {
+    const data = !val ? localStorage.getItem('environmentVariables') : val;
+    state.environmentVariables = data;
+  },
 };

@@ -35,10 +35,8 @@ const config = {
     HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
-    RABBITMQ_URL:
-      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
-    BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
@@ -79,10 +77,8 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL:
-      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
-    BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
@@ -122,10 +118,8 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL:
-      'wss://rabbitmqtest.sendyit.com:8443/ws?apikey=4RNNeyATKN6B6S6XiOyJdPMEJ3oLRKBT',
+    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
-    BROKER_PASS: '0FAHmQQmjfsIXdro',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
@@ -170,7 +164,6 @@ const config = {
 
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',
-    BROKER_PASS: 'Z_EQ-T5rO-oQVx-OqL2',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://auth.sendyit.com',
     ELASTIC_APM_SERVER_URL: 'https://apm.sendyit.com:443',

@@ -81,6 +81,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getEnvironmentVariables']),
 
     query_string() {
       localStorage.setItem('query', this.query);
@@ -99,7 +100,7 @@ export default {
       return placeholderArray[currentUser];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       let searchString = '';

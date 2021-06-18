@@ -178,6 +178,7 @@ export default {
       disabledStatus: false,
       activeCancellationReasons: [],
       deactivatedCancellationReasons: [],
+      environmentVariables: null,
     };
   },
 
