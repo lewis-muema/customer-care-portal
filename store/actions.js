@@ -1793,7 +1793,6 @@ export default {
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = {
       headers: {
-        'Content-Type': 'text/plain',
         Accept: 'application/json',
         Authorization: jwtToken,
       },
@@ -1801,7 +1800,7 @@ export default {
 
     const url = `${config.STAFF_API}variables`;
     try {
-      const response = await axios.get(url, headers);
+      const response = await axiosConfig.get(url, headers);
       const res = response.data;
       const status = res.status;
       const data = res.data;
