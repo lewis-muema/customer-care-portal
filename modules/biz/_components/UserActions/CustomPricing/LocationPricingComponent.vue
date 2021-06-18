@@ -557,10 +557,9 @@ export default {
       configuredDistancePricing: 'getConfiguredDistancePricing',
       configuredLocationPricing: 'getConfiguredLocationPricing',
       getCustomPricingDetails: 'getCustomPricingDetails',
-      getEnvironmentVariables: 'getEnvironmentVariables',
     }),
     herokuKey() {
-      return this.getEnvironmentVariables.HEROKU_GOOGLE_API_KEY;
+      return this.$env.HEROKU_GOOGLE_API_KEY;
     },
     vendor() {
       return this.vendorTypes.find(op => {

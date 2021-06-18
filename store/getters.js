@@ -269,11 +269,4 @@ export default {
   getDeactivatedCancellationConsequences(state) {
     return state.deactivatedCancellationConsequences;
   },
-  getEnvironmentVariables(state) {
-    const val = !state.environmentVariables
-      ? JSON.parse(localStorage.getItem('environmentVariables'))
-      : state.environmentVariables;
-
-    return val;
-  },
 };

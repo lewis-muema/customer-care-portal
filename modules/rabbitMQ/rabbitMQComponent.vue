@@ -35,7 +35,6 @@ export default {
 
   computed: {
     ...mapState(['config', 'cities']),
-    ...mapGetters(['getEnvironmentVariables']),
 
     url() {
       return this.config.RABBITMQ_URL;
@@ -43,7 +42,7 @@ export default {
     headers() {
       const params = {
         login: this.config.BROKER_USER,
-        passcode: this.getEnvironmentVariables.BROKER_PASS,
+        passcode: this.config.BROKER_PASS,
       };
       return params;
     },

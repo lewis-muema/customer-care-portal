@@ -165,7 +165,6 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(['getEnvironmentVariables']),
     placeholder() {
       return this.category;
     },
@@ -182,7 +181,7 @@ export default {
       return this.config[userSearch];
     },
     solarToken() {
-      return this.getEnvironmentVariables.SOLR_JWT;
+      return this.$env.SOLR_JWT;
     },
     src() {
       const searchString = `${this.solarBase}select?q=(id_no:*${this.query_string}*)&wt=json&indent=true&row=10&sort=rider_id%20desc&jwt=${this.solarToken}`;
