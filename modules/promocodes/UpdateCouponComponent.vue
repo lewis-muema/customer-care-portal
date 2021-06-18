@@ -39,6 +39,7 @@
               >
               <TheTagsComponent
                 @emails="setTargetGroup"
+                @deleteEmail="deleteEmail"
                 :target-groups="targetGroups"
               />
             </div>
@@ -55,7 +56,11 @@
                 @click="update()"
                 :disabled="!isValid || coupon[0].active === 1"
               >
-                Add Users
+                <span v-if="loading">
+                  <i class="fa fa-spinner fa-spin"></i>
+                  loading
+                </span>
+                <span v-else>Add Users </span>
               </button>
             </div>
           </span>
@@ -116,41 +121,71 @@ export default {
       this.targetedGroup = emails.data;
       this.isValid = emails.status;
     },
-
     async update() {
       this.submitted = true;
       const notification = [];
       let actionClass = '';
-
+      this.loading = true;
       const payload = {
         app: 'CUSTOMERS_APP',
-        endpoint: 'create_coupon_code',
-        apiKey: true,
+        endpoint: 'update_targeted',
         params: {
-          data_set: 'coupon_actions',
-          action_id: 2,
+          data_set: 'targeted_coupon',
+          action_id: 1,
           action_data: {
             coupon_name: this.coupon[0].couponName,
-            coupon_type: null,
-            coupon_discount: null,
-            coupon_start_date: null,
-            coupon_end_date: null,
-            maximum_usage: null,
-            maximum_usage_user: null,
-            max_discount_amount: null,
-            country_code: null,
-            sendy_staff_promo: null,
-            is_targeted: false,
             targeted_group: this.targetedGroup,
-            targeted_file: null,
           },
           request_id: '1622',
           action_user: this.actionUser,
         },
       };
-
       try {
         const data = await this.perform_user_action(payload);
+        notification.push(data.message);
+        actionClass = this.display_order_action_notification(data.status);
+        this.loading = false;
+        if (data.status) {
+          // eslint-disable-next-line no-restricted-globals
+          location.reload();
+        }
+      } catch (error) {
+        notification.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+        actionClass = 'danger';
+      }
+      this.updateClass(actionClass);
+      this.updateErrors(notification);
+    },
+
+    async deleteEmail(val) {
+      this.submitted = true;
+      const notification = [];
+      let actionClass = '';
+      const email = [
+        {
+          email: val.data,
+        },
+      ];
+      const payload = {
+        app: 'CUSTOMERS_APP',
+        endpoint: 'update_targeted',
+        params: {
+          data_set: 'targeted_coupon',
+          action_id: 2,
+          action_data: {
+            coupon_name: this.coupon[0].couponName,
+            targeted_group: email,
+          },
+          request_id: '1622',
+          action_user: this.actionUser,
+        },
+      };
+      this.loading = true;
+      try {
+        const data = await this.perform_user_action(payload);
+        this.loading = false;
         notification.push(data.message);
         actionClass = this.display_order_action_notification(data.status);
         if (data.status) {

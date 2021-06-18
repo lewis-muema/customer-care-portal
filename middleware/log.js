@@ -1,3 +1,3 @@
 export default function(context) {
-  console.log('Midlle the log is running');
+  console.log('Middle the log is running');
 }

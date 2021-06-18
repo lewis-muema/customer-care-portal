@@ -5,98 +5,127 @@
       class="form-inline add-reward-section"
       :class="{ 'full-width': isEditForm }"
     >
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat"> Country </label>
-        <v-select
-          :options="active_countries"
-          :reduce="name => name.country_code"
-          name="country_name"
-          label="country_name"
-          placeholder="Select "
-          class="form-control select user-billing"
-          :id="`name`"
-          @input="getSelectedCountryCode"
-          v-model="country"
+      <div class="row full-width">
+        <div
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
         >
-        </v-select>
-        <div v-if="submitted && !$v.country.required" class="rewards_valid">
-          Country is required
+          <label class="vat"> Country </label>
+          <v-select
+            :options="active_countries"
+            :reduce="name => name.country_code"
+            name="country_name"
+            label="country_name"
+            placeholder="Select "
+            class="form-control select user-billing"
+            :id="`name`"
+            @input="getSelectedCountryCode"
+            v-model="country"
+          >
+          </v-select>
+          <div v-if="submitted && !$v.country.required" class="rewards_valid">
+            Country is required
+          </div>
+        </div>
+
+        <div
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
+        >
+          <label class="vat"> Vendor Type </label>
+          <v-select
+            :options="vendor_type"
+            :reduce="name => name.id"
+            multiple
+            chips
+            name="name"
+            label="name"
+            placeholder="Select"
+            class="form-control select user-billing"
+            :id="`name`"
+            v-model="vendorsSelected"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.vendorsSelected.required"
+            class="rewards_valid"
+          >
+            Vendor type has to be selected
+          </div>
+        </div>
+
+        <div
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
+        >
+          <label class="vat"> When to display the cancellation reason </label>
+          <v-select
+            :options="when_to_display_Reason"
+            :reduce="name => name.value"
+            multiple
+            chips
+            label="label"
+            name="label"
+            placeholder="Select"
+            class="form-control select user-billing"
+            :id="`value`"
+            v-model="whenToDisplayReason"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.whenToDisplayReason.required"
+            class="rewards_valid"
+          >
+            When to display cancellation reason is required
+          </div>
         </div>
       </div>
-
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat"> Vendor Type </label>
-        <v-select
-          :options="vendor_type"
-          :reduce="name => name.id"
-          multiple
-          chips
-          name="name"
-          label="name"
-          placeholder="Select"
-          class="form-control select user-billing"
-          :id="`name`"
-          v-model="vendorsSelected"
-        >
-        </v-select>
+      <div class="row full-width">
         <div
-          v-if="submitted && !$v.vendorsSelected.required"
-          class="rewards_valid"
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
         >
-          Vendor type has to be selected
+          <label class="vat"> Platform for cancellation reason</label>
+          <v-select
+            :options="platform"
+            :reduce="name => name.value"
+            multiple
+            chips
+            label="label"
+            name="label"
+            placeholder="Select"
+            class="form-control select user-billing"
+            :id="`value`"
+            v-model="allowPlatform"
+          >
+          </v-select>
+          <div
+            v-if="submitted && !$v.allowPlatform.required"
+            class="rewards_valid"
+          >
+            Platform for cancellation reason is required
+          </div>
         </div>
-      </div>
 
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat"> When to display the cancellation reason </label>
-        <v-select
-          :options="when_to_display_Reason"
-          :reduce="name => name.value"
-          multiple
-          chips
-          label="label"
-          name="label"
-          placeholder="Select"
-          class="form-control select user-billing"
-          :id="`value`"
-          v-model="whenToDisplayReason"
-        >
-        </v-select>
         <div
-          v-if="submitted && !$v.whenToDisplayReason.required"
-          class="rewards_valid"
+          class="form-group col-md-4 user-input"
+          :class="{ 'full-width col-md-12': isEditForm }"
         >
-          When to display cancellation reason is required
-        </div>
-      </div>
-
-      <div
-        class="form-group col-md-12 user-input"
-        :class="{ 'full-width': isEditForm }"
-      >
-        <label class="vat">Cancellation reason</label>
-        <el-input
-          v-model="cancellation_reason"
-          class="message-input"
-          :class="{
-            'reduce-message-input': this.formDataType.operation === 'edit',
-          }"
-        >
-        </el-input>
-        <div
-          v-if="submitted && !$v.cancellation_reason.required"
-          class="rewards_valid"
-        >
-          Cancellation reason is required
+          <label class="vat">Cancellation reason</label>
+          <el-input
+            v-model="cancellation_reason"
+            class="message-input"
+            :class="{
+              'reduce-message-input': this.formDataType.operation === 'edit',
+            }"
+          >
+          </el-input>
+          <div
+            v-if="submitted && !$v.cancellation_reason.required"
+            class="rewards_valid"
+          >
+            Cancellation reason is required
+          </div>
         </div>
       </div>
 
@@ -112,7 +141,11 @@
       </div>
     </form>
 
-    <div v-if="submit_status" class="response-section">
+    <div
+      v-if="submit_status"
+      class="response-section"
+      :class="{ 'remove-margin': isEditForm }"
+    >
       <p class="response-text" v-if="response_status === true">
         <i class="fa fa-spinner fa-spin loader invoice-loader--align"></i>
         Processing your request ....
@@ -172,6 +205,11 @@ export default {
       ],
       whenToDisplayReason: [],
       submit_state: false,
+      platform: [
+        { label: 'CC Portal', value: 'CC' },
+        { label: 'Customer', value: 'CUSTOMER' },
+      ],
+      allowPlatform: [],
     };
   },
   validations: {
@@ -179,6 +217,7 @@ export default {
     vendorsSelected: { required },
     country: { required },
     whenToDisplayReason: { required },
+    allowPlatform: { required },
   },
   computed: {
     ...mapGetters({
@@ -220,6 +259,7 @@ export default {
       this.vendorsSelected = [];
       this.cancellation_reason = '';
       this.whenToDisplayReason = [];
+      this.allowPlatform = [];
     },
     populateFormFields() {
       const cancellationData = this.formDataType.data;
@@ -230,6 +270,7 @@ export default {
       this.whenToDisplayReason = JSON.parse(
         cancellationData.applicable_order_status,
       );
+      this.allowPlatform = JSON.parse(cancellationData.allow_platform);
     },
     mapOrderReasonsToId(whenToDisplayReasons) {
       if (!whenToDisplayReasons.length) return;
@@ -308,6 +349,10 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
+      } else if (!this.allowPlatform.length) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = ' Platform for cancellation reason is required';
       }
 
       const data = {
@@ -317,7 +362,7 @@ export default {
         applicable_order_status: this.whenToDisplayReason,
         admin_id: this.getSession.payload.data.admin_id,
         priority_key: 18,
-        allow_platform: ['CC', 'CUSTOMER'],
+        allow_platform: this.allowPlatform,
       };
       const payload = {
         app: 'ADONIS_API',
@@ -373,6 +418,10 @@ export default {
         this.submit_state = false;
         this.response_status = 'error';
         this.error_msg = ' When to display cancellation reason is required';
+      } else if (!this.allowPlatform.length) {
+        this.submit_state = false;
+        this.response_status = 'error';
+        this.error_msg = ' Platform for cancellation reason is required';
       }
 
       const payload = {
@@ -380,6 +429,7 @@ export default {
         vendor_type_ids: this.vendorsSelected,
         cancel_reason: this.cancellation_reason,
         applicable_order_status: this.whenToDisplayReason,
+        allow_platform: this.allowPlatform,
         admin_id: this.getSession.payload.data.admin_id,
         status: this.formDataType.data.status,
         cancellation_reason_id: this.formDataType.data.id,
@@ -396,6 +446,11 @@ export default {
             this.clearData();
             this.$emit('showDialog', false);
           }, 2000);
+        } else {
+          this.response_status = 'error';
+          this.submit_state = false;
+          this.loading_messages = true;
+          this.error_msg = result.data;
         }
       } catch (error) {
         this.submit_state = false;
@@ -413,6 +468,9 @@ export default {
 .add-reward-section {
   width: 80% !important;
   min-height: 340px;
+}
+.add-reward-section div {
+  margin-left: -4px;
 }
 .form-inline {
   margin-left: 2%;
@@ -432,7 +490,6 @@ export default {
 }
 .vat {
   width: 100%;
-  margin-left: -15px;
 }
 .vat-inline {
   max-width: 72% !important;
@@ -440,14 +497,16 @@ export default {
 .form-inline label {
   align-items: center;
   justify-content: left;
-  margin-bottom: 0;
   font-size: small;
+}
+.v-select {
+  height: auto;
+  padding: 0;
 }
 .select {
   margin-left: -15px;
   padding: 0;
   width: 95%;
-  height: 2%;
 }
 .v-select .vs__dropdown-menu .option-description {
   margin-top: 5px;
@@ -464,7 +523,6 @@ export default {
 }
 .user-input {
   margin-bottom: 34px;
-  width: 30%;
 }
 .full-width {
   width: 100% !important;
@@ -482,7 +540,7 @@ export default {
   border: 2px solid #00ae55;
   box-sizing: border-box;
   border-radius: 4px;
-  margin-left: 2%;
+  margin-left: 15px;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -504,12 +562,17 @@ export default {
 .rewards_valid {
   font-size: 14px !important;
   color: #dc3545;
-  margin-left: -4% !important;
 }
 .submit-success {
   color: #00ae55;
 }
 .submit-error {
   color: #ff0000;
+}
+.remove-margin {
+  margin-left: 0;
+}
+.full-width {
+  width: 100%;
 }
 </style>

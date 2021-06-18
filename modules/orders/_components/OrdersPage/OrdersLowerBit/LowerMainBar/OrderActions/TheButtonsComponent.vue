@@ -134,7 +134,7 @@
           class="force_blue"
           :class="{ activeLink: showTab === `allocate__${orderNo}` }"
           data-toggle="tab"
-          aria-expanded=" false"
+          aria-expanded="false"
           @click="viewTab('allocate', orderNo)"
           :id="`allocate__${orderNo}`"
         >
@@ -375,7 +375,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'TheButtonsComponent',
@@ -460,34 +460,34 @@ export default {
       this.show = 'show';
     },
     showDispatch(order) {
-      const resp =
+      return (
         order.order_details.order_status === 'pending' &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showReallocateBtn(order) {
-      const resp =
+      return (
         order.order_details.order_status !== 'pending' &&
         this.permissions.reassign_orders &&
         order.order_details.order_status !== 'delivered' &&
         order.order_details.order_status !== 'cancelled' &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showReturnBtn(order) {
-      const resp =
+      return (
         order.order_details.order_status !== 'delivered' &&
         order.order_details.order_status !== 'cancelled' &&
         this.userData['admin_type'] !== 1 &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showScheduleBtn(order) {
-      const resp =
+      return (
         (order.order_details.order_status === 'pending' ||
           order.order_details.order_status === 'confirmed') &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showProximityBtn(order) {
       const resp =
@@ -499,39 +499,38 @@ export default {
       return resp;
     },
     showAllocateOrdersBtn(order) {
-      const resp =
+      return (
         order.order_details.order_status === 'pending' &&
         this.permissions.assign_orders &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showMarkInTransitBtn(order) {
-      const resp =
+      return (
         order.order_details.order_status !== 'delivered' &&
         order.order_details.order_status !== 'cancelled' &&
         order.order_details.order_status !== 'pending' &&
         this.mm === 0 &&
         this.permissions.update_delivery_status &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showCompleteOrderBtn(order) {
-      const resp =
+      return (
         order.order_details.order_status === 'in transit' &&
         this.permissions.complete_order &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showUploadDnotesBtn(order) {
-      const resp =
+      return (
         order.order_details.order_status === 'delivered' &&
         this.permissions.upload_dnotes &&
-        order.rider_details.vendor_type_id !== 26;
-      return resp;
+        order.rider_details.vendor_type_id !== 26
+      );
     },
     showDeliveryStatusBtn(order) {
-      const resp = order.rider_details.vendor_type_id === 26;
-      return resp;
+      return order.rider_details.vendor_type_id === 26;
     },
     showWeightOfOrderBtn(order) {
       let resp = false;

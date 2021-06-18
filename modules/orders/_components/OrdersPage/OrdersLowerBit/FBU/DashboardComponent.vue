@@ -105,7 +105,7 @@ export default {
     }),
     ...mapActions({
       request_single_order: 'request_single_order',
-      setExchangeRates: 'setExchangeRates',
+      setExchangeRates: 'getExchangeRates',
     }),
     viewTab(tab, orderNo) {
       this.showTab = `${tab}_${orderNo}`;

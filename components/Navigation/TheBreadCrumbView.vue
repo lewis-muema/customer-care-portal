@@ -117,9 +117,8 @@ export default {
     ...mapMutations({
       updateSelectedUnits: 'setSelectedBusinessUnits',
     }),
-    ...mapActions(['setBusinessUnits', 'requestBusinessUnits']),
+    ...mapActions(['setBusinessUnits']),
     async requestUnits() {
-      const arr = await this.requestBusinessUnits();
       await this.setBusinessUnits();
     },
     checkAll() {

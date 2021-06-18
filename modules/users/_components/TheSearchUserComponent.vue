@@ -78,7 +78,10 @@ export default {
 
   computed: {
     ...mapState(['config']),
-    ...mapGetters(['getEnvironmentVariables']),
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
+    country() {
+      return this.getSession;
+    },
     placeholder() {
       return 'Select account to transfer';
     },
@@ -109,6 +112,10 @@ export default {
       }
       return searchString;
     },
+    userCountries() {
+      const staffCountry = JSON.parse(this.country.payload.data.country_codes);
+      return staffCountry;
+    },
   },
   watch: {
     user(val) {
@@ -131,7 +138,11 @@ export default {
       this.searchInput += 1;
     },
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
     onHit(item) {
       const display =

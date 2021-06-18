@@ -1,6 +1,4 @@
 export default {
-  // ...apix.getMutations(),
-
   setbreadcrumbs(state, breadcrumbs) {
     state.breadcrumbs = breadcrumbs;
   },
@@ -15,6 +13,12 @@ export default {
   },
   setActionClass(state, val) {
     state.actionClass = val;
+  },
+  setCities(state, cities) {
+    state.cities = cities;
+  },
+  setBusinessUnits(state, businessUnits) {
+    state.businessUnits = businessUnits;
   },
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;
@@ -58,8 +62,17 @@ export default {
   setSession(state, session) {
     state.userData = session;
   },
-  setOrderStatuses(state, val) {
-    state.selectedStatus = val;
+  setExchangeRates(state, exchangeRates) {
+    state.exchangeRates = exchangeRates;
+  },
+  setCopTypes(state, copTypes) {
+    state.copTypes = copTypes;
+  },
+  setAdmins(state, admins) {
+    state.admins = admins;
+  },
+  setSurveys(state, surveys) {
+    state.surveys = surveys;
   },
   setDBUpdatedStatus(state, val) {
     state.dbUpdated = val;
@@ -178,8 +191,14 @@ export default {
   setNPSCommentStatus(state, val) {
     state.commentStatus = val;
   },
+  setCountries(state, countries) {
+    state.countries = countries;
+  },
   setActiveCountries(state, val) {
     state.activeCountries = val;
+  },
+  setVendorTypes(state, vendorTypes) {
+    state.vendorTypes = vendorTypes;
   },
   setActiveAccountTypes(state, val) {
     state.activeAccountTypes = val;
@@ -265,16 +284,20 @@ export default {
   setReallocationReasons(state, val) {
     state.reallocationReasons = val;
   },
-  setDisabledStatus(state, val) {
-    state.disabledStatus = val;
-  },
-
   setActiveCancellationReasons(state, val) {
     state.activeCancellationReasons = val;
   },
-
   setDeactivatedCancellationReasons(state, val) {
     state.deactivatedCancellationReasons = val;
+  },
+  setCancellationActions(state, val) {
+    state.cancellationActions = val;
+  },
+  setActiveCancellationConsequences(state, val) {
+    state.activeCancellationConsequences = val;
+  },
+  setDeactivatedCancellationConsequences(state, val) {
+    state.deactivatedCancellationConsequences = val;
   },
   setEnvironmentVariables(state, val) {
     const data = !val ? localStorage.getItem('environmentVariables') : val;

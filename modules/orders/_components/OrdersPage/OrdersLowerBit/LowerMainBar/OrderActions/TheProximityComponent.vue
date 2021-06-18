@@ -166,7 +166,7 @@ export default {
       updateClass: 'setActionClass',
     }),
     ...mapActions({
-      perform_order_action: '$_orders/perform_order_action',
+      perform_order_action: 'orders/perform_order_action',
     }),
     async increaseProximity() {
       this.submitted = true;

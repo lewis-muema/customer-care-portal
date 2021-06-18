@@ -81,7 +81,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getSearchedOrder', 'getSearchState', 'getHelpScoutToken']),
+    ...mapGetters(['getSearchedOrder', 'getSearchState']),
     searchState() {
       return this.getSearchState;
     },
@@ -95,18 +95,9 @@ export default {
       return (this.order = order);
     },
   },
-  async mounted() {
-    if (localStorage.getItem('helpscoutTokenRequested') === null) {
-      await this.requestHelpscoutToken();
-    }
-  },
   methods: {
     ...mapMutations({
       updateSearchState: 'setSearchState',
-      updateHelpScoutToken: 'setHelpScoutToken',
-    }),
-    ...mapActions({
-      requestHelpscoutToken: 'request_helpscout_token',
     }),
     remove() {
       this.updateSearchState(false);
@@ -143,8 +134,6 @@ export default {
   padding: 15px;
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
 }
 .pass {
   margin-left: 50px;

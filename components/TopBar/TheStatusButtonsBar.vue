@@ -21,7 +21,7 @@
       />
       PENDING
       <div class="ml-1 badge-total pending-total text-center ">
-        {{ pendingCount + objectLength(pendingOrders) }}
+        {{ ordersMeta !== null ? this.ordersMeta.pendingOrders : 0 }}
       </div>
     </span>
     <span class="row confirmed mr-5">
@@ -35,7 +35,7 @@
       />
       CONFIRMED
       <div class="ml-1 badge-total confirmed-total text-center">
-        {{ confirmedCount + objectLength(confirmedOrders) }}
+        {{ ordersMeta !== null ? this.ordersMeta.confirmedOrders : 0 }}
       </div>
     </span>
     <span class="row transit mr-5">
@@ -49,14 +49,14 @@
       />
       IN TRANSIT
       <div class="ml-1 badge-total transit-total text-center">
-        {{ transitCount + objectLength(transitOrders) }}
+        {{ ordersMeta !== null ? this.ordersMeta.inTransitOrders : 0 }}
       </div>
     </span>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'statusBar',
@@ -71,10 +71,10 @@ export default {
       status: [],
       isCheckAll: true,
       orderDetails: this.orders,
-      count: null,
       pendingCount: 0,
       confirmedCount: 0,
       transitCount: 0,
+      ordersMeta: null,
     };
   },
   computed: {
@@ -83,33 +83,14 @@ export default {
       const data = this.orderDetails;
       return data;
     },
-    pendingOrders() {
-      return this.allOrders.filter(el => {
-        return el.order_status.toLowerCase() === 'pending';
-      });
-    },
-    confirmedOrders() {
-      return this.allOrders.filter(el => {
-        return el.order_status.toLowerCase() === 'confirmed';
-      });
-    },
-    transitOrders() {
-      return this.allOrders.filter(el => {
-        return el.order_status.toLowerCase() === 'in transit';
-      });
-    },
   },
-  watch: {
-    getOrderCount(count) {
-      this.pendingCount = count !== null ? count.pending : this.pendingCount;
-      this.confirmedCount =
-        count !== null ? count.confirmed : this.confirmedCount;
-      this.transitCount = count !== null ? count.transit : this.transitCount;
-      return (this.count = count);
-    },
+  async mounted() {
+    this.ordersMeta = await this.requestOrdersMetaData();
   },
+
   methods: {
-    ...mapMutations({
+    ...mapActions('orders', ['requestOrdersMetaData']),
+    ...mapMutations('orders', {
       updateOrderStatuses: 'setOrderStatuses',
       setDisabledStatus: 'setDisabledStatus',
     }),
@@ -167,7 +148,7 @@ export default {
   color: #fff;
   font-size: 10px;
   border-radius: 100%;
-  height: 16px;
-  width: 16px;
+  padding: 2px 4px;
+  font-weight: 600;
 }
 </style>

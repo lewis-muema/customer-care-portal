@@ -1,6 +1,4 @@
 export default {
-  // ...apix.getGetters(),
-
   breadcrumbs(state) {
     return state.breadcrumbs;
   },
@@ -34,11 +32,23 @@ export default {
   getSession(state) {
     return state.userData;
   },
-  getOrderStatuses(state) {
-    return state.selectedStatus;
-  },
   getSearchState(state) {
     return state.searchState;
+  },
+  getCopTypes(state) {
+    return state.copTypes;
+  },
+  getAdmins(state) {
+    return state.admins;
+  },
+  getSurveys(state) {
+    return state.surveys;
+  },
+  getBusinessUnits(state) {
+    return state.businessUnits;
+  },
+  getCities(state) {
+    return state.cities;
   },
   getSelectedBusinessUnits(state) {
     return state.selectedBusinessUnits;
@@ -124,10 +134,6 @@ export default {
   getActionClass(state) {
     return state.actionClass;
   },
-
-  getloginErrors(state) {
-    return state.loginErrors;
-  },
   getOrderAmount(state) {
     return state.orderAmount;
   },
@@ -164,8 +170,14 @@ export default {
   getNPSCommentStatus(state) {
     return state.commentStatus;
   },
+  getCountries(state) {
+    return state.countries;
+  },
   getActiveCountries(state) {
     return state.activeCountries;
+  },
+  getVendorTypes(state) {
+    return state.vendorTypes;
   },
   getActiveAccountTypes(state) {
     return state.activeAccountTypes;
@@ -247,6 +259,15 @@ export default {
   },
   getDeactivatedCancellationReasons(state) {
     return state.deactivatedCancellationReasons;
+  },
+  getCancellationActions(state) {
+    return state.cancellationActions;
+  },
+  getActiveCancellationConsequences(state) {
+    return state.activeCancellationConsequences;
+  },
+  getDeactivatedCancellationConsequences(state) {
+    return state.deactivatedCancellationConsequences;
   },
   getEnvironmentVariables(state) {
     const val = !state.environmentVariables

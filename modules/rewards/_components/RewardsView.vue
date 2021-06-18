@@ -19,6 +19,9 @@
       <el-tab-pane label="Cancellation Reasons" name="cancellation">
         <cancellation-reason-component :key="componentKey" />
       </el-tab-pane>
+      <el-tab-pane label="Cancellation Consequences" name="consequences">
+        <cancellation-consequences-component :key="componentKey" />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -30,6 +33,7 @@ import Penalties from './PenaltiesComponent.vue';
 import Warning from './WarningComponent.vue';
 import Reallocation from './ReallocationComponent.vue';
 import CancellationReasonComponent from './CancellationReasonComponent';
+import CancellationConsequencesComponent from './CancellationConsequencesComponent';
 
 export default {
   name: 'RewardsView',
@@ -39,6 +43,7 @@ export default {
     Warning,
     Reallocation,
     CancellationReasonComponent,
+    CancellationConsequencesComponent,
   },
   data() {
     return {
