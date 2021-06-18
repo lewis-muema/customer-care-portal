@@ -416,7 +416,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 import axios from 'axios';
 import Loading from './LoadingComponent.vue';
@@ -465,10 +465,9 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
-    ...mapGetters(['getEnvironmentVariables']),
 
     herokuKey() {
-      return this.getEnvironmentVariables.HEROKU_GOOGLE_API_KEY;
+      return this.$env.HEROKU_GOOGLE_API_KEY;
     },
     allow_add_collection() {
       return this.markers.length > 1;

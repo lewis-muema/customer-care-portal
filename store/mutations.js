@@ -299,8 +299,4 @@ export default {
   setDeactivatedCancellationConsequences(state, val) {
     state.deactivatedCancellationConsequences = val;
   },
-  setEnvironmentVariables(state, val) {
-    const data = !val ? localStorage.getItem('environmentVariables') : val;
-    state.environmentVariables = data;
-  },
 };
