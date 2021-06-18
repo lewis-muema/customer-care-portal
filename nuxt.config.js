@@ -178,13 +178,10 @@ module.exports = {
       {
         keys: [
           'GOOGLE_API_KEY',
-          'HEROKU_GOOGLE_API_KEY',
           'GOOGLE_CLIENT_ID',
           'BACKEND_KEY',
-          'SOLR_JWT',
           'APP_ENV',
           'BROKER_USER',
-          'BROKER_PASS',
         ],
       },
     ],

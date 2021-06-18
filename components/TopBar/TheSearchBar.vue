@@ -66,10 +66,11 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(['getSession']),
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
     country() {
       return this.getSession;
     },
+
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query.trim();
@@ -78,7 +79,7 @@ export default {
       return this.config.SOLR_BASE;
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;

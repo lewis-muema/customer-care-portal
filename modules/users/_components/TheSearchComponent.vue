@@ -81,7 +81,8 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(['getSession']),
+
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
     country() {
       return this.getSession;
     },
@@ -102,7 +103,7 @@ export default {
       return placeholderArray[currentUser];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       let searchString = '';
