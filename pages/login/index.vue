@@ -41,9 +41,8 @@ export default {
     }),
     ...mapActions({
       clearCache: 'clearCache',
-      fetchEnvironmentVariables: 'fetch_environment_variables',
     }),
-    async signIn(data) {
+    signIn(data) {
       const token = data.token;
       const accessToken = token.access_token;
       const refreshToken = token.refresh_token;
@@ -54,8 +53,6 @@ export default {
       localStorage.setItem('refreshToken', refreshToken);
       Cookie.set('jwt', accessToken);
       Cookie.set('refreshToken', refreshToken);
-
-      await this.fetchKeys();
 
       this.$router.push('/orders');
     },
@@ -69,9 +66,6 @@ export default {
       setTimeout(() => {
         this.clearToken();
       }, duration);
-    },
-    async fetchKeys() {
-      const environmentVariables = await this.fetchEnvironmentVariables();
     },
   },
 };
