@@ -1788,4 +1788,29 @@ export default {
       return error;
     }
   },
+  async fetch_environment_variables({ state, dispatch }) {
+    const config = state.config;
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = {
+      headers: {
+        Accept: 'application/json',
+        Authorization: jwtToken,
+      },
+    };
+
+    const url = `${config.STAFF_API}variables`;
+    try {
+      const response = await axiosConfig.get(url, headers);
+      const res = response.data;
+      const status = res.status;
+      const data = res.data;
+      if (status) {
+        localStorage.setItem('environmentVariables', JSON.stringify(data));
+        commit('setEnvironmentVariables', data);
+      }
+      return response.data;
+    } catch (error) {
+      return error;
+    }
+  },
 };

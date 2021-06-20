@@ -49,6 +49,9 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      fetchEnvironmentVariables: 'fetch_environment_variables',
+    }),
     /**
      * This the callback called after the websocket connection to rabbitMQ has been established
      * which then subscribes to the exchange for order pushes.
@@ -224,7 +227,8 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
+    !this.getEnvironmentVariables ? await this.fetchEnvironmentVariables() : {};
     this.client = Stomp.client(this.url);
 
     this.client.connect(
