@@ -98,6 +98,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getEnvironmentVariables']),
     placeholder() {
       return this.category;
     },
@@ -119,7 +120,7 @@ export default {
       return this.config[userSearch];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       const searchString = `${this.solarBase}select?q=(phone:*${this.query_string}*+OR+phone:*${this.query_string_phone}*)&wt=json&indent=true&row=10&sort=id%20desc&jwt=${this.solarToken}`;
