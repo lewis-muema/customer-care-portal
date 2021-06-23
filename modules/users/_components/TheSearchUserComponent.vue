@@ -38,6 +38,14 @@
           </span>
         </li>
       </ul>
+      <ul
+        v-show="!hasItems && query !== ''"
+        :class="[!isActive ? 'inactiveClass' : '']"
+      >
+        <li class="my-3">
+          No results Found
+        </li>
+      </ul>
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
     </div>
   </span>
