@@ -45,6 +45,14 @@
           </span>
         </li>
       </ul>
+      <ul
+        v-show="!hasItems && query !== ''"
+        :class="[!isActive ? 'inactiveClass' : '']"
+      >
+        <li class="my-3">
+          No results Found
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -104,8 +112,11 @@ export default {
       orderNo = orderNo.trim();
       try {
         const data = await this.request_single_order(orderNo);
-        this.updateSearchedOrder(data);
-        return (this.order = data);
+        const filtered = this.userCountries.includes(data.country_code)
+          ? data
+          : '';
+        this.updateSearchedOrder(filtered);
+        return (this.order = filtered);
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',

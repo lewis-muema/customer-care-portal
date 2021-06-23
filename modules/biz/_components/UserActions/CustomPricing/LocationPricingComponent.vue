@@ -758,13 +758,18 @@ export default {
     },
     // eslint-disable-next-line func-names
     search: _.debounce(function(val) {
+      const session = this.getSessionData;
+      const countryCodesUppercase = JSON.parse(
+        session.payload.data.country_codes,
+      );
+      const countryCodes = [];
+      countryCodesUppercase.forEach(elem => {
+        countryCodes.push(elem.toLowerCase());
+      });
       this.service.getPlacePredictions(
         {
           input: val,
           types: [],
-          componentRestrictions: {
-            country: ['ke', 'ug', 'tz'],
-          },
         },
         this.displaySuggestions,
       );

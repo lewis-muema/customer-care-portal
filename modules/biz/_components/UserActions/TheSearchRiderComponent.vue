@@ -33,6 +33,11 @@
           </span>
         </li>
       </ul>
+      <ul v-show="!hasItems && query !== ''">
+        <span class="no-results ml-3">
+          No results Found
+        </span>
+      </ul>
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
     </div>
   </span>
@@ -74,10 +79,12 @@ export default {
       solr: {
         riders: 'RIDER_SEARCH',
       },
+      userCountries: '',
     };
   },
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getSession']),
     placeholder() {
       return this.category;
     },
@@ -101,6 +108,10 @@ export default {
       return searchString;
     },
   },
+  mounted() {
+    const session = this.getSession;
+    this.userCountries = JSON.parse(session.payload.data.country_codes);
+  },
   methods: {
     trigger() {
       this.rider = null;
@@ -111,8 +122,10 @@ export default {
     prepareResponseData(data) {
       const results = data.response.docs;
       results.splice(0, 0, this.arr);
-
-      return results;
+      const filtered = results.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
     onHit(item) {
       this.hide = 'hide';
@@ -224,5 +237,11 @@ span {
 }
 .tt-suggestion {
   border-bottom: 0;
+}
+.no-results {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #747d84;
+  font-size: 18px;
 }
 </style>
