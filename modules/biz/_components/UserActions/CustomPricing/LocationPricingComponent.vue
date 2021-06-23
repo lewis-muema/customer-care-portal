@@ -771,9 +771,6 @@ export default {
         {
           input: val,
           types: [],
-          componentRestrictions: {
-            country: countryCodes,
-          },
         },
         this.displaySuggestions,
       );

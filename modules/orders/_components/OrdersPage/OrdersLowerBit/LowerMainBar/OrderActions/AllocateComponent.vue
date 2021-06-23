@@ -37,7 +37,7 @@
         </div>
       </div>
       <br />
-      <button class="btn btn-primary allocate">
+      <button class="btn btn-primary allocate" :disabled="!rider">
         Allocate Order to Rider
       </button>
     </form>
@@ -203,6 +203,11 @@ export default {
 }
 .allocate {
   margin-left: 0%;
+}
+.allocate:disabled .allocate[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
 }
 .form-group.col-md-12 {
   width: 91%;
