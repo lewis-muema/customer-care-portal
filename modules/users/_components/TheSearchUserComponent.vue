@@ -38,6 +38,15 @@
           </span>
         </li>
       </ul>
+      <ul
+        v-show="!hasItems && query !== ''"
+        :class="[!isActive ? 'inactiveClass' : '']"
+      >
+        <li class="my-3">
+          No results Found
+        </li>
+      </ul>
+
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
     </div>
   </span>
@@ -78,10 +87,13 @@ export default {
 
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
+    country() {
+      return this.getSession;
+    },
     placeholder() {
       return 'Select account to transfer';
     },
-
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
@@ -108,6 +120,10 @@ export default {
       }
       return searchString;
     },
+    userCountries() {
+      const staffCountry = JSON.parse(this.country.payload.data.country_codes);
+      return staffCountry;
+    },
   },
   watch: {
     user(val) {
@@ -130,8 +146,13 @@ export default {
       this.searchInput += 1;
     },
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
+
     onHit(item) {
       const display =
         this.userType === 'business'
