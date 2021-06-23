@@ -33,6 +33,11 @@
           </span>
         </li>
       </ul>
+      <ul v-show="!hasItems && query !== ''">
+        <span class="no-results ml-3">
+          No results Found
+        </span>
+      </ul>
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
     </div>
   </span>
@@ -232,5 +237,11 @@ span {
 }
 .tt-suggestion {
   border-bottom: 0;
+}
+.no-results {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #747d84;
+  font-size: 18px;
 }
 </style>
