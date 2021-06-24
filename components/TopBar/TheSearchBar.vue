@@ -70,10 +70,12 @@ export default {
       query: '',
       order: null,
       isActive: true,
+      errors: [],
     };
   },
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getSession']),
 
     query_string() {
       localStorage.setItem('query', this.query);
@@ -84,6 +86,12 @@ export default {
     },
     solarToken() {
       return this.$env.SOLR_JWT;
+    },
+    userCountries() {
+      const staffCountry = JSON.parse(
+        this.getSession.payload.data.country_codes.toLowerCase(),
+      );
+      return staffCountry;
     },
     src() {
       return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
@@ -112,11 +120,8 @@ export default {
       orderNo = orderNo.trim();
       try {
         const data = await this.request_single_order(orderNo);
-        const filtered = this.userCountries.includes(data.country_code)
-          ? data
-          : '';
-        this.updateSearchedOrder(filtered);
-        return (this.order = filtered);
+        this.updateSearchedOrder(data);
+        return (this.order = data);
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',
