@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(['getSession']),
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query.trim();
