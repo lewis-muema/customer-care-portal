@@ -76,7 +76,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapGetters(['getSession']),
-
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query.trim();
@@ -120,8 +119,11 @@ export default {
       orderNo = orderNo.trim();
       try {
         const data = await this.request_single_order(orderNo);
-        this.updateSearchedOrder(data);
-        return (this.order = data);
+        const filtered = this.userCountries.includes(data.country_code)
+          ? data
+          : {};
+        this.updateSearchedOrder(filtered);
+        return (this.order = filtered);
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',
