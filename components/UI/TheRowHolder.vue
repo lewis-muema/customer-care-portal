@@ -190,21 +190,42 @@ export default {
   data() {
     return {
       opened: [],
-      moreData: this.order.order_details,
-      clientDetails: this.order.client_details,
-      riderDetails: this.order.rider_details,
-      paymentDetails: this.order.payment_details,
+      moreData:
+        Object.keys(this.order).length !== 0 ? this.order.order_details : {},
+      clientDetails:
+        Object.keys(this.order).length !== 0 ? this.order.client_details : {},
+      riderDetails:
+        Object.keys(this.order).length !== 0 ? this.order.rider_details : {},
+      paymentDetails:
+        Object.keys(this.order).length !== 0 ? this.order.payment_details : {},
       images: this.order.delivery_details,
       orderDetails: {
-        countryCode: this.order.country_code,
-        orderStatus: this.order.order_details.order_status,
-        vendorID: this.order.rider_details.vendor_type_id,
+        countryCode:
+          Object.keys(this.order).length !== 0 ? this.order.country_code : '',
+        orderStatus:
+          Object.keys(this.order).length !== 0
+            ? this.order.order_details.order_status
+            : '',
+        vendorID:
+          Object.keys(this.order).length !== 0
+            ? this.order.rider_details.vendor_type_id
+            : '',
       },
       mainDetails: {
-        country_code: this.order.country_code,
-        vendor_type_id: this.order.rider_details.vendor_type_id,
-        order_status: this.order.order_details.order_status,
-        order_no: this.order.order_details.order_no,
+        country_code:
+          Object.keys(this.order).length !== 0 ? this.order.country_code : '',
+        vendor_type_id:
+          Object.keys(this.order).length !== 0
+            ? this.order.rider_details.vendor_type_id
+            : '',
+        order_status:
+          Object.keys(this.order).length !== 0
+            ? this.order.order_details.order_status
+            : '',
+        order_no:
+          Object.keys(this.order).length !== 0
+            ? this.order.order_details.order_no
+            : '',
       },
     };
   },
