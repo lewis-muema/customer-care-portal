@@ -92,6 +92,7 @@ export default {
   watch: {
     getSearchedOrder(order) {
       this.forceRerender();
+      return (this.order = order);
     },
   },
   async mounted() {
