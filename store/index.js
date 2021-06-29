@@ -181,6 +181,7 @@ export default {
       activeCancellationConsequences: [],
       deactivatedCancellationConsequences: [],
       cancellationActions: [],
+      environmentVariables: null,
     };
   },
 

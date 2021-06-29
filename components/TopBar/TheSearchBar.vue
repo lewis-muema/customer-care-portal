@@ -75,7 +75,8 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(['getSession']),
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
+
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query.trim();
@@ -84,7 +85,7 @@ export default {
       return this.config.SOLR_BASE;
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     userCountries() {
       const staffCountry = JSON.parse(
