@@ -41,6 +41,7 @@
                 @emails="setTargetGroup"
                 @deleteEmail="deleteEmail"
                 :target-groups="targetGroups"
+                @addedEmail="setAddedEmail"
               />
             </div>
             <div class="row pull-right">
@@ -86,6 +87,7 @@ export default {
       isValid: true,
       targetedGroup: [],
       loading: false,
+      addedEmails: [],
     };
   },
   validations: {
@@ -116,7 +118,9 @@ export default {
       updateSuccess: 'setUserActionSuccess',
     }),
     ...mapActions(['request_single_coupons', 'perform_user_action']),
-
+    setAddedEmail(val) {
+      this.addedEmails.push(val);
+    },
     setTargetGroup(emails) {
       this.targetedGroup = emails.data;
       this.isValid = emails.status;
@@ -134,7 +138,7 @@ export default {
           action_id: 1,
           action_data: {
             coupon_name: this.coupon[0].couponName,
-            targeted_group: this.targetedGroup,
+            targeted_group: this.addedEmails,
           },
           request_id: '1622',
           action_user: this.actionUser,

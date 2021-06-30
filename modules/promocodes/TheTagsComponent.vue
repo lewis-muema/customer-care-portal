@@ -11,6 +11,7 @@
         :placeholder="placeholderText"
         @tags-changed="newTags => (tags = newTags)"
         @before-deleting-tag="updateDeleted"
+        @before-adding-tag="updateAddedTag"
       />
       <div class="text-right">
         <i class="fa fa-spinner fa-spin loader spinner" v-if="posted"></i>
@@ -94,6 +95,15 @@ export default {
         data: val.tag.text,
       });
       val.deleteTag();
+    },
+    updateAddedTag(obj) {
+      if (!this.isEmailValid(obj.tag.text)) {
+        return (this.valid = false);
+      }
+      this.$emit('addedEmail', {
+        email: obj.tag.text,
+      });
+      obj.addTag();
     },
   },
 };
