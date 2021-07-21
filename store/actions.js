@@ -80,7 +80,7 @@ export default {
     };
     commit('setbreadcrumbs', breadcrumbsObject.peer);
   },
-  // eslint-disable-next-line require-await
+  // eslint-disable-next-line require-awaiting
   async request_helpscoute_post({ state, commit, dispatch }, payload) {
     const customConfig = state.config;
     const url = customConfig[payload.url];
