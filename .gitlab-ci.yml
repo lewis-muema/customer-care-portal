@@ -29,6 +29,6 @@ unitTest:
   # What scripts do we want to run?
   script:
     # install mocha-webpack
-#    - npm i mocha-webpack
+    #    - npm i mocha-webpack
     # Run tests
     - npm run test
