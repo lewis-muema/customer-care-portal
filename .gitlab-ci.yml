@@ -1,4 +1,4 @@
-image: node:alpine
+image: node
 
 stages:
   # also create a tests stage
