@@ -13,6 +13,9 @@ cache:
 unitTest:
   # run tests and determine coverage
   stage: test
+  tags:
+    - docker
+
   # What scripts do we want to run?
   script:
     - npm install
