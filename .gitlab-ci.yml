@@ -1,8 +1,8 @@
 image: node
 
 stages:
-  - deps
   - test
+  - deps
 
 # Cache the node modules installed.
 cache:
@@ -11,11 +11,8 @@ cache:
 
 # Lets name our Job unitTest, because that's what it's doing.
 unitTest:
-  # run tests and determine coverage 
+  # run tests and determine coverage
   stage: test
-  tags:
-    - docker
-
   # What scripts do we want to run?
   script:
     - npm install
