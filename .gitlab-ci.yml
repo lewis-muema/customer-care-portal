@@ -16,8 +16,9 @@ unitTest:
   tags:
     - docker
 
-  # What scripts do we want to run?
+  # Install packages for scripts we want to run
   script:
     - npm install
+    - npm install @babel/core --save
     - npm cache clean --force
     - npm run test
