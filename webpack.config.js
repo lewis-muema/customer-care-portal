@@ -9,15 +9,23 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
   module: {
     rules: [
-      // ... other rules
       {
         test: /\.vue$/,
         loader: 'vue-loader',
       },
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            compact: true,
+            exclude: file =>
+              /node_modules/.test(file) && !/\.vue\.js/.test(file),
+          },
+        },
+      },
     ],
   },
-  plugins: [
-    // make sure to include the plugin!
-    new VueLoaderPlugin(),
-  ],
+  plugins: [new VueLoaderPlugin()],
 };
