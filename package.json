@@ -108,8 +108,6 @@
     "expect": "^24.8.0",
     "jsdom": "^15.1.1",
     "jsdom-global": "^3.0.2",
-    "mocha": "^6.1.4",
-    "mocha-webpack": "^2.0.0-beta.0",
     "nodemon": "^1.18.9",
     "nyc": "^14.1.1",
     "prettier": "^1.18.2",
