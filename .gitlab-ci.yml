@@ -11,14 +11,13 @@ cache:
 
 # Lets name our Job unitTest, because that's what it's doing.
 unitTest:
-  # run tests and determine coverage
+  # run tests and determine code test coverage
   stage: test
   tags:
-    - docker
+    - test
 
-  # Install packages for scripts we want to run
+  # Install packages for test scripts we want to run
   script:
     - npm cache clean --force
     - npm install
-    - npm install @babel/core
     - npm run test
