@@ -18,6 +18,6 @@ unitTest:
 
   # Install packages for test scripts we want to run
   script:
+    - npm install
     - npm cache clean --force
-    - npm install --force
     - npm run test
