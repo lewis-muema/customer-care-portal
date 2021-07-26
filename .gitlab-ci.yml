@@ -2,7 +2,6 @@ image: node:14.16.1
 
 stages:
   - test
-  - deps
 
 # Cache the node modules installed.
 cache:
