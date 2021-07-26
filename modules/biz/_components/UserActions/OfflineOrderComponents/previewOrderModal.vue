@@ -17,7 +17,16 @@
       <span class="title">Review and Submit</span>
     </div>
     <hr />
-
+    <el-alert
+      title="success alert"
+      :type="actionClass"
+      effect="dark"
+      class="mt-5"
+      v-if="message"
+      @close="this.message = null"
+    >
+      {{ message }}
+    </el-alert>
     <div>
       <span class="title"> Billing Period </span>
       <div class="row mt-3">
@@ -168,7 +177,7 @@
       </div>
     </div>
     <template slot="footer" class="dialog-footer">
-      <button class="btn primary-btn">
+      <button class="btn primary-btn" @click="offlineOrderSubmit">
         Submit
       </button>
     </template>
@@ -176,21 +185,57 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import offlineOrderMxn from '@/mixins/offline_order_mixin';
 
 export default {
   name: 'previwOrderModal',
   mixins: [offlineOrderMxn],
-  props: ['checked', 'elements', 'propObject', 'showDialog', 'payload'],
+  props: ['checked', 'elements', 'propObject', 'showDialog', 'payloadDraft'],
   data() {
-    return {};
+    return {
+      actionClass: 'success',
+      message: '',
+    };
   },
   methods: {
+    ...mapActions({
+      perform_user_action: 'perform_user_action',
+    }),
     getVendorType(id) {
       const filtered = this.propObject.vendorTypes.filter(
         el => el.id === parseInt(id),
       );
       return filtered[0].name;
+    },
+    cleanPartnerData(data) {
+      data.forEach(element => {
+        delete element.vendor_type;
+        delete element.riderDisplay;
+      });
+      return data;
+    },
+    async offlineOrderSubmit() {
+      const payload = this.payloadDraft;
+      const partners = this.cleanPartnerData(this.elements);
+      if (!this.checked) {
+        payload.params.action_data.partners = [];
+        payload.params.action_data.charge_commission = false;
+        payload.params.action_data.commission_rate = '0';
+      } else {
+        payload.params.action_data.partners = partners;
+        payload.params.action_data.charge_commission = this.propObject.charge_commission;
+        payload.params.action_data.commission_rate = this.propObject.commission_rate;
+      }
+
+      if (this.propObject.isChargeEntity) {
+        payload.params.action_data.entity_id = 1;
+      }
+      const data = await this.perform_user_action(payload);
+      this.actionClass = data.status ? 'success' : 'error';
+      this.message = Object.prototype.hasOwnProperty.call(data, 'message')
+        ? data.message
+        : data.reason;
     },
   },
 };
