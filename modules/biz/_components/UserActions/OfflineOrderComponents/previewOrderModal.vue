@@ -18,14 +18,13 @@
     </div>
     <hr />
     <el-alert
-      title="success alert"
+      :title="message"
       :type="actionClass"
       effect="dark"
       class="mt-5"
       v-if="message"
       @close="this.message = null"
     >
-      {{ message }}
     </el-alert>
     <div>
       <span class="title"> Billing Period </span>
