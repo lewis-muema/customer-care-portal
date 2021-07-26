@@ -20,3 +20,4 @@ unitTest:
     - npm cache clean --force
     - npm install
 #    - npm run test
+    - npm run dev
