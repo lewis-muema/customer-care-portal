@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-const LiveOpsMxn = {
+const offlineOrderMxn = {
   methods: {
     formatDate(date, format) {
       return moment(date).format(format);
@@ -41,4 +41,4 @@ const LiveOpsMxn = {
     },
   },
 };
-export default LiveOpsMxn;
+export default offlineOrderMxn;
