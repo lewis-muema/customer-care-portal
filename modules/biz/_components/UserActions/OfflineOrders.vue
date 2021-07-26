@@ -310,183 +310,13 @@
         </div>
       </div>
     </div>
-
-    <!-- <el-dialog :visible.sync="centerDialogVisible" width="976px" :modal="false">
-      <template slot="title">
-        <span class="midnightBlue20Color" @click="centerDialogVisible = false">
-          <i class="fa fa-arrow-left mr-2" aria-hidden="true"></i>
-          Go Back and Edit
-        </span>
-      </template>
-      <div class="mt-n3">
-        <span class="title">Review and Submit</span>
-      </div>
-      <hr />
-
-      <div>
-        <span class="title"> Billing Period </span>
-        <div class="row mt-3">
-          <div class="form-group col-md-4 user-input">
-            <label class="small-font"> From </label>
-            <div>
-              <span> {{ formatDateMonthyear(start_date) }} </span>
-            </div>
-          </div>
-
-          <div class="form-group user-input">
-            <label class="small-font"> To</label>
-            <div>
-              <span> {{ formatDateMonthyear(end_date) }} </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <hr />
-
-      <div>
-        <span class="title"> Partner Details</span>
-        <div class="mt-3">
-          <span class="muted-text" v-if="!checked">
-            No Partners added
-          </span>
-          <div
-            class=" row"
-            v-for="(element, key) in elements"
-            :key="key"
-            v-else
-          >
-            <div class="col-3">
-              <span class="small-font" v-if="key === 0"> Partner Account</span>
-              <div class="mt-1">
-                <span class="">
-                  {{ element.riderDisplay }}
-                </span>
-              </div>
-            </div>
-            <div class="col">
-              <span class="small-font" v-if="key === 0">Vendor Type</span>
-              <div class="mt-1">
-                <span class="">
-                  {{
-                    !element.vendor_type
-                      ? '0 Tonnes'
-                      : getVendorType(element.vendor_type)
-                  }}
-                </span>
-              </div>
-            </div>
-            <div class="col text-right">
-              <span class="small-font" v-if="key === 0">Partner Earnings</span>
-              <div class="mt-1">
-                <span> {{ currency }}</span>
-                <span> {{ element.amount }}</span>
-              </div>
-            </div>
-            <div class="col text-right">
-              <span class="small-font" v-if="key === 0"
-                >No. of Days worked</span
-              >
-              <div class="mt-1">
-                <span>{{ element.days }}</span>
-              </div>
-            </div>
-
-            <div class="col text-right">
-              <span class="small-font" v-if="key === 0">No. of Orders</span>
-              <div class="mt-1">
-                <span>{{ element.orders }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <hr />
-      <div>
-        <span class="title">Customer Billing Details</span>
-        <div class="mt-3 row">
-          <div class="mb-3 col-4">
-            <label for="invoice" class="form-label small-font">
-              Invoice Notes
-            </label>
-            <div>
-              <span class="muted-text" v-if="!notes"> Empty </span>
-              <span v-html="notes" v-else></span>
-            </div>
-          </div>
-
-          <div class="col-3 text-right">
-            <span class="small-font">Amount Billed (before VAT)</span>
-            <div class="mt-2">
-              <span> {{ currency }}</span>
-              <span> {{ billingAmount }}</span>
-            </div>
-          </div>
-
-          <div class="col pl-0">
-            <div class="d-flex ">
-              <div class="cost-preview">
-                <div class="mt-3 ml-2">
-                  <span class="mt-3 cost-text">
-                    Total Partner Cost
-                  </span>
-                </div>
-                <div class="total-cost mt-2">
-                  <span>
-                    {{ currency }} {{ CommaSeperator(calculatedAmount) }}
-                  </span>
-                </div>
-              </div>
-              <div class="cost-preview ml-1">
-                <div class="mt-3 ml-2">
-                  <span class="mt-3 cost-text">
-                    Sendy Take Home
-                  </span>
-                </div>
-                <div class="total-cost mt-2">
-                  <span>
-                    {{ currency }} {{ CommaSeperator(sendyTakeHome) }}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="cost-preview mt-2">
-              <div class="ml-2 pt-3">
-                <div>
-                  <span class="cost-text">
-                    {{ determineVAT() }}
-                  </span>
-                  <span class="float-right total-cost">
-                    {{ currency }} {{ CommaSeperator(vatAmount) }}
-                  </span>
-                </div>
-
-                <div class="mt-3">
-                  <span class="cost-text">
-                    Total Charge to Customer
-                  </span>
-                  <span class="float-right total-cost">
-                    {{ currency }} {{ CommaSeperator(totalAmount) }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <template slot="footer" class="dialog-footer">
-        <button class="btn primary-btn">
-          Submit
-        </button>
-      </template>
-    </el-dialog> -->
     <PreviewOrderModal
       :checked="checked"
       :elements="elements"
       :prop-object="propObject"
       :show-dialog="showDialog"
       @close="showDialog = false"
+      :payload-draft="payload"
     />
   </div>
 </template>
@@ -498,6 +328,7 @@ import { mapActions, mapMutations } from 'vuex';
 import Calendar from 'v-calendar/lib/components/calendar.umd';
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import VueNumber from 'vue-number-animation';
+import moment from 'moment';
 import offlineOrderMxn from '@/mixins/offline_order_mixin';
 
 Vue.component('calendar', Calendar);
@@ -531,6 +362,8 @@ export default {
       end_date: '',
       amount: 0,
       checked: false,
+      charge_commission: false,
+      charge_vat: true,
       centerDialogVisible: false,
       elements: [
         {
@@ -566,6 +399,7 @@ export default {
       ],
       businessUnit: '',
       isChargeEntity: false,
+      payload: {},
     };
   },
   validations: {
@@ -594,6 +428,9 @@ export default {
         totalAmount: this.totalAmount,
         vendorTypes: this.vendorTypes,
         determineVAT: this.determineVAT(),
+        isChargeEntity: this.isChargeEntity,
+        charge_commission: false,
+        commission_rate: this.commission_rate,
       };
     },
   },
@@ -636,7 +473,6 @@ export default {
   mounted() {
     this.fetchTaxRates();
     this.fetchVendorTypes();
-    console.log(this.user);
   },
   methods: {
     ...mapMutations({
@@ -703,7 +539,6 @@ export default {
     addElement() {
       this.elements.push({
         riderDisplay: '',
-        value: '',
         amount: '',
         days: '0',
         tonnage: '0',
@@ -718,7 +553,6 @@ export default {
       this.checked = event.target.value;
     },
     searchedRider(riderData) {
-      console.log(riderData);
       const index = riderData.riderKey;
       const riderID = riderData.item.rider_id;
       this.elements[index].vendor_type = riderData.item.vendor_type;
@@ -738,7 +572,6 @@ export default {
       };
       try {
         const data = await this.request_vendor_types(payload);
-        console.log(data);
         this.vendorTypes = data.vendor_types;
         return data.vendor_types;
       } catch (error) {
@@ -779,7 +612,6 @@ export default {
     },
     dispatchbillingAmount() {
       this.handleTotalAmount();
-      console.log('key up');
     },
     UpdateMessaging(status, code, msg) {
       this.submit_status = status;
@@ -787,14 +619,10 @@ export default {
       this.error_msg = msg;
     },
     offline_orders() {
-      console.log('clicked');
-      const notification = [];
-      const payload = {};
-      const actionClass = '';
+      let payload = {};
       this.submitted = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log('invalid', this.$v.$invalid);
         return;
       }
 
@@ -842,6 +670,33 @@ export default {
             'Billing amount should be greater than the Total Partner Amount Earned',
           );
         } else {
+          payload = {
+            app: 'CUSTOMERS_APP',
+            endpoint: 'sendy/cc_actions',
+            apiKey: true,
+            params: {
+              channel: 'customer_support_peer_biz',
+              data_set: 'cc_actions',
+              action_id: 26,
+              action_data: {
+                from: moment(this.start_date).format('YYYY-MM-DD'),
+                to: moment(this.end_date).format('YYYY-MM-DD'),
+                cop_id: this.user.user_details.cop_id,
+                notes: this.notes,
+                bill_amount: this.isChargeEntity
+                  ? this.calculatedAmount
+                  : this.billingAmount,
+                charge_vat: this.charge_vat,
+                currency: this.currency,
+                business_unit: parseInt(this.businessUnit, 10),
+                pay_from_sendy_entity: this.isChargeEntity,
+                vat_exempt: this.vat_exempt ? 1 : 0,
+              },
+              request_id: '1611',
+              action_user: this.actionUser,
+            },
+          };
+          this.payload = payload;
           this.showDialog = true;
         }
       }
