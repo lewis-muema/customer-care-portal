@@ -339,9 +339,9 @@ export default {
   name: 'TheOfflineOrders',
   components: {
     OfflineSearchSearchRider: () =>
-      import('./offlineOrderComponents/OfflineOrderSearchRider'),
+      import('./OfflineOrderComponents/OfflineOrderSearchRider'),
     PreviewOrderModal: () =>
-      import('./offlineOrderComponents/previewOrderModal'),
+      import('./OfflineOrderComponents/previewOrderModal'),
   },
   mixins: [offlineOrderMxn],
   props: {
