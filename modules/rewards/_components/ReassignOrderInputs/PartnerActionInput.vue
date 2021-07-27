@@ -555,7 +555,7 @@ export default {
     },
     checkInvalidActionInputs() {
       const invalidActionInputs = Object.values(this.invalidInputs);
-      return invalidActionInputs.some(inputInvalid => inputInvalid === true);
+      return invalidActionInputs.includes(true);
     },
     emitAllInputValues() {
       // DEEP CLONE ARRAY

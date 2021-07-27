@@ -1,4 +1,4 @@
-const packageJson = require('../package');
+const packageJson = require('../package.json');
 
 const config = {
   development: {
