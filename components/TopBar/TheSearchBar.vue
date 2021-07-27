@@ -101,6 +101,7 @@ export default {
       await this.singleOrderRequest(orderNo);
     },
     async singleOrderRequest(orderNo) {
+      if (!orderNo) return;
       orderNo = orderNo.trim();
       try {
         const data = await this.request_single_order(orderNo);
