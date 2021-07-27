@@ -7,7 +7,7 @@ import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import ElementUI from 'element-ui';
 import locale from 'element-ui/lib/locale/lang/en';
 import WarningComponent from '~/modules/rewards/_components/WarningComponent';
-import { buildVuexFromNuxt } from '../../nuxt-store.mock';
+import { buildVuexFromNuxt } from '../nuxt-store.mock';
 import * as main from '~/store';
 
 Vue.use(Vuex);
