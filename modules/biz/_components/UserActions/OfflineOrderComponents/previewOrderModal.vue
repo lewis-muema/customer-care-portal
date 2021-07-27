@@ -23,7 +23,7 @@
       effect="dark"
       class="mt-5"
       v-if="message"
-      @close="this.message = null"
+      @close="message = null"
     >
     </el-alert>
     <div>
@@ -235,6 +235,11 @@ export default {
       this.message = Object.prototype.hasOwnProperty.call(data, 'message')
         ? data.message
         : data.reason;
+      if (data.status) {
+        setTimeout(() => {
+          this.$emit('close', false);
+        }, 3000);
+      }
     },
   },
 };
