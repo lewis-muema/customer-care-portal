@@ -77,9 +77,6 @@ export default {
     solarToken() {
       return this.$env.SOLR_JWT;
     },
-    src() {
-      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
-    },
   },
   methods: {
     ...mapMutations({
@@ -156,7 +153,7 @@ export default {
   font-size: 14px;
 }
 .Typeahead__input:focus {
-  border-color: 2px solid #0097cf;
+  border: 2px solid #0097cf;
   outline: 0;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #0097cf;
 }
