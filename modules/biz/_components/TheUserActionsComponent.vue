@@ -322,7 +322,7 @@
             role="tabpanel"
             v-if="showTab === `offline_orders_${copID}`"
           >
-            <TheOfflineOrdersComponent
+            <OfflineOrders
               :user="user"
               :session="userData"
               :currency="currency"
@@ -399,8 +399,7 @@ export default {
       import('./UserActions/TheCustomInvoiceComponent'),
     TheReverseInvoiceComponent: () =>
       import('./UserActions/TheReverseInvoiceComponent'),
-    TheOfflineOrdersComponent: () =>
-      import('./UserActions/TheOfflineOrdersComponent'),
+    OfflineOrders: () => import('./UserActions/OfflineOrders'),
     TheMillersTonnageComponent: () =>
       import('./UserActions/TheMillersTonnageComponent'),
     TheFinancingComponent: () => import('./UserActions/AuxilliaryServices'),
