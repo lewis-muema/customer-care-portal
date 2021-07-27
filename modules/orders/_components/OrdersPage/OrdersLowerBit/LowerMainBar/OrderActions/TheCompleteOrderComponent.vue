@@ -244,10 +244,9 @@ export default {
             ctx.drawImage(img, 0, 0, width, height);
 
             const dataurl = canvas.toDataURL('image/png');
-            const bytes =
-              dataurl.split(',')[0].indexOf('base64') >= 0
-                ? atob(dataurl.split(',')[1])
-                : '';
+            const bytes = dataurl.split(',')[0].includes('base64')
+              ? atob(dataurl.split(',')[1])
+              : '';
 
             const mime = dataurl
               .split(',')[0]

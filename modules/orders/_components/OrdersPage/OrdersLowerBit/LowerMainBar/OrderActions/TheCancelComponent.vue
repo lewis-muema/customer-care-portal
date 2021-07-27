@@ -255,7 +255,7 @@ export default {
       const filteredCancellationReasons = [];
       this.cancellationReasons.forEach(reason => {
         const vendorIDs = JSON.parse(reason.vendor_type_ids);
-        const found = vendorIDs.indexOf(this.orderDetails.vendorID) !== -1;
+        const found = vendorIDs.includes(this.orderDetails.vendorID);
         if (found) {
           filteredCancellationReasons.push(reason);
         }
@@ -268,7 +268,7 @@ export default {
         const orderStatus = JSON.parse(reason.applicable_order_status);
         const orderStatusValue = this.mapOrderStatusToValue();
 
-        const found = orderStatus.indexOf(orderStatusValue) !== -1;
+        const found = orderStatus.includes(orderStatusValue);
         if (found) reasonsArray.push(reason);
       });
       this.loading_cancellation_reasons = false;
