@@ -147,9 +147,7 @@ export default {
 
         this.vendorsSelected.forEach(vendorId => {
           this.setCancellationReasons.map(reason => {
-            const found = JSON.parse(reason.vendor_type_ids).some(
-              id => id === vendorId,
-            );
+            const found = JSON.parse(reason.vendor_type_ids).includes(vendorId);
             if (found) filteredReasonsArray.push(reason);
           });
         });

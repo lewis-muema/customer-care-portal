@@ -425,11 +425,10 @@ export default {
       if (this.pickup_config_data === null) {
         return this.pickup_config_data;
       } else {
-        return this.pickup_config_data.filter(
-          pr =>
-            pr.collection_centers[0].address
-              .toLowerCase()
-              .indexOf(self.search_data.toLowerCase()) >= 0,
+        return this.pickup_config_data.filter(pr =>
+          pr.collection_centers[0].address
+            .toLowerCase()
+            .includes(self.search_data.toLowerCase()),
         );
       }
     },

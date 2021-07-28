@@ -104,8 +104,8 @@ export default {
       updateClass: 'setActionClass',
     }),
     ...mapActions({
-      perform_order_action: '$_orders/perform_order_action',
-      tracker_status: '$_orders/tracker_status',
+      perform_order_action: 'orders/perform_order_action',
+      tracker_status: 'orders/tracker_status',
       fetch_all_reallocation_reason: 'fetch_all_reallocation_reason',
     }),
     fetchReassignmentReasons() {

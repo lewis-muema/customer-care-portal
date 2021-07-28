@@ -1,22 +1,52 @@
-import axios from 'axios';
+import { axiosConfig } from '~/middleware/axios';
 
 export default {
+  async setOrders({ rootState, commit, dispatch }, payload) {
+    const config = rootState.config;
+    const { page, params } = payload;
+    const countryArray = [];
+    params.country_code.forEach(country => {
+      countryArray.push(`&country_code=${country}`);
+    });
+    const countryQuery = countryArray.join('');
+    const url = `${config.ADONIS_API}orders?page=${page}${countryQuery}`;
+
+    try {
+      const response = await axiosConfig.get(url);
+      commit('setOrders', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async requestOrdersMetaData({ rootState, dispatch }) {
+    const config = rootState.config;
+    const url = `${config.ADONIS_API}/orders/meta`;
+    try {
+      const response = await axiosConfig.get(url);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async request_single_order({ rootState }, orderNo) {
     const config = rootState.config;
     const url = `${config.ADONIS_API}orders/${orderNo}`;
     try {
-      const response = await axios.get(url);
+      const response = await axiosConfig.get(url);
       const data = await response;
-      const orderDetails = data.data;
-      return orderDetails;
+      return data.data;
     } catch (error) {
       return error;
     }
   },
   async request_quotes_list({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
@@ -27,16 +57,14 @@ export default {
   },
   async request_partner_last_position({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }
   },
   async request_order_eta({ dispatch }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      return await dispatch('requestAxiosPost', payload, { root: true });
     } catch (error) {
       return error;
     }

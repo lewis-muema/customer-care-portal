@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 const NPSMxn = {
   data() {
@@ -82,7 +82,7 @@ const NPSMxn = {
     this.requestUnits();
   },
   methods: {
-    ...mapActions(['requestBusinessUnits']),
+    ...mapActions(['setBusinessUnits']),
 
     formatDate(date, format) {
       return moment(date).format(format);
@@ -105,8 +105,7 @@ const NPSMxn = {
     },
     getDateFromNow(date) {
       const dt1 = this.convertToLocalTime(date, 'YYYY.MM.DD HH:mm:ss');
-      const formattedDate = moment(dt1).fromNow();
-      return formattedDate;
+      return moment(dt1).fromNow();
     },
     forceRerender() {
       this.surveyComponentKey += 1;
@@ -130,7 +129,7 @@ const NPSMxn = {
       const businessHolder = [];
 
       businessHolder.push(allCategory);
-      const arr = await this.requestBusinessUnits();
+      const arr = await this.setBusinessUnits();
       for (let i = 0; i < arr.length; i += 1) {
         const data = {
           code: arr[i].abbr,

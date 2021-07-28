@@ -1,5 +1,4 @@
 export default function(context) {
-  //   console.log('test middleware', route.name);
   const store = context.store;
   const breadcrumbsObject = {
     peer: {
@@ -20,14 +19,6 @@ export default function(context) {
   };
 
   const routeName = context.route.name;
-  // let r = null;
-  // if (context.route.name === 'peer') {
-  //   r = 'peer';
-  // }
   const selectedBreadcrumb = breadcrumbsObject.peer;
-
   store.commit('setbreadcrumbs', selectedBreadcrumb);
-  // console.log('testing midd', context.store.getters.breadcrumbs);
-  // console.log('route', routeName);
-  // console.log('efrtyutrfedsadfg');
 }

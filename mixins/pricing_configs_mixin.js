@@ -164,7 +164,7 @@ const PricingConfigsMxn = {
       try {
         const data = await this.request_vendor_types(payload);
         this.vendorTypes = data.vendor_types;
-        return data.vendor_types;
+        return this.vendorTypes;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';

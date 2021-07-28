@@ -195,10 +195,9 @@
   </tbody>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 
 import TheLowerSlideComponent from '../OrdersLowerBit/TheLowerSlideComponent';
-import LowerSlideComponent from '../OrdersLowerBit/FBU/LowerSlideComponent';
 import rabbitMQcomponent from '../../../../rabbitMQ/rabbitMQComponent';
 import DashboardComponent from '../OrdersLowerBit/FBU/DashboardComponent';
 
@@ -232,15 +231,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'getOrders',
-      'getOrderStatuses',
-      'getSelectedBusinessUnits',
-      'getSelectedCopNames',
-      'getSelectedCities',
-      'getReorganizeStatus',
-      'getBusinessUnits',
-    ]),
+    ...mapGetters({
+      getOrders: 'orders/getOrders',
+      getOrderStatuses: 'orders/getOrderStatuses',
+      getSelectedBusinessUnits: 'getSelectedBusinessUnits',
+      getSelectedCopNames: 'getSelectedCopNames',
+      getSelectedCities: 'getSelectedCities',
+      getReorganizeStatus: 'getReorganizeStatus',
+      getBusinessUnits: 'getBusinessUnits',
+    }),
     ...mapState(['delayLabels', 'vendorLabels', 'cityAbbrev', 'userData']),
     autoLoadDisabled() {
       return this.loading || this.commentsData.length === 0;
@@ -261,8 +260,7 @@ export default {
       });
     },
     sessionData() {
-      const data = this.userData.payload.data;
-      return data;
+      return this.userData.payload.data;
     },
     countryCode() {
       const code = this.sessionData.country_codes;
@@ -368,21 +366,16 @@ export default {
   },
   mounted() {
     if (process.client) {
-      this.setOrders({
-        page: 1,
-        params: {
-          country_code: this.countryCode,
-        },
-      });
+      this.setOrders();
     }
   },
   methods: {
     ...mapMutations({
-      setOrdersObject: '$_orders/setOrdersObject',
       setDBUpdatedStatus: 'setDBUpdatedStatus',
       updateReorganizeStatus: 'setReorganizeStatus',
+      setDisabledStatus: 'orders/setDisabledStatus',
     }),
-    ...mapActions(['setOrders']),
+    ...mapActions('orders', ['setOrders']),
     initialOrderRequest() {
       this.setOrders();
     },
@@ -466,7 +459,7 @@ export default {
     determineOrderColor(date, push_order) {
       const currentDate = this.getFormattedDate(new Date(), 'YYYY-MM-DD');
       const orderDate = this.getFormattedDate(date, 'YYYY-MM-DD');
-      let colorClass = 'tetst';
+      let colorClass = 'test';
       if (orderDate < currentDate) {
         colorClass = 'pull_attention';
       }
