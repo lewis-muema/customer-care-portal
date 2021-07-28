@@ -238,7 +238,7 @@ export default {
       if (data.status) {
         setTimeout(() => {
           this.$emit('close', false);
-        }, 3000);
+        }, 1000);
       }
     },
   },
