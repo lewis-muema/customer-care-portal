@@ -90,7 +90,7 @@ export default {
     },
     userCountries() {
       const staffCountry = JSON.parse(
-        this.country.payload.data.country_codes.toLowerCase(),
+        this.getSession.payload.data.country_codes.toLowerCase(),
       );
       return staffCountry;
     },
