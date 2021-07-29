@@ -352,7 +352,7 @@ export default {
   },
   data() {
     return {
-      showSubmittedModal: true,
+      showSubmittedModal: false,
       showDialog: false,
       submitted: false,
       start_date: '',
