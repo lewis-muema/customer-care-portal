@@ -356,7 +356,7 @@ export default {
   },
   data() {
     return {
-      disabled: false,
+      disabled: true,
       showSubmittedModal: false,
       showDialog: false,
       submitted: false,
@@ -706,6 +706,7 @@ export default {
     handleClose() {
       this.showDialog = false;
       this.showSubmittedModal = true;
+      this.disabled = true;
       setTimeout(() => {
         this.updateSuccess(true);
       }, 2000);
