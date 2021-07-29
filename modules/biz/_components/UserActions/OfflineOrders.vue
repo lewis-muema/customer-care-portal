@@ -17,7 +17,7 @@
       </p>
     </div>
     <div class="row">
-      <div class="form-group col-md-4 user-input">
+      <div class="form-group col-md-5 user-input">
         <label class="small-font"> From </label>
 
         <date-picker
@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div class="form-group col-md-4 user-input">
+      <div class="form-group col-md-5 user-input">
         <label class="small-font"> To</label>
         <date-picker
           v-model="end_date"
@@ -49,8 +49,9 @@
           End Date is required
         </div>
       </div>
-
-      <div class="form-group col-md-4 user-input business-unit-select">
+    </div>
+    <div class="row pl-2">
+      <div class="form-group col-md-5  business-unit-select">
         <label class="small-font">Business Units</label>
         <v-select
           :options="businessUnits"
@@ -58,7 +59,7 @@
           name="name"
           label="name"
           placeholder="Select Business Unit"
-          class="form-control select mt-n2"
+          class="form-control select"
           :id="`business-units`"
           v-model="businessUnit"
           :class="{
@@ -74,7 +75,6 @@
         </div>
       </div>
     </div>
-
     <hr />
 
     <div>
@@ -123,16 +123,6 @@
               @riderData="searchedRider"
               :rider-key="key"
             />
-            <!-- <div id="input_container">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Enter phone number"
-                v-model="element.rider_id"
-                value="0719898985 | Beatrice Kiambi"
-              />
-              <i class="fa fa-user fa-lg icon"></i>
-            </div> -->
           </div>
           <div>
             <span class="small-font" v-if="key === 0">Vendor Type</span>
@@ -315,8 +305,13 @@
       :elements="elements"
       :prop-object="propObject"
       :show-dialog="showDialog"
-      @close="showDialog = false"
+      @close="handleClose"
       :payload-draft="payload"
+    />
+    <SubmittedModal
+      :dialog-visible="showSubmittedModal"
+      :customer-name="user.user_details.cop_name"
+      @close="showSubmittedModal = false"
     />
   </div>
 </template>
@@ -331,8 +326,8 @@ import VueNumber from 'vue-number-animation';
 import moment from 'moment';
 import offlineOrderMxn from '@/mixins/offline_order_mixin';
 
-Vue.component('calendar', Calendar);
-Vue.component('date-picker', DatePicker);
+Vue.component('Calendar', Calendar);
+Vue.component('DatePicker', DatePicker);
 Vue.use(VueNumber);
 
 export default {
@@ -342,6 +337,7 @@ export default {
       import('./OfflineOrderComponents/OfflineOrderSearchRider'),
     PreviewOrderModal: () =>
       import('./OfflineOrderComponents/previewOrderModal'),
+    SubmittedModal: () => import('./OfflineOrderComponents/submittedModal.vue'),
   },
   mixins: [offlineOrderMxn],
   props: {
@@ -356,6 +352,7 @@ export default {
   },
   data() {
     return {
+      showSubmittedModal: false,
       showDialog: false,
       submitted: false,
       start_date: '',
@@ -700,6 +697,10 @@ export default {
           this.showDialog = true;
         }
       }
+    },
+    handleClose() {
+      this.showDialog = false;
+      this.showSubmittedModal = true;
     },
   },
 };
