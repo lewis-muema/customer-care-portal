@@ -236,9 +236,7 @@ export default {
         ? data.message
         : data.reason;
       if (data.status) {
-        setTimeout(() => {
-          this.$emit('close', false);
-        }, 1000);
+        this.$emit('close', false);
       }
     },
   },
