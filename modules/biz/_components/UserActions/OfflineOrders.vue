@@ -293,7 +293,11 @@
           </div>
 
           <div class="mt-4">
-            <button class="btn primary-btn float-right" @click="offline_orders">
+            <button
+              class="btn primary-btn float-right"
+              @click="offline_orders"
+              :disabled="disabled"
+            >
               Continue
             </button>
           </div>
@@ -352,6 +356,7 @@ export default {
   },
   data() {
     return {
+      disabled: false,
       showSubmittedModal: false,
       showDialog: false,
       submitted: false,
@@ -701,6 +706,9 @@ export default {
     handleClose() {
       this.showDialog = false;
       this.showSubmittedModal = true;
+      setTimeout(() => {
+        this.updateSuccess(true);
+      }, 2000);
     },
   },
 };
