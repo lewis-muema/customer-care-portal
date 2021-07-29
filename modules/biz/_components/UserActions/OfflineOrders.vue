@@ -356,7 +356,7 @@ export default {
   },
   data() {
     return {
-      disabled: true,
+      disabled: false,
       showSubmittedModal: false,
       showDialog: false,
       submitted: false,
