@@ -703,13 +703,14 @@ export default {
         }
       }
     },
-    handleClose() {
+    handleClose(val) {
+      if (val) {
+        this.showDialog = false;
+        return;
+      }
       this.showDialog = false;
       this.showSubmittedModal = true;
       this.disabled = true;
-      setTimeout(() => {
-        this.updateSuccess(true);
-      }, 2000);
     },
   },
 };

@@ -8,7 +8,7 @@
     top="2Vh"
   >
     <template slot="title">
-      <span class="azureTransporter30" @click="$emit('close', false)">
+      <span class="azureTransporter30" @click="$emit('close', true)">
         <i class="fa fa-arrow-left mr-2" aria-hidden="true"></i>
         Go Back and Edit
       </span>
@@ -232,11 +232,12 @@ export default {
       }
       const data = await this.perform_user_action(payload);
       this.actionClass = data.status ? 'success' : 'error';
-      this.message = Object.prototype.hasOwnProperty.call(data, 'message')
-        ? data.message
-        : data.reason;
       if (data.status) {
         this.$emit('close', false);
+      } else {
+        this.message = Object.prototype.hasOwnProperty.call(data, 'message')
+          ? data.message
+          : data.reason;
       }
     },
   },
