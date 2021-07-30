@@ -16,11 +16,7 @@
         {{ customerName }}.
       </div>
       <hr />
-      <el-button
-        type="primary"
-        class="primary-blue"
-        @click="$emit('close', false)"
-      >
+      <el-button type="primary" class="primary-blue" @click="handleClose">
         Close
       </el-button>
     </div>
@@ -28,11 +24,22 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'SubmitModal',
   props: ['dialogVisible', 'customerName'],
   data() {
     return {};
+  },
+  methods: {
+    ...mapMutations({
+      updateSuccess: 'setUserActionSuccess',
+    }),
+    handleClose() {
+      this.updateSuccess(true);
+      this.$emit('close', false);
+    },
   },
 };
 </script>
