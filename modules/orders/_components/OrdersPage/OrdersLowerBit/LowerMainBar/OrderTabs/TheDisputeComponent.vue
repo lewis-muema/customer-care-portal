@@ -3,20 +3,6 @@
     <span :class="determineClass(this.dispute_status)">
       {{ determineMsg(this.dispute_status) }}
     </span>
-    <!-- <span
-      v-if="
-        paymentDetails.extra_distance_amount > 0 ||
-          paymentDetails.waiting_time_amount > 0
-      "
-    >
-      <span
-        @click="activate_dispute_content(moreData.order_no)"
-        class="badge bg-green pull-left"
-        style="margin-left:2px;background-color:#3c8dbc;cursor:pointer;"
-      >
-        Dispute
-      </span>
-    </span> -->
     <br />
     <br />
     <table class="table table-bordered">
@@ -45,6 +31,16 @@
         ></td>
       </tr>
     </table>
+
+    <el-button
+      @click="activate_dispute_content(moreData.order_no)"
+      class="dispute-btn"
+      type="primary"
+      size="medium"
+      plain
+    >
+      Dispute Extra Charges
+    </el-button>
   </div>
 </template>
 
@@ -76,6 +72,14 @@ export default {
       },
     };
   },
+  computed: {
+    showDisputeButton() {
+      return (
+        this.paymentDetails.extra_distance_amount > 0 ||
+        this.paymentDetails.waiting_time_amount > 0
+      );
+    },
+  },
   mounted() {
     const notification = [];
     const actionClass = '';
@@ -98,3 +102,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.dispute-btn {
+  margin-top: 10px;
+}
+</style>
