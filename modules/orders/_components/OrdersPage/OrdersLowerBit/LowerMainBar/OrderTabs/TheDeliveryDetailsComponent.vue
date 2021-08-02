@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <section>
     <div v-if="!riderDeliverImg || riderDeliverImg.length === 0">
       No docs found for this delivery
     </div>
@@ -61,9 +61,7 @@
               class="signature-img-notes"
               :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
-              :src="
-                  `${s3Path}${image}`,
-              "
+              :src="`${s3Path}${image}`"
             />
           </div>
         </div>
@@ -75,7 +73,7 @@
       :path="s3Path"
     />
     <DeliveryDetailsForm :order="order" />
-  </span>
+  </section>
 </template>
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
