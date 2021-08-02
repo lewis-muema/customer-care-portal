@@ -27,9 +27,8 @@
             <span v-else>
               <img
                 class="signature-img"
-                :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`
-                "
+                src="~/assets/images/noimage.png"
+                alt="image-missing"
               />
             </span>
           </div>
@@ -58,10 +57,18 @@
         <div class="col-md-3" v-for="image in img.images" :key="image.index">
           <div class="signature-image">
             <img
+              v-if="image"
               class="signature-img-notes"
               :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
               :src="`${s3Path}${image}`"
+              alt="disputed-document"
+            />
+            <img
+              v-else
+              class="signature-img"
+              src="~/assets/images/noimage.png"
+              alt="no document image"
             />
           </div>
         </div>
@@ -169,7 +176,9 @@ export default {
 }
 .signature-img {
   max-width: 60%;
-  margin-left: 55px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 .signature-img-notes {
   max-width: 100%;

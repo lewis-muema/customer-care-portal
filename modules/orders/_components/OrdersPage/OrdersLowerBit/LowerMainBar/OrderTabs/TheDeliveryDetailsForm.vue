@@ -447,8 +447,14 @@ export default {
 };
 </script>
 <style>
+section {
+  margin-top: 20px;
+}
 .alert-success {
   width: 100%;
   margin-left: 9px;
+}
+.form-group div {
+  margin-bottom: 10px;
 }
 </style>
