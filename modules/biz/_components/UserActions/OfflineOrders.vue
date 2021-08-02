@@ -144,7 +144,7 @@
               </div>
               <div class="amount-input">
                 <input
-                  type="number"
+                  type=""
                   v-model="element.amount"
                   name="amount"
                   placeholder="0"
@@ -225,7 +225,7 @@
             </div>
             <div class="amount-input">
               <input
-                type="number"
+                type=""
                 name="amount"
                 placeholder="0"
                 id="input"
