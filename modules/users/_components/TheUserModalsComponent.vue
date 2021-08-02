@@ -67,7 +67,7 @@ export default {
 </script>
 <style>
 .modal-dialog {
-  max-width: 92% !important;
+  max-width: 98% !important;
 }
 .modal-content {
   position: relative;
