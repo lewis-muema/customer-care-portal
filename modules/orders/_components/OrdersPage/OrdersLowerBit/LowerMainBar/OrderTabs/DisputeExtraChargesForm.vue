@@ -1,5 +1,13 @@
 <template>
   <section>
+    <!--    TODO remove this warning-->
+    <el-alert
+      title="This feature is not ready for use yet!"
+      type="warning"
+      effect="dark"
+    >
+    </el-alert>
+
     <form id="dispute-form" @submit.prevent="submitDisputeDialog">
       <div class="form-group">
         <v-select
@@ -34,8 +42,9 @@
         Dispute description is required
       </div>
 
+      <!--    TODO enable button-->
       <div slot="footer" class="dialog-footer">
-        <button class="btn btn-primary action-button">
+        <button class="btn btn-primary action-button" disabled>
           Submit
         </button>
       </div>
