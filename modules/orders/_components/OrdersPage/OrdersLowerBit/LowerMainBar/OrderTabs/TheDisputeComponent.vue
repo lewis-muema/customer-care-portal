@@ -3,20 +3,6 @@
     <span :class="determineClass(this.dispute_status)">
       {{ determineMsg(this.dispute_status) }}
     </span>
-    <!-- <span
-      v-if="
-        paymentDetails.extra_distance_amount > 0 ||
-          paymentDetails.waiting_time_amount > 0
-      "
-    >
-      <span
-        @click="activate_dispute_content(moreData.order_no)"
-        class="badge bg-green pull-left"
-        style="margin-left:2px;background-color:#3c8dbc;cursor:pointer;"
-      >
-        Dispute
-      </span>
-    </span> -->
     <br />
     <br />
     <table class="table table-bordered">
@@ -45,14 +31,38 @@
         ></td>
       </tr>
     </table>
+
+    <el-button
+      v-if="showDisputeButton"
+      @click="activate_dispute_content(moreData)"
+      class="dispute-btn"
+      type="primary"
+      size="medium"
+      plain
+    >
+      Dispute Extra Charges
+    </el-button>
+
+    <el-dialog
+      title="Dispute Extra Charges"
+      :visible.sync="showDisputeDialog"
+      width="30%"
+    >
+      <dispute-extra-charges
+        :dispute-data="disputeData"
+        @closeDisputeDialog="closeDisputeDialog"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex';
+import DisputeExtraCharges from './DisputeExtraChargesForm';
 
 export default {
   name: 'TheDisputeComponent',
+  components: { DisputeExtraCharges },
   props: {
     order: {
       type: Object,
@@ -74,7 +84,17 @@ export default {
         3: { class: 'badge bg-aqua pull-left', msg: 'Appealed' },
         4: { class: 'badge bg-aqua pull-left', msg: 'Disputed and resolved' },
       },
+      showDisputeDialog: false,
+      disputeData: {},
     };
+  },
+  computed: {
+    showDisputeButton() {
+      return (
+        this.paymentDetails.extra_distance_amount > 0 ||
+        this.paymentDetails.waiting_time_amount > 0
+      );
+    },
   },
   mounted() {
     const notification = [];
@@ -95,6 +115,26 @@ export default {
       const disputeClass = this.disputeParams[disputeStatus];
       return disputeClass.msg;
     },
+    closeDisputeDialog(value) {
+      this.showDisputeDialog = value;
+    },
+    activate_dispute_content(moreData) {
+      this.showDisputeDialog = true;
+      console.log('...', this.order);
+      const { name, email, phone_no } = this.orderDetails.client_details;
+      this.disputeData = {
+        order_no: moreData.order_no,
+        name,
+        email,
+        phone: phone_no,
+      };
+    },
   },
 };
 </script>
+
+<style>
+.dispute-btn {
+  margin-top: 10px;
+}
+</style>

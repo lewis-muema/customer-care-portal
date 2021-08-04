@@ -71,7 +71,7 @@ export default {
     convertTime(date) {
       const UTC = this.convertToUTC(date);
       const localTime = this.convertToLocalTime(UTC);
-      return moment(localTime).format('MMMM Do YYYY, h:mm:ss a');
+      return moment(localTime.toString()).format('MMMM Do YYYY, h:mm:ss a');
     },
   },
 };
