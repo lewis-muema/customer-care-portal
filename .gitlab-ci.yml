@@ -12,8 +12,6 @@ cache:
 unitTest:
   # run tests and determine code test coverage
   stage: test
-  tags:
-    - test
 
   # Install packages for test scripts we want to run
   script:
