@@ -33,7 +33,8 @@
     </table>
 
     <el-button
-      @click="activate_dispute_content(moreData.order_no)"
+      v-if="showDisputeButton"
+      @click="activate_dispute_content(moreData)"
       class="dispute-btn"
       type="primary"
       size="medium"
@@ -41,14 +42,27 @@
     >
       Dispute Extra Charges
     </el-button>
+
+    <el-dialog
+      title="Dispute Extra Charges"
+      :visible.sync="showDisputeDialog"
+      width="30%"
+    >
+      <dispute-extra-charges
+        :dispute-data="disputeData"
+        @closeDisputeDialog="closeDisputeDialog"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex';
+import DisputeExtraCharges from './DisputeExtraChargesForm';
 
 export default {
   name: 'TheDisputeComponent',
+  components: { DisputeExtraCharges },
   props: {
     order: {
       type: Object,
@@ -70,6 +84,8 @@ export default {
         3: { class: 'badge bg-aqua pull-left', msg: 'Appealed' },
         4: { class: 'badge bg-aqua pull-left', msg: 'Disputed and resolved' },
       },
+      showDisputeDialog: false,
+      disputeData: {},
     };
   },
   computed: {
@@ -98,6 +114,20 @@ export default {
     determineMsg(disputeStatus) {
       const disputeClass = this.disputeParams[disputeStatus];
       return disputeClass.msg;
+    },
+    closeDisputeDialog(value) {
+      this.showDisputeDialog = value;
+    },
+    activate_dispute_content(moreData) {
+      this.showDisputeDialog = true;
+      console.log('...', this.order);
+      const { name, email, phone_no } = this.orderDetails.client_details;
+      this.disputeData = {
+        order_no: moreData.order_no,
+        name,
+        email,
+        phone: phone_no,
+      };
     },
   },
 };

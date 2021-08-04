@@ -1,26 +1,11 @@
 <template>
   <section>
     <div class="row">
-      <div
-        class="col-sm-3"
-        v-if="
-          dispute_status === 0 || dispute_status === 1 || dispute_status === 3
-        "
-      >
+      <div class="col-sm-3" v-if="dispute_status === 0 || dispute_status === 1">
         <div class="form-group">
-          <div class="radio">
-            <label>
-              <input
-                :name="`delivery_docs_dispute_value1_${orderNo}`"
-                :id="`delivery_docs_action2_${orderNo}`"
-                @change="update_delivery_docs_dispute_action(switched)"
-                checked
-                value="3"
-                type="radio"
-              />
-              Dispute Driver Documents
-            </label>
-          </div>
+          <el-button @click="actionType = '3'" type="primary" size="medium">
+            Dispute Delivery Docs
+          </el-button>
         </div>
       </div>
       <div class="col-sm-3" v-if="dispute_status === 3">
@@ -30,10 +15,10 @@
               <input
                 :name="`delivery_docs_dispute_value1_${orderNo}`"
                 :id="`delivery_docs_action2_${orderNo}`"
-                @change="update_delivery_docs_dispute_action(switched)"
                 checked
                 value="2"
                 type="radio"
+                v-model="actionType"
               />
               Reject Driver Appeal
             </label>
@@ -49,9 +34,9 @@
                 :id="`delivery_docs_action1_${orderNo}`"
                 value="1"
                 type="radio"
-                @change="update_delivery_docs_dispute_action(switched)"
+                v-model="actionType"
               />
-              Accept Driver Appeal
+              Accept Driver Documents
             </label>
           </div>
         </div>
@@ -66,159 +51,137 @@
                 :id="`delivery_docs_action1_${orderNo}`"
                 value="1"
                 type="radio"
-                @change="update_delivery_docs_dispute_action(switched)"
+                v-model="actionType"
               />
               Reject Customer Dispute
             </label>
           </div>
         </div>
       </div>
-
-      <div class="col-sm-3">
-        <div class="form-group" v-if="dispute_status === 0">
-          <div class="radio">
-            <label>
-              <input
-                :name="`delivery_docs_dispute_value1_${orderNo}`"
-                :id="`delivery_docs_action1_${orderNo}`"
-                value="1"
-                type="radio"
-                @change="update_delivery_docs_dispute_action(switched)"
-              />
-              Accept Driver Documents
-            </label>
-          </div>
-        </div>
-      </div>
     </div>
     <div
-      v-if="disputeResponse !== null"
+      v-if="disputeResponse"
+      class="alert-notification"
       :class="`row alert alert-${disputeErrorClass}`"
       :id="`dispute_error_${orderNo}`"
     >
       <strong> {{ disputeResponse }} </strong>
     </div>
 
-    <div v-if="switched">
-      <form id="dispute-form" @submit.prevent="determineAction">
-        <div
-          class="form-group"
+    <form v-if="showForm" id="dispute-form" @submit.prevent="determineAction">
+      <div
+        class="form-group"
+        v-if="
+          dispute_status === 0 || dispute_status === 1 || dispute_status === 3
+        "
+      >
+        <v-select
+          :options="options"
+          :reduce="reason => reason.code"
+          name="reason"
+          label="reason"
+          placeholder="Select dispute reason .."
+          class="form-control proximity-point"
+          :id="`dispute_reason_${orderNo}`"
+          v-model="reason"
+          :class="{
+            'is-invalid': submitted && $v.reason.$error,
+          }"
+        >
+        </v-select>
+        <div v-if="submitted && !$v.reason.required" class="invalid-feedback">
+          dispute reason is required
+        </div>
+        <textarea
           v-if="
             dispute_status === 0 || dispute_status === 1 || dispute_status === 3
           "
+          type="text"
+          v-model="description"
+          :id="`dispute_description_${orderNo}`"
+          name="description"
+          placeholder="Description"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.description.$error,
+          }"
         >
-          <v-select
-            :options="options"
-            :reduce="reason => reason.code"
-            name="reason"
-            label="reason"
-            placeholder="Select dispute reason .."
-            class="form-control proximity-point"
-            :id="`dispute_reason_${orderNo}`"
-            v-model="reason"
-            :class="{
-              'is-invalid': submitted && $v.reason.$error,
-            }"
-          >
-          </v-select>
-          <div v-if="submitted && !$v.reason.required" class="invalid-feedback">
-            dispute reason is required
-          </div>
-          <textarea
-            v-if="
-              dispute_status === 0 ||
-                dispute_status === 1 ||
-                dispute_status === 3
-            "
-            type="text"
-            v-model="description"
-            :id="`dispute_description_${orderNo}`"
-            name="description"
-            placeholder="Description"
-            class="form-control"
-            :class="{
-              'is-invalid': submitted && $v.description.$error,
-            }"
-          >
-          </textarea>
-          <div
-            v-if="
-              // eslint-disable-next-line prettier/prettier
+        </textarea>
+        <div
+          v-if="
+            // eslint-disable-next-line prettier/prettier
             submitted && !$v.description.required && (dispute_status === 0 || dispute_status === 1 || dispute_status === 3)
-            "
-            class="invalid-feedback"
-          >
-            Description is required
-          </div>
-        </div>
-        <div class="form-group" v-else>
-          <v-select
-            v-if="
-              dispute_status === 0 ||
-                dispute_status === 2 ||
-                dispute_status === 3
-            "
-            :options="optionz"
-            :reduce="reason => reason.code"
-            name="reason"
-            label="reason"
-            placeholder="Select undispute reason .."
-            class="form-control proximity-point"
-            :id="`undispute_reason_${orderNo}`"
-            v-model="reason"
-            :class="{
-              'is-invalid': submitted && $v.reason.$error,
-            }"
-          >
-          </v-select>
-          <div
-            v-if="
-              submitted &&
-                !$v.reason.required &&
-                (dispute_status === 0 ||
-                  dispute_status === 2 ||
-                  dispute_status === 3)
-            "
-            class="invalid-feedback"
-          >
-            undispute reason is required
-          </div>
-          <textarea
-            v-if="
-              dispute_status === 0 ||
-                dispute_status === 2 ||
-                dispute_status === 3
-            "
-            type="text"
-            v-model="description"
-            :id="`dispute_description_${orderNo}`"
-            name="description"
-            placeholder="Description"
-            class="form-control"
-            :class="{
-              'is-invalid': submitted && $v.description.$error,
-            }"
-          >
-          </textarea>
-          <div
-            v-if="
-              dispute_status === 0 ||
-                dispute_status === 2 ||
-                dispute_status === 3
-            "
-            class="invalid-feedback"
-          >
-            Description is required
-          </div>
-        </div>
-        <button
-          v-if="dispute_status !== 4"
-          class="btn btn-primary action-button"
+          "
+          class="invalid-feedback"
         >
-          submit
-        </button>
-      </form>
-    </div>
+          Description is required
+        </div>
+      </div>
+      <div class="form-group" v-else>
+        <v-select
+          v-if="
+            dispute_status === 0 || dispute_status === 2 || dispute_status === 3
+          "
+          :options="option2"
+          :reduce="reason => reason.code"
+          name="reason"
+          label="reason"
+          placeholder="Select undispute reason .."
+          class="form-control proximity-point"
+          :id="`undispute_reason_${orderNo}`"
+          v-model="reason"
+          :class="{
+            'is-invalid': submitted && $v.reason.$error,
+          }"
+        >
+        </v-select>
+        <div
+          v-if="
+            submitted &&
+              !$v.reason.required &&
+              (dispute_status === 0 ||
+                dispute_status === 2 ||
+                dispute_status === 3)
+          "
+          class="invalid-feedback"
+        >
+          undispute reason is required
+        </div>
+        <textarea
+          v-if="
+            dispute_status === 0 || dispute_status === 2 || dispute_status === 3
+          "
+          type="text"
+          v-model="description"
+          :id="`dispute_description_${orderNo}`"
+          name="description"
+          placeholder="Description"
+          class="form-control"
+          :class="{
+            'is-invalid': submitted && $v.description.$error,
+          }"
+        >
+        </textarea>
+        <div
+          v-if="
+            dispute_status === 0 || dispute_status === 2 || dispute_status === 3
+          "
+          class="invalid-feedback"
+        >
+          Description is required
+        </div>
+      </div>
+      <button v-if="dispute_status !== 4" class="btn btn-primary action-button">
+        submit
+      </button>
+    </form>
+    <button
+      v-if="actionType === '1' && dispute_status === 3"
+      class="btn btn-primary action-button"
+      @click="determineAction"
+    >
+      submit
+    </button>
   </section>
 </template>
 <script>
@@ -250,7 +213,7 @@ export default {
         { code: '2', reason: 'The delivery document is not clear' },
         { code: '3', reason: 'The delivery document is not valid' },
       ],
-      optionz: [
+      option2: [
         { code: '1', reason: 'The delivery document is there' },
         { code: '2', reason: 'The delivery document is clear' },
         { code: '3', reason: 'The delivery document is valid' },
@@ -258,7 +221,7 @@ export default {
       reason: '',
       description: '',
       submitted: false,
-      switched: true,
+      actionType: '1',
     };
   },
   validations: {
@@ -267,10 +230,13 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-
     ...mapState(['userData']),
     actionUser() {
       return this.session.payload.data.name;
+    },
+    showForm() {
+      const action_type = parseInt(this.actionType);
+      return action_type === 3 || action_type === 2;
     },
   },
   mounted() {
@@ -285,26 +251,28 @@ export default {
     ...mapActions({
       perform_order_action: 'orders/perform_order_action',
     }),
-    triggerDnotesModal(image, e) {
+    triggerDocNotesModal(image, e) {
       this.modalImage = image;
       $(`#ModalCenter`).modal('show');
       e.preventDefault();
     },
     determineAction() {
-      if (this.dispute_status === 0 && !this.switched) {
-        return this.verifyDnote();
-      }
-      if (this.dispute_status === 0 && this.switched) {
+      if (this.dispute_status === 0 && !this.showForm)
+        return this.verifyDocNote();
+      if (this.dispute_status === 0 && this.showForm)
         return this.disputeOrder();
-      }
-      if (this.dispute_status === 1 && this.switched) {
-        return this.disputeOrder();
-      }
-      if (this.dispute_status === 3 && this.switched) {
-        return this.disputeOrder();
-      }
+
       if (
-        !this.switched &&
+        (this.dispute_status === 0 ||
+          this.dispute_status === 1 ||
+          this.dispute_status === 3) &&
+        this.showForm
+      ) {
+        return this.disputeOrder();
+      }
+
+      if (
+        !this.showForm &&
         (this.dispute_status === 2 || this.dispute_status === 3)
       ) {
         return this.undisputeOrder();
@@ -357,17 +325,11 @@ export default {
       this.disputeErrorClass = actionClass;
       this.disputeResponse = notification;
     },
-
     async undisputeOrder() {
       let notification = '';
       let actionClass = '';
 
       this.submitted = true;
-      this.$v.$touch();
-      if (this.$v.$invalid) {
-        return;
-      }
-
       const adminID = this.session.payload.data.admin_id;
 
       const payload = {
@@ -402,7 +364,7 @@ export default {
       this.disputeErrorClass = actionClass;
       this.disputeResponse = notification;
     },
-    async verifyDnote() {
+    async verifyDocNote() {
       let notification = '';
       let actionClass = '';
       const adminID = this.session.payload.data.admin_id;
@@ -439,20 +401,20 @@ export default {
       this.disputeErrorClass = actionClass;
       this.disputeResponse = notification;
     },
-    update_delivery_docs_dispute_action(switched) {
-      this.switched = !this.switched;
-      return this.switched;
-    },
   },
 };
 </script>
-<style>
+<style scoped>
 section {
   margin-top: 20px;
 }
 .alert-success {
   width: 100%;
   margin-left: 9px;
+}
+.alert-notification {
+  margin-left: auto;
+  margin-right: auto;
 }
 .form-group div {
   margin-bottom: 10px;
