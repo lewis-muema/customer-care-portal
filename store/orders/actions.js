@@ -189,4 +189,19 @@ export default {
       return error;
     }
   },
+  async create_charges_dispute({ dispatch }, values) {
+    const payload = {
+      app: 'PRIVATE_API',
+      endpoint: '/dispute_order',
+      apiKey: true,
+      params: values,
+    };
+
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res.data;
+    } catch (error) {
+      return error;
+    }
+  },
 };

@@ -37,13 +37,7 @@ const addResponseInterceptor = axiosConfig => {
       return response;
     },
     error => {
-      if (
-        authToken &&
-        error.response &&
-        (error.response.status === 400 ||
-          error.response.status === 401 ||
-          error.response.status === 403)
-      ) {
+      if (authToken && error.response && error.response.status === 401) {
         if (process.client && typeof window !== 'undefined') {
           localStorage.clear();
           window.location.reload();

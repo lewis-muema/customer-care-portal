@@ -182,9 +182,7 @@
             v-model="checked"
             checked
           />
-          <label for="" class="charge_commission--label"
-            >Charge Commission</label
-          >
+          <label class="charge_commission--label">Charge Commission</label>
         </div>
       </div>
       <button
