@@ -722,6 +722,13 @@ export default {
       });
       return filtered;
     },
+    copDetails() {
+      const cop = {
+        copName: this.copName,
+        copId: this.copId,
+      };
+      return cop;
+    },
   },
   watch: {
     mode(val) {
@@ -1006,11 +1013,19 @@ export default {
           if (action === 'delete') {
             notification.push('Custom price configs deactivated successfully.');
             actionClass = this.display_order_action_notification(data.status);
-            await this.logAction('Deactivate Container pricing config', 36);
+            await this.logAction(
+              'Deactivate Container pricing config',
+              36,
+              this.copDetails,
+            );
           } else {
             notification.push('Custom price configs edited successfully.');
             actionClass = this.display_order_action_notification(data.status);
-            await this.logAction('Edit Container pricing config', 36);
+            await this.logAction(
+              'Edit Container pricing config',
+              36,
+              this.copDetails,
+            );
           }
         } else {
           this.trackResetConfigsFail();
@@ -1183,7 +1198,11 @@ export default {
             this.admin.name,
             'created',
           );
-          await this.logAction('Add Container pricing config', 36);
+          await this.logAction(
+            'Add Container pricing config',
+            36,
+            this.copDetails,
+          );
         } else {
           this.trackFailedSubmission();
           this.trackMixpanelIdentify();
