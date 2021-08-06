@@ -12,7 +12,7 @@
     <div class="mt-1">
       <span class="title"> Submitted </span>
       <div class="mt-1 sub-text">
-        Offline order submitted and an invoice sent to <br />
+        Offline order submitted sent to <br />
         {{ customerName }}.
       </div>
       <hr />
