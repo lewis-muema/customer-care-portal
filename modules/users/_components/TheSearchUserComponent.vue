@@ -38,6 +38,15 @@
           </span>
         </li>
       </ul>
+      <ul
+        v-show="!hasItems && query !== ''"
+        :class="[!isActive ? 'inactiveClass' : '']"
+      >
+        <li class="my-3">
+          No results Found
+        </li>
+      </ul>
+
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
     </div>
   </span>
@@ -78,10 +87,13 @@ export default {
 
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
+    country() {
+      return this.getSession;
+    },
     placeholder() {
       return 'Select account to transfer';
     },
-
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
@@ -97,7 +109,7 @@ export default {
       return this.config[userSearch];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       let searchString = '';
@@ -107,6 +119,10 @@ export default {
         searchString = `${this.solarBase}select?q=(user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+user_status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=user_id%20desc&jwt=${this.solarToken}`;
       }
       return searchString;
+    },
+    userCountries() {
+      const staffCountry = JSON.parse(this.country.payload.data.country_codes);
+      return staffCountry;
     },
   },
   watch: {
@@ -130,8 +146,13 @@ export default {
       this.searchInput += 1;
     },
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
+
     onHit(item) {
       const display =
         this.userType === 'business'

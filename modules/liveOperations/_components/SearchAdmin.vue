@@ -50,6 +50,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    ...mapGetters(['getEnvironmentVariables']),
 
     query_string() {
       localStorage.setItem('query', this.query);
@@ -59,7 +60,7 @@ export default {
       return this.config.STAFF_SEARCH;
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       return `${this.solarBase}select?q=(name:*${this.query_string}*+OR+email:*${this.query_string}*)&wt=json&indent=true&row=10&sort=admin_id%20desc&jwt=${this.solarToken}&fq=(status:1)`;

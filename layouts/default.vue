@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import { Base64 } from 'js-base64';
 import TheHeader from '@/components/Navigation/TheHeader';
 import TheSidenav from '@/components/Navigation/TheSidenav';
@@ -61,13 +61,21 @@ export default {
       return this.$store.getters.breadcrumbs;
     },
   },
-  mounted() {
+  async mounted() {
+    const environmentVariables = !this.getEnvironmentVariables
+      ? await this.fetchEnvironmentVariables()
+      : this.getEnvironmentVariables;
+
     this.getloggedUser();
   },
   methods: {
     ...mapMutations({
       updateSession: 'setSession',
     }),
+    ...mapActions({
+      fetchEnvironmentVariables: 'fetch_environment_variables',
+    }),
+
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');
       const token =

@@ -35,6 +35,7 @@ export default {
 
   computed: {
     ...mapState(['config', 'cities']),
+    ...mapGetters(['getEnvironmentVariables']),
 
     url() {
       return this.config.RABBITMQ_URL;
@@ -42,13 +43,17 @@ export default {
     headers() {
       const params = {
         login: this.config.BROKER_USER,
-        passcode: this.config.BROKER_PASS,
+        passcode: this.getEnvironmentVariables.BROKER_PASS,
       };
       return params;
     },
   },
 
   methods: {
+    ...mapActions({
+      fetchEnvironmentVariables: 'fetch_environment_variables',
+    }),
+
     /**
      * This the callback called after the websocket connection to rabbitMQ has been established
      * which then subscribes to the exchange for order pushes.
@@ -224,7 +229,9 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
+    !this.getEnvironmentVariables ? await this.fetchEnvironmentVariables() : {};
+
     this.client = Stomp.client(this.url);
 
     this.client.connect(

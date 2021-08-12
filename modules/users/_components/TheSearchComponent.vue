@@ -36,6 +36,14 @@
           </div>
         </li>
       </ul>
+      <ul
+        v-show="!hasItems && query !== ''"
+        :class="[!isActive ? 'inactiveClass' : '']"
+      >
+        <li class="my-3">
+          No results Found
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -81,7 +89,10 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-
+    ...mapGetters(['getSession', 'getEnvironmentVariables']),
+    country() {
+      return this.getSession;
+    },
     query_string() {
       localStorage.setItem('query', this.query);
       const q = this.query;
@@ -99,7 +110,7 @@ export default {
       return placeholderArray[currentUser];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       let searchString = '';
@@ -112,6 +123,10 @@ export default {
       }
       return searchString;
     },
+    userCountries() {
+      const staffCountry = JSON.parse(this.country.payload.data.country_codes);
+      return staffCountry;
+    },
   },
   methods: {
     ...mapMutations({
@@ -123,7 +138,11 @@ export default {
       request_single_biz_user: 'request_single_biz_user',
     }),
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
     searchBiz(param) {
       const account_no = param.trim().toLowerCase();

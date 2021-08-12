@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { Base64 } from 'js-base64';
 import TheHeader from '@/components/Navigation/TheHeader';
 import TheBreadCrumbView from '@/components/Navigation/TheBreadCrumbView';
@@ -55,7 +55,11 @@ export default {
       return this.$store.getters.breadcrumbs;
     },
   },
-  mounted() {
+  async mounted() {
+    const environmentVariables = !this.getEnvironmentVariables
+      ? await this.fetchEnvironmentVariables()
+      : this.getEnvironmentVariables;
+
     this.getloggedUser();
   },
 
@@ -63,6 +67,10 @@ export default {
     ...mapMutations({
       updateSession: 'setSession',
     }),
+    ...mapActions({
+      fetchEnvironmentVariables: 'fetch_environment_variables',
+    }),
+
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');
       const token =
