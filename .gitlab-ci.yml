@@ -1,0 +1,20 @@
+image: node:14.16.1
+
+stages:
+  - test
+
+# Cache the node modules installed.
+cache:
+  paths:
+    - node_modules/
+
+# Lets name our Job unitTest, because that's what it's doing.
+unitTest:
+  # run tests and determine code test coverage
+  stage: test
+
+  # Install packages for test scripts we want to run
+  script:
+    - npm cache clean --force
+    - npm install
+    - npm run test

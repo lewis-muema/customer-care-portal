@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <section>
     <div v-if="!riderDeliverImg || riderDeliverImg.length === 0">
       No docs found for this delivery
     </div>
@@ -27,9 +27,8 @@
             <span v-else>
               <img
                 class="signature-img"
-                :src="
-                  `https://sendy-delivery-signatures.s3.amazonaws.com/${img.signature}`
-                "
+                src="~/assets/images/noimage.png"
+                alt="image-missing"
               />
             </span>
           </div>
@@ -58,12 +57,18 @@
         <div class="col-md-3" v-for="image in img.images" :key="image.index">
           <div class="signature-image">
             <img
+              v-if="image"
               class="signature-img-notes"
               :id="`${image}`"
               @click="triggerDnotesModal(image, $event)"
-              :src="
-                  `${s3Path}${image}`,
-              "
+              :src="`${s3Path}${image}`"
+              alt="disputed-document"
+            />
+            <img
+              v-else
+              class="signature-img"
+              src="~/assets/images/noimage.png"
+              alt="no document image"
             />
           </div>
         </div>
@@ -75,7 +80,7 @@
       :path="s3Path"
     />
     <DeliveryDetailsForm :order="order" />
-  </span>
+  </section>
 </template>
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
@@ -148,7 +153,7 @@ export default {
       updateClass: 'setActionClass',
     }),
     ...mapActions({
-      perform_order_action: '$_orders/perform_order_action',
+      perform_order_action: 'orders/perform_order_action',
     }),
     triggerDnotesModal(image, e) {
       this.modalImage = image;
@@ -171,7 +176,9 @@ export default {
 }
 .signature-img {
   max-width: 60%;
-  margin-left: 55px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 .signature-img-notes {
   max-width: 100%;

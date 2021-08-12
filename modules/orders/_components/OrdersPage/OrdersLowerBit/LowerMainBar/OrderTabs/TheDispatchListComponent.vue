@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      request_dispatch_list: '$_orders/request_dispatch_list',
+      request_dispatch_list: 'orders/request_dispatch_list',
     }),
     async dispatchListRequest() {
       const payload = {

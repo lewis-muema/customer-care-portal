@@ -96,7 +96,7 @@ export default {
     }),
     ...mapActions({
       request_single_rider: 'request_single_rider',
-      assign_order: '$_orders/assign_order',
+      assign_order: 'orders/assign_order',
       requestAppVersion: 'requestAppVersion',
     }),
     searchedRider(riderData) {

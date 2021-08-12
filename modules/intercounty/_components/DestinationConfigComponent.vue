@@ -478,11 +478,10 @@ export default {
       if (this.destination_config_data === null) {
         return this.destination_config_data;
       } else {
-        return this.destination_config_data.filter(
-          pr =>
-            pr.collection_centers[0].address
-              .toLowerCase()
-              .indexOf(self.search_data.toLowerCase()) >= 0,
+        return this.destination_config_data.filter(pr =>
+          pr.collection_centers[0].address
+            .toLowerCase()
+            .includes(self.search_data.toLowerCase()),
         );
       }
     },

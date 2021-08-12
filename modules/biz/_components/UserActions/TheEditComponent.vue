@@ -185,7 +185,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 
 export default {
@@ -245,33 +245,30 @@ export default {
       return this.user.admin_list ? this.user.admin_list : this.admin_list;
     },
     copTypeList() {
-      const list = this.cop_type_list;
-      return list;
+      return this.cop_type_list;
     },
     companyTypeData() {
       const state = this.user.user_details.cop_type_name;
       const arr = this.categories;
-      return arr.filter(c => c.name.indexOf(state) > -1);
+      return arr.filter(c => c.name.includes(state));
     },
     riderAllocation() {
-      const riderAllocation = [
+      return [
         { code: '1', type: 'Dedicated Riders' },
         { code: '0', type: 'All Riders' },
       ];
-      return riderAllocation;
     },
     creditPeriod() {
-      const creditPeriod = [
+      return [
         { code: '15', name: '15 Days' },
         { code: '30', name: '30 Days' },
         { code: '45', name: '45 Days' },
       ];
-      return creditPeriod;
     },
     periodData() {
       const state = this.user.user_details.credit_period;
       const arr = this.creditPeriod;
-      return arr.filter(c => c.code.indexOf(state) > -1);
+      return arr.filter(c => c.code.includes(state));
     },
     canEditPeriod() {
       const option = this.payOption;
@@ -283,34 +280,32 @@ export default {
     },
 
     approvalStatus() {
-      const approvalStatus = [
+      return [
         { code: '1', status: 'Approve' },
         { code: '2', status: 'Suspend' },
       ];
-      return approvalStatus;
     },
     companyCategory() {
-      const companyCategory = [
+      return [
         { code: '0', name: 'Merchant' },
         { code: '1', name: 'Enterprise' },
       ];
-      return companyCategory;
     },
     categoryData() {
       const state = this.user.user_details.cop_category;
       const arr = this.companyCategory;
 
-      return arr.filter(c => c.code.indexOf(state) > -1);
+      return arr.filter(c => c.code.includes(state));
     },
     riderTypeData() {
       const state = this.user.user_details.strict_allocation;
       const arr = this.riderAllocation;
-      return arr.filter(c => c.code.indexOf(state) > -1);
+      return arr.filter(c => c.code.includes(state));
     },
     approval() {
       const state = this.user.user_details.approved;
       const arr = this.approvalStatus;
-      const returned = arr.filter(c => c.code.indexOf(state) > -1);
+      const returned = arr.filter(c => c.code.includes(state));
       return returned[0];
     },
     payOptions() {
@@ -323,8 +318,7 @@ export default {
     paymentOption() {
       const state = this.user.user_details.payment_option;
       const arr = this.payOptions;
-      const returned = arr.filter(c => c.code.indexOf(state) > -1);
-      return returned;
+      return arr.filter(c => c.code.includes(state));
     },
     actionUser() {
       return this.session.payload.data.name;
@@ -419,8 +413,8 @@ export default {
         : this.approveStatus;
       // eslint-disable-next-line no-restricted-globals
       const type = isNaN(Number(this.companyType))
-        ? this.cop_type_list.filter(
-            c => c.name.indexOf(this.user.user_details.cop_type_name) > -1,
+        ? this.cop_type_list.filter(c =>
+            c.name.includes(this.user.user_details.cop_type_name),
           )[0].cop_type_id
         : this.companyType;
       // eslint-disable-next-line no-restricted-globals

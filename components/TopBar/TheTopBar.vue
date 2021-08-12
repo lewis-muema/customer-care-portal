@@ -143,8 +143,6 @@ export default {
   padding: 15px;
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
 }
 .pass {
   margin-left: 50px;
