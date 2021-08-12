@@ -18,6 +18,7 @@
         @input="update"
         @blur="reset"
       />
+      <i class="icon fa fa-user fa-lg"></i>
       <ul v-show="hasItems">
         <li
           v-for="(item, $item) in items"
@@ -38,17 +39,16 @@
           No results Found
         </span>
       </ul>
-      <i class="fa fa-spinner fa-spin" v-if="loading"></i>
+      <i class="fa fa-spinner fa-spin icon2" v-if="loading"></i>
     </div>
   </span>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
-
 import VueTypeahead from 'vue-typeahead';
 
 export default {
-  name: 'TheSearchRiderComponent',
+  name: 'OfflineSearchSearchRider',
   extends: VueTypeahead,
 
   props: {
@@ -132,8 +132,9 @@ export default {
       this.hideInput = '';
       this.riderDisplay = `${item.rider_name} | ${item.phone_no}`;
       this.$emit('riderData', {
-        riderID: item.rider_id,
         riderKey: this.riderKey,
+        riderDisplay: this.riderDisplay,
+        item,
       });
       return (this.rider = item.rider_id);
     },
@@ -162,11 +163,23 @@ export default {
 .Typeahead {
   position: relative;
 }
+.Typeahead > .icon {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  color: #909399;
+}
+
+.Typeahead > input {
+  padding-right: 40px;
+}
+
 .Typeahead__input ::placeholder {
   color: red;
 }
+
 .Typeahead__input {
-  width: 90%;
+  width: 100%;
   font-size: 14px;
   color: #2c3e50;
   line-height: 1.42857143;
@@ -185,7 +198,7 @@ export default {
   cursor: pointer;
 }
 
-i {
+.icon2 {
   float: right;
   position: relative;
   top: 0px;
