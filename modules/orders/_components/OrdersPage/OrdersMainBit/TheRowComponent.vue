@@ -297,7 +297,6 @@ export default {
       const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      this.setDisabledStatus(false);
       this.orders = newOrders;
       return this.orders;
     },
@@ -307,7 +306,6 @@ export default {
     getOrderStatuses(statusArray) {
       this.orders = [];
       this.statusArray = statusArray;
-      this.setDisabledStatus(true);
       this.sendRequest(this.params);
       return (this.statusArray = statusArray);
     },
@@ -368,12 +366,7 @@ export default {
   },
   mounted() {
     if (process.client) {
-      this.setOrders({
-        page: 1,
-        params: {
-          country_code: this.countryCode,
-        },
-      });
+      this.setOrders();
     }
   },
   methods: {

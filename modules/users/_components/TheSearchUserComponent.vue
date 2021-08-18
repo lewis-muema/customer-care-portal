@@ -93,7 +93,6 @@ export default {
     placeholder() {
       return 'Select account to transfer';
     },
-
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query;
@@ -152,6 +151,7 @@ export default {
       );
       return filtered;
     },
+
     onHit(item) {
       const display =
         this.userType === 'business'

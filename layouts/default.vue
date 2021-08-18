@@ -65,16 +65,23 @@ export default {
     const environmentVariables = !this.getEnvironmentVariables
       ? await this.fetchEnvironmentVariables()
       : this.getEnvironmentVariables;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 581b9969bb2900203c59b696f01225e8bb74ee5f
     this.getloggedUser();
   },
   methods: {
     ...mapMutations({
       updateSession: 'setSession',
-      setToken: 'setToken',
     }),
     ...mapActions({
       fetchEnvironmentVariables: 'fetch_environment_variables',
     }),
+<<<<<<< HEAD
+=======
+
+>>>>>>> 581b9969bb2900203c59b696f01225e8bb74ee5f
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');
       const token =

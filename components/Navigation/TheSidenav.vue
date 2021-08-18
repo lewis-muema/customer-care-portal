@@ -126,6 +126,7 @@
               <span> Live Operations </span></nuxt-link
             >
           </li>
+
           <li id="online_2">
             <a href="#"
               ><i class="fa fa-circle-o text-success"></i>
