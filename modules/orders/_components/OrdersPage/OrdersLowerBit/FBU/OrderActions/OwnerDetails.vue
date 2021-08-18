@@ -99,7 +99,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapGetters(['getEnvironmentVariables']),
-
     placeholder() {
       return this.category;
     },

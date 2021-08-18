@@ -308,7 +308,7 @@ const PricingConfigsMxn = {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    async logAction(action, actionId) {
+    async logAction(action, actionId, copDetails) {
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'log_cc_action',
@@ -323,6 +323,10 @@ const PricingConfigsMxn = {
           order_no: '',
         },
       };
+      if (copDetails) {
+        payload.params.cop_id = copDetails.copId;
+        payload.params.cop_name = copDetails.copName;
+      }
       const data = await this.log_action(payload);
     },
   },
