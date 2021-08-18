@@ -366,7 +366,12 @@ export default {
   },
   mounted() {
     if (process.client) {
-      this.setOrders();
+      this.setOrders({
+        page: 1,
+        params: {
+          country_code: this.countryCode,
+        },
+      });
     }
   },
   methods: {
