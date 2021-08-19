@@ -84,6 +84,100 @@
       </div>
     </div>
 
+    <div class="form-group col-md-6">
+      <label for="contact">Contact</label>
+      <input
+        type="text"
+        class="form-control"
+        id="contact"
+        placeholder="name@example.com"
+        readonly
+      />
+    </div>
+
+    <div class="form-group col-md-12">
+      <label for="subject">Subject</label>
+      <input type="text" class="form-control" id="subject" />
+    </div>
+    <div class="form-group col-md-12">
+      <label for="description">Description</label>
+      <textarea class="form-control" id="description" rows="3"></textarea>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="businessunit">Business Unit</label>
+      <select class="form-control" id="businessunit">
+        <option>TRANSPORT - CLIENT</option>
+      </select>
+    </div>
+    <div class="w-100"></div>
+    <div class="form-group col-md-6">
+      <label for="userjourney">User Journey</label>
+      <select class="form-control" id="userjourney">
+        <option>Goods Dropoff</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="issue">Issue</label>
+      <select class="form-control" id="issue">
+        <option>D note Inquiry</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="type">Type</label>
+      <select class="form-control" id="type">
+        <option>4W</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="source">Source</label>
+      <select class="form-control" id="source">
+        <option>CC PORTAL</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="contact">Order Number</label>
+      <input
+        type="text"
+        class="form-control"
+        id="order"
+        placeholder="ABFVH89-67"
+        readonly
+      />
+    </div>
+    <div class="w-100"></div>
+    <div class="form-group col-md-6">
+      <label for="priority">Priority</label>
+      <select class="form-control" id="priority">
+        <option>High</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="status">Status</label>
+      <select class="form-control" id="status">
+        <option>Open</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="group">Group</label>
+      <select class="form-control" id="group">
+        <option>Customer Support</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="agent">Agent</label>
+      <select class="form-control" id="agent">
+        <option>Dorcas Cherono</option>
+      </select>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="contact">Tags</label>
+      <input
+        type="text"
+        class="form-control"
+        id="tags"
+        placeholder="ABFVH89-67"
+      />
+    </div>
     <div class="form-group">
       <button class="btn btn-primary action-button" :disabled="loading">
         Create Ticket
@@ -95,6 +189,7 @@
   </form>
 </template>
 <script>
+/* eslint-disable */
 import moment from 'moment';
 
 import { required } from 'vuelidate/lib/validators';

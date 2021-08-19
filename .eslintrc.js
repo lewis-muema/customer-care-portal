@@ -55,7 +55,7 @@ module.exports = {
     'vue/no-template-shadow': 'off',
     'vue/no-v-html': 'off',
     radix: 'off',
-    'prettier/prettier': ['error', { singleQuote: true }],
+    // 'prettier/prettier': ['error', { singleQuote: true }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/extensions': [
       'error',
