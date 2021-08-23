@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="submitTicket" class="form-inline">
-    <div class="form-group col-md-6">
+    <!-- <div class="form-group col-md-6">
       <v-select
         v-if="
           order.order_details !== undefined &&
@@ -43,8 +43,8 @@
       >
         Ticket reason is required
       </div>
-    </div>
-    <div class="form-group  col-md-6">
+    </div> -->
+    <!-- <div class="form-group col-md-6">
       <input
         type="text"
         v-model="params.department"
@@ -62,8 +62,8 @@
       >
         Ticket department is required
       </div>
-    </div>
-    <div class="form-group col-md-12">
+    </div> -->
+    <!-- <div class="form-group col-md-12">
       <textarea
         type="text"
         v-model="params.message"
@@ -82,7 +82,7 @@
       >
         Ticket message is required
       </div>
-    </div>
+    </div> -->
 
     <div class="form-group col-md-6">
       <label for="contact">Contact</label>
@@ -90,54 +90,164 @@
         type="text"
         class="form-control"
         id="contact"
+        v-model="params.contact"
         placeholder="name@example.com"
+        :class="{
+          'is-invalid': submitted && $v.params.contact.$error,
+        }"
         readonly
       />
+      <div
+        v-if="submitted && !$v.params.message.required"
+        class="invalid-feedback"
+      >
+        contact is required
+      </div>
     </div>
 
     <div class="form-group col-md-12">
       <label for="subject">Subject</label>
-      <input type="text" class="form-control" id="subject" />
+      <input
+        type="text"
+        class="form-control"
+        id="subject"
+        v-model="params.subject"
+        :class="{
+          'is-invalid': submitted && $v.params.subject.$error,
+        }"
+      />
+      <div
+        v-if="submitted && !$v.params.message.required"
+        class="invalid-feedback"
+      >
+        Ticket subject is required
+      </div>
     </div>
     <div class="form-group col-md-12">
       <label for="description">Description</label>
-      <textarea class="form-control" id="description" rows="3"></textarea>
+      <textarea
+        class="form-control"
+        id="description"
+        v-model="params.description"
+        rows="3"
+      ></textarea>
     </div>
     <div class="form-group col-md-6">
       <label for="businessunit">Business Unit</label>
-      <select class="form-control" id="businessunit">
-        <option>TRANSPORT - CLIENT</option>
-      </select>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select Business unit .."
+        class="form-control proximity-point"
+        v-model="params.businessUnit"
+        :class="{
+          'is-invalid': submitted && $v.params.businessUnit.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.businessUnit.required"
+          class="invalid-feedback"
+        >
+          Business Unit is required
+        </div>
+      </v-select>
     </div>
     <div class="w-100"></div>
     <div class="form-group col-md-6">
       <label for="userjourney">User Journey</label>
-      <select class="form-control" id="userjourney">
-        <option>Goods Dropoff</option>
-      </select>
+      <v-select
+        :options="userJourneys"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select User Journey."
+        class="form-control proximity-point"
+        v-model="params.businessUnit"
+        :class="{
+          'is-invalid': submitted && $v.params.userJourney.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.userJourney.required"
+          class="invalid-feedback"
+        >
+          User Journey is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-6">
-      <label for="issue">Issue</label>
-      <select class="form-control" id="issue">
-        <option>D note Inquiry</option>
-      </select>
+      <label for="userjourney">Issue</label>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select User Journey."
+        class="form-control proximity-point"
+        v-model="params.issue"
+        :class="{
+          'is-invalid': submitted && $v.params.issue.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.params.issue.required"
+          class="invalid-feedback"
+        >
+          Issue is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-6">
       <label for="type">Type</label>
-      <select class="form-control" id="type">
-        <option>4W</option>
-      </select>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select Ticket type ."
+        class="form-control proximity-point"
+        v-model="params.type"
+        :class="{
+          'is-invalid': submitted && $v.params.type.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.params.type.required"
+          class="invalid-feedback"
+        >
+          Type is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-6">
       <label for="source">Source</label>
-      <select class="form-control" id="source">
-        <option>CC PORTAL</option>
-      </select>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select Ticket source."
+        class="form-control proximity-point"
+        v-model="params.source"
+        :class="{
+          'is-invalid': submitted && $v.params.source.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.params.source.required"
+          class="invalid-feedback"
+        >
+          Ticket source is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-6">
       <label for="contact">Order Number</label>
       <input
         type="text"
+        v-model="params.orderNo"
         class="form-control"
         id="order"
         placeholder="ABFVH89-67"
@@ -147,32 +257,97 @@
     <div class="w-100"></div>
     <div class="form-group col-md-6">
       <label for="priority">Priority</label>
-      <select class="form-control" id="priority">
-        <option>High</option>
-      </select>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select Priority ."
+        class="form-control proximity-point"
+        v-model="params.priority"
+        :class="{
+          'is-invalid': submitted && $v.params.priority.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.params.priority.required"
+          class="invalid-feedback"
+        >
+          Ticket Priority is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-6">
       <label for="status">Status</label>
-      <select class="form-control" id="status">
-        <option>Open</option>
-      </select>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select Status ."
+        class="form-control proximity-point"
+        v-model="params.status"
+        :class="{
+          'is-invalid': submitted && $v.params.status.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.params.status.required"
+          class="invalid-feedback"
+        >
+          Ticket status is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-6">
       <label for="group">Group</label>
-      <select class="form-control" id="group">
-        <option>Customer Support</option>
-      </select>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select Group ."
+        class="form-control proximity-point"
+        v-model="params.group"
+        :class="{
+          'is-invalid': submitted && $v.params.group.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.params.group.required"
+          class="invalid-feedback"
+        >
+          Ticket Group is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-6">
       <label for="agent">Agent</label>
-      <select class="form-control" id="agent">
-        <option>Dorcas Cherono</option>
-      </select>
+      <v-select
+        :options="businessUnits"
+        :reduce="name => name.value"
+        name="name"
+        label="name"
+        placeholder="Select the Agent ."
+        class="form-control proximity-point"
+        v-model="params.agent"
+        :class="{
+          'is-invalid': submitted && $v.params.agent.$error,
+        }"
+      >
+        <div
+          v-if="submitted && !$v.params.agent.required"
+          class="invalid-feedback"
+        >
+          Agent is required
+        </div>
+      </v-select>
     </div>
     <div class="form-group col-md-12">
       <label for="contact">Tags</label>
       <input
         type="text"
+        v-model="params.tags"
         class="form-control"
         id="tags"
         placeholder="ABFVH89-67"
@@ -219,9 +394,21 @@ export default {
         reason: '',
         message: '',
         department: 'Customer Support',
+        businessUnit: '',
+        userJourney: '',
       },
       submitted: false,
       loading: false,
+      businessUnits: [
+        { value: 1, name: 'TRANSPORT - PARTNER' },
+        { value: 2, name: 'TRANSPORT - CLIENT' },
+        { value: 3, name: 'SENDY SUPPLY - SELLER' },
+        { value: 3, name: 'SENDY SUPPLY - BUYER' },
+      ],
+      userJourneys: [
+        { value: 1, name: 'Non-journey' },
+        { value: 2, name: 'Account Sign In' },
+      ],
     };
   },
   validations: {
@@ -230,6 +417,10 @@ export default {
       message: { required },
       department: { required },
     },
+  },
+  mounted() {
+    this.fetch_ticket_fields('fsffds');
+    this.user_groups();
   },
   computed: {
     ...mapState(['userData']),
@@ -246,7 +437,15 @@ export default {
 
     ...mapActions({
       createTicket: 'createTicket',
+      fetch_ticket_fields: 'fetch_ticket_fields',
+      user_groups: 'user_groups',
     }),
+
+    // async fetchTicketFields(field) {
+    //   try {
+    //     this.$store.dispatch('fetch_ticket_fields', field);
+    //   } catch (error) {}
+    // },
     async submitTicket() {
       this.submitted = true;
       this.$v.$touch();

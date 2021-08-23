@@ -22,6 +22,7 @@ const config = {
     COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
+    STAFF_API2: 'https://staffapitest.sendyit.com/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
@@ -63,6 +64,7 @@ const config = {
     COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
+    STAFF_API2: 'https://staffapitest.sendyit.com/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
@@ -99,6 +101,7 @@ const config = {
     COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
+    STAFF_API2: 'https://staffapitest.sendyit.com/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',

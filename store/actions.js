@@ -299,6 +299,33 @@ export default {
       return error;
     }
   },
+  async fetch_ticket_fields({ state, dispatch, payload }) {
+    const config = state.config;
+    const url = `${config.STAFF_API2}freshdesk/ticket_fields?field=${payload}`;
+    console.log('tickets_url', url);
+    try {
+      const response = await axiosConfig.get(url);
+      commit('setTicketFields', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async user_groups({ state, dispatch }) {
+    const config = state.config;
+    const url = `${config.STAFF_API2}freshdesk/groups`;
+    console.log('groups', url);
+    try {
+      const response = await axiosConfig.get(url);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async createTicket({ rootState, dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
