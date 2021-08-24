@@ -202,10 +202,10 @@
     <div class="form-group col-md-6">
       <label for="type">Type</label>
       <v-select
-        :options="businessUnits"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
+        :options="ticketType"
+        :reduce="label => label.value"
+        name="label"
+        label="label"
         placeholder="Select Ticket type ."
         class="form-control proximity-point"
         v-model="params.type"
@@ -217,14 +217,14 @@
           v-if="submitted && !$v.params.type.required"
           class="invalid-feedback"
         >
-          Type is required
+          Ticket Type is required
         </div>
       </v-select>
     </div>
     <div class="form-group col-md-6">
       <label for="source">Source</label>
       <v-select
-        :options="businessUnits"
+        :options="userGroups"
         :reduce="name => name.value"
         name="name"
         label="name"
@@ -258,10 +258,10 @@
     <div class="form-group col-md-6">
       <label for="priority">Priority</label>
       <v-select
-        :options="businessUnits"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
+        :options="priority"
+        :reduce="label => label.value"
+        name="label"
+        label="label"
         placeholder="Select Priority ."
         class="form-control proximity-point"
         v-model="params.priority"
@@ -280,10 +280,10 @@
     <div class="form-group col-md-6">
       <label for="status">Status</label>
       <v-select
-        :options="businessUnits"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
+        :options="status"
+        :reduce="label => label.value"
+        name="label"
+        label="label"
         placeholder="Select Status ."
         class="form-control proximity-point"
         v-model="params.status"
@@ -302,7 +302,7 @@
     <div class="form-group col-md-6">
       <label for="group">Group</label>
       <v-select
-        :options="businessUnits"
+        :options="userGroups"
         :reduce="name => name.value"
         name="name"
         label="name"
@@ -324,7 +324,7 @@
     <div class="form-group col-md-6">
       <label for="agent">Agent</label>
       <v-select
-        :options="businessUnits"
+        :options="userGroups"
         :reduce="name => name.value"
         name="name"
         label="name"
@@ -391,24 +391,27 @@ export default {
   data() {
     return {
       params: {
-        reason: '',
-        message: '',
-        department: 'Customer Support',
+        contact: '',
+        subject: '',
+        description: '',
+        type: '',
+        source: '',
+        orderNo: '',
+        priority: '',
+        status: '',
+        group: '',
+        agent: 'cvhjnm',
+        tags: '',
         businessUnit: '',
         userJourney: '',
       },
       submitted: false,
       loading: false,
-      businessUnits: [
-        { value: 1, name: 'TRANSPORT - PARTNER' },
-        { value: 2, name: 'TRANSPORT - CLIENT' },
-        { value: 3, name: 'SENDY SUPPLY - SELLER' },
-        { value: 3, name: 'SENDY SUPPLY - BUYER' },
-      ],
-      userJourneys: [
-        { value: 1, name: 'Non-journey' },
-        { value: 2, name: 'Account Sign In' },
-      ],
+      ticketType: [],
+      priority: [],
+      status: [],
+      businessUnits: [],
+      userGroups: [],
     };
   },
   validations: {
@@ -419,8 +422,11 @@ export default {
     },
   },
   mounted() {
-    this.fetch_ticket_fields('fsffds');
-    this.user_groups();
+    this.fetchTicketFields('business_unit');
+    this.fetchTicketFields('ticket_type');
+    this.fetchTicketFields('priority');
+    this.fetchTicketFields('status');
+    this.fetchUserGroups();
   },
   computed: {
     ...mapState(['userData']),
@@ -441,11 +447,29 @@ export default {
       user_groups: 'user_groups',
     }),
 
-    // async fetchTicketFields(field) {
-    //   try {
-    //     this.$store.dispatch('fetch_ticket_fields', field);
-    //   } catch (error) {}
-    // },
+    async fetchUserGroups() {
+      const data = await this.user_groups();
+      this.userGroups = data['data'];
+    },
+    async fetchTicketFields(field) {
+      let data = await this.fetch_ticket_fields(field);
+      const finalData = data['data'];
+      switch (field) {
+        case 'business_unit':
+          this.businessUnits = finalData;
+          break;
+        case 'ticket_type':
+          this.ticketType = finalData;
+          break;
+        case 'priority':
+          this.priority = finalData;
+          break;
+        case 'status':
+          this.status = finalData;
+          break;
+        default:
+      }
+    },
     async submitTicket() {
       this.submitted = true;
       this.$v.$touch();

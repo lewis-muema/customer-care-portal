@@ -299,13 +299,14 @@ export default {
       return error;
     }
   },
-  async fetch_ticket_fields({ state, dispatch, payload }) {
+  async fetch_ticket_fields({ state, dispatch }, payload) {
     const config = state.config;
-    const url = `${config.STAFF_API2}freshdesk/ticket_fields?field=${payload}`;
-    console.log('tickets_url', url);
+    const url = `${config.STAFF_API2}freshdesk/ticket-fields?field=${payload}`;
     try {
       const response = await axiosConfig.get(url);
-      commit('setTicketFields', response.data);
+      // console.log('ticketResponse', response);
+      // commit('setTicketFields', response.data);
+      // console.log('ticketResponse2', response);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -316,9 +317,9 @@ export default {
   async user_groups({ state, dispatch }) {
     const config = state.config;
     const url = `${config.STAFF_API2}freshdesk/groups`;
-    console.log('groups', url);
     try {
       const response = await axiosConfig.get(url);
+      // commit('setUserGroups', response.data);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {

@@ -23,6 +23,9 @@ export default {
   setTicketFields(state, ticketFields) {
     state.ticketFields = ticketFields;
   },
+  setUserGroups(state, userGroups) {
+    state.userGroups = userGroups;
+  },
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;
   },

@@ -18,6 +18,7 @@ const state = () => ({
   searchedRider: null,
   businessUnits: null,
   ticketFields: null,
+  userGroups: {},
   selectedBusinessUnits: null,
   selectedCopNames: null,
   selectedCities: null,
