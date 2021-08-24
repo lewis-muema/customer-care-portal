@@ -70,7 +70,6 @@ export default {
   methods: {
     ...mapMutations({
       updateSession: 'setSession',
-      setToken: 'setToken',
     }),
     ...mapActions({
       fetchEnvironmentVariables: 'fetch_environment_variables',

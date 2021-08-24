@@ -49,6 +49,7 @@
                   )
                 }}
               </td>
+
               <td>
                 {{
                   getFormattedDate(data.created_at, 'MMM Do,  YYYY HH:mm:ss')

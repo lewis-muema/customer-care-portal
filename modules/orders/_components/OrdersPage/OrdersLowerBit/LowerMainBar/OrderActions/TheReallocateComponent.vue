@@ -112,11 +112,12 @@ export default {
       this.fetch_all_reallocation_reason()
         .then(results => {
           this.customerInfo = results.data.filter(
-            reason => reason.status === 1,
+            reason =>
+              reason.status === 1 && this.vendorType === reason.vendor_type_id,
           );
         })
         .catch(err => {
-          console.error('Error occurred: ', err);
+          throw err;
         });
     },
     async checkTrackerStatus() {

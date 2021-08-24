@@ -70,6 +70,7 @@ export default {
       query: '',
       order: null,
       isActive: true,
+      errors: [],
     };
   },
   computed: {

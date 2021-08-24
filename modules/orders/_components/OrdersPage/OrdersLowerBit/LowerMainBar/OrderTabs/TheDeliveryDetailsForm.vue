@@ -176,7 +176,7 @@
       </button>
     </form>
     <button
-      v-if="actionType === '1' && dispute_status === 3"
+      v-if="showSubmitButton"
       class="btn btn-primary action-button"
       @click="determineAction"
     >
@@ -237,6 +237,12 @@ export default {
     showForm() {
       const action_type = parseInt(this.actionType);
       return action_type === 3 || action_type === 2;
+    },
+    showSubmitButton() {
+      return (
+        this.actionType === '1' &&
+        (this.dispute_status === 3 || this.dispute_status === 2)
+      );
     },
   },
   mounted() {
