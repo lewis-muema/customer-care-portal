@@ -301,12 +301,10 @@ export default {
   },
   async fetch_ticket_fields({ state, dispatch }, payload) {
     const config = state.config;
-    const url = `${config.STAFF_API2}freshdesk/ticket-fields?field=${payload}`;
+    const url = `${config.STAFF_API2}ticket-fields?field=${payload}`;
     try {
       const response = await axiosConfig.get(url);
-      // console.log('ticketResponse', response);
       // commit('setTicketFields', response.data);
-      // console.log('ticketResponse2', response);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -316,7 +314,20 @@ export default {
   },
   async user_groups({ state, dispatch }) {
     const config = state.config;
-    const url = `${config.STAFF_API2}freshdesk/groups`;
+    const url = `${config.STAFF_API2}groups`;
+    try {
+      const response = await axiosConfig.get(url);
+      // commit('setUserGroups', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async fetch_business_units({ state, dispatch }) {
+    const config = state.config;
+    const url = `${config.STAFF_API2}business-units`;
     try {
       const response = await axiosConfig.get(url);
       // commit('setUserGroups', response.data);

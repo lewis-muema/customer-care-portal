@@ -123,6 +123,7 @@
         Ticket subject is required
       </div>
     </div>
+    {{ params.subject }}
     <div class="form-group col-md-12">
       <label for="description">Description</label>
       <textarea
@@ -136,12 +137,12 @@
       <label for="businessunit">Business Unit</label>
       <v-select
         :options="businessUnits"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
+        :reduce="label => label.label"
+        label="label"
         placeholder="Select Business unit .."
         class="form-control proximity-point"
         v-model="params.businessUnit"
+        @input="changedBusinesssUnit"
         :class="{
           'is-invalid': submitted && $v.params.businessUnit.$error,
         }"
@@ -153,18 +154,18 @@
           Business Unit is required
         </div>
       </v-select>
+      {{ params.businessUnit }}
     </div>
     <div class="w-100"></div>
     <div class="form-group col-md-6">
       <label for="userjourney">User Journey</label>
       <v-select
         :options="userJourneys"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
+        :reduce="label => label.label"
+        label="label"
         placeholder="Select User Journey."
         class="form-control proximity-point"
-        v-model="params.businessUnit"
+        v-model="params.userJourney"
         :class="{
           'is-invalid': submitted && $v.params.userJourney.$error,
         }"
@@ -303,12 +304,12 @@
       <label for="group">Group</label>
       <v-select
         :options="userGroups"
-        :reduce="name => name.value"
-        name="name"
+        :reduce="name => name.name"
         label="name"
         placeholder="Select Group ."
         class="form-control proximity-point"
         v-model="params.group"
+        @input="changedUserGroup"
         :class="{
           'is-invalid': submitted && $v.params.group.$error,
         }"
@@ -324,9 +325,8 @@
     <div class="form-group col-md-6">
       <label for="agent">Agent</label>
       <v-select
-        :options="userGroups"
-        :reduce="name => name.value"
-        name="name"
+        :options="userAgents"
+        :reduce="name => name.name"
         label="name"
         placeholder="Select the Agent ."
         class="form-control proximity-point"
@@ -405,11 +405,15 @@ export default {
         businessUnit: '',
         userJourney: '',
       },
+      bus: '',
       submitted: false,
       loading: false,
       ticketType: [],
       priority: [],
       status: [],
+      agents: [],
+      userJourneys: [],
+      userAgents: [],
       businessUnits: [],
       userGroups: [],
     };
@@ -422,11 +426,14 @@ export default {
     },
   },
   mounted() {
-    this.fetchTicketFields('business_unit');
     this.fetchTicketFields('ticket_type');
     this.fetchTicketFields('priority');
     this.fetchTicketFields('status');
     this.fetchUserGroups();
+    this.fetchBusinessUnits();
+  },
+  watch: {
+    businessUnit: {},
   },
   computed: {
     ...mapState(['userData']),
@@ -445,30 +452,51 @@ export default {
       createTicket: 'createTicket',
       fetch_ticket_fields: 'fetch_ticket_fields',
       user_groups: 'user_groups',
+      fetch_business_units: 'fetch_business_units',
     }),
-
     async fetchUserGroups() {
-      const data = await this.user_groups();
-      this.userGroups = data['data'];
+      let data = await this.user_groups();
+      const userGroups = data['data'];
+      this.userGroups = userGroups;
     },
     async fetchTicketFields(field) {
       let data = await this.fetch_ticket_fields(field);
-      const finalData = data['data'];
+      const ticketFields = data['data'];
       switch (field) {
-        case 'business_unit':
-          this.businessUnits = finalData;
-          break;
         case 'ticket_type':
-          this.ticketType = finalData;
+          this.ticketType = ticketFields;
           break;
         case 'priority':
-          this.priority = finalData;
+          this.priority = ticketFields;
           break;
         case 'status':
-          this.status = finalData;
+          this.status = ticketFields;
           break;
         default:
       }
+    },
+    async changedBusinesssUnit(event) {
+      let data = await this.fetch_business_units();
+      const businessUnits = data['data'];
+      businessUnits.forEach(businessUnit => {
+        if (businessUnit.label === event) {
+          this.userJourneys = businessUnit.user_journeys;
+        }
+      });
+    },
+    async changedUserGroup(event) {
+      let data = await this.user_groups();
+      const userGroups = data['data'];
+      userGroups.forEach(userGroup => {
+        if (userGroup.name === event) {
+          this.userAgents = userGroup.agents;
+        }
+      });
+    },
+    async fetchBusinessUnits() {
+      let data = await this.fetch_business_units();
+      const businessUnits = data['data'];
+      this.businessUnits = businessUnits;
     },
     async submitTicket() {
       this.submitted = true;
