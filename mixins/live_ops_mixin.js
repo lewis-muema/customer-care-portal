@@ -35,7 +35,7 @@ const LiveOpsMxn = {
     this.requestUnits();
   },
   methods: {
-    ...mapActions(['requestBusinessUnits']),
+    ...mapActions(['setBusinessUnits']),
 
     formatDate(date, format) {
       return moment(date).format(format);
@@ -62,7 +62,7 @@ const LiveOpsMxn = {
       return formattedDate;
     },
     async requestUnits() {
-      const arr = await this.requestBusinessUnits();
+      const arr = await this.setBusinessUnits();
 
       this.businessUnits = arr;
     },
