@@ -166,6 +166,7 @@
         placeholder="Select User Journey."
         class="form-control proximity-point"
         v-model="params.userJourney"
+        @input="changedUserJourney"
         :class="{
           'is-invalid': submitted && $v.params.userJourney.$error,
         }"
@@ -181,11 +182,10 @@
     <div class="form-group col-md-6">
       <label for="userjourney">Issue</label>
       <v-select
-        :options="businessUnits"
-        :reduce="name => name.value"
-        name="name"
-        label="name"
-        placeholder="Select User Journey."
+        :options="issues"
+        :reduce="label => label.label"
+        label="label"
+        placeholder="Select Ticket issue."
         class="form-control proximity-point"
         v-model="params.issue"
         :class="{
@@ -204,8 +204,7 @@
       <label for="type">Type</label>
       <v-select
         :options="ticketType"
-        :reduce="label => label.value"
-        name="label"
+        :reduce="label => label.label"
         label="label"
         placeholder="Select Ticket type ."
         class="form-control proximity-point"
@@ -226,8 +225,7 @@
       <label for="source">Source</label>
       <v-select
         :options="userGroups"
-        :reduce="name => name.value"
-        name="name"
+        :reduce="name => name.name"
         label="name"
         placeholder="Select Ticket source."
         class="form-control proximity-point"
@@ -260,8 +258,7 @@
       <label for="priority">Priority</label>
       <v-select
         :options="priority"
-        :reduce="label => label.value"
-        name="label"
+        :reduce="label => label.label"
         label="label"
         placeholder="Select Priority ."
         class="form-control proximity-point"
@@ -282,9 +279,8 @@
       <label for="status">Status</label>
       <v-select
         :options="status"
-        :reduce="label => label.value"
+        :reduce="label => label.label"
         name="label"
-        label="label"
         placeholder="Select Status ."
         class="form-control proximity-point"
         v-model="params.status"
@@ -395,12 +391,12 @@ export default {
         subject: '',
         description: '',
         type: '',
-        source: '',
+        source: 'CC PORTAL',
         orderNo: '',
         priority: '',
         status: '',
         group: '',
-        agent: 'cvhjnm',
+        agent: '',
         tags: '',
         businessUnit: '',
         userJourney: '',
@@ -412,6 +408,7 @@ export default {
       priority: [],
       status: [],
       agents: [],
+      issues: [],
       userJourneys: [],
       userAgents: [],
       businessUnits: [],
@@ -491,6 +488,17 @@ export default {
         if (userGroup.name === event) {
           this.userAgents = userGroup.agents;
         }
+      });
+    },
+    async changedUserJourney(event) {
+      let data = await this.fetch_business_units();
+      const businessUnits = data['data'];
+      businessUnits.forEach(businessUnit => {
+        businessUnit.user_journeys.forEach(userJourney => {
+          if (userJourney.label === event) {
+            this.issues = userJourney.issues;
+          }
+        });
       });
     },
     async fetchBusinessUnits() {
