@@ -19,6 +19,7 @@ const state = () => ({
   businessUnits: null,
   ticketFields: null,
   userGroups: {},
+  ticketBusinessUnits: {},
   selectedBusinessUnits: null,
   selectedCopNames: null,
   selectedCities: null,

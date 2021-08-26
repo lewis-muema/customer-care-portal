@@ -299,12 +299,12 @@ export default {
       return error;
     }
   },
-  async fetch_ticket_fields({ state, dispatch }, payload) {
+  async fetch_ticket_fields({ state, dispatch, commit }, payload) {
     const config = state.config;
     const url = `${config.STAFF_API2}ticket-fields?field=${payload}`;
     try {
       const response = await axiosConfig.get(url);
-      // commit('setTicketFields', response.data);
+      commit('setTicketFields', response.data);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -312,12 +312,12 @@ export default {
       });
     }
   },
-  async user_groups({ state, dispatch }) {
+  async fetch_ticket_user_groups({ state, dispatch }) {
     const config = state.config;
     const url = `${config.STAFF_API2}groups`;
     try {
       const response = await axiosConfig.get(url);
-      // commit('setUserGroups', response.data);
+      commit('setUserGroups', response.data);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
@@ -325,12 +325,25 @@ export default {
       });
     }
   },
-  async fetch_business_units({ state, dispatch }) {
+  async fetch_ticket_business_units({ state, dispatch, commit }) {
     const config = state.config;
     const url = `${config.STAFF_API2}business-units`;
     try {
       const response = await axiosConfig.get(url);
-      // commit('setUserGroups', response.data);
+      commit('setTicketBusinessUnits', response.data);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async fetch_ticket_tags({ state, dispatch, commit }) {
+    const config = state.config;
+    const url = `${config.STAFF_API2}business-units`;
+    try {
+      const response = await axiosConfig.get(url);
+      //commit('setTicketBusinessUnits', response.data);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {

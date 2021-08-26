@@ -26,6 +26,9 @@ export default {
   setUserGroups(state, userGroups) {
     state.userGroups = userGroups;
   },
+  setTicketBusinessUnits(state, ticketBusinessUnits) {
+    state.ticketBusinessUnits = ticketBusinessUnits;
+  },
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;
   },

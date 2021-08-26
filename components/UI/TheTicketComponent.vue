@@ -139,7 +139,7 @@
         :options="businessUnits"
         :reduce="label => label.label"
         label="label"
-        placeholder="Select Business unit .."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.businessUnit"
         @input="changedBusinesssUnit"
@@ -154,10 +154,9 @@
           Business Unit is required
         </div>
       </v-select>
-      {{ params.businessUnit }}
     </div>
     <div class="w-100"></div>
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-6" v-if="params.businessUnit">
       <label for="userjourney">User Journey</label>
       <v-select
         :options="userJourneys"
@@ -179,7 +178,7 @@
         </div>
       </v-select>
     </div>
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-6" v-if="params.userJourney">
       <label for="userjourney">Issue</label>
       <v-select
         :options="issues"
@@ -396,12 +395,12 @@ export default {
         priority: '',
         status: '',
         group: '',
-        agent: '',
+        agent: this.$store.state.userData.payload.data.name,
         tags: '',
-        businessUnit: '',
+        businessUnit: null,
         userJourney: '',
+        isUserJourneySelected: false,
       },
-      bus: '',
       submitted: false,
       loading: false,
       ticketType: [],
@@ -428,9 +427,7 @@ export default {
     this.fetchTicketFields('status');
     this.fetchUserGroups();
     this.fetchBusinessUnits();
-  },
-  watch: {
-    businessUnit: {},
+    console.log(this.loggedUser);
   },
   computed: {
     ...mapState(['userData']),
@@ -449,7 +446,7 @@ export default {
       createTicket: 'createTicket',
       fetch_ticket_fields: 'fetch_ticket_fields',
       user_groups: 'user_groups',
-      fetch_business_units: 'fetch_business_units',
+      fetch_business_units: 'fetch_ticket_business_units',
     }),
     async fetchUserGroups() {
       let data = await this.user_groups();
