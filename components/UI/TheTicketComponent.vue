@@ -92,13 +92,10 @@
         id="contact"
         v-model="params.contact"
         placeholder="name@example.com"
-        :class="{
-          'is-invalid': submitted && $v.params.contact.$error,
-        }"
         readonly
       />
       <div
-        v-if="submitted && !$v.params.message.required"
+        v-if="submitted && !$v.params.contact.required"
         class="invalid-feedback"
       >
         contact is required
@@ -116,14 +113,12 @@
           'is-invalid': submitted && $v.params.subject.$error,
         }"
       />
-      <div
-        v-if="submitted && !$v.params.message.required"
-        class="invalid-feedback"
-      >
-        Ticket subject is required
+      <div class="invalid-feedback">
+        <span v-if="!$v.params.subject.required">
+          Ticket subject is required
+        </span>
       </div>
     </div>
-    {{ params.subject }}
     <div class="form-group col-md-12">
       <label for="description">Description</label>
       <textarea
@@ -131,7 +126,15 @@
         id="description"
         v-model="params.description"
         rows="3"
+        :class="{
+          'is-invalid': submitted && $v.params.description.$error,
+        }"
       ></textarea>
+      <div class="invalid-feedback">
+        <span v-if="!$v.params.description.required">
+          Ticket description is required
+        </span>
+      </div>
     </div>
     <div class="form-group col-md-6">
       <label for="businessunit">Business Unit</label>
@@ -148,7 +151,7 @@
         }"
       >
         <div
-          v-if="submitted && !$v.businessUnit.required"
+          v-if="submitted && !$v.params.businessUnit.required"
           class="invalid-feedback"
         >
           Business Unit is required
@@ -162,7 +165,7 @@
         :options="userJourneys"
         :reduce="label => label.label"
         label="label"
-        placeholder="Select User Journey."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.userJourney"
         @input="changedUserJourney"
@@ -171,7 +174,7 @@
         }"
       >
         <div
-          v-if="submitted && !$v.userJourney.required"
+          v-if="submitted && !$v.params.userJourney.required"
           class="invalid-feedback"
         >
           User Journey is required
@@ -184,7 +187,7 @@
         :options="issues"
         :reduce="label => label.label"
         label="label"
-        placeholder="Select Ticket issue."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.issue"
         :class="{
@@ -205,7 +208,7 @@
         :options="ticketType"
         :reduce="label => label.label"
         label="label"
-        placeholder="Select Ticket type ."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.type"
         :class="{
@@ -222,24 +225,13 @@
     </div>
     <div class="form-group col-md-6">
       <label for="source">Source</label>
-      <v-select
-        :options="userGroups"
-        :reduce="name => name.name"
-        label="name"
-        placeholder="Select Ticket source."
-        class="form-control proximity-point"
+      <input
+        type="text"
         v-model="params.source"
-        :class="{
-          'is-invalid': submitted && $v.params.source.$error,
-        }"
-      >
-        <div
-          v-if="submitted && !$v.params.source.required"
-          class="invalid-feedback"
-        >
-          Ticket source is required
-        </div>
-      </v-select>
+        class="form-control"
+        id="source"
+        readonly
+      />
     </div>
     <div class="form-group col-md-6">
       <label for="contact">Order Number</label>
@@ -248,7 +240,6 @@
         v-model="params.orderNo"
         class="form-control"
         id="order"
-        placeholder="ABFVH89-67"
         readonly
       />
     </div>
@@ -259,7 +250,7 @@
         :options="priority"
         :reduce="label => label.label"
         label="label"
-        placeholder="Select Priority ."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.priority"
         :class="{
@@ -278,9 +269,9 @@
       <label for="status">Status</label>
       <v-select
         :options="status"
-        :reduce="label => label.label"
+        :reduce="label => label.id"
         name="label"
-        placeholder="Select Status ."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.status"
         :class="{
@@ -299,9 +290,9 @@
       <label for="group">Group</label>
       <v-select
         :options="userGroups"
-        :reduce="name => name.name"
+        :reduce="name => name.id"
         label="name"
-        placeholder="Select Group ."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.group"
         @input="changedUserGroup"
@@ -321,9 +312,9 @@
       <label for="agent">Agent</label>
       <v-select
         :options="userAgents"
-        :reduce="name => name.name"
+        :reduce="name => name.id"
         label="name"
-        placeholder="Select the Agent ."
+        placeholder=".."
         class="form-control proximity-point"
         v-model="params.agent"
         :class="{
@@ -338,16 +329,6 @@
         </div>
       </v-select>
     </div>
-    <div class="form-group col-md-12">
-      <label for="contact">Tags</label>
-      <input
-        type="text"
-        v-model="params.tags"
-        class="form-control"
-        id="tags"
-        placeholder="ABFVH89-67"
-      />
-    </div>
     <div class="form-group">
       <button class="btn btn-primary action-button" :disabled="loading">
         Create Ticket
@@ -356,14 +337,16 @@
         ></span>
       </button>
     </div>
+    {{ params }}
+    {{ getName }}
   </form>
 </template>
 <script>
 /* eslint-disable */
 import moment from 'moment';
 
-import { required } from 'vuelidate/lib/validators';
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { required, minLength } from 'vuelidate/lib/validators';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 
 import TheTicketForm from '~/components/UI/TheTicketComponent';
 
@@ -386,20 +369,18 @@ export default {
   data() {
     return {
       params: {
-        contact: '',
+        contact: this.ticket.customer.firstName,
         subject: '',
         description: '',
         type: '',
         source: 'CC PORTAL',
-        orderNo: '',
+        orderNo: this.order.order_details.order_no,
         priority: '',
         status: '',
         group: '',
-        agent: this.$store.state.userData.payload.data.name,
-        tags: '',
-        businessUnit: null,
+        businessUnit: '',
         userJourney: '',
-        isUserJourneySelected: false,
+        agent: this.$store.getters.getSession.payload.data.name,
       },
       submitted: false,
       loading: false,
@@ -416,9 +397,19 @@ export default {
   },
   validations: {
     params: {
-      reason: { required },
-      message: { required },
-      department: { required },
+      contact: { required },
+      subject: { required },
+      description: { required },
+      issue: { required },
+      type: { required },
+      source: { required },
+      orderNo: { required },
+      priority: { required },
+      status: { required },
+      group: { required },
+      agent: { required },
+      businessUnit: { required },
+      userJourney: { required },
     },
   },
   mounted() {
@@ -427,12 +418,15 @@ export default {
     this.fetchTicketFields('status');
     this.fetchUserGroups();
     this.fetchBusinessUnits();
-    console.log(this.loggedUser);
   },
   computed: {
     ...mapState(['userData']),
+    ...mapGetters(['getSession']),
     idParam() {
       return this.ticket.id;
+    },
+    getName() {
+      return this.ticket.customer.email;
     },
   },
   methods: {
@@ -445,7 +439,7 @@ export default {
     ...mapActions({
       createTicket: 'createTicket',
       fetch_ticket_fields: 'fetch_ticket_fields',
-      user_groups: 'user_groups',
+      user_groups: 'fetch_ticket_user_groups',
       fetch_business_units: 'fetch_ticket_business_units',
     }),
     async fetchUserGroups() {
@@ -473,6 +467,7 @@ export default {
       let data = await this.fetch_business_units();
       const businessUnits = data['data'];
       businessUnits.forEach(businessUnit => {
+        console.log(event);
         if (businessUnit.label === event) {
           this.userJourneys = businessUnit.user_journeys;
         }
@@ -482,7 +477,7 @@ export default {
       let data = await this.user_groups();
       const userGroups = data['data'];
       userGroups.forEach(userGroup => {
-        if (userGroup.name === event) {
+        if (userGroup.id === event) {
           this.userAgents = userGroup.agents;
         }
       });
@@ -509,48 +504,60 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-
       this.loading = true;
       const notification = [];
       let actionClass = '';
-      const department = 2;
+      // const department = 2;
 
-      const loggedUser = this.userData.payload.data.name;
-      const msg = `${this.params.message} <br /> <code class="pull-right">Raised By : ${loggedUser} from CC Portal</code>`;
+      // const loggedUser = this.userData.payload.data.name;
+      // const msg = `${this.params.message} <br /> <code class="pull-right">Raised By : ${loggedUser} from CC Portal</code>`;
+      const msg = 'Your ticket has been created successfully'
 
-      const filteredReason = this.customerInfo.filter(reason => {
-        return reason.code === this.params.reason;
-      });
+      // const filteredReason = this.customerInfo.filter(reason => {
+      //   return reason.code === this.params.reason;
+      // });
 
       const payload = {
         app: 'STAFF_API',
         endpoint: 'freshdesk/tickets',
         apiKey: false,
         params: {
-          name: this.ticket.customer.firstName,
+          name: this.params.contact,
+          subject: this.params.subject,
+          description: this.params.description,
+          status: this.params.status,
+          type: this.params.type,
+          priority: 2,
+          responder_id: this.params.agent,
           email: this.ticket.customer.email,
-          subject: `${filteredReason[0].reason} - ${this.ticket.title}`,
-          description: msg,
-          status: 3, // pending status
-          priority: 1, // low priority
-          agentEmail: this.userData.payload.data.email,
+          group_id: this.params.group,
+          source: 114,
+          custom_fields: {
+            cf_business_unit870537: this.params.businessUnit,
+            cf_user_journey793335: this.params.userJourney,
+            cf_issue690783: this.params.issue,
+            cf_order_number: this.params.orderNo,
+          },
         },
       };
 
       try {
+        console.log('here', payload);
         const data = await this.createTicket(payload);
-        const errorMsg = data.message;
-        if (!data.status && data.data) {
-          notification.push(errorMsg);
-          const errors = data.data.errors;
-          for (let i = 0; i < errors.length; i += 1) {
-            notification.push(`${errors[i].field} - ${errors[i].message}`);
+        console.log(data.data);
+        console.log('ticket created successfullyççç');
+          const errorMsg = data.message;
+          if (!data.status && data.data) {
+            notification.push(errorMsg);
+            const errors = data.data.errors;
+            for (let i = 0; i < errors.length; i += 1) {
+              notification.push(`${errors[i].field} - ${errors[i].message}`);
+            }
+          } else {
+            notification.push('Ticket created successfully on fresh desk');
           }
-        } else {
-          notification.push('Ticket created successfully on fresh desk');
-        }
-        const status = typeof data.status === 'boolean' ? data.status : false;
-        actionClass = this.display_order_action_notification(status);
+          const status = typeof data.status === 'boolean' ? data.status : false;
+          actionClass = this.display_order_action_notification(status);
       } catch (error) {
         notification.push(error.response.message);
         actionClass = 'danger';

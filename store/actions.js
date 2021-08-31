@@ -312,7 +312,7 @@ export default {
       });
     }
   },
-  async fetch_ticket_user_groups({ state, dispatch }) {
+  async fetch_ticket_user_groups({ state, dispatch, commit }) {
     const config = state.config;
     const url = `${config.STAFF_API2}groups`;
     try {
@@ -331,19 +331,6 @@ export default {
     try {
       const response = await axiosConfig.get(url);
       commit('setTicketBusinessUnits', response.data);
-      return response.data;
-    } catch (error) {
-      await dispatch('handleErrors', error.response.status, {
-        root: true,
-      });
-    }
-  },
-  async fetch_ticket_tags({ state, dispatch, commit }) {
-    const config = state.config;
-    const url = `${config.STAFF_API2}business-units`;
-    try {
-      const response = await axiosConfig.get(url);
-      //commit('setTicketBusinessUnits', response.data);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
