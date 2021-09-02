@@ -471,7 +471,7 @@ export default {
           description: this.params.description,
           status: this.params.status,
           type: this.params.type,
-          priority: 2,
+          priority: this.params.priority,
           responder_id: this.params.agent,
           email: this.ticket.customer.email,
           group_id: this.params.group,
