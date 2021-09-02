@@ -76,6 +76,9 @@
       <div class="w-100"></div>
       <div class="form-group col-md-6" v-if="params.businessUnit">
         <label for="userjourney">User Journey</label>
+        <span v-if="isBusinessUnitSelected">
+          <i class="fa fa-spinner fa-spin loader"></i
+        ></span>
         <v-select
           :options="userJourneys"
           :reduce="label => label.label"
@@ -98,6 +101,9 @@
       </div>
       <div class="form-group col-md-6" v-if="params.userJourney">
         <label for="userjourney">Issue</label>
+        <span v-if="isUserJourneySelected">
+          <i class="fa fa-spinner fa-spin loader"></i
+        ></span>
         <v-select
           :options="issues"
           :reduce="label => label.label"
@@ -172,7 +178,7 @@
         <label for="priority">Priority</label>
         <v-select
           :options="priority"
-          :reduce="label => label.label"
+          :reduce="label => label.id"
           label="label"
           placeholder=".."
           class="form-control proximity-point"
@@ -234,6 +240,9 @@
       </div>
       <div class="form-group col-md-6">
         <label for="agent">Agent</label>
+        <span v-if="isUserGroupSelected">
+          <i class="fa fa-spinner fa-spin loader"></i
+        ></span>
         <v-select
           :options="userAgents"
           :reduce="name => name.id"
@@ -325,6 +334,9 @@ export default {
       loading: false,
       disabled: false,
       showDialog: false,
+      isBusinessUnitSelected: false,
+      isUserJourneySelected: false,
+      isUserGroupSelected: false,
       showSubmittedModal: false,
       ticketType: [],
       priority: [],
@@ -335,6 +347,7 @@ export default {
       userAgents: [],
       businessUnits: [],
       userGroups: [],
+      ticketFields: ['ticket_type', 'priority', 'status'],
     };
   },
   validations: {
@@ -355,9 +368,9 @@ export default {
     },
   },
   mounted() {
-    this.fetchTicketFields('ticket_type');
-    this.fetchTicketFields('priority');
-    this.fetchTicketFields('status');
+    this.ticketFields.forEach(ticketField => {
+      this.fetchTicketFields(`${ticketField}`);
+    });
     this.fetchUserGroups();
     this.fetchBusinessUnits();
   },
@@ -401,47 +414,51 @@ export default {
     },
     async fetchTicketFields(field) {
       let data = await this.fetch_ticket_fields(field);
-      const ticketFields = data['data'];
+      const ticketFieldsData = data['data'];
       switch (field) {
         case 'ticket_type':
-          this.ticketType = ticketFields;
+          this.ticketType = ticketFieldsData;
           break;
         case 'priority':
-          this.priority = ticketFields;
+          this.priority = ticketFieldsData;
           break;
         case 'status':
-          this.status = ticketFields;
+          this.status = ticketFieldsData;
           break;
         default:
       }
     },
     async changedBusinesssUnit(event) {
-      this.loading = true;
+      this.isBusinessUnitSelected = true;
       let data = await this.fetch_business_units();
       const businessUnits = data['data'];
       businessUnits.forEach(businessUnit => {
         if (businessUnit.label === event) {
           this.userJourneys = businessUnit.user_journeys;
-          this.loading = false;
+          this.isBusinessUnitSelected = false;
         }
       });
     },
     async changedUserGroup(event) {
+      this.isUserGroupSelected = true;
       let data = await this.user_groups();
       const userGroups = data['data'];
       userGroups.forEach(userGroup => {
         if (userGroup.id === event) {
           this.userAgents = userGroup.agents;
+          this.isUserGroupSelected = false;
         }
       });
     },
     async changedUserJourney(event) {
+      this.isUserJourneySelected = true;
       let data = await this.fetch_business_units();
       const businessUnits = data['data'];
       businessUnits.forEach(businessUnit => {
         businessUnit.user_journeys.forEach(userJourney => {
           if (userJourney.label === event) {
             this.issues = userJourney.issues;
+            this.isUserJourneySelected = false;
           }
         });
       });
@@ -538,5 +555,10 @@ export default {
 }
 .btn-cancel {
   margin-left: 160px !important;
+}
+.loader {
+  color: #324ba8;
+  font-weight: 700;
+  font-size: 15px;
 }
 </style>
