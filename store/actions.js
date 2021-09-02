@@ -219,8 +219,8 @@ export default {
 
     const url = 'HELPSCOUT_REFRESH';
     const grant_type = 'refresh_token';
-    const client_id = 'qcqVxzfYpyiXsiykssxuGha8drOeVElu';
-    const client_secret = 'w4mzvqkT1284Ejh7qZZOKeSCoEZDqN7U';
+    const client_id = this.$env.HELP_SCOUT_CLIENT_ID;
+    const client_secret = this.$env.HELP_SCOUT_SECRET_KEY;
 
     const values = {
       url,
@@ -1194,7 +1194,7 @@ export default {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res.data;
     } catch (error) {
-      await dispatch('handleErrors', error.response.status, {
+      const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -1205,7 +1205,7 @@ export default {
       const res = await dispatch('requestAxiosPatch', payload, { root: true });
       return res.data;
     } catch (error) {
-      await dispatch('handleErrors', error.response.status, {
+      const err = await dispatch('handleErrors', error.response.status, {
         root: true,
       });
       return error.response;
@@ -1722,6 +1722,7 @@ export default {
       },
     };
     const url = `${config.STAFF_API}live-ops/orders`;
+
     try {
       const response = await axiosConfig.get(url, values);
       return response.data;

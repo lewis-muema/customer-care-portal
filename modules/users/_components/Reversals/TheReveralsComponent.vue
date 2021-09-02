@@ -378,7 +378,7 @@ export default {
     ...mapActions({
       request_payment_methods: 'request_payment_methods',
       perform_user_action: 'perform_user_action',
-      setBusinessUnits: 'requestBusinessUnits',
+      setBusinessUnits: 'setBusinessUnits',
       requestTransactions: 'requestTransactions',
     }),
     async update_reversal() {
@@ -504,6 +504,7 @@ export default {
         name: 'Cash',
         payment_method_id: 5,
       };
+
       try {
         const data = await this.request_payment_methods(payload);
         const error = !this.status ? data.error : '';
@@ -515,6 +516,7 @@ export default {
         } else {
           data.payment_methods.push(cashMethod);
         }
+
         return (this.paymentMethods = data.payment_methods);
       } catch (error) {
         this.status = false;

@@ -55,7 +55,6 @@ export default {
       return this.$store.getters.breadcrumbs;
     },
   },
-
   async mounted() {
     const environmentVariables = !this.getEnvironmentVariables
       ? await this.fetchEnvironmentVariables()
@@ -65,7 +64,6 @@ export default {
   methods: {
     ...mapMutations({
       updateSession: 'setSession',
-      setToken: 'setToken',
     }),
     ...mapActions({
       fetchEnvironmentVariables: 'fetch_environment_variables',

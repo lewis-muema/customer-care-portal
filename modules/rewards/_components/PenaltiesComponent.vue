@@ -303,7 +303,6 @@ export default {
       vendor_type: [],
       vendorType: '',
       vendorName: '',
-      vendorId: '',
       country: '',
       penalizing_reason: [],
       penalized_orders: '',

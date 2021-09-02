@@ -297,7 +297,6 @@ export default {
       const currentOrdersData = this.orders;
       const pagination = ordersData.pagination;
       const newOrders = currentOrdersData.concat(ordersData.data);
-      this.setDisabledStatus(false);
       this.orders = newOrders;
       return this.orders;
     },
@@ -307,7 +306,6 @@ export default {
     getOrderStatuses(statusArray) {
       this.orders = [];
       this.statusArray = statusArray;
-      this.setDisabledStatus(true);
       this.sendRequest(this.params);
       return (this.statusArray = statusArray);
     },

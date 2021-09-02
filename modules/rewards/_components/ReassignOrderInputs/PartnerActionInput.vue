@@ -355,6 +355,7 @@ export default {
       return inputValue === null || inputValue === '';
     },
     filterReassignmentReasons() {
+      this.reassignmentReasonPenalize = '';
       this.reassignment_reason = this.reallocationReasons.filter(
         reason => reason.status === 1,
       );

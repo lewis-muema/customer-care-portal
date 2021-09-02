@@ -32,6 +32,11 @@ const config = {
       'https://cors-anywhere.herokuapp.com/https://pricingtest.sendyit.com/pricing/',
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API: 'https://authtest.sendyit.com/rider/admin_partner_api/v5/',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
+
     RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
 

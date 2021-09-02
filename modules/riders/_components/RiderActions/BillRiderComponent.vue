@@ -141,7 +141,6 @@ export default {
       refNo: '',
       peer: null,
       hide: '',
-
       billingTypes: [
         { value: 26, name: 'Rider Penalty', transactionID: 1 },
         { value: 27, name: 'Loss of package', transactionID: 1 },
