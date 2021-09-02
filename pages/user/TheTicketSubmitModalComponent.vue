@@ -13,7 +13,10 @@
           <!-- <i class="fa fa-check-circle fa-2x submit-success"></i> -->
         </div>
         <span class="title">Ticket Created</span>
-        <div class="mt-2 sub-text">Your freshdesk {{ ticketGroup }} <br /></div>
+        <div class="mt-2 sub-text">
+          Your freshdesk {{ ticketSource }} has been <br />
+          created successfully. <br />
+        </div>
         <span slot="footer" class="dialog-footer">
           <hr />
           <el-button type="primary" class="primary-blue" @click="handleClose">
@@ -30,7 +33,7 @@ import { mapMutations } from 'vuex';
 
 export default {
   name: 'TicketSubmitModal',
-  props: ['dialogVisible', 'ticketGroup'],
+  props: ['dialogVisible', 'ticketSource'],
   data() {
     return {};
   },

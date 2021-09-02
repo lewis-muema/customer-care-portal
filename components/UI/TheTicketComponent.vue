@@ -1,95 +1,11 @@
 <template>
   <div>
     <form @submit.prevent="submitTicket" class="form-inline">
-      <!-- <div class="form-group col-md-6">
-      <v-select
-        v-if="
-          order.order_details !== undefined &&
-            order.order_details.order_no !==
-              order.order_details.parent_order_no &&
-            Object.prototype.hasOwnProperty.call(order, 'freight_details') &&
-            order.freight_details
-        "
-        :options="freightReallocationInfo"
-        :reduce="reason => reason.code"
-        name="point"
-        label="reason"
-        placeholder="Select ticket reason .."
-        class="form-control proximity-point"
-        :id="`reason_${idParam}`"
-        v-model="params.reason"
-        :class="{
-          'is-invalid': submitted && $v.params.reason.$error,
-        }"
-      >
-      </v-select>
-      <v-select
-        v-else
-        :options="customerInfo"
-        :reduce="reason => reason.code"
-        name="point"
-        label="reason"
-        placeholder="Select ticket reason .."
-        class="form-control proximity-point"
-        :id="`reason_${idParam}`"
-        v-model="params.reason"
-        :class="{
-          'is-invalid': submitted && $v.params.reason.$error,
-        }"
-      >
-      </v-select>
-      <div
-        v-if="submitted && !$v.params.reason.required"
-        class="invalid-feedback"
-      >
-        Ticket reason is required
-      </div>
-    </div> -->
-      <!-- <div class="form-group col-md-6">
-      <input
-        type="text"
-        v-model="params.department"
-        name="department"
-        placeholder="department"
-        class="form-control order-input"
-        readonly
-        :class="{
-          'is-invalid': submitted && $v.params.department.$error,
-        }"
-      />
-      <div
-        v-if="submitted && !$v.params.department.required"
-        class="invalid-feedback"
-      >
-        Ticket department is required
-      </div>
-    </div> -->
-      <!-- <div class="form-group col-md-12">
-      <textarea
-        type="text"
-        v-model="params.message"
-        :id="`ticket_message_${idParam}`"
-        name="message"
-        class="form-control"
-        placeholder="Ticket message"
-        :class="{
-          'is-invalid': submitted && $v.params.message.$error,
-        }"
-      >
-      </textarea>
-      <div
-        v-if="submitted && !$v.params.message.required"
-        class="invalid-feedback"
-      >
-        Ticket message is required
-      </div>
-    </div> -->
-
       <div class="form-group col-md-6">
         <label for="contact">Contact</label>
         <input
           type="text"
-          class="form-control"
+          class="form-control form-control-contact"
           id="contact"
           v-model="params.contact"
           readonly
@@ -101,7 +17,6 @@
           contact is required
         </div>
       </div>
-
       <div class="form-group col-md-12">
         <label for="subject">Subject</label>
         <input
@@ -240,8 +155,17 @@
           v-model="params.orderNo"
           class="form-control"
           id="order"
-          readonly
+          placeholder=".."
+          :class="{
+            'is-invalid': submitted && $v.params.orderNo.$error,
+          }"
         />
+        <div
+          v-if="submitted && !$v.params.orderNo.required"
+          class="invalid-feedback"
+        >
+          OrderNo is required
+        </div>
       </div>
       <div class="w-100"></div>
       <div class="form-group col-md-6">
@@ -329,18 +253,25 @@
           </div>
         </v-select>
       </div>
-      <div class="form-group">
-        <button class="btn btn-primary action-button" :disabled="loading">
+      <div class="form-group col-md-6"></div>
+      <div class="form-group col-md-6">
+        <div class="">
+          <button
+            type="button"
+            class="btn btn-default btn-cancel"
+            @click="clearInputs()"
+          >
+            Cancel
+          </button>
+        </div>
+        <button class="btn btn-primary  ml-3 " :disabled="loading">
           Create Ticket
-          <span v-if="loading">
-            <i class="fa fa-spinner fa-spin loader"></i
-          ></span>
         </button>
       </div>
     </form>
     <TicketSubmitModal
       :dialog-visible="showSubmittedModal"
-      :user-group="params.group"
+      :ticket-source="params.source"
       @close="showSubmittedModal = false"
     />
   </div>
@@ -382,7 +313,7 @@ export default {
         description: '',
         type: '',
         source: 'CC PORTAL',
-        orderNo: 'AD19BK842-RC9',
+        orderNo: '',
         priority: '',
         status: '',
         group: '',
@@ -450,6 +381,19 @@ export default {
       user_groups: 'fetch_ticket_user_groups',
       fetch_business_units: 'fetch_ticket_business_units',
     }),
+    clearInputs() {
+      this.params.subject = '';
+      this.params.description = '';
+      this.params.businessUnit = '';
+      this.params.userJourney = '';
+      this.params.issue = '';
+      this.params.type = '';
+      this.params.orderNo = '';
+      this.params.priority = '';
+      this.params.status = '';
+      this.params.group = '';
+      this.params.agent = '';
+    },
     async fetchUserGroups() {
       let data = await this.user_groups();
       const userGroups = data['data'];
@@ -588,5 +532,11 @@ export default {
   width: 100%;
   color: white;
   background: #324ba8;
+}
+.btn-primary {
+  background: #324ba8 !important;
+}
+.btn-cancel {
+  margin-left: 160px !important;
 }
 </style>
