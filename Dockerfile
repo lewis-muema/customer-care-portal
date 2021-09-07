@@ -1,4 +1,4 @@
-FROM sendy-docker-local.jfrog.io/node:10.19-alpine AS build-stage
+FROM sendy-docker-local.jfrog.io/node:12.10-alpine AS build-stage
 
 RUN adduser -D sendy
 
@@ -22,7 +22,7 @@ USER sendy:sendy
 
 
 ########
-FROM sendy-docker-local.jfrog.io/node:10.19-alpine
+FROM sendy-docker-local.jfrog.io/node:12.10-alpine
 
 RUN adduser -D sendy
 
