@@ -1539,7 +1539,7 @@ export default {
     const config = state.config;
     const url = `${config.PRICING_SERVICE}pricing/inter_county_config/cities`;
     try {
-      const response = await axiosConfig.get(url, param);
+      const response = await axiosConfig.get(url);
       return response.data;
     } catch (error) {
       await dispatch('handleErrors', error.response.status, {
