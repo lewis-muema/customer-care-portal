@@ -101,8 +101,8 @@
 </template>
 
 <script>
-import CancellationReasonsForm from '@/modules/rewards/_components/CancellationReasonsForm';
 import { mapActions, mapGetters } from 'vuex';
+import CancellationReasonsForm from '@/modules/rewards/_components/CancellationReasonsForm';
 
 export default {
   name: 'ActiveCancellationsDataTable',

@@ -378,7 +378,7 @@ export default {
     ...mapActions({
       request_payment_methods: 'request_payment_methods',
       perform_user_action: 'perform_user_action',
-      setBusinessUnits: 'requestBusinessUnits',
+      setBusinessUnits: 'setBusinessUnits',
       requestTransactions: 'requestTransactions',
     }),
     async update_reversal() {

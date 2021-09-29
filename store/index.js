@@ -17,6 +17,9 @@ const state = () => ({
   searchedPeerUser: null,
   searchedRider: null,
   businessUnits: null,
+  ticketFields: null,
+  userGroups: {},
+  ticketBusinessUnits: {},
   selectedBusinessUnits: null,
   selectedCopNames: null,
   selectedCities: null,
@@ -158,5 +161,6 @@ const state = () => ({
   deactivatedCancellationConsequences: [],
   cancellationActions: [],
   vendorTypes: null,
+  environmentVariables: null,
 });
 export { state, getters, mutations, actions };

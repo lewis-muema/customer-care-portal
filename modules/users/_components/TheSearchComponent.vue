@@ -36,10 +36,7 @@
           </div>
         </li>
       </ul>
-      <ul
-        v-show="!hasItems && query !== ''"
-        :class="[!isActive ? 'inactiveClass' : '']"
-      >
+      <ul v-show="!hasItems && query !== ''">
         <li class="my-3">
           No results Found
         </li>

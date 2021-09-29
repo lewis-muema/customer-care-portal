@@ -46,7 +46,6 @@
           No results Found
         </li>
       </ul>
-
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
     </div>
   </span>
