@@ -171,8 +171,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import cancellation_consequences_table_mixin from '@/mixins/cancellation_consequences_table_mixin';
+import { mapGetters } from 'vuex';
 import CancellationConsequencesEdit from '../CancellationConsequencesEdit';
 
 export default {

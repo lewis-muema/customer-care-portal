@@ -59,6 +59,7 @@ export default {
     const environmentVariables = !this.getEnvironmentVariables
       ? await this.fetchEnvironmentVariables()
       : this.getEnvironmentVariables;
+
     this.getloggedUser();
   },
 
@@ -69,6 +70,7 @@ export default {
     ...mapActions({
       fetchEnvironmentVariables: 'fetch_environment_variables',
     }),
+
     getloggedUser() {
       const storedToken = localStorage.getItem('jwtToken');
       const token =

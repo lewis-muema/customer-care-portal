@@ -31,7 +31,7 @@ const offlineOrderMxn = {
       return this.convertToLocalTime(date, 'DD MMMM YYYY');
     },
     async requestUnits() {
-      const arr = await this.setBusinessUnits();
+      const arr = await this.requestBusinessUnits();
 
       this.businessUnits = arr;
     },

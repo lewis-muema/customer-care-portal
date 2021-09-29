@@ -309,7 +309,7 @@
       :elements="elements"
       :prop-object="propObject"
       :show-dialog="showDialog"
-      @close="showDialog"
+      @close="handleClose"
       :payload-draft="payload"
     />
     <SubmittedModal
