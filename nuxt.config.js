@@ -164,6 +164,7 @@ module.exports = {
     'plugins/vue-select',
     'plugins/vuelidate',
     'plugins/typeahead',
+    { src: '~plugins/font-awesome-icon', ssr: false },
   ],
   /*
    ** Nuxt.js modules
