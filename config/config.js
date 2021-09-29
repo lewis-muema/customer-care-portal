@@ -22,7 +22,6 @@ const config = {
     COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
-    STAFF_API2: 'https://staffapitest.sendyit.com/freshdesk/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
@@ -69,12 +68,15 @@ const config = {
     COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
-    STAFF_API2: 'https://staffapitest.sendyit.com/freshdesk/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API:
       'https://autht.staging.sendyit.com/rider/admin_partner_api/v5/',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
     RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
@@ -106,13 +108,16 @@ const config = {
     COUPON_SEARCH: 'https://gate.sendyit.com/solr/coupon_staging/',
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
-    STAFF_API2: 'https://staffapitest.sendyit.com/freshdesk/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
     AUTH: 'https://auth.staging.sendyit.com/',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
     RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
@@ -153,6 +158,10 @@ const config = {
       'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',

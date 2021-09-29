@@ -20,15 +20,6 @@ export default {
   setBusinessUnits(state, businessUnits) {
     state.businessUnits = businessUnits;
   },
-  setTicketFields(state, ticketFields) {
-    state.ticketFields = ticketFields;
-  },
-  setUserGroups(state, userGroups) {
-    state.userGroups = userGroups;
-  },
-  setTicketBusinessUnits(state, ticketBusinessUnits) {
-    state.ticketBusinessUnits = ticketBusinessUnits;
-  },
   setSelectedBusinessUnits(state, selectedBusinessUnits) {
     state.selectedBusinessUnits = selectedBusinessUnits;
   },
