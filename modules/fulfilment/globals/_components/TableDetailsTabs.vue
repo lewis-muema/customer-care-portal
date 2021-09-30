@@ -1,14 +1,27 @@
 <template>
   <el-tabs type="card">
-    <el-tab-pane label="Users">Users</el-tab-pane>
-    <el-tab-pane label="Items">Items</el-tab-pane>
-    <el-tab-pane label="Order Details">Order Details</el-tab-pane>
-    <el-tab-pane label="Map">Map</el-tab-pane>
-    <el-tab-pane label="Pricing Tiers">Pricing Tiers</el-tab-pane>
+    <el-tab-pane label="Users">
+      <users />
+    </el-tab-pane>
+    <el-tab-pane label="Items">
+      <items />
+    </el-tab-pane>
+    <el-tab-pane label="Order Details">
+      <order-details />
+    </el-tab-pane>
+    <el-tab-pane label="Pricing Tiers">
+      <pricing-tiers />
+    </el-tab-pane>
   </el-tabs>
 </template>
 <script>
+import users from './tabInfo/users.vue';
+import items from './tabInfo/items.vue';
+import orderDetails from './tabInfo/orderDetails.vue';
+import pricingTiers from './tabInfo/pricingTiers.vue';
+
 export default {
+  components: { users, items, orderDetails, pricingTiers },
   data() {
     return {
       activeName: 'first',
