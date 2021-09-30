@@ -1660,7 +1660,6 @@ textarea.is-invalid {
   color: #324BA8;
 }
 .fulfilment-tabs {
-  display: flex;
   margin-bottom: -1px;
 }
 .fulfilment-tabs-titles {
@@ -1696,4 +1695,11 @@ textarea.is-invalid {
   margin-top: 0%;
   margin-left: 5%;
   line-height: 70px;
+}
+.fulfilment-tabs > .el-tabs--top > .el-tabs__header{
+  width: 39%;
+  margin-bottom: 4%;
+}
+.region-label{
+  width: 48%;
 }
