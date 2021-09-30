@@ -26,7 +26,7 @@
   </el-container>
 </template>
 <script>
-import Timeline from './TimeLine.vue';
+import Timeline from './Timeline.vue';
 import TableActions from './TableActions.vue';
 import TableDetailsTabs from './TableDetailsTabs.vue';
 
