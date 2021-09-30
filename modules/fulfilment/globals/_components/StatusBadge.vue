@@ -22,7 +22,6 @@ export default {
   },
   methods: {
     orderStatusColor() {
-      console.log(this.status);
       switch (this.status) {
         case 'confirmed':
           this.activeClass = 'confirmed';
