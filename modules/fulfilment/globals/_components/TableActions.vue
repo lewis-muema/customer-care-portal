@@ -27,6 +27,7 @@ export default {
   color: #528bb8;
   border-color: #528bb8;
   background-color: #ffffff;
+  outline: none;
 }
 .blue:hover {
   color: #ffffff;
