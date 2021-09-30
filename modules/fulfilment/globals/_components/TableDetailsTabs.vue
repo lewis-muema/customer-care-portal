@@ -1,5 +1,5 @@
 <template>
-  <el-tabs type="card">
+  <el-tabs type="border-card">
     <el-tab-pane label="Users">
       <users />
     </el-tab-pane>
@@ -35,8 +35,19 @@ export default {
 };
 </script>
 <style>
-.el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
-  border-top: 3px solid #1b7fc3;
+.el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
+  border-top: 4px solid #1b7fc3;
   color: #000;
+}
+.el-tabs--border-card > .el-tabs__header {
+  background-color: #ffffff;
+}
+.el-tabs--border-card > .el-tabs__header .el-tabs__item {
+  padding-top: 5px;
+}
+.el-tabs--border-card
+  > .el-tabs__header
+  .el-tabs__item:not(.is-disabled):hover {
+  color: #1b7fc3;
 }
 </style>

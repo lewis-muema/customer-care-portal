@@ -16,9 +16,9 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-card shadow="never">
-              <TableDetailsTabs />
-            </el-card>
+            <!-- <el-card shadow="never"> -->
+            <TableDetailsTabs />
+            <!-- </el-card> -->
           </el-col>
         </el-row>
       </el-col>
