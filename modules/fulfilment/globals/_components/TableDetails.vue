@@ -1,12 +1,12 @@
 <template>
   <el-container>
     <el-row :gutter="18">
-      <el-col :span="6">
+      <el-col :span="9">
         <el-card shadow="never">
           <Timeline :activities="activities" />
         </el-card>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="15">
         <el-row>
           <el-col :span="24">
             <el-card shadow="never">
@@ -16,9 +16,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-card shadow="never">
-              <TableDetailsTabs />
-            </el-card>
+            <TableDetailsTabs />
           </el-col>
         </el-row>
       </el-col>
@@ -41,28 +39,14 @@ export default {
     return {
       activities: [
         {
-          content: 'Order Received on',
-          timestamp: '2018-04-12 20:46',
-          size: 'large',
-          color: '#EE7D00',
-          icon: 'el-icon-circle-check',
+          log_type: 1,
+          log_time: '2021-09-24T15:03:59.000Z',
+          description: 'Order received Monday',
         },
         {
-          content: 'Order is being picked',
-          timestamp: '2018-04-12 20:46',
-          size: 'large',
-          color: '#EE7D00',
-          icon: 'el-icon-circle-check',
-        },
-        {
-          content: 'Package is on the way',
-          timestamp: '2018-04-03 20:46',
-          size: 'large',
-          color: '#7586C5',
-        },
-        {
-          content: 'Default node',
-          timestamp: '2018-04-03 20:46',
+          log_type: 36,
+          log_time: '2021-09-24T15:03:59.000Z',
+          description: 'Order has been packaged at the hub',
         },
       ],
     };
