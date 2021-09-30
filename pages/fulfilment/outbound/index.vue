@@ -1,5 +1,5 @@
 <template>
-  <div class="nps-container">
+  <div class="nps-container fulfilment-font">
     <FulfilmentOutboundComponent />
   </div>
 </template>
