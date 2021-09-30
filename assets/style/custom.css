@@ -1660,7 +1660,6 @@ textarea.is-invalid {
   color: #324BA8;
 }
 .fulfilment-tabs {
-  display: flex;
   margin-bottom: -1px;
 }
 .fulfilment-tabs-titles {
@@ -1707,5 +1706,18 @@ textarea.is-invalid {
   color: #FFFFFF !important;
   background: inherit !important;
   text-transform: uppercase;
-
+}
+.fulfilment-tabs > .el-tabs--top > .el-tabs__header{
+  width: 39%;
+  margin-bottom: 4%;
+}
+.region-label{
+  width: 48%;
+}
+.sidebar-img {
+  width: 5%;
+}
+.sidebar-divider {
+  background: rgba(154, 154, 154, 0.29);
+  margin: 7px 0;
 }
