@@ -1714,7 +1714,7 @@ textarea.is-invalid {
 }
 .fulfilment-tabs > .el-tabs--top > .el-tabs__header{
   width: 39%;
-  margin-bottom: 4%;
+  margin-bottom: 3%;
 }
 .region-label{
   width: 48% !important;
@@ -1724,7 +1724,7 @@ textarea.is-invalid {
 }
 .fulfilment-table-wrapper{
   background: #FEFEFE;
-  border: 1px solid #E9E9E9;
+  border: 1px solid #9E9E9E;
   padding: 20px;
 }
 .fulfilment-font{
