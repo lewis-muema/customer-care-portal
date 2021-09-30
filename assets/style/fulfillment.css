@@ -1,0 +1,60 @@
+.fulfillment-tab-info {
+  width: 100%;
+}
+.fulfillment-tab-info-top {
+  width: 100%;
+  display: flex;
+}
+.fulfillment-tab-info-bottom {
+  width: 100%;
+}
+.fulfillment-tab-info-seller {
+  width: 50%;
+}
+.fulfillment-tab-info-recipient {
+  width: 50%;
+}
+.fulfillment-tab-info-titles {
+  margin: 15px 0px;
+  font-weight: 600;
+}
+.fulfillment-tab-info-description {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  font-size: 13px;
+}
+.fulfillment-tab-info-description-icon {
+  color: #909399;
+  margin: 5px 15px 5px 0px;
+}
+.fulfillment-tab-info-rider-img {
+  width: 60px;
+  border-radius: 20px;
+  height: 60px;
+  margin: 0px 20px 0px 0px;
+}
+.fulfillment-tab-info-rider-details {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+.fulfillment-tab-info-rider-phone {
+  display: flex;
+}
+.fulfillment-tab-info-view-batch {
+  margin: 0px 10px;
+  cursor: pointer;
+  color: #0049B7;
+}
+.fulfillment-tab-info-items-img {
+  width: 60px;
+  margin: 10px;
+}
+.pricing-tiers-table .el-table__header-wrapper {
+  display: none;
+}
+.pricing-tiers-table .el-table__row {
+  height: 30px !important;
+}

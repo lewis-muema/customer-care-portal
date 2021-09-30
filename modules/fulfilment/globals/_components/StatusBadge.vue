@@ -22,7 +22,8 @@ export default {
   },
   methods: {
     orderStatusColor() {
-      switch (this.status) {
+      const transformedStatus = this.status.toLowerCase();
+      switch (transformedStatus) {
         case 'confirmed':
           this.activeClass = 'confirmed';
           break;

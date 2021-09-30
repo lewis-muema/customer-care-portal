@@ -1,17 +1,20 @@
 <template>
-  <div>
-    <p v-text="title"></p>
+  <div class="">
+    <p v-text="title" class="fulfilment-activity-header"></p>
     <el-timeline :reverse="reverse">
       <el-timeline-item
         v-for="(activity, index) in activities"
         :key="index"
-        :icon="activity.icon"
+        icon="el-icon-circle-check"
         :type="activity.type"
-        :color="activity.color"
-        :size="activity.size"
+        color="#EE7D00"
+        size="medium"
         :timestamp="activity.timestamp"
       >
-        {{ activity.content }}
+        <div class="fulfilment-timeline-header">{{ activity.description }}</div>
+        <div class="fulfilment-timeline-timestamp">
+          {{ getFormattedDate(activity.log_time, 'DD MMM ,YYYY hh.mm a ') }}
+        </div>
       </el-timeline-item>
     </el-timeline>
   </div>
@@ -27,7 +30,7 @@ export default {
   data() {
     return {
       reverse: false,
-      title: 'Order History',
+      title: 'ACTIVITY',
     };
   },
 };
