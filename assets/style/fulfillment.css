@@ -15,8 +15,11 @@
   width: 50%;
 }
 .fulfillment-tab-info-titles {
+  font-size: 14px;
+  line-height: 28px;
   margin: 15px 0px;
-  font-weight: 600;
+  font-weight: 500;
+  color: #1F1E1E;
 }
 .fulfillment-tab-info-description {
   display: flex;
@@ -37,16 +40,18 @@
 .fulfillment-tab-info-rider-details {
   display: flex;
   align-items: center;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
+  color: #000000;
 }
 .fulfillment-tab-info-rider-phone {
   display: flex;
 }
 .fulfillment-tab-info-view-batch {
-  margin: 0px 10px;
   cursor: pointer;
   color: #0049B7;
+  margin-left: 10%;
+  font-weight: 500;
 }
 .fulfillment-tab-info-items-img {
   width: 60px;
@@ -57,4 +62,7 @@
 }
 .pricing-tiers-table .el-table__row {
   height: 30px !important;
+}
+.fulfilment-tabs-vehicle-details{
+  width: 55%;
 }
