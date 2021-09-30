@@ -29,7 +29,7 @@ export default {
           },
           {
             order_no: 'ES97ZL615-F4U',
-            status: 'Received',
+            status: 'In Transit',
             customer_name: 'Mike Doe',
             rider_name: 'Sendy Rider',
             rider_id: 1,

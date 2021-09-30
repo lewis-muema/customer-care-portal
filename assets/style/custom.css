@@ -1575,10 +1575,6 @@ color: #000000;
 .el-table thead {
   color: #606266 !important;
 }
-.el-table {
-  color: #555 !important;
-  font-size: 13px !important;
-}
 .el-table .cell {
   line-height: 20px !important;
 }
@@ -1630,6 +1626,8 @@ color: #000000;
 }
 .el-table{
   background-color: #f9f9f9 ;
+  font-size: 12px;
+  color: #555 !important;
 }
 .expanded{
   color: #212529;
@@ -1651,7 +1649,7 @@ textarea.is-invalid {
   border: none !important;
 }
 .el-tabs__item{
- font-size: 17px;
+ font-size: 15px;
  line-height: 28px;
  color: #606266;
 }
@@ -1718,6 +1716,11 @@ textarea.is-invalid {
   border: 1px solid #E9E9E9;
   padding: 20px;
 }
-.el-table{
-  font-size: 12px;
+.fulfilment-font{
+  font-family: Nunito,sans-serif !important;
+}
+.el-table th>.cell {
+  color: #000000;
+  font-weight: bold;
+  font-size: 14px;
 }
