@@ -141,6 +141,7 @@ module.exports = {
    */
   css: [
     '@assets/style/custom.css',
+    '@assets/style/fulfillment.css',
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
     '@assets/style/pricing-config.css',
