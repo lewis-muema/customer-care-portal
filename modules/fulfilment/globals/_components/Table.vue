@@ -12,24 +12,29 @@
           <TableDetails />
         </template>
       </el-table-column>
+      <el-table-column label="Order No" prop="order_no" width="130">
+      </el-table-column>
       <el-table-column label="Status" prop="status" width="130">
         <template slot-scope="props">
           <StatusBadge :status="props.row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="Client" prop="customer_name"> </el-table-column>
-      <el-table-column label="Order No" prop="order_no"> </el-table-column>
+      <el-table-column label="Seller" prop="seller_name"> </el-table-column>
+      <el-table-column label="Recipient" prop="recipient_name">
+      </el-table-column>
       <el-table-column label="Time" prop="time_placed" width="150">
         <template slot-scope="props">
           {{ formatDate(props.row.time_placed) }}
         </template>
       </el-table-column>
-      <el-table-column label="Pickup" prop="pickup_location" width="180">
-      </el-table-column>
       <el-table-column
-        label="Delivery"
-        prop="delivery_location"
-      ></el-table-column>
+        label="Destination"
+        prop="destination_location"
+        width="120"
+      >
+      </el-table-column>
+      <el-table-column label="Assigned Batch" prop="batch_no" width="130">
+      </el-table-column>
       <el-table-column label="Rider" prop="rider_name"> </el-table-column>
       <el-table-column label="Region" prop="city_name">
         <template slot-scope="props">
