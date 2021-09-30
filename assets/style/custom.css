@@ -200,13 +200,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #BDBDBD;
+  border: 1px solid #bdbdbd;
 }
 
 .active-currency-button {
   color: white;
-  background: #1B7FC3;
-  border: 1px solid #1B7FC3;
+  background: #1b7fc3;
+  border: 1px solid #1b7fc3;
 }
 
 .tracking_map_table td {
@@ -1106,7 +1106,8 @@ table {
 .freight-assign-new-rider-buttons {
   border: 1px solid #c0c2c3 !important;
 }
-.assign-order-button, .auxillary-save-button__active {
+.assign-order-button,
+.auxillary-save-button__active {
   color: white;
   background: #1a7fc3;
   border: 1px solid #1b7fc3;
@@ -1121,8 +1122,8 @@ table {
 }
 .auxillary-save-button__inactive {
   color: white;
-  background: #BDBDBD;
-  border: 1px solid #BDBDBD;
+  background: #bdbdbd;
+  border: 1px solid #bdbdbd;
   width: 120px;
   height: 40px;
   border-radius: 5px;
@@ -1224,7 +1225,8 @@ table {
 .assign-details-tab {
   margin-top: 15px;
 }
-.save-truck-button, .driver-assign-inputs {
+.save-truck-button,
+.driver-assign-inputs {
   width: -webkit-fill-available;
 }
 .finances-tab {
@@ -1516,11 +1518,11 @@ table {
   background: #f5f7fa !important;
 }
 .ti-tags {
-background: #f5f7fa;
-border-radius: 0;
-font-size: 16px;
-line-height: 28px;
-color: #000000;
+  background: #f5f7fa;
+  border-radius: 0;
+  font-size: 16px;
+  line-height: 28px;
+  color: #000000;
 }
 .ti-tag {
   background-color: #ebf1f7 !important;
@@ -1530,8 +1532,8 @@ color: #000000;
   padding: 7px 27px !important;
 }
 .ti-new-tag-input-wrapper input {
-  background: #F5F7FA;
-  cursor: pointer
+  background: #f5f7fa;
+  cursor: pointer;
 }
 .ti-new-tag-input-wrapper::placeholder {
   color: #000000;
@@ -1548,25 +1550,23 @@ color: #000000;
   color: #000000;
   font-size: 16px;
   line-height: 28px;
-
 }
 .ti-new-tag-input.ti-new-tag-input::-ms-input-placeholder {
   color: #000000;
   font-size: 16px;
   line-height: 28px;
-
 }
 .ti-icon-close {
-  color: #FF3D00;
+  color: #ff3d00;
   font-size: 14px;
   margin-left: 5px;
   margin-top: 4px;
 }
-.datetimepicker .datepicker{
+.datetimepicker .datepicker {
   position: relative !important;
   min-width: 378px !important;
 }
-.el-input-group__prepend{
+.el-input-group__prepend {
   width: 46%;
 }
 .el-table__row {
@@ -1581,57 +1581,57 @@ color: #000000;
 
 .el-table td,
 .el-table th {
-  padding: 10px 0 ;
+  padding: 10px 0;
 }
 .el-table--border td,
 .el-table th.is-leaf {
-  border-bottom: 1px solid #dcdfe6 ;
+  border-bottom: 1px solid #dcdfe6;
 }
 
 .el-table--border td,
 .el-table--border th,
 .el-table--border th {
-  border-right: 1px solid #dcdfe6 ;
+  border-right: 1px solid #dcdfe6;
 }
 
 .el-table--border,
 .el-table--group {
-  border: 1px solid #dcdfe6 ;
+  border: 1px solid #dcdfe6;
 }
 .table-bordered td,
 .table-bordered th {
-  border: none ;
+  border: none;
 }
 .el-table__expanded-cell {
-  background-color: white ;
+  background-color: white;
 }
 .el-table__expanded-cell:hover {
-    background-color: white !important;
+  background-color: white !important;
 }
 
 .el-table td,
 .el-table th {
-  padding: 0px ;
+  padding: 0px;
 }
 .el-table th,
 .el-table tr {
   height: 55px !important;
-  border-color: #FFFFFF !important;
+  border-color: #ffffff !important;
 }
-.el-table td{
-  border-color: #FFFFFF !important;
+.el-table td {
+  border-color: #ffffff !important;
 }
 .el-table::before {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
-.el-table{
-  background-color: #f9f9f9 ;
+.el-table {
+  background-color: #f9f9f9;
   font-size: 12px;
   color: #555 !important;
 }
-.expanded{
+.expanded {
   color: #212529;
-  background-color: rgba(0,0,0,.075) !important;
+  background-color: rgba(0, 0, 0, 0.075) !important;
 }
 .text-grey {
   color: #b8c7ce !important;
@@ -1642,27 +1642,28 @@ color: #000000;
 textarea.is-invalid {
   border: 1px solid red;
 }
-.content-wrapper, .right-side {
-  background: #F2F6FC !important;
+.content-wrapper,
+.right-side {
+  background: #f2f6fc !important;
 }
 .ticket-select > .vs__dropdown-toggle {
   border: none !important;
 }
-.el-tabs__item{
- font-size: 15px;
- line-height: 28px;
- color: #606266;
+.el-tabs__item {
+  font-size: 15px;
+  line-height: 28px;
+  color: #606266;
 }
-.el-tabs__item.is-active{
-  color: #324BA8;
+.el-tabs__item.is-active {
+  color: #324ba8;
 }
-.el-tabs__active-bar{
-  color: #324BA8;
-  background-color: #324BA8;
+.el-tabs__active-bar {
+  color: #324ba8;
+  background-color: #324ba8;
   height: 4px;
 }
 .el-tabs__item:hover {
-  color: #324BA8;
+  color: #324ba8;
 }
 .fulfilment-tabs {
   margin-bottom: -1px;
@@ -1683,7 +1684,7 @@ textarea.is-invalid {
   padding: 30px;
 }
 .fulfilment-container {
-  width: 90%;
+  width: 98%;
   margin: 0 auto;
   padding-top: 40px;
   margin-bottom: 100px;
@@ -1691,46 +1692,48 @@ textarea.is-invalid {
   display: flex;
 }
 .fulfilment-header {
-  background: #e5e5e5;
+  background: #ffffff;
+  margin-top: 10px;
+  margin-bottom: -50px;
 }
 .fulfilment-label {
   font-weight: 500;
   font-size: 24px;
   line-height: 33px;
   margin-top: 0%;
-  margin-left: 5%;
+  margin-left: 20px;
   line-height: 70px;
 }
 .main-sidebar {
   font-family: 'Nunito', sans-serif;
 }
-.skin-blue .sidebar-menu>li.header {
+.skin-blue .sidebar-menu > li.header {
   font-weight: bold;
   font-size: 13px;
   line-height: 20px;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   background: inherit !important;
   text-transform: uppercase;
 }
-.fulfilment-tabs > .el-tabs--top > .el-tabs__header{
+.fulfilment-tabs > .el-tabs--top > .el-tabs__header {
   width: 39%;
   margin-bottom: 4%;
 }
-.region-label{
+.region-label {
   width: 48% !important;
 }
-.el-table__expanded-cell{
+.el-table__expanded-cell {
   padding: 15px 10px !important;
 }
-.fulfilment-table-wrapper{
-  background: #FEFEFE;
-  border: 1px solid #E9E9E9;
+.fulfilment-table-wrapper {
+  background: #fefefe;
+  border: 1px solid #e9e9e9;
   padding: 20px;
 }
-.fulfilment-font{
-  font-family: Nunito,sans-serif !important;
+.fulfilment-font {
+  font-family: Nunito, sans-serif !important;
 }
-.el-table th>.cell {
+.el-table th > .cell {
   color: #000000;
   font-weight: bold;
   font-size: 14px;
