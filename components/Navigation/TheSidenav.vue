@@ -195,7 +195,6 @@ export default {
     ...mapGetters(['getSession']),
 
     photo() {
-      console.log('user', this.user.payload);
       const image = this.user.payload.data.pic;
       return `${this.userImage}${image}`;
     },
