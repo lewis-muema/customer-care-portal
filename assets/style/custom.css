@@ -1727,7 +1727,7 @@ textarea.is-invalid {
 }
 .fulfilment-table-wrapper {
   background: #fefefe;
-  border: 1px solid #9E9E9E;
+  border: 1px solid #9e9e9e;
   padding: 20px;
 }
 .fulfilment-font {
@@ -1735,7 +1735,7 @@ textarea.is-invalid {
 }
 .el-table th > .cell {
   color: #000000;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 14px;
 }
 .sidebar-img {
@@ -1748,15 +1748,15 @@ textarea.is-invalid {
 .timeline > li > .fulfilment-timeline {
   margin-right: 0px !important;
 }
-.fulfilment-timeline-header{
+.fulfilment-timeline-header {
   font-size: 12px;
 }
-.fulfilment-timeline-timestamp{
+.fulfilment-timeline-timestamp {
   font-size: 12px;
   margin-top: 2%;
   color: #909399;
 }
-.fulfilment-activity-header{
+.fulfilment-activity-header {
   margin-left: 9%;
   color: #000000;
   letter-spacing: 1.5px;

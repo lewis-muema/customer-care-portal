@@ -34,4 +34,8 @@ export default {
   background-color: #528bb8;
   border: none;
 }
+.el-button--primary.is-plain:active {
+  background-color: #528bb8;
+  border: none;
+}
 </style>
