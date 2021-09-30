@@ -7,6 +7,8 @@
       <div class="fulfilment-container ">
         <div class="fulfilment-tabs">
           <el-tabs v-model="mode">
+            <FiltersBar />
+
             <el-tab-pane label="Delivery requests" name="ordersView">
               <OrdersView :key="componentKey" v-if="mode === 'ordersView'" />
             </el-tab-pane>
@@ -30,10 +32,11 @@
 import OrdersView from './_components/OrdersComponent.vue';
 import BatchesView from './_components/BatchesComponent.vue';
 import MovableUnitsView from './_components/MovableUnitsComponent.vue';
+import FiltersBar from '../globals/_components/FiltersBar.vue';
 
 export default {
   name: 'OutboundView',
-  components: { OrdersView, BatchesView, MovableUnitsView },
+  components: { OrdersView, BatchesView, MovableUnitsView, FiltersBar },
   data() {
     return {
       mode: 'ordersView',

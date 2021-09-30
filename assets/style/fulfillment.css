@@ -57,6 +57,41 @@
   width: 60px;
   margin: 10px;
 }
+.filtersBar {
+  margin-bottom: 3%;
+
+}
+.fulfilment-status-filter input {
+  height: 37px;
+  border: none;
+  font-weight: bold;
+  font-size: 10.5378px;
+  color: #000000;
+}
+.fulfilment-status-filter input::placeholder {
+  color: #000000;
+}
+.fulfilment-status-filter .el-select__caret {
+  color: #000000 !important;
+  font-weight: bold;
+  font-size: 10.5378px !important;
+
+}
+.fulfilment-search-filter .el-input__inner {
+  border: none;
+  height: 37px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 10.5378px;
+  line-height: 14px;
+  color: #9E9E9E;
+}
+.fulfilment-search-filter .el-icon-search {
+  color: #909399;
+  font-weight: bold;
+  font-size: 10.5378px;
+  line-height: 37px;
+}
 .pricing-tiers-table .el-table__header-wrapper {
   display: none;
 }
