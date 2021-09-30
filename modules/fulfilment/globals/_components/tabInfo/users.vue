@@ -38,7 +38,7 @@
           src="https://s3-eu-west-1.amazonaws.com/sendy-partner-docs/photo/1533214131993profile_picture_placeholder.png"
           alt=""
         />
-        <div>
+        <div class="fulfilment-tabs-vehicle-details">
           <div>John Otieno</div>
           <div>KCEK 345V</div>
           <div class="fulfillment-tab-info-rider-phone">
