@@ -1724,3 +1724,20 @@ textarea.is-invalid {
   font-weight: bold;
   font-size: 14px;
 }
+.timeline > li > .fulfilment-timeline {
+  margin-right: 0px !important;
+}
+.fulfilment-timeline-header{
+  font-size: 12px;
+}
+.fulfilment-timeline-timestamp{
+  font-size: 12px;
+  margin-top: 2%;
+  color: #909399;
+}
+.fulfilment-activity-header{
+  margin-left: 9%;
+  color: #000000;
+  letter-spacing: 1.5px;
+  font-size: 14px;
+}
