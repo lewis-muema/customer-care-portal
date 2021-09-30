@@ -16,7 +16,27 @@
         </el-row>
       </div>
     </el-col>
-    <el-col :span="9"><div class="grid-content bg-white"></div></el-col>
+    <el-col :span="12">
+      <div class="grid-content bg-white">
+        <el-row type="flex" class="">
+          <el-col :span="8">
+            <div class="grid-content">
+              <HubsFilter />
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="grid-content">
+              region
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="grid-content">
+              batch
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+    </el-col>
   </el-row>
 </template>
 
@@ -26,6 +46,7 @@ export default {
   components: {
     StatusFilter: () => import('./filters/StatusFilter'),
     Search: () => import('./filters/Search'),
+    HubsFilter: () => import('./filters/HubFilter'),
   },
 };
 </script>
@@ -36,6 +57,7 @@ export default {
   box-sizing: border-box;
   border-radius: 6px;
   height: 40px;
+  margin-top: 6%;
 }
 .fulfilment-status-filter {
   border-right: 0.878146px solid #9e9e9e;

@@ -101,3 +101,8 @@
 .fulfilment-tabs-vehicle-details{
   width: 55%;
 }
+
+.fulfilment-tabs .el-tabs__nav-wrap::after {
+  height: 1px;
+  background-color: #C0C4CC;
+}
