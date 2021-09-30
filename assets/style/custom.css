@@ -1570,7 +1570,7 @@ color: #000000;
   width: 46%;
 }
 .el-table__row {
-  height: 44px !important;
+  height: 44px;
 }
 .el-table thead {
   color: #606266 !important;
