@@ -24,7 +24,40 @@
           <li class="treeview >">
             <nuxt-link to="/orders"
               ><i class="fa fa-shopping-cart"></i>
-              <span> Ongoing </span></nuxt-link
+              <span> Transport Orders</span></nuxt-link
+            >
+          </li>
+          <li class="treeview">
+            <a
+              class="fancybox fancybox.iframe fancyboxy fulfilment-cursor"
+              @click="showFulfilment"
+            >
+              <img src="../../assets/images/fulfilment.png" alt="" />
+              <span class="fulfilment-nav">
+                Fulfilment
+                <font-awesome-icon
+                  class="chevron-icon-position"
+                  icon="chevron-down"
+                  :class="revertFulfilmentIcon"
+                  width="15px"
+              /></span>
+            </a>
+          </li>
+
+          <li class="treeview >" v-show="fulfilment_view">
+            <nuxt-link to="/fulfilment/inbound"
+              ><img src="../../assets/images/fulfilment.png" alt="" />
+              <span class="fulfilment-nav">
+                Inbound
+              </span></nuxt-link
+            >
+          </li>
+          <li class="treeview >" v-show="fulfilment_view">
+            <nuxt-link to="/fulfilment/outbound"
+              ><img src="../../assets/images/fulfilment.png" alt="" />
+              <span class="fulfilment-nav">
+                Outbound
+              </span></nuxt-link
             >
           </li>
           <li class="treeview">
@@ -142,6 +175,10 @@
 </template>
 <script>
 import { mapMutations, mapGetters } from 'vuex';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faChevronDown);
 
 export default {
   name: 'TheSidenav',
@@ -157,6 +194,7 @@ export default {
   data() {
     return {
       modalUser: '',
+      fulfilment_view: false,
     };
   },
   computed: {
@@ -174,6 +212,12 @@ export default {
     },
     permissions() {
       return JSON.parse(this.user.payload.data.privilege);
+    },
+    revertFulfilmentIcon() {
+      return {
+        'rotate-transform': true,
+        rotate: this.fulfilment_view,
+      };
     },
   },
   methods: {
@@ -203,6 +247,20 @@ export default {
       $(`#usersModal`).modal('show');
       e.preventDefault();
     },
+    showFulfilment() {
+      this.fulfilment_view = !this.fulfilment_view;
+    },
   },
 };
 </script>
+<style scoped>
+.fulfilment-nav {
+  margin-left: 5%;
+}
+.chevron-icon-position {
+  margin-left: 25%;
+}
+.fulfilment-cursor {
+  cursor: pointer;
+}
+</style>
