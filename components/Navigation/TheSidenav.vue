@@ -20,7 +20,7 @@
         </div>
 
         <ul class="sidebar-menu">
-          <li class="header">MAIN NAVIGATION</li>
+          <li class="header">Fulfilment</li>
           <li class="treeview >">
             <nuxt-link to="/orders"
               ><i class="fa fa-shopping-cart"></i>
@@ -201,6 +201,7 @@ export default {
     ...mapGetters(['getSession']),
 
     photo() {
+      console.log('user', this.user.payload);
       const image = this.user.payload.data.pic;
       return `${this.userImage}${image}`;
     },

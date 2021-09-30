@@ -1697,3 +1697,15 @@ textarea.is-invalid {
   margin-left: 5%;
   line-height: 70px;
 }
+.main-sidebar {
+  font-family: 'Nunito', sans-serif;
+}
+.skin-blue .sidebar-menu>li.header {
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 20px;
+  color: #FFFFFF !important;
+  background: inherit !important;
+  text-transform: uppercase;
+
+}
