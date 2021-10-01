@@ -106,3 +106,34 @@
   height: 1px;
   background-color: #C0C4CC;
 }
+.fulfilment-filter-header {
+  font-size: 12px;
+  letter-spacing: 0.005em;
+  color: #000000;
+}
+.fulfilment-multiselect .multiselect__tags {
+  border: 1px solid #E1E1E1;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+  border-radius: 6px;
+}
+.fulfilment-multiselect .multiselect__tag {
+  margin-bottom: 0px;
+  font-size: 13px;
+  letter-spacing: 0.005em;
+}
+.fulfilment-multiselect .multiselect__input::placeholder, .fulfilment-multiselect .multiselect__option {
+  font-size: 13px;
+}
+.fulfilment-multiselect .multiselect__option--selected.multiselect__option--highlight {
+  background: #3c8dbc !important;
+}
+.multiselect__tag-icon:hover, .multiselect__tag-icon:focus {
+  background-color: #3c8dbc !important;
+}
+.fulfilment-batch-actions {
+  margin-top: 13%;
+}
+.fulfilment-action-button {
+  background: #528BB8;
+  border-color: #528BB8;
+}

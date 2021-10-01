@@ -1,6 +1,6 @@
 <template>
   <div class="fulfilment-multiselect">
-    <label class="typo__label fulfilment-filter-header">Hubs</label>
+    <label class="typo__label fulfilment-filter-header">Filter Region</label>
     <multiselect
       v-model="checkedOptions"
       placeholder="Search Hubs"
@@ -43,18 +43,19 @@
 import Multiselect from 'vue-multiselect';
 
 export default {
-  name: 'HubsFilter',
+  name: 'RegionsFilter',
   components: {
     Multiselect,
   },
+
   data() {
     return {
-      checkedOptions: [{ code: 'all', name: 'All Hubs', checked: true }],
+      checkedOptions: [{ code: 'all', name: 'All Regions', checked: true }],
       options: [
-        { code: 'all', name: 'All Hubs', checked: true },
-        { name: 'Main Warehouse', code: '1', checked: false },
-        { name: 'Roysambu Hub', code: '2', checked: false },
-        { name: 'Tilisi', code: '3', checked: false },
+        { code: 'all', name: 'All Regions', checked: true },
+        { name: 'Nairobi ', code: '1', checked: false },
+        { name: 'Nakuru ', code: '2', checked: false },
+        { name: 'Kisumu', code: '3', checked: false },
       ],
     };
   },
