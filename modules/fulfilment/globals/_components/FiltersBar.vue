@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'FiltersBar',
   components: {
@@ -49,6 +51,9 @@ export default {
     HubsFilter: () => import('./filters/HubFilter'),
     RegionsFilter: () => import('./filters/RegionFilter'),
     BatchActions: () => import('./filters/BatchActions'),
+  },
+  computed: {
+    ...mapGetters(['getActivePage']),
   },
 };
 </script>

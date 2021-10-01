@@ -303,4 +303,7 @@ export default {
     const data = !val ? localStorage.getItem('environmentVariables') : val;
     state.environmentVariables = data;
   },
+  setActivePage(state, val) {
+    state.activePage = val;
+  },
 };

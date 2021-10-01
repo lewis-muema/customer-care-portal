@@ -6,7 +6,7 @@
     <div class="box-body ">
       <div class="fulfilment-container ">
         <div class="fulfilment-tabs">
-          <el-tabs v-model="mode">
+          <el-tabs v-model="mode" @tab-click="handleClick" :key="componentKey">
             <FiltersBar />
 
             <el-tab-pane label="Delivery requests" name="ordersView">
@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 import OrdersView from './_components/OrdersComponent.vue';
 import BatchesView from './_components/BatchesComponent.vue';
 import MovableUnitsView from './_components/MovableUnitsComponent.vue';
@@ -45,9 +47,21 @@ export default {
   },
   computed: {},
   watch: {},
+  mounted() {
+    const page = { name: 'ordersView' };
+    this.handleClick(page);
+  },
   methods: {
+    ...mapMutations({
+      updateActivePage: 'setActivePage',
+    }),
     handleTab() {
       this.componentKey += 1;
+    },
+    handleClick(tab) {
+      const tabName = `Outbound_${tab.name}`;
+      this.updateActivePage(tabName);
+      this.handleTab();
     },
   },
 };
