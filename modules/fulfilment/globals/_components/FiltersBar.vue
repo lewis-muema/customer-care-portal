@@ -16,22 +16,22 @@
         </el-row>
       </div>
     </el-col>
-    <el-col :span="12">
+    <el-col :span="11">
       <div class="grid-content bg-white">
-        <el-row type="flex" class="">
-          <el-col :span="8">
+        <el-row type="flex" class="" justify="space-between">
+          <el-col :span="7">
             <div class="grid-content">
               <HubsFilter />
             </div>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <div class="grid-content">
-              region
+              <RegionsFilter />
             </div>
           </el-col>
           <el-col :span="8">
             <div class="grid-content">
-              batch
+              <BatchActions />
             </div>
           </el-col>
         </el-row>
@@ -47,6 +47,8 @@ export default {
     StatusFilter: () => import('./filters/StatusFilter'),
     Search: () => import('./filters/Search'),
     HubsFilter: () => import('./filters/HubFilter'),
+    RegionsFilter: () => import('./filters/RegionFilter'),
+    BatchActions: () => import('./filters/BatchActions'),
   },
 };
 </script>
