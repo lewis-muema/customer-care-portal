@@ -1,20 +1,33 @@
 <template>
   <el-tabs type="border-card">
-    <el-tab-pane label="Users">
+    <el-tab-pane
+      label="Users"
+      v-if="getFulfilmentType === 'Outbound_ordersView'"
+    >
       <users />
     </el-tab-pane>
-    <el-tab-pane label="Items">
+    <el-tab-pane
+      label="Items"
+      v-if="getFulfilmentType === 'Outbound_ordersView'"
+    >
       <items />
     </el-tab-pane>
-    <el-tab-pane label="Order Details">
+    <el-tab-pane
+      label="Order Details"
+      v-if="getFulfilmentType === 'Outbound_ordersView'"
+    >
       <order-details />
     </el-tab-pane>
-    <el-tab-pane label="Pricing Tiers">
+    <el-tab-pane
+      label="Pricing Tiers"
+      v-if="getFulfilmentType === 'Outbound_ordersView'"
+    >
       <pricing-tiers />
     </el-tab-pane>
   </el-tabs>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 import users from './tabInfo/users.vue';
 import items from './tabInfo/items.vue';
 import orderDetails from './tabInfo/orderDetails.vue';
@@ -27,11 +40,12 @@ export default {
       activeName: 'first',
     };
   },
-  methods: {
-    handleClick(tab, event) {
-      console.log(tab, event);
-    },
+  computed: {
+    ...mapGetters({
+      getFulfilmentType: 'fulfilment/getFulfilmentType',
+    }),
   },
+  methods: {},
 };
 </script>
 <style>
