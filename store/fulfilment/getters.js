@@ -14,4 +14,10 @@ export default {
   getSearchingStatus(state) {
     return state.isSearching;
   },
+  getFulfilmentType(state) {
+    return state.fulfilmentType;
+  },
+  getPagination(state) {
+    return state.pagination;
+  },
 };

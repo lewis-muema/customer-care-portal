@@ -40,11 +40,7 @@
       </el-col>
     </el-row>
     <el-row type="flex" class="row-bg mb-2" v-if="searched">
-      <div
-        v-if="isSearching"
-        justify="center"
-        class="search-header text-center"
-      >
+      <div v-if="searching" justify="center" class="search-header text-center">
         Fetching results ...
       </div>
       <div v-else class="search-header text-right back-btn">
@@ -70,7 +66,7 @@ export default {
   },
   data() {
     return {
-      isSearching: false,
+      searching: false,
       searched: false,
       title: '',
       page: '',
@@ -94,7 +90,7 @@ export default {
   },
   watch: {
     getSearchingStatus(status) {
-      this.isSearching = status;
+      this.searching = status;
     },
     getSearchState(status) {
       this.searched = status;
