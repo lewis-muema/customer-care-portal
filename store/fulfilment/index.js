@@ -52,6 +52,7 @@ const state = () => ({
       width: '',
     },
   ],
+  fulfilmentType: '',
 });
 
 export { state, getters, mutations, actions };

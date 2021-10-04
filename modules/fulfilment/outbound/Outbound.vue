@@ -54,6 +54,7 @@ export default {
   methods: {
     ...mapMutations({
       updateActivePage: 'setActivePage',
+      setFulfilmentType: 'fulfilment/setFulfilmentType',
     }),
     handleTab() {
       this.componentKey += 1;
@@ -61,6 +62,7 @@ export default {
     handleClick(tab) {
       const tabName = `Outbound_${tab.name}`;
       this.updateActivePage(tabName);
+      this.setFulfilmentType(tabName);
       this.handleTab();
     },
   },
