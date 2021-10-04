@@ -5,4 +5,7 @@ export default {
   getTableProps(state) {
     return state.tableProps;
   },
+  getPagination(state) {
+    return state.pagination;
+  },
 };

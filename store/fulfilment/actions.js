@@ -1,5 +1,5 @@
 export default {
-  async fetchOrders({ commit }) {
+  async fetchOrders({ commit }, payload) {
     const promise = new Promise(resolve => {
       const response = {
         pagination: {
@@ -97,6 +97,7 @@ export default {
     const results = await promise;
     setTimeout(() => {
       commit('setOrders', results);
+      commit('setPagination', results.pagination);
     }, 1000);
   },
 

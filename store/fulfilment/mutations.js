@@ -5,4 +5,7 @@ export default {
   setOrderActivity(_state, payload) {
     _state.orderActivity = payload;
   },
+  setPagination(_state, payload) {
+    _state.pagination = payload;
+  },
 };

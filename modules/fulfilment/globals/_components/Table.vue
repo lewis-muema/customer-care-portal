@@ -31,6 +31,18 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="fulfilment-pagination">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        background
+        layout="prev, pager, next"
+        :total="getPagination.total"
+        :page-size="getPagination.perPage"
+        :current-page.sync="currentPage"
+      >
+      </el-pagination>
+      {{ currentPage }}
+    </div>
   </div>
 </template>
 <script>
@@ -46,10 +58,22 @@ export default {
     StatusBadge,
   },
   computed: {
-    ...mapState('fulfilment', ['orders']),
+    ...mapState('fulfilment', ['orders', 'pagination']),
     ...mapGetters({
       getTableProps: 'fulfilment/getTableProps',
+      getPagination: 'fulfilment/getPagination',
     }),
+    currentPage: {
+      get() {
+        return this.$store.state.fulfilment.pagination.page;
+      },
+      set(value) {
+        this.$store.commit('fulfilment/setPagination', {
+          ...this.getPagination,
+          page: value,
+        });
+      },
+    },
   },
   mounted() {
     this.fetchOrders();
@@ -63,6 +87,9 @@ export default {
     },
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
+    },
+    handleCurrentChange(val) {
+      this.fetchOrders({ currentPage: val });
     },
   },
 };
@@ -79,5 +106,12 @@ export default {
   width: 40%;
   text-align: center;
   display: inline-block;
+}
+.fulfilment-pagination {
+  display: flex;
+  justify-content: center;
+}
+.el-pagination {
+  width: 35%;
 }
 </style>

@@ -5,6 +5,7 @@ import mutations from './mutations';
 const state = () => ({
   orders: [],
   orderActivity: [],
+  pagination: {},
   tableProps: [
     {
       name: 'Order Number',
