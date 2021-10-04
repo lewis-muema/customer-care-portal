@@ -41,7 +41,6 @@
         :current-page.sync="currentPage"
       >
       </el-pagination>
-      {{ currentPage }}
     </div>
   </div>
 </template>
