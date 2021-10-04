@@ -8,4 +8,7 @@ export default {
   getFulfilmentType(state) {
     return state.fulfilmentType;
   },
+  getPagination(state) {
+    return state.pagination;
+  },
 };

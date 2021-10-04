@@ -11,4 +11,7 @@ export default {
   setTableProps(state, array) {
     state.tableProps = array;
   },
+  setPagination(_state, payload) {
+    _state.pagination = payload;
+  },
 };

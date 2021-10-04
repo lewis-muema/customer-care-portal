@@ -7,6 +7,7 @@ const state = () => ({
   orderActivity: [],
   tableProps: [],
   fulfilmentType: '',
+  pagination: {},
 });
 
 export { state, getters, mutations, actions };
