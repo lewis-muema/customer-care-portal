@@ -101,9 +101,9 @@ export default {
       if (this.mode === 'ordersView') {
         data = this.ordersViewTableProps;
       } else if (this.mode === 'batchesView') {
-        data = this.ordersViewTableProps;
+        data = this.batchesViewTableProps;
       } else {
-        data = this.ordersViewTableProps;
+        data = this.movableUnitsViewTableProps;
       }
       return data;
     },
