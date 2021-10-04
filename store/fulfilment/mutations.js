@@ -3,7 +3,7 @@ export default {
     state.orders = payload;
   },
   setOrderActivity(state, payload) {
-    _state.orderActivity = payload;
+    state.orderActivity = payload;
   },
   setFulfilmentType(state, value) {
     state.fulfilmentType = value;
