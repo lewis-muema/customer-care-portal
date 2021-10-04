@@ -49,7 +49,16 @@ export default {
     ...mapState('fulfilment', ['orders']),
     ...mapGetters({
       getTableProps: 'fulfilment/getTableProps',
+      getOrders: 'fulfilment/getOrders',
+      getSearchState: 'fulfilment/getSearchState',
     }),
+  },
+  watch: {
+    getSearchState(status) {
+      if (!status) {
+        this.fetchOrders();
+      }
+    },
   },
   mounted() {
     this.fetchOrders();

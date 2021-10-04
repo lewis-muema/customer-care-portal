@@ -107,54 +107,42 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSearchedEntity: 'setSearchedFulfilmentEntity',
-      updateSearchState: 'setSearchState',
+      updateSearchedEntity: 'fulfilment/setSearchedEntity',
+      updateSearchState: 'fulfilment/setSearchState',
+      isSearching: 'fulfilment/setSearchingStatus',
     }),
     ...mapActions({
-      request_single_fulfilment_entity: 'request_single_fulfilment_entity',
       request_single_order: 'request_single_order',
+      fetchSingleOrder: 'fulfilment/fetchSingleOrder',
     }),
-    // async byPassSolrSearch() {
-    //   this.updateSearchState(true);
-    //   const orderNo = localStorage.query;
-    //   await this.singleOrderRequest(orderNo);
-    // },
     async onHit(item) {
-      // console.log('item', this.identifier[this.page], item);
       this.isActive = false;
       this.updateSearchState(true);
+      this.isSearching(true);
       const orderNo = item.order_no;
       const identifier = this.identifier[this.page];
       const entityID = item[identifier];
       await this.singleFulfilmentRequest(entityID);
     },
     async singleFulfilmentRequest(entityID) {
-      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/orders/{order_id}
-      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/batches/{batch_id}
-      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/movableunits/{movable_unit_id}
-      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/hubs/{movable_unit_id}
-
       if (!entityID) return;
       entityID = entityID.trim();
       try {
-        const data = await this.request_single_order(entityID);
-        // const filtered = this.userCountries.includes(data.country_code)
-        //   ? data
-        //   : {};
+        const data = await this.fetchSingleOrder();
         this.updateSearchedEntity(data);
+        this.isSearching(false);
+
         return (this.order = data);
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',
         );
+        this.isSearching(false);
       }
     },
     prepareResponseData(data) {
       const response = data.response.docs;
-      // const filtered = response.filter(item =>
-      //   this.userCountries.includes(item.country_code),
-      // );
-      return filtered;
+      return response;
     },
     clear() {
       this.isActive = true;

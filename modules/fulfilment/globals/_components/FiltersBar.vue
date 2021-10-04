@@ -1,47 +1,63 @@
 <template>
-  <el-row type="flex" class="row-bg filtersBar" justify="space-between">
-    <el-col :span="9">
-      <div class="grid-content fulfilment-search-holder">
-        <el-row type="flex" class="">
-          <el-col :span="7">
-            <div class="grid-content fulfilment-status-filter">
-              <StatusFilter />
-            </div>
-          </el-col>
-          <el-col :span="16">
-            <div class="grid-content fulfilment-search-filter">
-              <Search :page="getActivePage" />
-            </div>
-          </el-col>
-        </el-row>
+  <div>
+    <el-row type="flex" class="row-bg filtersBar" justify="space-between">
+      <el-col :span="9">
+        <div class="grid-content fulfilment-search-holder">
+          <el-row type="flex" class="">
+            <el-col :span="7">
+              <div class="grid-content fulfilment-status-filter">
+                <StatusFilter />
+              </div>
+            </el-col>
+            <el-col :span="16">
+              <div class="grid-content fulfilment-search-filter">
+                <Search :page="getActivePage" />
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </el-col>
+      <el-col :span="11">
+        <div class="grid-content bg-white">
+          <el-row type="flex" class="" justify="space-between">
+            <el-col :span="7">
+              <div class="grid-content">
+                <HubsFilter />
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="grid-content">
+                <RegionsFilter />
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="grid-content">
+                <BatchActions />
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row type="flex" class="row-bg mb-2" v-if="searched">
+      <div
+        v-if="isSearching"
+        justify="center"
+        class="search-header text-center"
+      >
+        Fetching results ...
       </div>
-    </el-col>
-    <el-col :span="11">
-      <div class="grid-content bg-white">
-        <el-row type="flex" class="" justify="space-between">
-          <el-col :span="7">
-            <div class="grid-content">
-              <HubsFilter />
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content">
-              <RegionsFilter />
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="grid-content">
-              <BatchActions />
-            </div>
-          </el-col>
-        </el-row>
+      <div v-else class="search-header text-right back-btn">
+        <span @click="goBack()"
+          ><i class="fa fa-arrow-left"></i> Back to {{ title }} List
+        </span>
       </div>
-    </el-col>
-  </el-row>
+    </el-row>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: 'FiltersBar',
@@ -52,8 +68,52 @@ export default {
     RegionsFilter: () => import('./filters/RegionFilter'),
     BatchActions: () => import('./filters/BatchActions'),
   },
+  data() {
+    return {
+      isSearching: false,
+      searched: false,
+      title: '',
+      page: '',
+    };
+  },
   computed: {
-    ...mapGetters(['getActivePage']),
+    ...mapGetters({
+      getActivePage: 'getActivePage',
+      getSearchingStatus: 'fulfilment/getSearchingStatus',
+      getSearchState: 'fulfilment/getSearchState',
+    }),
+
+    pageTitle() {
+      const data = {
+        Outbound_ordersView: 'Delivery Request',
+        Outbound_batchesView: 'Batched Orders',
+        Outbound_movableUnitsView: 'Movable Units',
+      };
+      return data;
+    },
+  },
+  watch: {
+    getSearchingStatus(status) {
+      this.isSearching = status;
+    },
+    getSearchState(status) {
+      this.searched = status;
+      this.title = this.pageTitle[this.getActivePage];
+    },
+    getActivePage(page) {
+      this.page = page;
+    },
+  },
+  methods: {
+    ...mapMutations({
+      updateSearchedEntity: 'fulfilment/setSearchedEntity',
+      updateSearchState: 'fulfilment/setSearchState',
+      isSearching: 'fulfilment/setSearchingStatus',
+    }),
+    goBack() {
+      this.updateSearchedEntity(null);
+      this.updateSearchState(false);
+    },
   },
 };
 </script>
@@ -72,5 +132,17 @@ export default {
 }
 .fulfilment-search-filter {
   height: 39px;
+}
+.search-header {
+  color: #518bb8;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  width: 100%;
+}
+.back-btn {
+  margin-right: 1em;
+}
+.back-btn span {
+  cursor: pointer;
 }
 </style>

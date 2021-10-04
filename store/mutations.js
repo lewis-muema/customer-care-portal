@@ -306,7 +306,4 @@ export default {
   setActivePage(state, val) {
     state.activePage = val;
   },
-  setSearchedFulfilmentEntity(state, val) {
-    state.searchedFulfilmentEntity = val;
-  },
 };

@@ -160,6 +160,5 @@ const state = () => ({
   vendorTypes: null,
   environmentVariables: null,
   activePage: null,
-  searchedFulfilmentEntity: null,
 });
 export { state, getters, mutations, actions };
