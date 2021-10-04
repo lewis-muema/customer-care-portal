@@ -1702,7 +1702,7 @@ textarea.is-invalid {
   line-height: 33px;
   margin-top: 0%;
   margin-left: 20px;
-  line-height: 70px;
+  line-height: 60px;
 }
 .main-sidebar {
   font-family: 'Nunito', sans-serif;
@@ -1717,7 +1717,6 @@ textarea.is-invalid {
 }
 .fulfilment-tabs > .el-tabs--top > .el-tabs__header {
   width: 39%;
-  margin-bottom: 3%;
 }
 .region-label {
   width: 48% !important;

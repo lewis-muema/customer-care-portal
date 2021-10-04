@@ -276,4 +276,7 @@ export default {
 
     return val;
   },
+  getActivePage(state) {
+    return state.activePage;
+  },
 };

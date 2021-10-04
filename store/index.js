@@ -158,5 +158,7 @@ const state = () => ({
   deactivatedCancellationConsequences: [],
   cancellationActions: [],
   vendorTypes: null,
+  environmentVariables: null,
+  activePage: '',
 });
 export { state, getters, mutations, actions };
