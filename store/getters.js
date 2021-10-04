@@ -277,4 +277,7 @@ export default {
   getActivePage(state) {
     return state.activePage;
   },
+  getSearchedFulfilmentEntity(state) {
+    return state.searchedFulfilmentEntity;
+  },
 };

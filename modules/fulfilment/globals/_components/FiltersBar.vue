@@ -10,7 +10,7 @@
           </el-col>
           <el-col :span="16">
             <div class="grid-content fulfilment-search-filter">
-              <Search />
+              <Search :page="getActivePage" />
             </div>
           </el-col>
         </el-row>

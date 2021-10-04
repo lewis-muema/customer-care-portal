@@ -53,9 +53,10 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 export default {
   name: 'Search',
   extends: VueTypeahead,
+  props: ['page'],
   data() {
     return {
-      limit: 3,
+      limit: 5,
       minChars: 1,
       query: '',
       order: null,
@@ -76,8 +77,28 @@ export default {
     solarToken() {
       return this.getEnvironmentVariables.SOLR_JWT;
     },
+    srcPath() {
+      const data = {
+        Outbound_ordersView: `select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc`,
+
+        Outbound_batchesView: `select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc`,
+
+        Outbound_movableUnitsView: `select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc`,
+      };
+
+      return data;
+    },
     src() {
-      return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
+      // eslint-disable-next-line prettier/prettier
+      return `${this.solarBase}${this.srcPath[this.page]}&jwt=${this.solarToken}`;
+    },
+    identifier() {
+      const data = {
+        Outbound_ordersView: 'order_no',
+        Outbound_batchesView: 'batch_id',
+        Outbound_movableUnitsView: 'movable_unit_id',
+      };
+      return data;
     },
     userCountries() {
       const countryCodeArray = this.getSession.payload.data.country_codes;
@@ -86,33 +107,42 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSearchedOrder: 'setSearchedOrder',
+      updateSearchedEntity: 'setSearchedFulfilmentEntity',
       updateSearchState: 'setSearchState',
     }),
     ...mapActions({
+      request_single_fulfilment_entity: 'request_single_fulfilment_entity',
       request_single_order: 'request_single_order',
     }),
-    async byPassSolrSearch() {
-      this.updateSearchState(true);
-      const orderNo = localStorage.query;
-      await this.singleOrderRequest(orderNo);
-    },
+    // async byPassSolrSearch() {
+    //   this.updateSearchState(true);
+    //   const orderNo = localStorage.query;
+    //   await this.singleOrderRequest(orderNo);
+    // },
     async onHit(item) {
+      // console.log('item', this.identifier[this.page], item);
       this.isActive = false;
       this.updateSearchState(true);
       const orderNo = item.order_no;
-      await this.singleOrderRequest(orderNo);
+      const identifier = this.identifier[this.page];
+      const entityID = item[identifier];
+      await this.singleFulfilmentRequest(entityID);
     },
-    async singleOrderRequest(orderNo) {
-      if (!orderNo) return;
-      orderNo = orderNo.trim();
+    async singleFulfilmentRequest(entityID) {
+      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/orders/{order_id}
+      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/batches/{batch_id}
+      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/movableunits/{movable_unit_id}
+      // https://stoplight.io/mocks/sendy/fulfilment-service/20985211/missioncontrol/hubs/{movable_unit_id}
+
+      if (!entityID) return;
+      entityID = entityID.trim();
       try {
-        const data = await this.request_single_order(orderNo);
-        const filtered = this.userCountries.includes(data.country_code)
-          ? data
-          : {};
-        this.updateSearchedOrder(filtered);
-        return (this.order = filtered);
+        const data = await this.request_single_order(entityID);
+        // const filtered = this.userCountries.includes(data.country_code)
+        //   ? data
+        //   : {};
+        this.updateSearchedEntity(data);
+        return (this.order = data);
       } catch {
         this.errors.push(
           'Something went wrong. Try again or contact Tech Support',
@@ -121,9 +151,9 @@ export default {
     },
     prepareResponseData(data) {
       const response = data.response.docs;
-      const filtered = response.filter(item =>
-        this.userCountries.includes(item.country_code),
-      );
+      // const filtered = response.filter(item =>
+      //   this.userCountries.includes(item.country_code),
+      // );
       return filtered;
     },
     clear() {

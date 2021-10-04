@@ -1813,4 +1813,18 @@ export default {
       return error;
     }
   },
+
+  async request_single_fulfilment_entity({ state, dispatch }, entityID) {
+    const config = state.config;
+    const url = `${config.ADONIS_API}orders/${entityID}`;
+    try {
+      const response = await axiosConfig.get(url);
+      return response.data;
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.message;
+    }
+  },
 };
