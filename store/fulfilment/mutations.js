@@ -1,9 +1,15 @@
 export default {
-  setOrders(_state, payload) {
-    _state.orders = payload;
+  setOrders(state, payload) {
+    state.orders = payload;
   },
-  setOrderActivity(_state, payload) {
-    _state.orderActivity = payload;
+  setOrderActivity(state, payload) {
+    state.orderActivity = payload;
+  },
+  setFulfilmentType(state, value) {
+    state.fulfilmentType = value;
+  },
+  setTableProps(state, array) {
+    state.tableProps = array;
   },
   setPagination(_state, payload) {
     _state.pagination = payload;

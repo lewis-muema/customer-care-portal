@@ -43,9 +43,71 @@ export default {
     return {
       mode: 'ordersView',
       componentKey: 0,
+      ordersViewTableProps: [
+        {
+          name: 'Order Number',
+          tag: 'order_no',
+          width: '130',
+        },
+        {
+          name: 'Status',
+          tag: 'status',
+          width: '130',
+        },
+        {
+          name: 'Seller',
+          tag: 'seller_name',
+          width: '',
+        },
+        {
+          name: 'Recipient',
+          tag: 'recipient_name',
+          width: '',
+        },
+        {
+          name: 'Time',
+          tag: 'time_placed',
+          width: '150',
+        },
+        {
+          name: 'Destination',
+          tag: 'destination_location',
+          width: '120',
+        },
+        {
+          name: 'Assigned Batch',
+          tag: 'assigned_batch_no',
+          width: '130',
+        },
+        {
+          name: 'Rider',
+          tag: 'rider_name',
+          width: '',
+        },
+        {
+          name: 'Region',
+          tag: 'city_name',
+          width: '',
+        },
+      ],
+      batchesViewTableProps: [],
+      movableUnitsViewTableProps: [],
     };
   },
-  computed: {},
+  computed: {
+    getFilteredProps() {
+      let data = [];
+
+      if (this.mode === 'ordersView') {
+        data = this.ordersViewTableProps;
+      } else if (this.mode === 'batchesView') {
+        data = this.batchesViewTableProps;
+      } else {
+        data = this.movableUnitsViewTableProps;
+      }
+      return data;
+    },
+  },
   watch: {},
   mounted() {
     const page = { name: 'ordersView' };
@@ -54,6 +116,8 @@ export default {
   methods: {
     ...mapMutations({
       updateActivePage: 'setActivePage',
+      setFulfilmentType: 'fulfilment/setFulfilmentType',
+      setTableProps: 'fulfilment/setTableProps',
     }),
     handleTab() {
       this.componentKey += 1;
@@ -61,6 +125,8 @@ export default {
     handleClick(tab) {
       const tabName = `Outbound_${tab.name}`;
       this.updateActivePage(tabName);
+      this.setFulfilmentType(tabName);
+      this.setTableProps(this.getFilteredProps);
       this.handleTab();
     },
   },
