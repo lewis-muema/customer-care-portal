@@ -12,33 +12,22 @@
           <TableDetails />
         </template>
       </el-table-column>
-      <el-table-column label="Order No" prop="order_no" width="130">
-      </el-table-column>
-      <el-table-column label="Status" prop="status" width="130">
-        <template slot-scope="props">
-          <StatusBadge :status="props.row.status" />
-        </template>
-      </el-table-column>
-      <el-table-column label="Seller" prop="seller_name"> </el-table-column>
-      <el-table-column label="Recipient" prop="recipient_name">
-      </el-table-column>
-      <el-table-column label="Time" prop="time_placed" width="150">
-        <template slot-scope="props">
-          {{ formatDate(props.row.time_placed) }}
-        </template>
-      </el-table-column>
       <el-table-column
-        label="Destination"
-        prop="destination_location"
-        width="120"
+        v-for="(table_data, index) in getTableProps"
+        :key="index"
+        :label="table_data.name"
+        :width="table_data.width"
       >
-      </el-table-column>
-      <el-table-column label="Assigned Batch" prop="batch_no" width="130">
-      </el-table-column>
-      <el-table-column label="Rider" prop="rider_name"> </el-table-column>
-      <el-table-column label="Region" prop="city_name">
         <template slot-scope="props">
-          <div>{{ props.row.city_name }}</div>
+          <div v-if="table_data.tag === 'status'">
+            <StatusBadge :status="props.row.status" />
+          </div>
+          <div v-else-if="table_data.tag === 'time_placed'">
+            {{ formatDate(props.row.time_placed) }}
+          </div>
+          <div v-else>
+            {{ props.row[table_data.tag] }}
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -46,7 +35,7 @@
 </template>
 <script>
 import moment from 'moment';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import TableDetails from './TableDetails.vue';
 import StatusBadge from './StatusBadge.vue';
 
@@ -58,6 +47,9 @@ export default {
   },
   computed: {
     ...mapState('fulfilment', ['orders']),
+    ...mapGetters({
+      getTableProps: 'fulfilment/getTableProps',
+    }),
   },
   mounted() {
     this.fetchOrders();
