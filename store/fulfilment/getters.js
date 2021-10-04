@@ -5,6 +5,15 @@ export default {
   getTableProps(state) {
     return state.tableProps;
   },
+  getSearchedEntity(state) {
+    return state.searchedEntity;
+  },
+  getSearchState(state) {
+    return state.searchState;
+  },
+  getSearchingStatus(state) {
+    return state.isSearching;
+  },
   getFulfilmentType(state) {
     return state.fulfilmentType;
   },

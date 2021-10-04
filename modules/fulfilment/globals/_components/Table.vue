@@ -31,7 +31,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="fulfilment-pagination">
+    <div class="fulfilment-pagination" v-if="!getSearchState">
       <el-pagination
         @current-change="handleCurrentChange"
         background
@@ -60,6 +60,8 @@ export default {
     ...mapState('fulfilment', ['orders', 'pagination']),
     ...mapGetters({
       getTableProps: 'fulfilment/getTableProps',
+      getOrders: 'fulfilment/getOrders',
+      getSearchState: 'fulfilment/getSearchState',
       getPagination: 'fulfilment/getPagination',
     }),
     currentPage: {
@@ -72,6 +74,13 @@ export default {
           page: value,
         });
       },
+    },
+  },
+  watch: {
+    getSearchState(status) {
+      if (!status) {
+        this.fetchOrders();
+      }
     },
   },
   mounted() {

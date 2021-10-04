@@ -8,6 +8,9 @@ const state = () => ({
   tableProps: [],
   fulfilmentType: '',
   pagination: {},
+  searchedEntity: null,
+  searchState: false,
+  isSearching: false,
 });
 
 export { state, getters, mutations, actions };

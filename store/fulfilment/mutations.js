@@ -14,4 +14,13 @@ export default {
   setPagination(_state, payload) {
     _state.pagination = payload;
   },
+  setSearchedEntity(_state, val) {
+    _state.searchedEntity = val;
+  },
+  setSearchState(_state, searchState) {
+    _state.searchState = searchState;
+  },
+  setSearchingStatus(_state, data) {
+    _state.isSearching = data;
+  },
 };
