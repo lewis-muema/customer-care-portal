@@ -8,4 +8,7 @@ export default {
   setFulfilmentType(state, value) {
     state.fulfilmentType = value;
   },
+  setTableProps(state, array) {
+    state.tableProps = array;
+  },
 };
