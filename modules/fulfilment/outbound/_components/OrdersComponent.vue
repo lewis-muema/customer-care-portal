@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 import Table from '../../globals/_components/Table';
 
 export default {
