@@ -23,4 +23,7 @@ export default {
   setSearchingStatus(_state, data) {
     _state.isSearching = data;
   },
+  setTableData(state, payload) {
+    state.tableData = payload;
+  },
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="fulfilment-table-wrapper">
     <el-table
-      :data="orders.data"
+      :data="getTableData"
       ref="tableData"
       style="width: 100%"
       @row-click="rowClicked"
@@ -56,13 +56,15 @@ export default {
     TableDetails,
     StatusBadge,
   },
+  props: {
+    dataProps: Object,
+  },
   computed: {
-    ...mapState('fulfilment', ['orders', 'pagination']),
     ...mapGetters({
       getTableProps: 'fulfilment/getTableProps',
-      getOrders: 'fulfilment/getOrders',
       getSearchState: 'fulfilment/getSearchState',
       getPagination: 'fulfilment/getPagination',
+      getTableData: 'fulfilment/getTableData',
     }),
     currentPage: {
       get() {
@@ -79,17 +81,17 @@ export default {
   watch: {
     getSearchState(status) {
       if (!status) {
-        this.fetchOrders();
+        this.fetchTableData();
       }
     },
   },
   mounted() {
-    this.fetchOrders();
+    this.fetchTableData();
   },
   methods: {
-    ...mapActions({
-      fetchOrders: 'fulfilment/fetchOrders',
-    }),
+    fetchTableData() {
+      this.$store.dispatch(this.dataProps.setter);
+    },
     rowClicked(row) {
       this.$refs.tableData.toggleRowExpansion(row);
     },
@@ -97,7 +99,7 @@ export default {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
     },
     handleCurrentChange(val) {
-      this.fetchOrders({ currentPage: val });
+      this.fetchTableData({ currentPage: val });
     },
   },
 };
