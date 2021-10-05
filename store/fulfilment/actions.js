@@ -567,12 +567,14 @@ export default {
             batch_no: '#13322',
           },
         ],
+        pagination: {},
       };
       resolve(response);
     });
     const results = await promise;
     setTimeout(() => {
-      commit('setOrders', results);
+      commit('setTableData', results.data);
+      commit('setPagination', results.pagination);
     }, 10);
   },
 };
