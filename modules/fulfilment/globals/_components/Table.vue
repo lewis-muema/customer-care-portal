@@ -1,7 +1,7 @@
 <template>
   <div class="fulfilment-table-wrapper">
     <el-table
-      :data="orders.data"
+      :data="getTableData"
       ref="tableData"
       style="width: 100%"
       @row-click="rowClicked"
@@ -31,6 +31,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="fulfilment-pagination" v-if="!getSearchState">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        background
+        layout="prev, pager, next"
+        :total="getPagination.total"
+        :page-size="getPagination.perPage"
+        :current-page.sync="currentPage"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -45,24 +56,50 @@ export default {
     TableDetails,
     StatusBadge,
   },
+  props: {
+    dataProps: Object,
+  },
   computed: {
-    ...mapState('fulfilment', ['orders']),
     ...mapGetters({
       getTableProps: 'fulfilment/getTableProps',
+      getSearchState: 'fulfilment/getSearchState',
+      getPagination: 'fulfilment/getPagination',
+      getTableData: 'fulfilment/getTableData',
     }),
+    currentPage: {
+      get() {
+        return this.$store.state.fulfilment.pagination.page;
+      },
+      set(value) {
+        this.$store.commit('fulfilment/setPagination', {
+          ...this.getPagination,
+          page: value,
+        });
+      },
+    },
+  },
+  watch: {
+    getSearchState(status) {
+      if (!status) {
+        this.fetchTableData();
+      }
+    },
   },
   mounted() {
-    this.fetchOrders();
+    this.fetchTableData();
   },
   methods: {
-    ...mapActions({
-      fetchOrders: 'fulfilment/fetchOrders',
-    }),
+    fetchTableData() {
+      this.$store.dispatch(this.dataProps.setter);
+    },
     rowClicked(row) {
       this.$refs.tableData.toggleRowExpansion(row);
     },
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
+    },
+    handleCurrentChange(val) {
+      this.fetchTableData({ currentPage: val });
     },
   },
 };
@@ -79,5 +116,12 @@ export default {
   width: 40%;
   text-align: center;
   display: inline-block;
+}
+.fulfilment-pagination {
+  display: flex;
+  justify-content: center;
+}
+.el-pagination {
+  width: 35%;
 }
 </style>
