@@ -41,6 +41,7 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: 'HubsFilter',
@@ -50,16 +51,41 @@ export default {
   data() {
     return {
       checkedOptions: [{ code: 'all', name: 'All Hubs', checked: true }],
-      options: [
-        { code: 'all', name: 'All Hubs', checked: true },
-        { name: 'Main Warehouse', code: '1', checked: false },
-        { name: 'Roysambu Hub', code: '2', checked: false },
-        { name: 'Tilisi', code: '3', checked: false },
-      ],
+      hubs: [],
+      options: [{ code: 'all', name: 'All Hubs', checked: true }],
+      selectedHubs: [],
     };
+  },
+  computed: {
+    ...mapGetters({
+      getHubs: 'fulfilment/getHubs',
+    }),
+  },
+  watch: {
+    getHubs(hubs) {
+      this.options = [{ code: 'all', name: 'All Hubs', checked: true }];
+      hubs.forEach(hub => {
+        this.options.push({
+          code: hub.hub_id,
+          name: hub.hub_name,
+          checked: false,
+        });
+        this.hubs.push(hub.hub_id);
+      });
+    },
+  },
+  mounted() {
+    this.fetchHubs();
   },
 
   methods: {
+    ...mapMutations({
+      updateSelectedHubs: 'fulfilment/setSelectedHubs',
+    }),
+    ...mapActions({
+      fetchHubs: 'fulfilment/fetchHubs',
+    }),
+
     customLabel(option) {
       return `${option.name}`;
     },
@@ -84,7 +110,14 @@ export default {
     select(data) {
       return data;
     },
-    submitMethod() {},
+    submitMethod() {
+      const arr = [];
+      this.checkedOptions.forEach(element => {
+        arr.push(element.code);
+      });
+      this.selectedHubs = arr.includes('all') ? this.hubs : arr;
+      this.updateSelectedHubs(this.selectedHubs);
+    },
   },
 };
 </script>

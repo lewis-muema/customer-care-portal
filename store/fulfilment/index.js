@@ -12,6 +12,9 @@ const state = () => ({
   searchedEntity: null,
   searchState: false,
   isSearching: false,
+  hubs: null,
+  selectedHubs: null,
+  processing: false,
 });
 
 export { state, getters, mutations, actions };

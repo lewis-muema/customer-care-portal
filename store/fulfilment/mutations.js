@@ -26,4 +26,13 @@ export default {
   setTableData(state, payload) {
     state.tableData = payload;
   },
+  setHubs(_state, payload) {
+    _state.hubs = payload;
+  },
+  setSelectedHubs(_state, payload) {
+    _state.selectedHubs = payload;
+  },
+  setProcessingStatus(_state, payload) {
+    _state.processing = payload;
+  },
 };

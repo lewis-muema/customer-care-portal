@@ -23,4 +23,13 @@ export default {
   getTableData(state) {
     return state.tableData;
   },
+  getHubs(state) {
+    return state.hubs;
+  },
+  getSelectedHubs(state) {
+    return state.selectedHubs;
+  },
+  getProcessingStatus(state) {
+    return state.processing;
+  },
 };
