@@ -3,6 +3,7 @@ export default {
     commit('setTableProps', payload);
   },
   async fetchOrders({ commit }, payload) {
+    commit('setProcessingStatus', true);
     const promise = new Promise(resolve => {
       const response = {
         pagination: {
@@ -501,6 +502,7 @@ export default {
     setTimeout(() => {
       commit('setTableData', results.data);
       commit('setPagination', results.pagination);
+      commit('setProcessingStatus', false);
     }, 1000);
   },
 
@@ -576,5 +578,77 @@ export default {
       commit('setTableData', results.data);
       commit('setPagination', results.pagination);
     }, 10);
+  },
+  async fetchHubs({ commit }, payload) {
+    const promise = new Promise(resolve => {
+      const response = {
+        data: {
+          hubs: [
+            {
+              hub_id: 'H_ASD123',
+              hub_type: 'LAST_MILE',
+              activated: true,
+              hub_name: 'Main Warehouse',
+              hub_phone_number: 12345678,
+              hub_location: {},
+            },
+            {
+              hub_id: 'H_ASD124',
+              hub_type: 'LAST_MILE',
+              activated: true,
+              hub_name: 'Tilisi',
+              hub_phone_number: 12345678,
+              hub_location: {},
+            },
+            {
+              hub_id: 'H_ASD125',
+              hub_type: 'LAST_MILE',
+              activated: true,
+              hub_name: 'Roysambu Hub',
+              hub_phone_number: 12345678,
+              hub_location: {},
+            },
+          ],
+        },
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setHubs', results.data.hubs);
+    }, 1000);
+  },
+  async fetchRegions({ commit }, payload) {
+    const promise = new Promise(resolve => {
+      const response = {
+        data: {
+          regions: [
+            {
+              region_id: '1',
+              region: 'Nairobi',
+            },
+            {
+              region_id: '2',
+              region: 'Nakuru',
+            },
+            {
+              region_id: '3',
+              region: 'Kisumu',
+            },
+            {
+              region_id: '4',
+              region: 'Thika',
+            },
+          ],
+        },
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setRegions', results.data.regions);
+    }, 1000);
   },
 };
