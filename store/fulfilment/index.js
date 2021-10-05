@@ -15,6 +15,8 @@ const state = () => ({
   hubs: null,
   selectedHubs: null,
   processing: false,
+  regions: null,
+  selectedRegions: null,
 });
 
 export { state, getters, mutations, actions };

@@ -32,4 +32,10 @@ export default {
   getProcessingStatus(state) {
     return state.processing;
   },
+  getRegions(state) {
+    return state.regions;
+  },
+  getSelectedRegions(state) {
+    return state.selectedRegions;
+  },
 };

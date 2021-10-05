@@ -71,6 +71,7 @@ export default {
     return {
       hubs: null,
       processing: false,
+      regions: null,
     };
   },
   computed: {
@@ -80,6 +81,7 @@ export default {
       getPagination: 'fulfilment/getPagination',
       getTableData: 'fulfilment/getTableData',
       getSelectedHubs: 'fulfilment/getSelectedHubs',
+      getSelectedRegions: 'fulfilment/getSelectedRegions',
       getProcessingStatus: 'fulfilment/getProcessingStatus',
     }),
     currentPage: {
@@ -105,6 +107,13 @@ export default {
       this.updatePagination({});
 
       this.hubs = hubs;
+      this.fetchTableData();
+    },
+    getSelectedRegions(regions) {
+      this.updateTableData([]);
+      this.updatePagination({});
+
+      this.regions = regions;
       this.fetchTableData();
     },
     getProcessingStatus(status) {

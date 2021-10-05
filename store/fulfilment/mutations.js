@@ -35,4 +35,10 @@ export default {
   setProcessingStatus(_state, payload) {
     _state.processing = payload;
   },
+  setRegions(_state, payload) {
+    _state.regions = payload;
+  },
+  setSelectedRegions(_state, payload) {
+    _state.selectedRegions = payload;
+  },
 };

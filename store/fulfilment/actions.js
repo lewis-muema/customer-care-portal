@@ -619,4 +619,36 @@ export default {
       commit('setHubs', results.data.hubs);
     }, 1000);
   },
+  async fetchRegions({ commit }, payload) {
+    const promise = new Promise(resolve => {
+      const response = {
+        data: {
+          regions: [
+            {
+              region_id: '1',
+              region: 'Nairobi',
+            },
+            {
+              region_id: '2',
+              region: 'Nakuru',
+            },
+            {
+              region_id: '3',
+              region: 'Kisumu',
+            },
+            {
+              region_id: '4',
+              region: 'Thika',
+            },
+          ],
+        },
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setRegions', results.data.regions);
+    }, 1000);
+  },
 };
