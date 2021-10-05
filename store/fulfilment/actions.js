@@ -496,7 +496,7 @@ export default {
 
     const results = await promise;
     setTimeout(() => {
-      commit('setOrders', results);
+      commit('setTableData', results.data);
       commit('setPagination', results.pagination);
     }, 1000);
   },

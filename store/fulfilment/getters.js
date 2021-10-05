@@ -20,4 +20,7 @@ export default {
   getPagination(state) {
     return state.pagination;
   },
+  getTableData(state) {
+    return state.tableData;
+  },
 };
