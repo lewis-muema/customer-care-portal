@@ -1799,7 +1799,7 @@ export default {
 
     const url = `${config.STAFF_API}variables`;
     try {
-      const response = await axios.get(url, headers);
+      const response = await axiosConfig.get(url, headers);
       const res = response.data;
       const status = res.status;
       const data = res.data;
