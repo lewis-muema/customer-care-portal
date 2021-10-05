@@ -1,4 +1,7 @@
 export default {
+  setTableProps({ commit }, payload) {
+    commit('setTableProps', payload);
+  },
   async fetchOrders({ commit }, payload) {
     const promise = new Promise(resolve => {
       const response = {
