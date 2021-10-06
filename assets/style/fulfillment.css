@@ -134,8 +134,9 @@
   margin-top: 13%;
 }
 .fulfilment-action-button {
-  background: #528BB8;
-  border-color: #528BB8;
+  background: #0062DB;
+  border-color: #0062DB;
+  letter-spacing: 0.005em;
 }
 .fulfilment-table-wrapper .el-table__empty-block {
   display: none !important;
