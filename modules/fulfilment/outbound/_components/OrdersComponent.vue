@@ -21,13 +21,13 @@ export default {
   mounted() {
     const tableProps = [
       {
-        name: 'Order Number',
-        tag: 'order_no',
+        name: 'Status',
+        tag: 'status',
         width: '130',
       },
       {
-        name: 'Status',
-        tag: 'status',
+        name: 'Order Number',
+        tag: 'order_no',
         width: '130',
       },
       {

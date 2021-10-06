@@ -15,7 +15,7 @@ export default {
         data: [
           {
             order_no: 'ES97ZL615-F4U',
-            status: 'Received',
+            status: 'Pending',
             seller_name: 'Jame Merchant',
             recipient_name: 'John Doe',
             rider_name: 'Sendy Rider',
@@ -75,7 +75,7 @@ export default {
           },
           {
             order_no: 'ES97ZL615-F4U',
-            status: 'received',
+            status: 'Pending',
             seller_name: 'Jame Merchant',
             recipient_name: 'Mike Doe',
             rider_name: 'Sendy Rider',
