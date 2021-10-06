@@ -15,11 +15,6 @@
         <span v-else>No Data</span>
       </div>
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column type="expand">
-        <template>
-          <TableDetails />
-        </template>
-      </el-table-column>
       <el-table-column
         v-for="(table_data, index) in getTableProps"
         :key="index"
@@ -36,6 +31,11 @@
           <div v-else>
             {{ props.row[table_data.tag] }}
           </div>
+        </template>
+      </el-table-column>
+      <el-table-column type="expand">
+        <template>
+          <TableDetails />
         </template>
       </el-table-column>
     </el-table>
