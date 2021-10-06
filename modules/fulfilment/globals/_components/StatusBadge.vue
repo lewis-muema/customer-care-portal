@@ -45,12 +45,13 @@ export default {
 </script>
 <style scoped>
 .order-status {
-  color: #ffffff;
   text-align: center;
-  width: 60%;
+  width: 70%;
   border-radius: 20px;
   text-transform: capitalize;
   font-weight: 700;
+  font-size: 10.5378px;
+  line-height: 24px;
 }
 .order-status.pending {
   background-color: #fddb97;
@@ -62,7 +63,7 @@ export default {
   color: #324ba8;
 }
 .order-status.in-transit {
-  background-color: #064a2333;
+  background-color: #defad2;
   color: #064a23;
 }
 </style>
