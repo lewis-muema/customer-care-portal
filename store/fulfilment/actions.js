@@ -53,7 +53,7 @@ export default {
         data: [
           {
             order_no: 'ES97ZL615-F4U',
-            status: 'Received',
+            status: 'Pending',
             seller_name: 'Jame Merchant',
             recipient_name: 'John Doe',
             rider_name: 'Sendy Rider',
@@ -70,6 +70,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -90,6 +94,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -110,10 +118,14 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
-            status: 'received',
+            status: 'Pending',
             seller_name: 'Jame Merchant',
             recipient_name: 'Mike Doe',
             rider_name: 'Sendy Rider',
@@ -130,6 +142,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -150,6 +166,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -170,6 +190,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -190,6 +214,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -210,6 +238,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -230,6 +262,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -250,6 +286,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -270,6 +310,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -290,6 +334,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -310,6 +358,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -330,6 +382,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -350,6 +406,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -370,6 +430,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -390,6 +454,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -410,6 +478,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -430,6 +502,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -450,6 +526,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -470,6 +550,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -490,6 +574,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -510,6 +598,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
           {
             order_no: 'ES97ZL615-F4U',
@@ -530,6 +622,10 @@ export default {
             unit_per_order: 10,
             volume: 10,
             batch_no: '#13322',
+            movable_unit_id: 'BLF-O001',
+            hub_pickup: 'Alp Warehouse',
+            hub_destination: 'Westlands Hub',
+            batches_no: 10,
           },
         ],
       };
@@ -540,6 +636,7 @@ export default {
     setTimeout(() => {
       commit('setTableData', results.data);
       commit('setPagination', results.pagination);
+      commit('setProcessingStatus', false);
     }, 1000);
   },
 
@@ -606,12 +703,86 @@ export default {
             batch_no: '#13322',
           },
         ],
+        pagination: {},
       };
       resolve(response);
     });
     const results = await promise;
     setTimeout(() => {
-      commit('setOrders', results);
+      commit('setTableData', results.data);
+      commit('setPagination', results.pagination);
     }, 10);
+  },
+  async fetchHubs({ commit }, payload) {
+    const promise = new Promise(resolve => {
+      const response = {
+        data: {
+          hubs: [
+            {
+              hub_id: 'H_ASD123',
+              hub_type: 'LAST_MILE',
+              activated: true,
+              hub_name: 'Main Warehouse',
+              hub_phone_number: 12345678,
+              hub_location: {},
+            },
+            {
+              hub_id: 'H_ASD124',
+              hub_type: 'LAST_MILE',
+              activated: true,
+              hub_name: 'Tilisi',
+              hub_phone_number: 12345678,
+              hub_location: {},
+            },
+            {
+              hub_id: 'H_ASD125',
+              hub_type: 'LAST_MILE',
+              activated: true,
+              hub_name: 'Roysambu Hub',
+              hub_phone_number: 12345678,
+              hub_location: {},
+            },
+          ],
+        },
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setHubs', results.data.hubs);
+    }, 1000);
+  },
+  async fetchRegions({ commit }, payload) {
+    const promise = new Promise(resolve => {
+      const response = {
+        data: {
+          regions: [
+            {
+              region_id: '1',
+              region: 'Nairobi',
+            },
+            {
+              region_id: '2',
+              region: 'Nakuru',
+            },
+            {
+              region_id: '3',
+              region: 'Kisumu',
+            },
+            {
+              region_id: '4',
+              region: 'Thika',
+            },
+          ],
+        },
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setRegions', results.data.regions);
+    }, 1000);
   },
 };

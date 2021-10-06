@@ -137,3 +137,24 @@
   background: #528BB8;
   border-color: #528BB8;
 }
+.fulfilment-table-wrapper .el-table__empty-block {
+  display: none !important;
+}
+.fulfilment-table-wrapper .el-table th .el-checkbox {
+  margin-left: 5px;
+  margin-top: 7px;
+}
+.fulfilment-table-wrapper .el-table th > .cell {
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+  font-weight: bold;
+  font-size: 12.294px;
+  line-height: 17px;
+  color: #000000;
+}
+.fulfilment-table-wrapper  .el-checkbox__inner {
+  border: 1px solid #9E9E9E;
+  box-sizing: border-box;
+  border-radius: 3px;
+}

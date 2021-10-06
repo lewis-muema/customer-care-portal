@@ -154,6 +154,7 @@ module.exports = {
    */
   plugins: [
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
+    { src: '~plugins/el-table-infinite-scroll.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
     { src: '~plugins/apm.js', mode: 'client', ssr: false },
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },

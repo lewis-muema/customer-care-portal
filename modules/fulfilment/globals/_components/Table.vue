@@ -9,12 +9,15 @@
       infinite-scroll-disabled="busy"
       infinite-scroll-distance="10"
     >
+      <div
+        class="data-info-panel"
+        slot="append"
+        v-if="getTableData.length == '0'"
+      >
+        <span v-if="processing"> Fetching data ... </span>
+        <span v-else>No Data</span>
+      </div>
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column type="expand">
-        <template>
-          <TableDetails />
-        </template>
-      </el-table-column>
       <el-table-column
         v-for="(table_data, index) in getTableProps"
         :key="index"
@@ -33,6 +36,11 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column type="expand">
+        <template>
+          <TableDetails />
+        </template>
+      </el-table-column>
     </el-table>
     <!-- <div class="fulfilment-pagination" v-if="!getSearchState">
       <el-pagination
@@ -49,7 +57,7 @@
 </template>
 <script>
 import moment from 'moment';
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import TableDetails from './TableDetails.vue';
 import StatusBadge from './StatusBadge.vue';
 
@@ -67,12 +75,22 @@ export default {
   props: {
     dataProps: Object,
   },
+  data() {
+    return {
+      hubs: null,
+      processing: false,
+      regions: null,
+    };
+  },
   computed: {
     ...mapGetters({
       getTableProps: 'fulfilment/getTableProps',
       getSearchState: 'fulfilment/getSearchState',
       getPagination: 'fulfilment/getPagination',
       getTableData: 'fulfilment/getTableData',
+      getSelectedHubs: 'fulfilment/getSelectedHubs',
+      getSelectedRegions: 'fulfilment/getSelectedRegions',
+      getProcessingStatus: 'fulfilment/getProcessingStatus',
     }),
     currentPage: {
       get() {
@@ -92,11 +110,33 @@ export default {
         this.fetchTableData();
       }
     },
+    getSelectedHubs(hubs) {
+      this.updateTableData([]);
+      this.updatePagination({});
+
+      this.hubs = hubs;
+      this.fetchTableData();
+    },
+    getSelectedRegions(regions) {
+      this.updateTableData([]);
+      this.updatePagination({});
+
+      this.regions = regions;
+      this.fetchTableData();
+    },
+    getProcessingStatus(status) {
+      this.processing = status;
+    },
   },
   mounted() {
     this.fetchTableData();
   },
   methods: {
+    ...mapMutations({
+      updateTableData: 'fulfilment/setTableData',
+      updatePagination: 'fulfilment/setPagination',
+    }),
+
     fetchTableData() {
       this.$store.dispatch(this.dataProps.setter);
     },
@@ -134,5 +174,19 @@ export default {
 }
 .el-pagination {
   width: 35%;
+}
+.data-info-panel {
+  min-height: 60px;
+  text-align: center;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 </style>

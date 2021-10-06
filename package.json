@@ -34,6 +34,7 @@
     "country-list": "^2.2.0",
     "cross-env": "^5.2.0",
     "dotenv": "^8.1.0",
+    "el-table-infinite-scroll": "^1.0.10",
     "elastic-apm-node": "^3.8.0",
     "element-ui": "^2.12.0",
     "es6-promise": "^4.2.8",

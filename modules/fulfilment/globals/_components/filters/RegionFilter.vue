@@ -41,26 +41,51 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: 'RegionsFilter',
   components: {
     Multiselect,
   },
-
   data() {
     return {
       checkedOptions: [{ code: 'all', name: 'All Regions', checked: true }],
-      options: [
-        { code: 'all', name: 'All Regions', checked: true },
-        { name: 'Nairobi ', code: '1', checked: false },
-        { name: 'Nakuru ', code: '2', checked: false },
-        { name: 'Kisumu', code: '3', checked: false },
-      ],
+      regions: [],
+      options: [{ code: 'all', name: 'All Regions', checked: true }],
+      selectedRegions: [],
     };
+  },
+  computed: {
+    ...mapGetters({
+      getRegions: 'fulfilment/getRegions',
+    }),
+  },
+  watch: {
+    getRegions(regions) {
+      this.options = [{ code: 'all', name: 'All Regions', checked: true }];
+      regions.forEach(region => {
+        this.options.push({
+          code: region.region_id,
+          name: region.region,
+          checked: false,
+        });
+        this.regions.push(region.region_id);
+      });
+    },
+  },
+  mounted() {
+    this.fetchRegions();
   },
 
   methods: {
+    ...mapMutations({
+      updateSelectedRegions: 'fulfilment/setSelectedRegions',
+    }),
+    ...mapActions({
+      fetchRegions: 'fulfilment/fetchRegions',
+    }),
+
     customLabel(option) {
       return `${option.name}`;
     },
@@ -85,7 +110,14 @@ export default {
     select(data) {
       return data;
     },
-    submitMethod() {},
+    submitMethod() {
+      const arr = [];
+      this.checkedOptions.forEach(element => {
+        arr.push(element.code);
+      });
+      this.selectedRegions = arr.includes('all') ? this.regions : arr;
+      this.updateSelectedRegions(this.selectedRegions);
+    },
   },
 };
 </script>
