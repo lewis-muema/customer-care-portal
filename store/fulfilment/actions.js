@@ -4,7 +4,7 @@ export default {
   setTableProps({ commit }, payload) {
     commit('setTableProps', payload);
   },
-  async fetchInboundDeliveryRequests({ commit }, payload) {
+  async fetchOutboundDeliveryRequests({ commit }, payload) {
     commit('setProcessingStatus', true);
     const promise = new Promise(resolve => {
       const response = {
@@ -27,7 +27,7 @@ export default {
     }, 1000);
   },
 
-  async fetchInboundBatchedOrders({ commit }, payload) {
+  async fetchOutboundBatchedOrders({ commit }, payload) {
     commit('setProcessingStatus', true);
     const promise = new Promise(resolve => {
       const response = {
@@ -37,7 +37,7 @@ export default {
           page: 1,
           lastPage: 20,
         },
-        data: FulfilmentData.inbound_batched_orders,
+        data: FulfilmentData.outbound_batched_orders,
       };
       resolve(response);
     });
@@ -61,6 +61,50 @@ export default {
           lastPage: 20,
         },
         data: FulfilmentData.movable_units,
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setTableData', results.data);
+      commit('setPagination', results.pagination);
+      commit('setProcessingStatus', false);
+    }, 1000);
+  },
+  async fetchOutboundPickUpRequests({ commit }, payload) {
+    commit('setProcessingStatus', true);
+    const promise = new Promise(resolve => {
+      const response = {
+        pagination: {
+          total: 987,
+          perPage: 50,
+          page: 1,
+          lastPage: 20,
+        },
+        data: FulfilmentData.pickup_request,
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setTableData', results.data);
+      commit('setPagination', results.pagination);
+      commit('setProcessingStatus', false);
+    }, 1000);
+  },
+  async fetchInboundBatchedOrders({ commit }, payload) {
+    commit('setProcessingStatus', true);
+    const promise = new Promise(resolve => {
+      const response = {
+        pagination: {
+          total: 987,
+          perPage: 50,
+          page: 1,
+          lastPage: 20,
+        },
+        data: FulfilmentData.inbound_batched_orders,
       };
       resolve(response);
     });
