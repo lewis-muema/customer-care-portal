@@ -5,6 +5,9 @@
       ref="tableData"
       style="width: 100%"
       @row-click="rowClicked"
+      v-infinite-scroll="loadMore"
+      infinite-scroll-disabled="busy"
+      infinite-scroll-distance="10"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column type="expand">
@@ -31,7 +34,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="fulfilment-pagination" v-if="!getSearchState">
+    <!-- <div class="fulfilment-pagination" v-if="!getSearchState">
       <el-pagination
         @current-change="handleCurrentChange"
         background
@@ -41,7 +44,7 @@
         :current-page.sync="currentPage"
       >
       </el-pagination>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -55,6 +58,11 @@ export default {
   components: {
     TableDetails,
     StatusBadge,
+  },
+  data() {
+    return {
+      busy: false,
+    };
   },
   props: {
     dataProps: Object,
@@ -100,6 +108,9 @@ export default {
     },
     handleCurrentChange(val) {
       this.fetchTableData({ currentPage: val });
+    },
+    loadMore() {
+      this.fetchTableData({ infinite: true });
     },
   },
 };

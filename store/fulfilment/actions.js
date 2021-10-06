@@ -2,7 +2,46 @@ export default {
   setTableProps({ commit }, payload) {
     commit('setTableProps', payload);
   },
-  async fetchOrders({ commit }, payload) {
+  async fetchOrders({ commit, state }, payload) {
+    if (typeof payload !== 'undefined' && payload.infinite) {
+      const newTableData = {
+        pagination: {
+          total: 987,
+          perPage: 50,
+          page: state.pagination.page + 1,
+          lastPage: 20,
+        },
+        data: [
+          {
+            order_no: 'ES97ZL615-F4U-Paginated',
+            status: 'Received',
+            seller_name: 'Jame Merchant',
+            recipient_name: 'John Doe',
+            rider_name: 'Sendy Rider',
+            rider_id: 1,
+            city_name: 'Nairobi',
+            time_placed: '2021-09-28T09:32:46.000Z',
+            pickup_location: 'The Chancery, Valley Rd ',
+            destination_location: 'Tilisi Hub',
+            distance: 20,
+            order_amount: 244,
+            currency: 'KSH',
+            assigned_batch_no: 'BLF-O001',
+            estimated_weight: 400,
+            unit_per_order: 10,
+            volume: 10,
+            batch_no: '#13322',
+          },
+        ],
+      };
+
+      const updatedTableData = state.tableData.concat(newTableData.data);
+      console.log(updatedTableData);
+      setTimeout(() => {
+        commit('setTableData', updatedTableData);
+        commit('setPagination', newTableData.pagination);
+      }, 1000);
+    }
     const promise = new Promise(resolve => {
       const response = {
         pagination: {
