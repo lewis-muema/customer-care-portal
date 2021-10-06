@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchOrders',
+        setter: 'fulfilment/fetchInboundDeliveryRequests',
       },
     };
   },

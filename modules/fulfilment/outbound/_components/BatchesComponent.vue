@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchOrders',
+        setter: 'fulfilment/fetchInboundBatchedOrders',
       },
     };
   },
@@ -25,12 +25,12 @@ export default {
       },
       {
         name: 'Packages',
-        tag: 'seller_name',
+        tag: 'package_no',
         width: '',
       },
       {
         name: 'Batch No',
-        tag: 'recipient_name',
+        tag: 'batch_no',
         width: '',
       },
       {
@@ -40,12 +40,12 @@ export default {
       },
       {
         name: 'Pickup',
-        tag: 'assigned_batch_no',
+        tag: 'pick_up',
         width: '130',
       },
       {
         name: 'Destination',
-        tag: 'destination_location',
+        tag: 'destination',
         width: '120',
       },
       {
