@@ -54,11 +54,13 @@ export default {
     ...mapMutations({
       updateActivePage: 'setActivePage',
       setFulfilmentType: 'fulfilment/setFulfilmentType',
+      setTableData: 'fulfilment/setTableData',
     }),
     handleTab() {
       this.componentKey += 1;
     },
     handleClick(tab) {
+      this.setTableData([]);
       const tabName = `Outbound_${tab.name}`;
       this.updateActivePage(tabName);
       this.setFulfilmentType(tabName);

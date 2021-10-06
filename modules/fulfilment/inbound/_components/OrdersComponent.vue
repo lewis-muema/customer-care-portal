@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchOrders',
+        setter: 'fulfilment/fetchOutboundPickUpRequests',
       },
     };
   },
@@ -26,29 +26,29 @@ export default {
         width: '130',
       },
       {
-        name: 'Seller',
-        tag: 'seller_name',
+        name: 'Client',
+        tag: 'recipient_name',
         width: '',
       },
       {
-        name: 'Recipient',
-        tag: 'recipient_name',
+        name: 'Order No',
+        tag: 'order_no',
         width: '',
       },
       {
         name: 'Time',
         tag: 'time_placed',
-        width: '150',
+        width: '',
       },
       {
-        name: 'Destination',
-        tag: 'destination_location',
-        width: '120',
+        name: 'PickUp',
+        tag: 'pickup_location',
+        width: '',
       },
       {
-        name: 'Assigned Batch',
-        tag: 'assigned_batch_no',
-        width: '130',
+        name: 'Delivery',
+        tag: 'delivery',
+        width: '',
       },
       {
         name: 'Rider',
