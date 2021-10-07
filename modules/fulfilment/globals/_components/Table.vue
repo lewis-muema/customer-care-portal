@@ -67,7 +67,10 @@ export default {
     StatusBadge,
   },
   props: {
-    dataProps: Object,
+    dataProps: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
