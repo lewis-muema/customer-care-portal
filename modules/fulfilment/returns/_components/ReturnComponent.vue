@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchOutboundDeliveryRequests',
+        setter: 'fulfilment/fetchReturnOrders',
       },
     };
   },
@@ -23,11 +23,6 @@ export default {
       {
         name: 'Status',
         tag: 'status',
-        width: '130',
-      },
-      {
-        name: 'Order Number',
-        tag: 'order_no',
         width: '130',
       },
       {
@@ -41,28 +36,28 @@ export default {
         width: '',
       },
       {
+        name: 'Order Number',
+        tag: 'order_no',
+        width: '',
+      },
+      {
         name: 'Time',
         tag: 'time_placed',
-        width: '150',
+        width: '',
       },
       {
-        name: 'Destination',
-        tag: 'destination_location',
-        width: '120',
+        name: 'Recipient’s location',
+        tag: 'recipient_location',
+        width: '',
       },
       {
-        name: 'Assigned Batch',
-        tag: 'assigned_batch_no',
-        width: '130',
+        name: 'Return location',
+        tag: 'hub_location',
+        width: '',
       },
       {
         name: 'Rider',
         tag: 'rider_name',
-        width: '',
-      },
-      {
-        name: 'Region',
-        tag: 'city_name',
         width: '',
       },
     ];

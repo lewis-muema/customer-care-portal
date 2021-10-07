@@ -5,7 +5,9 @@
       ref="tableData"
       style="width: 100%"
       @row-click="rowClicked"
+      @selection-change="handleSelectionChange"
     >
+      >
       <div
         class="data-info-panel"
         slot="append"
@@ -57,7 +59,10 @@ export default {
     StatusBadge,
   },
   props: {
-    dataProps: Object,
+    dataProps: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -69,6 +74,7 @@ export default {
       hubs: null,
       processing: false,
       regions: null,
+      multipleSelection: [],
     };
   },
   computed: {
@@ -124,6 +130,7 @@ export default {
     ...mapMutations({
       updateTableData: 'fulfilment/setTableData',
       updatePagination: 'fulfilment/setPagination',
+      updateCheckedOrders: 'fulfilment/setCheckedOrders',
     }),
 
     fetchTableData(payload = null) {
@@ -146,6 +153,10 @@ export default {
         nextPage,
       });
       loadingInstance.close();
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      this.updateCheckedOrders(this.multipleSelection);
     },
   },
 };

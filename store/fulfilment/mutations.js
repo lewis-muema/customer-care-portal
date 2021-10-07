@@ -41,4 +41,8 @@ export default {
   setSelectedRegions(_state, payload) {
     _state.selectedRegions = payload;
   },
+
+  setCheckedOrders(_state, payload) {
+    _state.checkedOrders = payload;
+  },
 };

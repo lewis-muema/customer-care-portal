@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchOutboundDeliveryRequests',
+        setter: 'fulfilment/getHubList',
       },
     };
   },
@@ -21,48 +21,33 @@ export default {
   mounted() {
     const tableProps = [
       {
+        name: 'Name',
+        tag: 'hub_name',
+        width: '',
+      },
+      {
+        name: 'Country',
+        tag: 'country',
+        width: '',
+      },
+      {
+        name: 'Location',
+        tag: 'location',
+        width: '',
+      },
+      {
+        name: 'Type of hub',
+        tag: 'type',
+        width: '',
+      },
+      {
         name: 'Status',
         tag: 'status',
         width: '130',
       },
       {
-        name: 'Order Number',
-        tag: 'order_no',
-        width: '130',
-      },
-      {
-        name: 'Seller',
-        tag: 'seller_name',
-        width: '',
-      },
-      {
-        name: 'Recipient',
-        tag: 'recipient_name',
-        width: '',
-      },
-      {
-        name: 'Time',
-        tag: 'time_placed',
-        width: '150',
-      },
-      {
-        name: 'Destination',
-        tag: 'destination_location',
-        width: '120',
-      },
-      {
-        name: 'Assigned Batch',
-        tag: 'assigned_batch_no',
-        width: '130',
-      },
-      {
-        name: 'Rider',
-        tag: 'rider_name',
-        width: '',
-      },
-      {
-        name: 'Region',
-        tag: 'city_name',
+        name: 'Actions',
+        tag: 'action',
         width: '',
       },
     ];
