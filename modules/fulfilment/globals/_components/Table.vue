@@ -16,7 +16,8 @@
         <span v-if="processing"> Fetching data ... </span>
         <span v-else>No Data</span>
       </div>
-      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column :type="checkFulfilmentMultiSelect" width="55">
+      </el-table-column>
       <el-table-column
         v-for="(table_data, index) in getTableProps"
         :key="index"
@@ -35,7 +36,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column type="expand">
+      <el-table-column type="expand" v-if="checkFulfilmentExpand">
         <template>
           <TableDetails />
         </template>
@@ -78,6 +79,13 @@ export default {
       processing: false,
       regions: null,
       multipleSelection: [],
+      disableCheckBoxPages: [
+        'HubsView',
+        'ReturnView',
+        'Outbound_movableUnitsView',
+        'Inbound_batchesView',
+      ],
+      disableExpandPages: ['HubsView'],
     };
   },
   computed: {
@@ -89,6 +97,7 @@ export default {
       getSelectedHubs: 'fulfilment/getSelectedHubs',
       getSelectedRegions: 'fulfilment/getSelectedRegions',
       getProcessingStatus: 'fulfilment/getProcessingStatus',
+      getFulfilmentType: 'fulfilment/getFulfilmentType',
     }),
     currentPage: {
       get() {
@@ -100,6 +109,16 @@ export default {
           page: value,
         });
       },
+    },
+    checkFulfilmentMultiSelect() {
+      let type = '';
+      if (!this.disableCheckBoxPages.includes(this.getFulfilmentType)) {
+        type = 'selection';
+      }
+      return type;
+    },
+    checkFulfilmentExpand() {
+      return !this.disableExpandPages.includes(this.getFulfilmentType);
     },
   },
   watch: {
