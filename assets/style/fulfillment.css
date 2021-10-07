@@ -133,9 +133,10 @@
 .fulfilment-batch-actions {
   margin-top: 13%;
 }
-.fulfilment-action-button {
-  background: #528BB8;
-  border-color: #528BB8;
+.fulfilment-action-button, .fulfilment-batch-actions .el-button--primary:active, .fulfilment-batch-actions .el-button--primary:hover, .fulfilment-batch-actions .el-button--primary:focus {
+  background: #0062DB;
+  border-color: #0062DB;
+  letter-spacing: 0.005em;
 }
 .fulfilment-table-wrapper .el-table__empty-block {
   display: none !important;
@@ -157,4 +158,51 @@
   border: 1px solid #9E9E9E;
   box-sizing: border-box;
   border-radius: 3px;
+}
+
+.fulfilment-table-wrapper .el-checkbox__input.is-checked .el-checkbox__inner, .fulfilment-table-wrapper .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: #324ba8;
+  border-color: #324ba8;
+}
+
+.fulfilment-batch-actions .el-button--primary.is-disabled, 
+.fulfilment-batch-actions .el-button--primary.is-disabled:active, 
+.fulfilment-batch-actions .el-button--primary.is-disabled:focus, 
+fulfilment-batch-actions .el-button--primary.is-disabled:hover {
+  color: #C0C4CC;
+  background-color: #F0F3F7;
+  border-color: #F0F3F7;
+}
+.full-width {
+  width: 100% !important;
+}
+.action-submit-button {
+  background: #0049b7;
+  border: 1px solid #0049b7;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.1px;
+  margin: 20px 0 !important;
+}
+.fulfilment-batch-actions .el-form-item__label {
+  line-height: 0;
+  line-height: 16px;
+  letter-spacing: 0.1px;
+  color: #000000;
+}
+.fulfilment-batch-actions .el-input__inner {
+  padding-right: 30px;
+  border: 1px solid #B3AFAF;
+  border-radius: 6px;
+}
+.fulfilment-batch-actions .el-input__inner::placeholder {
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  color: #000000;
+}
+.fulfilment-batch-actions .el-select .el-input .el-select__caret {
+  color: #000000;
 }
