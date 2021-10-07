@@ -117,6 +117,52 @@ export default {
     }, 1000);
   },
 
+  async fetchReturnOrders({ commit }, payload) {
+    commit('setProcessingStatus', true);
+    const promise = new Promise(resolve => {
+      const response = {
+        pagination: {
+          total: 987,
+          perPage: 50,
+          page: 1,
+          lastPage: 20,
+        },
+        data: FulfilmentData.return_orders,
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setTableData', results.data);
+      commit('setPagination', results.pagination);
+      commit('setProcessingStatus', false);
+    }, 1000);
+  },
+
+  async getHubList({ commit }, payload) {
+    commit('setProcessingStatus', true);
+    const promise = new Promise(resolve => {
+      const response = {
+        pagination: {
+          total: 987,
+          perPage: 50,
+          page: 1,
+          lastPage: 20,
+        },
+        data: FulfilmentData.hubs,
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setTableData', results.data);
+      commit('setPagination', results.pagination);
+      commit('setProcessingStatus', false);
+    }, 1000);
+  },
+
   async fetchOrderActivites({ commit }, payload) {
     const promise = new Promise(resolve => {
       const response = {
