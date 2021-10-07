@@ -165,9 +165,9 @@
   border-color: #324ba8;
 }
 
-.fulfilment-batch-actions .el-button--primary.is-disabled, 
-.fulfilment-batch-actions .el-button--primary.is-disabled:active, 
-.fulfilment-batch-actions .el-button--primary.is-disabled:focus, 
+.fulfilment-batch-actions .el-button--primary.is-disabled,
+.fulfilment-batch-actions .el-button--primary.is-disabled:active,
+.fulfilment-batch-actions .el-button--primary.is-disabled:focus,
 fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   color: #C0C4CC;
   background-color: #F0F3F7;
@@ -205,4 +205,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .fulfilment-batch-actions .el-select .el-input .el-select__caret {
   color: #000000;
+}
+.hub-margin{
+  margin-top : 1%;
 }
