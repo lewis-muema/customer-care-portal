@@ -206,3 +206,20 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fulfilment-batch-actions .el-select .el-input .el-select__caret {
   color: #000000;
 }
+
+.fulfilment-batch-actions .no-results{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #000000 !important;
+  font-size: 12px !important;
+}
+.fulfilment-batch-actions  .Typeahead__input {
+  padding-right: 30px !important;
+  border: 1px solid #B3AFAF !important;
+  border-radius: 6px !important;
+  width: 94% !important;
+}
+.fulfilment-batch-actions .fa-spinner{
+  font-size: 19px;
+  margin-top: 10px;
+}

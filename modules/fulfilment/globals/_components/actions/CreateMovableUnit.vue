@@ -5,7 +5,19 @@
     :model="formLabelAlign"
   >
     <el-form-item label="Pick up location of the movable unit">
-      <el-input v-model="formLabelAlign.name"></el-input>
+      <el-select
+        v-model="formLabelAlign.name"
+        placeholder="Select hub"
+        class="full-width"
+      >
+        <el-option
+          v-for="item in getHubs"
+          :key="item.hub_id"
+          :label="item.hub_name"
+          :value="item.hub_id"
+        >
+        </el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="Destination of the movable unit">
       <el-select
@@ -44,7 +56,17 @@
       placeholder="Enter Full Number plate / Phone Number"
       v-if="formLabelAlign.preferedDriver === 'yes'"
     >
-      <el-input v-model="formLabelAlign.rider"></el-input>
+      <div>
+        <TheSearchRiderComponent
+          @riderData="searchedRider"
+          :category="placehoder"
+          :arr="array"
+          :rider-key="0"
+        />
+        <div :class="`invalid ${hide}`">
+          Please select a rider
+        </div>
+      </div>
     </el-form-item>
 
     <el-button type="primary" class="full-width action-submit-button">
@@ -58,9 +80,16 @@ import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: 'CreateMovableUnit',
+  components: {
+    TheSearchRiderComponent: () =>
+      import('../../../../biz/_components/UserActions/TheSearchRiderComponent'),
+  },
   data() {
     return {
       labelPosition: 'top',
+      placehoder: 'Search for rider',
+      hide: 'hide',
+      array: {},
       formLabelAlign: {
         name: '',
         region: '',
@@ -83,6 +112,11 @@ export default {
     ...mapGetters({
       getHubs: 'fulfilment/getHubs',
     }),
+  },
+  methods: {
+    searchedRider(riderData) {
+      return (this.rider = riderData.riderID);
+    },
   },
 };
 </script>
