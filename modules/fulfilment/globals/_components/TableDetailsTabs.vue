@@ -18,6 +18,18 @@
     >
       <pricing-tiers />
     </el-tab-pane>
+    <el-tab-pane
+      :label="batchLabel"
+      v-if="batchesTab.includes(getFulfilmentType)"
+    >
+      <batches />
+    </el-tab-pane>
+    <el-tab-pane
+      label="Batch details"
+      v-if="batchesDetailsTab.includes(getFulfilmentType)"
+    >
+      <batch-details />
+    </el-tab-pane>
   </el-tabs>
 </template>
 <script>
@@ -26,9 +38,18 @@ import users from './tabInfo/users.vue';
 import items from './tabInfo/items.vue';
 import orderDetails from './tabInfo/orderDetails.vue';
 import pricingTiers from './tabInfo/pricingTiers.vue';
+import batches from './tabInfo/batchesView.vue';
+import batchDetails from './tabInfo/batchesDetails.vue';
 
 export default {
-  components: { users, items, orderDetails, pricingTiers },
+  components: {
+    users,
+    items,
+    orderDetails,
+    pricingTiers,
+    batches,
+    batchDetails,
+  },
   data() {
     return {
       activeName: 'first',
@@ -36,12 +57,18 @@ export default {
       itemsTab: ['Outbound_ordersView', 'ReturnView'],
       orderDetailsTab: ['Outbound_ordersView', 'ReturnView'],
       pricingTiersTab: ['Outbound_ordersView', 'ReturnView'],
+      batchesTab: ['Outbound_movableUnitsView'],
+      batchesDetailsTab: ['Outbound_movableUnitsView'],
+      batch_count: 4,
     };
   },
   computed: {
     ...mapGetters({
       getFulfilmentType: 'fulfilment/getFulfilmentType',
     }),
+    batchLabel() {
+      return `Batches (${this.batch_count})`;
+    },
   },
   methods: {},
 };
