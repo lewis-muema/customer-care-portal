@@ -4,7 +4,7 @@ export default {
   setTableProps({ commit }, payload) {
     commit('setTableProps', payload);
   },
-  async fetchOutboundDeliveryRequests({ commit }, payload) {
+  async fetchOutboundDeliveryRequests({ commit, getters }, payload) {
     commit('setProcessingStatus', true);
     if (payload != null && payload.nextPage) {
       const newTableData = {
