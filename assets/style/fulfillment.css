@@ -113,7 +113,6 @@
 }
 .fulfilment-multiselect .multiselect__tags {
   border: 1px solid #E1E1E1;
-  box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
   border-radius: 6px;
 }
 .fulfilment-multiselect .multiselect__tag {
@@ -225,4 +224,11 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .hub-margin{
   margin-top : 1%;
+}
+
+.fulfilment-table-wrapper .el-tabs--border-card>.el-tabs__header .el-tabs__item+.el-tabs__item, .fulfilment-table-wrapper .el-tabs--border-card>.el-tabs__header .el-tabs__item:first-child {
+  font-size: 13px;
+}
+.fulfilment-table-wrapper .el-tabs--border-card {
+  box-shadow: none;
 }
