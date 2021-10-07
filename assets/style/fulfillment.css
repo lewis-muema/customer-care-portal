@@ -209,3 +209,20 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .hub-margin{
   margin-top : 1%;
 }
+.hubs-header-flex{
+  display: flex;
+  justify-content: space-between;
+}
+.add-hub-outer{
+  margin-right: 1.5%;
+}
+.fulfilment-add-hub-button{
+  background: #528BB8;
+  border-color: #528BB8;
+  letter-spacing: 0.005em;
+}
+.fulfilment-add-hub-button.el-button:hover ,
+.fulfilment-add-hub-button.el-button:focus{
+  background: #528BB8 !important;
+  border-color: #528BB8 !important;
+}

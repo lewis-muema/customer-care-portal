@@ -1,7 +1,18 @@
 <template lang="html">
   <div class="box box-info">
-    <div class="fulfilment-header">
-      <h1 class="fulfilment-label">Hubs</h1>
+    <div class="fulfilment-header hubs-header-flex">
+      <div class="">
+        <h1 class="fulfilment-label">Hubs</h1>
+      </div>
+      <div class="fulfilment-label add-hub-outer">
+        <el-button
+          type="primary"
+          size="medium"
+          class="fulfilment-add-hub-button"
+        >
+          Add Hub
+        </el-button>
+      </div>
     </div>
     <div class="box-body ">
       <div class="fulfilment-container ">
