@@ -53,12 +53,28 @@ export default {
   data() {
     return {
       activeName: 'first',
-      usersTab: ['Outbound_ordersView', 'ReturnView'],
-      itemsTab: ['Outbound_ordersView', 'ReturnView'],
-      orderDetailsTab: ['Outbound_ordersView', 'ReturnView'],
-      pricingTiersTab: ['Outbound_ordersView', 'ReturnView'],
-      batchesTab: ['Outbound_movableUnitsView'],
-      batchesDetailsTab: ['Outbound_movableUnitsView'],
+      usersTab: ['Outbound_ordersView', 'ReturnView', 'Inbound_ordersView'],
+      itemsTab: ['Outbound_ordersView', 'ReturnView', 'Inbound_ordersView'],
+      orderDetailsTab: [
+        'Outbound_ordersView',
+        'ReturnView',
+        'Inbound_ordersView',
+      ],
+      pricingTiersTab: [
+        'Outbound_ordersView',
+        'ReturnView',
+        'Inbound_ordersView',
+      ],
+      batchesTab: [
+        'Outbound_movableUnitsView',
+        'Outbound_batchesView',
+        'Inbound_batchesView',
+      ],
+      batchesDetailsTab: [
+        'Outbound_movableUnitsView',
+        'Outbound_batchesView',
+        'Inbound_batchesView',
+      ],
       batch_count: 4,
     };
   },
