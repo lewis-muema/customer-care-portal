@@ -1,26 +1,20 @@
 <template>
   <el-tabs type="border-card">
-    <el-tab-pane
-      label="Users"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
-    >
+    <el-tab-pane label="Users" v-if="usersTab.includes(getFulfilmentType)">
       <users />
     </el-tab-pane>
-    <el-tab-pane
-      label="Items"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
-    >
+    <el-tab-pane label="Items" v-if="itemsTab.includes(getFulfilmentType)">
       <items />
     </el-tab-pane>
     <el-tab-pane
       label="Order Details"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
+      v-if="orderDetailsTab.includes(getFulfilmentType)"
     >
       <order-details />
     </el-tab-pane>
     <el-tab-pane
       label="Pricing Tiers"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
+      v-if="pricingTiersTab.includes(getFulfilmentType)"
     >
       <pricing-tiers />
     </el-tab-pane>
@@ -38,6 +32,10 @@ export default {
   data() {
     return {
       activeName: 'first',
+      usersTab: ['Outbound_ordersView', 'ReturnView'],
+      itemsTab: ['Outbound_ordersView', 'ReturnView'],
+      orderDetailsTab: ['Outbound_ordersView', 'ReturnView'],
+      pricingTiersTab: ['Outbound_ordersView', 'ReturnView'],
     };
   },
   computed: {
