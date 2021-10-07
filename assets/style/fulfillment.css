@@ -165,9 +165,9 @@
   border-color: #324ba8;
 }
 
-.fulfilment-batch-actions .el-button--primary.is-disabled, 
-.fulfilment-batch-actions .el-button--primary.is-disabled:active, 
-.fulfilment-batch-actions .el-button--primary.is-disabled:focus, 
+.fulfilment-batch-actions .el-button--primary.is-disabled,
+.fulfilment-batch-actions .el-button--primary.is-disabled:active,
+.fulfilment-batch-actions .el-button--primary.is-disabled:focus,
 fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   color: #C0C4CC;
   background-color: #F0F3F7;
@@ -222,4 +222,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fulfilment-batch-actions .fa-spinner{
   font-size: 19px;
   margin-top: 10px;
+}
+.hub-margin{
+  margin-top : 1%;
 }
