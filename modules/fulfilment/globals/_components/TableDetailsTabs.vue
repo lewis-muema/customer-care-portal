@@ -57,8 +57,8 @@ export default {
       itemsTab: ['Outbound_ordersView', 'ReturnView'],
       orderDetailsTab: ['Outbound_ordersView', 'ReturnView'],
       pricingTiersTab: ['Outbound_ordersView', 'ReturnView'],
-      batchesTab: ['Outbound_movableUnitsView'],
-      batchesDetailsTab: ['Outbound_movableUnitsView'],
+      batchesTab: ['Outbound_movableUnitsView', 'Outbound_batchesView'],
+      batchesDetailsTab: ['Outbound_movableUnitsView', 'Outbound_batchesView'],
       batch_count: 4,
     };
   },
