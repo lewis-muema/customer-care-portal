@@ -1,28 +1,34 @@
 <template>
   <el-tabs type="border-card">
-    <el-tab-pane
-      label="Users"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
-    >
+    <el-tab-pane label="Users" v-if="usersTab.includes(getFulfilmentType)">
       <users />
     </el-tab-pane>
-    <el-tab-pane
-      label="Items"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
-    >
+    <el-tab-pane label="Items" v-if="itemsTab.includes(getFulfilmentType)">
       <items />
     </el-tab-pane>
     <el-tab-pane
       label="Order Details"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
+      v-if="orderDetailsTab.includes(getFulfilmentType)"
     >
       <order-details />
     </el-tab-pane>
     <el-tab-pane
       label="Pricing Tiers"
-      v-if="getFulfilmentType === 'Outbound_ordersView'"
+      v-if="pricingTiersTab.includes(getFulfilmentType)"
     >
       <pricing-tiers />
+    </el-tab-pane>
+    <el-tab-pane
+      :label="batchLabel"
+      v-if="batchesTab.includes(getFulfilmentType)"
+    >
+      <batches />
+    </el-tab-pane>
+    <el-tab-pane
+      label="Batch details"
+      v-if="batchesDetailsTab.includes(getFulfilmentType)"
+    >
+      <batch-details />
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -32,18 +38,53 @@ import users from './tabInfo/users.vue';
 import items from './tabInfo/items.vue';
 import orderDetails from './tabInfo/orderDetails.vue';
 import pricingTiers from './tabInfo/pricingTiers.vue';
+import batches from './tabInfo/batchesView.vue';
+import batchDetails from './tabInfo/batchesDetails.vue';
 
 export default {
-  components: { users, items, orderDetails, pricingTiers },
+  components: {
+    users,
+    items,
+    orderDetails,
+    pricingTiers,
+    batches,
+    batchDetails,
+  },
   data() {
     return {
       activeName: 'first',
+      usersTab: ['Outbound_ordersView', 'ReturnView', 'Inbound_ordersView'],
+      itemsTab: ['Outbound_ordersView', 'ReturnView', 'Inbound_ordersView'],
+      orderDetailsTab: [
+        'Outbound_ordersView',
+        'ReturnView',
+        'Inbound_ordersView',
+      ],
+      pricingTiersTab: [
+        'Outbound_ordersView',
+        'ReturnView',
+        'Inbound_ordersView',
+      ],
+      batchesTab: [
+        'Outbound_movableUnitsView',
+        'Outbound_batchesView',
+        'Inbound_batchesView',
+      ],
+      batchesDetailsTab: [
+        'Outbound_movableUnitsView',
+        'Outbound_batchesView',
+        'Inbound_batchesView',
+      ],
+      batch_count: 4,
     };
   },
   computed: {
     ...mapGetters({
       getFulfilmentType: 'fulfilment/getFulfilmentType',
     }),
+    batchLabel() {
+      return `Batches (${this.batch_count})`;
+    },
   },
   methods: {},
 };
