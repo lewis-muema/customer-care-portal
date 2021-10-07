@@ -24,18 +24,18 @@
             <li class="treeview">
               <a
                 class="fancybox fancybox.iframe fancyboxy fulfilment-cursor"
-                href="/fulfilment/outbound"
+                href="/fulfilment/returns"
               >
                 <img :src="`${s3Path}mission_control/return.svg`" alt="" />
                 <span class="fulfilment-nav">
-                  returns
+                  Returns
                 </span>
               </a>
             </li>
             <li class="treeview">
               <a
                 class="fancybox fancybox.iframe fancyboxy fulfilment-cursor"
-                href="/fulfilment/outbound"
+                href="/fulfilment/hub"
               >
                 <img :src="`${s3Path}mission_control/hub.svg`" alt="" />
                 <span class="fulfilment-nav">

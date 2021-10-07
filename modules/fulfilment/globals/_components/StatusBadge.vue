@@ -36,6 +36,9 @@ export default {
         case 'in transit':
           this.activeClass = 'in-transit';
           break;
+        case 'in active':
+          this.activeClass = 'pending';
+          break;
         default:
           this.activeClass = 'confirmed';
       }
