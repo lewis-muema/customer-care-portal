@@ -32,7 +32,7 @@
             </el-col>
             <el-col :span="8">
               <div class="grid-content">
-                <BatchActions />
+                <BatchActions :page="getActivePage" />
               </div>
             </el-col>
           </el-row>
@@ -45,7 +45,7 @@
       </div>
       <div v-else class="search-header text-right back-btn">
         <span @click="goBack()"
-          ><i class="fa fa-arrow-left"></i> Back to {{ title }} List
+          ><i class="fa fa-arrow-left"></i> Back to all {{ title }} List
         </span>
       </div>
     </el-row>
@@ -81,7 +81,7 @@ export default {
 
     pageTitle() {
       const data = {
-        Outbound_ordersView: 'Delivery Request',
+        Outbound_ordersView: 'Delivery Requests',
         Outbound_batchesView: 'Batched Orders',
         Outbound_movableUnitsView: 'Movable Units',
       };

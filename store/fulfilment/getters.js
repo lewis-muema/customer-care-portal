@@ -38,4 +38,7 @@ export default {
   getSelectedRegions(state) {
     return state.selectedRegions;
   },
+  getCheckedOrders(state) {
+    return state.checkedOrders;
+  },
 };

@@ -5,7 +5,9 @@
       ref="tableData"
       style="width: 100%"
       @row-click="rowClicked"
+      @selection-change="handleSelectionChange"
     >
+      >
       <div
         class="data-info-panel"
         slot="append"
@@ -75,6 +77,7 @@ export default {
       hubs: null,
       processing: false,
       regions: null,
+      multipleSelection: [],
     };
   },
   computed: {
@@ -130,6 +133,7 @@ export default {
     ...mapMutations({
       updateTableData: 'fulfilment/setTableData',
       updatePagination: 'fulfilment/setPagination',
+      updateCheckedOrders: 'fulfilment/setCheckedOrders',
     }),
 
     fetchTableData() {
@@ -143,6 +147,10 @@ export default {
     },
     handleCurrentChange(val) {
       this.fetchTableData({ currentPage: val });
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      this.updateCheckedOrders(this.multipleSelection);
     },
   },
 };
