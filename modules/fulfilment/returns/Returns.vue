@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="box box-info">
     <div class="fulfilment-header">
-      <h1 class="fulfilment-label">Outbound orders</h1>
+      <h1 class="fulfilment-label">Returns</h1>
     </div>
     <div class="box-body ">
       <div class="fulfilment-container ">
