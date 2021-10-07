@@ -5,9 +5,6 @@
       ref="tableData"
       style="width: 100%"
       @row-click="rowClicked"
-      v-infinite-scroll="loadMore"
-      infinite-scroll-disabled="busy"
-      infinite-scroll-distance="10"
     >
       <div
         class="data-info-panel"
@@ -37,26 +34,18 @@
         </template>
       </el-table-column>
       <el-table-column type="expand">
-        <template>
+        <template slot-scope="">
           <TableDetails />
         </template>
       </el-table-column>
     </el-table>
-    <!-- <div class="fulfilment-pagination" v-if="!getSearchState">
-      <el-pagination
-        @current-change="handleCurrentChange"
-        background
-        layout="prev, pager, next"
-        :total="getPagination.total"
-        :page-size="getPagination.perPage"
-        :current-page.sync="currentPage"
-      >
-      </el-pagination>
-    </div> -->
+    <div class="fulfilment-table-loader"></div>
+    <div v-observe-visibility="loadMore" v-show="getTableData.length"></div>
   </div>
 </template>
 <script>
 import moment from 'moment';
+import { Loading } from 'element-ui';
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import TableDetails from './TableDetails.vue';
 import StatusBadge from './StatusBadge.vue';
@@ -67,13 +56,13 @@ export default {
     TableDetails,
     StatusBadge,
   },
-  data() {
-    return {
-      busy: false,
-    };
-  },
   props: {
     dataProps: Object,
+  },
+  data() {
+    return {
+      distance: 300,
+    };
   },
   data() {
     return {
@@ -137,8 +126,8 @@ export default {
       updatePagination: 'fulfilment/setPagination',
     }),
 
-    fetchTableData() {
-      this.$store.dispatch(this.dataProps.setter);
+    fetchTableData(payload = null) {
+      this.$store.dispatch(this.dataProps.setter, payload);
     },
     rowClicked(row) {
       this.$refs.tableData.toggleRowExpansion(row);
@@ -146,11 +135,17 @@ export default {
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
     },
-    handleCurrentChange(val) {
-      this.fetchTableData({ currentPage: val });
-    },
-    loadMore() {
-      this.fetchTableData({ infinite: true });
+    async loadMore(isVisible) {
+      const nextPage = this.getPagination.page + 1;
+      if (!isVisible && nextPage > this.getPagination.lastPage) return;
+      const loadingInstance = Loading.service({
+        fullscreen: false,
+        target: '.fulfilment-table-loader',
+      });
+      await this.$store.dispatch(this.dataProps.setter, {
+        nextPage,
+      });
+      loadingInstance.close();
     },
   },
 };
@@ -188,5 +183,8 @@ export default {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+}
+.fulfilment-table-loader {
+  margin-top: 40px;
 }
 </style>

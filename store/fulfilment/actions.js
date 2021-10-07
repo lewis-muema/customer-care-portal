@@ -2,18 +2,18 @@ export default {
   setTableProps({ commit }, payload) {
     commit('setTableProps', payload);
   },
-  async fetchOrders({ commit, state }, payload) {
-    if (typeof payload !== 'undefined' && payload.infinite) {
+  async fetchOrders({ commit, state, getters }, payload) {
+    if (payload != null && payload.nextPage) {
       const newTableData = {
         pagination: {
           total: 987,
           perPage: 50,
-          page: state.pagination.page + 1,
+          page: payload.nextPage,
           lastPage: 20,
         },
         data: [
           {
-            order_no: 'ES97ZL615-F4U-Paginated',
+            order_no: `ES97ZL615-F4U ${payload.nextPage}`,
             status: 'Received',
             seller_name: 'Jame Merchant',
             recipient_name: 'John Doe',
@@ -34,13 +34,16 @@ export default {
           },
         ],
       };
-
-      const updatedTableData = state.tableData.concat(newTableData.data);
-      console.log(updatedTableData);
-      setTimeout(() => {
-        commit('setTableData', updatedTableData);
-        commit('setPagination', newTableData.pagination);
-      }, 1000);
+      const promise = new Promise(resolve => {
+        const tableData = [...getters.getTableData];
+        const updatedTableData = tableData.concat(newTableData.data);
+        setTimeout(() => {
+          commit('setTableData', updatedTableData);
+          commit('setPagination', newTableData.pagination);
+          resolve(updatedTableData);
+        }, 1000);
+      });
+      return promise;
     }
     const promise = new Promise(resolve => {
       const response = {
