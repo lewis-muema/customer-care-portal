@@ -42,7 +42,7 @@
       </el-table-column>
     </el-table>
     <div class="fulfilment-table-loader"></div>
-    <div v-observe-visibility="loadMore" v-show="getTableData.length"></div>
+    <div v-observe-visibility="loadMore"></div>
   </div>
 </template>
 <script>
@@ -66,11 +66,6 @@ export default {
   },
   data() {
     return {
-      distance: 300,
-    };
-  },
-  data() {
-    return {
       hubs: null,
       processing: false,
       regions: null,
@@ -87,17 +82,6 @@ export default {
       getSelectedRegions: 'fulfilment/getSelectedRegions',
       getProcessingStatus: 'fulfilment/getProcessingStatus',
     }),
-    currentPage: {
-      get() {
-        return this.$store.state.fulfilment.pagination.page;
-      },
-      set(value) {
-        this.$store.commit('fulfilment/setPagination', {
-          ...this.getPagination,
-          page: value,
-        });
-      },
-    },
   },
   watch: {
     getSearchState(status) {
@@ -143,16 +127,17 @@ export default {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
     },
     async loadMore(isVisible) {
-      const nextPage = this.getPagination.page + 1;
-      if (!isVisible && nextPage > this.getPagination.lastPage) return;
-      const loadingInstance = Loading.service({
-        fullscreen: false,
-        target: '.fulfilment-table-loader',
-      });
-      await this.$store.dispatch(this.dataProps.setter, {
-        nextPage,
-      });
-      loadingInstance.close();
+      if (!this.processing && isVisible) {
+        const nextPage = this.getPagination.page + 1;
+        const loadingInstance = Loading.service({
+          fullscreen: false,
+          target: '.fulfilment-table-loader',
+        });
+        await this.$store.dispatch(this.dataProps.setter, {
+          nextPage,
+        });
+        loadingInstance.close();
+      }
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

@@ -4,8 +4,10 @@ export default {
   setTableProps({ commit }, payload) {
     commit('setTableProps', payload);
   },
+  setTableData({ commit }, payload) {
+    commit('setTableData', payload);
+  },
   async fetchOutboundDeliveryRequests({ commit, getters }, payload) {
-    commit('setProcessingStatus', true);
     if (payload != null && payload.nextPage) {
       const newTableData = {
         pagination: {
@@ -43,12 +45,12 @@ export default {
         setTimeout(() => {
           commit('setTableData', updatedTableData);
           commit('setPagination', newTableData.pagination);
-          commit('setProcessingStatus', false);
           resolve(updatedTableData);
         }, 1000);
       });
       return promise;
     }
+    commit('setProcessingStatus', true);
     const promise = new Promise(resolve => {
       const response = {
         pagination: {
