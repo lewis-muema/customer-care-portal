@@ -42,21 +42,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="fulfilment-pagination" v-if="!getSearchState">
-      <el-pagination
-        @current-change="handleCurrentChange"
-        background
-        layout="prev, pager, next"
-        :total="getPagination.total"
-        :page-size="getPagination.perPage"
-        :current-page.sync="currentPage"
-      >
-      </el-pagination>
-    </div>
+    <div class="fulfilment-table-loader"></div>
+    <div v-observe-visibility="loadMore"></div>
   </div>
 </template>
 <script>
 import moment from 'moment';
+import { Loading } from 'element-ui';
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import TableDetails from './TableDetails.vue';
 import StatusBadge from './StatusBadge.vue';
@@ -155,8 +147,8 @@ export default {
       updateCheckedOrders: 'fulfilment/setCheckedOrders',
     }),
 
-    fetchTableData() {
-      this.$store.dispatch(this.dataProps.setter);
+    fetchTableData(payload = null) {
+      this.$store.dispatch(this.dataProps.setter, payload);
     },
     rowClicked(row) {
       this.$refs.tableData.toggleRowExpansion(row);
@@ -164,8 +156,18 @@ export default {
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
     },
-    handleCurrentChange(val) {
-      this.fetchTableData({ currentPage: val });
+    async loadMore(isVisible) {
+      if (!this.processing && isVisible) {
+        const nextPage = this.getPagination.page + 1;
+        const loadingInstance = Loading.service({
+          fullscreen: false,
+          target: '.fulfilment-table-loader',
+        });
+        await this.$store.dispatch(this.dataProps.setter, {
+          nextPage,
+        });
+        loadingInstance.close();
+      }
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -207,5 +209,8 @@ export default {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+}
+.fulfilment-table-loader {
+  margin-top: 40px;
 }
 </style>
