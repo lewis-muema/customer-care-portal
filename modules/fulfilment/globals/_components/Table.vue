@@ -43,7 +43,10 @@
       </el-table-column>
     </el-table>
     <div class="fulfilment-table-loader"></div>
-    <div v-observe-visibility="loadMore"></div>
+    <div
+      v-observe-visibility="loadMore"
+      v-if="infiniteScroll && scrolledToBottom"
+    ></div>
   </div>
 </template>
 <script>
@@ -64,6 +67,10 @@ export default {
       type: Object,
       required: true,
     },
+    infiniteScroll: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -71,6 +78,7 @@ export default {
       processing: false,
       regions: null,
       multipleSelection: [],
+      scrolledToBottom: false,
       disableCheckBoxPages: [
         'HubsView',
         'ReturnView',
@@ -139,6 +147,7 @@ export default {
   },
   mounted() {
     this.fetchTableData();
+    this.scroll();
   },
   methods: {
     ...mapMutations({
@@ -172,6 +181,24 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
       this.updateCheckedOrders(this.multipleSelection);
+    },
+    scroll() {
+      window.onscroll = () => {
+        const bottomOfWindow =
+          Math.max(
+            window.pageYOffset,
+            document.documentElement.scrollTop,
+            document.body.scrollTop,
+          ) +
+            window.innerHeight ===
+          document.documentElement.offsetHeight;
+
+        if (bottomOfWindow) {
+          this.scrolledToBottom = true; // replace it with your code
+        } else {
+          this.scrolledToBottom = false;
+        }
+      };
     },
   },
 };

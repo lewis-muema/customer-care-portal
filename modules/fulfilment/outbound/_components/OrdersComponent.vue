@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <Table :data-props="dataProps" />
+    <Table :data-props="dataProps" :infinite-scroll="true" />
   </div>
 </template>
 
