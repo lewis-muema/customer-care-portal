@@ -284,3 +284,6 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   margin-right: 3%;
   margin-bottom: 2%;
 }
+.fulfilment-actions-holder {
+  margin-top: 2em;
+}
