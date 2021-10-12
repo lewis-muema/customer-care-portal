@@ -4,7 +4,52 @@ export default {
   setTableProps({ commit }, payload) {
     commit('setTableProps', payload);
   },
-  async fetchOutboundDeliveryRequests({ commit }, payload) {
+  setTableData({ commit }, payload) {
+    commit('setTableData', payload);
+  },
+  async fetchOutboundDeliveryRequests({ commit, getters }, payload) {
+    if (payload != null && payload.nextPage) {
+      const newTableData = {
+        pagination: {
+          total: 987,
+          perPage: 50,
+          page: payload.nextPage,
+          lastPage: 20,
+        },
+        data: [
+          {
+            order_no: `ES97ZL615-F4U ${payload.nextPage}`,
+            status: 'Received',
+            seller_name: 'Jame Merchant',
+            recipient_name: 'John Doe',
+            rider_name: 'Sendy Rider',
+            rider_id: 1,
+            city_name: 'Nairobi',
+            time_placed: '2021-09-28T09:32:46.000Z',
+            pickup_location: 'The Chancery, Valley Rd ',
+            destination_location: 'Tilisi Hub',
+            distance: 20,
+            order_amount: 244,
+            currency: 'KSH',
+            assigned_batch_no: 'BLF-O001',
+            estimated_weight: 400,
+            unit_per_order: 10,
+            volume: 10,
+            batch_no: '#13322',
+          },
+        ],
+      };
+      const promise = new Promise(resolve => {
+        const tableData = [...getters.getTableData];
+        const updatedTableData = tableData.concat(newTableData.data);
+        setTimeout(() => {
+          commit('setTableData', updatedTableData);
+          commit('setPagination', newTableData.pagination);
+          resolve(updatedTableData);
+        }, 1000);
+      });
+      return promise;
+    }
     commit('setProcessingStatus', true);
     const promise = new Promise(resolve => {
       const response = {
