@@ -10,7 +10,7 @@
         <el-row>
           <el-col :span="24">
             <el-card shadow="never">
-              <TableActions />
+              <TableActions :page="getActivePage" />
             </el-card>
           </el-col>
         </el-row>
@@ -24,6 +24,8 @@
   </el-container>
 </template>
 <script>
+import { mapGetters, mapMutations } from 'vuex';
+
 import Timeline from './Timeline.vue';
 import TableActions from './TableActions.vue';
 import TableDetailsTabs from './TableDetailsTabs.vue';
@@ -50,6 +52,11 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    ...mapGetters({
+      getActivePage: 'getActivePage',
+    }),
   },
 };
 </script>
