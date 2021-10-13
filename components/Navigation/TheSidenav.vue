@@ -6,42 +6,36 @@
           <ul class="sidebar-menu">
             <li class="header">Fulfilment</li>
             <li class="treeview >">
-              <nuxt-link to="/fulfilment/inbound"
-                ><img :src="`${s3Path}mission_control/inbound.svg`" alt="" />
-                <span class="fulfilment-nav">
-                  Inbound orders
-                </span></nuxt-link
+              <nuxt-link to="/fulfilment/inbound" class="inline-display">
+                <div>
+                  <img :src="`${s3Path}mission_control/inbound.svg`" alt="" />
+                </div>
+                <span class="fulfilment-nav"> Inbound orders</span></nuxt-link
               >
             </li>
             <li class="treeview >">
-              <nuxt-link to="/fulfilment/outbound"
-                ><img :src="`${s3Path}mission_control/outbound.svg`" alt="" />
-                <span class="fulfilment-nav">
-                  Outbound orders
-                </span></nuxt-link
+              <nuxt-link to="/fulfilment/outbound" class="inline-display">
+                <div>
+                  <img :src="`${s3Path}mission_control/outbound.svg`" alt="" />
+                </div>
+                <span class="fulfilment-nav"> Outbound orders</span></nuxt-link
               >
             </li>
-            <li class="treeview">
-              <a
-                class="fancybox fancybox.iframe fancyboxy fulfilment-cursor"
-                href="/fulfilment/returns"
+            <li class="treeview >">
+              <nuxt-link to="/fulfilment/returns" class="inline-display">
+                <div>
+                  <img :src="`${s3Path}mission_control/return.svg`" alt="" />
+                </div>
+                <span class="fulfilment-nav"> Returns</span></nuxt-link
               >
-                <img :src="`${s3Path}mission_control/return.svg`" alt="" />
-                <span class="fulfilment-nav">
-                  Returns
-                </span>
-              </a>
             </li>
-            <li class="treeview">
-              <a
-                class="fancybox fancybox.iframe fancyboxy fulfilment-cursor"
-                href="/fulfilment/hub"
+            <li class="treeview >">
+              <nuxt-link to="/fulfilment/hub" class="inline-display">
+                <div>
+                  <img :src="`${s3Path}mission_control/hub.svg`" alt="" />
+                </div>
+                <span class="fulfilment-nav"> Hubs</span></nuxt-link
               >
-                <img :src="`${s3Path}mission_control/hub.svg`" alt="" />
-                <span class="fulfilment-nav">
-                  Hubs
-                </span>
-              </a>
             </li>
           </ul>
           <hr class="sidebar-divider" />
@@ -251,10 +245,15 @@ export default {
 .fulfilment-nav {
   margin-left: 5%;
 }
-.chevron-icon-position {
+.chevron-icon-position,
+.fulfilment-single-nav {
   margin-left: 25%;
 }
 .fulfilment-cursor {
   cursor: pointer;
+}
+.inline-display {
+  display: inline-flex;
+  width: 100%;
 }
 </style>
