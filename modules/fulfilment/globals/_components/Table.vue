@@ -31,8 +31,27 @@
           <div v-else-if="table_data.tag === 'time_placed'">
             {{ formatDate(props.row.time_placed) }}
           </div>
+          <div v-else-if="table_data.tag === 'hub_type'">
+            {{ props.row.hub_type.replace(/_/g, ' ') }}
+          </div>
+          <div v-else-if="table_data.tag === 'hub_status'">
+            <div
+              class="hub-status"
+              :class="props.row.activated ? 'active-hub' : 'deactivated-hub'"
+            >
+              {{ props.row.activated ? 'Active' : 'In active' }}
+            </div>
+          </div>
+          <div v-else-if="table_data.tag === 'activated'">
+            <div v-if="props.row.activated" class="active-hub">
+              Deactivate
+            </div>
+            <div v-else class="deactivated-hub">
+              Activate
+            </div>
+          </div>
           <div v-else>
-            {{ props.row[table_data.tag] }}
+            {{ returnRestructedPropData(props.row, table_data.tag) }}
           </div>
         </template>
       </el-table-column>
@@ -165,6 +184,18 @@ export default {
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
     },
+    returnRestructedPropData(row, prop) {
+      if (!prop.includes('.')) {
+        return row[prop];
+      } else {
+        const split_prop = prop.split('.');
+        let table_row = row;
+        for (let i = 0; i < split_prop.length; i++) {
+          table_row = table_row[split_prop[i]];
+        }
+        return table_row;
+      }
+    },
     async loadMore(isVisible) {
       if (
         !this.processing &&
@@ -243,5 +274,30 @@ export default {
 }
 .fulfilment-table-loader {
   margin-top: 40px;
+}
+.active-hub {
+  color: #0049b7;
+  cursor: pointer;
+}
+.deactivated-hub {
+  color: #cc6100;
+  cursor: pointer;
+}
+.hub-status {
+  text-align: center;
+  width: 70%;
+  border-radius: 20px;
+  text-transform: capitalize;
+  font-weight: 700;
+  font-size: 10.5378px;
+  line-height: 24px;
+}
+.hub-status.deactivated-hub {
+  background-color: #fddb97;
+  color: #9d5004;
+}
+.hub-status.active-hub {
+  background-color: #324ba833;
+  color: #324ba8;
 }
 </style>

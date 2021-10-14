@@ -287,3 +287,8 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fulfilment-actions-holder {
   margin-top: 2em;
 }
+.el-button--primary.is-plain:focus{
+    background: #528bb8;
+    border-color: #528bb8;
+    color: #FFF;
+}
