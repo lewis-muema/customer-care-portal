@@ -166,7 +166,11 @@ export default {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
     },
     async loadMore(isVisible) {
-      if (!this.processing && isVisible) {
+      if (
+        !this.processing &&
+        isVisible &&
+        this.getPagination.page <= this.getPagination.lastPage
+      ) {
         const nextPage = this.getPagination.page + 1;
         const loadingInstance = Loading.service({
           fullscreen: false,
