@@ -32,22 +32,22 @@ export default {
       },
       {
         name: 'Location',
-        tag: 'location',
+        tag: 'hub_location.description',
         width: '',
       },
       {
         name: 'Type of hub',
-        tag: 'type',
+        tag: 'hub_type',
         width: '',
       },
       {
         name: 'Status',
-        tag: 'status',
+        tag: 'hub_status',
         width: '130',
       },
       {
         name: 'Actions',
-        tag: 'action',
+        tag: 'activated',
         width: '',
       },
     ];

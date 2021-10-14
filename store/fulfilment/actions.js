@@ -1,4 +1,5 @@
 import FulfilmentData from '../../mixins/fulfilment_data';
+import { axiosConfig } from '~/middleware/axios';
 
 export default {
   setTableProps({ commit }, payload) {
@@ -7,7 +8,11 @@ export default {
   setTableData({ commit }, payload) {
     commit('setTableData', payload);
   },
-  async fetchOutboundDeliveryRequests({ commit, getters }, payload) {
+  async fetchOutboundDeliveryRequests(
+    { rootState, commit, getters, dispatch },
+    payload,
+  ) {
+    const url = rootState.config.FULFILMENT_SERVICE;
     if (payload != null && payload.nextPage) {
       const newTableData = {
         pagination: {
@@ -50,26 +55,26 @@ export default {
       });
       return promise;
     }
-    commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = {
-        pagination: {
-          total: 987,
+    try {
+      commit('setProcessingStatus', true);
+      const response = await axiosConfig.get(`${url}missioncontrol/deliveries`);
+      if (response.status === 200) {
+        const deliveryOrders = response.data.data.orders;
+        const pagination = {
+          total: deliveryOrders.length,
           perPage: 50,
           page: 1,
           lastPage: 20,
-        },
-        data: FulfilmentData.delivery_request,
-      };
-      resolve(response);
-    });
-
-    const results = await promise;
-    setTimeout(() => {
-      commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
-      commit('setProcessingStatus', false);
-    }, 1000);
+        };
+        commit('setTableData', deliveryOrders);
+        commit('setPagination', pagination);
+        commit('setProcessingStatus', false);
+      }
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
 
   async fetchOutboundBatchedOrders({ commit }, payload) {
@@ -185,25 +190,16 @@ export default {
     }, 1000);
   },
 
-  async getHubList({ commit }, payload) {
+  async getHubList({ rootState, commit, dispatch }) {
     commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = {
-        pagination: {
-          total: 987,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
-        },
-        data: FulfilmentData.hubs,
-      };
-      resolve(response);
-    });
+    const config = rootState.config;
+    const url = `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
-    const results = await promise;
+    const results = await axiosConfig.get(url);
     setTimeout(() => {
-      commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
+      const res = results.data;
+      commit('setTableData', res.data);
+      // commit('setPagination', results.pagination);
       commit('setProcessingStatus', false);
     }, 1000);
   },

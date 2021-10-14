@@ -1,6 +1,6 @@
 <template>
   <div class="order-status" :class="activeClass">
-    {{ status }}
+    {{ statusText }}
   </div>
 </template>
 <script>
@@ -15,6 +15,7 @@ export default {
   data() {
     return {
       activeClass: 'pending',
+      statusText: 'Processing',
     };
   },
   mounted() {
@@ -24,23 +25,24 @@ export default {
     orderStatusColor() {
       const transformedStatus = this.status.toLowerCase();
       switch (transformedStatus) {
-        case 'confirmed':
+        case 'order_completed':
           this.activeClass = 'confirmed';
+          this.statusText = 'Confirmed';
           break;
-        case 'received':
+        case 'order_received':
           this.activeClass = 'received';
+          this.statusText = 'Received';
           break;
-        case 'pending':
+        case 'order_in_processing':
           this.activeClass = 'pending';
+          this.statusText = 'Processing';
           break;
-        case 'in transit':
+        case 'order_in_transit':
           this.activeClass = 'in-transit';
-          break;
-        case 'in active':
-          this.activeClass = 'pending';
+          this.statusText = 'In transit';
           break;
         default:
-          this.activeClass = 'confirmed';
+          this.activeClass = 'pending';
       }
     },
   },
