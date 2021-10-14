@@ -41,4 +41,7 @@ export default {
   getCheckedOrders(state) {
     return state.checkedOrders;
   },
+  getSelectedStatus(state) {
+    return state.selectedStatus;
+  },
 };
