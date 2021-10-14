@@ -95,11 +95,7 @@ export default {
       return (this.order = order);
     },
   },
-  async mounted() {
-    if (localStorage.getItem('helpscoutTokenRequested') === null) {
-      await this.requestHelpscoutToken();
-    }
-  },
+  mounted() {},
   methods: {
     ...mapMutations({
       updateSearchState: 'setSearchState',

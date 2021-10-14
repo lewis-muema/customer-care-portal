@@ -151,8 +151,8 @@
 </template>
 
 <script>
-import cancellation_consequences_table_mixin from '@/mixins/cancellation_consequences_table_mixin';
 import { mapGetters } from 'vuex';
+import cancellation_consequences_table_mixin from '@/mixins/cancellation_consequences_table_mixin';
 
 export default {
   name: 'DeactivatedConsequencesDataTable',
