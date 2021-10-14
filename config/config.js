@@ -25,7 +25,6 @@ const config = {
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
-    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
     OFFLINE_PRICING:
@@ -45,6 +44,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'development',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
   },
   dev: {
     BASE_URL: 'http://localhost:8080/',
@@ -74,7 +74,6 @@ const config = {
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API:
       'https://autht.staging.sendyit.com/rider/admin_partner_api/v5/',
-    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
     RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
 
@@ -83,6 +82,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
@@ -106,7 +106,6 @@ const config = {
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
-    FULFILMENT_SERVICE: 'https://auth.staging.sendyit.com/fulfilment/v1/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
     OFFLINE_PRICING:
@@ -120,6 +119,7 @@ const config = {
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
   },
   production: {
     BASE_URL: 'http://localhost:8080/',
@@ -152,7 +152,6 @@ const config = {
       'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
-    FULFILMENT_SERVICE: 'https://auth.sendyit.com/fulfilment/v1/',
 
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',
@@ -161,6 +160,7 @@ const config = {
     ELASTIC_APM_SERVER_URL: 'https://apm.sendyit.com:443',
     ELASTIC_APM_ENVIRONMENT: 'production',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    FULFILMENT_SERVICE: 'https://auth.sendyit.com/fulfilment/v1/',
   },
 };
 export default config;
