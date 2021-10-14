@@ -18,6 +18,7 @@ const state = () => ({
   regions: null,
   selectedRegions: null,
   checkedOrders: [],
+  selectedStatus: null,
 });
 
 export { state, getters, mutations, actions };
