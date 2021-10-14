@@ -25,7 +25,7 @@ const config = {
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
-    MISSION_CONTROL_API: 'https://authtest.sendyit.com/missioncontrol/',
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orderstest.sendyit.com/orders/',
     OFFLINE_PRICING:
@@ -74,7 +74,7 @@ const config = {
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API:
       'https://autht.staging.sendyit.com/rider/admin_partner_api/v5/',
-    MISSION_CONTROL_API: 'https://authtest.sendyit.com/missioncontrol/',
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
     RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
     BROKER_USER: 'staging',
 
@@ -106,7 +106,7 @@ const config = {
     STAFF_SEARCH: 'https://gate.sendyit.com/solr/staff_staging/',
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
-    MISSION_CONTROL_API: 'https://auth.staging.sendyit.com/missioncontrol/',
+    FULFILMENT_SERVICE: 'https://auth.staging.sendyit.com/fulfilment/v1/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
     OFFLINE_PRICING:
@@ -152,7 +152,8 @@ const config = {
       'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
-    MISSION_CONTROL_API: 'https://auth.sendyit.com/missioncontrol/',
+    FULFILMENT_SERVICE: 'https://auth.sendyit.com/fulfilment/v1/',
+
     RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',
 
