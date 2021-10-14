@@ -22,47 +22,47 @@ export default {
     const tableProps = [
       {
         name: 'Status',
-        tag: 'status',
+        tag: 'order_status',
         width: '130',
       },
       {
         name: 'Order Number',
-        tag: 'order_no',
-        width: '130',
+        tag: 'order_id',
+        width: '150',
       },
       {
         name: 'Seller',
-        tag: 'seller_name',
+        tag: 'business.business_name',
         width: '',
       },
       {
         name: 'Recipient',
-        tag: 'recipient_name',
+        tag: 'destination.name',
         width: '',
       },
       {
         name: 'Time',
-        tag: 'time_placed',
+        tag: 'scheduled_date',
         width: '150',
       },
       {
         name: 'Destination',
-        tag: 'destination_location',
+        tag: 'destination.delivery_location.description',
         width: '120',
       },
       {
         name: 'Assigned Batch',
-        tag: 'assigned_batch_no',
+        tag: 'batches[0].batch_id',
         width: '130',
       },
       {
         name: 'Rider',
-        tag: 'rider_name',
+        tag: 'batches[0].assigned_shipping_agent.agent_name',
         width: '',
       },
       {
         name: 'Region',
-        tag: 'city_name',
+        tag: 'destination.delivery_location.region',
         width: '',
       },
     ];

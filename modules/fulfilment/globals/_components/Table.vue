@@ -25,14 +25,14 @@
         :width="table_data.width"
       >
         <template slot-scope="props">
-          <div v-if="table_data.tag === 'status'">
-            <StatusBadge :status="props.row.status" />
+          <div v-if="table_data.tag === 'order_status'">
+            <StatusBadge :status="props.row.order_status" />
           </div>
-          <div v-else-if="table_data.tag === 'time_placed'">
+          <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.time_placed) }}
           </div>
           <div v-else>
-            {{ props.row[table_data.tag] }}
+            {{ transformColumnProperty(props.row, table_data) }}
           </div>
         </template>
       </el-table-column>
@@ -203,6 +203,20 @@ export default {
           this.scrolledToBottom = false;
         }
       };
+    },
+
+    transformColumnProperty(tableRow, tableProp) {
+      console.log(tableRow, tableProp);
+      const splitTag = tableProp.tag.split('.');
+      if (splitTag.length === 1) {
+        return tableRow.tag;
+      } else {
+        let transformedTableRow = tableRow;
+        splitTag.map(element => {
+          transformedTableRow = transformedTableRow[element];
+        });
+        return transformedTableRow;
+      }
     },
   },
 };
