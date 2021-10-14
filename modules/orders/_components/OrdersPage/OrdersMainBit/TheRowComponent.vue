@@ -366,7 +366,11 @@ export default {
   },
   mounted() {
     if (process.client) {
-      this.setOrders();
+      const params = this.isEmpty(this.params) ? '' : this.params;
+      this.setOrders({
+        page: 1,
+        params,
+      });
     }
   },
   methods: {
