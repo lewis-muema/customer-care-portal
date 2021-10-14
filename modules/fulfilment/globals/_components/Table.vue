@@ -25,10 +25,10 @@
         :width="table_data.width"
       >
         <template slot-scope="props">
-          <div v-if="table_data.tag === 'status'">
-            <StatusBadge :status="props.row.status" />
+          <div v-if="table_data.tag === 'order_status'">
+            <StatusBadge :status="props.row.order_status" />
           </div>
-          <div v-else-if="table_data.tag === 'time_placed'">
+          <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.time_placed) }}
           </div>
           <div v-else-if="table_data.tag === 'hub_type'">

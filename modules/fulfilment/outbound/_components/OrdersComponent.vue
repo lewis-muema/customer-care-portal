@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <Table :data-props="dataProps" :infinite-scroll="true" />
+    <Table :data-props="dataProps" />
   </div>
 </template>
 
@@ -22,47 +22,47 @@ export default {
     const tableProps = [
       {
         name: 'Status',
-        tag: 'status',
+        tag: 'order_status',
         width: '130',
       },
       {
         name: 'Order Number',
-        tag: 'order_no',
-        width: '130',
+        tag: 'order_id',
+        width: '150',
       },
       {
         name: 'Seller',
-        tag: 'seller_name',
-        width: '',
+        tag: 'business.business_name',
+        width: '140',
       },
       {
         name: 'Recipient',
-        tag: 'recipient_name',
+        tag: 'destination.name',
         width: '',
       },
       {
         name: 'Time',
-        tag: 'time_placed',
+        tag: 'scheduled_date',
         width: '150',
       },
       {
         name: 'Destination',
-        tag: 'destination_location',
-        width: '120',
+        tag: 'destination.delivery_location.description',
+        width: '140',
       },
       {
         name: 'Assigned Batch',
-        tag: 'assigned_batch_no',
-        width: '130',
+        tag: 'batches[0]',
+        width: '150',
       },
       {
         name: 'Rider',
-        tag: 'rider_name',
+        tag: 'destination.delivery_location.region',
         width: '',
       },
       {
         name: 'Region',
-        tag: 'city_name',
+        tag: 'destination.delivery_location.region',
         width: '',
       },
     ];
