@@ -210,25 +210,16 @@ export default {
     }, 1000);
   },
 
-  async getHubList({ commit }, payload) {
+  async getHubList({ rootState, commit, dispatch }) {
     commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = {
-        pagination: {
-          total: 987,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
-        },
-        data: FulfilmentData.hubs,
-      };
-      resolve(response);
-    });
+    const config = rootState.config;
+    const url = `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
-    const results = await promise;
+    const results = await axiosConfig.get(url);
     setTimeout(() => {
-      commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
+      const res = results.data;
+      commit('setTableData', res.data);
+      // commit('setPagination', results.pagination);
       commit('setProcessingStatus', false);
     }, 1000);
   },

@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <Table :data-props="dataProps" :infinite-scroll="true" />
+    <Table :data-props="dataProps" />
   </div>
 </template>
 
@@ -33,7 +33,7 @@ export default {
       {
         name: 'Seller',
         tag: 'business.business_name',
-        width: '',
+        width: '140',
       },
       {
         name: 'Recipient',
@@ -48,16 +48,16 @@ export default {
       {
         name: 'Destination',
         tag: 'destination.delivery_location.description',
-        width: '120',
+        width: '140',
       },
       {
         name: 'Assigned Batch',
-        tag: 'batches[0].batch_id',
-        width: '130',
+        tag: 'batches[0]',
+        width: '150',
       },
       {
         name: 'Rider',
-        tag: 'batches[0].assigned_shipping_agent.agent_name',
+        tag: 'destination.delivery_location.region',
         width: '',
       },
       {
