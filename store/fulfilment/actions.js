@@ -194,7 +194,6 @@ export default {
     const results = await axiosConfig.get(url);
     setTimeout(() => {
       const res = results.data;
-      console.log('results', results);
       commit('setTableData', res.data);
       // commit('setPagination', results.pagination);
       commit('setProcessingStatus', false);
