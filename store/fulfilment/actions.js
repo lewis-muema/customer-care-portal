@@ -75,26 +75,6 @@ export default {
         root: true,
       });
     }
-
-    // const promise = new Promise(resolve => {
-    //   const response = {
-    //     pagination: {
-    //       total: 987,
-    //       perPage: 50,
-    //       page: 1,
-    //       lastPage: 20,
-    //     },
-    //     data: FulfilmentData.delivery_request,
-    //   };
-    //   resolve(response);
-    // });
-
-    // const results = await promise;
-    // setTimeout(() => {
-    //   commit('setTableData', results.data);
-    //   commit('setPagination', results.pagination);
-    //   commit('setProcessingStatus', false);
-    // }, 1000);
   },
 
   async fetchOutboundBatchedOrders({ commit }, payload) {
