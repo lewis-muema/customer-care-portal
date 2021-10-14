@@ -44,6 +44,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'development',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
   },
   dev: {
     BASE_URL: 'http://localhost:8080/',
@@ -86,6 +87,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
@@ -126,6 +128,7 @@ const config = {
     ELASTIC_APM_SERVER_URL: 'https://staging-elk.sendyit.com:8200',
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
   },
   production: {
     BASE_URL: 'http://localhost:8080/',
@@ -170,6 +173,7 @@ const config = {
     ELASTIC_APM_SERVER_URL: 'https://apm.sendyit.com:443',
     ELASTIC_APM_ENVIRONMENT: 'production',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
+    FULFILMENT_SERVICE: 'https://auth.sendyit.com/fulfilment/v1/',
   },
 };
 export default config;
