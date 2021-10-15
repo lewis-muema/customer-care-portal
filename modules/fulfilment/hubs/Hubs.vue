@@ -9,6 +9,7 @@
           type="primary"
           size="medium"
           class="fulfilment-add-hub-button"
+          @click="displayDialog"
         >
           Add Hub
         </el-button>
@@ -21,6 +22,14 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      :title="title"
+      class="addHubDialog"
+      :visible.sync="displayHubDialog"
+      width="30%"
+    >
+      <AddHubDialog />
+    </el-dialog>
   </div>
 </template>
 
@@ -28,14 +37,17 @@
 import { mapMutations } from 'vuex';
 
 import HubSection from './_components/HubsComponent.vue';
+import AddHubDialog from './_components/AddHubDialog.vue';
 
 export default {
   name: 'HubView',
-  components: { HubSection },
+  components: { HubSection, AddHubDialog },
   data() {
     return {
       mode: 'HubsView',
       componentKey: 0,
+      displayHubDialog: false,
+      title: 'Add hub',
     };
   },
   watch: {},
@@ -57,6 +69,9 @@ export default {
       this.updateActivePage(this.mode);
       this.setFulfilmentType(this.mode);
       this.handleTab();
+    },
+    displayDialog() {
+      this.displayHubDialog = true;
     },
   },
 };

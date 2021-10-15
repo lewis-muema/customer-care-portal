@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchOutboundPickUpRequests',
+        setter: 'fulfilment/fetchPickUpRequests',
       },
     };
   },
@@ -22,42 +22,47 @@ export default {
     const tableProps = [
       {
         name: 'Status',
-        tag: 'status',
+        tag: 'order_status',
         width: '130',
       },
       {
-        name: 'Client',
-        tag: 'recipient_name',
-        width: '',
+        name: 'Order Number',
+        tag: 'order_id',
+        width: '150',
       },
       {
-        name: 'Order No',
-        tag: 'order_no',
+        name: 'Seller',
+        tag: 'business.business_name',
+        width: '140',
+      },
+      {
+        name: 'Recipient',
+        tag: 'destination.name',
         width: '',
       },
       {
         name: 'Time',
-        tag: 'time_placed',
-        width: '',
+        tag: 'scheduled_date',
+        width: '150',
       },
       {
-        name: 'PickUp',
-        tag: 'pickup_location',
-        width: '',
+        name: 'Destination',
+        tag: 'destination.delivery_location.description',
+        width: '140',
       },
       {
-        name: 'Delivery',
-        tag: 'delivery',
-        width: '',
+        name: 'Assigned Batch',
+        tag: 'batches[0]',
+        width: '150',
       },
       {
         name: 'Rider',
-        tag: 'rider_name',
+        tag: 'destination.delivery_location.region',
         width: '',
       },
       {
         name: 'Region',
-        tag: 'city_name',
+        tag: 'destination.delivery_location.region',
         width: '',
       },
     ];

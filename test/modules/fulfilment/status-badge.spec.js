@@ -4,7 +4,7 @@ import StatusBadge from '@/modules/fulfilment/globals/_components/StatusBadge';
 describe('StatusBadge Component', () => {
   const wrapper = shallowMount(StatusBadge, {
     propsData: {
-      status: 'pending',
+      status: 'order_in_processing',
     },
   });
   it('should initialize component', () => {
@@ -12,21 +12,17 @@ describe('StatusBadge Component', () => {
   });
 
   it('should get the correct passed status props', () => {
-    expect(wrapper.props().status).toBe('pending');
+    expect(wrapper.props().status).toBe('order_in_processing');
   });
 
-  it('should ensure active class matches passed prop', () => {
-    const shallowWrapper = shallowMount(StatusBadge, {
-      propsData: { status: 'confirmed' },
-    });
-    expect(shallowWrapper.vm.activeClass).toBe('confirmed');
-  });
   it('should call orderstatus function on init', async () => {
     const orderStatusColor = jest.spyOn(
       StatusBadge.methods,
       'orderStatusColor',
     );
-    await shallowMount(StatusBadge, { propsData: { status: 'pending' } });
+    await shallowMount(StatusBadge, {
+      propsData: { status: 'order_in_processing' },
+    });
     expect(orderStatusColor).toHaveBeenCalled();
   });
 
@@ -34,6 +30,6 @@ describe('StatusBadge Component', () => {
     const shallowWrapper = shallowMount(StatusBadge, {
       propsData: { status: 'foo' },
     });
-    expect(shallowWrapper.vm.activeClass).toBe('confirmed');
+    expect(shallowWrapper.vm.activeClass).toBe('pending');
   });
 });

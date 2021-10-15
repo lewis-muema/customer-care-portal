@@ -8,7 +8,11 @@ export default {
   setTableData({ commit }, payload) {
     commit('setTableData', payload);
   },
-  async fetchOutboundDeliveryRequests({ commit, getters }, payload) {
+  async fetchDeliveryRequests(
+    { rootState, commit, getters, dispatch },
+    payload,
+  ) {
+    const url = rootState.config.FULFILMENT_SERVICE;
     if (payload != null && payload.nextPage) {
       const newTableData = {
         pagination: {
@@ -51,26 +55,26 @@ export default {
       });
       return promise;
     }
-    commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = {
-        pagination: {
-          total: 987,
+    try {
+      commit('setProcessingStatus', true);
+      const response = await axiosConfig.get(`${url}missioncontrol/deliveries`);
+      if (response.status === 200) {
+        const deliveryOrders = response.data.data.orders;
+        const pagination = {
+          total: deliveryOrders.length,
           perPage: 50,
           page: 1,
           lastPage: 20,
-        },
-        data: FulfilmentData.delivery_request,
-      };
-      resolve(response);
-    });
-
-    const results = await promise;
-    setTimeout(() => {
-      commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
-      commit('setProcessingStatus', false);
-    }, 1000);
+        };
+        commit('setTableData', deliveryOrders);
+        commit('setPagination', pagination);
+        commit('setProcessingStatus', false);
+      }
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
 
   async fetchOutboundBatchedOrders({ commit }, payload) {
@@ -118,27 +122,30 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
-  async fetchOutboundPickUpRequests({ commit }, payload) {
-    commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = {
-        pagination: {
-          total: 987,
+  async fetchPickUpRequests({ rootState, dispatch, commit }, payload) {
+    try {
+      const url = rootState.config.FULFILMENT_SERVICE;
+      commit('setProcessingStatus', true);
+      const response = await axiosConfig.get(
+        `${url}missioncontrol/consignments`,
+      );
+      if (response.status === 200) {
+        const deliveryOrders = response.data.data.orders;
+        const pagination = {
+          total: deliveryOrders.length,
           perPage: 50,
           page: 1,
           lastPage: 20,
-        },
-        data: FulfilmentData.pickup_request,
-      };
-      resolve(response);
-    });
-
-    const results = await promise;
-    setTimeout(() => {
-      commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
-      commit('setProcessingStatus', false);
-    }, 1000);
+        };
+        commit('setTableData', deliveryOrders);
+        commit('setPagination', pagination);
+        commit('setProcessingStatus', false);
+      }
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
   async fetchInboundBatchedOrders({ commit }, payload) {
     commit('setProcessingStatus', true);
