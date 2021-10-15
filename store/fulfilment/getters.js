@@ -44,4 +44,7 @@ export default {
   getSelectedStatus(state) {
     return state.selectedStatus;
   },
+  getHubDialog(state) {
+    return state.hubDialog;
+  },
 };

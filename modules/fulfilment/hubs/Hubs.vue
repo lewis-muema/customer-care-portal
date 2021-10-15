@@ -9,6 +9,7 @@
           type="primary"
           size="medium"
           class="fulfilment-add-hub-button"
+          @click="displayDialog"
         >
           Add Hub
         </el-button>
@@ -21,24 +22,48 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      :title="title"
+      class="addHubDialog"
+      :visible.sync="displayHubDialog"
+      width="30%"
+    >
+      <AddHubDialog />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 import HubSection from './_components/HubsComponent.vue';
+import AddHubDialog from './_components/AddHubDialog.vue';
 
 export default {
   name: 'HubView',
-  components: { HubSection },
+  components: { HubSection, AddHubDialog },
   data() {
     return {
       mode: 'HubsView',
       componentKey: 0,
+      displayHubDialog: false,
+      title: 'Add hub',
     };
   },
-  watch: {},
+  computed: {
+    ...mapGetters({
+      getHubDialog: 'fulfilment/getHubDialog',
+    }),
+  },
+  watch: {
+    getHubDialog(val) {
+      if (val) {
+        this.displayHubDialog = false;
+        this.handleTab();
+        this.resetHubDialog(false);
+      }
+    },
+  },
   mounted() {
     const page = { name: 'HubsView' };
     this.handleClick(page);
@@ -48,6 +73,7 @@ export default {
       updateActivePage: 'setActivePage',
       setFulfilmentType: 'fulfilment/setFulfilmentType',
       setTableData: 'fulfilment/setTableData',
+      resetHubDialog: 'fulfilment/resetHubDialog',
     }),
     handleTab() {
       this.componentKey += 1;
@@ -57,6 +83,9 @@ export default {
       this.updateActivePage(this.mode);
       this.setFulfilmentType(this.mode);
       this.handleTab();
+    },
+    displayDialog() {
+      this.displayHubDialog = true;
     },
   },
 };
