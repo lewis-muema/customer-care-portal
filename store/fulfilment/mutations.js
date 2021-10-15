@@ -47,4 +47,7 @@ export default {
   setSelectedStatus(_state, payload) {
     _state.selectedStatus = payload;
   },
+  resetHubDialog(state, val) {
+    state.hubDialog = val;
+  },
 };
