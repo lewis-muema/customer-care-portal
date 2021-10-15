@@ -220,14 +220,6 @@ export default {
         this.doNotification(2, 'Add Hub Error', 'Kindly provide all values');
       }
     },
-    doNotification(level, title, message) {
-      const notification = {
-        title,
-        level,
-        message,
-      };
-      this.displayNotification(notification);
-    },
   },
 };
 </script>
