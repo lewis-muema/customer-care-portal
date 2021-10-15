@@ -29,8 +29,37 @@
       <p class="add-hub-label">
         Location
       </p>
-      <el-input v-model="location" type="input" placeholder="Enter location">
-      </el-input>
+      <div class="add-hub-popover">
+        <template>
+          <el-popover
+            placement="bottom"
+            width="Min width 150px"
+            v-model="visible"
+            class="add-hub-popover"
+          >
+            <div>
+              <div
+                class="single-suggestion"
+                v-for="suggestion in suggestions"
+                :key="suggestion.id"
+                @click="
+                  handleSelect(suggestion.description, 0, suggestion.place_id)
+                "
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
+            <el-input
+              slot="reference"
+              size="large"
+              class=""
+              placeholder="Enter location"
+              v-model="location"
+              @input="handleFocus($event, 0)"
+            ></el-input>
+          </el-popover>
+        </template>
+      </div>
     </div>
     <div class="add-hub-selector">
       <p class="add-hub-label">
@@ -59,12 +88,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import _ from 'lodash';
+
 export default {
   name: 'AddHub',
   data() {
     return {
+      visible: false,
       hub_name: '',
+      suggestions: [],
       location: '',
+      location_data: {},
       country: '',
       country_list: [
         {
@@ -79,7 +114,94 @@ export default {
           name: 'Main Hub',
         },
       ],
+      service: '',
+      placeService: '',
     };
+  },
+  computed: {
+    ...mapGetters(['getEnvironmentVariables']),
+    herokuKey() {
+      return this.getEnvironmentVariables.HEROKU_GOOGLE_API_KEY;
+    },
+  },
+  watch: {
+    location(val) {
+      if (val === '') {
+        this.location_data = {};
+      }
+    },
+  },
+  mounted() {
+    this.$gmapApiPromiseLazy().then(() => {
+      this.loadMapScript();
+    });
+  },
+  methods: {
+    loadMapScript() {
+      if (window.google && window.google.maps) {
+        setTimeout(() => {
+          this.initMap();
+        }, 180);
+      } else {
+        const script = document.createElement('script');
+        script.onload = () => {
+          this.initMap();
+        };
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.herokuKey}`;
+        document.head.appendChild(script);
+      }
+    },
+    initMap() {
+      this.service = new window.google.maps.places.AutocompleteService();
+      this.placeService = new window.google.maps.places.PlacesService(
+        document.createElement('div'),
+      );
+    },
+    // eslint-disable-next-line func-names
+    search: _.debounce(function(val) {
+      this.service.getPlacePredictions(
+        {
+          input: val,
+          componentRestrictions: { country: ['ke'] },
+        },
+        this.displaySuggestions,
+      );
+    }, 500),
+    displaySuggestions(predictions, status) {
+      if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+        this.suggestions = [];
+        this.visible = false;
+        return;
+      }
+      this.suggestions = predictions;
+      this.visible = true;
+    },
+    handleFocus(val, input) {
+      if (val) {
+        this.search(val);
+      }
+    },
+    handleSelect(item, input, placeId) {
+      this.visible = false;
+      this.suggestions = [];
+      const fromPlaceId = placeId;
+      this.placeService.getDetails(
+        {
+          placeId: fromPlaceId,
+        },
+        details => {
+          this.location = details.name;
+          const geo_location = details.geometry;
+          const data = {
+            address: this.location,
+            lat: geo_location.location.lat(),
+            long: geo_location.location.lng(),
+          };
+
+          this.location_data = data;
+        },
+      );
+    },
   },
 };
 </script>
@@ -104,5 +226,10 @@ export default {
 }
 .add-hub-select {
   width: 100%;
+}
+.single-suggestion {
+  cursor: pointer;
+  height: 25px;
+  padding-right: 15px;
 }
 </style>
