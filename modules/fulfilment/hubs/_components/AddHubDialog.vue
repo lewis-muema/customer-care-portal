@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 import NotificationMxn from '../../../../mixins/notification_mixin';
 
@@ -116,8 +116,12 @@ export default {
       hub_type: '',
       hub_list: [
         {
-          id: 1,
+          id: 'MAIN_HUB',
           name: 'Main Hub',
+        },
+        {
+          id: 'LAST_MILE',
+          name: 'Last Mile',
         },
       ],
       service: '',
@@ -143,6 +147,12 @@ export default {
     });
   },
   methods: {
+    ...mapMutations({
+      resetHubDialog: 'fulfilment/resetHubDialog',
+    }),
+    ...mapActions({
+      add_fulfilment_hub: 'fulfilment/add_fulfilment_hub',
+    }),
     loadMapScript() {
       if (window.google && window.google.maps) {
         setTimeout(() => {
@@ -199,23 +209,63 @@ export default {
           this.location = details.name;
           const geo_location = details.geometry;
           const data = {
-            address: this.location,
-            lat: geo_location.location.lat(),
-            long: geo_location.location.lng(),
+            description: this.location,
+            longitude: geo_location.location.lng(),
+            latitude: geo_location.location.lat(),
           };
 
           this.location_data = data;
         },
       );
     },
-    addHub() {
+    async addHub() {
       if (
         this.location !== '' &&
         this.hub_name !== '' &&
         this.country !== '' &&
         this.hub_type !== ''
       ) {
-        // process add hub flow
+        const payload = {
+          app: 'FULFILMENT_SERVICE',
+          endpoint: 'missioncontrol/hubs',
+          apiKey: false,
+          params: {
+            hub_type: this.hub_type,
+            activated: true,
+            hub_name: this.hub_name,
+            hub_phone_number: '+254 709 779 779',
+            hub_location: this.location_data,
+          },
+        };
+        try {
+          const data = await this.add_fulfilment_hub(payload);
+
+          if (data.status === 200) {
+            /* eslint no-restricted-globals: ["error", "event"] */
+            this.doNotification(
+              1,
+              'Hub Added',
+              'Hub has been added successfully',
+            );
+            setTimeout(() => {
+              this.resetHubDialog(true);
+            }, 800);
+          } else {
+            let error_response = '';
+            if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
+              error_response = data.data.errors;
+            } else {
+              error_response = data.data.message;
+            }
+            this.doNotification(2, 'Add Hub Error', error_response);
+          }
+        } catch (error) {
+          this.doNotification(
+            3,
+            'Internal Server Error',
+            'Kindly refresh the page. If error persists contact tech support',
+          );
+        }
       } else {
         this.doNotification(2, 'Add Hub Error', 'Kindly provide all values');
       }

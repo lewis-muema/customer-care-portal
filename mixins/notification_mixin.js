@@ -38,8 +38,9 @@ const NotificationMxn = {
       } else if (notification.level === 3) {
         // error
         this.$notify({
-          type: 'error',
+          title: notification.title,
           message: notification.message,
+          type: 'error',
           offset: 20,
           duration: 5000,
         });

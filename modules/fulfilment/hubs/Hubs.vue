@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 import HubSection from './_components/HubsComponent.vue';
 import AddHubDialog from './_components/AddHubDialog.vue';
@@ -50,7 +50,20 @@ export default {
       title: 'Add hub',
     };
   },
-  watch: {},
+  computed: {
+    ...mapGetters({
+      getHubDialog: 'fulfilment/getHubDialog',
+    }),
+  },
+  watch: {
+    getHubDialog(val) {
+      if (val) {
+        this.displayHubDialog = false;
+        this.handleTab();
+        this.resetHubDialog(false);
+      }
+    },
+  },
   mounted() {
     const page = { name: 'HubsView' };
     this.handleClick(page);
@@ -60,6 +73,7 @@ export default {
       updateActivePage: 'setActivePage',
       setFulfilmentType: 'fulfilment/setFulfilmentType',
       setTableData: 'fulfilment/setTableData',
+      resetHubDialog: 'fulfilment/resetHubDialog',
     }),
     handleTab() {
       this.componentKey += 1;
