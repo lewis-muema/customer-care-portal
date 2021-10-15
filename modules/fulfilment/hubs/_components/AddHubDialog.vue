@@ -8,6 +8,16 @@
     </div>
     <div class="add-hub-selector">
       <p class="add-hub-label">
+        Hub phone number
+      </p>
+      <vue-tel-input
+        v-model="hub_phone"
+        class="form-control"
+        :preferred-countries="['ke']"
+      />
+    </div>
+    <div class="add-hub-selector">
+      <p class="add-hub-label">
         Select country
       </p>
       <el-select
@@ -93,6 +103,8 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import VueTelInput from 'vue-tel-input';
+import 'vue-tel-input/dist/vue-tel-input.css';
 import _ from 'lodash';
 import NotificationMxn from '../../../../mixins/notification_mixin';
 
@@ -103,6 +115,7 @@ export default {
     return {
       visible: false,
       hub_name: '',
+      hub_phone: '',
       suggestions: [],
       location: '',
       location_data: {},
@@ -223,7 +236,8 @@ export default {
         this.location !== '' &&
         this.hub_name !== '' &&
         this.country !== '' &&
-        this.hub_type !== ''
+        this.hub_type !== '' &&
+        this.hub_phone !== ''
       ) {
         const payload = {
           app: 'FULFILMENT_SERVICE',
@@ -233,7 +247,7 @@ export default {
             hub_type: this.hub_type,
             activated: true,
             hub_name: this.hub_name,
-            hub_phone_number: '+254 709 779 779',
+            hub_phone_number: this.hub_phone.replace(/\s/g, ''),
             hub_location: this.location_data,
           },
         };
