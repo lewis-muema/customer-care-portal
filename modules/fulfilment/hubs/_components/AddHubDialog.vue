@@ -81,7 +81,11 @@
       </el-select>
     </div>
 
-    <el-button type="primary" class="full-width action-submit-button">
+    <el-button
+      type="primary"
+      class="full-width action-submit-button"
+      @click="addHub"
+    >
       Add hub
     </el-button>
   </div>
@@ -90,9 +94,11 @@
 <script>
 import { mapGetters } from 'vuex';
 import _ from 'lodash';
+import NotificationMxn from '../../../../mixins/notification_mixin';
 
 export default {
   name: 'AddHub',
+  mixins: [NotificationMxn],
   data() {
     return {
       visible: false,
@@ -201,6 +207,18 @@ export default {
           this.location_data = data;
         },
       );
+    },
+    addHub() {
+      if (
+        this.location !== '' &&
+        this.hub_name !== '' &&
+        this.country !== '' &&
+        this.hub_type !== ''
+      ) {
+        // process add hub flow
+      } else {
+        this.doNotification(2, 'Add Hub Error', 'Kindly provide all values');
+      }
     },
   },
 };
