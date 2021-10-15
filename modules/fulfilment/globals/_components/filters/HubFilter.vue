@@ -74,16 +74,10 @@ export default {
       });
     },
   },
-  mounted() {
-    this.fetchHubs();
-  },
 
   methods: {
     ...mapMutations({
       updateSelectedHubs: 'fulfilment/setSelectedHubs',
-    }),
-    ...mapActions({
-      fetchHubs: 'fulfilment/fetchHubs',
     }),
 
     customLabel(option) {

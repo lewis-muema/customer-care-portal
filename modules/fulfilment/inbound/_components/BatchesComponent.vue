@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <Table :data-props="dataProps" />
+    <Table :data-props="dataProps" :params="params" />
   </div>
 </template>
 
@@ -13,16 +13,24 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchInboundBatchedOrders',
+        setter: 'fulfilment/fetchBatchedOrders',
       },
     };
+  },
+  computed: {
+    params() {
+      const data = {
+        direction: 'INBOUND',
+      };
+      return data;
+    },
   },
 
   mounted() {
     const tableProps = [
       {
         name: 'Status',
-        tag: 'status',
+        tag: 'batch_status',
         width: '130',
       },
       {
@@ -32,12 +40,12 @@ export default {
       },
       {
         name: 'Batch No',
-        tag: 'batch_no',
+        tag: 'batch_id',
         width: '',
       },
       {
         name: 'Time',
-        tag: 'time_placed',
+        tag: 'scheduled_date',
         width: '',
       },
       {
