@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'FiltersBar',
@@ -100,12 +100,19 @@ export default {
       this.page = page;
     },
   },
+  mounted() {
+    this.fetchHubs();
+  },
   methods: {
     ...mapMutations({
       updateSearchedEntity: 'fulfilment/setSearchedEntity',
       updateSearchState: 'fulfilment/setSearchState',
       isSearching: 'fulfilment/setSearchingStatus',
     }),
+    ...mapActions({
+      fetchHubs: 'fulfilment/fetchHubs',
+    }),
+
     goBack() {
       this.updateSearchedEntity(null);
       this.updateSearchState(false);

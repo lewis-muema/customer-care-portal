@@ -1,6 +1,6 @@
 <template>
   <div class="fulfilment-outbound-batches">
-    <Table :data-props="dataProps" />
+    <Table :data-props="dataProps" :params="params" />
   </div>
 </template>
 <script>
@@ -12,15 +12,23 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchOutboundBatchedOrders',
+        setter: 'fulfilment/fetchBatchedOrders',
       },
     };
+  },
+  computed: {
+    params() {
+      const data = {
+        direction: 'OUTBOUND',
+      };
+      return data;
+    },
   },
   mounted() {
     const tableProps = [
       {
         name: 'Status',
-        tag: 'status',
+        tag: 'batch_status',
         width: '130',
       },
       {
@@ -30,22 +38,22 @@ export default {
       },
       {
         name: 'Batch No',
-        tag: 'batch_no',
+        tag: 'batch_id',
         width: '',
       },
       {
         name: 'Time',
-        tag: 'time_placed',
+        tag: 'scheduled_date',
         width: '150',
       },
       {
         name: 'Pickup',
-        tag: 'pick_up',
+        tag: 'hub_id',
         width: '130',
       },
       {
         name: 'Destination',
-        tag: 'destination',
+        tag: 'direction',
         width: '120',
       },
       {

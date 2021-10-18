@@ -77,27 +77,31 @@ export default {
     }
   },
 
-  async fetchOutboundBatchedOrders({ commit }, payload) {
-    commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = {
-        pagination: {
-          total: 987,
+  async fetchBatchedOrders({ rootState, dispatch, commit }, payload) {
+    try {
+      const url = rootState.config.FULFILMENT_SERVICE;
+      commit('setProcessingStatus', true);
+      const response = await axiosConfig.get(
+        `${url}missioncontrol/batches?direction=${payload.direction}`,
+      );
+      if (response.status === 200) {
+        const batches = response.data.data.batches;
+
+        const pagination = {
+          total: batches.length,
           perPage: 50,
           page: 1,
           lastPage: 20,
-        },
-        data: FulfilmentData.outbound_batched_orders,
-      };
-      resolve(response);
-    });
-
-    const results = await promise;
-    setTimeout(() => {
-      commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
-      commit('setProcessingStatus', false);
-    }, 1000);
+        };
+        commit('setTableData', batches);
+        commit('setPagination', pagination);
+        commit('setProcessingStatus', false);
+      }
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
 
   async fetchMovableUnits({ commit }, payload) {
@@ -147,29 +151,6 @@ export default {
       });
     }
   },
-  async fetchInboundBatchedOrders({ commit }, payload) {
-    commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = {
-        pagination: {
-          total: 987,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
-        },
-        data: FulfilmentData.inbound_batched_orders,
-      };
-      resolve(response);
-    });
-
-    const results = await promise;
-    setTimeout(() => {
-      commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
-      commit('setProcessingStatus', false);
-    }, 1000);
-  },
-
   async fetchReturnOrders({ commit }, payload) {
     commit('setProcessingStatus', true);
     const promise = new Promise(resolve => {
@@ -202,6 +183,7 @@ export default {
     setTimeout(() => {
       const res = results.data;
       commit('setTableData', res.data);
+      commit('setHubs', res.data);
       // commit('setPagination', results.pagination);
       commit('setProcessingStatus', false);
     }, 1000);
@@ -288,44 +270,17 @@ export default {
       commit('setPagination', results.pagination);
     }, 10);
   },
-  async fetchHubs({ commit }, payload) {
-    const promise = new Promise(resolve => {
-      const response = {
-        data: {
-          hubs: [
-            {
-              hub_id: 'H_ASD123',
-              hub_type: 'LAST_MILE',
-              activated: true,
-              hub_name: 'Main Warehouse',
-              hub_phone_number: 12345678,
-              hub_location: {},
-            },
-            {
-              hub_id: 'H_ASD124',
-              hub_type: 'LAST_MILE',
-              activated: true,
-              hub_name: 'Tilisi',
-              hub_phone_number: 12345678,
-              hub_location: {},
-            },
-            {
-              hub_id: 'H_ASD125',
-              hub_type: 'LAST_MILE',
-              activated: true,
-              hub_name: 'Roysambu Hub',
-              hub_phone_number: 12345678,
-              hub_location: {},
-            },
-          ],
-        },
-      };
-      resolve(response);
-    });
+  async fetchHubs({ rootState, commit, dispatch }) {
+    commit('setProcessingStatus', true);
+    const config = rootState.config;
+    const url = `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
-    const results = await promise;
+    const results = await axiosConfig.get(url);
     setTimeout(() => {
-      commit('setHubs', results.data.hubs);
+      const res = results.data;
+      commit('setHubs', res.data);
+      // commit('setPagination', results.pagination);
+      commit('setProcessingStatus', false);
     }, 1000);
   },
   async fetchRegions({ commit }, payload) {
