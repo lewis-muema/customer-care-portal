@@ -4,20 +4,16 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'StatusBadge',
-  props: {
-    status: {
-      type: String,
-      required: true,
-    },
-  },
+  props: ['status'],
   data() {
     return {
       activeClass: 'pending',
       statusText: 'Processing',
+      statuses: [],
     };
   },
   computed: {
@@ -25,14 +21,23 @@ export default {
       getStatusMapping: 'fulfilment/getStatusMapping',
     }),
   },
-  mounted() {
+  watch: {
+    getStatusMapping(val) {
+      this.statuses = val;
+    },
+  },
+  async mounted() {
+    await this.setOrderStatuses();
     this.orderStatusColor();
   },
   methods: {
+    ...mapActions({
+      setOrderStatuses: 'fulfilment/mapOrderStatus',
+    }),
     orderStatusColor() {
       const transformedStatus = this.status;
 
-      const filteredStatus = this.getStatusMapping.filter(
+      const filteredStatus = this.statuses.filter(
         event => event.value === this.status,
       );
       // eslint-disable-next-line prettier/prettier
