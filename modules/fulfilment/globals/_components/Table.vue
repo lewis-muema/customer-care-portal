@@ -96,6 +96,7 @@ export default {
       hubs: null,
       processing: false,
       regions: null,
+      status: null,
       multipleSelection: [],
       scrolledToBottom: false,
       disableCheckBoxPages: [
@@ -117,6 +118,7 @@ export default {
       getSelectedRegions: 'fulfilment/getSelectedRegions',
       getProcessingStatus: 'fulfilment/getProcessingStatus',
       getFulfilmentType: 'fulfilment/getFulfilmentType',
+      getSelectedStatus: 'fulfilment/getSelectedStatus',
     }),
     currentPage: {
       get() {
@@ -158,6 +160,13 @@ export default {
       this.updatePagination({});
 
       this.regions = regions;
+      this.fetchTableData();
+    },
+    getSelectedStatus(val) {
+      this.updateTableData([]);
+      this.updatePagination({});
+
+      this.status = val;
       this.fetchTableData();
     },
     getProcessingStatus(status) {

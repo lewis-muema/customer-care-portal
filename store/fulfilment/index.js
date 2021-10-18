@@ -18,6 +18,8 @@ const state = () => ({
   regions: null,
   selectedRegions: null,
   checkedOrders: [],
+  selectedStatus: null,
+  hubDialog: false,
 });
 
 export { state, getters, mutations, actions };

@@ -206,6 +206,14 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
+  async add_fulfilment_hub({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
 
   async fetchOrderActivites({ commit }, payload) {
     const promise = new Promise(resolve => {

@@ -9,7 +9,7 @@
                 <StatusFilter />
               </div>
             </el-col>
-            <el-col :span="16">
+            <el-col :span="17">
               <div class="grid-content fulfilment-search-filter">
                 <Search :page="getActivePage" />
               </div>
@@ -116,18 +116,22 @@ export default {
 
 <style scoped>
 .fulfilment-search-holder {
-  border: 0.878146px solid #9e9e9e;
   box-sizing: border-box;
   border-radius: 6px;
   height: 40px;
   margin-top: 6%;
 }
 .fulfilment-status-filter {
-  border-right: 0.878146px solid #9e9e9e;
   height: 39px;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 .fulfilment-search-filter {
   height: 39px;
+  border: 1px solid #9e9e9e;
+  border-left: none;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 .search-header {
   color: #518bb8;

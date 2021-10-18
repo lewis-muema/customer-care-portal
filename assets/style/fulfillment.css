@@ -292,3 +292,9 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
     border-color: #528bb8;
     color: #FFF;
 }
+.addHubDialog > div > .el-dialog__header {
+  margin: 2% !important;
+}
+.addHubDialog > div > .el-dialog__body {
+  margin: 2% !important;
+}
