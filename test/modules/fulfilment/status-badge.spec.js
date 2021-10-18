@@ -1,11 +1,27 @@
-import { shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import StatusBadge from '@/modules/fulfilment/globals/_components/StatusBadge';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
+let getters;
+let store;
+
 describe('StatusBadge Component', () => {
+  getters = {
+    getStatusMapping: () => [],
+  };
+
+  store = new Vuex.Store({
+    namespaced: true,
+    mutations,
+  });
   const wrapper = shallowMount(StatusBadge, {
     propsData: {
       status: 'order_in_processing',
     },
+    localVue,
+    store,
   });
   it('should initialize component', () => {
     expect(wrapper).toBeTruthy();
