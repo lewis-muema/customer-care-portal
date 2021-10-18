@@ -4,46 +4,47 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'StatusBadge',
-  props: {
-    status: {
-      type: String,
-      required: true,
-    },
-  },
+  props: ['status'],
   data() {
     return {
       activeClass: 'pending',
       statusText: 'Processing',
+      statuses: [],
     };
   },
-  mounted() {
+  computed: {
+    ...mapGetters({
+      getStatusMapping: 'fulfilment/getStatusMapping',
+    }),
+  },
+  watch: {
+    getStatusMapping(val) {
+      this.statuses = val;
+    },
+  },
+  async mounted() {
+    await this.setOrderStatuses();
     this.orderStatusColor();
   },
   methods: {
+    ...mapActions({
+      setOrderStatuses: 'fulfilment/mapOrderStatus',
+    }),
     orderStatusColor() {
-      const transformedStatus = this.status.toLowerCase();
-      switch (transformedStatus) {
-        case 'order_completed':
-          this.activeClass = 'confirmed';
-          this.statusText = 'Confirmed';
-          break;
-        case 'order_received':
-          this.activeClass = 'received';
-          this.statusText = 'Received';
-          break;
-        case 'order_in_processing':
-          this.activeClass = 'pending';
-          this.statusText = 'Processing';
-          break;
-        case 'order_in_transit':
-          this.activeClass = 'in-transit';
-          this.statusText = 'In transit';
-          break;
-        default:
-          this.activeClass = 'pending';
-      }
+      const transformedStatus = this.status;
+
+      const filteredStatus = this.statuses.filter(
+        event => event.value === this.status,
+      );
+      // eslint-disable-next-line prettier/prettier
+      const label = filteredStatus.length > 0 ? filteredStatus[0].label : 'Pending';
+
+      this.activeClass = label.replace(/\s+/g, '-').toLowerCase();
+      this.statusText = label;
     },
   },
 };
@@ -59,16 +60,31 @@ export default {
   line-height: 24px;
 }
 .order-status.pending {
+  background-color: #ffe9d8;
+  color: #b71f25;
+}
+
+.order-status.confirmed,
+.order-status.received,
+.order-status.processing {
   background-color: #fddb97;
   color: #9d5004;
-}
-.order-status.confirmed,
-.order-status.received {
-  background-color: #324ba833;
-  color: #324ba8;
 }
 .order-status.in-transit {
   background-color: #defad2;
   color: #064a23;
+}
+.order-status.completed,
+.order-status.composition {
+  background-color: #324ba833;
+  color: #324ba8;
+}
+.order-status.failed {
+  background-color: #dd4b39;
+  color: #fff;
+}
+.order-status.cancelled {
+  background-color: black;
+  color: #fff;
 }
 </style>

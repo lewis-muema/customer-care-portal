@@ -31,6 +31,12 @@
           <div v-if="table_data.tag === 'order_status'">
             <StatusBadge :status="props.row.order_status" />
           </div>
+          <div v-else-if="table_data.tag === 'batch_status'">
+            <StatusBadge
+              v-if="props.row.batch_status"
+              :status="props.row.batch_status"
+            />
+          </div>
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.time_placed) }}
           </div>

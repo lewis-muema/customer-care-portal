@@ -327,4 +327,84 @@ export default {
       commit('setRegions', results.data.regions);
     }, 1000);
   },
+  async mapOrderStatus({ commit }, payload) {
+    const promise = new Promise(resolve => {
+      const response = {
+        data: {
+          status: [
+            {
+              value: 'ORDER_RECEIVED',
+              label: 'Received',
+              type: 'order',
+            },
+            {
+              value: 'ORDER_IN_PROCESSING',
+              label: 'Pending',
+              type: 'order',
+            },
+            {
+              value: 'ORDER_IN_TRANSIT',
+              label: 'In Transit',
+              type: 'order',
+            },
+            {
+              value: 'ORDER_COMPLETED',
+              label: 'Completed',
+              type: 'order',
+            },
+            {
+              value: 'ORDER_CANCELED',
+              label: 'Cancelled',
+              type: 'order',
+            },
+            {
+              value: 'ORDER_FAILED',
+              label: 'Failed',
+              type: 'order',
+            },
+
+            {
+              value: 'BATCH_IN_COMPOSITION',
+              label: 'Composition',
+              type: 'batch',
+            },
+            {
+              value: 'BATCH_IN_HUB_PREPARATION',
+              label: 'Pending',
+              type: 'batch',
+            },
+            {
+              value: 'BATCH_PENDING_SHIPPING_ASSIGNMENT',
+              label: 'Processing',
+              type: 'batch',
+            },
+            {
+              value: 'BATCH_FAILED_SHIPPING_ASSIGNMENT',
+              label: 'Failed',
+              type: 'batch',
+            },
+            {
+              value: 'BATCH_IN_TRANSIT',
+              label: 'In Transit',
+              type: 'batch',
+            },
+            {
+              value: 'BATCH_COMPLETED',
+              label: 'Completed',
+              type: 'batch',
+            },
+            {
+              value: 'BATCH_CANCELLED',
+              label: 'Cancelled',
+              type: 'batch',
+            },
+          ],
+        },
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    commit('setStatusMapping', results.data.status);
+  },
 };
