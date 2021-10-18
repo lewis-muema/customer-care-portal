@@ -20,6 +20,11 @@ const state = () => ({
   checkedOrders: [],
   selectedStatus: null,
   hubDialog: false,
+  tableDetails: [],
+  tableDetailKeyMetrics: {
+    endpoint: 'missioncontrol/orders',
+    id: 'order_id',
+  },
 });
 
 export { state, getters, mutations, actions };
