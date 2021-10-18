@@ -37,6 +37,12 @@ export default {
     TableActions,
     TableDetailsTabs,
   },
+  props: {
+    orderInfo: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       activities: [
@@ -57,6 +63,9 @@ export default {
     ...mapGetters({
       getActivePage: 'getActivePage',
     }),
+  },
+  beforeMount() {
+    // process order details data here
   },
 };
 </script>

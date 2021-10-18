@@ -4,7 +4,10 @@
       :data="getTableData"
       ref="tableData"
       style="width: 100%"
-      @row-click="rowClicked"
+      :row-key="getRowKey"
+      :expand-row-keys="expand_keys"
+      @row-click="expandTableRow"
+      @expand-change="handleRowExpand"
       @selection-change="handleSelectionChange"
     >
       >
@@ -59,8 +62,8 @@
         </template>
       </el-table-column>
       <el-table-column type="expand" v-if="checkFulfilmentExpand">
-        <template>
-          <TableDetails />
+        <template slot-scope="props">
+          <TableDetails :order-info="props.row" />
         </template>
       </el-table-column>
     </el-table>
@@ -114,6 +117,8 @@ export default {
         'Inbound_batchesView',
       ],
       disableExpandPages: ['HubsView'],
+      expand_id: 0,
+      expand_keys: [],
     };
   },
   computed: {
@@ -195,8 +200,26 @@ export default {
     fetchTableData(payload = null) {
       this.$store.dispatch(this.dataProps.setter, payload);
     },
-    rowClicked(row) {
-      this.$refs.tableData.toggleRowExpansion(row);
+    getRowKey(row) {
+      return row.order_id;
+    },
+    expandTableRow(row) {
+      if (this.expand_keys.includes(row.order_id)) {
+        this.expand_keys = [];
+      } else {
+        this.expand_id = row.order_id;
+        this.expand_keys = [];
+        this.expand_keys.push(row.order_id);
+      }
+    },
+    handleRowExpand(row) {
+      if (this.expand_keys.includes(row.order_id)) {
+        this.expand_keys = [];
+      } else {
+        this.expand_id = row.order_id;
+        this.expand_keys = [];
+        this.expand_keys.push(row.order_id);
+      }
     },
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
