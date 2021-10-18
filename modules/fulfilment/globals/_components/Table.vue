@@ -132,6 +132,7 @@ export default {
       getProcessingStatus: 'fulfilment/getProcessingStatus',
       getFulfilmentType: 'fulfilment/getFulfilmentType',
       getSelectedStatus: 'fulfilment/getSelectedStatus',
+      getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
     }),
     currentPage: {
       get() {
@@ -204,21 +205,23 @@ export default {
       return row.order_id;
     },
     expandTableRow(row) {
-      if (this.expand_keys.includes(row.order_id)) {
+      const key_value = this.getTableDetailKeyMetric.id;
+      if (this.expand_keys.includes(row[key_value])) {
         this.expand_keys = [];
       } else {
-        this.expand_id = row.order_id;
+        this.expand_id = row[key_value];
         this.expand_keys = [];
-        this.expand_keys.push(row.order_id);
+        this.expand_keys.push(row[key_value]);
       }
     },
     handleRowExpand(row) {
-      if (this.expand_keys.includes(row.order_id)) {
+      const key_value = this.getTableDetailKeyMetric.id;
+      if (this.expand_keys.includes(row[key_value])) {
         this.expand_keys = [];
       } else {
-        this.expand_id = row.order_id;
+        this.expand_id = row[key_value];
         this.expand_keys = [];
-        this.expand_keys.push(row.order_id);
+        this.expand_keys.push(row[key_value]);
       }
     },
     formatDate(date) {

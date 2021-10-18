@@ -50,4 +50,10 @@ export default {
   resetHubDialog(state, val) {
     state.hubDialog = val;
   },
+  setTableDetailKeyMetric(state, val) {
+    state.tableDetailKeyMetrics = val;
+  },
+  setTableDetails(state, val) {
+    state.tableDetails = val;
+  },
 };
