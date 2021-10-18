@@ -298,3 +298,9 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .addHubDialog > div > .el-dialog__body {
   margin: 2% !important;
 }
+.tiers-container {
+  width: 50%;
+}
+.tiers-inner {
+  width: 50%;
+}

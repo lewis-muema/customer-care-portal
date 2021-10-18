@@ -4,27 +4,39 @@
       <tbody>
         <tr>
           <td width="50%">Order Number</td>
-          <td>{{ order_details.order_no }}</td>
+          <td>{{ order_details.order_id }}</td>
         </tr>
         <tr>
           <td width="50%">Batch</td>
           <td>
-            {{ order_details.batch_no }}
+            {{
+              Object.keys(order_details.batches).length === 0
+                ? '--'
+                : 'Updating ...'
+            }}
           </td>
         </tr>
         <tr>
           <td width="50%">Vendor Type</td>
-          <td>{{ order_details.vendor_type }}</td>
+          <td>--</td>
         </tr>
         <tr>
           <td width="50%">Fulfilment fee</td>
           <td>
-            {{ order_details.currency }} {{ order_details.fulfilment_fee }}
+            {{ order_details.pricing.currency }}
+            {{ order_details.pricing.fulfilment_cost }}
           </td>
         </tr>
         <tr>
           <td width="50%">Number of items</td>
-          <td>{{ order_details.items }} items</td>
+          <td>
+            {{ Object.keys(order_details.order_items.items).length }}
+            {{
+              Object.keys(order_details.order_items.items).length === 1
+                ? 'item'
+                : 'items'
+            }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -32,19 +44,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-  name: 'BatchesDetails',
+  name: 'OrderDetails',
   data() {
     return {
-      order_details: {
-        order_no: 'ADHDHD383',
-        batch_no: '#4744444',
-        vendor_type: 'Bike',
-        currency: 'KES',
-        fulfilment_fee: 299,
-        items: 4,
-      },
+      order_details: {},
     };
+  },
+  computed: {
+    ...mapGetters({
+      getTableDetails: 'fulfilment/getTableDetails',
+    }),
+  },
+  beforeMount() {
+    this.order_details = this.getTableDetails;
   },
 };
 </script>

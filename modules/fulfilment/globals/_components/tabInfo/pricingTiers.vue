@@ -1,39 +1,58 @@
 <template>
   <div>
-    <el-table
-      :data="tableData"
-      class="pricing-tiers-table"
-      style="width: max-content"
-    >
-      <el-table-column prop="field" label="" width="150"></el-table-column>
-      <el-table-column prop="val" label="" width="150"></el-table-column>
-    </el-table>
+    <div class="fulfillment-tab-info-description tiers-container">
+      <div class="tiers-inner">
+        Industry
+      </div>
+      <div class="tiers-inner">
+        {{ order_details.pricing.industry }}
+      </div>
+    </div>
+    <div class="fulfillment-tab-info-description tiers-container">
+      <div class="tiers-inner">
+        Total product cost
+      </div>
+      <div class="tiers-inner">
+        {{ order_details.pricing.currency }}
+        {{ order_details.pricing.total_product_cost }}
+      </div>
+    </div>
+    <div class="fulfillment-tab-info-description tiers-container">
+      <div class="tiers-inner">
+        % cost
+      </div>
+      <div class="tiers-inner">
+        {{ order_details.pricing.fulfilment_rate }} %
+      </div>
+    </div>
+    <div class="fulfillment-tab-info-description tiers-container">
+      <div class="tiers-inner">
+        Fulfilment cost
+      </div>
+      <div class="tiers-inner">
+        {{ order_details.pricing.currency }}
+        {{ order_details.pricing.fulfilment_cost }}
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
-      tableData: [
-        {
-          field: 'Industry',
-          val: 'Fashion',
-        },
-        {
-          field: 'Total product cost',
-          val: 'Kes 2,300',
-        },
-        {
-          field: '% cost',
-          val: '13%',
-        },
-        {
-          field: 'Fulfilment cost',
-          val: 'KES 299',
-        },
-      ],
+      order_details: {},
     };
+  },
+  computed: {
+    ...mapGetters({
+      getTableDetails: 'fulfilment/getTableDetails',
+    }),
+  },
+  beforeMount() {
+    this.order_details = this.getTableDetails;
   },
 };
 </script>
