@@ -56,4 +56,7 @@ export default {
   setTableDetails(state, val) {
     state.tableDetails = val;
   },
+  setStatusMapping(state, val) {
+    state.statusMapping = val;
+  },
 };

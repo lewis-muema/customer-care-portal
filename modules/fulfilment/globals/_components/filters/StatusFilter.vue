@@ -2,7 +2,7 @@
   <div :key="componentKey">
     <el-select v-model="status" multiple placeholder="All Orders">
       <el-option
-        v-for="item in options"
+        v-for="item in sectionStatuses"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -13,38 +13,35 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'StatusFilter',
+  props: ['page'],
   data() {
     return {
       componentKey: 0,
-      options: [
-        {
-          value: 1,
-          label: 'Pending',
-        },
-        {
-          value: 2,
-          label: 'Confirmed',
-        },
-        {
-          value: 3,
-          label: 'In Transit',
-        },
-        {
-          value: 4,
-          label: 'Delivered',
-        },
-        {
-          value: 5,
-          label: 'Cancelled',
-        },
-      ],
       status: [],
       value2: [],
     };
+  },
+  computed: {
+    ...mapGetters({
+      getStatusMapping: 'fulfilment/getStatusMapping',
+    }),
+
+    section() {
+      return this.page === 'Outbound_ordersView' ||
+        this.page === 'Inbound_ordersView'
+        ? 'order'
+        : 'batch';
+    },
+    sectionStatuses() {
+      const filteredStatus = this.getStatusMapping.filter(
+        event => event.type === this.section,
+      );
+      return filteredStatus;
+    },
   },
   watch: {
     status(val) {

@@ -6,7 +6,7 @@
           <el-row type="flex" class="">
             <el-col :span="7">
               <div class="grid-content fulfilment-status-filter">
-                <StatusFilter />
+                <StatusFilter :page="getActivePage" />
               </div>
             </el-col>
             <el-col :span="17">
@@ -77,6 +77,7 @@ export default {
       getActivePage: 'getActivePage',
       getSearchingStatus: 'fulfilment/getSearchingStatus',
       getSearchState: 'fulfilment/getSearchState',
+      getStatusMapping: 'fulfilment/getStatusMapping',
     }),
 
     pageTitle() {
@@ -101,6 +102,7 @@ export default {
     },
   },
   mounted() {
+    this.setOrderStatuses();
     this.fetchHubs();
   },
   methods: {
@@ -111,6 +113,7 @@ export default {
     }),
     ...mapActions({
       fetchHubs: 'fulfilment/fetchHubs',
+      setOrderStatuses: 'fulfilment/mapOrderStatus',
     }),
 
     goBack() {

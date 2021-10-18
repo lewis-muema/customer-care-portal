@@ -53,4 +53,7 @@ export default {
   getTableDetails(state) {
     return state.tableDetails;
   },
+  getStatusMapping(state) {
+    return state.statusMapping;
+  },
 };
