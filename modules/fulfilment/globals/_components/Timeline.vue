@@ -49,6 +49,21 @@ export default {
         'event.delivery.partner.arrived.at.buyer.location':
           'Order arrived at buyer',
         'event.delivery.partner.submitted.items.to.buyer.confirmed.via.code':
+          'Order received by buyer',
+        'event.pickup.order.created': 'Order created',
+        'event.pickup.at.hub.processing.for.delivery': 'Order being processed',
+        'event.pickup.at.hub.waiting.for.partner':
+          'Order waiting to be assigned to partner',
+        'event.pickup.at.hub.partner.assigned': 'Order assigned to partner',
+        'event.pickup.partner.enroute.to.hub': 'Order in transit to hub',
+        'event.pickup.partner.arrived.at.hub': 'Order arrived at hub',
+        'event.pickup.partner.pickup.from.hub.confirmed.via.code':
+          'Order picked by partner',
+        'event.pickup.partner.enroute.to.buyer.location':
+          'Order enroute to buyer',
+        'event.pickup.partner.arrived.at.buyer.location':
+          'Order arrived at buyer',
+        'event.pickup.partner.submitted.items.to.buyer.confirmed.via.code':
           'Order received buyer',
       },
     };
