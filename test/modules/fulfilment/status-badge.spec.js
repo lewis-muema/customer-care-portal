@@ -15,7 +15,7 @@ describe('StatusBadge Component', () => {
 
   store = new Vuex.Store({
     namespaced: true,
-    mutations,
+    getters,
   });
   const wrapper = shallowMount(StatusBadge, {
     propsData: {
