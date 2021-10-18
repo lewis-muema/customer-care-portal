@@ -22,7 +22,7 @@ const state = () => ({
   hubDialog: false,
   tableDetails: [],
   tableDetailKeyMetrics: {
-    endpoint: 'missioncontrol/orders/',
+    endpoint: 'missioncontrol/orders',
     id: 'order_id',
   },
 });

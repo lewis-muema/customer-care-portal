@@ -43,6 +43,14 @@ export default {
     return {
       mode: 'ordersView',
       componentKey: 0,
+      orderTableMetrics: {
+        endpoint: 'missioncontrol/orders',
+        id: 'order_id',
+      },
+      batchTableMetrics: {
+        endpoint: 'missioncontrol/batches',
+        id: 'batch_id',
+      },
     };
   },
   watch: {},
@@ -55,6 +63,7 @@ export default {
       updateActivePage: 'setActivePage',
       setFulfilmentType: 'fulfilment/setFulfilmentType',
       setTableData: 'fulfilment/setTableData',
+      setTableDetailKeyMetric: 'fulfilment/setTableDetailKeyMetric',
     }),
     handleTab() {
       this.componentKey += 1;
@@ -65,6 +74,15 @@ export default {
       this.updateActivePage(tabName);
       this.setFulfilmentType(tabName);
       this.handleTab();
+      this.setTableMetrics(tab.name);
+    },
+    setTableMetrics(val) {
+      if (val === 'ordersView') {
+        this.setTableDetailKeyMetric(this.orderTableMetrics);
+      }
+      if (val === 'batchesView') {
+        this.setTableDetailKeyMetric(this.batchTableMetrics);
+      }
     },
   },
 };
