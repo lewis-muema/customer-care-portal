@@ -50,6 +50,9 @@
               Activate
             </div>
           </div>
+          <div v-else-if="checkDataAvailability(props.row, table_data.tag)">
+            N/A
+          </div>
           <div v-else>
             {{ returnRestructedPropData(props.row, table_data.tag) }}
           </div>
@@ -197,6 +200,21 @@ export default {
     },
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
+    },
+    checkDataAvailability(row, prop) {
+      let data = '';
+      if (!prop.includes('.')) {
+        data = row[prop];
+      } else {
+        const split_prop = prop.split('.');
+        let table_row = row;
+        for (let i = 0; i < split_prop.length; i++) {
+          table_row = table_row[split_prop[i]];
+        }
+        data = table_row;
+      }
+
+      return !data;
     },
     returnRestructedPropData(row, prop) {
       if (!prop.includes('.')) {
