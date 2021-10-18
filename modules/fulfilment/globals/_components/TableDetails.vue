@@ -49,18 +49,7 @@ export default {
   },
   data() {
     return {
-      activities: [
-        {
-          log_type: 1,
-          log_time: '2021-09-24T15:03:59.000Z',
-          description: 'Order received Monday',
-        },
-        {
-          log_type: 36,
-          log_time: '2021-09-24T15:03:59.000Z',
-          description: 'Order has been packaged at the hub',
-        },
-      ],
+      activities: [],
       loading: false,
     };
   },
@@ -83,6 +72,7 @@ export default {
   beforeMount() {
     this.setTableDetails([]);
     this.processOrderDetails();
+    this.fetchOrderActivities();
   },
   methods: {
     ...mapMutations({
@@ -90,6 +80,7 @@ export default {
     }),
     ...mapActions({
       fetch_table_details: 'fulfilment/fetch_table_details',
+      fetchOrderActivitiesAction: 'fulfilment/fetchOrderActivites',
     }),
     async processOrderDetails() {
       const payload = {
@@ -121,6 +112,12 @@ export default {
           'Kindly refresh the page. If error persists contact tech support',
         );
       }
+    },
+    async fetchOrderActivities() {
+      const response = await this.fetchOrderActivitiesAction({
+        order_id: this.orderInfo.order_id,
+      });
+      this.activities = response.data.events;
     },
   },
 };

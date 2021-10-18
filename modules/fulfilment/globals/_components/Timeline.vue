@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="fulfilment-timeline-wrapper">
     <p v-text="title" class="fulfilment-activity-header"></p>
     <el-timeline :reverse="reverse">
       <el-timeline-item
@@ -11,9 +11,9 @@
         size="medium"
         :timestamp="activity.timestamp"
       >
-        <div class="fulfilment-timeline-header">{{ activity.description }}</div>
+        <div class="fulfilment-timeline-header">{{ activity.event_code }}</div>
         <div class="fulfilment-timeline-timestamp">
-          {{ getFormattedDate(activity.log_time, 'DD MMM ,YYYY hh.mm a ') }}
+          {{ getFormattedDate(activity.event_time, 'DD MMM ,YYYY hh.mm a ') }}
         </div>
       </el-timeline-item>
     </el-timeline>
@@ -35,3 +35,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.fulfilment-timeline-wrapper {
+  height: 360px;
+  overflow-y: scroll;
+}
+</style>

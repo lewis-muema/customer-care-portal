@@ -209,43 +209,19 @@ export default {
     }
   },
 
-  async fetchOrderActivites({ commit }, payload) {
-    const promise = new Promise(resolve => {
-      const response = {
-        data: [
-          {
-            content: 'Order Received on',
-            timestamp: '2018-04-12 20:46',
-            size: 'large',
-            color: '#EE7D00',
-            icon: 'el-icon-circle-check',
-          },
-          {
-            content: 'Order is being picked',
-            timestamp: '2018-04-12 20:46',
-            size: 'large',
-            color: '#EE7D00',
-            icon: 'el-icon-circle-check',
-          },
-          {
-            content: 'Package is on the way',
-            timestamp: '2018-04-03 20:46',
-            size: 'large',
-            color: '#7586C5',
-          },
-          {
-            content: 'Default node',
-            timestamp: '2018-04-03 20:46',
-          },
-        ],
-      };
-      resolve(response);
-    });
+  async fetchOrderActivites({ rootState, commit, dispatch }, payload) {
+    const url = rootState.config.FULFILMENT_SERVICE;
 
-    const results = await promise;
-    setTimeout(() => {
-      commit('setOrders', results);
-    }, 1000);
+    try {
+      const response = await axiosConfig.get(
+        `${url}missioncontrol/orders/${payload.order_id}/tracking`,
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data.data;
+    }
   },
   async fetchSingleOrder({ commit }) {
     const promise = new Promise(resolve => {
