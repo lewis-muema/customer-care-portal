@@ -34,37 +34,24 @@ export default {
       reverse: false,
       title: 'ACTIVITY',
       orderEvents: {
-        'event.delivery.order.created': 'Order created',
+        'event.delivery.order.created': 'Order has been created',
         'event.delivery.at.hub.processing.for.delivery':
-          'Order being processed',
+          'Order is being processed',
         'event.delivery.at.hub.waiting.for.partner':
-          'Order waiting to be assigned to partner',
-        'event.delivery.at.hub.partner.assigned': 'Order assigned to partner',
-        'event.delivery.partner.enroute.to.hub': 'Order in transit to hub',
-        'event.delivery.partner.arrived.at.hub': 'Order arrived at hub',
+          'Order is waiting to be assigned to partner',
+        'event.delivery.at.hub.partner.assigned':
+          'Order has been assigned to partner',
+        'event.delivery.partner.enroute.to.hub':
+          'Order is in transit to the hub',
+        'event.delivery.partner.arrived.at.hub': 'Order has arrived at the hub',
         'event.delivery.partner.pickup.from.hub.confirmed.via.code':
           'Order picked by partner',
         'event.delivery.partner.enroute.to.buyer.location':
-          'Order enroute to buyer',
+          'Order is enroute to the buyer',
         'event.delivery.partner.arrived.at.buyer.location':
-          'Order arrived at buyer',
+          'Partner has reached at location as is ready to deliver your  package',
         'event.delivery.partner.submitted.items.to.buyer.confirmed.via.code':
-          'Order received by buyer',
-        'event.pickup.order.created': 'Order created',
-        'event.pickup.at.hub.processing.for.delivery': 'Order being processed',
-        'event.pickup.at.hub.waiting.for.partner':
-          'Order waiting to be assigned to partner',
-        'event.pickup.at.hub.partner.assigned': 'Order assigned to partner',
-        'event.pickup.partner.enroute.to.hub': 'Order in transit to hub',
-        'event.pickup.partner.arrived.at.hub': 'Order arrived at hub',
-        'event.pickup.partner.pickup.from.hub.confirmed.via.code':
-          'Order picked by partner',
-        'event.pickup.partner.enroute.to.buyer.location':
-          'Order enroute to buyer',
-        'event.pickup.partner.arrived.at.buyer.location':
-          'Order arrived at buyer',
-        'event.pickup.partner.submitted.items.to.buyer.confirmed.via.code':
-          'Order received buyer',
+          'Delivery code received awaiting partner confirmation',
       },
     };
   },
