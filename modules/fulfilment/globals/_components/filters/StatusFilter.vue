@@ -2,7 +2,7 @@
   <div :key="componentKey">
     <el-select v-model="status" multiple placeholder="All Orders">
       <el-option
-        v-for="item in options"
+        v-for="item in sectionStatuses"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -13,46 +13,35 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'StatusFilter',
+  props: ['page'],
   data() {
     return {
       componentKey: 0,
-      options: [
-        {
-          value: 'BATCH_IN_COMPOSITION',
-          label: 'In Composition',
-        },
-        {
-          value: 'BATCH_IN_HUB_PREPARATION',
-          label: 'In Preparation',
-        },
-        {
-          value: 'BATCH_PENDING_SHIPPING_ASSIGNMENT',
-          label: 'Pending Assignment',
-        },
-        {
-          value: 'BATCH_FAILED_SHIPPING_ASSIGNMENT',
-          label: 'Failed Assignment',
-        },
-        {
-          value: 'BATCH_IN_TRANSIT',
-          label: 'In Transit',
-        },
-        {
-          value: 'BATCH_COMPLETED',
-          label: 'Completed',
-        },
-        {
-          value: 'BATCH_CANCELLED',
-          label: 'Cancelled',
-        },
-      ],
       status: [],
       value2: [],
     };
+  },
+  computed: {
+    ...mapGetters({
+      getStatusMapping: 'fulfilment/getStatusMapping',
+    }),
+
+    section() {
+      return this.page === 'Outbound_ordersView' ||
+        this.page === 'Inbound_ordersView'
+        ? 'order'
+        : 'batch';
+    },
+    sectionStatuses() {
+      const filteredStatus = this.getStatusMapping.filter(
+        event => event.type === this.section,
+      );
+      return filteredStatus;
+    },
   },
   watch: {
     status(val) {

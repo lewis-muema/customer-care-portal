@@ -47,4 +47,7 @@ export default {
   getHubDialog(state) {
     return state.hubDialog;
   },
+  getStatusMapping(state) {
+    return state.statusMapping;
+  },
 };

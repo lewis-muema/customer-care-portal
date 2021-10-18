@@ -50,4 +50,7 @@ export default {
   resetHubDialog(state, val) {
     state.hubDialog = val;
   },
+  setStatusMapping(state, val) {
+    state.statusMapping = val;
+  },
 };
