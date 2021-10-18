@@ -35,7 +35,7 @@ export default {
       },
       {
         name: 'Orders',
-        tag: 'package_no',
+        tag: 'order_count',
         width: '130',
       },
       {
@@ -48,14 +48,14 @@ export default {
         tag: 'scheduled_date',
         width: '',
       },
-      {
-        name: 'Region',
-        tag: 'region',
-        width: '',
-      },
+      // {
+      //   name: 'Region',
+      //   tag: 'region',
+      //   width: '',
+      // },
       {
         name: 'Rider',
-        tag: 'rider_name',
+        tag: 'shipping_agent_name',
         width: '',
       },
     ];

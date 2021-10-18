@@ -22,23 +22,31 @@ export default {
       componentKey: 0,
       options: [
         {
-          value: 1,
-          label: 'Pending',
+          value: 'BATCH_IN_COMPOSITION',
+          label: 'In Composition',
         },
         {
-          value: 2,
-          label: 'Confirmed',
+          value: 'BATCH_IN_HUB_PREPARATION',
+          label: 'In Preparation',
         },
         {
-          value: 3,
+          value: 'BATCH_PENDING_SHIPPING_ASSIGNMENT',
+          label: 'Pending Assignment',
+        },
+        {
+          value: 'BATCH_FAILED_SHIPPING_ASSIGNMENT',
+          label: 'Failed Assignment',
+        },
+        {
+          value: 'BATCH_IN_TRANSIT',
           label: 'In Transit',
         },
         {
-          value: 4,
-          label: 'Delivered',
+          value: 'BATCH_COMPLETED',
+          label: 'Completed',
         },
         {
-          value: 5,
+          value: 'BATCH_CANCELLED',
           label: 'Cancelled',
         },
       ],
