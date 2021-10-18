@@ -1,4 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import StatusBadge from '@/modules/fulfilment/globals/_components/StatusBadge';
 
 const localVue = createLocalVue();
