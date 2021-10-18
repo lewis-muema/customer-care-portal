@@ -32,12 +32,12 @@ export default {
       },
       {
         name: 'Seller',
-        tag: 'business.business_name',
+        tag: 'business_name',
         width: '140',
       },
       {
         name: 'Recipient',
-        tag: 'destination.name',
+        tag: 'order_recipient_name',
         width: '',
       },
       {
@@ -47,22 +47,22 @@ export default {
       },
       {
         name: 'Destination',
-        tag: 'destination.delivery_location.description',
+        tag: 'destination_description',
         width: '140',
       },
       {
         name: 'Assigned Batch',
-        tag: 'batches[0]',
+        tag: 'most_recent_batch_id',
         width: '150',
       },
       {
         name: 'Rider',
-        tag: 'destination.delivery_location.region',
+        tag: 'shipping_agent_name',
         width: '',
       },
       {
         name: 'Region',
-        tag: 'destination.delivery_location.region',
+        tag: 'destination_region',
         width: '',
       },
     ];
