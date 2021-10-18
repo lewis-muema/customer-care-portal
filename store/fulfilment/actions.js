@@ -196,6 +196,18 @@ export default {
       return error.response.data.data;
     }
   },
+  async fetch_table_details({ rootState, dispatch }, payload) {
+    const config = rootState.config;
+    const url = `${config[payload.app]}${payload.endpoint}/${
+      payload.params.data_id
+    }`;
+    try {
+      const response = await axiosConfig.get(url);
+      return response;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
 
   async fetchOrderActivites({ commit }, payload) {
     const promise = new Promise(resolve => {

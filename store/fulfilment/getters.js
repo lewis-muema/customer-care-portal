@@ -47,6 +47,12 @@ export default {
   getHubDialog(state) {
     return state.hubDialog;
   },
+  getTableDetailKeyMetric(state) {
+    return state.tableDetailKeyMetrics;
+  },
+  getTableDetails(state) {
+    return state.tableDetails;
+  },
   getStatusMapping(state) {
     return state.statusMapping;
   },
