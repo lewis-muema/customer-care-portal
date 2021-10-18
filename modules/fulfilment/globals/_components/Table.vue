@@ -7,6 +7,7 @@
       :row-key="getRowKey"
       :expand-row-keys="expand_keys"
       @row-click="expandTableRow"
+      @expand-change="handleRowExpand"
       @selection-change="handleSelectionChange"
     >
       >
