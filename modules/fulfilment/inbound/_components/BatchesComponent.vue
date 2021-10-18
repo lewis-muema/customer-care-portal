@@ -48,11 +48,11 @@ export default {
         tag: 'scheduled_date',
         width: '',
       },
-      // {
-      //   name: 'Region',
-      //   tag: 'region',
-      //   width: '',
-      // },
+      {
+        name: 'Region',
+        tag: 'region',
+        width: '',
+      },
       {
         name: 'Rider',
         tag: 'shipping_agent_name',

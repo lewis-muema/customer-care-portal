@@ -51,11 +51,6 @@ export default {
         tag: 'hub_name',
         width: '130',
       },
-      // {
-      //   name: 'Destination',
-      //   tag: 'direction',
-      //   width: '120',
-      // },
       {
         name: 'Rider',
         tag: 'shipping_agent_name',
