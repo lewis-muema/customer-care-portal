@@ -11,7 +11,9 @@
         size="medium"
         :timestamp="activity.timestamp"
       >
-        <div class="fulfilment-timeline-header">{{ activity.event_code }}</div>
+        <div class="fulfilment-timeline-header">
+          {{ orderEvents[activity.event_code] }}
+        </div>
         <div class="fulfilment-timeline-timestamp">
           {{ getFormattedDate(activity.event_time, 'DD MMM ,YYYY hh.mm a ') }}
         </div>
@@ -31,6 +33,24 @@ export default {
     return {
       reverse: false,
       title: 'ACTIVITY',
+      orderEvents: {
+        'event.delivery.order.created': 'Order created',
+        'event.delivery.at.hub.processing.for.delivery':
+          'Order being processed',
+        'event.delivery.at.hub.waiting.for.partner':
+          'Order waiting to be assigned to partner',
+        'event.delivery.at.hub.partner.assigned': 'Order assigned to partner',
+        'event.delivery.partner.enroute.to.hub': 'Order in transit to hub',
+        'event.delivery.partner.arrived.at.hub': 'Order arrived at hub',
+        'event.delivery.partner.pickup.from.hub.confirmed.via.code':
+          'Order picked by partner',
+        'event.delivery.partner.enroute.to.buyer.location':
+          'Order enroute to buyer',
+        'event.delivery.partner.arrived.at.buyer.location':
+          'Order arrived at buyer',
+        'event.delivery.partner.submitted.items.to.buyer.confirmed.via.code':
+          'Order received buyer',
+      },
     };
   },
 };
