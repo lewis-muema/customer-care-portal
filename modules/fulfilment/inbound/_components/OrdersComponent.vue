@@ -26,15 +26,16 @@ export default {
         width: '130',
       },
       {
-        name: 'Order Number',
-        tag: 'order_id',
-        width: '150',
-      },
-      {
         name: 'Seller',
         tag: 'business_name',
         width: '140',
       },
+      {
+        name: 'Order Number',
+        tag: 'order_id',
+        width: '150',
+      },
+
       {
         name: 'Recipient',
         tag: 'order_recipient_name',
