@@ -61,14 +61,24 @@ export default {
           description: 'Order has been packaged at the hub',
         },
       ],
-      loading: true,
+      loading: false,
     };
   },
   computed: {
     ...mapGetters({
       getActivePage: 'getActivePage',
       getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
+      getTableDetails: 'fulfilment/getTableDetails',
     }),
+  },
+  watch: {
+    getTableDetails(val) {
+      if (Object.keys(val).length > 0) {
+        this.loading = true;
+      } else {
+        this.loading = false;
+      }
+    },
   },
   beforeMount() {
     this.setTableDetails([]);
