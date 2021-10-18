@@ -54,7 +54,7 @@
             </div>
           </div>
           <div v-else-if="checkDataAvailability(props.row, table_data.tag)">
-            N/A
+            --
           </div>
           <div v-else>
             {{ returnRestructedPropData(props.row, table_data.tag) }}

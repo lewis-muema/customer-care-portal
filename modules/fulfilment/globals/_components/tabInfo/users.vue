@@ -6,11 +6,17 @@
         <div>
           <div class="fulfillment-tab-info-description">
             <i class="fa fa-user fulfillment-tab-info-description-icon"></i>
-            <div>Marini Natural</div>
+            <div>{{ orderDetail.business.business_name }}</div>
           </div>
           <div class="fulfillment-tab-info-description">
             <i class="fa fa-phone fulfillment-tab-info-description-icon"></i>
-            <div>+254 700 000 000</div>
+            <div>
+              {{
+                !orderDetail.business.business_phone
+                  ? '--'
+                  : orderDetail.business.business_phone
+              }}
+            </div>
           </div>
         </div>
       </div>
@@ -19,11 +25,17 @@
         <div>
           <div class="fulfillment-tab-info-description">
             <i class="fa fa-user fulfillment-tab-info-description-icon"></i>
-            <div>Marini Natural</div>
+            <div>{{ orderDetail.destination.name }}</div>
           </div>
           <div class="fulfillment-tab-info-description">
             <i class="fa fa-phone fulfillment-tab-info-description-icon"></i>
-            <div>+254 700 000 000</div>
+            <div>
+              {{
+                !orderDetail.destination.phone_number
+                  ? '--'
+                  : orderDetail.destination.phone_number
+              }}
+            </div>
           </div>
         </div>
       </div>
@@ -57,7 +69,24 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters } from 'vuex';
+
+export default {
+  name: 'UsersInfo',
+  data() {
+    return {
+      orderDetail: {},
+    };
+  },
+  computed: {
+    ...mapGetters({
+      getTableDetails: 'fulfilment/getTableDetails',
+    }),
+  },
+  beforeMount() {
+    this.orderDetail = this.getTableDetails;
+  },
+};
 </script>
 
 <style></style>
