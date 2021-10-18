@@ -95,7 +95,11 @@ export default {
         const data = await this.fetch_table_details(payload);
 
         if (data.status === 200) {
-          this.setTableDetails(data.data.data.order);
+          if (this.getTableDetailKeyMetric.id === 'batch_id') {
+            this.setTableDetails(data.data.data.batch);
+          } else {
+            this.setTableDetails(data.data.data.order);
+          }
         } else {
           let error_response = '';
           if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {

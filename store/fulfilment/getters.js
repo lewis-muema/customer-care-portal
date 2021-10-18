@@ -53,7 +53,7 @@ export default {
   getTableDetails(state) {
     return state.tableDetails;
   },
-  getOrderActivity(state) {
-    return state.orderActivity;
+  getStatusMapping(state) {
+    return state.statusMapping;
   },
 };

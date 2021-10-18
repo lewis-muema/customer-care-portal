@@ -33,7 +33,7 @@ export default {
       },
       {
         name: 'Packages',
-        tag: 'package_no',
+        tag: 'order_count',
         width: '',
       },
       {
@@ -48,17 +48,12 @@ export default {
       },
       {
         name: 'Pickup',
-        tag: 'hub_id',
+        tag: 'hub_name',
         width: '130',
       },
       {
-        name: 'Destination',
-        tag: 'direction',
-        width: '120',
-      },
-      {
         name: 'Rider',
-        tag: 'rider_name',
+        tag: 'shipping_agent_name',
         width: '',
       },
       {

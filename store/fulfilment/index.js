@@ -25,6 +25,7 @@ const state = () => ({
     endpoint: 'missioncontrol/orders',
     id: 'order_id',
   },
+  statusMapping: null,
 });
 
 export { state, getters, mutations, actions };
