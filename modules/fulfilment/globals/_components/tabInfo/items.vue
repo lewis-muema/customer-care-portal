@@ -47,31 +47,6 @@ import { mapGetters } from 'vuex';
 export default {
   data() {
     return {
-      tableData: [
-        {
-          itemImg:
-            'https://s3.eu-west-1.amazonaws.com/images.sendyit.com/mission_control/shea.png',
-          itemName: 'Shea Butter',
-          unitPrice: 'KES 1300',
-          quantity: '1',
-          totalPrice: 'KES 1300',
-        },
-        {
-          itemImg:
-            'https://s3.eu-west-1.amazonaws.com/images.sendyit.com/mission_control/mango.png',
-          itemName: 'Mango Butter',
-          unitPrice: 'KES 1000',
-          quantity: '1',
-          totalPrice: 'KES 1000',
-        },
-        {
-          itemImg: '',
-          itemName: '',
-          unitPrice: '',
-          quantity: 'Total',
-          totalPrice: 'KES 2300',
-        },
-      ],
       order_details: {},
     };
   },
