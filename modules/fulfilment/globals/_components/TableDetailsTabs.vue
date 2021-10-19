@@ -75,15 +75,16 @@ export default {
         'Outbound_batchesView',
         'Inbound_batchesView',
       ],
-      batch_count: 4,
     };
   },
   computed: {
     ...mapGetters({
       getFulfilmentType: 'fulfilment/getFulfilmentType',
+      getTableDetails: 'fulfilment/getTableDetails',
     }),
     batchLabel() {
-      return `Batches (${this.batch_count})`;
+      const batch_details = this.getTableDetails.orders;
+      return `Batches (${batch_details.length})`;
     },
   },
   methods: {},

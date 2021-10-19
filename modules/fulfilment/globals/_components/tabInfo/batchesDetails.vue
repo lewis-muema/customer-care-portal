@@ -22,7 +22,7 @@
         </tr>
         <tr>
           <td width="50%">Total Units</td>
-          <td>--</td>
+          <td>{{ order_detail.batch_summary.total_ordered_items_count }}</td>
         </tr>
         <tr>
           <td width="50%">Waypoints</td>
