@@ -69,6 +69,7 @@ export default {
           'Partner has submitted items at the hub',
         'event.pickup.hub.items.received.at.hub':
           'Order has been received at the hub',
+        'batch.created': 'Batch has been created',
       },
     };
   },

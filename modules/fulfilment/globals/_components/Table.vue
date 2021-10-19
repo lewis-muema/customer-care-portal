@@ -1,5 +1,5 @@
 <template>
-  <div class="fulfilment-table-wrapper">
+  <div class="fulfilment-table-wrapper" :key="tableKey">
     <el-table
       :data="getTableData"
       ref="tableData"
@@ -19,7 +19,12 @@
         <span v-if="processing"> Fetching data ... </span>
         <span v-else>No Data</span>
       </div>
-      <el-table-column :type="checkFulfilmentMultiSelect" width="55">
+      <el-table-column
+        :type="checkFulfilmentMultiSelect"
+        class="selectionStatus"
+        width="55"
+        :selectable="selectable"
+      >
       </el-table-column>
       <el-table-column
         v-for="(table_data, index) in getTableProps"
@@ -125,6 +130,7 @@ export default {
       disableExpandPages: ['HubsView'],
       expand_id: 0,
       expand_keys: [],
+      tableKey: 0,
     };
   },
   computed: {
@@ -139,6 +145,7 @@ export default {
       getFulfilmentType: 'fulfilment/getFulfilmentType',
       getSelectedStatus: 'fulfilment/getSelectedStatus',
       getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
+      getCheckedOrders: 'fulfilment/getCheckedOrders',
     }),
     currentPage: {
       get() {
@@ -191,6 +198,12 @@ export default {
     },
     getProcessingStatus(status) {
       this.processing = status;
+    },
+    getCheckedOrders(val) {
+      this.multipleSelection = val;
+      if (val.length === 0) {
+        this.tableKey += 1;
+      }
     },
   },
   mounted() {
@@ -299,6 +312,12 @@ export default {
           this.scrolledToBottom = false;
         }
       };
+    },
+    selectable(row, index) {
+      const enabled =
+        row.order_status === 'ORDER_RECEIVED' ||
+        row.order_status === 'ORDER_FAILED';
+      return enabled;
     },
   },
 };

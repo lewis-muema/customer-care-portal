@@ -72,7 +72,7 @@ export default {
   beforeMount() {
     this.setTableDetails([]);
     this.processOrderDetails();
-    this.fetchOrderActivities();
+    this.fetchActivities();
   },
   methods: {
     ...mapMutations({
@@ -80,7 +80,7 @@ export default {
     }),
     ...mapActions({
       fetch_table_details: 'fulfilment/fetch_table_details',
-      fetchOrderActivitiesAction: 'fulfilment/fetchOrderActivites',
+      fetchActivitiesAction: 'fulfilment/fetchActivites',
     }),
     async processOrderDetails() {
       const payload = {
@@ -117,9 +117,11 @@ export default {
         );
       }
     },
-    async fetchOrderActivities() {
-      const response = await this.fetchOrderActivitiesAction({
-        order_id: this.orderInfo.order_id,
+    async fetchActivities() {
+      const { order_id, batch_id } = this.orderInfo;
+      const response = await this.fetchActivitiesAction({
+        record_id: order_id ?? batch_id,
+        type: typeof order_id === 'undefined' ? 'batches' : 'orders',
       });
       this.activities = response.data.events;
     },
