@@ -4,30 +4,34 @@
       <tbody>
         <tr>
           <td width="50%">Estimated Weight</td>
-          <td>{{ batch_details.weight }} {{ batch_details.weight_unit }}</td>
+          <td>
+            {{ order_detail.batch_summary.estimated_measure[0].value }}
+            {{ order_detail.batch_summary.estimated_measure[0].value_type }}
+          </td>
         </tr>
         <tr>
           <td width="50%">Total Volume</td>
           <td>
-            {{ batch_details.total_volume }}{{ batch_details.volume_unit }}
+            {{ order_detail.batch_summary.estimated_measure[1].value }}
+            {{ order_detail.batch_summary.estimated_measure[1].value_type }}
           </td>
         </tr>
         <tr>
           <td width="50%">Region</td>
-          <td>{{ batch_details.region }}</td>
+          <td>{{ order_detail.hub.hub_name }}</td>
         </tr>
         <tr>
           <td width="50%">Total Units</td>
-          <td>{{ batch_details.total_units }}</td>
+          <td>{{ order_detail.batch_summary.total_ordered_items_count }}</td>
         </tr>
         <tr>
           <td width="50%">Waypoints</td>
-          <td>{{ batch_details.waypoints }} locations</td>
+          <td>{{ order_detail.batch_summary.waypoints }} locations</td>
         </tr>
         <tr>
           <td width="50%">Delivery Cost</td>
           <td>
-            {{ batch_details.currency }} {{ batch_details.delivery_cost }}
+            {{ order_detail.batch_summary.total_fulfilment_fee }}
           </td>
         </tr>
       </tbody>
@@ -36,22 +40,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'BatchesDetails',
   data() {
     return {
-      batch_details: {
-        weight: 400,
-        weight_unit: 'Kgs',
-        total_volume: 22,
-        volume_unit: 'm',
-        region: 'Makadara , Nairobi',
-        total_units: 40,
-        waypoints: 5,
-        currency: 'KES',
-        delivery_cost: 7800,
-      },
+      order_detail: {},
     };
+  },
+  computed: {
+    ...mapGetters({
+      getTableDetails: 'fulfilment/getTableDetails',
+    }),
+  },
+  beforeMount() {
+    this.order_detail = this.getTableDetails;
   },
 };
 </script>

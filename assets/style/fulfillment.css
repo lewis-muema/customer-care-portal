@@ -304,6 +304,22 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .tiers-inner {
   width: 50%;
 }
+
+.items-total-container {
+  display: flex;
+  margin-top: 4%;
+}
+.items-divider {
+  width: 360px;
+}
+.items-total-label {
+  width: 240px;
+  text-align: center;
+}
+.items-total-quantity {
+  width: 153px;
+  text-align: center;
+}
 .fulfilment-date-class .field-input {
   border: 1px solid #b3afaf !important;
   border-radius: 6px !important;

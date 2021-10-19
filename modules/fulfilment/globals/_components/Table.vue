@@ -221,7 +221,8 @@ export default {
       this.$store.dispatch(this.dataProps.setter, payload);
     },
     getRowKey(row) {
-      return row.order_id;
+      const key_value = this.getTableDetailKeyMetric.id;
+      return row[key_value];
     },
     expandTableRow(row) {
       const key_value = this.getTableDetailKeyMetric.id;
