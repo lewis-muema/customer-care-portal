@@ -1,21 +1,232 @@
 <template>
   <div>
-    <el-row class="batch-details-holder">
-      <el-col :span="12">Estimated weight : 400kgs </el-col>
-      <el-col :span="12"> Total quantity : 40</el-col>
-      <el-col :span="12"> Region : Makadara, Nairobi</el-col>
-      <el-col :span="12">Waypoints : 5 locations </el-col>
+    <el-row v-if="fetching" class="batch-details-holder">
+      <p>
+        <i class="fa fa-spinner fa-spin loader"></i>
+        Processing orders summary...
+      </p>
     </el-row>
-
-    <el-button type="primary" class="full-width action-submit-button">
+    <div v-else>
+      <el-row class="batch-details-holder">
+        <el-col :span="12"
+          >Estimated weight :
+          <ul>
+            <li
+              v-for="(measure, index) in summary.estimated_measure"
+              :key="index"
+            >
+              {{ measure.value.toFixed(3) }}
+              {{ measure.value_type === 'KILOGRAM' ? 'kgs' : 'litres' }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12">
+          Total quantity : {{ summary.total_ordered_items_count }}</el-col
+        >
+        <el-col :span="12"> Region : N/A</el-col>
+        <el-col :span="12">Waypoints : {{ summary.waypoints }} </el-col>
+      </el-row>
+      <el-row>
+        <div class="vehicle-header">Recommended vehicle type</div>
+        <div
+          v-if="!showRecommendedVehicle(summary.recommended_vehicle_type)"
+          class="vehicle-holder"
+        >
+          <div>N/A</div>
+        </div>
+        <div v-else class="vehicle-holder">
+          <img :src="`${webImages}${selectedVendor.image}`" />
+          <div>{{ selectedVendor.name }}</div>
+        </div>
+      </el-row>
+      <el-row>
+        <div class="vehicle-header">Select Hub</div>
+        <el-select v-model="hub" class="full-width hub-field">
+          <el-option
+            v-for="item in getHubs"
+            :key="item.hub_id"
+            :label="item.hub_name"
+            :value="item.hub_id"
+          >
+          </el-option>
+        </el-select>
+      </el-row>
+      <el-row>
+        <div class="vehicle-header">Select Scheduled date</div>
+        <VueCtkDateTimePicker
+          class="fulfilment-date-class"
+          formatted="MMM DD YYYY hh:mm:ss a"
+          v-model="selectedDate"
+          :range="false"
+          :no-label="true"
+          id="liveops"
+        />
+      </el-row>
+    </div>
+    <el-button
+      type="primary"
+      class="full-width action-submit-button"
+      :disabled="!hub || !selectedDate || this.orders.length === 0 || disabled"
+      @click="batchOrders()"
+    >
       Batch
     </el-button>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
+import NotificationMxn from '../../../../../mixins/notification_mixin';
+
 export default {
   name: 'BatchOrders',
+  mixins: [NotificationMxn],
+
+  props: ['orders', 'page'],
+  data() {
+    return {
+      selectedOrders: null,
+      processing: false,
+      fetching: false,
+      summary: [],
+      selectedVendor: [],
+      selectedDate: '',
+      hub: '',
+      disabled: false,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      vehicles: 'fulfilment/getVehicles',
+      getHubs: 'fulfilment/getHubs',
+    }),
+  },
+  async mounted() {
+    this.fetching = true;
+    this.fetchVehicles();
+    await this.generateOrderIDs();
+    await this.fetchOrdersSummary();
+
+    this.fetching = false;
+  },
+  methods: {
+    ...mapActions({
+      orders_summary: 'fulfilment/orders_summary',
+      fetchVehicles: 'fulfilment/fetchVehicles',
+      perform_post_actions: 'fulfilment/perform_post_actions',
+    }),
+
+    generateOrderIDs() {
+      const arr = [];
+      for (let index = 0; index < this.orders.length; index++) {
+        arr.push(this.orders[index].order_id);
+      }
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.selectedOrders = {
+        orders: arr,
+      };
+      return arr;
+    },
+
+    async fetchOrdersSummary() {
+      const payload = {
+        app: 'FULFILMENT_SERVICE',
+        endpoint: 'missioncontrol/orders/summary',
+        apiKey: false,
+        params: this.selectedOrders,
+      };
+      try {
+        const res = await this.orders_summary(payload);
+        if (res.status === 200) {
+          this.summary = res.data.data;
+        } else {
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
+            error_response = data.data.errors;
+          } else {
+            error_response = data.data.message;
+          }
+          this.doNotification(2, 'Order Summary Error', error_response);
+        }
+      } catch (error) {
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
+    },
+    showRecommendedVehicle(val) {
+      let vendor = null;
+      if (!val) {
+        return vendor;
+      }
+      const filteredVehicle = this.vehicles.filter(
+        vehicle => vehicle.value === val,
+      );
+      // eslint-disable-next-line prettier/prettier
+        vendor = filteredVehicle.length > 0 ? filteredVehicle[0]: null;
+      this.selectedVendor = vendor;
+      return vendor;
+    },
+    async batchOrders() {
+      // eslint-disable-next-line no-unreachable
+      this.processing = true;
+      this.disabled = true;
+      if (!this.hub || !this.selectedDate) {
+        this.doNotification(2, 'Batching Error', 'Kindly provide all values');
+        return;
+      }
+      // eslint-disable-next-line prettier/prettier
+      const direction = this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
+
+      const date = Date.parse(this.selectedDate);
+
+      const payload = {
+        app: 'FULFILMENT_SERVICE',
+        endpoint: 'missioncontrol/batches',
+        apiKey: false,
+        params: {
+          hub_id: this.hub,
+          direction,
+          scheduled_date: date,
+          orders: this.selectedOrders.orders,
+        },
+      };
+      try {
+        const res = await this.perform_post_actions(payload);
+
+        if (res.status === 200) {
+          /* eslint no-restricted-globals: ["error", "event"] */
+          this.doNotification(
+            1,
+            'Batch Created',
+            `Batch has been created successfully. Batch ID:  ${res.data.data.batch_id}`,
+          );
+          setTimeout(() => {
+            this.$emit('dialogStatus', false);
+          }, 800);
+        } else {
+          this.disabled = false;
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
+            error_response = data.data.errors;
+          } else {
+            error_response = data.data.message;
+          }
+          this.doNotification(2, 'Create Batch Error', error_response);
+        }
+        // eslint-disable-next-line no-unreachable
+      } catch (error) {
+        this.disabled = false;
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
+    },
+  },
 };
 </script>
 
@@ -29,5 +240,32 @@ export default {
   letter-spacing: 0.1px;
   color: #000000;
   padding: 16px;
+}
+.vehicle-header {
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  color: #000000;
+  margin-top: 1em;
+}
+.vehicle-holder {
+  display: inline-flex;
+}
+.vehicle-holder img {
+  width: 7%;
+  margin-right: 1em;
+}
+.vehicle-holder div {
+  margin-top: 8px;
+  letter-spacing: 0.1px;
+  color: #000000;
+}
+.hub-field {
+  padding-top: 1em;
+}
+.fulfilment-date-class .field-input {
+  border: 1px solid #b3afaf;
+  border-radius: 6px;
+  margin-top: 1em;
 }
 </style>

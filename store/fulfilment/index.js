@@ -26,6 +26,7 @@ const state = () => ({
     id: 'order_id',
   },
   statusMapping: null,
+  vehicles: [],
 });
 
 export { state, getters, mutations, actions };

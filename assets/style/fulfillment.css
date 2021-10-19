@@ -304,3 +304,11 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .tiers-inner {
   width: 50%;
 }
+.fulfilment-date-class .field-input {
+  border: 1px solid #b3afaf !important;
+  border-radius: 6px !important;
+  margin-top: 1em;
+}
+.fulfilment-date-class .field-input::placeholder {
+  color: #000000;
+}
