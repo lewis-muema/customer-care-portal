@@ -209,12 +209,12 @@ export default {
     }
   },
 
-  async fetchOrderActivites({ rootState, commit, dispatch }, payload) {
+  async fetchActivites({ rootState, commit, dispatch }, payload) {
     const url = rootState.config.FULFILMENT_SERVICE;
 
     try {
       const response = await axiosConfig.get(
-        `${url}missioncontrol/orders/${payload.order_id}/tracking`,
+        `${url}missioncontrol/${payload.type}/${payload.record_id}/tracking`,
       );
       if (response.status === 200) {
         return response.data;
