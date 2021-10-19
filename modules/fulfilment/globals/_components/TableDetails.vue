@@ -70,6 +70,7 @@ export default {
     },
   },
   beforeMount() {
+    console.log(this.orderInfo);
     this.setTableDetails([]);
     this.processOrderDetails();
     this.fetchActivities();
