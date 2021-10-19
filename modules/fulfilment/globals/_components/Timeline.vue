@@ -52,6 +52,23 @@ export default {
           'Partner has reached at location as is ready to deliver your  package',
         'event.delivery.partner.submitted.items.to.buyer.confirmed.via.code':
           'Delivery code received awaiting partner confirmation',
+        'event.pickup.order.created': 'Order has been created',
+        'event.pickup.processing.for.pickup':
+          'Order is being processed for pickup',
+        'event.pickup.partner.enroute.to.pickup.location':
+          'Order is on its way to pickup location',
+        'event.pickup.partner.assigned': 'Order has been assigned to partner',
+        'event.pickup.partner.enroute.to.pickup.location':
+          'Partner is on the way to pickup the order',
+        'event.pickup.partner.arrived.at.pickup.location':
+          'Partner has arrived at pickup location',
+        'event.pickup.partner.enroute.to.hub':
+          'Partner is on the way to the hub',
+        'event.pickup.partner.arrived.at.hub': 'Partner has arrived at the hub',
+        'event.pickup.partner.submitted.items.at.hub.confirmed.via.code':
+          'Partner has submitted items at the hub',
+        'event.pickup.hub.items.received.at.hub':
+          'Order has been received at the hub',
       },
     };
   },

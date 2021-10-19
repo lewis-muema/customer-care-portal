@@ -7,6 +7,34 @@
           class="blue"
           size="mini"
           plain
+          v-if="
+            page === 'Outbound_batchesView' || page === 'Inbound_batchesView'
+          "
+          @click="triggerAction('details')"
+          >Details</el-button
+        >
+      </el-col>
+
+      <el-col :span="5">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          plain
+          v-if="
+            page === 'Outbound_batchesView' || page === 'Inbound_batchesView'
+          "
+          @click="triggerAction('request_transport')"
+          >Request for transport</el-button
+        >
+      </el-col>
+
+      <el-col :span="3">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          plain
           v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
           @click="triggerAction('cancel')"
           >Cancel</el-button
@@ -32,33 +60,6 @@
           v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
           @click="triggerAction('delivery_codes')"
           >Delivery Codes</el-button
-        >
-      </el-col>
-      <el-col :span="3">
-        <el-button
-          type="primary"
-          class="blue"
-          size="mini"
-          plain
-          v-if="
-            page === 'Outbound_batchesView' ||
-              page === 'Outbound_movableUnitsView'
-          "
-          @click="triggerAction('details')"
-          >Details</el-button
-        >
-      </el-col>
-      <el-col :span="5">
-        <el-button
-          type="primary"
-          class="blue"
-          size="mini"
-          plain
-          v-if="
-            page === 'Outbound_batchesView' || page === 'Inbound_batchesView'
-          "
-          @click="triggerAction('request_transport')"
-          >Request for transport</el-button
         >
       </el-col>
       <el-col :span="3">

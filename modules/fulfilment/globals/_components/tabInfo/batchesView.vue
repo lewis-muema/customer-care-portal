@@ -6,16 +6,20 @@
       </el-button>
     </div>
     <div class="body-box col-md-12 movable-units-batch-table">
-      <el-table :data="batches_data" size="medium" :border="false">
+      <el-table :data="order_details" size="medium" :border="false">
         <el-table-column label="Status" prop="status" width="100">
           <template slot-scope="scope">
-            <StatusBadge :status="batches_data[scope.$index]['status']" />
+            <StatusBadge
+              :status="order_details[scope.$index]['order_status']"
+            />
           </template>
         </el-table-column>
-        <el-table-column label="Destination" prop="destination">
+        <el-table-column label="Destination" prop="destination_description">
         </el-table-column>
-        <el-table-column label="Batch No." prop="batch_no"> </el-table-column>
-        <el-table-column label="Packages" prop="package_no"> </el-table-column>
+        <el-table-column label="Batch No." prop="most_recent_batch_id">
+        </el-table-column>
+        <el-table-column label="Packages" prop="ordered_items_count">
+        </el-table-column>
         <el-table-column label="Actions" prop="action">
           <template>
             <div class="fulfilment-batch-actions">
@@ -34,6 +38,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import StatusBadge from '../StatusBadge.vue';
 
 export default {
@@ -43,33 +48,16 @@ export default {
   },
   data() {
     return {
-      batches_data: [
-        {
-          status: 'pending',
-          destination: 'Ruiru View',
-          batch_no: 'AWHDHDDN',
-          package_no: 3,
-        },
-        {
-          status: 'pending',
-          destination: 'Ruiru View',
-          batch_no: 'AWHDHDDN',
-          package_no: 3,
-        },
-        {
-          status: 'pending',
-          destination: 'Ruiru View',
-          batch_no: 'AWHDHDDN',
-          package_no: 3,
-        },
-        {
-          status: 'pending',
-          destination: 'Ruiru View',
-          batch_no: 'AWHDHDDN',
-          package_no: 3,
-        },
-      ],
+      order_details: [],
     };
+  },
+  computed: {
+    ...mapGetters({
+      getTableDetails: 'fulfilment/getTableDetails',
+    }),
+  },
+  beforeMount() {
+    this.order_details = this.getTableDetails.orders;
   },
 };
 </script>
