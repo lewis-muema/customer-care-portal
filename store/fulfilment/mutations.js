@@ -59,4 +59,7 @@ export default {
   setStatusMapping(state, val) {
     state.statusMapping = val;
   },
+  setVehicles(state, val) {
+    state.vehicles = val;
+  },
 };

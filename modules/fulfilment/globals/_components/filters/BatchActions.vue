@@ -6,17 +6,6 @@
         size="medium"
         class="fulfilment-action-button"
         :disabled="selectedOrders.length === 0"
-        v-if="page === 'Outbound_ordersView'"
-        @click="showModal('consolidation', 'Request for consolidation')"
-      >
-        Request consolidation
-      </el-button>
-
-      <el-button
-        type="primary"
-        size="medium"
-        class="fulfilment-action-button"
-        :disabled="selectedOrders.length === 0"
         v-if="page === 'Outbound_batchesView'"
         @click="showModal('movable', 'Create a movable unit')"
       >
@@ -28,16 +17,26 @@
         size="medium"
         class="fulfilment-action-button"
         :disabled="selectedOrders.length === 0"
-        v-if="page === 'Inbound_ordersView'"
+        v-if="page === 'Inbound_ordersView' || page === 'Outbound_ordersView'"
         @click="showModal('batching', 'About these orders')"
       >
         Batch orders
       </el-button>
     </el-row>
-    <el-dialog :title="title" :visible.sync="centerDialogVisible" width="30%">
-      <RequestConsolidation v-if="page === 'Outbound_ordersView'" />
+    <el-dialog
+      :title="title"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      @close="closeDialog()"
+      :key="componentKey"
+    >
       <CreateMovableUnit v-if="page === 'Outbound_batchesView'" />
-      <BatchOrders v-if="page === 'Inbound_ordersView'" />
+      <BatchOrders
+        v-if="page === 'Inbound_ordersView' || page === 'Outbound_ordersView'"
+        :orders="selectedOrders"
+        :page="page"
+        @dialogStatus="handleDialog"
+      />
     </el-dialog>
   </div>
 </template>
@@ -48,16 +47,17 @@ import { mapGetters, mapMutations } from 'vuex';
 export default {
   name: 'BatchActions',
   components: {
-    RequestConsolidation: () => import('../actions/RequestConsolidation'),
     CreateMovableUnit: () => import('../actions/CreateMovableUnit'),
     BatchOrders: () => import('../actions/BatchOrders'),
   },
+
   props: ['page'],
 
   data() {
     return {
       selectedOrders: [],
       centerDialogVisible: false,
+      componentKey: 0,
       title: '',
     };
   },
@@ -81,9 +81,21 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      updateCheckedOrders: 'fulfilment/setCheckedOrders',
+    }),
     showModal(action, title) {
       this.title = title;
       this.centerDialogVisible = true;
+    },
+    closeDialog() {
+      this.selectedOrders = [];
+      this.updateCheckedOrders(this.selectedOrders);
+      this.componentKey += 1;
+    },
+    handleDialog(dialogStatus) {
+      this.closeDialog();
+      this.centerDialogVisible = dialogStatus;
     },
   },
 };

@@ -56,4 +56,7 @@ export default {
   getStatusMapping(state) {
     return state.statusMapping;
   },
+  getVehicles(state) {
+    return state.vehicles;
+  },
 };

@@ -126,6 +126,25 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
+  async fetchVehicles({ commit }, payload) {
+    const promise = new Promise(resolve => {
+      const response = {
+        pagination: {
+          total: 987,
+          perPage: 50,
+          page: 1,
+          lastPage: 20,
+        },
+        data: FulfilmentData.vehicles,
+      };
+      resolve(response);
+    });
+
+    const results = await promise;
+    setTimeout(() => {
+      commit('setVehicles', results.data);
+    }, 100);
+  },
   async fetchPickUpRequests({ rootState, dispatch, commit }, payload) {
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -382,5 +401,21 @@ export default {
 
     const results = await promise;
     commit('setStatusMapping', results.data.status);
+  },
+  async orders_summary({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
+  async perform_post_actions({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
   },
 };
