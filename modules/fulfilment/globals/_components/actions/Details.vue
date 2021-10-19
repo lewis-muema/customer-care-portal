@@ -78,15 +78,6 @@ export default {
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
     }),
-    getPendingStats() {
-      return parseInt(this.pending_stats, 10);
-    },
-    getDeliveredStats() {
-      return parseInt(this.delivered_stats, 10);
-    },
-    getFailedStats() {
-      return parseInt(this.failed_stats, 10);
-    },
   },
   watch: {
     batch_stats(val) {
