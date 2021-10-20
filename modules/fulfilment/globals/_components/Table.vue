@@ -175,12 +175,16 @@ export default {
         this.fetchTableData();
       }
     },
-    getSelectedHubs(hubs) {
+    getSelectedHubs(hub) {
       this.updateTableData([]);
       this.updatePagination({});
 
-      this.hubs = hubs;
-      this.fetchTableData();
+      const payload = {
+        hub_id: hub,
+      };
+
+      this.hubs = hub;
+      this.fetchTableData(payload);
     },
     getSelectedRegions(regions) {
       this.updateTableData([]);
@@ -193,8 +197,12 @@ export default {
       this.updateTableData([]);
       this.updatePagination({});
 
+      const payload = {
+        order_status: val,
+      };
+
       this.status = val;
-      this.fetchTableData();
+      this.fetchTableData(payload);
     },
     getProcessingStatus(status) {
       this.processing = status;

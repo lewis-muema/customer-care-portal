@@ -7,7 +7,7 @@
       label="name"
       track-by="code"
       :options="options"
-      :multiple="true"
+      :multiple="false"
       :taggable="true"
       select-label=""
       selected-label=""
@@ -50,7 +50,7 @@ export default {
   },
   data() {
     return {
-      checkedOptions: [{ code: 'all', name: 'All Hubs', checked: true }],
+      checkedOptions: { code: 'all', name: 'All Hubs', checked: true },
       hubs: [],
       options: [{ code: 'all', name: 'All Hubs', checked: true }],
       selectedHubs: [],
@@ -74,10 +74,16 @@ export default {
       });
     },
   },
+  mounted() {
+    this.fetchHubs();
+  },
 
   methods: {
     ...mapMutations({
       updateSelectedHubs: 'fulfilment/setSelectedHubs',
+    }),
+    ...mapActions({
+      fetchHubs: 'fulfilment/fetchHubs',
     }),
 
     customLabel(option) {
@@ -85,16 +91,12 @@ export default {
     },
     onSelect(option) {
       const index = this.options.findIndex(item => item.code === option.code);
-      this.options[index].checked = true;
+      const previousIndex = this.options.findIndex(
+        item => item.code === this.checkedOptions.code,
+      );
 
-      if (option.code !== 'all') {
-        const indexAll = this.checkedOptions.findIndex(
-          item => item.code === 'all',
-        );
-        this.options[0].checked = false;
-        // eslint-disable-next-line prettier/prettier
-        this.checkedOptions = indexAll > -1 ?  this.checkedOptions.splice(indexAll) : this.checkedOptions;
-      }
+      this.options[index].checked = true;
+      this.options[previousIndex].checked = false;
     },
     onRemove(option) {
       const index = this.options.findIndex(item => item.code === option.code);
@@ -105,11 +107,7 @@ export default {
       return data;
     },
     submitMethod() {
-      const arr = [];
-      this.checkedOptions.forEach(element => {
-        arr.push(element.code);
-      });
-      this.selectedHubs = arr.includes('all') ? this.hubs : arr;
+      this.selectedHubs = this.checkedOptions.code;
       this.updateSelectedHubs(this.selectedHubs);
     },
   },

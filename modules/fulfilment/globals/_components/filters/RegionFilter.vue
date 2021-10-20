@@ -1,13 +1,13 @@
 <template>
   <div class="fulfilment-multiselect">
     <label class="typo__label fulfilment-filter-header">Filter Region</label>
+
     <multiselect
       v-model="checkedOptions"
       placeholder="Search Hubs"
       label="name"
       track-by="code"
       :options="options"
-      :multiple="true"
       :taggable="true"
       select-label=""
       selected-label=""
@@ -50,7 +50,7 @@ export default {
   },
   data() {
     return {
-      checkedOptions: [{ code: 'all', name: 'All Regions', checked: true }],
+      checkedOptions: { code: 'all', name: 'All Regions', checked: true },
       regions: [],
       options: [{ code: 'all', name: 'All Regions', checked: true }],
       selectedRegions: [],
@@ -91,16 +91,12 @@ export default {
     },
     onSelect(option) {
       const index = this.options.findIndex(item => item.code === option.code);
-      this.options[index].checked = true;
+      const previousIndex = this.options.findIndex(
+        item => item.code === this.checkedOptions.code,
+      );
 
-      if (option.code !== 'all') {
-        const indexAll = this.checkedOptions.findIndex(
-          item => item.code === 'all',
-        );
-        this.options[0].checked = false;
-        // eslint-disable-next-line prettier/prettier
-        this.checkedOptions = indexAll > -1 ?  this.checkedOptions.splice(indexAll) : this.checkedOptions;
-      }
+      this.options[index].checked = true;
+      this.options[previousIndex].checked = false;
     },
     onRemove(option) {
       const index = this.options.findIndex(item => item.code === option.code);
@@ -111,11 +107,7 @@ export default {
       return data;
     },
     submitMethod() {
-      const arr = [];
-      this.checkedOptions.forEach(element => {
-        arr.push(element.code);
-      });
-      this.selectedRegions = arr.includes('all') ? this.regions : arr;
+      this.selectedRegions = this.checkedOptions.code;
       this.updateSelectedRegions(this.selectedRegions);
     },
   },
