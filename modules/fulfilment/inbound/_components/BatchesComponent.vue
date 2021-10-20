@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       dataProps: {
-        setter: 'fulfilment/fetchBatchedOrders',
+        setter: 'fulfilment/fetchInBoundBatchedOrders',
       },
     };
   },
