@@ -28,7 +28,7 @@
       </div>
     </section>
     <section>
-      <el-button class="submit-blue" type="primary"
+      <el-button class="submit-blue" type="primary" @click="requestForTransport"
         >Request for Transport</el-button
       >
     </section>
@@ -55,6 +55,9 @@ export default {
     }),
   },
   methods: {
+    ...mapActions({
+      requestForTransportAction: 'fulfilment/requestForTransport',
+    }),
     vehicleTypeImage() {
       if (this.rowData.shipping_agent_vehicle_type === null) return false;
       const vehicleType = this.vehicles.filter(element => {
@@ -64,6 +67,15 @@ export default {
     },
     updateSelectedPartner(partner) {
       this.selectedPartner = partner;
+    },
+    requestForTransport() {
+      const payload = {
+        app: 'FULFILMENT_SERVICE',
+        endpoint: 'missioncontrol/hubs',
+        apiKey: false,
+        params: {},
+      };
+      this.requestForTransportAction(payload);
     },
   },
 };
@@ -89,7 +101,7 @@ label {
 }
 .el-select,
 .el-input {
-  width: 50%;
+  width: 100%;
 }
 button.submit-blue.el-button.el-button--primary {
   background-color: #528bb8;

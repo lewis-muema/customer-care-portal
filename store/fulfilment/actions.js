@@ -463,7 +463,12 @@ export default {
       return error.response.data.data;
     }
   },
-  requestForTransport({ commit }, payload) {
-    return { data: 'foo' };
+  async requestForTransport({ commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
   },
 };

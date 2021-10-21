@@ -24,7 +24,7 @@
           v-if="
             page === 'Outbound_batchesView' || page === 'Inbound_batchesView'
           "
-          @click="triggerAction('request_transport')"
+          @click="dialogVisible = true"
           >Request for transport</el-button
         >
       </el-col>
@@ -96,11 +96,14 @@
       <Reallocate v-if="action === 'reallocate'" />
       <Dispatch v-if="action === 'dispatch'" />
       <Details v-if="action === 'details'" />
-      <RequestTransport
-        v-if="action === 'request_transport'"
-        :row-data="rowData"
-      />
     </el-row>
+    <el-dialog
+      title="Request for transport"
+      :visible.sync="dialogVisible"
+      width="40%"
+    >
+      <RequestTransport :row-data="rowData" />
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -119,6 +122,7 @@ export default {
   data() {
     return {
       action: '',
+      dialogVisible: false,
     };
   },
   methods: {

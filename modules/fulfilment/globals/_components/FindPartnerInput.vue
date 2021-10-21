@@ -81,7 +81,7 @@ export default {
 <style scoped>
 .search-rider {
   position: relative;
-  width: 50%;
+  width: 100%;
 }
 ul {
   position: absolute;
