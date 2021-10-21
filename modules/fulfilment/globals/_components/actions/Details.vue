@@ -3,11 +3,14 @@
     <div class="fulfillment-tab-info-top">
       <div class="fulfillment-tab-info-seller">
         <div class="fulfillment-tab-info-titles">Recommended vehicle</div>
-        <div>
-          <!-- <div class="fulfillment-tab-info-description">
-            <i class="fa fa-user fulfillment-tab-info-description-icon"></i>
-            <div>--</div>
-          </div> -->
+        <div class="fulfilment-recommended-vehicles">
+          <div class="fulfillment-tab-info-description">
+            <img
+              :src="`${webImages}${showVehicle()}`"
+              class="fulfilment-vendor-image fulfillment-tab-info-description-icon"
+            />
+            <div class="transform-vehicle-name">{{ getVendorType() }}</div>
+          </div>
         </div>
       </div>
       <div class="fulfillment-tab-info-recipient">
@@ -77,6 +80,8 @@ export default {
   computed: {
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
+      getAgentVehicleType: 'fulfilment/getAgentVehicleType',
+      vehicles: 'fulfilment/getVehicles',
     }),
   },
   watch: {
@@ -106,6 +111,23 @@ export default {
           this.orders_count,
         10,
       );
+    },
+    getVendorType() {
+      const string = this.getAgentVehicleType.replace(/_/g, ' ').toLowerCase();
+
+      return string;
+    },
+    showVehicle() {
+      let vendor = null;
+      if (!this.getAgentVehicleType) {
+        return vendor;
+      }
+      const filteredVehicle = this.vehicles.filter(
+        vehicle => vehicle.value === this.getAgentVehicleType,
+      );
+      // eslint-disable-next-line prettier/prettier
+        vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image: null;
+      return vendor;
     },
   },
 };
