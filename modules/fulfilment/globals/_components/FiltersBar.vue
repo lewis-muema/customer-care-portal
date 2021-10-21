@@ -22,13 +22,11 @@
           <el-row type="flex" class="" justify="space-between">
             <el-col :span="7">
               <div class="grid-content">
-                <HubsFilter />
+                <HubsFilter v-if="section === 'batches'" />
               </div>
             </el-col>
             <el-col :span="6">
-              <div class="grid-content">
-                <RegionsFilter />
-              </div>
+              <div class="grid-content"></div>
             </el-col>
             <el-col :span="8">
               <div class="grid-content">
@@ -61,7 +59,6 @@ export default {
     StatusFilter: () => import('./filters/StatusFilter'),
     Search: () => import('./filters/Search'),
     HubsFilter: () => import('./filters/HubFilter'),
-    RegionsFilter: () => import('./filters/RegionFilter'),
     BatchActions: () => import('./filters/BatchActions'),
   },
   data() {
@@ -86,6 +83,18 @@ export default {
         Outbound_batchesView: 'Batched Orders',
         Outbound_movableUnitsView: 'Movable Units',
       };
+      return data;
+    },
+    section() {
+      let data = '';
+      if (
+        this.getActivePage === 'Outbound_batchesView' ||
+        this.getActivePage === 'Inbound_batchesView'
+      ) {
+        data = 'batches';
+      } else {
+        data = 'orders';
+      }
       return data;
     },
   },
