@@ -27,6 +27,8 @@ const state = () => ({
   },
   statusMapping: null,
   vehicles: [],
+  vehicles_type: '',
+  batchChildOrderData: {},
 });
 
 export { state, getters, mutations, actions };

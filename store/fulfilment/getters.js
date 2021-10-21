@@ -59,4 +59,10 @@ export default {
   getVehicles(state) {
     return state.vehicles;
   },
+  getAgentVehicleType(state) {
+    return state.vehicles_type;
+  },
+  getBatchChildOrderDetails(state) {
+    return state.batchChildOrderData;
+  },
 };

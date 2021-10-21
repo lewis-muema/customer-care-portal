@@ -62,4 +62,10 @@ export default {
   setVehicles(state, val) {
     state.vehicles = val;
   },
+  setAgentVehicleType(state, val) {
+    state.vehicles_type = val;
+  },
+  setBatchChildOrderDetails(state, val) {
+    state.batchChildOrderData = val;
+  },
 };

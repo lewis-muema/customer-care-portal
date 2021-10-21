@@ -49,13 +49,19 @@ export default {
         width: '',
       },
       {
-        name: 'Region',
-        tag: 'region',
+        name: 'Destination',
+        tag: 'hub_name',
         width: '',
       },
+
       {
         name: 'Rider',
         tag: 'shipping_agent_name',
+        width: '',
+      },
+      {
+        name: 'Region',
+        tag: 'region',
         width: '',
       },
     ];

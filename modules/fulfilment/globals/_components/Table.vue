@@ -46,7 +46,11 @@
             {{ formatDate(props.row.time_placed) }}
           </div>
           <div v-else-if="table_data.tag === 'shipping_agent_name'">
-            {{ props.row.shipping_agent_name }}
+            {{
+              !props.row.shipping_agent_name
+                ? '--'
+                : props.row.shipping_agent_name
+            }}
             <img
               v-if="showVehicle(props.row.shipping_agent_vehicle_type)"
               :src="
@@ -211,7 +215,7 @@ export default {
       this.updatePagination({});
 
       const payload = {
-        order_status: val,
+        status: val,
       };
 
       this.status = val;
