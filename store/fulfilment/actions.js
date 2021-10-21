@@ -425,11 +425,6 @@ export default {
               label: 'Completed',
               type: 'batch',
             },
-            {
-              value: 'BATCH_CANCELLED',
-              label: 'Cancelled',
-              type: 'batch',
-            },
           ],
         },
       };
