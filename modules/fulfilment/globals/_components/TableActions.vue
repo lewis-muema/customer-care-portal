@@ -96,7 +96,10 @@
       <Reallocate v-if="action === 'reallocate'" />
       <Dispatch v-if="action === 'dispatch'" />
       <Details v-if="action === 'details'" />
-      <RequestTransport v-if="action === 'request_transport'" />
+      <RequestTransport
+        v-if="action === 'request_transport'"
+        :row-data="rowData"
+      />
     </el-row>
   </div>
 </template>
@@ -112,7 +115,7 @@ export default {
     Details: () => import('./actions/Details'),
     RequestTransport: () => import('./actions/RequestTransport'),
   },
-  props: ['page'],
+  props: ['page', 'rowData'],
   data() {
     return {
       action: '',

@@ -11,7 +11,7 @@
           <el-row>
             <el-col :span="24">
               <el-card shadow="never">
-                <TableActions :page="getActivePage" />
+                <TableActions :page="getActivePage" :row-data="orderInfo" />
               </el-card>
             </el-col>
           </el-row>

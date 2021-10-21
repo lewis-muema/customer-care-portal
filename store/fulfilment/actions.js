@@ -80,7 +80,10 @@ export default {
   async fetchOutboundBatchedOrders({ rootState, dispatch, commit }, payload) {
     delete payload.direction;
     // eslint-disable-next-line prettier/prettier
-      const filter = !payload || Object.keys(payload).length === 0 ? '' : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    const filter =
+      !payload || Object.keys(payload).length === 0
+        ? ''
+        : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -110,7 +113,10 @@ export default {
   async fetchInBoundBatchedOrders({ rootState, dispatch, commit }, payload) {
     delete payload.direction;
     // eslint-disable-next-line prettier/prettier
-      const filter = !payload || Object.keys(payload).length === 0 ? '' : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    const filter =
+      !payload || Object.keys(payload).length === 0
+        ? ''
+        : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -181,7 +187,9 @@ export default {
   },
   async fetchPickUpRequests({ rootState, dispatch, commit }, payload) {
     // eslint-disable-next-line prettier/prettier
-    const filter = !payload ? '' : `?${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    const filter = !payload
+      ? ''
+      : `?${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -454,5 +462,10 @@ export default {
     } catch (error) {
       return error.response.data.data;
     }
+  },
+  async performAxiosGet({ commit }, payload) {
+    console.log(payload);
+    const response = await axiosConfig.get(payload.url);
+    return response;
   },
 };
