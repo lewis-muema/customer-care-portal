@@ -129,9 +129,7 @@
 .multiselect__tag-icon:hover, .multiselect__tag-icon:focus {
   background-color: #3c8dbc !important;
 }
-.fulfilment-batch-actions {
-  margin-top: 13%;
-}
+
 .fulfilment-action-button, .fulfilment-batch-actions .el-button--primary:active, .fulfilment-batch-actions .el-button--primary:hover, .fulfilment-batch-actions .el-button--primary:focus {
   background: #0062DB;
   border-color: #0062DB;
@@ -256,13 +254,15 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   padding-left: 0px !important;
 }
 .fulfilment-batch-actions >.view-order{
-  font-size: 12px;
+  font-size: 14px;
   color: #0049B7;
   margin-right: 5%;
+  cursor: pointer;
 }
 .fulfilment-batch-actions >.remove-order{
-  font-size: 12px;
+  font-size: 14px;
   color: #9B101C;
+  cursor: pointer;
 }
 .add-batch-section{
   background: #FFFFFF;
