@@ -76,6 +76,7 @@ export default {
         params: {},
       };
       this.requestForTransportAction(payload);
+      this.$emit('closeDialog', false);
     },
   },
 };
@@ -92,6 +93,9 @@ export default {
   width: 20px;
   margin-right: 5px;
   margin-top: -10px;
+}
+.vehicle-type > div {
+  margin-top: 10px;
 }
 label {
   font-size: 14px;

@@ -102,7 +102,10 @@
       :visible.sync="dialogVisible"
       width="40%"
     >
-      <RequestTransport :row-data="rowData" />
+      <RequestTransport
+        :row-data="rowData"
+        @closeDialog="closeDialog($event)"
+      />
     </el-dialog>
   </div>
 </template>
@@ -128,6 +131,9 @@ export default {
   methods: {
     triggerAction(action) {
       this.action = action;
+    },
+    closeDialog(data) {
+      this.dialogVisible = data;
     },
   },
 };
