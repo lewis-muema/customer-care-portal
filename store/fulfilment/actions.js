@@ -463,9 +463,7 @@ export default {
       return error.response.data.data;
     }
   },
-  async performAxiosGet({ commit }, payload) {
-    console.log(payload);
-    const response = await axiosConfig.get(payload.url);
-    return response;
+  requestForTransport({ commit }, payload) {
+    return { data: 'foo' };
   },
 };

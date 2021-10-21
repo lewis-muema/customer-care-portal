@@ -19,7 +19,13 @@
     </section>
     <section v-if="preferredDriver === 'yes'">
       <label>Enter their phone number or the number plate</label>
-      <FindPartnerInput />
+      <FindPartnerInput
+        @changeSelectedPartner="updateSelectedPartner($event)"
+      />
+      <div class="selected-partner" v-if="selectedPartner !== ''">
+        Selected Partner: {{ selectedPartner.rider_name }} |
+        {{ selectedPartner.phone_no }}
+      </div>
     </section>
     <section>
       <el-button class="submit-blue" type="primary"
@@ -40,6 +46,7 @@ export default {
   data() {
     return {
       preferredDriver: 'no',
+      selectedPartner: '',
     };
   },
   computed: {
@@ -54,6 +61,9 @@ export default {
         return element.value === this.rowData.shipping_agent_vehicle_type;
       });
       return vehicleType[0];
+    },
+    updateSelectedPartner(partner) {
+      this.selectedPartner = partner;
     },
   },
 };

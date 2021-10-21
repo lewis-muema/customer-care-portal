@@ -14,10 +14,6 @@
     >
     </el-input>
 
-    <span class="selected-partner" v-if="selectedPartner !== ''"
-      >Selected Partner: {{ selectedPartner.rider_name }} |
-      {{ selectedPartner.phone_no }}</span
-    >
     <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
       <li
         v-for="(item, $item) in items"
@@ -74,11 +70,10 @@ export default {
       return response;
     },
     onHit(item) {
-      this.selectedPartner = item;
+      this.$emit('changeSelectedPartner', item);
     },
     clear() {
       this.isActive = true;
-      this.selectedPartner = '';
     },
   },
 };
