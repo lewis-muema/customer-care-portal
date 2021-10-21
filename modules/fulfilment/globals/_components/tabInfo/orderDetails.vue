@@ -12,7 +12,7 @@
             {{
               Object.keys(order_details.batches).length === 0
                 ? '--'
-                : 'Updating ...'
+                : batch_list.toString()
             }}
           </td>
         </tr>
@@ -51,6 +51,7 @@ export default {
   data() {
     return {
       order_details: {},
+      batch_list: [],
     };
   },
   computed: {
@@ -60,6 +61,15 @@ export default {
   },
   beforeMount() {
     this.order_details = this.getTableDetails;
+    this.getBatchList();
+  },
+  methods: {
+    getBatchList() {
+      const batches = this.order_details.batches;
+      for (let i = 0; i < batches.length; i += 1) {
+        this.batch_list.push(batches[i].batch_id);
+      }
+    },
   },
 };
 </script>
