@@ -40,26 +40,50 @@
         </div>
       </div>
     </div>
-    <div class="fulfillment-tab-info-bottom">
+    <div
+      class="fulfillment-tab-info-bottom"
+      v-if="orderDetail.batches.length > 0"
+    >
       <div class="fulfillment-tab-info-titles">
-        Delivery Partner
+        Delivery Partner (s)
       </div>
-      <div class="fulfillment-tab-info-rider-details">
-        <img
-          class="fulfillment-tab-info-rider-img"
-          src="https://s3-eu-west-1.amazonaws.com/sendy-partner-docs/photo/1533214131993profile_picture_placeholder.png"
-          alt=""
-        />
-        <div class="fulfilment-tabs-vehicle-details">
-          <div>John Otieno</div>
-          <div>KCEK 345V</div>
-          <div class="fulfillment-tab-info-rider-phone">
+      <div class="fulfilment-delivery-partners-container">
+        <div
+          class="fulfillment-tab-info-rider-details delivery-partners-section"
+          v-for="(val, index) in orderDetail.batches"
+          :key="index"
+        >
+          <img
+            class="fulfillment-tab-info-rider-img"
+            src="https://s3-eu-west-1.amazonaws.com/sendy-partner-docs/photo/1533214131993profile_picture_placeholder.png"
+            alt=""
+          />
+          <div v-if="!val.assigned_shipping_agent">
+            N/A
+          </div>
+          <div class="fulfilment-tabs-vehicle-details" v-else>
             <div>
-              +25471234567
+              {{
+                !val.assigned_shipping_agent.agent_name
+                  ? '--'
+                  : val.assigned_shipping_agent.agent_name
+              }}
             </div>
-            <div class="fulfillment-tab-info-view-batch">
-              View Batch
-              <i class="el-icon-arrow-right"></i>
+            <div>
+              {{
+                !val.assigned_shipping_agent.vehicle_identifier
+                  ? 'N/A'
+                  : val.assigned_shipping_agent.vehicle_identifier
+              }}
+            </div>
+            <div class="fulfillment-tab-info-rider-phone">
+              <div>
+                {{
+                  !val.assigned_shipping_agent.agent_phone_number
+                    ? '--'
+                    : val.assigned_shipping_agent.agent_phone_number
+                }}
+              </div>
             </div>
           </div>
         </div>
