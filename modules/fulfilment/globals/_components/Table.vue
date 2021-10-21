@@ -45,6 +45,18 @@
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.time_placed) }}
           </div>
+          <div v-else-if="table_data.tag === 'shipping_agent_name'">
+            {{ props.row.shipping_agent_name }}
+            <img
+              v-if="showVehicle(props.row.shipping_agent_vehicle_type)"
+              :src="
+                `${webImages}${showVehicle(
+                  props.row.shipping_agent_vehicle_type,
+                )}`
+              "
+              class="image"
+            />
+          </div>
           <div v-else-if="table_data.tag === 'hub_type'">
             {{ props.row.hub_type.replace(/_/g, ' ') }}
           </div>
@@ -146,6 +158,7 @@ export default {
       getSelectedStatus: 'fulfilment/getSelectedStatus',
       getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
       getCheckedOrders: 'fulfilment/getCheckedOrders',
+      vehicles: 'fulfilment/getVehicles',
     }),
     currentPage: {
       get() {
@@ -175,12 +188,16 @@ export default {
         this.fetchTableData();
       }
     },
-    getSelectedHubs(hubs) {
+    getSelectedHubs(hub) {
       this.updateTableData([]);
       this.updatePagination({});
 
-      this.hubs = hubs;
-      this.fetchTableData();
+      const payload = {
+        hub_id: hub,
+      };
+
+      this.hubs = hub;
+      this.fetchTableData(payload);
     },
     getSelectedRegions(regions) {
       this.updateTableData([]);
@@ -193,8 +210,12 @@ export default {
       this.updateTableData([]);
       this.updatePagination({});
 
+      const payload = {
+        order_status: val,
+      };
+
       this.status = val;
-      this.fetchTableData();
+      this.fetchTableData(payload);
     },
     getProcessingStatus(status) {
       this.processing = status;
@@ -207,6 +228,7 @@ export default {
     },
   },
   mounted() {
+    this.fetchVehicles();
     this.fetchTableData(this.params);
     this.scroll();
   },
@@ -215,6 +237,9 @@ export default {
       updateTableData: 'fulfilment/setTableData',
       updatePagination: 'fulfilment/setPagination',
       updateCheckedOrders: 'fulfilment/setCheckedOrders',
+    }),
+    ...mapActions({
+      fetchVehicles: 'fulfilment/fetchVehicles',
     }),
 
     fetchTableData(payload = null) {
@@ -319,6 +344,18 @@ export default {
         row.order_status === 'ORDER_FAILED';
       return enabled;
     },
+    showVehicle(val) {
+      let vendor = null;
+      if (!val) {
+        return vendor;
+      }
+      const filteredVehicle = this.vehicles.filter(
+        vehicle => vehicle.value === val,
+      );
+      // eslint-disable-next-line prettier/prettier
+        vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image: null;
+      return vendor;
+    },
   },
 };
 </script>
@@ -383,5 +420,9 @@ export default {
 .hub-status.active-hub {
   background-color: #324ba833;
   color: #324ba8;
+}
+.image {
+  width: 10%;
+  margin-left: 7px;
 }
 </style>

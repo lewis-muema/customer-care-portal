@@ -77,12 +77,46 @@ export default {
     }
   },
 
-  async fetchBatchedOrders({ rootState, dispatch, commit }, payload) {
+  async fetchOutboundBatchedOrders({ rootState, dispatch, commit }, payload) {
+    delete payload.direction;
+    // eslint-disable-next-line prettier/prettier
+      const filter = !payload || Object.keys(payload).length === 0 ? '' : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/batches?direction=${payload.direction}`,
+        `${url}missioncontrol/batches?direction=OUTBOUND${filter}`,
+      );
+      if (response.status === 200) {
+        const batches = response.data.data.batches;
+
+        const pagination = {
+          total: batches.length,
+          perPage: 50,
+          page: 1,
+          lastPage: 20,
+        };
+        commit('setTableData', batches);
+        commit('setPagination', pagination);
+        commit('setProcessingStatus', false);
+      }
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async fetchInBoundBatchedOrders({ rootState, dispatch, commit }, payload) {
+    delete payload.direction;
+    // eslint-disable-next-line prettier/prettier
+      const filter = !payload || Object.keys(payload).length === 0 ? '' : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+
+    try {
+      const url = rootState.config.FULFILMENT_SERVICE;
+      commit('setProcessingStatus', true);
+      const response = await axiosConfig.get(
+        `${url}missioncontrol/batches?direction=INBOUND${filter}`,
       );
       if (response.status === 200) {
         const batches = response.data.data.batches;
@@ -146,11 +180,14 @@ export default {
     }, 100);
   },
   async fetchPickUpRequests({ rootState, dispatch, commit }, payload) {
+    // eslint-disable-next-line prettier/prettier
+    const filter = !payload ? '' : `?${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/consignments`,
+        `${url}missioncontrol/consignments${filter}`,
       );
       if (response.status === 200) {
         const deliveryOrders = response.data.data.orders;

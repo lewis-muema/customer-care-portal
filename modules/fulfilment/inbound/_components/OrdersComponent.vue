@@ -61,11 +61,6 @@ export default {
         tag: 'shipping_agent_name',
         width: '',
       },
-      {
-        name: 'Region',
-        tag: 'destination_region',
-        width: '',
-      },
     ];
 
     this.setTableProps(tableProps);

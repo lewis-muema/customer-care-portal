@@ -1,6 +1,6 @@
 <template>
   <div :key="componentKey">
-    <el-select v-model="status" multiple placeholder="All Orders">
+    <el-select v-model="status" placeholder="All Orders">
       <el-option
         v-for="item in sectionStatuses"
         :key="item.value"
@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       componentKey: 0,
-      status: [],
+      status: '',
       value2: [],
     };
   },
