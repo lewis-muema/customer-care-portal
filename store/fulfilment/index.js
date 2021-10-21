@@ -27,6 +27,7 @@ const state = () => ({
   },
   statusMapping: null,
   vehicles: [],
+  vehicles_type: '',
 });
 
 export { state, getters, mutations, actions };
