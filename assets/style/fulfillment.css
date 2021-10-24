@@ -344,3 +344,6 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fulfilment-delivery-partners-container {
   display: flex;
 }
+.fa-spin {
+  color: #1b7fc3;
+}
