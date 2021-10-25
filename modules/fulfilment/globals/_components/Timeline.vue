@@ -5,17 +5,19 @@
       <el-timeline-item
         v-for="(activity, index) in activities"
         :key="index"
-        icon="el-icon-circle-check"
+        :icon="timelineIcon"
         :type="activity.type"
         color="#EE7D00"
         size="medium"
         :timestamp="activity.timestamp"
       >
-        <div class="fulfilment-timeline-header">
-          {{ orderEvents[activity.event_code] }}
-        </div>
-        <div class="fulfilment-timeline-timestamp">
-          {{ getFormattedDate(activity.event_time, 'DD MMM ,YYYY hh.mm a ') }}
+        <div class="fulfilment-timeline-activity">
+          <div class="fulfilment-timeline-header">
+            {{ orderEvents[activity.event_code] }}
+          </div>
+          <div class="fulfilment-timeline-timestamp">
+            {{ getFormattedDate(activity.event_time, 'DD MMM ,YYYY hh.mm a ') }}
+          </div>
         </div>
       </el-timeline-item>
     </el-timeline>
@@ -73,11 +75,24 @@ export default {
       },
     };
   },
+  computed: {
+    timelineIcon() {
+      return 'el-icon-success';
+    },
+  },
 };
 </script>
 <style scoped>
 .fulfilment-timeline-wrapper {
   height: 360px;
   overflow-y: scroll;
+}
+.fulfilment-timeline-activity {
+  box-shadow: 2px 2px 24px rgb(0 0 0 / 25%);
+  padding-left: 4%;
+  font-family: Nunito, sans-serif;
+  width: 90% !important;
+  padding-top: 2%;
+  padding-bottom: 2%;
 }
 </style>
