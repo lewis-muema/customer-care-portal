@@ -466,4 +466,15 @@ export default {
       return error.response.data.data;
     }
   },
+  async perform_patch_actions({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res;
+    } catch (error) {
+      const err = await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+      return error.response;
+    }
+  },
 };

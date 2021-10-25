@@ -173,7 +173,9 @@ export default {
       const entityID = item[identifier];
       this.$emit('orderDetails', item);
 
-      await this.processOrderDetails(entityID);
+      if (this.page !== 'addOrder') {
+        await this.processOrderDetails(entityID);
+      }
     },
     async processOrderDetails(entityID) {
       const payload = {

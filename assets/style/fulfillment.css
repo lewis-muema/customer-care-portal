@@ -347,6 +347,14 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fa-spin {
   color: #1b7fc3;
 }
+.add-batch .el-dialog__title, .add-batch .el-dialog__close {
+  font-size: 18px;
+  line-height: 25px;
+  color: #000000;
+}
+.add-batch .fa-spin {
+  margin-left: -2em !important;
+}
 .transform-vehicle-name{
   text-transform: capitalize;
 }
