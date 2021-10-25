@@ -72,7 +72,9 @@ export default {
       }
     },
     getVendorType() {
-      const string = this.getAgentVehicleType.replace(/_/g, ' ').toLowerCase();
+      const string = !this.getAgentVehicleType
+        ? ''
+        : this.getAgentVehicleType.replace(/_/g, ' ').toLowerCase();
 
       return string;
     },
