@@ -26,6 +26,7 @@
     <el-dialog
       :title="title"
       :visible.sync="centerDialogVisible"
+      class="fulfilmentDialog"
       width="30%"
       @close="closeDialog()"
       :key="componentKey"
@@ -103,7 +104,7 @@ export default {
 
 <style>
 .fulfilment-batch-actions .el-dialog__title {
-  font-weight: 600;
+  font-weight: 500;
   line-height: 27px;
   letter-spacing: 0.112081px;
   color: #000000;
