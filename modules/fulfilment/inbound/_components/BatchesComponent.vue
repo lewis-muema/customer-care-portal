@@ -36,7 +36,7 @@ export default {
       {
         name: 'Orders',
         tag: 'order_count',
-        width: '130',
+        width: '100',
       },
       {
         name: 'Batch No',
@@ -57,11 +57,6 @@ export default {
       {
         name: 'Rider',
         tag: 'shipping_agent_name',
-        width: '',
-      },
-      {
-        name: 'Region',
-        tag: 'region',
         width: '',
       },
     ];

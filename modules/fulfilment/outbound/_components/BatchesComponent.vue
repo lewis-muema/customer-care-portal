@@ -34,7 +34,7 @@ export default {
       {
         name: 'Packages',
         tag: 'order_count',
-        width: '',
+        width: '100',
       },
       {
         name: 'Batch No',
@@ -44,21 +44,16 @@ export default {
       {
         name: 'Time',
         tag: 'scheduled_date',
-        width: '150',
+        width: '',
       },
       {
         name: 'Pickup',
         tag: 'hub_name',
-        width: '130',
+        width: '',
       },
       {
         name: 'Rider',
         tag: 'shipping_agent_name',
-        width: '',
-      },
-      {
-        name: 'Region',
-        tag: 'city_name',
         width: '',
       },
     ];
