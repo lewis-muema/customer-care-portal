@@ -14,7 +14,11 @@
         </el-table-column>
         <el-table-column label="Batch No." prop="most_recent_batch_id">
         </el-table-column>
-        <el-table-column label="Packages" prop="ordered_items_count">
+        <el-table-column
+          label="Packages"
+          prop="ordered_items_count"
+          width="100"
+        >
         </el-table-column>
         <el-table-column label="Actions" prop="action">
           <template slot-scope="scope">
@@ -23,10 +27,10 @@
                 class="el-icon-view view-order"
                 @click="viewBatchChildOrder(order_details[scope.$index])"
               >
-                View
+                <span class="child-order-action">View</span>
               </i>
               <i class="el-icon-delete remove-order">
-                Remove
+                <span class="child-order-action">Remove</span>
               </i>
             </div>
           </template>
