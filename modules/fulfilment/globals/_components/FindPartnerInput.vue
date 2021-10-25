@@ -1,6 +1,7 @@
 <template>
   <div class="search-rider">
     <el-input
+      v-show="riderPhone === ''"
       placeholder="Enter number plate or phone number"
       autocomplete="off"
       v-model="query"
@@ -9,9 +10,16 @@
       @keydown.enter="hit"
       @keydown.esc="reset"
       @input="update"
-      @click="clear"
       @blur="reset"
     >
+    </el-input>
+    <el-input
+      v-show="riderPhone !== ''"
+      autocomplete="off"
+      :readonly="true"
+      v-model="riderPhone"
+    >
+      <el-button slot="append" icon="el-icon-close" @click="close"></el-button>
     </el-input>
 
     <ul v-show="hasItems" :class="[!isActive ? 'inactiveClass' : '']">
@@ -43,8 +51,8 @@ export default {
   data() {
     return {
       isActive: true,
-      query: '',
-      selectedPartner: '',
+      selectedPartner: {},
+      riderPhone: '',
     };
   },
   computed: {
@@ -70,11 +78,14 @@ export default {
       return response;
     },
     onHit(item) {
-      this.query = item.phone_no;
+      this.riderPhone = item.phone_no;
       this.$emit('changeSelectedPartner', item);
     },
     clear() {
       this.isActive = true;
+    },
+    close() {
+      this.riderPhone = '';
     },
   },
 };

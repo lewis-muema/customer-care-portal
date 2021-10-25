@@ -22,10 +22,6 @@
       <FindPartnerInput
         @changeSelectedPartner="updateSelectedPartner($event)"
       />
-      <div class="selected-partner" v-if="selectedPartner !== ''">
-        Selected Partner: {{ selectedPartner.rider_name }} |
-        {{ selectedPartner.phone_no }}
-      </div>
     </section>
     <section>
       <el-button
@@ -84,7 +80,6 @@ export default {
       const hub = this.hubs.filter(element => {
         return element.hub_name === this.rowData.hub_name;
       });
-      console.log(this.selectedPartner.phone_no);
       const payload = {
         app: 'FULFILMENT_SERVICE',
         endpoint: `missioncontrol/batches/${this.rowData.batch_id}/assign-shippingagent`,
