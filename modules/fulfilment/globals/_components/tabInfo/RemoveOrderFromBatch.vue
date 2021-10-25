@@ -67,8 +67,6 @@ export default {
       try {
         const data = await this.remove_order_from_batch(payload);
 
-        console.log('data', data);
-
         if (data.status === 200) {
           /* eslint no-restricted-globals: ["error", "event"] */
           this.doNotification(
