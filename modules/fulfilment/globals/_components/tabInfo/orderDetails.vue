@@ -18,7 +18,7 @@
         </tr>
         <tr>
           <td width="50%">Vendor Type</td>
-          <td>--</td>
+          <td class="transform-vehicle-name">{{ getVendorType() }}</td>
         </tr>
         <tr>
           <td width="50%">Fulfilment fee</td>
@@ -57,6 +57,7 @@ export default {
   computed: {
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
+      getAgentVehicleType: 'fulfilment/getAgentVehicleType',
     }),
   },
   beforeMount() {
@@ -69,6 +70,13 @@ export default {
       for (let i = 0; i < batches.length; i += 1) {
         this.batch_list.push(batches[i].batch_id);
       }
+    },
+    getVendorType() {
+      const string = !this.getAgentVehicleType
+        ? ''
+        : this.getAgentVehicleType.replace(/_/g, ' ').toLowerCase();
+
+      return string;
     },
   },
 };

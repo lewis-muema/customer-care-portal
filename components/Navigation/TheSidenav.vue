@@ -21,14 +21,14 @@
                 <span class="fulfilment-nav"> Outbound orders</span></nuxt-link
               >
             </li>
-            <li class="treeview >">
+            <!-- <li class="treeview >">
               <nuxt-link to="/fulfilment/returns" class="inline-display">
                 <div>
                   <img :src="`${s3Path}mission_control/return.svg`" alt="" />
                 </div>
                 <span class="fulfilment-nav"> Returns</span></nuxt-link
               >
-            </li>
+            </li> -->
             <li class="treeview >">
               <nuxt-link to="/fulfilment/hub" class="inline-display">
                 <div>

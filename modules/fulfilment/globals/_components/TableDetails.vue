@@ -11,7 +11,7 @@
           <el-row>
             <el-col :span="24">
               <el-card shadow="never">
-                <TableActions :page="getActivePage" />
+                <TableActions :page="getActivePage" :row-data="orderInfo" />
               </el-card>
             </el-col>
           </el-row>
@@ -77,6 +77,7 @@ export default {
   methods: {
     ...mapMutations({
       setTableDetails: 'fulfilment/setTableDetails',
+      setAgentVehicleType: 'fulfilment/setAgentVehicleType',
     }),
     ...mapActions({
       fetch_table_details: 'fulfilment/fetch_table_details',
@@ -91,6 +92,7 @@ export default {
           data_id: this.orderInfo[this.getTableDetailKeyMetric.id],
         },
       };
+      this.setAgentVehicleType(this.orderInfo.shipping_agent_vehicle_type);
       try {
         const data = await this.fetch_table_details(payload);
 

@@ -80,7 +80,10 @@ export default {
   async fetchOutboundBatchedOrders({ rootState, dispatch, commit }, payload) {
     delete payload.direction;
     // eslint-disable-next-line prettier/prettier
-      const filter = !payload || Object.keys(payload).length === 0 ? '' : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    const filter =
+      !payload || Object.keys(payload).length === 0
+        ? ''
+        : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -110,7 +113,10 @@ export default {
   async fetchInBoundBatchedOrders({ rootState, dispatch, commit }, payload) {
     delete payload.direction;
     // eslint-disable-next-line prettier/prettier
-      const filter = !payload || Object.keys(payload).length === 0 ? '' : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    const filter =
+      !payload || Object.keys(payload).length === 0
+        ? ''
+        : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -181,7 +187,9 @@ export default {
   },
   async fetchPickUpRequests({ rootState, dispatch, commit }, payload) {
     // eslint-disable-next-line prettier/prettier
-    const filter = !payload ? '' : `?${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    const filter = !payload
+      ? ''
+      : `?${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -443,6 +451,14 @@ export default {
     }
   },
   async perform_post_actions({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
+  async requestForTransport({ commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
       return res;

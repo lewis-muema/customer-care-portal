@@ -17,12 +17,15 @@
         <el-table-column label="Packages" prop="ordered_items_count">
         </el-table-column>
         <el-table-column label="Actions" prop="action">
-          <template>
+          <template slot-scope="scope">
             <div class="fulfilment-batch-actions">
-              <i class="fa fa-eye view-order" aria-hidden="true">
-                <span> View </span>
+              <i
+                class="el-icon-view view-order"
+                @click="viewBatchChildOrder(order_details[scope.$index])"
+              >
+                View
               </i>
-              <i class="fa fa-trash remove-order" aria-hidden="true">
+              <i class="el-icon-delete remove-order">
                 Remove
               </i>
             </div>
@@ -30,33 +33,68 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog
+      :title="getDialogTitle()"
+      :visible.sync="batchDialogVisible"
+      width="30%"
+    >
+      <BatchChildOrderDetail />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import StatusBadge from '../StatusBadge.vue';
+import BatchChildOrderDetail from './BatchChildOrderDetail.vue';
 
 export default {
   name: 'BatchesView',
   components: {
     StatusBadge,
     AddOrder: () => import('../actions/AddOrder'),
+    BatchChildOrderDetail,
   },
   data() {
     return {
       order_details: [],
       batchID: null,
+      batchDialogVisible: false,
     };
   },
   computed: {
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
+      getBatchChildOrderDetails: 'fulfilment/getBatchChildOrderDetails',
     }),
+  },
+  watch: {
+    batchDialogVisible(val) {
+      if (!val) {
+        this.setBatchChildOrderDetails({});
+      }
+    },
   },
   beforeMount() {
     this.order_details = this.getTableDetails.orders;
     this.batchID = this.getTableDetails.batch_id;
+  },
+  methods: {
+    ...mapMutations({
+      setBatchChildOrderDetails: 'fulfilment/setBatchChildOrderDetails',
+      setBatchChildOrderDialog: 'fulfilment/setBatchChildOrderDialog',
+    }),
+    viewBatchChildOrder(data) {
+      this.setBatchChildOrderDetails(data);
+      this.batchDialogVisible = true;
+    },
+    getDialogTitle() {
+      return `Fulfilment order ${
+        !this.getBatchChildOrderDetails
+          ? ''
+          : this.getBatchChildOrderDetails.order_id
+      } details`;
+    },
   },
 };
 </script>
