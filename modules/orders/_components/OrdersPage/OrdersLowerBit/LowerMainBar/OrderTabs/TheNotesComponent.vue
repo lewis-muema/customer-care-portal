@@ -17,7 +17,7 @@
     </div>
     <p v-if="!notesLog.length">No notes found</p>
     <div v-else>
-      <div v-if="notesLog[0].msg === 'none'">
+      <div v-if="notesLog[0].msg === 'none' || notesLog[0].msg === 'NOTES: '">
         <div class="">
           <div class="route-header">
             Pickup instructions at {{ notesData()[0].name }}
