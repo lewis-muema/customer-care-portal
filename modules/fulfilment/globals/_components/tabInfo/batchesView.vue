@@ -25,7 +25,7 @@
                 <span class="child-order-action">View</span>
               </i>
               <i class="el-icon-delete remove-order" v-if="isEditable">
-                Remove
+                <span class="child-order-action">Remove</span>
               </i>
             </div>
           </template>
