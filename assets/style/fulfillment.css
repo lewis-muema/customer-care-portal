@@ -344,6 +344,17 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fulfilment-delivery-partners-container {
   display: flex;
 }
+.fa-spin {
+  color: #1b7fc3;
+}
+.add-batch .el-dialog__title, .add-batch .el-dialog__close {
+  font-size: 18px;
+  line-height: 25px;
+  color: #000000;
+}
+.add-batch .fa-spin {
+  margin-left: -2em !important;
+}
 .transform-vehicle-name{
   text-transform: capitalize;
 }
@@ -353,4 +364,13 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .fulfilment-recommended-vehicles{
   margin-top: 5%;
+}
+.el-timeline-item__tail {
+  margin-left: 1%;
+}
+.el-timeline-item__icon {
+  font-size: 22px;
+}
+.el-timeline-item__content {
+  margin-left: 2%;
 }

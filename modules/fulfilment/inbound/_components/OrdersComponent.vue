@@ -39,7 +39,7 @@ export default {
       {
         name: 'Recipient',
         tag: 'order_recipient_name',
-        width: '',
+        width: '130',
       },
       {
         name: 'Time',
@@ -49,12 +49,12 @@ export default {
       {
         name: 'Destination',
         tag: 'destination_description',
-        width: '140',
+        width: '',
       },
       {
         name: 'Assigned Batch',
         tag: 'most_recent_batch_id',
-        width: '150',
+        width: '',
       },
       {
         name: 'Rider',

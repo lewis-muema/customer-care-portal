@@ -45,14 +45,26 @@
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.time_placed) }}
           </div>
-          <div v-else-if="table_data.tag === 'shipping_agent_name'">
-            {{
+          <div
+            v-else-if="table_data.tag === 'shipping_agent_name'"
+            :class="
               !props.row.shipping_agent_name
-                ? '--'
-                : props.row.shipping_agent_name
-            }}
+                ? 'no-assigned-fulfilment-order'
+                : ''
+            "
+          >
+            <span>
+              {{
+                !props.row.shipping_agent_name
+                  ? 'Not assigned'
+                  : props.row.shipping_agent_name
+              }}
+            </span>
             <img
-              v-if="showVehicle(props.row.shipping_agent_vehicle_type)"
+              v-if="
+                showVehicle(props.row.shipping_agent_vehicle_type) &&
+                  props.row.shipping_agent_name
+              "
               :src="
                 `${webImages}${showVehicle(
                   props.row.shipping_agent_vehicle_type,
@@ -163,6 +175,7 @@ export default {
       getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
       getCheckedOrders: 'fulfilment/getCheckedOrders',
       vehicles: 'fulfilment/getVehicles',
+      getSearchedEntity: 'fulfilment/getSearchedEntity',
     }),
     currentPage: {
       get() {
@@ -187,9 +200,11 @@ export default {
     },
   },
   watch: {
-    getSearchState(status) {
-      if (!status) {
-        this.fetchTableData();
+    getSearchedEntity(data) {
+      if (!data) {
+        this.updateTableData([]);
+        this.updatePagination({});
+        this.fetchTableData(this.params);
       }
     },
     getSelectedHubs(hub) {
@@ -428,5 +443,8 @@ export default {
 .image {
   width: 10%;
   margin-left: 7px;
+}
+.no-assigned-fulfilment-order {
+  color: #cacaca;
 }
 </style>
