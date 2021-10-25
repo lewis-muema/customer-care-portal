@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <AddOrder :batch="batchID" />
+    <AddOrder :batch="batchID" v-if="isEditable" />
     <div class="body-box col-md-12 movable-units-batch-table">
       <el-table :data="order_details" size="medium" :border="false">
         <el-table-column label="Status" prop="status" width="100">
@@ -12,13 +12,8 @@
         </el-table-column>
         <el-table-column label="Destination" prop="destination_description">
         </el-table-column>
-        <el-table-column label="Batch No." prop="most_recent_batch_id">
-        </el-table-column>
-        <el-table-column
-          label="Packages"
-          prop="ordered_items_count"
-          width="100"
-        >
+        <el-table-column label="Order No." prop="order_id"> </el-table-column>
+        <el-table-column label="Items" prop="ordered_items_count">
         </el-table-column>
         <el-table-column label="Actions" prop="action">
           <template slot-scope="scope">
@@ -29,8 +24,8 @@
               >
                 <span class="child-order-action">View</span>
               </i>
-              <i class="el-icon-delete remove-order">
-                <span class="child-order-action">Remove</span>
+              <i class="el-icon-delete remove-order" v-if="isEditable">
+                Remove
               </i>
             </div>
           </template>
@@ -71,6 +66,14 @@ export default {
       getTableDetails: 'fulfilment/getTableDetails',
       getBatchChildOrderDetails: 'fulfilment/getBatchChildOrderDetails',
     }),
+    isEditable() {
+      const status = this.getTableDetails.batch_status;
+      return (
+        status === 'BATCH_IN_COMPOSITION' ||
+        status === 'BATCH_IN_HUB_PREPARATION' ||
+        status === 'BATCH_PENDING_SHIPPING_ASSIGNMENT'
+      );
+    },
   },
   watch: {
     batchDialogVisible(val) {
