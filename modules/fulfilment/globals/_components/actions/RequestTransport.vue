@@ -98,11 +98,16 @@ export default {
       this.loading = false;
       if (response.errors.length > 0) {
         // TODO: Error Mapping
-        this.doNotification(
-          2,
-          'Request for transport error',
-          'We could not complete your request, please try again.',
-        );
+        let errorMessage;
+        const errors = response.errors[0];
+        switch (errors.source) {
+          case 'assignShippingAgent.requestModel.vehicleType':
+            errorMessage = 'There is no recommended vehicle for this batch';
+            break;
+          default:
+            errorMessage = 'We could not request for transport for this batch';
+        }
+        this.doNotification(2, 'Request for transport error', errorMessage);
       } else {
         this.doNotification(
           1,
