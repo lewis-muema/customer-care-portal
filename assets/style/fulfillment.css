@@ -365,3 +365,12 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fulfilment-recommended-vehicles{
   margin-top: 5%;
 }
+.el-timeline-item__tail {
+  margin-left: 1%;
+}
+.el-timeline-item__icon {
+  font-size: 22px;
+}
+.el-timeline-item__content {
+  margin-left: 2%;
+}
