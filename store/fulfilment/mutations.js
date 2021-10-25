@@ -68,4 +68,7 @@ export default {
   setBatchChildOrderDetails(state, val) {
     state.batchChildOrderData = val;
   },
+  setRemoveOrderStoreValue(state, val) {
+    state.remove_order_state = val;
+  },
 };
