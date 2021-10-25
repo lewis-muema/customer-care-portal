@@ -477,4 +477,12 @@ export default {
       return error.response;
     }
   },
+  async remove_order_from_batch({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPatch', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
 };

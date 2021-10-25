@@ -21,9 +21,11 @@
 
 <script>
 import moment from 'moment';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
+import NotificationMxn from '../../../../../mixins/notification_mixin';
 
 export default {
+  mixins: [NotificationMxn],
   data() {
     return {
       order_info: [],
@@ -45,12 +47,51 @@ export default {
   methods: {
     ...mapMutations({
       setRemoveOrderStoreValue: 'fulfilment/setRemoveOrderStoreValue',
+      updateProcessingStatus: 'fulfilment/setProcessingStatus',
+    }),
+    ...mapActions({
+      remove_order_from_batch: 'fulfilment/remove_order_from_batch',
     }),
     closeDialog() {
       this.setRemoveOrderStoreValue(false);
     },
-    removeOrderFromBatch() {
-      // handle request
+    async removeOrderFromBatch() {
+      const payload = {
+        app: 'FULFILMENT_SERVICE',
+        endpoint: `missioncontrol/batches/${this.order_info.most_recent_batch_id}/removeorders`,
+        apiKey: false,
+        params: {
+          orders: [this.order_info.order_id],
+        },
+      };
+      try {
+        const data = await this.remove_order_from_batch(payload);
+
+        if (data.status === 200) {
+          /* eslint no-restricted-globals: ["error", "event"] */
+          this.doNotification(
+            1,
+            'Order Removal',
+            'Order has been removed from batch successfully',
+          );
+          this.setRemoveOrderStoreValue(false);
+          this.updateProcessingStatus(true);
+        } else {
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
+            error_response = data.data.errors;
+          } else {
+            error_response = data.data.message;
+          }
+          this.doNotification(2, 'Order Removal Error', error_response);
+        }
+      } catch (error) {
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
     },
   },
 };
