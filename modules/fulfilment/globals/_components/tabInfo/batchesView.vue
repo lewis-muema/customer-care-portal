@@ -1,10 +1,6 @@
-<template lang="html">
+<template>
   <div class="">
-    <div class="add-batch-container">
-      <el-button type="primary" class="add-batch-section">
-        + Add to batch
-      </el-button>
-    </div>
+    <AddOrder :batch="batchID" />
     <div class="body-box col-md-12 movable-units-batch-table">
       <el-table :data="order_details" size="medium" :border="false">
         <el-table-column label="Status" prop="status" width="100">
@@ -45,10 +41,12 @@ export default {
   name: 'BatchesView',
   components: {
     StatusBadge,
+    AddOrder: () => import('../actions/AddOrder'),
   },
   data() {
     return {
       order_details: [],
+      batchID: null,
     };
   },
   computed: {
@@ -58,6 +56,7 @@ export default {
   },
   beforeMount() {
     this.order_details = this.getTableDetails.orders;
+    this.batchID = this.getTableDetails.batch_id;
   },
 };
 </script>
