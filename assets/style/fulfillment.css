@@ -376,8 +376,45 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .fulfilmentDialog > div > .el-dialog__header {
   margin: 2% !important;
+  padding: 30px 30px 10px 30px;
 }
 .fulfilmentDialog > div > .el-dialog__body {
   margin: 2% !important;
   padding: 0px 30px 16px;
+}
+.child-order-action{
+  font-family: Nunito, sans-serif !important;
+  font-weight: 500;
+  font-size: 12px;
+  padding-left: 4px;
+}
+.remove-order-dialog > div > .el-dialog__body {
+  padding: 0px 30px 20px 30px;
+}
+.remove-order-dialog > .el-dialog{
+  margin-top: 35vh !important;
+  width: 26% !important;
+}
+.fulfilment-cancelation-text{
+  font-size: 16px;
+  color: #000000;
+  margin: 2% 0;
+}
+.remove-order-btn{
+  background: #9B101C;
+  border: 1px solid #9B101C;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.1px;
+  margin: 20px 0 !important;
+}
+.close-order-dialog{
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 2%;
+  color: #324BA8;
+  font-size: 14px;
+  font-weight: 600;
 }
