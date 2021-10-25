@@ -17,7 +17,7 @@
 .fulfillment-tab-info-titles {
   font-size: 14px;
   line-height: 28px;
-  margin: 7% 0%;
+  margin: 3% 0%;
   font-weight: 600;
   color: #000000;
 }
@@ -417,4 +417,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   color: #324BA8;
   font-size: 14px;
   font-weight: 600;
+}
+.fulfilment-delivery-partner-inner{
+  display: flex;
 }
