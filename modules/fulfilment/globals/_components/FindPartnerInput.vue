@@ -70,6 +70,7 @@ export default {
       return response;
     },
     onHit(item) {
+      this.query = item.phone_no;
       this.$emit('changeSelectedPartner', item);
     },
     clear() {

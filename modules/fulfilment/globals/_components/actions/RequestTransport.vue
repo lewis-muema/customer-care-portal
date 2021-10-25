@@ -32,6 +32,10 @@
         class="submit-blue"
         type="primary"
         :loading="loading"
+        :disabled="
+          preferredDriver === 'yes' &&
+            typeof selectedPartner.phone_no === 'undefined'
+        "
         @click="requestForTransport"
         >Request for Transport</el-button
       >
@@ -80,12 +84,14 @@ export default {
       const hub = this.hubs.filter(element => {
         return element.hub_name === this.rowData.hub_name;
       });
+      console.log(this.selectedPartner.phone_no);
       const payload = {
         app: 'FULFILMENT_SERVICE',
         endpoint: `missioncontrol/batches/${this.rowData.batch_id}/assign-shippingagent`,
         apiKey: false,
         params: {
-          shipping_request_type: 'DISPATCH',
+          shipping_request_type:
+            this.preferredDriver === 'no' ? 'DISPATCH' : 'DIRECT_ASSIGNMENT',
           shipping_provider: 'SENDY',
           vehicle_type: this.rowData.shipping_agent_vehicle_type ?? null,
           shipping_agent_id: this.selectedPartner.phone_no ?? null,
