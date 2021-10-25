@@ -15,12 +15,12 @@
             <el-tab-pane label="Batched orders" name="batchesView">
               <BatchesView :key="componentKey" v-if="mode === 'batchesView'" />
             </el-tab-pane>
-            <el-tab-pane label="Movable units" name="movableUnitsView">
+            <!-- <el-tab-pane label="Movable units" name="movableUnitsView">
               <MovableUnitsView
                 :key="componentKey"
                 v-if="mode === 'movableUnitsView'"
               />
-            </el-tab-pane>
+            </el-tab-pane> -->
           </el-tabs>
         </div>
       </div>
@@ -38,7 +38,7 @@ import FiltersBar from '../globals/_components/FiltersBar.vue';
 
 export default {
   name: 'OutboundView',
-  components: { OrdersView, BatchesView, MovableUnitsView, FiltersBar },
+  components: { OrdersView, BatchesView, FiltersBar },
   data() {
     return {
       mode: 'ordersView',

@@ -84,7 +84,7 @@ export default {
     }),
     batchLabel() {
       const batch_details = this.getTableDetails.orders;
-      return `Batches (${batch_details.length})`;
+      return `Orders (${batch_details.length})`;
     },
   },
   methods: {},
