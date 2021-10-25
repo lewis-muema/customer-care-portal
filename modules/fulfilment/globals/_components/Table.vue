@@ -163,6 +163,7 @@ export default {
       getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
       getCheckedOrders: 'fulfilment/getCheckedOrders',
       vehicles: 'fulfilment/getVehicles',
+      getSearchedEntity: 'fulfilment/getSearchedEntity',
     }),
     currentPage: {
       get() {
@@ -187,9 +188,11 @@ export default {
     },
   },
   watch: {
-    getSearchState(status) {
-      if (!status) {
-        this.fetchTableData();
+    getSearchedEntity(data) {
+      if (!data) {
+        this.updateTableData([]);
+        this.updatePagination({});
+        this.fetchTableData(this.params);
       }
     },
     getSelectedHubs(hub) {

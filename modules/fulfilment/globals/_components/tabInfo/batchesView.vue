@@ -90,7 +90,11 @@ export default {
       this.batchDialogVisible = true;
     },
     getDialogTitle() {
-      return `Fulfilment order ${this.getBatchChildOrderDetails.order_id} details`;
+      return `Fulfilment order ${
+        !this.getBatchChildOrderDetails
+          ? ''
+          : this.getBatchChildOrderDetails.order_id
+      } details`;
     },
   },
 };
