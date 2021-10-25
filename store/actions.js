@@ -906,9 +906,15 @@ export default {
       });
     }
   },
-  async setSurveys({ state, commit, dispatch }) {
+  async setSurveys({ state, commit, dispatch }, payload) {
     const config = state.config;
-    const url = `${config.ADONIS_API}nps/surveys`;
+    let params = '?';
+    Object.keys(payload.params).forEach((row, i) => {
+      params = `${params}${row}=${payload.params[`${row}`]}${
+        i < Object.keys(payload.params).length - 1 ? '&' : ''
+      }`;
+    });
+    const url = `${config.ADONIS_API}nps/surveys${params}`;
     try {
       const response = await axiosConfig.get(url);
       commit('setSurveys', response.data);
