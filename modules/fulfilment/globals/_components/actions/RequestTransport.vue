@@ -28,7 +28,11 @@
       </div>
     </section>
     <section>
-      <el-button class="submit-blue" type="primary" @click="requestForTransport"
+      <el-button
+        class="submit-blue"
+        type="primary"
+        :loading="loading"
+        @click="requestForTransport"
         >Request for Transport</el-button
       >
     </section>
@@ -38,20 +42,24 @@
 <script>
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import FindPartnerInput from '../FindPartnerInput.vue';
+import NotificationMxn from '../../../../../mixins/notification_mixin';
 
 export default {
   name: 'RequestTransport',
   components: { FindPartnerInput },
+  mixins: [NotificationMxn],
   props: ['rowData'],
   data() {
     return {
       preferredDriver: 'no',
       selectedPartner: '',
+      loading: false,
     };
   },
   computed: {
     ...mapGetters({
       vehicles: 'fulfilment/getVehicles',
+      hubs: 'fulfilment/getHubs',
     }),
   },
   methods: {
@@ -68,14 +76,40 @@ export default {
     updateSelectedPartner(partner) {
       this.selectedPartner = partner;
     },
-    requestForTransport() {
+    async requestForTransport() {
+      const hub = this.hubs.filter(element => {
+        return element.hub_name === this.rowData.hub_name;
+      });
       const payload = {
         app: 'FULFILMENT_SERVICE',
-        endpoint: 'missioncontrol/hubs',
+        endpoint: `missioncontrol/batches/${this.rowData.batch_id}/assign-shippingagent`,
         apiKey: false,
-        params: {},
+        params: {
+          shipping_request_type: 'DISPATCH',
+          shipping_provider: 'SENDY',
+          vehicle_type: this.rowData.shipping_agent_vehicle_type ?? null,
+          shipping_agent_id: this.selectedPartner.phone_no ?? null,
+          direction: this.rowData.direction,
+          hub_id: hub[0].hub_id,
+        },
       };
-      this.requestForTransportAction(payload);
+      this.loading = true;
+      const response = await this.requestForTransportAction(payload);
+      this.loading = false;
+      if (response.errors.length > 0) {
+        // TODO: Error Mapping
+        this.doNotification(
+          2,
+          'Request for transport error',
+          'We could not complete your request, please try again.',
+        );
+      } else {
+        this.doNotification(
+          1,
+          'Request for transport success',
+          'Process completed successfully!',
+        );
+      }
       this.$emit('closeDialog', false);
     },
   },

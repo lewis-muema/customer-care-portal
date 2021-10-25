@@ -165,7 +165,7 @@ export default {
         vehicle => vehicle.value === val,
       );
       // eslint-disable-next-line prettier/prettier
-        vendor = filteredVehicle.length > 0 ? filteredVehicle[0]: null;
+      vendor = filteredVehicle.length > 0 ? filteredVehicle[0] : null;
       this.selectedVendor = vendor;
       return vendor;
     },
@@ -178,7 +178,8 @@ export default {
         return;
       }
       // eslint-disable-next-line prettier/prettier
-      const direction = this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
+      const direction =
+        this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
 
       const date = Date.parse(this.selectedDate);
 
