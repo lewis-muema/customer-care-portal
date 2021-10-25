@@ -81,6 +81,7 @@ export default {
   methods: {
     ...mapMutations({
       isSearching: 'fulfilment/setSearchingStatus',
+      updateProcessingStatus: 'fulfilment/setProcessingStatus',
     }),
     ...mapActions({
       perform_patch_actions: 'fulfilment/perform_patch_actions',
@@ -117,8 +118,10 @@ export default {
             `Order has been added to batch successfully`,
           );
           setTimeout(() => {
+            this.updateProcessingStatus(true);
             this.centerDialogVisible = false;
           }, 800);
+          // eslint-disable-next-line no-unreachable
         } else {
           this.disabled = false;
           let error_response = '';
