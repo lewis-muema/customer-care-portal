@@ -3,31 +3,45 @@
     <el-row v-if="fetching" class="batch-details-holder">
       <p>
         <i class="fa fa-spinner fa-spin loader"></i>
-        Processing orders summary...
+        <span class="summary-text-loader">Processing orders summary...</span>
       </p>
     </el-row>
     <div v-else>
       <el-row class="batch-details-holder">
-        <el-col :span="12"
-          >Estimated weight :
+        <el-col :span="12" class="batch-summary-inner">
+          <span class="batch-summary-highlight"> Estimated weight(s) :</span>
           <ul>
             <li
               v-for="(measure, index) in summary.estimated_measure"
               :key="index"
+              class="batch-sumarry-highlight-value"
             >
               {{ measure.value.toFixed(3) }}
               {{ measure.value_type === 'KILOGRAM' ? 'kgs' : 'litres' }}
             </li>
           </ul>
         </el-col>
-        <el-col :span="12">
-          Total quantity : {{ summary.total_ordered_items_count }}</el-col
+        <el-col :span="12" class="batch-summary-inner">
+          <span class="batch-summary-highlight">Total quantity : </span>
+          <span class="batch-sumarry-highlight-value">{{
+            summary.total_ordered_items_count
+          }}</span></el-col
         >
-        <el-col :span="12"> Region : N/A</el-col>
-        <el-col :span="12">Waypoints : {{ summary.waypoints }} </el-col>
+        <el-col :span="12" class="batch-summary-inner">
+          <span class="batch-summary-highlight">Region : </span
+          ><span class="batch-sumarry-highlight-value">N/A</span></el-col
+        >
+        <el-col :span="12" class="batch-summary-inner"
+          ><span class="batch-summary-highlight">Waypoints :</span>
+          <span class="batch-sumarry-highlight-value">
+            {{ summary.waypoints }}
+          </span></el-col
+        >
       </el-row>
       <el-row>
-        <div class="vehicle-header">Recommended vehicle type</div>
+        <div class="vehicle-header recommended-vehicle-type">
+          Recommended vehicle type
+        </div>
         <div
           v-if="!showRecommendedVehicle(summary.recommended_vehicle_type)"
           class="vehicle-holder"
@@ -243,7 +257,7 @@ export default {
   padding: 16px;
 }
 .vehicle-header {
-  font-weight: 600;
+  font-weight: 400;
   line-height: 24px;
   letter-spacing: 0.1px;
   color: #000000;
@@ -262,11 +276,31 @@ export default {
   color: #000000;
 }
 .hub-field {
-  padding-top: 1em;
+  padding-top: 1%;
 }
 .fulfilment-date-class .field-input {
   border: 1px solid #b3afaf;
   border-radius: 6px;
-  margin-top: 1em;
+  margin-top: 1%;
+}
+.batch-summary-highlight {
+  font-size: 13px;
+  color: #000000;
+  font-weight: 100;
+}
+.batch-sumarry-highlight-value {
+  font-size: 13px;
+  color: #000000;
+  font-weight: 400;
+}
+.summary-text-loader {
+  font-size: 13px;
+  margin-left: 3%;
+}
+.batch-summary-inner {
+  margin-bottom: 1%;
+}
+.recommended-vehicle-type {
+  margin-bottom: 2%;
 }
 </style>

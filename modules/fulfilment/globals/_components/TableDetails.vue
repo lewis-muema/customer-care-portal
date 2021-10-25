@@ -1,29 +1,34 @@
 <template>
-  <div v-if="loading">
-    <el-container>
-      <el-row :gutter="18">
-        <el-col :span="9">
-          <el-card shadow="never">
-            <Timeline :activities="activities" />
-          </el-card>
-        </el-col>
-        <el-col :span="15">
-          <el-row>
-            <el-col :span="24">
-              <el-card shadow="never">
-                <TableActions :page="getActivePage" :row-data="orderInfo" />
-              </el-card>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <TableDetailsTabs />
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
-    </el-container>
-  </div>
+  <el-row>
+    <div v-if="loading">
+      <el-container>
+        <el-row :gutter="18">
+          <el-col :span="9">
+            <el-card shadow="never">
+              <Timeline :activities="activities" />
+            </el-card>
+          </el-col>
+          <el-col :span="15">
+            <el-row>
+              <el-col :span="24">
+                <el-card shadow="never">
+                  <TableActions :page="getActivePage" :row-data="orderInfo" />
+                </el-card>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <TableDetailsTabs />
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+      </el-container>
+    </div>
+    <div v-else class="text-center">
+      <strong>Fetching data...</strong>
+    </div>
+  </el-row>
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
@@ -58,6 +63,7 @@ export default {
       getActivePage: 'getActivePage',
       getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
       getTableDetails: 'fulfilment/getTableDetails',
+      getProcessingStatus: 'fulfilment/getProcessingStatus',
     }),
   },
   watch: {
@@ -67,6 +73,11 @@ export default {
       } else {
         this.loading = false;
       }
+    },
+    getProcessingStatus() {
+      this.setTableDetails([]);
+      this.processOrderDetails();
+      this.fetchActivities();
     },
   },
   beforeMount() {
@@ -78,6 +89,7 @@ export default {
     ...mapMutations({
       setTableDetails: 'fulfilment/setTableDetails',
       setAgentVehicleType: 'fulfilment/setAgentVehicleType',
+      updateProcessingStatus: 'fulfilment/setProcessingStatus',
     }),
     ...mapActions({
       fetch_table_details: 'fulfilment/fetch_table_details',
@@ -118,6 +130,7 @@ export default {
           'Kindly refresh the page. If error persists contact tech support',
         );
       }
+      this.updateProcessingStatus(false);
     },
     async fetchActivities() {
       const { order_id, batch_id } = this.orderInfo;
