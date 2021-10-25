@@ -29,6 +29,7 @@ const state = () => ({
   vehicles: [],
   vehicles_type: '',
   batchChildOrderData: {},
+  remove_order_state: false,
 });
 
 export { state, getters, mutations, actions };

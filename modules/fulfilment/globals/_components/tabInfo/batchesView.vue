@@ -24,7 +24,11 @@
               >
                 <span class="child-order-action">View</span>
               </i>
-              <i class="el-icon-delete remove-order" v-if="isEditable">
+              <i
+                class="el-icon-delete remove-order"
+                v-if="isEditable"
+                @click="removeOrderFromBatch(order_details[scope.$index])"
+              >
                 <span class="child-order-action">Remove</span>
               </i>
             </div>
@@ -39,6 +43,17 @@
     >
       <BatchChildOrderDetail />
     </el-dialog>
+    <el-dialog
+      :visible.sync="removeOrderDialog"
+      class="remove-order-dialog"
+      width="30%"
+      :modal-append-to-body="false"
+      :show-close="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+    >
+      <RemoveOrderFromBatch />
+    </el-dialog>
   </div>
 </template>
 
@@ -46,6 +61,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 import StatusBadge from '../StatusBadge.vue';
 import BatchChildOrderDetail from './BatchChildOrderDetail.vue';
+import RemoveOrderFromBatch from './RemoveOrderFromBatch.vue';
 
 export default {
   name: 'BatchesView',
@@ -53,18 +69,21 @@ export default {
     StatusBadge,
     AddOrder: () => import('../actions/AddOrder'),
     BatchChildOrderDetail,
+    RemoveOrderFromBatch,
   },
   data() {
     return {
       order_details: [],
       batchID: null,
       batchDialogVisible: false,
+      removeOrderDialog: false,
     };
   },
   computed: {
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
       getBatchChildOrderDetails: 'fulfilment/getBatchChildOrderDetails',
+      getRemoveOrderStoreValue: 'fulfilment/getRemoveOrderStoreValue',
     }),
     isEditable() {
       const status = this.getTableDetails.batch_status;
@@ -81,6 +100,15 @@ export default {
         this.setBatchChildOrderDetails({});
       }
     },
+    removeOrderDialog(val) {
+      if (!val) {
+        this.setBatchChildOrderDetails({});
+      }
+      this.setRemoveOrderStoreValue(val);
+    },
+    getRemoveOrderStoreValue(val) {
+      this.removeOrderDialog = val;
+    },
   },
   beforeMount() {
     this.order_details = this.getTableDetails.orders;
@@ -90,10 +118,15 @@ export default {
     ...mapMutations({
       setBatchChildOrderDetails: 'fulfilment/setBatchChildOrderDetails',
       setBatchChildOrderDialog: 'fulfilment/setBatchChildOrderDialog',
+      setRemoveOrderStoreValue: 'fulfilment/setRemoveOrderStoreValue',
     }),
     viewBatchChildOrder(data) {
       this.setBatchChildOrderDetails(data);
       this.batchDialogVisible = true;
+    },
+    removeOrderFromBatch(data) {
+      this.setBatchChildOrderDetails(data);
+      this.removeOrderDialog = true;
     },
     getDialogTitle() {
       return `Fulfilment order ${
