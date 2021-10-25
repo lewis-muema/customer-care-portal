@@ -11,7 +11,11 @@
             </el-col>
             <el-col :span="17">
               <div class="grid-content fulfilment-search-filter">
-                <Search :page="getActivePage" />
+                <Search
+                  :page="getActivePage"
+                  :section="section"
+                  placeholder="Search order ( order no, name, user phone)"
+                />
               </div>
             </el-col>
           </el-row>
@@ -41,7 +45,9 @@
       <div v-if="searching" justify="center" class="search-header text-center">
         Fetching results ...
       </div>
-      <div v-else class="search-header text-right back-btn">
+    </el-row>
+    <el-row type="flex" class="row-bg mb-2" v-if="getSearchedEntity">
+      <div class="search-header text-right back-btn">
         <span @click="goBack()"
           ><i class="fa fa-arrow-left"></i> Back to all {{ title }} List
         </span>
@@ -75,6 +81,8 @@ export default {
       getSearchingStatus: 'fulfilment/getSearchingStatus',
       getSearchState: 'fulfilment/getSearchState',
       getStatusMapping: 'fulfilment/getStatusMapping',
+      getProcessingStatus: 'fulfilment/getProcessingStatus',
+      getSearchedEntity: 'fulfilment/getSearchedEntity',
     }),
 
     pageTitle() {
@@ -119,6 +127,7 @@ export default {
       updateSearchedEntity: 'fulfilment/setSearchedEntity',
       updateSearchState: 'fulfilment/setSearchState',
       isSearching: 'fulfilment/setSearchingStatus',
+      updateProcessingStatus: 'fulfilment/setProcessingStatus',
     }),
     ...mapActions({
       fetchHubs: 'fulfilment/fetchHubs',

@@ -344,13 +344,6 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .fulfilment-delivery-partners-container {
   display: flex;
 }
-.transform-vehicle-name{
-  text-transform: capitalize;
-}
-.fulfilment-vendor-image {
-  width: 10%;
-  margin-left: 7px;
-}
-.fulfilment-recommended-vehicles{
-  margin-top: 5%;
+.fa-spin {
+  color: #1b7fc3;
 }
