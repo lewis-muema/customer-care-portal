@@ -458,12 +458,14 @@ export default {
       return error.response.data.data;
     }
   },
-  async requestForTransport({ commit }, payload) {
+  async requestForTransport({ rootState, commit }, payload) {
     try {
-      const res = await dispatch('requestAxiosPost', payload, { root: true });
-      return res;
+      const config = rootState.config;
+      const url = `${config.FULFILMENT_SERVICE}${payload.endpoint}`;
+      const response = await axiosConfig.put(url, payload.params);
+      return response.data;
     } catch (error) {
-      return error.response.data.data;
+      return error.response.data;
     }
   },
   async perform_patch_actions({ dispatch, commit }, payload) {
