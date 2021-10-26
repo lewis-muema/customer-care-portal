@@ -18,7 +18,7 @@
   font-size: 14px;
   line-height: 28px;
   margin: 3% 0%;
-  font-weight: 600;
+  font-weight: 400;
   color: #000000;
 }
 .fulfillment-tab-info-description {
@@ -56,6 +56,8 @@
 .fulfillment-tab-info-items-img {
   width: 60px;
   margin: 10px;
+  height: 60px;
+  object-fit: contain;
 }
 .filtersBar {
   margin-bottom: 3%;
@@ -357,6 +359,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .transform-vehicle-name{
   text-transform: capitalize;
+  font-weight: 300;
 }
 .fulfilment-vendor-image {
   width: 10%;
@@ -420,4 +423,29 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .fulfilment-delivery-partner-inner{
   display: flex;
+}
+.fulfilment-batch-actions .el-dialog__title {
+  font-weight: 500;
+  line-height: 27px;
+  letter-spacing: 0.112081px;
+  color: #000000;
+}
+.fulfilment-batch-actions .el-dialog__headerbtn .el-dialog__close {
+  color: #000000;
+  font-weight: 700;
+}
+.fulfilment-batch-actions .el-dialog__body {
+  padding: 13px 20px;
+}
+.requestTransportDialog >.el-dialog{
+  margin-top: 20vh !important;
+  width: 32% !important;
+}
+.requestTransportDialog > div > .el-dialog__header {
+  margin: 2% !important;
+  padding: 30px 30px 10px 45px;
+}
+.requestTransportDialog > div > .el-dialog__body {
+  margin: 2% !important;
+  padding: 0px 30px 16px;
 }

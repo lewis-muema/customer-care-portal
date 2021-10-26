@@ -146,6 +146,7 @@ export default {
   margin: 0px 0px 0px 1em;
   display: flex;
   font-size: 13px;
+  font-weight: 300;
 }
 .stats-pending-color {
   background-color: #e7a03c;

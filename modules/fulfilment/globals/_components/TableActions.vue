@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fulfilment-batch-actions">
     <el-row>
       <el-col :span="3">
         <el-button
@@ -29,7 +29,7 @@
         >
       </el-col>
 
-      <el-col :span="3">
+      <!-- <el-col :span="3">
         <el-button
           type="primary"
           class="blue"
@@ -39,8 +39,8 @@
           @click="triggerAction('cancel')"
           >Cancel</el-button
         >
-      </el-col>
-      <el-col :span="3">
+      </el-col> -->
+      <!-- <el-col :span="3">
         <el-button
           type="primary"
           class="blue"
@@ -50,7 +50,7 @@
           @click="triggerAction('ticket')"
           >Tickets</el-button
         >
-      </el-col>
+      </el-col> -->
       <el-col :span="4">
         <el-button
           type="primary"
@@ -62,7 +62,7 @@
           >Delivery Codes</el-button
         >
       </el-col>
-      <el-col :span="3">
+      <!-- <el-col :span="3">
         <el-button
           type="primary"
           class="blue"
@@ -76,8 +76,8 @@
           @click="triggerAction('reallocate')"
           >Reallocate</el-button
         >
-      </el-col>
-      <el-col :span="3">
+      </el-col> -->
+      <!-- <el-col :span="3">
         <el-button
           type="primary"
           class="blue"
@@ -87,7 +87,7 @@
           @click="triggerAction('dispatch')"
           >Dispatch</el-button
         >
-      </el-col>
+      </el-col> -->
     </el-row>
     <el-row>
       <DeliveryCodes v-if="action === 'delivery_codes'" />
@@ -100,6 +100,7 @@
     <el-dialog
       title="Request for transport"
       :visible.sync="dialogVisible"
+      class="requestTransportDialog"
       width="40%"
     >
       <RequestTransport
