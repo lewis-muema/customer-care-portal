@@ -110,6 +110,9 @@ import NotificationMxn from '../../../../mixins/notification_mixin';
 
 export default {
   name: 'AddHub',
+  components: {
+    'vue-tel-input': VueTelInput,
+  },
   mixins: [NotificationMxn],
   data() {
     return {

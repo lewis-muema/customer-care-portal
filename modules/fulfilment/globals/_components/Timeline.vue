@@ -16,7 +16,7 @@
             {{ orderEvents[activity.event_code] }}
           </div>
           <div class="fulfilment-timeline-timestamp">
-            {{ getFormattedDate(activity.event_time, 'DD MMM ,YYYY hh.mm a ') }}
+            {{ formatDate(activity.event_date) }}
           </div>
         </div>
       </el-timeline-item>
@@ -24,6 +24,8 @@
   </div>
 </template>
 <script>
+import moment from 'moment';
+
 export default {
   props: {
     activities: {
@@ -78,6 +80,11 @@ export default {
   computed: {
     timelineIcon() {
       return 'el-icon-success';
+    },
+  },
+  methods: {
+    formatDate(date) {
+      return moment(date).format('DD MMM ,YYYY hh.mm a ');
     },
   },
 };

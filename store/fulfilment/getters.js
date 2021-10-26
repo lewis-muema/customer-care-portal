@@ -65,4 +65,7 @@ export default {
   getBatchChildOrderDetails(state) {
     return state.batchChildOrderData;
   },
+  getRemoveOrderStoreValue(state) {
+    return state.remove_order_state;
+  },
 };

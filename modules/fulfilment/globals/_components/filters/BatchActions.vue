@@ -102,18 +102,4 @@ export default {
 };
 </script>
 
-<style>
-.fulfilment-batch-actions .el-dialog__title {
-  font-weight: 500;
-  line-height: 27px;
-  letter-spacing: 0.112081px;
-  color: #000000;
-}
-.fulfilment-batch-actions .el-dialog__headerbtn .el-dialog__close {
-  color: #000000;
-  font-weight: 700;
-}
-.fulfilment-batch-actions .el-dialog__body {
-  padding: 13px 20px;
-}
-</style>
+<style></style>

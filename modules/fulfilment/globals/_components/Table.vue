@@ -43,7 +43,7 @@
             />
           </div>
           <div v-else-if="table_data.tag === 'scheduled_date'">
-            {{ formatDate(props.row.time_placed) }}
+            {{ formatDate(props.row.scheduled_date) }}
           </div>
           <div
             v-else-if="table_data.tag === 'shipping_agent_name'"
