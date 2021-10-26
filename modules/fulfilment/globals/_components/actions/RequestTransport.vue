@@ -1,7 +1,7 @@
 <template>
   <div class="request-transport">
     <section class="vehicle-type">
-      <label>Recommended vehicle type</label>
+      <label class="request-transport-label">Recommended vehicle type</label>
       <div v-if="vehicleTypeImage()">
         <img :src="`${webImages}${vehicleTypeImage().image}`" />
         <span>{{ vehicleTypeImage().name }}</span>
@@ -11,21 +11,25 @@
       </div>
     </section>
     <section>
-      <label> Do you have a preferred driver at the pick up location?</label>
+      <label class="request-transport-label">
+        Do you have a preferred driver at the pick up location?</label
+      >
       <el-select v-model="preferredDriver">
         <el-option label="Yes" value="yes"></el-option>
         <el-option label="No" value="no"></el-option>
       </el-select>
     </section>
     <section v-if="preferredDriver === 'yes'">
-      <label>Enter their phone number or the number plate</label>
+      <label class="request-transport-label"
+        >Enter their phone number or the number plate</label
+      >
       <FindPartnerInput
         @changeSelectedPartner="updateSelectedPartner($event)"
       />
     </section>
     <section>
       <el-button
-        class="submit-blue"
+        class="submit-blue request-transport-btn"
         type="primary"
         :loading="loading"
         :disabled="
@@ -151,5 +155,14 @@ button.submit-blue.el-button.el-button--primary {
   background-color: #528bb8;
   border: none;
   outline: none;
+}
+.request-transport-label {
+  font-weight: 500;
+  margin-bottom: 3%;
+  color: #000000;
+}
+.request-transport-btn {
+  width: 100%;
+  margin-top: 3%;
 }
 </style>
