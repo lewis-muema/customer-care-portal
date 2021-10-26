@@ -96,7 +96,14 @@
             --
           </div>
           <div v-else>
-            {{ returnRestructedPropData(props.row, table_data.tag) }}
+            <span
+              v-html="
+                smartify_display(
+                  returnRestructedPropData(props.row, table_data.tag),
+                  20,
+                )
+              "
+            ></span>
           </div>
         </template>
       </el-table-column>
@@ -211,9 +218,11 @@ export default {
       this.updateTableData([]);
       this.updatePagination({});
 
-      const payload = {
+      let payload = {
         hub_id: hub,
       };
+
+      payload = hub === 'all' ? this.params : payload;
 
       this.hubs = hub;
       this.fetchTableData(payload);
@@ -229,9 +238,11 @@ export default {
       this.updateTableData([]);
       this.updatePagination({});
 
-      const payload = {
+      let payload = {
         status: val,
       };
+
+      payload = val === 'all' ? this.params : payload;
 
       this.status = val;
       this.fetchTableData(payload);
