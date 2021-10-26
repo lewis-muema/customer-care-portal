@@ -1,6 +1,6 @@
 <template>
   <div :key="componentKey">
-    <el-select v-model="status" placeholder="All Orders">
+    <el-select v-model="status" placeholder="All Orders" :disabled="processing">
       <el-option
         v-for="item in sectionStatuses"
         :key="item.value"
@@ -23,11 +23,13 @@ export default {
       componentKey: 0,
       status: '',
       value2: [],
+      processing: false,
     };
   },
   computed: {
     ...mapGetters({
       getStatusMapping: 'fulfilment/getStatusMapping',
+      getProcessingStatus: 'fulfilment/getProcessingStatus',
     }),
 
     section() {
@@ -40,6 +42,12 @@ export default {
       const filteredStatus = this.getStatusMapping.filter(
         event => event.type === this.section,
       );
+      const all = {
+        label: 'All Orders',
+        value: 'all',
+        type: '',
+      };
+      filteredStatus.unshift(all);
       return filteredStatus;
     },
   },
@@ -47,6 +55,9 @@ export default {
     status(val) {
       this.updateSelectedStatus(val);
       this.forceRender();
+    },
+    getProcessingStatus(status) {
+      this.processing = status;
     },
   },
   methods: {
