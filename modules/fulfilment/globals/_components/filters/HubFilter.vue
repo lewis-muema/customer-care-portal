@@ -18,6 +18,7 @@
       @input="submitMethod"
       @select="onSelect($event)"
       @remove="onRemove($event)"
+      :disabled="processing"
     >
       <span
         class="checkbox-label"
@@ -54,11 +55,13 @@ export default {
       hubs: [],
       options: [{ code: 'all', name: 'All Hubs', checked: true }],
       selectedHubs: [],
+      processing: false,
     };
   },
   computed: {
     ...mapGetters({
       getHubs: 'fulfilment/getHubs',
+      getProcessingStatus: 'fulfilment/getProcessingStatus',
     }),
   },
   watch: {
@@ -72,6 +75,9 @@ export default {
         });
         this.hubs.push(hub.hub_id);
       });
+    },
+    getProcessingStatus(status) {
+      this.processing = status;
     },
   },
   mounted() {
