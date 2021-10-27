@@ -159,5 +159,6 @@ const state = () => ({
   cancellationActions: [],
   vendorTypes: null,
   environmentVariables: null,
+  activePage: null,
 });
 export { state, getters, mutations, actions };

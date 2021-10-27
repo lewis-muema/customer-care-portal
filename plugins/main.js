@@ -10,6 +10,8 @@ Vue.mixin({
     return {
       userImage: config.USER_IMAGE,
       riderDeliveryImg: config.RIDER_DELIVERY_IMG,
+      sendyS3Path: 'https://s3.eu-west-1.amazonaws.com/images.sendyit.com/',
+      webImages: 'https://images.sendyit.com/web_platform/vendor_type/side/v2/',
       s3Path:
         'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//',
       orderColumns: [

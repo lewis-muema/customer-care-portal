@@ -274,4 +274,7 @@ export default {
       ? JSON.parse(localStorage.getItem('environmentVariables'))
       : state.environmentVariables;
   },
+  getActivePage(state) {
+    return state.activePage;
+  },
 };
