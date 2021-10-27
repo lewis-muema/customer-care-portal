@@ -45,6 +45,9 @@
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.scheduled_date) }}
           </div>
+          <div v-else-if="table_data.tag === 'hub_name'">
+            {{ !props.row.hub_name ? '--' : props.row.hub_name }}
+          </div>
           <div
             v-else-if="table_data.tag === 'shipping_agent_name'"
             :class="
