@@ -17,7 +17,10 @@
         size="medium"
         class="fulfilment-action-button"
         :disabled="selectedOrders.length === 0"
-        v-if="page === 'Inbound_ordersView' || page === 'Outbound_ordersView'"
+        v-if="
+          (page === 'Inbound_ordersView' || page === 'Outbound_ordersView') &&
+            permissions.batch_fulfilment_orders
+        "
         @click="showModal('batching', 'About these orders')"
       >
         Batch orders
@@ -43,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'BatchActions',
@@ -64,9 +67,13 @@ export default {
   },
 
   computed: {
+    ...mapState(['userData']),
     ...mapGetters({
       getCheckedOrders: 'fulfilment/getCheckedOrders',
     }),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
     modalTitle() {
       const data = {
         Outbound_ordersView: 'Delivery Requests',
