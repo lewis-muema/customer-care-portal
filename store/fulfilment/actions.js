@@ -59,6 +59,7 @@ export default {
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(`${url}missioncontrol/deliveries`);
       if (response.status === 200) {
+        if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
         const deliveryOrders = response.data.data.orders;
         const pagination = {
           total: deliveryOrders.length,
@@ -77,7 +78,10 @@ export default {
     }
   },
 
-  async fetchOutboundBatchedOrders({ rootState, dispatch, commit }, payload) {
+  async fetchOutboundBatchedOrders(
+    { rootState, dispatch, commit, getters },
+    payload,
+  ) {
     delete payload.direction;
     // eslint-disable-next-line prettier/prettier
     const filter =
@@ -92,6 +96,7 @@ export default {
         `${url}missioncontrol/batches?direction=OUTBOUND${filter}`,
       );
       if (response.status === 200) {
+        if (getters.getTableDetailKeyMetric.id !== 'batch_id') return;
         const batches = response.data.data.batches;
 
         const pagination = {
