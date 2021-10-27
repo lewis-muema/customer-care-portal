@@ -190,7 +190,10 @@ export default {
       try {
         const data = await this.fetch_table_details(payload);
 
-        if (data.status === 200) {
+        if (
+          data.status === 200 ||
+          data.data.message === 'batch.retrieve.success'
+        ) {
           const details =
             this.section === 'batches'
               ? data.data.data.batch
@@ -201,40 +204,46 @@ export default {
               order_id: details.order_id,
               created_date: details.created_date,
               order_status: details.order_status,
-              order_recipient_name: details.destination.name,
+              // eslint-disable-next-line prettier/prettier
+              order_recipient_name: !details.destination ? null : details.destination.name,
               ordered_items_count: details.order_items.items.length,
               scheduled_date: details.scheduled_date,
               completed_date: details.completed_date,
               consolidated: details.consolidated,
               business_name: details.business.business_name,
-              most_recent_batch_id: details.batches[0].batch_id,
+              // eslint-disable-next-line prettier/prettier
+              most_recent_batch_id: !details.batches || details.batches.length === 0 ? null : details.batches[0].batch_id,
               destination_region: null,
               // eslint-disable-next-line prettier/prettier
-              destination_description: details.destination.delivery_location.description,
+              destination_description: !details.destination ? null : details.destination.delivery_location.description,
               // eslint-disable-next-line prettier/prettier
-              shipping_agent_name: details.batches[0].assigned_shipping_agent.agent_name,
+              shipping_agent_name: details.batches || details.batches.length === 0 || !details.batches[0].assigned_shipping_agent ? null :details.batches[0].assigned_shipping_agent.agent_name,
               // eslint-disable-next-line prettier/prettier
-              shipping_agent_vehicle_type: details.batches[0].assigned_shipping_agent.vehicle_type,
+              shipping_agent_vehicle_type: details.batches || details.batches.length === 0 || details.batches[0].assigned_shipping_agent ? null : details.batches[0].assigned_shipping_agent.vehicle_type,
             };
+
             arr.push(r);
             this.updateTableData(arr);
-            // this.updateProcessingStatus(true);
             this.updateSearchedEntity(r);
             this.isSearching(false);
-            // this.updateSearchState(false);
           } else {
             const r = {
               batch_id: details.batch_id,
               batch_status: details.batch_status,
               created_date: details.created_date,
               scheduled_date: details.scheduled_date,
-              hub_name: details.hub.hub_name,
+              hub_name: !details.hub ? null : details.hub.hub_name,
               direction: details.direction,
-              shipping_agent_name: details.assigned_shipping_agent.agent_name,
-              // eslint-disable-next-line prettier/prettier
-              shipping_agent_vehicle_type: details.assigned_shipping_agent.vehicle_type,
+              shipping_agent_name: !details.assigned_shipping_agent
+                ? null
+                : details.assigned_shipping_agent.agent_name,
+              // // eslint-disable-next-line prettier/prettier
+              shipping_agent_vehicle_type: !details.assigned_shipping_agent
+                ? null
+                : details.assigned_shipping_agent.vehicle_type,
               order_count: details.orders.length,
             };
+
             arr.push(r);
 
             this.updateTableData(arr);
