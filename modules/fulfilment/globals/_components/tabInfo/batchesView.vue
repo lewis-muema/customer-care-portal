@@ -26,7 +26,9 @@
               </i>
               <i
                 class="el-icon-delete remove-order"
-                v-if="isEditable"
+                v-if="
+                  isEditable && permissions.remove_fulfilment_order_from_batch
+                "
                 @click="removeOrderFromBatch(order_details[scope.$index])"
               >
                 <span class="child-order-action">Remove</span>
@@ -58,7 +60,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 import StatusBadge from '../StatusBadge.vue';
 import BatchChildOrderDetail from './BatchChildOrderDetail.vue';
 import RemoveOrderFromBatch from './RemoveOrderFromBatch.vue';
@@ -80,11 +82,15 @@ export default {
     };
   },
   computed: {
+    ...mapState(['userData']),
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
       getBatchChildOrderDetails: 'fulfilment/getBatchChildOrderDetails',
       getRemoveOrderStoreValue: 'fulfilment/getRemoveOrderStoreValue',
     }),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
     isEditable() {
       const status = this.getTableDetails.batch_status;
       return (

@@ -4,6 +4,7 @@
       type="primary"
       class="add-batch-section"
       @click="centerDialogVisible = true"
+      v-if="permissions.add_fulfilment_order_to_batch"
     >
       + Add to batch
     </el-button>
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
 import NotificationMxn from '../../../../../mixins/notification_mixin';
 
 export default {
@@ -67,9 +68,13 @@ export default {
     };
   },
   computed: {
+    ...mapState(['userData']),
     ...mapGetters({
       getActivePage: 'getActivePage',
     }),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
     orderNumbers() {
       const arr = [];
       if (this.order) {

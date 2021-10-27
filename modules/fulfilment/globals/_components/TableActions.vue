@@ -24,7 +24,8 @@
           v-if="
             (page === 'Outbound_batchesView' ||
               page === 'Inbound_batchesView') &&
-              canRequestForTransport()
+              canRequestForTransport() &&
+              permissions.fulfilment_allocate_partner
           "
           @click="dialogVisible = true"
           >Request for transport</el-button
@@ -110,7 +111,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'OrderActions',
@@ -131,9 +132,13 @@ export default {
     };
   },
   computed: {
+    ...mapState(['userData']),
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
     }),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
   },
   methods: {
     triggerAction(action) {
