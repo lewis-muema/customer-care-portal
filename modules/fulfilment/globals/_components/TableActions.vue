@@ -22,7 +22,9 @@
           size="mini"
           plain
           v-if="
-            page === 'Outbound_batchesView' || page === 'Inbound_batchesView'
+            (page === 'Outbound_batchesView' ||
+              page === 'Inbound_batchesView') &&
+              getTableDetails.assigned_shipping_agent
           "
           @click="dialogVisible = true"
           >Request for transport</el-button
@@ -111,6 +113,8 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'OrderActions',
   components: {
@@ -128,6 +132,11 @@ export default {
       action: '',
       dialogVisible: false,
     };
+  },
+  computed: {
+    ...mapGetters({
+      getTableDetails: 'fulfilment/getTableDetails',
+    }),
   },
   methods: {
     triggerAction(action) {
