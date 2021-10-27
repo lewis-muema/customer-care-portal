@@ -24,7 +24,7 @@
           v-if="
             (page === 'Outbound_batchesView' ||
               page === 'Inbound_batchesView') &&
-              getTableDetails.assigned_shipping_agent
+              canRequestForTransport()
           "
           @click="dialogVisible = true"
           >Request for transport</el-button
@@ -105,10 +105,7 @@
       class="requestTransportDialog"
       width="40%"
     >
-      <RequestTransport
-        :row-data="rowData"
-        @closeDialog="closeDialog($event)"
-      />
+      <RequestTransport @closeDialog="closeDialog($event)" />
     </el-dialog>
   </div>
 </template>
@@ -144,6 +141,13 @@ export default {
     },
     closeDialog(data) {
       this.dialogVisible = data;
+    },
+    canRequestForTransport() {
+      const batchStatus = this.getTableDetails.batch_status;
+      const allowed =
+        batchStatus === 'BATCH_IN_COMPOSITION' ||
+        batchStatus === 'BATCH_FAILED_SHIPPING_ASSIGNMENT';
+      return allowed;
     },
   },
 };

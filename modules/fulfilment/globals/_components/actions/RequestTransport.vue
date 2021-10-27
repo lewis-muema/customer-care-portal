@@ -52,7 +52,6 @@ export default {
   name: 'RequestTransport',
   components: { FindPartnerInput },
   mixins: [NotificationMxn],
-  props: ['rowData'],
   data() {
     return {
       preferredDriver: 'no',
@@ -63,7 +62,7 @@ export default {
   computed: {
     ...mapGetters({
       vehicles: 'fulfilment/getVehicles',
-      hubs: 'fulfilment/getHubs',
+      getTableDetails: 'fulfilment/getTableDetails',
     }),
   },
   methods: {
@@ -71,9 +70,13 @@ export default {
       requestForTransportAction: 'fulfilment/requestForTransport',
     }),
     vehicleTypeImage() {
-      if (this.rowData.shipping_agent_vehicle_type === null) return false;
+      if (this.getTableDetails.batch_summary.recommended_vehicle_type === null)
+        return false;
       const vehicleType = this.vehicles.filter(element => {
-        return element.value === this.rowData.shipping_agent_vehicle_type;
+        return (
+          element.value ===
+          this.getTableDetails.batch_summary.recommended_vehicle_type
+        );
       });
       return vehicleType[0];
     },
@@ -81,21 +84,19 @@ export default {
       this.selectedPartner = partner;
     },
     async requestForTransport() {
-      const hub = this.hubs.filter(element => {
-        return element.hub_name === this.rowData.hub_name;
-      });
       const payload = {
         app: 'FULFILMENT_SERVICE',
-        endpoint: `missioncontrol/batches/${this.rowData.batch_id}/assign-shippingagent`,
+        endpoint: `missioncontrol/batches/${this.getTableDetails.batch_id}/assign-shippingagent`,
         apiKey: false,
         params: {
           shipping_request_type:
             this.preferredDriver === 'no' ? 'DISPATCH' : 'DIRECT_ASSIGNMENT',
           shipping_provider: 'SENDY',
-          vehicle_type: this.rowData.shipping_agent_vehicle_type ?? null,
+          vehicle_type:
+            this.getTableDetails.batch_summary.recommended_vehicle_type ?? null,
           shipping_agent_id: this.selectedPartner.phone_no ?? null,
-          direction: this.rowData.direction,
-          hub_id: hub[0].hub_id,
+          direction: this.getTableDetails.direction,
+          hub_id: this.getTableDetails.hub.hub_id,
         },
       };
       this.loading = true;
