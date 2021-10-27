@@ -3,7 +3,10 @@
     <div class="fulfillment-tab-info-top">
       <div class="fulfillment-tab-info-seller">
         <div class="fulfillment-tab-info-titles">Recommended vehicle</div>
-        <div class="fulfilment-recommended-vehicles">
+        <div v-if="!getTableDetails.assigned_shipping_agent">
+          Not Available
+        </div>
+        <div class="fulfilment-recommended-vehicles" v-else>
           <div class="fulfillment-tab-info-description">
             <img
               :src="`${webImages}${showVehicle()}`"
@@ -120,15 +123,15 @@ export default {
       return string;
     },
     showVehicle() {
+      const shipping_agent = this.getTableDetails.assigned_shipping_agent;
       let vendor = null;
-      if (!this.getAgentVehicleType) {
-        return vendor;
-      }
-      const filteredVehicle = this.vehicles.filter(
-        vehicle => vehicle.value === this.getAgentVehicleType,
-      );
-      // eslint-disable-next-line prettier/prettier
+      if (shipping_agent) {
+        const filteredVehicle = this.vehicles.filter(
+          vehicle => vehicle.value === shipping_agent.vehicle_type,
+        );
+        // eslint-disable-next-line prettier/prettier
         vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image: null;
+      }
       return vendor;
     },
   },

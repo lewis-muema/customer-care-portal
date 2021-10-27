@@ -26,20 +26,14 @@ export default {
         width: '130',
       },
       {
-        name: 'Seller',
-        tag: 'business_name',
-        width: '140',
+        name: 'Client',
+        tag: 'order_recipient_name',
+        width: '130',
       },
       {
         name: 'Order Number',
         tag: 'order_id',
         width: '150',
-      },
-
-      {
-        name: 'Recipient',
-        tag: 'order_recipient_name',
-        width: '130',
       },
       {
         name: 'Time',
@@ -47,9 +41,14 @@ export default {
         width: '150',
       },
       {
-        name: 'Destination',
+        name: 'Pickup',
         tag: 'destination_description',
         width: '',
+      },
+      {
+        name: 'Delivery',
+        tag: 'hub_name',
+        width: '140',
       },
       {
         name: 'Assigned Batch',
