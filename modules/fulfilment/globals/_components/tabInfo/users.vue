@@ -20,7 +20,10 @@
           </div>
         </div>
       </div>
-      <div class="fulfillment-tab-info-recipient">
+      <div
+        class="fulfillment-tab-info-recipient"
+        v-if="getFulfilmentType === 'Outbound_ordersView'"
+      >
         <div class="fulfillment-tab-info-titles">Recipient</div>
         <div>
           <div class="fulfillment-tab-info-description">
@@ -107,6 +110,7 @@ export default {
   computed: {
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
+      getFulfilmentType: 'fulfilment/getFulfilmentType',
     }),
   },
   beforeMount() {
