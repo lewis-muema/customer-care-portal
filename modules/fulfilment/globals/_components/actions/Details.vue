@@ -3,7 +3,7 @@
     <div class="fulfillment-tab-info-top">
       <div class="fulfillment-tab-info-seller">
         <div class="fulfillment-tab-info-titles">Recommended vehicle</div>
-        <div v-if="!getTableDetails.assigned_shipping_agent">
+        <div v-if="!getTableDetails.batch_summary.recommended_vehicle_type">
           Not Available
         </div>
         <div class="fulfilment-recommended-vehicles" v-else>
@@ -116,18 +116,22 @@ export default {
       );
     },
     getVendorType() {
-      const string = !this.getAgentVehicleType
+      const string = !this.getTableDetails.batch_summary
+        .recommended_vehicle_type
         ? ''
-        : this.getAgentVehicleType.replace(/_/g, ' ').toLowerCase();
+        : this.getTableDetails.batch_summary.recommended_vehicle_type
+            .replace(/_/g, ' ')
+            .toLowerCase();
 
       return string;
     },
     showVehicle() {
-      const shipping_agent = this.getTableDetails.assigned_shipping_agent;
+      const shipping_agent = this.getTableDetails.batch_summary
+        .recommended_vehicle_type;
       let vendor = null;
       if (shipping_agent) {
         const filteredVehicle = this.vehicles.filter(
-          vehicle => vehicle.value === shipping_agent.vehicle_type,
+          vehicle => vehicle.value === shipping_agent,
         );
         // eslint-disable-next-line prettier/prettier
         vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image: null;
