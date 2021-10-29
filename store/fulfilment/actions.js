@@ -431,7 +431,7 @@ export default {
             },
             {
               value: 'BATCH_FAILED_SHIPPING_ASSIGNMENT',
-              label: 'Failed',
+              label: 'No Partner',
               type: 'batch',
             },
             {
