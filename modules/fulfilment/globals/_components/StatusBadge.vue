@@ -87,4 +87,8 @@ export default {
   background-color: black;
   color: #fff;
 }
+.order-status.no-partner {
+  background-color: #dd4b39;
+  color: #fff;
+}
 </style>
