@@ -9,16 +9,17 @@
       @row-click="expandTableRow"
       @expand-change="handleRowExpand"
       @selection-change="handleSelectionChange"
+      v-loading="fetching"
     >
       >
       <div
         class="data-info-panel"
         slot="append"
-        v-if="getTableData.length == '0'"
+        v-if="getTableData.length === 0 && fetching === false"
       >
-        <span v-if="processing"> Fetching data ... </span>
-        <span v-else>No Data</span>
+        <span>No Data</span>
       </div>
+
       <el-table-column
         :type="checkFulfilmentMultiSelect"
         class="selectionStatus"
@@ -155,6 +156,7 @@ export default {
     return {
       hubs: null,
       processing: false,
+      fetching: false,
       regions: null,
       status: null,
       multipleSelection: [],
@@ -275,8 +277,10 @@ export default {
       fetchVehicles: 'fulfilment/fetchVehicles',
     }),
 
-    fetchTableData(payload = null) {
-      this.$store.dispatch(this.dataProps.setter, payload);
+    async fetchTableData(payload = null) {
+      this.fetching = true;
+      await this.$store.dispatch(this.dataProps.setter, payload);
+      this.fetching = false;
     },
     getRowKey(row) {
       const key_value = this.getTableDetailKeyMetric.id;
@@ -386,7 +390,7 @@ export default {
         vehicle => vehicle.value === val,
       );
       // eslint-disable-next-line prettier/prettier
-        vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image: null;
+      vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image : null;
       return vendor;
     },
   },
