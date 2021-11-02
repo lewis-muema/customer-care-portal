@@ -4,7 +4,10 @@
       <div class="">
         <h1 class="fulfilment-label">Hubs</h1>
       </div>
-      <div class="fulfilment-label add-hub-outer">
+      <div
+        class="fulfilment-label add-hub-outer"
+        v-if="permissions.add_fulfilment_hubs"
+      >
         <el-button
           type="primary"
           size="medium"
@@ -34,7 +37,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapState } from 'vuex';
 
 import HubSection from './_components/HubsComponent.vue';
 import AddHubDialog from './_components/AddHubDialog.vue';
@@ -51,9 +54,13 @@ export default {
     };
   },
   computed: {
+    ...mapState(['userData']),
     ...mapGetters({
       getHubDialog: 'fulfilment/getHubDialog',
     }),
+    permissions() {
+      return JSON.parse(this.userData.payload.data.privilege);
+    },
   },
   watch: {
     getHubDialog(val) {
