@@ -43,6 +43,11 @@
               :status="props.row.batch_status"
             />
           </div>
+          <div v-else-if="table_data.tag === 'country'">
+            <div class="country-badge">
+              {{ orderCountryName(props.row.country) }}
+            </div>
+          </div>
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.scheduled_date) }}
           </div>
@@ -393,6 +398,11 @@ export default {
       vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image : null;
       return vendor;
     },
+    orderCountryName(country) {
+      return `${country.charAt(0).toUpperCase()}${country
+        .slice(1)
+        .toLowerCase()}`;
+    },
   },
 };
 </script>
@@ -464,5 +474,16 @@ export default {
 }
 .no-assigned-fulfilment-order {
   color: #cacaca;
+}
+.country-badge {
+  text-align: center;
+  width: 70%;
+  border-radius: 20px;
+  text-transform: capitalize;
+  font-weight: 700;
+  font-size: 10.5378px;
+  line-height: 24px;
+  background-color: #00c0ef;
+  color: #fff;
 }
 </style>

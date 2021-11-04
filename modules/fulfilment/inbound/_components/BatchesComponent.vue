@@ -59,6 +59,11 @@ export default {
         tag: 'shipping_agent_name',
         width: '',
       },
+      {
+        name: 'Country',
+        tag: 'country',
+        width: '130',
+      },
     ];
     this.setTableProps(tableProps);
   },
