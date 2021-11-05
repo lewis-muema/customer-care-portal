@@ -38,7 +38,7 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
+    RABBITMQ_URL: 'wss://stomptest.sendyit.com/ws',
     BROKER_USER: 'staging',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
@@ -83,7 +83,7 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
+    RABBITMQ_URL: 'wss://stomptest.sendyit.com/ws',
     BROKER_USER: 'staging',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
@@ -127,7 +127,7 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
+    RABBITMQ_URL: 'wss://stomptest.sendyit.com/ws',
     BROKER_USER: 'staging',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
