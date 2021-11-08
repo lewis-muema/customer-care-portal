@@ -60,7 +60,12 @@
           class="blue"
           size="mini"
           plain
-          v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
+          v-if="
+            page === 'Outbound_ordersView' ||
+              page === 'Inbound_ordersView' ||
+              page === 'Outbound_batchesView' ||
+              page === 'Inbound_batchesView'
+          "
           @click="triggerAction('delivery_codes')"
           >Delivery Codes</el-button
         >
