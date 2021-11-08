@@ -161,7 +161,7 @@ const config = {
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
 
-    RABBITMQ_URL: 'wss://stomp.sendyit.com/ws',
+    RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
     BROKER_USER: 'production',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://auth.sendyit.com',
