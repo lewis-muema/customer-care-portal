@@ -91,6 +91,17 @@
           >Dispatch</el-button
         >
       </el-col> -->
+      <el-col :span="4">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          plain
+          @click="triggerAction('update_status')"
+          v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
+          >Update status</el-button
+        >
+      </el-col>
     </el-row>
     <el-row>
       <DeliveryCodes v-if="action === 'delivery_codes'" />
@@ -99,6 +110,11 @@
       <Reallocate v-if="action === 'reallocate'" />
       <Dispatch v-if="action === 'dispatch'" />
       <Details v-if="action === 'details'" />
+      <UpdateStatus
+        :page="page"
+        v-if="action === 'update_status'"
+        :details="getTableDetails"
+      />
     </el-row>
     <el-dialog
       title="Request for transport"
@@ -123,6 +139,7 @@ export default {
     Dispatch: () => import('./actions/Dispatch'),
     Details: () => import('./actions/Details'),
     RequestTransport: () => import('./actions/RequestTransport'),
+    UpdateStatus: () => import('./actions/UpdateStatus'),
   },
   props: ['page', 'rowData'],
   data() {
