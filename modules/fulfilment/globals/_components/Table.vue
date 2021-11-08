@@ -9,16 +9,17 @@
       @row-click="expandTableRow"
       @expand-change="handleRowExpand"
       @selection-change="handleSelectionChange"
+      v-loading="fetching"
     >
       >
       <div
         class="data-info-panel"
         slot="append"
-        v-if="getTableData.length == '0'"
+        v-if="getTableData.length === 0 && fetching === false"
       >
-        <span v-if="processing"> Fetching data ... </span>
-        <span v-else>No Data</span>
+        <span>No Data</span>
       </div>
+
       <el-table-column
         :type="checkFulfilmentMultiSelect"
         class="selectionStatus"
@@ -41,6 +42,11 @@
               v-if="props.row.batch_status"
               :status="props.row.batch_status"
             />
+          </div>
+          <div v-else-if="table_data.tag === 'country'">
+            <div class="country-badge">
+              {{ orderCountryName(props.row.country) }}
+            </div>
           </div>
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.scheduled_date) }}
@@ -155,6 +161,7 @@ export default {
     return {
       hubs: null,
       processing: false,
+      fetching: false,
       regions: null,
       status: null,
       multipleSelection: [],
@@ -275,8 +282,10 @@ export default {
       fetchVehicles: 'fulfilment/fetchVehicles',
     }),
 
-    fetchTableData(payload = null) {
-      this.$store.dispatch(this.dataProps.setter, payload);
+    async fetchTableData(payload = null) {
+      this.fetching = true;
+      await this.$store.dispatch(this.dataProps.setter, payload);
+      this.fetching = false;
     },
     getRowKey(row) {
       const key_value = this.getTableDetailKeyMetric.id;
@@ -386,8 +395,13 @@ export default {
         vehicle => vehicle.value === val,
       );
       // eslint-disable-next-line prettier/prettier
-        vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image: null;
+      vendor = filteredVehicle.length > 0 ? filteredVehicle[0].image : null;
       return vendor;
+    },
+    orderCountryName(country) {
+      return `${country.charAt(0).toUpperCase()}${country
+        .slice(1)
+        .toLowerCase()}`;
     },
   },
 };
@@ -460,5 +474,16 @@ export default {
 }
 .no-assigned-fulfilment-order {
   color: #cacaca;
+}
+.country-badge {
+  text-align: center;
+  width: 70%;
+  border-radius: 20px;
+  text-transform: capitalize;
+  font-weight: 700;
+  font-size: 10.5378px;
+  line-height: 24px;
+  background-color: #00c0ef;
+  color: #fff;
 }
 </style>
