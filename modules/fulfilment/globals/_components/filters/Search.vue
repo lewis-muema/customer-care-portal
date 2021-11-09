@@ -211,6 +211,7 @@ export default {
               completed_date: details.completed_date,
               consolidated: details.consolidated,
               business_name: details.business.business_name,
+              country: details.country,
               // eslint-disable-next-line prettier/prettier
               most_recent_batch_id: !details.batches || details.batches.length === 0 ? null : details.batches[0].batch_id,
               destination_region: null,
@@ -242,6 +243,7 @@ export default {
                 ? null
                 : details.assigned_shipping_agent.vehicle_type,
               order_count: details.orders.length,
+              country: details.country,
             };
 
             arr.push(r);
