@@ -176,9 +176,13 @@
       </div>
     </div>
     <template slot="footer" class="dialog-footer">
-      <button class="btn primary-btn" @click="offlineOrderSubmit">
+      <el-button
+        class="btn primary-btn"
+        :loading="loading"
+        @click="offlineOrderSubmit"
+      >
         Submit
-      </button>
+      </el-button>
     </template>
   </el-dialog>
 </template>
@@ -188,13 +192,14 @@ import { mapActions } from 'vuex';
 import offlineOrderMxn from '@/mixins/offline_order_mixin';
 
 export default {
-  name: 'previwOrderModal',
+  name: 'PreviwOrderModal',
   mixins: [offlineOrderMxn],
   props: ['checked', 'elements', 'propObject', 'showDialog', 'payloadDraft'],
   data() {
     return {
       actionClass: 'success',
       message: '',
+      loading: false,
     };
   },
   methods: {
@@ -215,6 +220,7 @@ export default {
       return data;
     },
     async offlineOrderSubmit() {
+      this.loading = true;
       const payload = this.payloadDraft;
       const partners = this.cleanPartnerData(this.elements);
       if (!this.checked) {
@@ -232,6 +238,7 @@ export default {
       }
       const data = await this.perform_user_action(payload);
       this.actionClass = data.status ? 'success' : 'error';
+      this.loading = false;
       if (data.status) {
         this.$emit('close', false);
       } else {
