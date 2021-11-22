@@ -174,7 +174,7 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL: 'wss://prod-stomp.sendyit.com:15675/ws',
+    RABBITMQ_URL: 'wss://stomp.sendyit.com:443/ws',
     BROKER_USER: 'production',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://auth.sendyit.com',
