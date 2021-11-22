@@ -12,6 +12,19 @@
     </section>
     <section>
       <label class="request-transport-label">
+        Select vehicle type
+      </label>
+      <el-select v-model="preferredVehicleType">
+        <el-option
+          v-for="item in getVehicleTypes()"
+          :key="item.value"
+          :label="item.name"
+          :value="item.value"
+        />
+      </el-select>
+    </section>
+    <section>
+      <label class="request-transport-label">
         Do you have a preferred driver at the pick up location?</label
       >
       <el-select v-model="preferredDriver">
@@ -47,16 +60,18 @@
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import FindPartnerInput from '../FindPartnerInput.vue';
 import NotificationMxn from '../../../../../mixins/notification_mixin';
+import FulfilmentData from '../../../../../mixins/fulfilment_data';
 
 export default {
   name: 'RequestTransport',
   components: { FindPartnerInput },
-  mixins: [NotificationMxn],
+  mixins: [NotificationMxn, FulfilmentData],
   data() {
     return {
       preferredDriver: 'no',
       selectedPartner: '',
       loading: false,
+      preferredVehicleType: '',
     };
   },
   computed: {
@@ -65,10 +80,16 @@ export default {
       getTableDetails: 'fulfilment/getTableDetails',
     }),
   },
+  created() {
+    this.preferredVehicleType = this.vehicleTypeImage().name;
+  },
   methods: {
     ...mapActions({
       requestForTransportAction: 'fulfilment/requestForTransport',
     }),
+    getVehicleTypes() {
+      return FulfilmentData.vehicles;
+    },
     vehicleTypeImage() {
       if (this.getTableDetails.batch_summary.recommended_vehicle_type === null)
         return false;
@@ -92,8 +113,7 @@ export default {
           shipping_request_type:
             this.preferredDriver === 'no' ? 'DISPATCH' : 'DIRECT_ASSIGNMENT',
           shipping_provider: 'SENDY',
-          vehicle_type:
-            this.getTableDetails.batch_summary.recommended_vehicle_type ?? null,
+          vehicle_type: this.preferredVehicleType ?? null,
           shipping_agent_id: this.selectedPartner.phone_no ?? null,
           direction: this.getTableDetails.direction,
           hub_id: this.getTableDetails.hub.hub_id,
