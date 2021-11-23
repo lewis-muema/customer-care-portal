@@ -81,7 +81,7 @@ export default {
     }),
   },
   created() {
-    this.preferredVehicleType = this.vehicleTypeImage().name;
+    this.preferredVehicleType = this.vehicleTypeImage().value;
   },
   methods: {
     ...mapActions({
