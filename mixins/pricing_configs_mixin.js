@@ -163,7 +163,7 @@ const PricingConfigsMxn = {
       };
       try {
         const data = await this.request_vendor_types(payload);
-        this.vendorTypes = data.vendor_types;
+        this.vendorTypes = data.status ? data.vendor_types : [];
         return this.vendorTypes;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
