@@ -13,7 +13,7 @@
       >
         <div class="fulfilment-timeline-activity">
           <div class="fulfilment-timeline-header">
-            {{ orderEvents[activity.event_code] }}
+            {{ formatOrderEvents(activity) }}
           </div>
           <div class="fulfilment-timeline-timestamp">
             {{ formatDate(activity.event_date) }}
@@ -85,6 +85,12 @@ export default {
   methods: {
     formatDate(date) {
       return moment(date).format('DD MMM ,YYYY hh.mm a ');
+    },
+    formatOrderEvents(activity) {
+      if (activity.notes) {
+        return activity.notes;
+      }
+      return this.orderEvents[activity.event_code];
     },
   },
 };
