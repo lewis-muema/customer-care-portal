@@ -558,4 +558,16 @@ export default {
       return error.response.data.data;
     }
   },
+  async fetchHubCountries({ rootState }) {
+    const url = rootState.config.FULFILMENT_SERVICE;
+
+    try {
+      const response = await axiosConfig.get(`${url}missioncontrol/countries`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
 };
