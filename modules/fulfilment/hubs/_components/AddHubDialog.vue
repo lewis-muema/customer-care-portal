@@ -13,7 +13,7 @@
       <vue-tel-input
         v-model="hub_phone"
         class="form-control"
-        :preferred-countries="['ke']"
+        :preferred-countries="country_codes"
       />
     </div>
     <div class="add-hub-selector">
@@ -28,9 +28,9 @@
       >
         <el-option
           v-for="val in country_list"
-          :key="val.id"
+          :key="val.code"
           :label="val.name"
-          :value="val.id"
+          :value="val.name"
         >
         </el-option>
       </el-select>
@@ -123,12 +123,8 @@ export default {
       location: '',
       location_data: {},
       country: '',
-      country_list: [
-        {
-          id: 1,
-          name: 'Kenya',
-        },
-      ],
+      country_list: [],
+      country_codes: [],
       hub_type: '',
       hub_list: [
         {
@@ -161,6 +157,7 @@ export default {
     this.$gmapApiPromiseLazy().then(() => {
       this.loadMapScript();
     });
+    this.getCountries();
   },
   methods: {
     ...mapMutations({
@@ -168,6 +165,7 @@ export default {
     }),
     ...mapActions({
       add_fulfilment_hub: 'fulfilment/add_fulfilment_hub',
+      fetchHubCountries: 'fulfilment/fetchHubCountries',
     }),
     loadMapScript() {
       if (window.google && window.google.maps) {
@@ -194,7 +192,7 @@ export default {
       this.service.getPlacePredictions(
         {
           input: val,
-          componentRestrictions: { country: ['ke'] },
+          componentRestrictions: { country: this.country_codes },
         },
         this.displaySuggestions,
       );
@@ -234,6 +232,13 @@ export default {
         },
       );
     },
+    async getCountries() {
+      const response = await this.fetchHubCountries();
+      this.country_list = response.data.countries;
+      this.country_list.forEach(element => {
+        this.country_codes.push(element.code.toLowerCase());
+      });
+    },
     async addHub() {
       if (
         this.location !== '' &&
@@ -252,6 +257,7 @@ export default {
             hub_name: this.hub_name,
             hub_phone_number: this.hub_phone.replace(/\s/g, ''),
             hub_location: this.location_data,
+            country: this.country,
           },
         };
         try {
