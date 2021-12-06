@@ -701,7 +701,7 @@ export default {
       toTime: '',
       daysWorked: '',
       preview: false,
-      selectedVendor: 'Bike',
+      selectedVendor: '',
       maxDistance: '',
       ratePerAdditionalKm: '',
       maxPartnerTakePerAdditionalKm: '',
@@ -806,7 +806,8 @@ export default {
         (this.partnerTake || this.partnerTake === 0) &&
         (this.ratePerAdditionalKm || this.ratePerAdditionalKm === 0) &&
         (this.maxPartnerTakePerAdditionalKm ||
-          this.maxPartnerTakePerAdditionalKm === 0)
+          this.maxPartnerTakePerAdditionalKm === 0) &&
+        this.selectedVendor !== ''
       ) {
         return true;
       } else if (
@@ -818,7 +819,8 @@ export default {
         (this.partnerTake || this.partnerTake === 0) &&
         (this.ratePerAdditionalKm || this.ratePerAdditionalKm === 0) &&
         (this.maxPartnerTakePerAdditionalKm ||
-          this.maxPartnerTakePerAdditionalKm === 0)
+          this.maxPartnerTakePerAdditionalKm === 0) &&
+        this.selectedVendor !== ''
       ) {
         return true;
       }
@@ -991,7 +993,8 @@ export default {
     const countryCode = this.user.user_details.country_code;
     await this.fetchVendorTypes(this.defaultCurrency);
     this.tablePricingData = this.dailyRateData;
-    this.selectedVendor = this.filterdVendors[0].name;
+    this.selectedVendor =
+      this.filterdVendors.length > 0 ? this.filterdVendors[0].name : '';
     if (this.userCurrencies.length > 0) {
       this.activeCurrency =
         this.defaultCurrency in this.userCurrencies
@@ -1049,7 +1052,7 @@ export default {
     },
     clearInputs() {
       this.selectedVendor =
-        this.filterdVendors.length > 0 ? this.filterdVendors[0].name : 'Bike';
+        this.filterdVendors.length > 0 ? this.filterdVendors[0].name : '';
       this.maxDistance = '';
       this.daysWorked = '';
       this.monthlyRate = '';

@@ -778,7 +778,8 @@ export default {
         this.partnerRate &&
         this.kmBands[0].lowerLimitKm &&
         this.kmBands[0].upperLimitKm &&
-        this.partnerPriceType === 'per_km_band'
+        this.partnerPriceType === 'per_km_band' &&
+        this.selectedVendor !== ''
       ) {
         return true;
       } else if (
@@ -787,7 +788,8 @@ export default {
         this.partnerRate &&
         this.costPerKm &&
         this.partnerCostPerKm &&
-        this.partnerPriceType === 'standard_rate_per_km'
+        this.partnerPriceType === 'standard_rate_per_km' &&
+        this.selectedVendor !== ''
       ) {
         return true;
       }
@@ -845,7 +847,8 @@ export default {
     await this.fetchVendorTypes(this.defaultCurrency);
     this.trackAddPricingDataPage();
     this.tablePricingData = this.MileageData;
-    this.selectedVendor = this.filterdVendors[0].name;
+    this.selectedVendor =
+      this.filterdVendors.length > 0 ? this.filterdVendors[0].name : '';
     if (this.userCurrencies.length > 0) {
       this.activeCurrency =
         this.defaultCurrency in this.userCurrencies
@@ -932,7 +935,7 @@ export default {
     },
     clearInputs() {
       this.selectedVendor =
-        this.filterdVendors.length > 0 ? this.filterdVendors[0].name : 'Bike';
+        this.filterdVendors.length > 0 ? this.filterdVendors[0].name : '';
       this.minDistance = '';
       this.customerRate = '';
       this.partnerRate = '';
