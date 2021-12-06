@@ -59,7 +59,7 @@
 
 <script>
 import VueTypeahead from 'vue-typeahead';
-import { mapGetters, mapMutations, mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
   extends: VueTypeahead,
@@ -76,7 +76,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapGetters(['getSession', 'getEnvironmentVariables']),
-
     query_string() {
       localStorage.setItem('query', this.query);
       return this.query.trim();
@@ -87,14 +86,12 @@ export default {
     solarToken() {
       return this.getEnvironmentVariables.SOLR_JWT;
     },
-    userCountries() {
-      const staffCountry = JSON.parse(
-        this.getSession.payload.data.country_codes.toLowerCase(),
-      );
-      return staffCountry;
-    },
     src() {
       return `${this.solarBase}select?q=(order_no:*${this.query_string}*+OR+pickup:*${this.query_string}*+OR+destination:*${this.query_string}*+OR+user_phone:*${this.query_string}*+OR+user_name:*${this.query_string}*+OR+user_email:*${this.query_string}*+OR+rider_email:*${this.query_string}*+OR+rider_phone_no:*${this.query_string}*+OR+rider_name:*${this.query_string}*+OR+container_number:*${this.query_string}*+OR+container_destination:*${this.query_string}*+OR+consignee:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
+    },
+    userCountries() {
+      const countryCodeArray = this.getSession.payload.data.country_codes;
+      return JSON.parse(countryCodeArray.toLowerCase());
     },
   },
   methods: {
@@ -117,6 +114,7 @@ export default {
       await this.singleOrderRequest(orderNo);
     },
     async singleOrderRequest(orderNo) {
+      if (!orderNo) return;
       orderNo = orderNo.trim();
       try {
         const data = await this.request_single_order(orderNo);
@@ -132,7 +130,11 @@ export default {
       }
     },
     prepareResponseData(data) {
-      return data.response.docs;
+      const response = data.response.docs;
+      const filtered = response.filter(item =>
+        this.userCountries.includes(item.country_code),
+      );
+      return filtered;
     },
     clear() {
       this.isActive = true;
@@ -174,7 +176,7 @@ export default {
   font-size: 14px;
 }
 .Typeahead__input:focus {
-  border-color: 2px solid #0097cf;
+  border: 2px solid #0097cf;
   outline: 0;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #0097cf;
 }

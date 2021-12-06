@@ -55,7 +55,7 @@
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: 'statusBar',
+  name: 'TheStatusButtonBar',
   props: {
     orders: {
       type: Array,
@@ -79,13 +79,13 @@ export default {
       return data;
     },
   },
-
   async mounted() {
     this.ordersMeta = await this.requestOrdersMetaData();
   },
+
   methods: {
-    ...mapActions(['requestOrdersMetaData']),
-    ...mapMutations({
+    ...mapActions('orders', ['requestOrdersMetaData']),
+    ...mapMutations('orders', {
       updateOrderStatuses: 'setOrderStatuses',
     }),
     objectLength(obj) {

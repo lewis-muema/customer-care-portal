@@ -163,8 +163,8 @@ const PricingConfigsMxn = {
       };
       try {
         const data = await this.request_vendor_types(payload);
-        this.vendorTypes = data.vendor_types;
-        return data.vendor_types;
+        this.vendorTypes = data.status ? data.vendor_types : [];
+        return this.vendorTypes;
       } catch (error) {
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
@@ -308,7 +308,7 @@ const PricingConfigsMxn = {
       this.updateClass(actionClass);
       this.updateErrors(notification);
     },
-    async logAction(action, actionId) {
+    async logAction(action, actionId, copDetails) {
       const payload = {
         app: 'ORDERS_APP',
         endpoint: 'log_cc_action',
@@ -323,6 +323,10 @@ const PricingConfigsMxn = {
           order_no: '',
         },
       };
+      if (copDetails) {
+        payload.params.cop_id = copDetails.copId;
+        payload.params.cop_name = copDetails.copName;
+      }
       const data = await this.log_action(payload);
     },
   },

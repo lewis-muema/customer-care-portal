@@ -141,6 +141,7 @@ module.exports = {
    */
   css: [
     '@assets/style/custom.css',
+    '@assets/style/fulfillment.css',
     '@assets/style/adminLTE.min',
     '@assets/style/typeahead.css',
     '@assets/style/pricing-config.css',
@@ -153,6 +154,7 @@ module.exports = {
    */
   plugins: [
     { src: '~plugins/vue-infinite-scroll.js', ssr: false },
+    { src: '~plugins/vue-observe-visibility.js', ssr: false },
     { src: '~plugins/aos.js', ssr: false },
     { src: '~plugins/apm.js', mode: 'client', ssr: false },
     { src: '~plugins/sendy-auth', mode: 'client', ssr: false },
@@ -164,6 +166,7 @@ module.exports = {
     'plugins/vue-select',
     'plugins/vuelidate',
     'plugins/typeahead',
+    { src: '~plugins/font-awesome-icon', ssr: false },
   ],
   /*
    ** Nuxt.js modules

@@ -36,10 +36,7 @@
           </div>
         </li>
       </ul>
-      <ul
-        v-show="!hasItems && query !== ''"
-        :class="[!isActive ? 'inactiveClass' : '']"
-      >
+      <ul v-show="!hasItems && query !== ''">
         <li class="my-3">
           No results Found
         </li>
@@ -110,7 +107,7 @@ export default {
       return placeholderArray[currentUser];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       let searchString = '';

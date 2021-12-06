@@ -701,7 +701,7 @@ export default {
       toTime: '',
       daysWorked: '',
       preview: false,
-      selectedVendor: 'Bike',
+      selectedVendor: '',
       maxDistance: '',
       ratePerAdditionalKm: '',
       maxPartnerTakePerAdditionalKm: '',
@@ -806,7 +806,8 @@ export default {
         (this.partnerTake || this.partnerTake === 0) &&
         (this.ratePerAdditionalKm || this.ratePerAdditionalKm === 0) &&
         (this.maxPartnerTakePerAdditionalKm ||
-          this.maxPartnerTakePerAdditionalKm === 0)
+          this.maxPartnerTakePerAdditionalKm === 0) &&
+        this.selectedVendor !== ''
       ) {
         return true;
       } else if (
@@ -818,7 +819,8 @@ export default {
         (this.partnerTake || this.partnerTake === 0) &&
         (this.ratePerAdditionalKm || this.ratePerAdditionalKm === 0) &&
         (this.maxPartnerTakePerAdditionalKm ||
-          this.maxPartnerTakePerAdditionalKm === 0)
+          this.maxPartnerTakePerAdditionalKm === 0) &&
+        this.selectedVendor !== ''
       ) {
         return true;
       }
@@ -874,6 +876,13 @@ export default {
         }
       });
       return filtered;
+    },
+    copDetails() {
+      const cop = {
+        copName: this.copName,
+        copId: this.copId,
+      };
+      return cop;
     },
   },
   watch: {
@@ -984,7 +993,8 @@ export default {
     const countryCode = this.user.user_details.country_code;
     await this.fetchVendorTypes(this.defaultCurrency);
     this.tablePricingData = this.dailyRateData;
-    this.selectedVendor = this.filterdVendors[0].name;
+    this.selectedVendor =
+      this.filterdVendors.length > 0 ? this.filterdVendors[0].name : '';
     if (this.userCurrencies.length > 0) {
       this.activeCurrency =
         this.defaultCurrency in this.userCurrencies
@@ -1042,7 +1052,7 @@ export default {
     },
     clearInputs() {
       this.selectedVendor =
-        this.filterdVendors.length > 0 ? this.filterdVendors[0].name : 'Bike';
+        this.filterdVendors.length > 0 ? this.filterdVendors[0].name : '';
       this.maxDistance = '';
       this.daysWorked = '';
       this.monthlyRate = '';
@@ -1099,7 +1109,11 @@ export default {
             this.trackMixpanelPeople();
             notification.push(data.message);
             actionClass = this.display_order_action_notification(data.status);
-            await this.logAction('Deactivate Daily rate pricing config', 36);
+            await this.logAction(
+              'Deactivate Daily rate pricing config',
+              36,
+              this.copDetails,
+            );
             this.updateSuccess(false);
           } else {
             this.trackMixpanelPeople();
@@ -1292,7 +1306,11 @@ export default {
             'You have successfully created the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
-          await this.logAction('Add Daily rate pricing config', 36);
+          await this.logAction(
+            'Add Daily rate pricing config',
+            36,
+            this.copDetails,
+          );
           this.updateSuccess(false);
           this.sendEmailNotification(
             this.admin.email,
@@ -1344,7 +1362,11 @@ export default {
             'You have successfully edited the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
-          await this.logAction('Edit Daily rate pricing config', 36);
+          await this.logAction(
+            'Edit Daily rate pricing config',
+            36,
+            this.copDetails,
+          );
           this.updateSuccess(false);
         } else {
           notification.push(`${data.message}, ${data.errors}`);

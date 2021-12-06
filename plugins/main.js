@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import moment from 'moment';
-import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import config from '~/config/configs';
 
 const momentTimezone = require('moment-timezone');
@@ -10,6 +10,8 @@ Vue.mixin({
     return {
       userImage: config.USER_IMAGE,
       riderDeliveryImg: config.RIDER_DELIVERY_IMG,
+      sendyS3Path: 'https://s3.eu-west-1.amazonaws.com/images.sendyit.com/',
+      webImages: 'https://images.sendyit.com/web_platform/vendor_type/side/v2/',
       s3Path:
         'https://s3-eu-west-1.amazonaws.com/sendy-delivery-signatures/rider_delivery_image//',
       orderColumns: [
@@ -112,8 +114,7 @@ Vue.mixin({
     },
     isDnoteUpload(name) {
       if (name) {
-        const isUpload = name.includes('upload');
-        return isUpload;
+        return name.includes('upload');
       }
       return false;
     },
@@ -163,24 +164,20 @@ Vue.mixin({
     },
     display_code_notification(message) {
       const code = Number(this.splitWords(message));
-      const notification = this.errorCodes[code];
-      return notification;
+      return this.errorCodes[code];
     },
     getOrderFormattedDate(date, requiredFormat) {
       const utcDate = this.convertToUTC(date);
       const localTime = this.convertToLocalTime(utcDate);
-      const dt = moment(localTime).format(requiredFormat);
-      return dt;
+      return moment(localTime).format(requiredFormat);
     },
     convertToUTC(date) {
-      const utcDate = moment.utc(date);
-      return utcDate;
+      return moment.utc(date);
     },
     convertToLocalTime(UTCDate) {
-      const localTime = moment(UTCDate)
+      return moment(UTCDate)
         .local()
         .format('YYYY-MM-DD HH:mm:ss');
-      return localTime;
     },
     convertGMTToUTC(date) {
       const userTZ = moment.tz.guess();
@@ -188,19 +185,16 @@ Vue.mixin({
         .tz(date, userTZ)
         .tz('GMT')
         .format('YYYY-MM-DD HH:mm ZZ');
-      const UTCDate = moment.utc(gmtDate);
-      return UTCDate;
+      return moment.utc(gmtDate);
     },
     getFormattedDate(date, requiredFormat) {
       const UTCDate = this.convertToUTC(date);
       const dt1 = this.convertToLocalTime(UTCDate);
-      const dt = moment(dt1).format(requiredFormat);
-      return dt;
+      return moment(dt1).format(requiredFormat);
     },
     getTimeFromNow(date) {
       const dt1 = this.convertToLocalTime(date);
-      const formattedDate = moment(dt1, 'YYYY.MM.DD').fromNow();
-      return formattedDate;
+      return moment(dt1, 'YYYY.MM.DD').fromNow();
     },
     determineDuration(seconds) {
       return this.fancyTimeFormat(seconds);

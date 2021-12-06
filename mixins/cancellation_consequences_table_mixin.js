@@ -76,7 +76,7 @@ export default {
       const dataArray = [];
       actionsIdArray.map(actionType => {
         const data = this.actions_data.find(action => action.id === actionType);
-        dataArray.push(data.display_name);
+        if (data && data.display_name) dataArray.push(data.display_name);
       });
       return dataArray;
     },
@@ -87,7 +87,7 @@ export default {
       return display_name;
     },
     mapComparator(comparator) {
-      if (comparator === undefined) return;
+      if (comparator === undefined) return 'N/A';
       const { name } = this.comparison_parameters.find(
         parameter => parameter.value === comparator,
       );

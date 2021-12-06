@@ -46,7 +46,6 @@
           No results Found
         </li>
       </ul>
-
       <i class="fa fa-spinner fa-spin" v-if="loading"></i>
     </div>
   </span>
@@ -109,7 +108,7 @@ export default {
       return this.config[userSearch];
     },
     solarToken() {
-      return this.$env.SOLR_JWT;
+      return this.getEnvironmentVariables.SOLR_JWT;
     },
     src() {
       let searchString = '';

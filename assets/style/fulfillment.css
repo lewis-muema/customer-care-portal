@@ -1,0 +1,451 @@
+.fulfillment-tab-info {
+  width: 100%;
+}
+.fulfillment-tab-info-top {
+  width: 100%;
+  display: flex;
+}
+.fulfillment-tab-info-bottom {
+  width: 100%;
+}
+.fulfillment-tab-info-seller {
+  width: 50%;
+}
+.fulfillment-tab-info-recipient {
+  width: 50%;
+}
+.fulfillment-tab-info-titles {
+  font-size: 14px;
+  line-height: 28px;
+  margin: 3% 0%;
+  font-weight: 400;
+  color: #000000;
+}
+.fulfillment-tab-info-description {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  font-size: 13px;
+}
+.fulfillment-tab-info-description-icon {
+  color: #909399;
+  margin: 5px 15px 5px 0px;
+}
+.fulfillment-tab-info-rider-img {
+  width: 60px;
+  border-radius: 20px;
+  height: 60px;
+  margin: 0px 20px 0px 0px;
+}
+.fulfillment-tab-info-rider-details {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #000000;
+}
+.fulfillment-tab-info-rider-phone {
+  display: flex;
+}
+.fulfillment-tab-info-view-batch {
+  cursor: pointer;
+  color: #0049B7;
+  margin-left: 10%;
+  font-weight: 500;
+}
+.fulfillment-tab-info-items-img {
+  width: 60px;
+  margin: 10px;
+  height: 60px;
+  object-fit: contain;
+}
+.filtersBar {
+  margin-bottom: 3%;
+
+}
+.fulfilment-status-filter input {
+  height: 37px;
+  border: none;
+  font-weight: bold;
+  font-size: 10.5378px;
+  color: #000000;
+}
+.fulfilment-status-filter input::placeholder {
+  color: #000000;
+}
+.fulfilment-status-filter .el-select__caret {
+  color: #000000 !important;
+  font-weight: bold;
+  font-size: 10.5378px !important;
+
+}
+.fulfilment-search-filter .el-input__inner {
+  border: none;
+  height: 37px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 10.5378px;
+  line-height: 14px;
+  color: #9E9E9E;
+}
+.fulfilment-search-filter .el-icon-search {
+  color: #909399;
+  font-weight: bold;
+  font-size: 10.5378px;
+  line-height: 37px;
+}
+.pricing-tiers-table .el-table__header-wrapper {
+  display: none;
+}
+.pricing-tiers-table .el-table__row {
+  height: 30px !important;
+}
+.fulfilment-tabs-vehicle-details{
+  width: 55%;
+}
+
+.fulfilment-tabs .el-tabs__nav-wrap::after {
+  height: 1px;
+  background-color: #C0C4CC;
+}
+.fulfilment-filter-header {
+  font-size: 12px;
+  letter-spacing: 0.005em;
+  color: #000000;
+}
+.fulfilment-multiselect .multiselect__tags {
+  border: 1px solid #E1E1E1;
+  border-radius: 6px;
+}
+.fulfilment-multiselect .multiselect__tag {
+  margin-bottom: 0px;
+  font-size: 13px;
+  letter-spacing: 0.005em;
+}
+.fulfilment-multiselect .multiselect__input::placeholder, .fulfilment-multiselect .multiselect__option {
+  font-size: 13px;
+}
+.fulfilment-multiselect .multiselect__option--selected.multiselect__option--highlight {
+  background: #3c8dbc !important;
+}
+.multiselect__tag-icon:hover, .multiselect__tag-icon:focus {
+  background-color: #3c8dbc !important;
+}
+
+.fulfilment-action-button, .fulfilment-batch-actions .el-button--primary:active, .fulfilment-batch-actions .el-button--primary:hover, .fulfilment-batch-actions .el-button--primary:focus {
+  background: #0062DB;
+  border-color: #0062DB;
+  letter-spacing: 0.005em;
+}
+.fulfilment-table-wrapper .el-table__empty-block {
+  display: none !important;
+}
+.fulfilment-table-wrapper .el-table th .el-checkbox {
+  margin-left: 5px;
+  margin-top: 7px;
+}
+.fulfilment-table-wrapper .el-table th > .cell {
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+  font-weight: bold;
+  font-size: 12.294px;
+  line-height: 17px;
+  color: #000000;
+}
+.fulfilment-table-wrapper  .el-checkbox__inner {
+  border: 1px solid #9E9E9E;
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+
+.fulfilment-table-wrapper .el-checkbox__input.is-checked .el-checkbox__inner, .fulfilment-table-wrapper .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: #324ba8;
+  border-color: #324ba8;
+}
+
+.fulfilment-batch-actions .el-button--primary.is-disabled,
+.fulfilment-batch-actions .el-button--primary.is-disabled:active,
+.fulfilment-batch-actions .el-button--primary.is-disabled:focus,
+fulfilment-batch-actions .el-button--primary.is-disabled:hover {
+  color: #C0C4CC;
+  background-color: #F0F3F7;
+  border-color: #F0F3F7;
+}
+.full-width {
+  width: 100% !important;
+}
+.action-submit-button {
+  background: #0049b7;
+  border: 1px solid #0049b7;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.1px;
+  margin: 20px 0 !important;
+}
+.fulfilment-batch-actions .el-form-item__label {
+  line-height: 0;
+  line-height: 16px;
+  letter-spacing: 0.1px;
+  color: #000000;
+}
+.fulfilment-batch-actions .el-input__inner {
+  padding-right: 30px;
+  border: 1px solid #B3AFAF;
+  border-radius: 6px;
+}
+.fulfilment-batch-actions .el-input__inner::placeholder {
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  color: #000000;
+}
+.fulfilment-batch-actions .el-select .el-input .el-select__caret {
+  color: #000000;
+}
+
+.fulfilment-batch-actions .no-results{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #000000 !important;
+  font-size: 12px !important;
+}
+.fulfilment-batch-actions  .Typeahead__input {
+  padding-right: 30px !important;
+  border: 1px solid #B3AFAF !important;
+  border-radius: 6px !important;
+  width: 94% !important;
+}
+.fulfilment-batch-actions .fa-spinner{
+  font-size: 19px;
+  margin-top: 10px;
+}
+.hub-margin{
+  margin-top : 1%;
+}
+
+.fulfilment-table-wrapper .el-tabs--border-card>.el-tabs__header .el-tabs__item+.el-tabs__item, .fulfilment-table-wrapper .el-tabs--border-card>.el-tabs__header .el-tabs__item:first-child {
+  font-size: 13px;
+}
+.fulfilment-table-wrapper .el-tabs--border-card {
+  box-shadow: none;
+}
+.hubs-header-flex{
+  display: flex;
+  justify-content: space-between;
+}
+.add-hub-outer{
+  margin-right: 1.5%;
+}
+.fulfilment-add-hub-button{
+  background: #528BB8;
+  border-color: #528BB8;
+  letter-spacing: 0.005em;
+}
+.fulfilment-add-hub-button.el-button:hover ,
+.fulfilment-add-hub-button.el-button:focus{
+  background: #528BB8 !important;
+  border-color: #528BB8 !important;
+}
+.movable-units-batch-table {
+  max-width: 100%;
+  margin-top: 2%;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+.fulfilment-batch-actions >.view-order{
+  font-size: 14px;
+  color: #0049B7;
+  margin-right: 5%;
+  cursor: pointer;
+}
+.fulfilment-batch-actions >.remove-order{
+  font-size: 14px;
+  color: #9B101C;
+  cursor: pointer;
+}
+.add-batch-section{
+  background: #FFFFFF;
+  border: 1px solid #1B7FC3;
+  color: #1B7FC3;
+  margin-left: 2%;
+  margin-bottom: 1%;
+}
+.add-batch-section:focus,
+.add-batch-section:hover,
+.add-batch-section:active {
+  background: #FFFFFF !important;
+  border: 1px solid #1B7FC3 !important;
+  color: #1B7FC3;
+  cursor: pointer;
+}
+.add-batch-container{
+  float: right;
+  margin-right: 3%;
+  margin-bottom: 2%;
+}
+.fulfilment-actions-holder {
+  margin-top: 2em;
+}
+.el-button--primary.is-plain:focus{
+    background: #528bb8;
+    border-color: #528bb8;
+    color: #FFF;
+}
+.addHubDialog > div > .el-dialog__header {
+  margin: 2% !important;
+}
+.addHubDialog > div > .el-dialog__body {
+  margin: 2% !important;
+}
+.tiers-container {
+  width: 50%;
+}
+.tiers-inner {
+  width: 50%;
+}
+
+.items-total-container {
+  display: flex;
+  margin-top: 4%;
+}
+.items-divider {
+  width: 360px;
+}
+.items-total-label {
+  width: 240px;
+  text-align: center;
+}
+.items-total-quantity {
+  width: 153px;
+  text-align: center;
+}
+.fulfilment-date-class .field-input {
+  border: 1px solid #b3afaf !important;
+  border-radius: 6px !important;
+  margin-top: 1em;
+}
+.fulfilment-date-class .field-input::placeholder {
+  color: #000000;
+}
+.multiselect__single {
+  margin-bottom: 0px !important;
+  font-size: 13px !important;
+  letter-spacing: 0.005em;
+  background-color: #3c8dbc !important;
+  text-transform: capitalize;
+  color: #fff;
+  margin-right: 10px;
+  padding: 0 10px !important;
+}
+.delivery-partners-section {
+  margin-right: 3%;
+}
+.fulfilment-delivery-partners-container {
+  display: flex;
+}
+.fa-spin {
+  color: #1b7fc3;
+}
+.add-batch .el-dialog__title, .add-batch .el-dialog__close {
+  font-size: 18px;
+  line-height: 25px;
+  color: #000000;
+}
+.add-batch .fa-spin {
+  margin-left: -2em !important;
+}
+.transform-vehicle-name{
+  text-transform: capitalize;
+  font-weight: 300;
+}
+.fulfilment-vendor-image {
+  width: 10%;
+  margin-left: 7px;
+}
+.fulfilment-recommended-vehicles{
+  margin-top: 5%;
+}
+.el-timeline-item__tail {
+  margin-left: 1%;
+}
+.el-timeline-item__icon {
+  font-size: 22px;
+}
+.el-timeline-item__content {
+  margin-left: 2%;
+}
+.fulfilmentDialog > div > .el-dialog__header {
+  margin: 2% !important;
+  padding: 30px 30px 10px 30px;
+}
+.fulfilmentDialog > div > .el-dialog__body {
+  margin: 2% !important;
+  padding: 0px 30px 16px;
+}
+.child-order-action{
+  font-family: Nunito, sans-serif !important;
+  font-weight: 500;
+  font-size: 12px;
+  padding-left: 4px;
+}
+.remove-order-dialog > div > .el-dialog__body {
+  padding: 0px 30px 20px 30px;
+}
+.remove-order-dialog > .el-dialog{
+  margin-top: 35vh !important;
+  width: 26% !important;
+}
+.fulfilment-cancelation-text{
+  font-size: 16px;
+  color: #000000;
+  margin: 2% 0;
+}
+.remove-order-btn{
+  background: #9B101C;
+  border: 1px solid #9B101C;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.1px;
+  margin: 20px 0 !important;
+}
+.close-order-dialog{
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 2%;
+  color: #324BA8;
+  font-size: 14px;
+  font-weight: 600;
+}
+.fulfilment-delivery-partner-inner{
+  display: flex;
+}
+.fulfilment-batch-actions .el-dialog__title {
+  font-weight: 500;
+  line-height: 27px;
+  letter-spacing: 0.112081px;
+  color: #000000;
+}
+.fulfilment-batch-actions .el-dialog__headerbtn .el-dialog__close {
+  color: #000000;
+  font-weight: 700;
+}
+.fulfilment-batch-actions .el-dialog__body {
+  padding: 13px 20px;
+}
+.requestTransportDialog >.el-dialog{
+  margin-top: 20vh !important;
+  width: 32% !important;
+}
+.requestTransportDialog > div > .el-dialog__header {
+  margin: 2% !important;
+  padding: 30px 30px 10px 45px;
+}
+.requestTransportDialog > div > .el-dialog__body {
+  margin: 2% !important;
+  padding: 0px 30px 16px;
+}
