@@ -96,7 +96,8 @@ export default {
       return (
         status === 'BATCH_IN_COMPOSITION' ||
         status === 'BATCH_IN_HUB_PREPARATION' ||
-        status === 'BATCH_PENDING_SHIPPING_ASSIGNMENT'
+        status === 'BATCH_PENDING_SHIPPING_ASSIGNMENT' ||
+        status === 'BATCH_FAILED_SHIPPING_ASSIGNMENT'
       );
     },
   },
