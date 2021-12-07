@@ -68,4 +68,7 @@ export default {
   getRemoveOrderStoreValue(state) {
     return state.remove_order_state;
   },
+  getStatusChanged(state) {
+    return state.statusChanged;
+  },
 };

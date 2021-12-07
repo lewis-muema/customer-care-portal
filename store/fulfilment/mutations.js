@@ -71,4 +71,7 @@ export default {
   setRemoveOrderStoreValue(state, val) {
     state.remove_order_state = val;
   },
+  setStatusChanged(state, val) {
+    state.statusChanged = val;
+  },
 };

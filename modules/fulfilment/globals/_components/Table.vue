@@ -193,6 +193,7 @@ export default {
       getCheckedOrders: 'fulfilment/getCheckedOrders',
       vehicles: 'fulfilment/getVehicles',
       getSearchedEntity: 'fulfilment/getSearchedEntity',
+      getStatusChanged: 'fulfilment/getStatusChanged',
     }),
     currentPage: {
       get() {
@@ -259,11 +260,19 @@ export default {
     },
     getProcessingStatus(status) {
       this.processing = status;
+      this.tableKey += 1;
     },
     getCheckedOrders(val) {
       this.multipleSelection = val;
       if (val.length === 0) {
         this.tableKey += 1;
+      }
+    },
+    getStatusChanged(status) {
+      if (status) {
+        this.updateTableData([]);
+        this.updatePagination({});
+        this.fetchTableData(this.params);
       }
     },
   },
