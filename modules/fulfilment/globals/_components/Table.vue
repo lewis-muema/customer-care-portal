@@ -278,11 +278,6 @@ export default {
         this.fetchTableData(this.params);
       }
     },
-    // getTableData(orders) {
-    //   orders.forEach(order => {
-    //     this.orders.push(order);
-    //   });
-    // },
   },
   mounted() {
     this.fetchVehicles();
