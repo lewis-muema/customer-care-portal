@@ -96,7 +96,7 @@
           >Dispatch</el-button
         >
       </el-col> -->
-      <el-col :span="4">
+      <!-- <el-col :span="4">
         <el-button
           type="primary"
           class="blue"
@@ -106,7 +106,7 @@
           v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
           >Update status</el-button
         >
-      </el-col>
+      </el-col> -->
     </el-row>
     <el-row>
       <DeliveryCodes v-if="action === 'delivery_codes'" />
