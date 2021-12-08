@@ -26,6 +26,11 @@ export default {
   setTableData(state, payload) {
     state.tableData = payload;
   },
+  setTableDataAppend(state, payload) {
+    payload.forEach(order => {
+      state.tableData.push(order);
+    });
+  },
   setHubs(_state, payload) {
     _state.hubs = payload;
   },

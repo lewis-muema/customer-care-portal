@@ -98,14 +98,16 @@ export default {
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'batch_id') return;
         const batches = response.data.data.batches;
-
+        const pageInfo = response.data.data.pagination;
         const pagination = {
           total: batches.length,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
+          perPage: pageInfo.max,
+          page: pageInfo.current_page,
         };
-        commit('setTableData', batches);
+
+        payload && payload.offset
+          ? commit('setTableDataAppend', batches)
+          : commit('setTableData', batches);
         commit('setPagination', pagination);
         commit('setProcessingStatus', false);
       }
@@ -136,14 +138,15 @@ export default {
         if (getters.getTableDetailKeyMetric.id !== 'batch_id') return;
 
         const batches = response.data.data.batches;
-
+        const pageInfo = response.data.data.pagination;
         const pagination = {
           total: batches.length,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
+          perPage: pageInfo.max,
+          page: pageInfo.current_page,
         };
-        commit('setTableData', batches);
+        payload && payload.offset
+          ? commit('setTableDataAppend', batches)
+          : commit('setTableData', batches);
         commit('setPagination', pagination);
         commit('setProcessingStatus', false);
       }
@@ -210,13 +213,15 @@ export default {
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
         const deliveryOrders = response.data.data.orders;
+        const pageInfo = response.data.data.pagination;
         const pagination = {
           total: deliveryOrders.length,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
+          perPage: pageInfo.max,
+          page: pageInfo.current_page,
         };
-        commit('setTableData', deliveryOrders);
+        payload && payload.offset
+          ? commit('setTableDataAppend', deliveryOrders)
+          : commit('setTableData', deliveryOrders);
         commit('setPagination', pagination);
         commit('setProcessingStatus', false);
       }
@@ -242,9 +247,14 @@ export default {
     });
 
     const results = await promise;
+    const pagination = {
+      total: results.data.length,
+      perPage: results.data.length - 1,
+      page: 0,
+    };
     setTimeout(() => {
       commit('setTableData', results.data);
-      commit('setPagination', results.pagination);
+      commit('setPagination', pagination);
       commit('setProcessingStatus', false);
     }, 1000);
   },
@@ -255,11 +265,16 @@ export default {
     const url = `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
     const results = await axiosConfig.get(url);
+    const pagination = {
+      total: results.data.length,
+      perPage: results.data.length - 1,
+      page: 0,
+    };
     setTimeout(() => {
       const res = results.data;
       commit('setTableData', res.data);
       commit('setHubs', res.data);
-      // commit('setPagination', results.pagination);
+      commit('setPagination', pagination);
       commit('setProcessingStatus', false);
     }, 1000);
   },
