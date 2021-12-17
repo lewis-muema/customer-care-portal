@@ -37,8 +37,14 @@
         <tr>
           <td width="50%">Shipping Order Number</td>
           <td>
-            <button type="button" class="btn btn-light">
-              {{ order_detail.assigned_shipping_agent.tracking_reference }}
+            <button
+              type="button"
+              class="btn btn-light"
+              @click.prevent="showMore"
+            >
+              <NuxtLink to="/">{{
+                order_detail.assigned_shipping_agent.tracking_reference
+              }}</NuxtLink>
             </button>
           </td>
         </tr>
@@ -48,7 +54,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'BatchesDetails',
@@ -58,12 +64,64 @@ export default {
     };
   },
   computed: {
+    ...mapState(['config']),
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
+      getSession: 'getSession',
+      getEnvironmentVariables: 'getEnvironmentVariables',
     }),
+    solarBase() {
+      return this.config.SOLR_BASE;
+    },
+    solarToken() {
+      return this.getEnvironmentVariables.SOLR_JWT;
+    },
+    userCountries() {
+      const staffCountry = JSON.parse(
+        this.getSession.payload.data.country_codes.toLowerCase(),
+      );
+      return staffCountry;
+    },
+    src() {
+      return `${this.solarBase}select?q=(order_no:*${this.order_detail.assigned_shipping_agent.tracking_reference}&wt=json&indent=true&row=10&sort=order_id%20desc&jwt=${this.solarToken}`;
+    },
   },
   beforeMount() {
     this.order_detail = this.getTableDetails;
+  },
+  methods: {
+    ...mapMutations({
+      updateSearchedOrder: 'setSearchedOrder',
+      updateSearchState: 'setSearchState',
+    }),
+    ...mapActions({
+      request_single_order: 'request_single_order',
+    }),
+    async showMore() {
+      this.updateSearchState(true);
+      const orderNo = this.order_detail.assigned_shipping_agent
+        .tracking_reference;
+      await this.singleOrderRequest(orderNo);
+    },
+    async singleOrderRequest(orderNo) {
+      if (!orderNo) return;
+      orderNo = orderNo.trim();
+      try {
+        const data = await this.request_single_order(orderNo);
+        const filtered = this.userCountries.includes(data.country_code)
+          ? data
+          : {};
+        this.updateSearchedOrder(filtered);
+        return (this.order = filtered);
+      } catch {
+        this.errors.push(
+          'Something went wrong. Try again or contact Tech Support',
+        );
+      }
+    },
+    prepareResponseData(data) {
+      return data.response.docs;
+    },
   },
 };
 </script>
@@ -74,5 +132,8 @@ export default {
 }
 .el-table tr {
   height: 35px !important;
+}
+.btn-light .active {
+  color: #ffffff !important;
 }
 </style>
