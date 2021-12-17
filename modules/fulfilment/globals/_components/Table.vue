@@ -11,7 +11,6 @@
       @selection-change="handleSelectionChange"
       v-loading="fetching"
     >
-      >
       <div
         class="data-info-panel"
         slot="append"
@@ -122,7 +121,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="fulfilment-table-loader"></div>
+    <div class="fulfilment-table-loader text-center" v-if="fetchMoreLoading">
+      <i class="fa fa-spinner fa-spin loader"></i>
+    </div>
     <div
       v-observe-visibility="loadMore"
       v-if="infiniteScroll && scrolledToBottom"
@@ -149,7 +150,7 @@ export default {
     },
     infiniteScroll: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     // eslint-disable-next-line vue/require-default-prop
     params: {
@@ -176,6 +177,8 @@ export default {
       expand_id: 0,
       expand_keys: [],
       tableKey: 0,
+      orders: [],
+      fetchMoreLoading: false,
     };
   },
   computed: {
@@ -354,17 +357,14 @@ export default {
       if (
         !this.processing &&
         isVisible &&
-        this.getPagination.page <= this.getPagination.lastPage
+        this.getPagination.total === this.getPagination.perPage
       ) {
         const nextPage = this.getPagination.page + 1;
-        const loadingInstance = Loading.service({
-          fullscreen: false,
-          target: '.fulfilment-table-loader',
-        });
+        this.fetchMoreLoading = true;
         await this.$store.dispatch(this.dataProps.setter, {
-          nextPage,
+          offset: nextPage,
         });
-        loadingInstance.close();
+        this.fetchMoreLoading = false;
       }
     },
     handleSelectionChange(val) {
@@ -450,7 +450,8 @@ export default {
   align-items: center;
 }
 .fulfilment-table-loader {
-  margin-top: 40px;
+  margin-top: 10px;
+  height: 70px;
 }
 .active-hub {
   color: #0049b7;
