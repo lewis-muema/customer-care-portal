@@ -34,6 +34,14 @@
             {{ order_detail.batch_summary.total_fulfilment_fee }}
           </td>
         </tr>
+        <tr>
+          <td width="50%">Shipping Order Number</td>
+          <td>
+            <button type="button" class="btn btn-light">
+              {{ order_detail.assigned_shipping_agent.tracking_reference }}
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
