@@ -133,7 +133,9 @@ export default {
 .el-table tr {
   height: 35px !important;
 }
-.btn-light .active {
-  color: #ffffff !important;
+.btn-light {
+  color: #212529;
+  background-color: inherit;
+  border-color: none;
 }
 </style>
