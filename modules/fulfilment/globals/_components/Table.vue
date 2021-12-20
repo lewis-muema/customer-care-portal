@@ -256,7 +256,7 @@ export default {
         status: val,
       };
 
-      payload = val === 'all' ? this.params : payload;
+      payload = val.includes('all') ? this.params : payload;
 
       this.status = val;
       this.fetchTableData(payload);
