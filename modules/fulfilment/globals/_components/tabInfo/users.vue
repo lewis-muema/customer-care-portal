@@ -12,9 +12,9 @@
             <i class="fa fa-phone fulfillment-tab-info-description-icon"></i>
             <div>
               {{
-                !orderDetail.business.business_phone
+                !orderDetail.business.phone_number
                   ? '--'
-                  : orderDetail.business.business_phone
+                  : orderDetail.business.phone_number
               }}
             </div>
           </div>
