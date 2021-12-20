@@ -37,15 +37,11 @@
         <tr>
           <td width="50%">Shipping Order Number</td>
           <td>
-            <button
-              type="button"
-              class="btn btn-light"
-              @click.prevent="showMore"
-            >
+            <span @click.prevent="showMore">
               <NuxtLink to="/">{{
                 order_detail.assigned_shipping_agent.tracking_reference
               }}</NuxtLink>
-            </button>
+            </span>
           </td>
         </tr>
       </tbody>
@@ -132,10 +128,5 @@ export default {
 }
 .el-table tr {
   height: 35px !important;
-}
-.btn-light {
-  color: #212529;
-  background-color: inherit;
-  border-color: none;
 }
 </style>
