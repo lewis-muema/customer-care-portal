@@ -9,8 +9,8 @@
       /></span>
       <span class="handoff-code">{{ delivery_code }}</span>
     </div>
-    <div>
-      <div class="headerReturn" v-if="return_code">Return code</div>
+    <div class="return-code">
+      <div class="header" v-if="return_code">Return code</div>
       <span
         ><img
           v-if="return_code"
@@ -45,20 +45,21 @@ export default {
 };
 </script>
 <style scoped>
+.fulfilment-actions-holder {
+  display: flex;
+}
+.return-code {
+  margin-left: 2.5em;
+}
 .header {
   font-weight: 600;
   margin-bottom: 1em;
-}
-.headerReturn {
-  font-weight: 600;
-  margin-bottom: 1em;
-  margin-top: 0.7em;
 }
 .handoff-code {
   font-size: 13px;
   margin: 0 4px;
 }
 .handoff-image {
-  width: 4%;
+  width: 35%;
 }
 </style>
