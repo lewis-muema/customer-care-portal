@@ -36,7 +36,8 @@
         </tr>
         <tr>
           <td width="50%">Shipping Order Number</td>
-          <td>
+          <td v-if="!order_detail.assigned_shipping_agent">-</td>
+          <td v-else>
             <span @click.prevent="showMore">
               <NuxtLink to="/">{{
                 order_detail.assigned_shipping_agent.tracking_reference
