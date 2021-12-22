@@ -192,6 +192,7 @@ export default {
       getProcessingStatus: 'fulfilment/getProcessingStatus',
       getFulfilmentType: 'fulfilment/getFulfilmentType',
       getSelectedStatus: 'fulfilment/getSelectedStatus',
+      getSelectedCountry: 'fulfilment/getSelectedCountry',
       getTableDetailKeyMetric: 'fulfilment/getTableDetailKeyMetric',
       getCheckedOrders: 'fulfilment/getCheckedOrders',
       vehicles: 'fulfilment/getVehicles',
@@ -248,15 +249,51 @@ export default {
       this.regions = regions;
       this.fetchTableData();
     },
+    getSelectedCountry(val) {
+      this.updateTableData([]);
+      this.updatePagination({});
+
+      const filtered_status = this.getSelectedStatus;
+      let all_status = false;
+
+      let payload = {
+        country: val,
+      };
+
+      if (filtered_status !== null) {
+        if (!filtered_status.includes('all')) {
+          payload.status = filtered_status;
+        } else {
+          all_status = true;
+        }
+      }
+
+      payload = val === 'All Countries' || all_status ? this.params : payload;
+      this.fetchTableData(payload);
+    },
     getSelectedStatus(val) {
       this.updateTableData([]);
       this.updatePagination({});
 
-      let payload = {
-        status: val,
-      };
+      const supported_countries = this.getSelectedCountry;
 
-      payload = val.includes('all') ? this.params : payload;
+      let payload = {};
+
+      if (!val.includes('all')) {
+        payload.status = val;
+      }
+
+      if (
+        supported_countries !== 'All Countries' &&
+        supported_countries !== null
+      ) {
+        payload.country = supported_countries;
+      }
+
+      payload =
+        val.includes('all') && supported_countries === 'All Countries'
+          ? this.params
+          : payload;
 
       this.status = val;
       this.fetchTableData(payload);
