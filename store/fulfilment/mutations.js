@@ -52,6 +52,9 @@ export default {
   setSelectedStatus(_state, payload) {
     _state.selectedStatus = payload;
   },
+  setSelectedCountry(_state, payload) {
+    _state.selectedCountry = payload;
+  },
   resetHubDialog(state, val) {
     state.hubDialog = val;
   },
@@ -78,5 +81,8 @@ export default {
   },
   setStatusChanged(state, val) {
     state.statusChanged = val;
+  },
+  setSupportedCountries(state, payload) {
+    state.supported_countries = payload;
   },
 };
