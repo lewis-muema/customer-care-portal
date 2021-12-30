@@ -3,7 +3,7 @@
     <label class="typo__label fulfilment-filter-header">Filter Countries</label>
     <multiselect
       v-model="checkedOptions"
-      placeholder="Search Hubs"
+      placeholder="Search Countries"
       label="name"
       track-by="code"
       :options="options"
