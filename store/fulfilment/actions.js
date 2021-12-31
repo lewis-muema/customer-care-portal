@@ -100,7 +100,7 @@ export default {
 
     for (const key in payload) {
       if (Object.prototype.hasOwnProperty.call(payload, key)) {
-        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        const param_const = '&';
         filter = `${filter}${param_const}${key}=${payload[key]}`;
       }
     }
@@ -143,7 +143,7 @@ export default {
 
     for (const key in payload) {
       if (Object.prototype.hasOwnProperty.call(payload, key)) {
-        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        const param_const = '&';
         filter = `${filter}${param_const}${key}=${payload[key]}`;
       }
     }

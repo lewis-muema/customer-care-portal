@@ -261,7 +261,7 @@ export default {
       };
 
       if (filtered_status !== null) {
-        if (!filtered_status.includes('all')) {
+        if (!filtered_status.includes('all') && filtered_status.length > 0) {
           payload.status = filtered_status;
         } else {
           all_status = true;
@@ -279,7 +279,7 @@ export default {
 
       let payload = {};
 
-      if (!val.includes('all')) {
+      if (!val.includes('all') && val.length > 0) {
         payload.status = val;
       }
 
