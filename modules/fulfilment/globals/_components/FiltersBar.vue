@@ -4,12 +4,12 @@
       <el-col :span="9">
         <div class="grid-content fulfilment-search-holder">
           <el-row type="flex" class="">
-            <el-col :span="7">
+            <el-col :span="9">
               <div class="grid-content fulfilment-status-filter">
                 <StatusFilter :page="getActivePage" />
               </div>
             </el-col>
-            <el-col :span="17">
+            <el-col :span="18">
               <div class="grid-content fulfilment-search-filter">
                 <Search
                   :page="getActivePage"
