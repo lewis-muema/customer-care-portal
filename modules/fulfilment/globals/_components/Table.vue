@@ -398,9 +398,27 @@ export default {
       ) {
         const nextPage = this.getPagination.page + 1;
         this.fetchMoreLoading = true;
-        await this.$store.dispatch(this.dataProps.setter, {
+        const loader_payload = {
           offset: nextPage,
-        });
+        };
+
+        if (
+          this.getSelectedCountry !== 'All Countries' &&
+          this.getSelectedCountry !== null
+        ) {
+          loader_payload.country = this.getSelectedCountry;
+        }
+
+        if (this.getSelectedStatus !== null) {
+          if (
+            !this.getSelectedStatus.includes('all') &&
+            this.getSelectedStatus.length > 0
+          ) {
+            loader_payload.status = this.getSelectedStatus;
+          }
+        }
+
+        await this.$store.dispatch(this.dataProps.setter, loader_payload);
         this.fetchMoreLoading = false;
       }
     },
