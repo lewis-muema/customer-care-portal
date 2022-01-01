@@ -19,6 +19,7 @@ const state = () => ({
   selectedRegions: null,
   checkedOrders: [],
   selectedStatus: null,
+  selectedCountry: null,
   hubDialog: false,
   tableDetails: [],
   tableDetailKeyMetrics: {
@@ -31,6 +32,7 @@ const state = () => ({
   batchChildOrderData: {},
   remove_order_state: false,
   statusChanged: false,
+  supported_countries: null,
 });
 
 export { state, getters, mutations, actions };
