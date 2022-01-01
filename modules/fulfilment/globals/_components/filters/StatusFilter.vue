@@ -1,6 +1,12 @@
 <template>
   <div :key="componentKey">
-    <el-select v-model="status" placeholder="All Orders" :disabled="processing">
+    <el-select
+      v-model="status"
+      multiple
+      collapse-tags
+      placeholder="All Orders"
+      :disabled="processing"
+    >
       <el-option
         v-for="item in sectionStatuses"
         :key="item.value"
@@ -21,7 +27,7 @@ export default {
   data() {
     return {
       componentKey: 0,
-      status: '',
+      status: [],
       value2: [],
       processing: false,
     };
