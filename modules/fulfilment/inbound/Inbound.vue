@@ -57,6 +57,8 @@ export default {
       setFulfilmentType: 'fulfilment/setFulfilmentType',
       setTableData: 'fulfilment/setTableData',
       setTableDetailKeyMetric: 'fulfilment/setTableDetailKeyMetric',
+      setSelectedCountry: 'fulfilment/setSelectedCountry',
+      setSelectedStatus: 'fulfilment/setSelectedStatus',
     }),
     handleTab() {
       this.componentKey += 1;
@@ -68,6 +70,8 @@ export default {
       this.setFulfilmentType(tabName);
       this.handleTab();
       this.setTableMetrics(tab.name);
+      this.setSelectedCountry(null);
+      this.setSelectedStatus(null);
     },
     setTableMetrics(val) {
       if (val === 'ordersView') {

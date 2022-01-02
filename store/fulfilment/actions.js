@@ -55,9 +55,21 @@ export default {
       });
       return promise;
     }
+    // eslint-disable-next-line prettier/prettier
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
+
     try {
       commit('setProcessingStatus', true);
-      const response = await axiosConfig.get(`${url}missioncontrol/deliveries`);
+      const response = await axiosConfig.get(
+        `${url}missioncontrol/deliveries${filter}`,
+      );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
         const deliveryOrders = response.data.data.orders;
@@ -84,10 +96,14 @@ export default {
   ) {
     delete payload.direction;
     // eslint-disable-next-line prettier/prettier
-    const filter =
-      !payload || Object.keys(payload).length === 0
-        ? ''
-        : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -123,10 +139,14 @@ export default {
   ) {
     delete payload.direction;
     // eslint-disable-next-line prettier/prettier
-    const filter =
-      !payload || Object.keys(payload).length === 0
-        ? ''
-        : `&${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
@@ -200,15 +220,20 @@ export default {
   },
   async fetchPickUpRequests({ rootState, dispatch, commit, getters }, payload) {
     // eslint-disable-next-line prettier/prettier
-    const filter = !payload
-      ? ''
-      : `?${Object.keys(payload)[0]}=${payload[Object.keys(payload)[0]]}`;
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
 
     try {
       const url = rootState.config.FULFILMENT_SERVICE;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/consignments${filter}`,
+        `${url}missioncontrol/consignments${filter.replace(/ /g, '')}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
@@ -573,12 +598,14 @@ export default {
       return error.response.data.data;
     }
   },
-  async fetchHubCountries({ rootState }) {
+
+  async fetchHubCountries({ rootState, commit }) {
     const url = rootState.config.FULFILMENT_SERVICE;
 
     try {
       const response = await axiosConfig.get(`${url}missioncontrol/countries`);
       if (response.status === 200) {
+        commit('setSupportedCountries', response.data.data.countries);
         return response.data;
       }
     } catch (error) {

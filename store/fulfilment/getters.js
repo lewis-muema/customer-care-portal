@@ -44,6 +44,9 @@ export default {
   getSelectedStatus(state) {
     return state.selectedStatus;
   },
+  getSelectedCountry(state) {
+    return state.selectedCountry;
+  },
   getHubDialog(state) {
     return state.hubDialog;
   },
@@ -70,5 +73,8 @@ export default {
   },
   getStatusChanged(state) {
     return state.statusChanged;
+  },
+  getSupportedCountries(state) {
+    return state.supported_countries;
   },
 };

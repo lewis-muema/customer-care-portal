@@ -4,12 +4,12 @@
       <el-col :span="9">
         <div class="grid-content fulfilment-search-holder">
           <el-row type="flex" class="">
-            <el-col :span="7">
+            <el-col :span="9">
               <div class="grid-content fulfilment-status-filter">
                 <StatusFilter :page="getActivePage" />
               </div>
             </el-col>
-            <el-col :span="17">
+            <el-col :span="18">
               <div class="grid-content fulfilment-search-filter">
                 <Search
                   :page="getActivePage"
@@ -24,7 +24,15 @@
       <el-col :span="11">
         <div class="grid-content bg-white">
           <el-row type="flex" class="" justify="space-between">
-            <el-col :span="7">
+            <el-col :span="8">
+              <div class="grid-content">
+                <CountryFilter v-if="getActivePage !== 'HubsView'" />
+              </div>
+            </el-col>
+            <el-col :span="1">
+              <div class="grid-content"></div>
+            </el-col>
+            <el-col :span="8">
               <div class="grid-content">
                 <HubsFilter v-if="section === 'batches'" />
               </div>
@@ -66,6 +74,7 @@ export default {
     Search: () => import('./filters/Search'),
     HubsFilter: () => import('./filters/HubFilter'),
     BatchActions: () => import('./filters/BatchActions'),
+    CountryFilter: () => import('./filters/CountryFilter'),
   },
   data() {
     return {
