@@ -195,7 +195,7 @@ export default {
       const direction =
         this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
 
-      const date = Date.parse(this.selectedDate);
+      const epoch_date = Date.parse(this.selectedDate);
 
       const payload = {
         app: 'FULFILMENT_SERVICE',
@@ -204,7 +204,7 @@ export default {
         params: {
           hub_id: this.hub,
           direction,
-          scheduled_date: date,
+          scheduled_date: epoch_date,
           orders: this.selectedOrders.orders,
         },
       };
