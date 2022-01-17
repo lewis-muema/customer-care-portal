@@ -90,6 +90,7 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
+import moment from 'moment';
 import NotificationMxn from '../../../../../mixins/notification_mixin';
 
 export default {
@@ -195,7 +196,10 @@ export default {
       const direction =
         this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
 
-      const epoch_date = Date.parse(this.selectedDate);
+      const epoch_date = moment(
+        this.selectedDate,
+        'YYYY-MM-DD h:mm a',
+      ).valueOf();
 
       const payload = {
         app: 'FULFILMENT_SERVICE',
