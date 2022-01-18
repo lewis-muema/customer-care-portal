@@ -77,4 +77,7 @@ export default {
   getSupportedCountries(state) {
     return state.supported_countries;
   },
+  getBatchDetailsDialogState(state) {
+    return state.batch_details_dialog_state;
+  },
 };
