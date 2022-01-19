@@ -6,6 +6,22 @@
           type="primary"
           class="blue"
           size="mini"
+          icon="el-icon-circle-close"
+          plain
+          v-if="
+            (page === 'Outbound_ordersView' || page === 'Inbound_ordersView') &&
+              canCancelOrder()
+          "
+          @click="triggerAction('cancel')"
+          >Cancel</el-button
+        >
+      </el-col>
+      <el-col :span="3">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          icon="el-icon-notebook-1"
           plain
           v-if="
             page === 'Outbound_batchesView' || page === 'Inbound_batchesView'
@@ -20,6 +36,7 @@
           type="primary"
           class="blue"
           size="mini"
+          icon="el-icon-search"
           plain
           v-if="
             (page === 'Outbound_batchesView' ||
@@ -31,18 +48,6 @@
           >Request for transport</el-button
         >
       </el-col>
-
-      <!-- <el-col :span="3">
-        <el-button
-          type="primary"
-          class="blue"
-          size="mini"
-          plain
-          v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
-          @click="triggerAction('cancel')"
-          >Cancel</el-button
-        >
-      </el-col> -->
       <!-- <el-col :span="3">
         <el-button
           type="primary"
@@ -59,6 +64,7 @@
           type="primary"
           class="blue"
           size="mini"
+          icon="el-icon-receiving"
           plain
           v-if="
             page === 'Outbound_ordersView' ||
@@ -101,6 +107,7 @@
           type="primary"
           class="blue"
           size="mini"
+          icon="el-icon-refresh"
           plain
           @click="triggerAction('update_status')"
           v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
@@ -174,6 +181,11 @@ export default {
       const allowed =
         batchStatus === 'BATCH_IN_COMPOSITION' ||
         batchStatus === 'BATCH_FAILED_SHIPPING_ASSIGNMENT';
+      return allowed;
+    },
+    canCancelOrder() {
+      const orderStatus = this.getTableDetails.order_status;
+      const allowed = orderStatus === 'ORDER_FAILED';
       return allowed;
     },
   },
