@@ -1,7 +1,7 @@
 <template>
   <div class="fulfilment-batch-actions">
     <el-row>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-button
           type="primary"
           class="blue"
@@ -16,7 +16,7 @@
           >Cancel</el-button
         >
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-button
           type="primary"
           class="blue"
@@ -60,6 +60,22 @@
         >
       </el-col> -->
       <el-col :span="4">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          icon="el-icon-date"
+          plain
+          v-if="
+            (page === 'Outbound_ordersView' || page === 'Inbound_ordersView') &&
+              canCancelOrder()
+          "
+          @click="triggerAction('schedule')"
+          >Schedule</el-button
+        >
+      </el-col>
+
+      <el-col :span="5">
         <el-button
           type="primary"
           class="blue"
@@ -122,6 +138,7 @@
       <Reallocate v-if="action === 'reallocate'" />
       <Dispatch v-if="action === 'dispatch'" />
       <Details v-if="action === 'details'" />
+      <Schedule v-if="action === 'schedule'" />
       <UpdateStatus
         :page="page"
         v-if="action === 'update_status'"
@@ -152,6 +169,7 @@ export default {
     Details: () => import('./actions/Details'),
     RequestTransport: () => import('./actions/RequestTransport'),
     UpdateStatus: () => import('./actions/UpdateStatus'),
+    Schedule: () => import('./actions/Schedule'),
   },
   props: ['page', 'rowData'],
   data() {
