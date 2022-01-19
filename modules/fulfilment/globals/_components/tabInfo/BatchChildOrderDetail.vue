@@ -66,11 +66,11 @@
             reasons
           </div>
           <div class="failed-request-expand-section">
-            <i v-if="opened" class="el-icon-arrow-up" />
-            <i v-if="!opened" class="el-icon-arrow-down" />
+            <i v-if="!opened" class="el-icon-arrow-up" />
+            <i v-if="opened" class="el-icon-arrow-down" />
           </div>
         </div>
-        <div class="failed-request-details" v-if="!opened">
+        <div class="failed-request-details" v-if="opened">
           <span class="details-content">
             <div class="failed-request-header">
               Attempt 1
