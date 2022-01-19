@@ -33,6 +33,7 @@ const state = () => ({
   remove_order_state: false,
   statusChanged: false,
   supported_countries: null,
+  batch_details_dialog_state: null,
 });
 
 export { state, getters, mutations, actions };
