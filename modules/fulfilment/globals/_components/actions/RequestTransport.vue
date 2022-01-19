@@ -60,12 +60,11 @@
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import FindPartnerInput from '../FindPartnerInput.vue';
 import NotificationMxn from '../../../../../mixins/notification_mixin';
-import FulfilmentData from '../../../../../mixins/fulfilment_data';
 
 export default {
   name: 'RequestTransport',
   components: { FindPartnerInput },
-  mixins: [NotificationMxn, FulfilmentData],
+  mixins: [NotificationMxn],
   data() {
     return {
       preferredDriver: 'no',
@@ -88,7 +87,7 @@ export default {
       requestForTransportAction: 'fulfilment/requestForTransport',
     }),
     getVehicleTypes() {
-      return FulfilmentData.vehicles;
+      return this.vehicles;
     },
     vehicleTypeImage() {
       if (this.getTableDetails.batch_summary.recommended_vehicle_type === null)

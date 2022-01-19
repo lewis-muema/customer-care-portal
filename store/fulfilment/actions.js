@@ -200,6 +200,9 @@ export default {
     }, 1000);
   },
   async fetchVehicles({ commit }, payload) {
+    const vehiclesVendors = await axiosConfig.get(
+      `https://authtest.sendyit.com/mission-control-bff/supported_vendors`,
+    );
     const promise = new Promise(resolve => {
       const response = {
         pagination: {
@@ -208,7 +211,7 @@ export default {
           page: 1,
           lastPage: 20,
         },
-        data: FulfilmentData.vehicles,
+        data: vehiclesVendors.data.data,
       };
       resolve(response);
     });
