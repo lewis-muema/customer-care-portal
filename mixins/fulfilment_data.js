@@ -295,33 +295,6 @@ const fulfilment_data = {
       batches_no: 10,
     },
   ],
-  vehicles: [
-    {
-      value: 'MOTOR_BIKE',
-      name: 'Motor Bike',
-      image: '1.svg',
-    },
-    {
-      value: 'CYCLING_BIKE',
-      name: 'Cycling Bike',
-      image: '28.svg',
-    },
-    {
-      value: 'PICK_UP',
-      name: 'Pick Up',
-      image: '2.svg',
-    },
-    {
-      value: 'VAN',
-      name: 'Van',
-      image: '3.svg',
-    },
-    {
-      value: 'TUK_TUK',
-      name: 'Tuk Tuk',
-      image: '12.svg',
-    },
-  ],
 };
 
 export default fulfilment_data;

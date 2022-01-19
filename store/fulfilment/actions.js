@@ -199,7 +199,11 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
-  async fetchVehicles({ commit }, payload) {
+  async fetchVehicles({ commit, rootState }, payload) {
+    const url = rootState.config.AUTH;
+    const vehiclesVendors = await axiosConfig.get(
+      `${url}mission-control-bff/supported_vendors`,
+    );
     const promise = new Promise(resolve => {
       const response = {
         pagination: {
@@ -208,7 +212,7 @@ export default {
           page: 1,
           lastPage: 20,
         },
-        data: FulfilmentData.vehicles,
+        data: vehiclesVendors.data.data,
       };
       resolve(response);
     });
