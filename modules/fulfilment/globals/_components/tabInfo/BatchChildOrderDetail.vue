@@ -205,7 +205,6 @@ export default {
   },
   beforeMount() {
     this.batch_info = this.getBatchChildOrderDetails;
-    console.log('batch_info', this.batch_info);
   },
   methods: {
     ...mapMutations({
