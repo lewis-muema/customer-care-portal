@@ -71,15 +71,19 @@
           </div>
         </div>
         <div class="failed-request-details" v-if="opened">
-          <span class="details-content">
+          <span
+            class="details-content"
+            v-for="(failed_data, index) in failed_request_data"
+            :key="index"
+          >
             <div class="failed-request-header">
-              Attempt 1
+              Attempt {{ `${index + 1}` }}
             </div>
             <div class="failed-request-date">
-              6th Jan 10:23 am
+              {{ formatDate(failed_data.attempt_date) }}
             </div>
             <div class="failed-request-reason">
-              Not unavailable
+              {{ failed_data.failure_reason }}
             </div>
           </span>
         </div>
@@ -177,7 +181,7 @@
 
 <script>
 import moment from 'moment';
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 export default {
   data() {
@@ -187,6 +191,8 @@ export default {
       selectedDate: '',
       cancel_reason: '',
       opened: false,
+      processing: true,
+      failed_request_data: [],
     };
   },
   computed: {
@@ -204,9 +210,16 @@ export default {
     },
   },
   beforeMount() {
+    this.processing = true;
     this.batch_info = this.getBatchChildOrderDetails;
+    if (this.batch_info.order_status === 'ORDER_FAILED') {
+      this.getFailedRequestData();
+    }
   },
   methods: {
+    ...mapActions({
+      fetchFailedAttempts: 'fulfilment/fetchFailedAttempts',
+    }),
     ...mapMutations({
       setBatchDetailsDialogState: 'fulfilment/setBatchDetailsDialogState',
     }),
@@ -214,7 +227,7 @@ export default {
       return moment(date).format('hh:mm A');
     },
     formatDate(date) {
-      return moment(date).format('DD-MM-YYYY ');
+      return moment(date).format('Do MMM hh:mm a');
     },
     formatScheduledDate(date) {
       return moment(date).format('Do MMM YYYY hh:mm a');
@@ -229,6 +242,20 @@ export default {
     },
     showFailedData(val) {
       this.opened = !val;
+    },
+    async getFailedRequestData() {
+      const payload = {
+        order_id: this.batch_info.order_id,
+      };
+      this.failed_request_data = [];
+      this.processing = true;
+      const response = await this.fetchFailedAttempts(payload);
+      this.processing = false;
+
+      if (Object.keys(response).length > 0) {
+        this.processing = true;
+        this.failed_request_data = response.failed_attempts;
+      }
     },
   },
 };
