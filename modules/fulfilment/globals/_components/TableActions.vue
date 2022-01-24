@@ -1,7 +1,7 @@
 <template>
   <div class="fulfilment-batch-actions">
     <el-row>
-      <el-col :span="4">
+      <el-col :span="3">
         <el-button
           type="primary"
           class="blue"
@@ -16,7 +16,7 @@
           >Cancel</el-button
         >
       </el-col>
-      <el-col :span="4">
+      <el-col :span="3">
         <el-button
           type="primary"
           class="blue"
@@ -30,24 +30,6 @@
           >Details</el-button
         >
       </el-col>
-
-      <el-col :span="5">
-        <el-button
-          type="primary"
-          class="blue"
-          size="mini"
-          icon="el-icon-search"
-          plain
-          v-if="
-            (page === 'Outbound_batchesView' ||
-              page === 'Inbound_batchesView') &&
-              canRequestForTransport() &&
-              permissions.fulfilment_allocate_partner
-          "
-          @click="dialogVisible = true"
-          >Request for transport</el-button
-        >
-      </el-col>
       <!-- <el-col :span="3">
         <el-button
           type="primary"
@@ -59,7 +41,7 @@
           >Tickets</el-button
         >
       </el-col> -->
-      <el-col :span="4">
+      <el-col :span="3">
         <el-button
           type="primary"
           class="blue"
@@ -75,7 +57,7 @@
         >
       </el-col>
 
-      <el-col :span="5">
+      <el-col :span="4">
         <el-button
           type="primary"
           class="blue"
@@ -90,6 +72,23 @@
           "
           @click="triggerAction('delivery_codes')"
           >Delivery Codes</el-button
+        >
+      </el-col>
+      <el-col :span="4">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          icon="el-icon-search"
+          plain
+          v-if="
+            (page === 'Outbound_batchesView' ||
+              page === 'Inbound_batchesView') &&
+              canRequestForTransport() &&
+              permissions.fulfilment_allocate_partner
+          "
+          @click="dialogVisible = true"
+          >Request for transport</el-button
         >
       </el-col>
       <!-- <el-col :span="3">
@@ -133,12 +132,16 @@
     </el-row>
     <el-row>
       <DeliveryCodes v-if="action === 'delivery_codes'" />
-      <CancelOrder v-if="action === 'cancel'" />
+      <CancelOrder
+        v-if="action === 'cancel'"
+        :details="getTableDetails"
+        :page="page"
+      />
       <Ticket v-if="action === 'ticket'" />
       <Reallocate v-if="action === 'reallocate'" />
       <Dispatch v-if="action === 'dispatch'" />
       <Details v-if="action === 'details'" />
-      <Schedule v-if="action === 'schedule'" />
+      <Schedule v-if="action === 'schedule'" :details="getTableDetails" />
       <UpdateStatus
         :page="page"
         v-if="action === 'update_status'"
