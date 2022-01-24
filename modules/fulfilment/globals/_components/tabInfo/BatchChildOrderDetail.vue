@@ -23,6 +23,7 @@
           !cancel_reason ? 'disabled-batch-order-btn' : 'cancel-batch-order-btn'
         "
         :disabled="!cancel_reason"
+        @click="cancelOrder()"
       >
         Cancel order
       </el-button>
@@ -51,6 +52,7 @@
             : 'reschedule-batch-order-btn'
         "
         :disabled="!selectedDate"
+        @click="rescheduleOrder()"
       >
         Submit
       </el-button>
@@ -182,8 +184,10 @@
 <script>
 import moment from 'moment';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
+import NotificationMxn from '../../../../../mixins/notification_mixin';
 
 export default {
+  mixins: [NotificationMxn],
   data() {
     return {
       batch_info: [],
@@ -199,6 +203,7 @@ export default {
     ...mapGetters({
       getBatchChildOrderDetails: 'fulfilment/getBatchChildOrderDetails',
       getBatchDetailsDialogState: 'fulfilment/getBatchDetailsDialogState',
+      getActivePage: 'getActivePage',
     }),
   },
   watch: {
@@ -219,10 +224,18 @@ export default {
   methods: {
     ...mapActions({
       fetchFailedAttempts: 'fulfilment/fetchFailedAttempts',
+      perform_post_actions: 'fulfilment/perform_post_actions',
     }),
     ...mapMutations({
       setBatchDetailsDialogState: 'fulfilment/setBatchDetailsDialogState',
+      updateProcessingStatus: 'fulfilment/setProcessingStatus',
     }),
+    convertToUTC(date) {
+      const userTZ = moment.tz.guess();
+      const gmtDate = moment.tz(date, 'YYYY-MM-DD HH:mm ZZ', userTZ);
+      const UTCDate = moment.utc(gmtDate);
+      return UTCDate;
+    },
     formatTime(date) {
       return moment(date).format('hh:mm A');
     },
@@ -231,6 +244,9 @@ export default {
     },
     formatScheduledDate(date) {
       return moment(date).format('Do MMM YYYY hh:mm a');
+    },
+    scheduled_time(date) {
+      return moment(date).format('YYYY-MM-DD HH:mm:ss');
     },
     nextDialog(val) {
       this.setBatchDetailsDialogState(val);
@@ -255,6 +271,117 @@ export default {
       if (Object.keys(response).length > 0) {
         this.processing = true;
         this.failed_request_data = response.failed_attempts;
+      }
+    },
+    async rescheduleOrder() {
+      // eslint-disable-next-line no-unreachable
+
+      if (!this.selectedDate) {
+        this.doNotification(
+          2,
+          'Reschedule Error',
+          'Kindly provide reschedule date',
+        );
+        return;
+      }
+      const date = this.convertToUTC(this.scheduled_time(this.selectedDate));
+
+      const payload = {
+        app: 'AUTH',
+        endpoint: 'mission-control-bff/orders/reschedule',
+        apiKey: false,
+        params: {
+          order_id: this.batch_info.order_id,
+          rescheduled_time: date,
+        },
+      };
+      try {
+        const res = await this.perform_post_actions(payload);
+
+        if (res.status === 200) {
+          /* eslint no-restricted-globals: ["error", "event"] */
+          this.doNotification(
+            1,
+            'Order Rescheduled',
+            'Order has been rescheduled successfully',
+          );
+          setTimeout(() => {
+            this.updateProcessingStatus(true);
+          }, 800);
+        } else {
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(res.data, 'errors')) {
+            error_response = res.data.errors;
+          } else {
+            error_response = res.data.message;
+          }
+          this.doNotification(2, 'Reschedule Order Error', error_response);
+        }
+        // eslint-disable-next-line no-unreachable
+      } catch (error) {
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
+    },
+    async cancelOrder() {
+      // eslint-disable-next-line no-unreachable
+
+      if (!this.cancel_reason) {
+        this.doNotification(
+          2,
+          'Cancel Order Error',
+          'Kindly provide cancellation reason',
+        );
+        return;
+      }
+      const order_type =
+        this.getActivePage === 'Outbound_ordersView'
+          ? 'Delivery'
+          : 'Consignment';
+
+      const payload = {
+        app: 'AUTH',
+        endpoint: 'mission-control-bff/orders/cancel',
+        apiKey: false,
+        params: {
+          order_id: this.batch_info.order_id,
+          reason: this.cancel_reason,
+          order_type,
+          business_id: this.batch_info.business_id,
+        },
+      };
+      try {
+        const res = await this.perform_post_actions(payload);
+
+        if (res.status === 200) {
+          /* eslint no-restricted-globals: ["error", "event"] */
+          this.doNotification(
+            1,
+            'Cancel Order',
+            'Order has been cancelled successfully',
+          );
+          setTimeout(() => {
+            this.updateProcessingStatus(true);
+          }, 800);
+        } else {
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(res.data, 'errors')) {
+            error_response = res.data.errors;
+          } else {
+            error_response = res.data.message;
+          }
+          this.doNotification(2, 'Cancel Order Error', error_response);
+        }
+        // eslint-disable-next-line no-unreachable
+      } catch (error) {
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
       }
     },
   },
