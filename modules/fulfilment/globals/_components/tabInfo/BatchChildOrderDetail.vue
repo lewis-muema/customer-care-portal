@@ -103,16 +103,17 @@
             {{ formatScheduledDate(batch_info.scheduled_date) }}
           </div>
 
-          <div
-            class="failed-request-actions"
-            v-if="batch_info.order_status === 'ORDER_FAILED'"
-          >
+          <div class="failed-request-actions">
             <span
               class="reschedule-batch-child"
               @click="nextDialog('reschedule')"
+              v-if="canScheduleOrder()"
               >RESCHEDULE</span
             >
-            <span class="cancel-batch-child" @click="nextDialog('cancel')"
+            <span
+              class="cancel-batch-child"
+              @click="nextDialog('cancel')"
+              v-if="canCancelOrder()"
               >CANCEL ORDER</span
             >
           </div>
@@ -258,6 +259,17 @@ export default {
     },
     showFailedData(val) {
       this.opened = !val;
+    },
+    canCancelOrder() {
+      const orderStatus = this.batch_info.order_status;
+      const allowed =
+        orderStatus === 'ORDER_RECEIVED' || orderStatus === 'ORDER_RESCHEDULED';
+      return allowed;
+    },
+    canScheduleOrder() {
+      const orderStatus = this.batch_info.order_status;
+      const allowed = orderStatus === 'ORDER_FAILED';
+      return allowed;
     },
     async getFailedRequestData() {
       const payload = {
