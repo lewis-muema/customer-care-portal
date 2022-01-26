@@ -5,6 +5,10 @@
   width: 100%;
   display: flex;
 }
+.fulfilment-status-filter > div > .el-select {
+  width: 100%;
+}
+
 .fulfillment-tab-info-bottom {
   width: 100%;
 }
