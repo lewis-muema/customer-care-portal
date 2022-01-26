@@ -454,5 +454,5 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .el-select-dropdown__item {
   font-size: 13px;
-  color: #303133
+  color: #303133;
 }
