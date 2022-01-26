@@ -50,7 +50,7 @@
           plain
           v-if="
             (page === 'Outbound_ordersView' || page === 'Inbound_ordersView') &&
-              canCancelOrder()
+              canScheduleOrder()
           "
           @click="triggerAction('schedule')"
           >Schedule</el-button
@@ -205,6 +205,12 @@ export default {
       return allowed;
     },
     canCancelOrder() {
+      const orderStatus = this.getTableDetails.order_status;
+      const allowed =
+        orderStatus === 'ORDER_RECEIVED' || orderStatus === 'ORDER_RESCHEDULED';
+      return allowed;
+    },
+    canScheduleOrder() {
       const orderStatus = this.getTableDetails.order_status;
       const allowed = orderStatus === 'ORDER_FAILED';
       return allowed;
