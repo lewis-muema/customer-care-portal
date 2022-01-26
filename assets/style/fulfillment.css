@@ -78,9 +78,6 @@
   font-weight: bold;
   font-size: 10.5378px !important;
 }
-.fulfilment-status-filter > div > .el-select {
-  width: 100%;
-}
 .fulfilment-search-filter .el-input__inner {
   border: none;
   height: 37px;
@@ -454,4 +451,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .el-select-dropdown__item {
   font-size: 13px;
   color: #303133
+}
+.fulfilment-status-filter > div > .el-select {
+  width: 100%;
 }
