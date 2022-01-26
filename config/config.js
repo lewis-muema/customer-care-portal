@@ -47,6 +47,7 @@ const config = {
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
     FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://authtest.sendyit.com/mission-control-bff/',
   },
   dev: {
     BASE_URL: 'http://localhost:8080/',
@@ -87,6 +88,7 @@ const config = {
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
     FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://authtest.sendyit.com/mission-control-bff/',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
@@ -126,6 +128,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://authtest.sendyit.com/mission-control-bff/',
   },
   production: {
     BASE_URL: 'http://localhost:8080/',
@@ -169,6 +172,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'production',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     FULFILMENT_SERVICE: 'https://auth.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://auth.sendyit.com/mission-control-bff/',
   },
 };
 export default config;

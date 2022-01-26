@@ -77,7 +77,9 @@
   color: #000000 !important;
   font-weight: bold;
   font-size: 10.5378px !important;
-
+}
+.fulfilment-status-filter > div > .el-select {
+  width: 100%;
 }
 .fulfilment-search-filter .el-input__inner {
   border: none;

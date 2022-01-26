@@ -12,49 +12,7 @@ export default {
     { rootState, commit, getters, dispatch },
     payload,
   ) {
-    const url = rootState.config.FULFILMENT_SERVICE;
-    if (payload != null && payload.nextPage) {
-      const newTableData = {
-        pagination: {
-          total: 987,
-          perPage: 50,
-          page: payload.nextPage,
-          lastPage: 20,
-        },
-        data: [
-          {
-            order_no: `ES97ZL615-F4U ${payload.nextPage}`,
-            status: 'Received',
-            seller_name: 'Jame Merchant',
-            recipient_name: 'John Doe',
-            rider_name: 'Sendy Rider',
-            rider_id: 1,
-            city_name: 'Nairobi',
-            time_placed: '2021-09-28T09:32:46.000Z',
-            pickup_location: 'The Chancery, Valley Rd ',
-            destination_location: 'Tilisi Hub',
-            distance: 20,
-            order_amount: 244,
-            currency: 'KSH',
-            assigned_batch_no: 'BLF-O001',
-            estimated_weight: 400,
-            unit_per_order: 10,
-            volume: 10,
-            batch_no: '#13322',
-          },
-        ],
-      };
-      const promise = new Promise(resolve => {
-        const tableData = [...getters.getTableData];
-        const updatedTableData = tableData.concat(newTableData.data);
-        setTimeout(() => {
-          commit('setTableData', updatedTableData);
-          commit('setPagination', newTableData.pagination);
-          resolve(updatedTableData);
-        }, 1000);
-      });
-      return promise;
-    }
+    const url = rootState.config.MISSION_CONTROL_BFF;
     // eslint-disable-next-line prettier/prettier
     let filter = '';
 
@@ -68,18 +26,22 @@ export default {
     try {
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/deliveries${filter}`,
+        `${url}orders/deliveries${filter}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
-        const deliveryOrders = response.data.data.orders;
+        const res = response.data;
+        const deliveryOrders = res.data.data.orders;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: deliveryOrders.length,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
+          perPage: pageInfo.max,
+          page: pageInfo.current_page,
         };
-        commit('setTableData', deliveryOrders);
+
+        payload && payload.offset
+          ? commit('setTableDataAppend', deliveryOrders)
+          : commit('setTableData', deliveryOrders);
         commit('setPagination', pagination);
         commit('setProcessingStatus', false);
       }
@@ -106,15 +68,16 @@ export default {
     }
 
     try {
-      const url = rootState.config.FULFILMENT_SERVICE;
+      const url = rootState.config.MISSION_CONTROL_BFF;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/batches?direction=OUTBOUND${filter}`,
+        `${url}batches?direction=OUTBOUND${filter}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'batch_id') return;
-        const batches = response.data.data.batches;
-        const pageInfo = response.data.data.pagination;
+        const res = response.data;
+        const batches = res.data.data.batches;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: batches.length,
           perPage: pageInfo.max,
@@ -149,16 +112,17 @@ export default {
     }
 
     try {
-      const url = rootState.config.FULFILMENT_SERVICE;
+      const url = rootState.config.MISSION_CONTROL_BFF;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/batches?direction=INBOUND${filter}`,
+        `${url}batches?direction=INBOUND${filter}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'batch_id') return;
 
-        const batches = response.data.data.batches;
-        const pageInfo = response.data.data.pagination;
+        const res = response.data;
+        const batches = res.data.data.batches;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: batches.length,
           perPage: pageInfo.max,
@@ -234,15 +198,16 @@ export default {
     }
 
     try {
-      const url = rootState.config.FULFILMENT_SERVICE;
+      const url = rootState.config.MISSION_CONTROL_BFF;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/consignments${filter.replace(/ /g, '')}`,
+        `${url}orders/consignments${filter.replace(/ /g, '')}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
-        const deliveryOrders = response.data.data.orders;
-        const pageInfo = response.data.data.pagination;
+        const res = response.data;
+        const deliveryOrders = res.data.data.orders;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: deliveryOrders.length,
           perPage: pageInfo.max,
