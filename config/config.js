@@ -38,7 +38,7 @@ const config = {
     HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
     HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
+    RABBITMQ_URL: 'wss://stomptest.sendyit.com/ws',
     BROKER_USER: 'staging',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
@@ -79,7 +79,12 @@ const config = {
     AUTH: 'https://authtest.sendyit.com/',
     PARTNER_API:
       'https://autht.staging.sendyit.com/rider/admin_partner_api/v5/',
-    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
+
+    RABBITMQ_URL: 'wss://stomptest.sendyit.com/ws',
     BROKER_USER: 'staging',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
@@ -119,8 +124,12 @@ const config = {
     OFFLINE_PRICING:
       'https://cors-anywhere.herokuapp.com/https://pricing.sendyit.com/pricing/',
     AUTH: 'https://auth.staging.sendyit.com/',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
-    RABBITMQ_URL: 'wss://rabbitmqtest.sendyit.com:15675/ws',
+    RABBITMQ_URL: 'wss://stomptest.sendyit.com/ws',
     BROKER_USER: 'staging',
 
     ELASTIC_APM_DISTRIBUTED_TRACING_ORIGINS: 'https://authtest.sendyit.com',
@@ -163,6 +172,10 @@ const config = {
       'https://cors-anywhere.herokuapp.com/https://prod.sendyit.com/pricing/',
     AUTH: 'https://auth.sendyit.com/',
     PARTNER_API: 'https://auth.sendyit.com/rider/admin_partner_api/v5/',
+    HELPSCOUT_TOKEN: 'https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_CONVERSATIONS: 'https://api.helpscout.net/v2/conversations',
+    HELPSCOUT_REFRESH: ' https://api.helpscout.net/v2/oauth2/token',
+    HELPSCOUT_USERS: ' https://api.helpscout.net/v2/users',
 
     RABBITMQ_URL: 'wss://stomp.sendyit.com:443/ws',
     BROKER_USER: 'production',
