@@ -85,4 +85,7 @@ export default {
   setSupportedCountries(state, payload) {
     state.supported_countries = payload;
   },
+  setBatchDetailsDialogState(state, payload) {
+    state.batch_details_dialog_state = payload;
+  },
 };

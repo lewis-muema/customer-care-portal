@@ -39,10 +39,21 @@
       </el-table>
     </div>
     <el-dialog
-      :title="getDialogTitle()"
       :visible.sync="batchDialogVisible"
+      class="batch-details-dialog"
       width="30%"
     >
+      <div class="">
+        <i
+          class="fa fa-arrow-left batch-dialog-back-btn"
+          v-if="
+            batch_details_dialog_state === 'cancel' ||
+              batch_details_dialog_state === 'reschedule'
+          "
+          @click="backToMainDialog()"
+        />
+        <span class="batch-details-dialog-title">{{ batch_dialog_label }}</span>
+      </div>
       <BatchChildOrderDetail />
     </el-dialog>
     <el-dialog
@@ -79,6 +90,8 @@ export default {
       batchID: null,
       batchDialogVisible: false,
       removeOrderDialog: false,
+      batch_details_dialog_state: null,
+      batch_dialog_label: 'Order details',
     };
   },
   computed: {
@@ -87,6 +100,7 @@ export default {
       getTableDetails: 'fulfilment/getTableDetails',
       getBatchChildOrderDetails: 'fulfilment/getBatchChildOrderDetails',
       getRemoveOrderStoreValue: 'fulfilment/getRemoveOrderStoreValue',
+      getBatchDetailsDialogState: 'fulfilment/getBatchDetailsDialogState',
     }),
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -105,6 +119,7 @@ export default {
     batchDialogVisible(val) {
       if (!val) {
         this.setBatchChildOrderDetails({});
+        this.setBatchDetailsDialogState(null);
       }
     },
     removeOrderDialog(val) {
@@ -116,6 +131,10 @@ export default {
     getRemoveOrderStoreValue(val) {
       this.removeOrderDialog = val;
     },
+    getBatchDetailsDialogState(val) {
+      this.batch_details_dialog_state = val;
+      this.setDialogTitle();
+    },
   },
   beforeMount() {
     this.order_details = this.getTableDetails.orders;
@@ -126,6 +145,7 @@ export default {
       setBatchChildOrderDetails: 'fulfilment/setBatchChildOrderDetails',
       setBatchChildOrderDialog: 'fulfilment/setBatchChildOrderDialog',
       setRemoveOrderStoreValue: 'fulfilment/setRemoveOrderStoreValue',
+      setBatchDetailsDialogState: 'fulfilment/setBatchDetailsDialogState',
     }),
     viewBatchChildOrder(data) {
       this.setBatchChildOrderDetails(data);
@@ -135,12 +155,17 @@ export default {
       this.setBatchChildOrderDetails(data);
       this.removeOrderDialog = true;
     },
-    getDialogTitle() {
-      return `Fulfilment order ${
-        !this.getBatchChildOrderDetails
-          ? ''
-          : this.getBatchChildOrderDetails.order_id
-      } details`;
+    backToMainDialog() {
+      this.setBatchDetailsDialogState(null);
+    },
+    setDialogTitle() {
+      if (this.batch_details_dialog_state === 'cancel') {
+        this.batch_dialog_label = 'Cancel order?';
+      } else if (this.batch_details_dialog_state === 'reschedule') {
+        this.batch_dialog_label = 'Reschedule order';
+      } else {
+        this.batch_dialog_label = 'Order details';
+      }
     },
   },
 };
