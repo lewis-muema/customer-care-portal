@@ -877,13 +877,6 @@ export default {
       });
       return filtered;
     },
-    copDetails() {
-      const cop = {
-        copName: this.copName,
-        copId: this.copId,
-      };
-      return cop;
-    },
   },
   watch: {
     mode(val) {
@@ -1109,11 +1102,7 @@ export default {
             this.trackMixpanelPeople();
             notification.push(data.message);
             actionClass = this.display_order_action_notification(data.status);
-            await this.logAction(
-              'Deactivate Daily rate pricing config',
-              36,
-              this.copDetails,
-            );
+            await this.logAction('Deactivate Daily rate pricing config', 36);
             this.updateSuccess(false);
           } else {
             this.trackMixpanelPeople();
@@ -1306,11 +1295,7 @@ export default {
             'You have successfully created the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
-          await this.logAction(
-            'Add Daily rate pricing config',
-            36,
-            this.copDetails,
-          );
+          await this.logAction('Add Daily rate pricing config', 36);
           this.updateSuccess(false);
           this.sendEmailNotification(
             this.admin.email,
@@ -1362,11 +1347,7 @@ export default {
             'You have successfully edited the custom pricing config!',
           );
           actionClass = this.display_order_action_notification(data.status);
-          await this.logAction(
-            'Edit Daily rate pricing config',
-            36,
-            this.copDetails,
-          );
+          await this.logAction('Edit Daily rate pricing config', 36);
           this.updateSuccess(false);
         } else {
           notification.push(`${data.message}, ${data.errors}`);

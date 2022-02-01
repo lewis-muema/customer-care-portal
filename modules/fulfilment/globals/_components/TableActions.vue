@@ -6,6 +6,22 @@
           type="primary"
           class="blue"
           size="mini"
+          icon="el-icon-circle-close"
+          plain
+          v-if="
+            (page === 'Outbound_ordersView' || page === 'Inbound_ordersView') &&
+              canCancelOrder()
+          "
+          @click="triggerAction('cancel')"
+          >Cancel</el-button
+        >
+      </el-col>
+      <el-col :span="3">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          icon="el-icon-notebook-1"
           plain
           v-if="
             page === 'Outbound_batchesView' || page === 'Inbound_batchesView'
@@ -14,35 +30,6 @@
           >Details</el-button
         >
       </el-col>
-
-      <el-col :span="5">
-        <el-button
-          type="primary"
-          class="blue"
-          size="mini"
-          plain
-          v-if="
-            (page === 'Outbound_batchesView' ||
-              page === 'Inbound_batchesView') &&
-              canRequestForTransport() &&
-              permissions.fulfilment_allocate_partner
-          "
-          @click="dialogVisible = true"
-          >Request for transport</el-button
-        >
-      </el-col>
-
-      <!-- <el-col :span="3">
-        <el-button
-          type="primary"
-          class="blue"
-          size="mini"
-          plain
-          v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
-          @click="triggerAction('cancel')"
-          >Cancel</el-button
-        >
-      </el-col> -->
       <!-- <el-col :span="3">
         <el-button
           type="primary"
@@ -54,11 +41,28 @@
           >Tickets</el-button
         >
       </el-col> -->
+      <el-col :span="3">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          icon="el-icon-date"
+          plain
+          v-if="
+            (page === 'Outbound_ordersView' || page === 'Inbound_ordersView') &&
+              canCancelOrder()
+          "
+          @click="triggerAction('schedule')"
+          >Schedule</el-button
+        >
+      </el-col>
+
       <el-col :span="4">
         <el-button
           type="primary"
           class="blue"
           size="mini"
+          icon="el-icon-receiving"
           plain
           v-if="
             page === 'Outbound_ordersView' ||
@@ -68,6 +72,23 @@
           "
           @click="triggerAction('delivery_codes')"
           >Delivery Codes</el-button
+        >
+      </el-col>
+      <el-col :span="4">
+        <el-button
+          type="primary"
+          class="blue"
+          size="mini"
+          icon="el-icon-search"
+          plain
+          v-if="
+            (page === 'Outbound_batchesView' ||
+              page === 'Inbound_batchesView') &&
+              canRequestForTransport() &&
+              permissions.fulfilment_allocate_partner
+          "
+          @click="dialogVisible = true"
+          >Request for transport</el-button
         >
       </el-col>
       <!-- <el-col :span="3">
@@ -101,6 +122,7 @@
           type="primary"
           class="blue"
           size="mini"
+          icon="el-icon-refresh"
           plain
           @click="triggerAction('update_status')"
           v-if="page === 'Outbound_ordersView' || page === 'Inbound_ordersView'"
@@ -110,11 +132,16 @@
     </el-row>
     <el-row>
       <DeliveryCodes v-if="action === 'delivery_codes'" />
-      <CancelOrder v-if="action === 'cancel'" />
+      <CancelOrder
+        v-if="action === 'cancel'"
+        :details="getTableDetails"
+        :page="page"
+      />
       <Ticket v-if="action === 'ticket'" />
       <Reallocate v-if="action === 'reallocate'" />
       <Dispatch v-if="action === 'dispatch'" />
       <Details v-if="action === 'details'" />
+      <Schedule v-if="action === 'schedule'" :details="getTableDetails" />
       <UpdateStatus
         :page="page"
         v-if="action === 'update_status'"
@@ -145,6 +172,7 @@ export default {
     Details: () => import('./actions/Details'),
     RequestTransport: () => import('./actions/RequestTransport'),
     UpdateStatus: () => import('./actions/UpdateStatus'),
+    Schedule: () => import('./actions/Schedule'),
   },
   props: ['page', 'rowData'],
   data() {
@@ -174,6 +202,11 @@ export default {
       const allowed =
         batchStatus === 'BATCH_IN_COMPOSITION' ||
         batchStatus === 'BATCH_FAILED_SHIPPING_ASSIGNMENT';
+      return allowed;
+    },
+    canCancelOrder() {
+      const orderStatus = this.getTableDetails.order_status;
+      const allowed = orderStatus === 'ORDER_FAILED';
       return allowed;
     },
   },

@@ -581,4 +581,18 @@ export default {
       return error.response.data.data;
     }
   },
+  async fetchFailedAttempts({ rootState, commit }, payload) {
+    const url = rootState.config.AUTH;
+
+    try {
+      const response = await axiosConfig.get(
+        `${url}mission-control-bff/orders/failed-attempts/${payload.order_id}`,
+      );
+      if (response.status === 200) {
+        return response.data.data;
+      }
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
 };
