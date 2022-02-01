@@ -342,10 +342,14 @@ export default {
       commit('setPagination', results.pagination);
     }, 10);
   },
-  async fetchHubs({ rootState, commit, dispatch }) {
+  async fetchHubs({ rootState, commit, getters, dispatch }) {
     commit('setProcessingStatus', true);
     const config = rootState.config;
-    const url = `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
+    const country = getters.getSelectedCountry;
+    const url =
+      country !== null
+        ? `https://fulfillment-biz-logic-service-dev.sendyit.com/v1/missioncontrol/hubs?country=${country}`
+        : `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
     const results = await axiosConfig.get(url);
     setTimeout(() => {
