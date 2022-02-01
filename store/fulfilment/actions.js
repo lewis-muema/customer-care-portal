@@ -266,8 +266,8 @@ export default {
     };
     setTimeout(() => {
       const res = results.data;
-      commit('setTableData', res.data);
-      commit('setHubs', res.data);
+      commit('setTableData', res.data.hubs);
+      commit('setHubs', res.data.hubs);
       commit('setPagination', pagination);
       commit('setProcessingStatus', false);
     }, 1000);
@@ -350,7 +350,7 @@ export default {
     const results = await axiosConfig.get(url);
     setTimeout(() => {
       const res = results.data;
-      commit('setHubs', res.data);
+      commit('setHubs', res.data.hubs);
       // commit('setPagination', results.pagination);
       commit('setProcessingStatus', false);
     }, 1000);
