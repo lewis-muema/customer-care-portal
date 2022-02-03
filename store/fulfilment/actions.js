@@ -301,8 +301,8 @@ export default {
     };
     setTimeout(() => {
       const res = results.data;
-      commit('setTableData', res.data);
-      commit('setHubs', res.data);
+      commit('setTableData', res.data.hubs);
+      commit('setHubs', res.data.hubs);
       commit('setPagination', pagination);
       commit('setProcessingStatus', false);
     }, 1000);
@@ -377,15 +377,19 @@ export default {
       commit('setPagination', results.pagination);
     }, 10);
   },
-  async fetchHubs({ rootState, commit, dispatch }) {
+  async fetchHubs({ rootState, commit, getters, dispatch }) {
     commit('setProcessingStatus', true);
     const config = rootState.config;
-    const url = `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
+    const country = getters.getSelectedCountry;
+    const url =
+      country !== null && country !== 'All Countries'
+        ? `https://fulfillment-biz-logic-service-dev.sendyit.com/v1/missioncontrol/hubs?country=${country}`
+        : `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
     const results = await axiosConfig.get(url);
     setTimeout(() => {
       const res = results.data;
-      commit('setHubs', res.data);
+      commit('setHubs', res.data.hubs);
       // commit('setPagination', results.pagination);
       commit('setProcessingStatus', false);
     }, 1000);

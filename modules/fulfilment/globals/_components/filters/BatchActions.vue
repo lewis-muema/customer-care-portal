@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState, mapActions } from 'vuex';
 
 export default {
   name: 'BatchActions',
@@ -91,10 +91,16 @@ export default {
   methods: {
     ...mapMutations({
       updateCheckedOrders: 'fulfilment/setCheckedOrders',
+      updateSelectedCountry: 'fulfilment/setSelectedCountry',
     }),
-    showModal(action, title) {
+    ...mapActions({
+      fetchHubs: 'fulfilment/fetchHubs',
+    }),
+    async showModal(action, title) {
       this.title = title;
       this.centerDialogVisible = true;
+      this.updateSelectedCountry(this.selectedOrders[0].country);
+      await this.fetchHubs();
     },
     closeDialog() {
       this.selectedOrders = [];
