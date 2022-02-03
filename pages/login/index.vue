@@ -21,9 +21,9 @@ import Cookie from 'js-cookie';
 import SessionMxn from '@/mixins/session_mixin';
 
 export default {
-  name: 'login',
-  layout: 'login',
+  name: 'Login',
   mixins: [SessionMxn],
+  layout: 'login',
   computed: {
     ...mapGetters(['getloginErrors']),
   },

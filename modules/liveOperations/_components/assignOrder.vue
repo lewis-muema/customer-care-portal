@@ -110,6 +110,7 @@ export default {
       reason: '',
       adminID: null,
       admin: null,
+      helpscoutUserID: null,
       submitted: false,
       errorMsg: '',
       searched: false,
@@ -170,7 +171,12 @@ export default {
       updateSearchState: 'setSearchState',
       updateLiveRefresh: 'setLiveOpsRefresh',
     }),
-    ...mapActions(['assignAlert', 'create_ticket', 'reAssignTicket']),
+    ...mapActions([
+      'getHelpscoutUser',
+      'assignAlert',
+      'create_ticket',
+      'reAssignTicket',
+    ]),
     async searchedAdmin(adminData) {
       this.adminID = adminData.admin_id;
       await this.updateSearchState(false);

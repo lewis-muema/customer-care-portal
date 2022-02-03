@@ -1791,7 +1791,6 @@ export default {
       await dispatch('handleErrors', error.response.status, {
         root: true,
       });
-      return error;
     }
   },
   async fetch_environment_variables({ state, dispatch }) {

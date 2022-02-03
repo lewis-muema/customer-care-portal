@@ -366,11 +366,10 @@ export default {
   },
   mounted() {
     if (process.client) {
+      const params = this.isEmpty(this.params) ? '' : this.params;
       this.setOrders({
         page: 1,
-        params: {
-          country_code: this.countryCode,
-        },
+        params,
       });
     }
   },
