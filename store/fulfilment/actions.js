@@ -347,7 +347,7 @@ export default {
     const config = rootState.config;
     const country = getters.getSelectedCountry;
     const url =
-      country !== null
+      country !== null && country !== 'All Countries'
         ? `https://fulfillment-biz-logic-service-dev.sendyit.com/v1/missioncontrol/hubs?country=${country}`
         : `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
