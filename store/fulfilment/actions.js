@@ -348,7 +348,7 @@ export default {
     const country = getters.getSelectedCountry;
     const url =
       country !== null && country !== 'All Countries'
-        ? `https://fulfillment-biz-logic-service-dev.sendyit.com/v1/missioncontrol/hubs?country=${country}`
+        ? `${config.FULFILMENT_SERVICE}missioncontrol/hubs?country=${country}`
         : `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
     const results = await axiosConfig.get(url);

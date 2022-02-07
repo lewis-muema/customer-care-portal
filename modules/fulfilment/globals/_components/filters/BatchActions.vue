@@ -97,7 +97,6 @@ export default {
     ...mapActions({
       fetchHubs: 'fulfilment/fetchHubs',
     }),
-
     async showModal(action, title) {
       this.title = title;
       this.centerDialogVisible = true;
