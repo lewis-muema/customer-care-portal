@@ -5,7 +5,7 @@
         <div>
           <ul class="sidebar-menu">
             <li class="header">Fulfilment</li>
-            <li class="treeview >">
+            <li class="treeview">
               <nuxt-link to="/fulfilment/inbound" class="inline-display">
                 <div>
                   <img :src="`${s3Path}mission_control/inbound.svg`" alt="" />
@@ -13,12 +13,23 @@
                 <span class="fulfilment-nav"> Inbound orders</span></nuxt-link
               >
             </li>
-            <li class="treeview >">
+            <li class="treeview">
               <nuxt-link to="/fulfilment/outbound" class="inline-display">
                 <div>
                   <img :src="`${s3Path}mission_control/outbound.svg`" alt="" />
                 </div>
                 <span class="fulfilment-nav"> Outbound orders</span></nuxt-link
+              >
+            </li>
+            <li class="treeview">
+              <nuxt-link to="/fulfilment/sellers" class="inline-display">
+                <div>
+                  <img
+                    :src="`${s3Path}mission_control/keyboard_return.svg`"
+                    alt=""
+                  />
+                </div>
+                <span class="fulfilment-nav"> Sellers </span></nuxt-link
               >
             </li>
             <!-- <li class="treeview >">
@@ -29,7 +40,7 @@
                 <span class="fulfilment-nav"> Returns</span></nuxt-link
               >
             </li> -->
-            <li class="treeview >">
+            <li class="treeview">
               <nuxt-link to="/fulfilment/hub" class="inline-display">
                 <div>
                   <img :src="`${s3Path}mission_control/hub.svg`" alt="" />
