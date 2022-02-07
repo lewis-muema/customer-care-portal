@@ -671,3 +671,59 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   width: 90% !important;
   margin-top: 3%;
 }
+.mc-seller-search{
+  width: 35%;
+  margin-right: 2%;
+}
+.mc-seller-stats-cards-inner{
+  display: flex;
+  width: 100%;
+}
+.mc-seller-stats-cards{
+  width: 100%;
+}
+.mc-seller-card-title{
+  margin-bottom: 8%;
+}
+.mc-seller-card-description{
+  color: #000000;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 33px;
+}
+.el-card{
+  margin-bottom: 3%;
+}
+.mc-seller-stats-sum > div > .el-card__body{
+  background-color: #E2E7ED;
+  border: none;
+}
+.mc-seller-stats-total-amount > div > .el-card__body{
+  background-color: #FDF1CC;
+  border: none;
+}
+.mc-seller-stats-overdue-payment > div > .el-card__body{
+  background-color: #FBDECF;
+  border: none;
+}
+.mc-seller-search-img{
+  width: 100%;
+  cursor: pointer;
+}
+.mc-seller-view-all{
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  font-size: 18px;
+  color: #324BA8;
+}
+.mc-seller-filters{
+  display: flex;
+  margin-bottom: 1%;
+}
+.mc-seller-duration-dropdown{
+  margin-right: 2%;
+}
+.mc-seller-country-filter{
+  margin-top: 3%;
+}

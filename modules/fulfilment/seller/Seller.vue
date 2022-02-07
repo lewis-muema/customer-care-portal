@@ -6,7 +6,7 @@
     <div class="box-body ">
       <div class="fulfilment-container ">
         <div class="fulfilment-tabs" :key="componentKey">
-          <!-- Seller view -->
+          <SellerStats />
         </div>
       </div>
     </div>
@@ -16,9 +16,11 @@
 <script>
 import { mapMutations } from 'vuex';
 
+import SellerStats from './_components/SellerStats.vue';
+
 export default {
-  name: 'ReturnView',
-  components: {},
+  name: 'SellerView',
+  components: { SellerStats },
   data() {
     return {
       mode: 'SellerView',
