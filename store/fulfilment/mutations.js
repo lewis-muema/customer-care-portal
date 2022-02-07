@@ -88,4 +88,7 @@ export default {
   setBatchDetailsDialogState(state, payload) {
     state.batch_details_dialog_state = payload;
   },
+  setSellerPage(state, payload) {
+    state.seller_active_page = payload;
+  },
 };

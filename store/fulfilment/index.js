@@ -34,6 +34,7 @@ const state = () => ({
   statusChanged: false,
   supported_countries: null,
   batch_details_dialog_state: null,
+  seller_active_page: 'seller-dash',
 });
 
 export { state, getters, mutations, actions };
