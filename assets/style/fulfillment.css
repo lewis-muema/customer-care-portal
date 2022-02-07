@@ -675,59 +675,97 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   width: 90% !important;
   margin-top: 3%;
 }
-.mc-seller-search{
+.mc-seller-search {
   width: 35%;
   margin-right: 2%;
 }
-.mc-seller-stats-cards-inner{
+.mc-seller-stats-cards-inner {
   display: flex;
   width: 100%;
 }
-.mc-seller-stats-cards{
+.mc-seller-stats-cards {
   width: 100%;
 }
-.mc-seller-card-title{
+.mc-seller-card-title {
   margin-bottom: 8%;
 }
-.mc-seller-card-description{
+.mc-seller-card-description {
   color: #000000;
   font-weight: 600;
   font-size: 24px;
   line-height: 33px;
 }
-.el-card{
+.el-card {
   margin-bottom: 3%;
 }
-.mc-seller-stats-sum > div > .el-card__body{
-  background-color: #E2E7ED;
+.mc-seller-stats-sum > div > .el-card__body {
+  background-color: #e2e7ed;
   border: none;
 }
-.mc-seller-stats-total-amount > div > .el-card__body{
-  background-color: #FDF1CC;
+.mc-seller-stats-total-amount > div > .el-card__body {
+  background-color: #fdf1cc;
   border: none;
 }
-.mc-seller-stats-overdue-payment > div > .el-card__body{
-  background-color: #FBDECF;
+.mc-seller-stats-overdue-payment > div > .el-card__body {
+  background-color: #fbdecf;
   border: none;
 }
-.mc-seller-search-img{
+.mc-seller-search-img {
   width: 100%;
   cursor: pointer;
 }
-.mc-seller-view-all{
+.mc-seller-view-all {
   display: flex;
   justify-content: space-between;
   font-weight: 500;
   font-size: 18px;
-  color: #324BA8;
+  color: #324ba8;
 }
-.mc-seller-filters{
+.mc-seller-filters {
   display: flex;
   margin-bottom: 1%;
 }
-.mc-seller-duration-dropdown{
+.mc-seller-duration-dropdown {
   margin-right: 2%;
 }
-.mc-seller-country-filter{
+.mc-seller-country-filter {
   margin-top: 3%;
+}
+.mc-fulfilment-header {
+  font-weight: 500;
+  line-height: 38px;
+  font-size: 22px;
+  padding-bottom: 0;
+  padding-top: 15px;
+  width: 97%;
+  margin-top: 0;
+  margin-left: 20px;
+}
+.mc-seller-search-input {
+  width: 33%;
+}
+.mc-seller-table-wrapper {
+  margin-top: 3%;
+  width: 80%;
+}
+.mc-seller-header {
+  background: #f5f7fa !important;
+}
+.mc-seller-breadcrumb {
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  list-style: none;
+  border-radius: 0.25rem;
+  color: #324ba8;
+  font-weight: 500;
+  cursor: pointer;
+}
+.mc-list-next {
+  margin-left: 7px;
+}
+.mc-inactive {
+  color: #909399 !important;
 }

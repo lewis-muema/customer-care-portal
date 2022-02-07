@@ -80,4 +80,7 @@ export default {
   getBatchDetailsDialogState(state) {
     return state.batch_details_dialog_state;
   },
+  getSellerPage(state) {
+    return state.seller_active_page;
+  },
 };

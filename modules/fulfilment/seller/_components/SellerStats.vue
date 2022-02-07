@@ -36,6 +36,7 @@
               src="https://images.sendyit.com/mission_control/all-sellers.svg"
               alt=""
               class="mc-seller-search-img"
+              @click="directToSellers('all-sellers')"
             />
           </div>
           <div class="mc-seller-stats-cards">
@@ -160,6 +161,9 @@ export default {
     ...mapActions({
       fetchCountries: 'fulfilment/fetchHubCountries',
     }),
+    ...mapMutations({
+      setSellerPage: 'fulfilment/setSellerPage',
+    }),
     startStartsCount() {
       const counters = document.querySelectorAll('.stats-count');
       const speed = 200;
@@ -179,6 +183,9 @@ export default {
         };
         updateCount();
       });
+    },
+    directToSellers(page) {
+      this.setSellerPage(page);
     },
   },
 };
