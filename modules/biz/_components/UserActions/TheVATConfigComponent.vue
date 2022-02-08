@@ -76,8 +76,11 @@
         </div>
       </div>
       <div class="form-group  col-md-12 config-submit">
-        <button class="btn btn-primary action-button">
+        <button class="btn btn-primary action-button" :disabled="loading">
           Update
+          <span v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i
+          ></span>
         </button>
       </div>
     </form>
@@ -113,6 +116,7 @@ export default {
       ],
       invoicing_cycle: '',
       tax_authority_pin: '',
+      loading: false,
     };
   },
 
@@ -175,15 +179,17 @@ export default {
           vat_compliant: this.vatCompliance,
         },
       };
-
+      this.loading = true;
       try {
         const data = await this.update_vat_config(payload);
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
+        this.loading = false;
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );
