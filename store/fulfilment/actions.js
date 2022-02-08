@@ -272,6 +272,46 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
+  async getDeliveryHistory({ commit }, payload) {
+    commit('setProcessingStatus', true);
+    const promise = new Promise(resolve => {
+      const response = FulfilmentData.delivery_list;
+      resolve(response);
+    });
+
+    const results = await promise;
+    const pagination = {
+      total: results.data.length,
+      perPage: results.data.length - 1,
+      page: 0,
+    };
+    setTimeout(() => {
+      const res = results.data;
+      commit('setTableData', res.delivery);
+      commit('setPagination', pagination);
+      commit('setProcessingStatus', false);
+    }, 1000);
+  },
+  async getInvoiceList({ commit }, payload) {
+    commit('setProcessingStatus', true);
+    const promise = new Promise(resolve => {
+      const response = FulfilmentData.invoice_list;
+      resolve(response);
+    });
+
+    const results = await promise;
+    const pagination = {
+      total: results.data.length,
+      perPage: results.data.length - 1,
+      page: 0,
+    };
+    setTimeout(() => {
+      const res = results.data;
+      commit('setTableData', res.invoice);
+      commit('setPagination', pagination);
+      commit('setProcessingStatus', false);
+    }, 1000);
+  },
   async add_fulfilment_hub({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });

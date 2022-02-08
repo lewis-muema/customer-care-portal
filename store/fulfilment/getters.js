@@ -83,4 +83,10 @@ export default {
   getSellerPage(state) {
     return state.seller_active_page;
   },
+  getSingleSellerPage(state) {
+    return state.single_seller_page;
+  },
+  getSellerInfo(state) {
+    return state.seller_info;
+  },
 };

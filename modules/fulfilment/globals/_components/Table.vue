@@ -10,6 +10,7 @@
       @expand-change="handleRowExpand"
       @selection-change="handleSelectionChange"
       v-loading="fetching"
+      header-cell-class-name="mc-seller-header"
     >
       <div
         class="data-info-panel"
@@ -49,6 +50,23 @@
           </div>
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.scheduled_date) }}
+          </div>
+          <div v-else-if="table_data.tag === 'fulfilment_fee'">
+            {{ props.row.currency }} {{ props.row.fulfilment_fee }}
+          </div>
+          <div v-else-if="table_data.tag === 'amount'">
+            {{ props.row.currency }} {{ props.row.amount }}
+          </div>
+          <div v-else-if="table_data.tag === 'status'">
+            <StatusBadge :status="props.row.status" />
+          </div>
+          <div v-else-if="table_data.tag === 'invoice_amount'">
+            {{ props.row.currency }} {{ props.row.invoice_amount }}
+          </div>
+          <div v-else-if="table_data.tag === 'invoice_download'">
+            <div class="mc-seller-download-invoice">
+              Download invoice
+            </div>
           </div>
           <div v-else-if="table_data.tag === 'hub_name'">
             {{ !props.row.hub_name ? '--' : props.row.hub_name }}
@@ -172,8 +190,10 @@ export default {
         'ReturnView',
         'Outbound_movableUnitsView',
         'Inbound_batchesView',
+        'deliveryHistory',
+        'invoices',
       ],
-      disableExpandPages: ['HubsView'],
+      disableExpandPages: ['HubsView', 'deliveryHistory', 'invoices'],
       expand_id: 0,
       expand_keys: [],
       tableKey: 0,
