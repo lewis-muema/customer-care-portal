@@ -10,7 +10,7 @@
         >
         </el-input>
       </div>
-      <div class="fulfilment-table-wrapper mc-seller-table-wrapper">
+      <div class="mc-seller-table-wrapper">
         <el-table
           :data="tableData"
           style="width: 100%"
@@ -30,9 +30,9 @@
           </el-table-column>
           <el-table-column prop="creation_date" label="Account creation date">
           </el-table-column>
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              {{ props.row }}
+          <el-table-column width="50">
+            <template>
+              <span> > </span>
             </template>
           </el-table-column>
         </el-table>
@@ -97,6 +97,10 @@ export default {
   mounted() {},
   methods: {
     ...mapActions({}),
+    ...mapMutations({
+      setSellerPage: 'fulfilment/setSellerPage',
+      setSellerInfo: 'fulfilment/setSellerInfo',
+    }),
     getRowKey(row) {
       return row.id;
     },
@@ -108,6 +112,8 @@ export default {
         this.expand_keys = [];
         this.expand_keys.push(row.id);
       }
+      this.setSellerInfo(row);
+      this.setSellerPage('single-seller');
     },
     handleRowExpand(row) {
       if (this.expand_keys.includes(row.id)) {

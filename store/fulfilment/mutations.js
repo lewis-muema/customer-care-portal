@@ -91,4 +91,10 @@ export default {
   setSellerPage(state, payload) {
     state.seller_active_page = payload;
   },
+  setSingleSellerPage(state, payload) {
+    state.single_seller_page = payload;
+  },
+  setSellerInfo(state, payload) {
+    state.seller_info = payload;
+  },
 };

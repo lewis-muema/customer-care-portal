@@ -765,3 +765,26 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .mc-inactive {
   color: #909399 !important;
 }
+.mc-seller-container {
+  width: 99%;
+  margin: 0 auto;
+  padding-top: 0px;
+  margin-bottom: 100px;
+  flex-direction: column;
+  display: flex;
+}
+.mc-seller-tabs {
+  margin-bottom: -1px;
+}
+.mc-seller-tabs > .el-tabs--top > .el-tabs__header {
+  width: 24%;
+}
+.mc-seller-table-container {
+  width: 80%;
+  margin-top: 3%;
+}
+.mc-seller-download-invoice {
+  color: #324BA8;
+  font-weight: 600;
+  cursor: pointer;
+}

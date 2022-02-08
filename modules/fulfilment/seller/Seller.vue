@@ -13,11 +13,19 @@
           </li>
           <li
             class="mc-list-next"
-            v-if="page === 'all-sellers'"
+            v-if="page === 'all-sellers' || page === 'single-seller'"
             :class="page === 'all-sellers' ? 'mc-inactive' : ''"
             @click="setPage('all-sellers')"
           >
             > All Sellers
+          </li>
+          <li
+            class="mc-list-next"
+            v-if="page === 'single-seller'"
+            :class="page === 'single-seller' ? 'mc-inactive' : ''"
+            @click="setPage('single-seller')"
+          >
+            > {{ getSellerInfo.business_name }}
           </li>
         </ol>
       </div>
@@ -27,6 +35,7 @@
         <div class="fulfilment-tabs" :key="componentKey">
           <SellerStats v-if="page === 'seller-dash'" />
           <SellerList v-if="page === 'all-sellers'" />
+          <SingleSeller v-if="page === 'single-seller'" />
         </div>
       </div>
     </div>
@@ -38,10 +47,11 @@ import { mapMutations, mapGetters } from 'vuex';
 
 import SellerStats from './_components/SellerStats.vue';
 import SellerList from './_components/SellerList.vue';
+import SingleSeller from './_components/SingleSeller.vue';
 
 export default {
   name: 'SellerView',
-  components: { SellerStats, SellerList },
+  components: { SellerStats, SellerList, SingleSeller },
   data() {
     return {
       mode: 'SellerView',
@@ -52,6 +62,7 @@ export default {
   computed: {
     ...mapGetters({
       getSellerPage: 'fulfilment/getSellerPage',
+      getSellerInfo: 'fulfilment/getSellerInfo',
     }),
   },
   watch: {
