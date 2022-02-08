@@ -16,7 +16,7 @@
           >Cancel</el-button
         >
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4" class="detailz">
         <el-button
           type="primary"
           class="blue"
@@ -41,7 +41,7 @@
           >Tickets</el-button
         >
       </el-col> -->
-      <el-col :span="3">
+      <el-col :span="4">
         <el-button
           type="primary"
           class="blue"
@@ -57,7 +57,7 @@
         >
       </el-col>
 
-      <el-col :span="4">
+      <el-col :span="5">
         <el-button
           type="primary"
           class="blue"
@@ -219,6 +219,9 @@ export default {
 };
 </script>
 <style scoped>
+.detailz {
+  width: 15%;
+}
 .blue {
   color: #528bb8;
   border-color: #528bb8;
