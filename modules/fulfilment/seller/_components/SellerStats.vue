@@ -163,6 +163,9 @@ export default {
     }),
     ...mapMutations({
       setSellerPage: 'fulfilment/setSellerPage',
+      setSingleSellerPage: 'fulfilment/setSingleSellerPage',
+      updateActivePage: 'setActivePage',
+      setFulfilmentType: 'fulfilment/setFulfilmentType',
     }),
     startStartsCount() {
       const counters = document.querySelectorAll('.stats-count');
@@ -186,6 +189,9 @@ export default {
     },
     directToSellers(page) {
       this.setSellerPage(page);
+      this.setSingleSellerPage(page);
+      this.updateActivePage(page);
+      this.setFulfilmentType(page);
     },
   },
 };
