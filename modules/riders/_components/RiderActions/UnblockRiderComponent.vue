@@ -26,8 +26,11 @@
         </div>
       </div>
       <div class="col-md-8 unblock-btn">
-        <button class="btn btn-primary action-button">
+        <button class="btn btn-primary action-button" :disabled="loading">
           Unblock
+          <span v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i
+          ></span>
         </button>
       </div>
     </form>
@@ -49,6 +52,7 @@ export default {
     return {
       submitted: false,
       narrative: '',
+      loading: false,
     };
   },
   validations: {
@@ -103,14 +107,17 @@ export default {
           user_id: session_data.admin_id,
         },
       };
+      this.loading = true;
       try {
         const data = await this.unblock_rider(payload);
+        this.loading = false;
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );

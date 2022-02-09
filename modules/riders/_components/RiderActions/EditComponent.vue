@@ -45,8 +45,11 @@
       </div>
 
       <div class="form-group actions col-md-12">
-        <button class="btn btn-primary action-button">
+        <button class="btn btn-primary action-button" :disabled="loading">
           Submit
+          <span v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i
+          ></span>
         </button>
       </div>
     </form>
@@ -75,7 +78,8 @@ export default {
         { code: 0, type: 'Deactivate' },
       ],
       // eslint-disable-next-line prettier/prettier
-       dedication: [{ code: 0, type: 'Open' }, { code: 1, type: 'Dedicated' }],
+      dedication: [{ code: 0, type: 'Open' }, { code: 1, type: 'Dedicated' }],
+      loading: false,
     };
   },
   validations: {
@@ -140,14 +144,17 @@ export default {
         },
       };
 
+      this.loading = true;
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
+        this.loading = false;
         actionClass = this.display_order_action_notification(data.status);
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );
