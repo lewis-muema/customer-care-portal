@@ -3,7 +3,7 @@
     <div class="fulfilment-header">
       <h1 class="mc-fulfilment-header">Seller</h1>
 
-      <div class="">
+      <div class="mc-seller-header-highlight">
         <ol class="mc-seller-breadcrumb">
           <li
             @click="setPage('seller-dash')"
@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="box-body ">
-      <div class="fulfilment-container ">
+      <div class="fulfilment-container mc-seller-main-container">
         <div class="fulfilment-tabs" :key="componentKey">
           <SellerStats v-if="page === 'seller-dash'" />
           <SellerList v-if="page === 'all-sellers'" />
@@ -81,6 +81,9 @@ export default {
   methods: {
     ...mapMutations({
       setSellerPage: 'fulfilment/setSellerPage',
+      setSingleSellerPage: 'fulfilment/setSingleSellerPage',
+      updateActivePage: 'setActivePage',
+      setFulfilmentType: 'fulfilment/setFulfilmentType',
     }),
     handleTab() {
       this.componentKey += 1;
@@ -91,6 +94,9 @@ export default {
     },
     setPage(page) {
       this.setSellerPage(page);
+      this.setSingleSellerPage(page);
+      this.updateActivePage(page);
+      this.setFulfilmentType(page);
     },
   },
 };

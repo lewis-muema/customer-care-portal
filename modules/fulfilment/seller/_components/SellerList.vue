@@ -2,15 +2,9 @@
   <div class="">
     <div class="">
       <div class="">
-        <el-input
-          placeholder="Search"
-          prefix-icon="el-icon-search"
-          class="mc-seller-search-input"
-          v-model="search"
-        >
-        </el-input>
+        <FiltersBar />
       </div>
-      <div class="mc-seller-table-wrapper">
+      <div class=" fulfilment-table-wrapper mc-seller-table-wrapper">
         <el-table
           :data="tableData"
           style="width: 100%"
@@ -43,10 +37,11 @@
 
 <script>
 import { mapMutations, mapActions, mapGetters } from 'vuex';
+import FiltersBar from '../../globals/_components/FiltersBar.vue';
 
 export default {
   name: 'SellerList',
-  components: {},
+  components: { FiltersBar },
   data() {
     return {
       mode: 'SellerList',

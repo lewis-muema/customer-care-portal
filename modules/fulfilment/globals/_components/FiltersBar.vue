@@ -1,21 +1,45 @@
 <template>
   <div>
     <el-row type="flex" class="row-bg filtersBar" justify="space-between">
-      <el-col :span="9">
+      <el-col :span="returnSpanVal">
         <div class="grid-content fulfilment-search-holder">
           <el-row type="flex" class="">
-            <el-col :span="9">
+            <el-col :span="9" v-if="checkSellerPage">
               <div class="grid-content fulfilment-status-filter">
                 <StatusFilter :page="getActivePage" />
               </div>
             </el-col>
             <el-col :span="18">
-              <div class="grid-content fulfilment-search-filter">
+              <div
+                class="grid-content fulfilment-search-filter"
+                :class="checkSellerPage ? '' : 'mc-seller-global-search'"
+              >
                 <Search
                   :page="getActivePage"
                   :section="section"
-                  placeholder="Search order ( order no, name, user phone)"
+                  :placeholder="searchPlaceHolder"
                 />
+              </div>
+            </el-col>
+
+            <el-col
+              :span="10"
+              v-if="!checkSellerPage && getActivePage !== 'all-sellers'"
+            >
+              <div
+                class="grid-content fulfilment-search-filter mc-seller-global-search"
+              >
+                <DateFilter :page="getActivePage" />
+              </div>
+            </el-col>
+            <el-col
+              :span="10"
+              v-if="!checkSellerPage && getActivePage !== 'all-sellers'"
+            >
+              <div
+                class="grid-content fulfilment-search-filter mc-seller-global-search"
+              >
+                <SellerStatusFilter :page="getActivePage" />
               </div>
             </el-col>
           </el-row>
@@ -24,7 +48,7 @@
       <el-col :span="11">
         <div class="grid-content bg-white">
           <el-row type="flex" class="" justify="space-between">
-            <el-col :span="8">
+            <el-col :span="8" v-if="checkSellerPage">
               <div class="grid-content">
                 <CountryFilter v-if="getActivePage !== 'HubsView'" />
               </div>
@@ -75,6 +99,8 @@ export default {
     HubsFilter: () => import('./filters/HubFilter'),
     BatchActions: () => import('./filters/BatchActions'),
     CountryFilter: () => import('./filters/CountryFilter'),
+    DateFilter: () => import('./filters/DateFilter'),
+    SellerStatusFilter: () => import('./filters/SellerStatusFilter'),
   },
   data() {
     return {
@@ -82,6 +108,7 @@ export default {
       searched: false,
       title: '',
       page: '',
+      sellerViewPages: ['deliveryHistory', 'invoices', 'all-sellers'],
     };
   },
   computed: {
@@ -113,6 +140,19 @@ export default {
         data = 'orders';
       }
       return data;
+    },
+    checkSellerPage() {
+      return !this.sellerViewPages.includes(this.getActivePage);
+    },
+    returnSpanVal() {
+      return this.checkSellerPage || this.getActivePage === 'all-sellers'
+        ? 9
+        : 12;
+    },
+    searchPlaceHolder() {
+      return this.checkSellerPage
+        ? 'Search order ( order no, name, user phone)'
+        : 'Search';
     },
   },
   watch: {

@@ -719,7 +719,8 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .mc-seller-filters {
   display: flex;
-  margin-bottom: 1%;
+  margin-bottom: 2%;
+  margin-top: 1%;
 }
 .mc-seller-duration-dropdown {
   margin-right: 2%;
@@ -728,9 +729,10 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   margin-top: 3%;
 }
 .mc-fulfilment-header {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
   font-weight: 500;
-  line-height: 38px;
-  font-size: 22px;
+  line-height: 1.2;
   padding-bottom: 0;
   padding-top: 15px;
   width: 97%;
@@ -749,15 +751,16 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .mc-seller-breadcrumb {
   display: flex;
-  -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
   list-style: none;
   border-radius: 0.25rem;
   color: #324ba8;
   font-weight: 500;
   cursor: pointer;
+  font-size: 11px;
+  padding-left: 0.7% !important;
 }
 .mc-list-next {
   margin-left: 7px;
@@ -775,6 +778,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .mc-seller-tabs {
   margin-bottom: -1px;
+  margin-top: 2%;
 }
 .mc-seller-tabs > .el-tabs--top > .el-tabs__header {
   width: 24%;
@@ -787,4 +791,30 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   color: #324BA8;
   font-weight: 600;
   cursor: pointer;
+}
+.mc-seller-table-wrapper .el-table th > .cell {
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+  font-weight: bold;
+  font-size: 12.294px;
+  line-height: 17px;
+  color: #000000;
+}
+.mc-seller-global-search{
+  border: 1px solid #9e9e9e !important;
+  border-radius: 6px !important;
+  margin-left: 5%;
+}
+.mc-seller-global-search > div > .reschedule-fulfilment-date {
+  margin-top: 0% !important;
+}
+.mc-seller-main-container{
+  padding-top: 2% !important;
+}
+.mc-seller-header-highlight{
+  border-bottom: 1px solid #ccc;
+  margin-left: 1%;
+  width: 84%;
+  margin-bottom: 2%;
 }

@@ -3,6 +3,7 @@
     <div class="mc-seller-container">
       <div class="mc-seller-tabs">
         <el-tabs v-model="mode" @tab-click="handleClick" :key="componentKey">
+          <FiltersBar />
           <el-tab-pane label="Delivery history" name="deliveryHistory">
             <DeliveryHistory
               :key="componentKey"
@@ -23,10 +24,11 @@ import { mapMutations } from 'vuex';
 
 import DeliveryHistory from './DeliveryHistory.vue';
 import Invoices from './Invoices.vue';
+import FiltersBar from '../../globals/_components/FiltersBar.vue';
 
 export default {
   name: 'SingleSeller',
-  components: { DeliveryHistory, Invoices },
+  components: { DeliveryHistory, Invoices, FiltersBar },
   data() {
     return {
       mode: 'deliveryHistory',
