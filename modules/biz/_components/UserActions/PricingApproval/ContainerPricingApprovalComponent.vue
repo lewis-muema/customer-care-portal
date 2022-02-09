@@ -85,7 +85,7 @@
                 Go Back
               </button>
               <el-button
-                :disabled="rejectionReason === ''"
+                :disabled="rejectionReason === '' || loading"
                 class="pricing-save-btn submit-approval-btn btn-primary"
                 @click="rejectContainerPricingConfigs"
                 >Reject Request</el-button
@@ -135,6 +135,7 @@ export default {
       rejectWithReason: false,
       pricingTitle: 'Container Pricing Table',
       approvalText: 'Requires your approval',
+      loading: false,
     };
   },
   computed: {
@@ -186,8 +187,11 @@ export default {
         apiKey: false,
         params: this.approvalParams,
       };
+
+      this.loading = true;
       try {
         const data = await this.approve_container_pricing_configs(payload);
+        this.loading = false;
         if (data.status) {
           const configs = await this.getDistancePricingConfigs();
           this.trackMixpanelPeople();
@@ -208,6 +212,7 @@ export default {
           actionClass = this.display_order_action_notification(data.status);
         }
       } catch (error) {
+        this.loading = false;
         notification.push('Something went wrong. Please try again.');
         actionClass = 'danger';
       }

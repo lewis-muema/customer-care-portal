@@ -68,8 +68,14 @@
           Transfer Option is required
         </div>
         <div class="col-md-12">
-          <button class="btn btn-primary action-button transfer-button">
+          <button
+            class="btn btn-primary action-button transfer-button"
+            :disabled="loading"
+          >
             Submit
+            <span v-if="loading">
+              <i class="fa fa-spinner fa-spin loader"></i
+            ></span>
           </button>
         </div>
       </div>
@@ -99,6 +105,7 @@ export default {
         { code: '3', status: 'Savings to Current' },
         { code: '4', status: 'Current to Savings' },
       ],
+      loading: false,
     };
   },
   validations: {
@@ -173,14 +180,17 @@ export default {
         },
       };
 
+      this.loading = true;
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
+        this.loading = false;
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );
