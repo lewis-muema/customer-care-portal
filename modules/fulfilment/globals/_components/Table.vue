@@ -57,6 +57,9 @@
           <div v-else-if="table_data.tag === 'amount'">
             {{ props.row.currency }} {{ props.row.amount }}
           </div>
+          <div v-else-if="table_data.tag === 'account_created_date'">
+            {{ formatDate(props.row.account_created_date) }}
+          </div>
           <div v-else-if="table_data.tag === 'status'">
             <StatusBadge :status="props.row.status" />
           </div>
