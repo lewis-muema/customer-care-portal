@@ -84,15 +84,17 @@ export default {
       setSingleSellerPage: 'fulfilment/setSingleSellerPage',
       updateActivePage: 'setActivePage',
       setFulfilmentType: 'fulfilment/setFulfilmentType',
+      setTableData: 'fulfilment/setTableData',
     }),
     handleTab() {
       this.componentKey += 1;
     },
     handleClick(tab) {
-      this.setSellerPage(tab);
+      this.setPage(tab);
       this.handleTab();
     },
     setPage(page) {
+      this.setTableData([]);
       this.setSellerPage(page);
       this.setSingleSellerPage(page);
       this.updateActivePage(page);
