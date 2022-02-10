@@ -27,6 +27,7 @@
       </el-button>
     </el-row>
     <el-dialog
+      :modal="false"
       :title="title"
       :visible.sync="centerDialogVisible"
       class="fulfilmentDialog"
