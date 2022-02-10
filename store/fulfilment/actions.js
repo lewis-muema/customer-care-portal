@@ -272,6 +272,25 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
+  async getSellerList({ rootState, commit }) {
+    commit('setProcessingStatus', true);
+    const config = rootState.config;
+    const url = `${config.AUTH}mission-control-bff/sellers`;
+
+    const results = await axiosConfig.get(url);
+
+    const pagination = {
+      total: results.data.length,
+      perPage: results.data.length - 1,
+      page: 0,
+    };
+    setTimeout(() => {
+      const res = results.data;
+      commit('setTableData', res.data);
+      commit('setPagination', pagination);
+      commit('setProcessingStatus', false);
+    }, 1000);
+  },
   async getDeliveryHistory({ commit }, payload) {
     commit('setProcessingStatus', true);
     const promise = new Promise(resolve => {

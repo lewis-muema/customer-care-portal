@@ -68,6 +68,9 @@
               Download invoice
             </div>
           </div>
+          <div v-else-if="table_data.tag === 'seller_redirect'">
+            >
+          </div>
           <div v-else-if="table_data.tag === 'hub_name'">
             {{ !props.row.hub_name ? '--' : props.row.hub_name }}
           </div>
@@ -190,10 +193,16 @@ export default {
         'ReturnView',
         'Outbound_movableUnitsView',
         'Inbound_batchesView',
+        'all-sellers',
         'deliveryHistory',
         'invoices',
       ],
-      disableExpandPages: ['HubsView', 'deliveryHistory', 'invoices'],
+      disableExpandPages: [
+        'HubsView',
+        'all-sellers',
+        'deliveryHistory',
+        'invoices',
+      ],
       expand_id: 0,
       expand_keys: [],
       tableKey: 0,
@@ -346,6 +355,8 @@ export default {
       updateTableData: 'fulfilment/setTableData',
       updatePagination: 'fulfilment/setPagination',
       updateCheckedOrders: 'fulfilment/setCheckedOrders',
+      setSellerPage: 'fulfilment/setSellerPage',
+      setSellerInfo: 'fulfilment/setSellerInfo',
     }),
     ...mapActions({
       fetchVehicles: 'fulfilment/fetchVehicles',
@@ -368,6 +379,11 @@ export default {
         this.expand_id = row[key_value];
         this.expand_keys = [];
         this.expand_keys.push(row[key_value]);
+      }
+
+      if (this.getFulfilmentType === 'all-sellers') {
+        this.setSellerInfo(row);
+        this.setSellerPage('single-seller');
       }
     },
     handleRowExpand(row) {
