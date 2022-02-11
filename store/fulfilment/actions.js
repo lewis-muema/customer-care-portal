@@ -321,50 +321,66 @@ export default {
     };
     setTimeout(() => {
       const res = results.data;
-      commit('setTableData', res.data);
+      commit('setTableData', res.data.seller_bio_data);
       commit('setPagination', pagination);
       commit('setProcessingStatus', false);
     }, 1000);
   },
-  async getDeliveryHistory({ commit }, payload) {
-    commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = FulfilmentData.delivery_list;
-      resolve(response);
-    });
+  async getDeliveryHistory({ rootState, commit, dispatch }, payload) {
+    try {
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/orders/seller/B-MPU-1501`;
+      const results = await axiosConfig.get(url);
+      if (results.status === 200) {
+        const pagination = {
+          total: results.data.length,
+          perPage: results.data.length - 1,
+          page: 0,
+        };
+        setTimeout(() => {
+          const res = results.data;
 
-    const results = await promise;
-    const pagination = {
-      total: results.data.length,
-      perPage: results.data.length - 1,
-      page: 0,
-    };
-    setTimeout(() => {
-      const res = results.data;
-      commit('setTableData', res.delivery);
-      commit('setPagination', pagination);
+          commit('setTableData', res.data.data.orders);
+          commit('setPagination', pagination);
+          commit('setProcessingStatus', false);
+        }, 1000);
+      }
+    } catch (error) {
+      commit('setTableData', []);
       commit('setProcessingStatus', false);
-    }, 1000);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
-  async getInvoiceList({ commit }, payload) {
-    commit('setProcessingStatus', true);
-    const promise = new Promise(resolve => {
-      const response = FulfilmentData.invoice_list;
-      resolve(response);
-    });
+  async getInvoiceList({ rootState, commit, dispatch }, payload) {
+    try {
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/sellers/invoices/B-MPU-1501`;
+      const results = await axiosConfig.get(url);
+      if (results.status === 200) {
+        const pagination = {
+          total: results.data.length,
+          perPage: results.data.length - 1,
+          page: 0,
+        };
+        setTimeout(() => {
+          const res = results.data;
 
-    const results = await promise;
-    const pagination = {
-      total: results.data.length,
-      perPage: results.data.length - 1,
-      page: 0,
-    };
-    setTimeout(() => {
-      const res = results.data;
-      commit('setTableData', res.invoice);
-      commit('setPagination', pagination);
+          commit('setTableData', res.data.data.invoices);
+          commit('setPagination', pagination);
+          commit('setProcessingStatus', false);
+        }, 1000);
+      }
+    } catch (error) {
+      commit('setTableData', []);
       commit('setProcessingStatus', false);
-    }, 1000);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
   async add_fulfilment_hub({ dispatch, commit }, payload) {
     try {

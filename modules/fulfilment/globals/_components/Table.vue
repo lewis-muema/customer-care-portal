@@ -54,11 +54,20 @@
           <div v-else-if="table_data.tag === 'fulfilment_fee'">
             {{ props.row.currency }} {{ props.row.fulfilment_fee }}
           </div>
+          <div v-else-if="table_data.tag === 'order_amount'">
+            {{ props.row.currency }} {{ props.row.order_amount }}
+          </div>
           <div v-else-if="table_data.tag === 'amount'">
-            {{ props.row.currency }} {{ props.row.amount }}
+            {{ props.row.currency }} {{ props.row.order_amount }}
           </div>
           <div v-else-if="table_data.tag === 'account_created_date'">
             {{ formatDate(props.row.account_created_date) }}
+          </div>
+          <div v-else-if="table_data.tag === 'completed_date'">
+            {{ formatDate(props.row.completed_date) }}
+          </div>
+          <div v-else-if="table_data.tag === 'created_date'">
+            {{ formatDate(props.row.created_date) }}
           </div>
           <div v-else-if="table_data.tag === 'status'">
             <StatusBadge :status="props.row.status" />

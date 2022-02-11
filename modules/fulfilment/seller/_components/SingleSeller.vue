@@ -33,6 +33,7 @@ export default {
     return {
       mode: 'deliveryHistory',
       componentKey: 0,
+      lastPage: '',
     };
   },
   computed: {},
@@ -56,7 +57,10 @@ export default {
       this.setSingleSellerPage(page.name);
       this.updateActivePage(page.name);
       this.setFulfilmentType(page.name);
-      this.handleTab();
+      if (page.name === this.lastPage && this.lastPage !== '') {
+        this.handleTab();
+      }
+      this.lastPage = page.name;
     },
   },
 };
