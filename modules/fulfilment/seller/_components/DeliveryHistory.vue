@@ -1,11 +1,11 @@
 <template lang="html">
   <div class="mc-seller-table-container">
-    <Table :data-props="dataProps" />
+    <Table :data-props="dataProps" :params="params" />
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import Table from '../../globals/_components/Table';
 
 export default {
@@ -22,12 +22,12 @@ export default {
     const tableProps = [
       {
         name: 'Order Number',
-        tag: 'order_no',
+        tag: 'order_id',
         width: '',
       },
       {
         name: 'Cost of goods',
-        tag: 'amount',
+        tag: 'order_amount',
         width: '',
       },
       {
@@ -37,24 +37,31 @@ export default {
       },
       {
         name: 'Creation date',
-        tag: 'creation_date',
+        tag: 'created_date',
         width: '',
       },
       {
         name: 'Fulfilment date',
-        tag: 'fulfilment_date',
+        tag: 'completed_date',
         width: '',
       },
       {
         name: 'Payment status',
-        tag: 'status',
+        tag: 'order_status',
         width: '150',
       },
     ];
 
     this.setTableProps(tableProps);
   },
-
+  computed: {
+    ...mapGetters({
+      getSellerInfo: 'fulfilment/getSellerInfo',
+    }),
+    params() {
+      return this.getSellerInfo;
+    },
+  },
   methods: {
     ...mapActions({
       setTableProps: 'fulfilment/setTableProps',
