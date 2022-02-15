@@ -38,15 +38,9 @@ export default {
       getProcessingStatus: 'fulfilment/getProcessingStatus',
     }),
 
-    section() {
-      return this.page === 'Outbound_ordersView' ||
-        this.page === 'Inbound_ordersView'
-        ? 'order'
-        : 'batch';
-    },
     sectionStatuses() {
       const filteredStatus = this.getStatusMapping.filter(
-        event => event.type === this.section,
+        event => event.type === 'order',
       );
       const all = {
         label: 'All',

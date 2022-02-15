@@ -9,7 +9,7 @@
                 <StatusFilter :page="getActivePage" />
               </div>
             </el-col>
-            <el-col :span="18">
+            <el-col :span="returnSearchSpan">
               <div
                 class="grid-content fulfilment-search-filter"
                 :class="checkSellerPage ? '' : 'mc-seller-global-search'"
@@ -23,7 +23,7 @@
             </el-col>
 
             <el-col
-              :span="10"
+              :span="7"
               v-if="!checkSellerPage && getActivePage !== 'all-sellers'"
             >
               <div
@@ -33,7 +33,7 @@
               </div>
             </el-col>
             <el-col
-              :span="10"
+              :span="5"
               v-if="!checkSellerPage && getActivePage !== 'all-sellers'"
             >
               <div
@@ -147,7 +147,12 @@ export default {
     returnSpanVal() {
       return this.checkSellerPage || this.getActivePage === 'all-sellers'
         ? 9
-        : 12;
+        : 18;
+    },
+    returnSearchSpan() {
+      return this.checkSellerPage || this.getActivePage === 'all-sellers'
+        ? 18
+        : 11;
     },
     searchPlaceHolder() {
       return this.checkSellerPage

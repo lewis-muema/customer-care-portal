@@ -2,8 +2,10 @@
   <div :key="componentKey">
     <el-date-picker
       v-model="filterDate"
-      type="date"
-      placeholder="Filter by date"
+      type="daterange"
+      align="right"
+      start-placeholder="Start Date"
+      end-placeholder="End Date"
       class="fulfilment-date-class reschedule-fulfilment-date"
     >
     </el-date-picker>
@@ -40,7 +42,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSelectedDate: 'fulfilment/setSelectedStatus',
+      updateSelectedDate: 'fulfilment/setSelectedDate',
     }),
     forceRender() {
       this.componentKey += 1;
