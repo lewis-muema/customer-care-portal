@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="mc-seller-table-container">
-    <Table :data-props="dataProps" :params="params" />
+    <Table :data-props="dataProps" />
   </div>
 </template>
 
@@ -40,22 +40,12 @@ export default {
         tag: 'total_deliveries',
         width: '',
       },
-      {
-        name: '',
-        tag: 'invoice_download',
-        width: '',
-      },
     ];
 
     this.setTableProps(tableProps);
   },
   computed: {
-    ...mapGetters({
-      getSellerInfo: 'fulfilment/getSellerInfo',
-    }),
-    params() {
-      return this.getSellerInfo;
-    },
+    ...mapGetters({}),
   },
   methods: {
     ...mapActions({
