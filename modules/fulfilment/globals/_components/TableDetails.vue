@@ -9,7 +9,7 @@
             </el-card>
           </el-col>
           <el-col :span="15">
-            <el-row>
+            <el-row v-if="page !== 'deliveryHistory'">
               <el-col :span="24">
                 <el-card shadow="never">
                   <TableActions :page="getActivePage" :row-data="orderInfo" />
@@ -49,6 +49,10 @@ export default {
   props: {
     orderInfo: {
       type: Object,
+      required: true,
+    },
+    page: {
+      type: String,
       required: true,
     },
   },
@@ -96,15 +100,25 @@ export default {
       fetchActivitiesAction: 'fulfilment/fetchActivites',
     }),
     async processOrderDetails() {
+      const order_id =
+        this.page === 'deliveryHistory'
+          ? this.orderInfo.order_id
+          : this.orderInfo[this.getTableDetailKeyMetric.id];
+      const route =
+        this.page === 'deliveryHistory'
+          ? 'missioncontrol/orders'
+          : this.getTableDetailKeyMetric.endpoint;
       const payload = {
         app: 'FULFILMENT_SERVICE',
-        endpoint: this.getTableDetailKeyMetric.endpoint,
+        endpoint: route,
         apiKey: false,
         params: {
-          data_id: this.orderInfo[this.getTableDetailKeyMetric.id],
+          data_id: order_id,
         },
       };
-      this.setAgentVehicleType(this.orderInfo.shipping_agent_vehicle_type);
+      if (this.page !== 'deliveryHistory') {
+        this.setAgentVehicleType(this.orderInfo.shipping_agent_vehicle_type);
+      }
       try {
         const data = await this.fetch_table_details(payload);
 
@@ -134,6 +148,7 @@ export default {
     },
     async fetchActivities() {
       const { order_id, batch_id } = this.orderInfo;
+
       const response = await this.fetchActivitiesAction({
         record_id: order_id ?? batch_id,
         type: typeof order_id === 'undefined' ? 'batches' : 'orders',
