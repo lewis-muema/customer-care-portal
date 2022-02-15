@@ -58,7 +58,7 @@
             {{ props.row.currency }} {{ props.row.order_amount }}
           </div>
           <div v-else-if="table_data.tag === 'amount'">
-            {{ props.row.currency }} {{ props.row.order_amount }}
+            {{ props.row.currency }} {{ props.row.amount }}
           </div>
           <div v-else-if="table_data.tag === 'account_created_date'">
             {{ formatDate(props.row.account_created_date) }}
@@ -150,7 +150,15 @@
       </el-table-column>
       <el-table-column type="expand" v-if="checkFulfilmentExpand">
         <template slot-scope="props">
-          <TableDetails :order-info="props.row" :page="getFulfilmentType" />
+          <InvoiceDetails
+            :order-info="props.row"
+            v-if="getFulfilmentType === 'invoices'"
+          />
+          <TableDetails
+            :order-info="props.row"
+            :page="getFulfilmentType"
+            v-if="getFulfilmentType !== 'invoices'"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -169,12 +177,14 @@ import { Loading } from 'element-ui';
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import TableDetails from './TableDetails.vue';
 import StatusBadge from './StatusBadge.vue';
+import InvoiceDetails from './InvoiceDetails.vue';
 
 export default {
   name: 'Table',
   components: {
     TableDetails,
     StatusBadge,
+    InvoiceDetails,
   },
   props: {
     dataProps: {
@@ -209,7 +219,7 @@ export default {
         'deliveryHistory',
         'invoices',
       ],
-      disableExpandPages: ['HubsView', 'all-sellers', 'invoices'],
+      disableExpandPages: ['HubsView', 'all-sellers'],
       expand_id: 0,
       expand_keys: [],
       tableKey: 0,

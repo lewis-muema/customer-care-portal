@@ -819,3 +819,13 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .el-range-input{
   font-size: 12px !important;
 }
+.mc-seller-invoice-data{
+  box-shadow: 2px 2px 24px rgb(0 0 0 / 25%);
+  padding-left: 9%;
+  border: 1px solid #d8dfe6;
+  border-radius: 4px;
+  margin: 1rem auto;
+  padding: 2rem;
+  font-family: Nunito,sans-serif;
+  padding-top: 1%;
+}
