@@ -136,6 +136,12 @@ export default {
         this.getActivePage === 'Inbound_batchesView'
       ) {
         data = 'batches';
+      } else if (this.getActivePage === 'invoices') {
+        data = 'invoices';
+      } else if (this.getActivePage === 'deliveryHistory') {
+        data = 'deliveryHistory';
+      } else if (this.getActivePage === 'all-sellers') {
+        data = 'allSellers';
       } else {
         data = 'orders';
       }

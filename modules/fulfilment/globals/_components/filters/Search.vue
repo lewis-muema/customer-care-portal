@@ -25,15 +25,34 @@
         @mousemove="setActive($item)"
         :key="item.index"
       >
-        <span>
+        <span v-if="section !== 'invoices'">
           <strong v-if="item.order_id">{{ item.order_id }}</strong>
           <strong v-if="item.consolidatedBatchId">{{
             item.consolidatedBatchId
           }}</strong>
         </span>
+        <span v-if="item.invoiceId" class="invoice-label"
+          ><b>Invoice No.:</b> {{ item.invoiceId }}</span
+        >
+        <span v-if="item.amount"
+          ><b>Amount:</b> {{ item.currency }} {{ item.amount }}</span
+        >
+
         <span v-if="item.business_name"
           ><b>Business Name:</b> {{ item.business_name }}</span
         >
+        <div class="seller-search-label" v-if="section === 'allSellers'">
+          <span v-if="item.business_name"
+            ><b>Client Name:</b> {{ item.client_name }}</span
+          >
+
+          <span v-if="item.business_name"><b>Email:</b> {{ item.email }}</span>
+
+          <span v-if="item.business_name"
+            ><b>Phone :</b> {{ item.phoneNumber }}</span
+          >
+        </div>
+
         <span v-if="item.recipient_name"
           ><b>Recipient Name:</b> {{ item.recipient_name }}</span
         >
@@ -106,6 +125,8 @@ export default {
       const solr = {
         orders: 'FULFILMENT_ORDERS',
         batches: 'FULFILMENT_BATCHES',
+        allSellers: 'FULFILMENT_SELLERS',
+        invoices: 'FULFILMENT_INVOICE',
       };
       const search = solr[this.section];
       return this.config[search];
@@ -118,16 +139,24 @@ export default {
 
       const batchSearch = `select?q=(consolidatedBatchId:*${this.query_string}*+OR+agentName:*${this.query_string}*+OR+direction:*${this.query_string}*OR+status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=consolidatedBatchId%20desc`;
 
+      const invoiceSearch = `select?q=(invoiceId:*${this.query_string}*)&wt=json&indent=true&row=10&sort=invoiceId%20desc`;
+
+      const sellerSearch = `select?q=(business_id:*${this.query_string}*+OR+business_name:*${this.query_string}*+OR+phoneNumber:*${this.query_string}*+OR+email:*${this.query_string}*)&wt=json&indent=true&row=10&sort=business_id%20desc`;
+
       const data = {
         orders: orderSearch,
         batches: batchSearch,
+        invoices: invoiceSearch,
+        allSellers: sellerSearch,
       };
 
       return data;
     },
     src() {
       // eslint-disable-next-line prettier/prettier
-      return `${this.solarBase}${this.srcPath[this.section]}&jwt=${this.solarToken}`;
+      return `${this.solarBase}${this.srcPath[this.section]}&jwt=${
+        this.solarToken
+      }`;
     },
     tableMetrics() {
       return this.section === 'orders'
@@ -173,7 +202,11 @@ export default {
       const entityID = item[identifier];
       this.$emit('orderDetails', item);
 
-      if (this.page !== 'addOrder') {
+      if (
+        this.page !== 'addOrder' ||
+        this.page !== 'invoices' ||
+        this.page !== 'allSellers'
+      ) {
         await this.processOrderDetails(entityID);
       }
     },
@@ -205,7 +238,9 @@ export default {
               created_date: details.created_date,
               order_status: details.order_status,
               // eslint-disable-next-line prettier/prettier
-              order_recipient_name: !details.destination ? null : details.destination.name,
+              order_recipient_name: !details.destination
+                ? null
+                : details.destination.name,
               ordered_items_count: details.order_items.items.length,
               scheduled_date: details.scheduled_date,
               completed_date: details.completed_date,
@@ -213,14 +248,29 @@ export default {
               business_name: details.business.business_name,
               country: details.country,
               // eslint-disable-next-line prettier/prettier
-              most_recent_batch_id: !details.batches || details.batches.length === 0 ? null : details.batches[0].batch_id,
+              most_recent_batch_id:
+                !details.batches || details.batches.length === 0
+                  ? null
+                  : details.batches[0].batch_id,
               destination_region: null,
               // eslint-disable-next-line prettier/prettier
-              destination_description: !details.destination ? null : details.destination.delivery_location.description,
+              destination_description: !details.destination
+                ? null
+                : details.destination.delivery_location.description,
               // eslint-disable-next-line prettier/prettier
-              shipping_agent_name: details.batches || details.batches.length === 0 || !details.batches[0].assigned_shipping_agent ? null :details.batches[0].assigned_shipping_agent.agent_name,
+              shipping_agent_name:
+                details.batches ||
+                details.batches.length === 0 ||
+                !details.batches[0].assigned_shipping_agent
+                  ? null
+                  : details.batches[0].assigned_shipping_agent.agent_name,
               // eslint-disable-next-line prettier/prettier
-              shipping_agent_vehicle_type: details.batches || details.batches.length === 0 || details.batches[0].assigned_shipping_agent ? null : details.batches[0].assigned_shipping_agent.vehicle_type,
+              shipping_agent_vehicle_type:
+                details.batches ||
+                details.batches.length === 0 ||
+                details.batches[0].assigned_shipping_agent
+                  ? null
+                  : details.batches[0].assigned_shipping_agent.vehicle_type,
             };
 
             arr.push(r);
@@ -284,7 +334,8 @@ export default {
         event => event.value === status,
       );
       // eslint-disable-next-line prettier/prettier
-      const label = filteredStatus.length > 0 ? filteredStatus[0].label : 'Pending';
+      const label =
+        filteredStatus.length > 0 ? filteredStatus[0].label : 'Pending';
 
       const activeClass = label.replace(/\s+/g, '-').toLowerCase();
       const statusText = label;
@@ -300,7 +351,7 @@ ul {
   position: absolute;
   padding: 0;
   margin-top: 8px;
-  min-width: 90%;
+  min-width: 70%;
   background-color: #fff;
   list-style: none;
   border-radius: 4px;
