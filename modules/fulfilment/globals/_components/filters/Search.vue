@@ -128,7 +128,6 @@ export default {
         allSellers: 'FULFILMENT_SELLERS',
         invoices: 'FULFILMENT_INVOICE',
       };
-      console.log('section', this.section);
       const search = solr[this.section];
       return this.config[search];
     },
