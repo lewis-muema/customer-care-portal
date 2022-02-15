@@ -16,7 +16,7 @@
             }}
           </td>
         </tr>
-        <tr>
+        <tr v-if="getFulfilmentType !== 'deliveryHistory'">
           <td width="50%">Vendor Type</td>
           <td class="transform-vehicle-name">{{ getVendorType() }}</td>
         </tr>
@@ -58,6 +58,7 @@ export default {
     ...mapGetters({
       getTableDetails: 'fulfilment/getTableDetails',
       getAgentVehicleType: 'fulfilment/getAgentVehicleType',
+      getFulfilmentType: 'fulfilment/getFulfilmentType',
     }),
   },
   beforeMount() {

@@ -1,6 +1,9 @@
 <template>
   <el-tabs type="border-card">
-    <el-tab-pane label="Users" v-if="usersTab.includes(getFulfilmentType)">
+    <el-tab-pane
+      :label="getUserTabHeader"
+      v-if="usersTab.includes(getFulfilmentType)"
+    >
       <users />
     </el-tab-pane>
     <el-tab-pane label="Items" v-if="itemsTab.includes(getFulfilmentType)">
@@ -53,12 +56,23 @@ export default {
   data() {
     return {
       activeName: 'first',
-      usersTab: ['Outbound_ordersView', 'ReturnView', 'Inbound_ordersView'],
-      itemsTab: ['Outbound_ordersView', 'ReturnView', 'Inbound_ordersView'],
+      usersTab: [
+        'Outbound_ordersView',
+        'ReturnView',
+        'Inbound_ordersView',
+        'deliveryHistory',
+      ],
+      itemsTab: [
+        'Outbound_ordersView',
+        'ReturnView',
+        'Inbound_ordersView',
+        'deliveryHistory',
+      ],
       orderDetailsTab: [
         'Outbound_ordersView',
         'ReturnView',
         'Inbound_ordersView',
+        'deliveryHistory',
       ],
       pricingTiersTab: [
         'Outbound_ordersView',
@@ -85,6 +99,9 @@ export default {
     batchLabel() {
       const batch_details = this.getTableDetails.orders;
       return `Orders (${batch_details.length})`;
+    },
+    getUserTabHeader() {
+      return this.getFulfilmentType === 'deliveryHistory' ? 'Buyer' : 'User';
     },
   },
   methods: {},

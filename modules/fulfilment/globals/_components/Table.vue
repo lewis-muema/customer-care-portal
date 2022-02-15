@@ -150,7 +150,7 @@
       </el-table-column>
       <el-table-column type="expand" v-if="checkFulfilmentExpand">
         <template slot-scope="props">
-          <TableDetails :order-info="props.row" />
+          <TableDetails :order-info="props.row" :page="getFulfilmentType" />
         </template>
       </el-table-column>
     </el-table>
@@ -209,12 +209,7 @@ export default {
         'deliveryHistory',
         'invoices',
       ],
-      disableExpandPages: [
-        'HubsView',
-        'all-sellers',
-        'deliveryHistory',
-        'invoices',
-      ],
+      disableExpandPages: ['HubsView', 'all-sellers', 'invoices'],
       expand_id: 0,
       expand_keys: [],
       tableKey: 0,
