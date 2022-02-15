@@ -829,3 +829,12 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   font-family: Nunito,sans-serif;
   padding-top: 1%;
 }
+.invoice-label{
+  margin-bottom: 2%;
+}
+.seller-search-label{
+  margin-top: 2%;
+}
+.mc-seller-global-search > div > ul {
+  min-width: 44% !important;
+}
