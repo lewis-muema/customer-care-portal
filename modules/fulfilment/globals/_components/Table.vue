@@ -447,7 +447,6 @@ export default {
     selectable(row, index) {
       const enabled =
         row.order_status === 'ORDER_RECEIVED' ||
-        row.order_status === 'ORDER_FAILED' ||
         row.order_status === 'ORDER_IN_PROCESSING' ||
         row.order_status === 'ORDER_RESCHEDULED';
       return enabled;
