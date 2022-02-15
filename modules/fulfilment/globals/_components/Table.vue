@@ -473,7 +473,8 @@ export default {
       if (
         !this.processing &&
         isVisible &&
-        this.getPagination.total === this.getPagination.perPage
+        this.getPagination.total === this.getPagination.perPage &&
+        this.getPagination.page
       ) {
         const nextPage = this.getPagination.page + 1;
         this.fetchMoreLoading = true;
@@ -495,6 +496,11 @@ export default {
           ) {
             loader_payload.status = this.getSelectedStatus;
           }
+        }
+
+        if (this.getSelectedDate !== null && this.getSelectedDate.length > 0) {
+          loader_payload.lowerLimitDate = this.getSelectedDate(val[0]);
+          loader_payload.upperLimitDate = this.getSelectedDate(val[1]);
         }
 
         await this.$store.dispatch(this.dataProps.setter, loader_payload);
