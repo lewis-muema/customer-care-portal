@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="mc-seller-table-container">
-    <Table :data-props="dataProps" :params="params" />
+    <Table :data-props="dataProps" />
   </div>
 </template>
 
@@ -58,9 +58,6 @@ export default {
     ...mapGetters({
       getSellerInfo: 'fulfilment/getSellerInfo',
     }),
-    params() {
-      return this.getSellerInfo;
-    },
   },
   methods: {
     ...mapActions({

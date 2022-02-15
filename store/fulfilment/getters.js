@@ -89,4 +89,7 @@ export default {
   getSellerInfo(state) {
     return state.seller_info;
   },
+  getSelectedDate(state) {
+    return state.selectedDate;
+  },
 };

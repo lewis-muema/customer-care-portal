@@ -326,11 +326,21 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
-  async getDeliveryHistory({ rootState, commit, dispatch }, payload) {
+  async getDeliveryHistory({ rootState, commit, dispatch, getters }, payload) {
     try {
+      let filter = '';
+
+      for (const key in payload) {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+          filter = `${filter}${param_const}${key}=${payload[key]}`;
+        }
+      }
       commit('setProcessingStatus', true);
       const config = rootState.config;
-      const url = `${config.AUTH}mission-control-bff/orders/seller/B-MPU-1501`;
+      const url = `${
+        config.AUTH
+      }mission-control-bff/orders/seller/B-MPU-1501${filter.replace(/ /g, '')}`;
       const results = await axiosConfig.get(url);
       if (results.status === 200) {
         const pagination = {
@@ -354,11 +364,25 @@ export default {
       });
     }
   },
-  async getInvoiceList({ rootState, commit, dispatch }, payload) {
+  async getInvoiceList({ rootState, commit, dispatch, getters }, payload) {
     try {
+      let filter = '';
+
+      for (const key in payload) {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+          filter = `${filter}${param_const}${key}=${payload[key]}`;
+        }
+      }
+
       commit('setProcessingStatus', true);
       const config = rootState.config;
-      const url = `${config.AUTH}mission-control-bff/sellers/invoices/B-MPU-1501`;
+      const url = `${
+        config.AUTH
+      }mission-control-bff/sellers/invoices/B-MPU-1501${filter.replace(
+        / /g,
+        '',
+      )}`;
       const results = await axiosConfig.get(url);
       if (results.status === 200) {
         const pagination = {

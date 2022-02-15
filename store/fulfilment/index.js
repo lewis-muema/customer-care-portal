@@ -37,6 +37,7 @@ const state = () => ({
   seller_active_page: 'seller-dash',
   single_seller_page: 'deliveryHistory',
   seller_info: {},
+  selectedDate: null,
 });
 
 export { state, getters, mutations, actions };

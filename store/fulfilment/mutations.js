@@ -97,4 +97,7 @@ export default {
   setSellerInfo(state, payload) {
     state.seller_info = payload;
   },
+  setSelectedDate(_state, payload) {
+    _state.selectedDate = payload;
+  },
 };

@@ -239,6 +239,7 @@ export default {
       vehicles: 'fulfilment/getVehicles',
       getSearchedEntity: 'fulfilment/getSearchedEntity',
       getStatusChanged: 'fulfilment/getStatusChanged',
+      getSelectedDate: 'fulfilment/getSelectedDate',
     }),
     currentPage: {
       get() {
@@ -317,11 +318,17 @@ export default {
       this.updatePagination({});
 
       const supported_countries = this.getSelectedCountry;
+      const selected_date = this.getSelectedDate;
 
       let payload = {};
 
       if (!val.includes('all') && val.length > 0) {
         payload.status = val;
+      }
+
+      if (selected_date !== null && selected_date.length > 0) {
+        payload.lowerLimitDate = selected_date(val[0]);
+        payload.upperLimitDate = selected_date(val[1]);
       }
 
       if (
@@ -339,6 +346,32 @@ export default {
       this.status = val;
       this.fetchTableData(payload);
     },
+
+    getSelectedDate(val) {
+      this.updateTableData([]);
+      this.updatePagination({});
+
+      const filtered_status = this.getSelectedStatus;
+      let all_status = false;
+      let payload = {};
+
+      if (val !== null && val.length > 0) {
+        payload.lowerLimitDate = this.formatFilterDate(val[0]);
+        payload.upperLimitDate = this.formatFilterDate(val[1]);
+      }
+
+      if (filtered_status !== null) {
+        if (!filtered_status.includes('all') && filtered_status.length > 0) {
+          payload.status = filtered_status;
+        } else {
+          all_status = true;
+        }
+      }
+
+      payload = val === 'All Countries' || all_status ? this.params : payload;
+      this.fetchTableData(payload);
+    },
+
     getProcessingStatus(status) {
       this.processing = status;
       this.tableKey += 1;
@@ -410,6 +443,9 @@ export default {
     },
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
+    },
+    formatFilterDate(date) {
+      return moment(date).format('YYYY-MM-DD');
     },
     checkDataAvailability(row, prop) {
       let data = '';
