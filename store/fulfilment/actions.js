@@ -746,13 +746,13 @@ export default {
 
     try {
       const response = await axiosConfig.get(
-        `${url}mission-control-bff/orders/v2/C-KZF-7324`,
+        `${url}mission-control-bff/orders/v2/${payload.order_no}`,
       );
       if (response.status === 200) {
-        return response.data.data;
+        return response.data;
       }
     } catch (error) {
-      return error.response.data.data;
+      return error.response.data;
     }
   },
   async getSellerStats({ rootState, commit }, payload) {

@@ -2,25 +2,30 @@
   <div>
     <div v-if="loading">
       <div class="mc-seller-invoice-data">
-        <el-table :data="invoiceData" style="width: 100%">
-          <el-table-column prop="order_no" width="100" label="Order No.">
-          </el-table-column>
-          <el-table-column prop="description" label="Description">
-          </el-table-column>
-          <el-table-column prop="shipping_date" label="Shipment date">
-          </el-table-column>
-          <el-table-column prop="quantity" width="50" label="Qty">
-          </el-table-column>
-          <el-table-column prop="unit_of_measure" label="Unit of Measure">
-          </el-table-column>
-          <el-table-column prop="seller_unit_price" label="Seller Unit Price">
-          </el-table-column>
-          <el-table-column
-            prop="fulfillment_unit_price"
-            label="Fulfillment Unit Price"
-          >
-          </el-table-column>
-        </el-table>
+        <div v-if="invoiceData.length > 0">
+          <el-table :data="invoiceData" style="width: 100%">
+            <el-table-column prop="order_no" width="100" label="Order No.">
+            </el-table-column>
+            <el-table-column prop="description" label="Description">
+            </el-table-column>
+            <el-table-column prop="shipping_date" label="Shipment date">
+            </el-table-column>
+            <el-table-column prop="quantity" width="50" label="Qty">
+            </el-table-column>
+            <el-table-column prop="unit_of_measure" label="Unit of Measure">
+            </el-table-column>
+            <el-table-column prop="seller_unit_price" label="Seller Unit Price">
+            </el-table-column>
+            <el-table-column
+              prop="fulfillment_unit_price"
+              label="Fulfillment Unit Price"
+            >
+            </el-table-column>
+          </el-table>
+        </div>
+        <div v-else class="mc-missing-data">
+          <span>No Data</span>
+        </div>
       </div>
     </div>
     <div v-else class="text-center">
@@ -65,12 +70,18 @@ export default {
     }),
     async fetchInvoiceData() {
       let data = [];
-      const response = await this.fetchInvoiceDetails({});
+      const payload = {
+        order_no: this.orderInfo.order_id,
+      };
 
-      if (response.length > 0) {
-        data = response;
+      try {
+        const response = await this.fetchInvoiceDetails(payload);
+        if (response.status) {
+          data = response.data;
+        }
+      } catch (error) {
+        return error.response.data.data;
       }
-
       this.invoiceData = data;
       this.loading = true;
     },
