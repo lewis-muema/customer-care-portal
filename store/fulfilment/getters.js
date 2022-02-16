@@ -92,4 +92,10 @@ export default {
   getSelectedDate(state) {
     return state.selectedDate;
   },
+  getInvoiceSearchedEntity(state) {
+    return state.invoiceSearchedEntity;
+  },
+  getSellerSearchedEntity(state) {
+    return state.sellerSearchedEntity;
+  },
 };

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 import DeliveryHistory from './DeliveryHistory.vue';
 import Invoices from './Invoices.vue';
@@ -36,8 +36,18 @@ export default {
       lastPage: '',
     };
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters({
+      getInvoiceSearchedEntity: 'fulfilment/getInvoiceSearchedEntity',
+    }),
+  },
+  watch: {
+    getInvoiceSearchedEntity(val) {
+      if (!val) {
+        this.handleClick('invoices');
+      }
+    },
+  },
   mounted() {
     const page = { name: 'deliveryHistory' };
     this.handleClick(page);

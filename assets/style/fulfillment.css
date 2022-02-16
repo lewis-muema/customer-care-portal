@@ -786,7 +786,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   margin-top: 3%;
 }
 .mc-seller-download-invoice {
-  color: #324BA8;
+  color: #324ba8;
   font-weight: 600;
   cursor: pointer;
 }
@@ -799,7 +799,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
   line-height: 17px;
   color: #000000;
 }
-.mc-seller-global-search{
+.mc-seller-global-search {
   border: 1px solid #9e9e9e !important;
   border-radius: 6px !important;
   margin-left: 5%;
@@ -807,34 +807,49 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .mc-seller-global-search > div > .reschedule-fulfilment-date {
   margin-top: 0% !important;
 }
-.mc-seller-main-container{
+.mc-seller-main-container {
   padding-top: 2% !important;
 }
-.mc-seller-header-highlight{
+.mc-seller-header-highlight {
   border-bottom: 1px solid #ccc;
   margin-left: 1%;
   width: 84%;
   margin-bottom: 2%;
 }
-.el-range-input{
+.el-range-input {
   font-size: 12px !important;
 }
-.mc-seller-invoice-data{
+.mc-seller-invoice-data {
   box-shadow: 2px 2px 24px rgb(0 0 0 / 25%);
   padding-left: 9%;
   border: 1px solid #d8dfe6;
   border-radius: 4px;
   margin: 1rem auto;
   padding: 2rem;
-  font-family: Nunito,sans-serif;
+  font-family: Nunito, sans-serif;
   padding-top: 1%;
 }
-.invoice-label{
+.invoice-label {
   margin-bottom: 2%;
 }
-.seller-search-label{
+.seller-search-label {
   margin-top: 2%;
 }
 .mc-seller-global-search > div > ul {
   min-width: 44% !important;
+}
+.mc-seller-back {
+  width: 78%;
+  text-align: right !important;
+}
+.back-seller-icon {
+  color: #3a6dae;
+  font-weight: 700;
+  cursor: pointer;
+}
+.back-seller-text {
+  font-size: 14px;
+  font-weight: 200;
+  color: #000;
+  cursor: pointer;
 }

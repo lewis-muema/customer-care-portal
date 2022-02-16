@@ -38,6 +38,8 @@ const state = () => ({
   single_seller_page: 'deliveryHistory',
   seller_info: {},
   selectedDate: null,
+  invoiceSearchedEntity: null,
+  sellerSearchedEntity: null,
 });
 
 export { state, getters, mutations, actions };
