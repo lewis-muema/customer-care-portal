@@ -78,13 +78,21 @@
         Fetching results ...
       </div>
     </el-row>
-    <el-row type="flex" class="row-bg mb-2" v-if="getSearchedEntity">
+    <el-row
+      type="flex"
+      class="row-bg mb-2"
+      v-if="getSearchedEntity && checkSellerPage"
+    >
       <div class="search-header text-right back-btn">
         <span @click="goBack()"
           ><i class="fa fa-arrow-left"></i> Back to all {{ title }} List
         </span>
       </div>
     </el-row>
+    <div class="mc-seller-back" v-if="checkSellerTab" @click="goBack()">
+      <i class="el-icon-arrow-left back-seller-icon"></i>
+      <span class="back-seller-text">Back to all List</span>
+    </div>
   </div>
 </template>
 
@@ -119,6 +127,8 @@ export default {
       getStatusMapping: 'fulfilment/getStatusMapping',
       getProcessingStatus: 'fulfilment/getProcessingStatus',
       getSearchedEntity: 'fulfilment/getSearchedEntity',
+      getInvoiceSearchedEntity: 'fulfilment/getInvoiceSearchedEntity',
+      getSellerSearchedEntity: 'fulfilment/getSellerSearchedEntity',
     }),
 
     pageTitle() {
@@ -165,6 +175,21 @@ export default {
         ? 'Search order ( order no, name, user phone)'
         : 'Search';
     },
+    checkSellerTab() {
+      let resp = false;
+      if (
+        this.getActivePage === 'all-sellers' &&
+        this.getSellerSearchedEntity
+      ) {
+        resp = true;
+      } else if (
+        this.getActivePage === 'invoice' &&
+        this.getInvoiceSearchedEntity
+      ) {
+        resp = true;
+      }
+      return resp;
+    },
   },
   watch: {
     getSearchingStatus(status) {
@@ -188,6 +213,8 @@ export default {
       updateSearchState: 'fulfilment/setSearchState',
       isSearching: 'fulfilment/setSearchingStatus',
       updateProcessingStatus: 'fulfilment/setProcessingStatus',
+      updateSellerSearchedEntity: 'fulfilment/updateSellerSearchedEntity',
+      updateInvoiceSearchedEntity: 'fulfilment/updateInvoiceSearchedEntity',
     }),
     ...mapActions({
       fetchHubs: 'fulfilment/fetchHubs',
@@ -197,6 +224,8 @@ export default {
     goBack() {
       this.updateSearchedEntity(null);
       this.updateSearchState(false);
+      this.updateSellerSearchedEntity(null);
+      this.updateInvoiceSearchedEntity(null);
     },
   },
 };

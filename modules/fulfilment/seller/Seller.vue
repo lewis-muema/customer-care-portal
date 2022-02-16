@@ -63,6 +63,7 @@ export default {
     ...mapGetters({
       getSellerPage: 'fulfilment/getSellerPage',
       getSellerInfo: 'fulfilment/getSellerInfo',
+      getSellerSearchedEntity: 'fulfilment/getSellerSearchedEntity',
     }),
   },
   watch: {
@@ -71,6 +72,11 @@ export default {
         this.page = val;
       } else {
         this.page = 'seller-dash';
+      }
+    },
+    getSellerSearchedEntity(val) {
+      if (!val) {
+        this.handleClick('all-sellers');
       }
     },
   },

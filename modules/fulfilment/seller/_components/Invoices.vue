@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import Table from '../../globals/_components/Table';
 
 export default {
@@ -43,6 +43,7 @@ export default {
     ];
 
     this.setTableProps(tableProps);
+    this.updateInvoiceSearchedEntity(null);
   },
   computed: {
     ...mapGetters({}),
@@ -50,6 +51,9 @@ export default {
   methods: {
     ...mapActions({
       setTableProps: 'fulfilment/setTableProps',
+    }),
+    ...mapMutations({
+      updateInvoiceSearchedEntity: 'fulfilment/updateInvoiceSearchedEntity',
     }),
   },
 };

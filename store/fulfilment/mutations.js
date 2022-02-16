@@ -100,4 +100,10 @@ export default {
   setSelectedDate(_state, payload) {
     _state.selectedDate = payload;
   },
+  updateInvoiceSearchedEntity(_state, val) {
+    _state.invoiceSearchedEntity = val;
+  },
+  updateSellerSearchedEntity(_state, val) {
+    _state.sellerSearchedEntity = val;
+  },
 };

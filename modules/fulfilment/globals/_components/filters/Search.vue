@@ -135,13 +135,15 @@ export default {
       return this.getEnvironmentVariables.SOLR_JWT;
     },
     srcPath() {
+      const string = this.query_string.replace(/ /g, '\\ ');
+
       const orderSearch = `select?q=(order_id:"${this.query_string}"OR+status:"${this.query_string}"OR+business_name:"${this.query_string}"OR+destination:"${this.query_string}"OR+agentName:"${this.query_string}"OR+hub_name:"${this.query_string}"OR+recipient_name:"${this.query_string}")&wt=json&indent=true&row=10&sort=order_id%20desc`;
 
       const batchSearch = `select?q=(consolidatedBatchId:*${this.query_string}*+OR+agentName:*${this.query_string}*+OR+direction:*${this.query_string}*OR+status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=consolidatedBatchId%20desc`;
 
       const invoiceSearch = `select?q=(invoiceId:*${this.query_string}*)&wt=json&indent=true&row=10&sort=invoiceId%20desc`;
 
-      const sellerSearch = `select?q=(business_id:*${this.query_string}*+OR+business_name:*${this.query_string}*+OR+phoneNumber:*${this.query_string}*+OR+email:*${this.query_string}*)&wt=json&indent=true&row=10&sort=business_id%20desc`;
+      const sellerSearch = `select?q=(business_id:*${string}*+OR+business_name:*${string}*+OR+phoneNumber:*${string}*+OR+email:*${string}*)&wt=json&indent=true&row=10&sort=business_id%20desc`;
 
       const data = {
         orders: orderSearch,
@@ -185,6 +187,8 @@ export default {
       isSearching: 'fulfilment/setSearchingStatus',
       updateTableData: 'fulfilment/setTableData',
       updateProcessingStatus: 'fulfilment/setProcessingStatus',
+      updateInvoiceSearchedEntity: 'fulfilment/updateInvoiceSearchedEntity',
+      updateSellerSearchedEntity: 'fulfilment/updateSellerSearchedEntity',
     }),
     ...mapActions({
       setOrderStatuses: 'fulfilment/mapOrderStatus',
@@ -192,21 +196,61 @@ export default {
       fetchSingleOrder: 'fulfilment/fetchSingleOrder',
       fetch_table_details: 'fulfilment/fetch_table_details',
     }),
-    async onHit(item) {
+    onHit(item) {
       this.isActive = false;
       this.updateSearchState(true);
       this.isSearching(true);
+
+      if (this.page === 'invoices' || this.page === 'all-sellers') {
+        this.hitSellers(item);
+      } else {
+        this.hitOrders(item);
+      }
+    },
+    hitSellers(item) {
+      const arr = [];
+      let item_data = {};
+
+      if (this.page === 'all-sellers') {
+        item_data = {
+          business_id: item.business_id,
+          business_name: item.business_name,
+          client_name: item.client_name,
+          business_email: item.email,
+          business_phone_no: item.phoneNumber,
+          account_created_date: item.createdDate,
+          country: item.countryOfOperation,
+        };
+        this.updateSellerSearchedEntity(item_data);
+      } else {
+        item_data = {
+          created_date: '',
+          invoice_id: item.invoiceId,
+          order_id: '',
+          order_type: '',
+          amount: item.amount,
+          applied_rate: item.appliedRate,
+          invoice_status: item.status,
+          business_id: item.business_id,
+          currency: item.currency,
+          card_id: '',
+          vat_amount: item.vatAmount,
+          total_deliveries: '',
+        };
+        this.updateInvoiceSearchedEntity(item_data);
+      }
+      arr.push(item_data);
+      this.updateTableData(arr);
+      this.isSearching(false);
+    },
+    async hitOrders(item) {
       const orderNo = item.order_no;
       const identifier = this.identifier[this.section];
 
       const entityID = item[identifier];
       this.$emit('orderDetails', item);
 
-      if (
-        this.page !== 'addOrder' ||
-        this.page !== 'invoices' ||
-        this.page !== 'allSellers'
-      ) {
+      if (this.page !== 'addOrder') {
         await this.processOrderDetails(entityID);
       }
     },

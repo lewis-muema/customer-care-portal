@@ -65,6 +65,7 @@ export default {
     ];
 
     this.setTableProps(tableProps);
+    this.updateSellerSearchedEntity(null);
   },
   methods: {
     ...mapActions({
@@ -73,6 +74,7 @@ export default {
     ...mapMutations({
       setSellerPage: 'fulfilment/setSellerPage',
       setSellerInfo: 'fulfilment/setSellerInfo',
+      updateSellerSearchedEntity: 'fulfilment/updateSellerSearchedEntity',
     }),
   },
 };
