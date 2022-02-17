@@ -346,9 +346,9 @@ export default {
       }
       commit('setProcessingStatus', true);
       const config = rootState.config;
-      const url = `${
-        config.AUTH
-      }mission-control-bff/orders/seller/B-MPU-1501${filter.replace(/ /g, '')}`;
+      const url = `${config.AUTH}mission-control-bff/orders/seller/${
+        getters.getSellerInfo.business_id
+      }${filter.replace(/ /g, '')}`;
       const results = await axiosConfig.get(url);
       if (results.status === 200) {
         const pagination = {
@@ -385,12 +385,9 @@ export default {
 
       commit('setProcessingStatus', true);
       const config = rootState.config;
-      const url = `${
-        config.AUTH
-      }mission-control-bff/sellers/invoices/B-MPU-1501${filter.replace(
-        / /g,
-        '',
-      )}`;
+      const url = `${config.AUTH}mission-control-bff/sellers/invoices/${
+        getters.getSellerInfo.business_id
+      }${filter.replace(/ /g, '')}`;
       const results = await axiosConfig.get(url);
       if (results.status === 200) {
         const pagination = {
@@ -766,6 +763,27 @@ export default {
       }
     } catch (error) {
       return error.response.data.data;
+    }
+  },
+  async fetch_delivery_details({ rootState, dispatch, getters }, payload) {
+    const app = rootState.config.AUTH;
+
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
+    const url = `${app}mission-control-bff/orders/seller/${
+      getters.getSellerInfo.business_id
+    }${filter.replace(/ /g, '')}`;
+    try {
+      const response = await axiosConfig.get(url);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
     }
   },
 };
