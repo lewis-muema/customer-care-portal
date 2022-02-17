@@ -312,7 +312,7 @@ export default {
 
       if (filtered_status !== null) {
         if (!filtered_status.includes('all') && filtered_status.length > 0) {
-          payload.status = filtered_status;
+          payload.payment_status = filtered_status;
         } else {
           all_status = true;
         }
@@ -331,7 +331,7 @@ export default {
       let payload = {};
 
       if (!val.includes('all') && val.length > 0) {
-        payload.status = val;
+        payload.payment_status = val;
       }
 
       if (selected_date !== null && selected_date.length > 0) {
@@ -370,7 +370,7 @@ export default {
 
       if (filtered_status !== null) {
         if (!filtered_status.includes('all') && filtered_status.length > 0) {
-          payload.status = filtered_status;
+          payload.payment_status = filtered_status;
         } else {
           all_status = true;
         }
