@@ -53,6 +53,22 @@
           >
         </div>
 
+        <div class="seller-search-label" v-if="section === 'deliveryHistory'">
+          <span v-if="item.order_amount"
+            ><b>Order Amount:</b> {{ item.currency }}
+            {{ item.order_amount }}</span
+          >
+
+          <span
+            v-if="item.order_status"
+            :class="statusColor(item.order_status).activeClass"
+          >
+            <strong>{{
+              statusColor(item.order_status).statusText
+            }}</strong></span
+          >
+        </div>
+
         <span v-if="item.recipient_name"
           ><b>Recipient Name:</b> {{ item.recipient_name }}</span
         >
@@ -116,6 +132,7 @@ export default {
       getStatusMapping: 'fulfilment/getStatusMapping',
       getSession: 'getSession',
       getEnvironmentVariables: 'getEnvironmentVariables',
+      getSellerInfo: 'fulfilment/getSellerInfo',
     }),
     query_string() {
       localStorage.setItem('query', this.query);
@@ -127,6 +144,7 @@ export default {
         batches: 'FULFILMENT_BATCHES',
         allSellers: 'FULFILMENT_SELLERS',
         invoices: 'FULFILMENT_INVOICE',
+        deliveryHistory: 'FULFILMENT_DELIVERY',
       };
       const search = solr[this.section];
       return this.config[search];
@@ -145,11 +163,14 @@ export default {
 
       const sellerSearch = `select?q=(business_id:*${string}*+OR+business_name:*${string}*+OR+phoneNumber:*${string}*+OR+email:*${string}*)&wt=json&indent=true&row=10&sort=business_id%20desc`;
 
+      const deliverySearch = `select?q=(order_id:*${this.query_string}*)&wt=json&indent=true&row=10&sort=order_id%20desc`;
+
       const data = {
         orders: orderSearch,
         batches: batchSearch,
         invoices: invoiceSearch,
         allSellers: sellerSearch,
+        deliveryHistory: deliverySearch,
       };
 
       return data;
@@ -195,13 +216,18 @@ export default {
       request_single_order: 'request_single_order',
       fetchSingleOrder: 'fulfilment/fetchSingleOrder',
       fetch_table_details: 'fulfilment/fetch_table_details',
+      fetch_delivery_details: 'fulfilment/fetch_delivery_details',
     }),
     onHit(item) {
       this.isActive = false;
       this.updateSearchState(true);
       this.isSearching(true);
 
-      if (this.page === 'invoices' || this.page === 'all-sellers') {
+      if (
+        this.page === 'invoices' ||
+        this.page === 'all-sellers' ||
+        this.page === 'deliveryHistory'
+      ) {
         this.hitSellers(item);
       } else {
         this.hitOrders(item);
@@ -222,6 +248,11 @@ export default {
           country: item.countryOfOperation,
         };
         this.updateSellerSearchedEntity(item_data);
+        arr.push(item_data);
+        this.updateTableData(arr);
+        this.isSearching(false);
+      } else if (this.page === 'deliveryHistory') {
+        this.processDeliveryHistory(item);
       } else {
         item_data = {
           created_date: '',
@@ -238,10 +269,40 @@ export default {
           total_deliveries: '',
         };
         this.updateInvoiceSearchedEntity(item_data);
+        arr.push(item_data);
+        this.updateTableData(arr);
+        this.isSearching(false);
       }
-      arr.push(item_data);
-      this.updateTableData(arr);
-      this.isSearching(false);
+    },
+    async processDeliveryHistory(item) {
+      const payload = {
+        order_id: item.order_id,
+      };
+
+      try {
+        const data = await this.fetch_delivery_details(payload);
+
+        if (data.status) {
+          this.updateTableData(data.data.data.orders);
+          this.isSearching(false);
+        } else {
+          this.isSearching(false);
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(data, 'errors')) {
+            error_response = data.errors;
+          } else {
+            error_response = data.message;
+          }
+          this.doNotification(2, 'Unable to retrieve details ', error_response);
+        }
+      } catch (error) {
+        this.isSearching(false);
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
     },
     async hitOrders(item) {
       const orderNo = item.order_no;

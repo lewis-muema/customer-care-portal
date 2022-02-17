@@ -26,6 +26,8 @@ const config = {
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
     FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice_staging/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
+    FULFILMENT_DELIVERY:
+      'https://gate.sendyit.com/solr/seller_deliveries_staging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
@@ -78,6 +80,8 @@ const config = {
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
     FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice_staging/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
+    FULFILMENT_DELIVERY:
+      'https://gate.sendyit.com/solr/seller_deliveries_staging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
@@ -124,6 +128,8 @@ const config = {
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
     FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice_staging/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
+    FULFILMENT_DELIVERY:
+      'https://gate.sendyit.com/solr/seller_deliveries_staging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
@@ -172,6 +178,7 @@ const config = {
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch/',
     FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers/',
+    FULFILMENT_DELIVERY: 'https://gate.sendyit.com/solr/seller_deliveries/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
     OFFLINE_ORDERS:
