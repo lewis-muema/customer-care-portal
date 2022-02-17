@@ -10,7 +10,7 @@
       <el-option
         v-for="item in sectionStatuses"
         :key="item.value"
-        :label="item.label"
+        :label="item.description"
         :value="item.value"
       >
       </el-option>
@@ -40,11 +40,12 @@ export default {
 
     sectionStatuses() {
       const filteredStatus = this.getStatusMapping.filter(
-        event => event.type === 'order',
+        event => event.type === 'payment',
       );
       const all = {
         label: 'All',
         value: 'all',
+        description: 'All',
         type: '',
       };
       filteredStatus.unshift(all);
