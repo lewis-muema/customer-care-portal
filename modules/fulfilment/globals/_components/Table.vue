@@ -43,6 +43,9 @@
               :status="props.row.batch_status"
             />
           </div>
+          <div v-else-if="table_data.tag === 'payment_status'">
+            <StatusBadge :status="props.row.payment_status" />
+          </div>
           <div v-else-if="table_data.tag === 'country'">
             <div class="country-badge">
               {{ orderCountryName(props.row.country) }}

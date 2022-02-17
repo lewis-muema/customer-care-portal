@@ -47,8 +47,8 @@ export default {
       },
       {
         name: 'Payment status',
-        tag: 'order_status',
-        width: '150',
+        tag: 'payment_status',
+        width: '170',
       },
     ];
 
