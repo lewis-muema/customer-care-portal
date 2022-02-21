@@ -100,20 +100,18 @@ export default {
       fetchActivitiesAction: 'fulfilment/fetchActivites',
     }),
     async processOrderDetails() {
-      const order_id =
-        this.page === 'deliveryHistory'
-          ? this.orderInfo.order_id
-          : this.orderInfo[this.getTableDetailKeyMetric.id];
-      const route =
-        this.page === 'deliveryHistory'
-          ? 'missioncontrol/orders'
-          : this.getTableDetailKeyMetric.endpoint;
       const payload = {
-        app: 'FULFILMENT_SERVICE',
-        endpoint: route,
+        app: this.page === 'deliveryHistory' ? 'AUTH' : 'FULFILMENT_SERVICE',
+        endpoint:
+          this.page === 'deliveryHistory'
+            ? 'mission-control-bff/orders'
+            : this.getTableDetailKeyMetric.endpoint,
         apiKey: false,
         params: {
-          data_id: order_id,
+          data_id:
+            this.page === 'deliveryHistory'
+              ? this.orderInfo.order_id
+              : this.orderInfo[this.getTableDetailKeyMetric.id],
         },
       };
       if (this.page !== 'deliveryHistory') {
@@ -125,6 +123,8 @@ export default {
         if (data.status === 200) {
           if (this.getTableDetailKeyMetric.id === 'batch_id') {
             this.setTableDetails(data.data.data.batch);
+          } else if (this.page === 'deliveryHistory') {
+            this.setTableDetails(data.data.data.data.order);
           } else {
             this.setTableDetails(data.data.data.order);
           }

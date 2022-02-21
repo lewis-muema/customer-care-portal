@@ -33,6 +33,12 @@
     >
       <batch-details />
     </el-tab-pane>
+    <el-tab-pane
+      label="Payment details"
+      v-if="getFulfilmentType === 'deliveryHistory'"
+    >
+      <payment-details />
+    </el-tab-pane>
   </el-tabs>
 </template>
 <script>
@@ -43,6 +49,7 @@ import orderDetails from './tabInfo/orderDetails.vue';
 import pricingTiers from './tabInfo/pricingTiers.vue';
 import batches from './tabInfo/batchesView.vue';
 import batchDetails from './tabInfo/batchesDetails.vue';
+import paymentDetails from './tabInfo/paymentDetails.vue';
 
 export default {
   components: {
@@ -52,6 +59,7 @@ export default {
     pricingTiers,
     batches,
     batchDetails,
+    paymentDetails,
   },
   data() {
     return {
