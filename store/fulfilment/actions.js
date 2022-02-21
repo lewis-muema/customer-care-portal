@@ -759,9 +759,17 @@ export default {
   },
   async getSellerStats({ rootState, commit }, payload) {
     const url = rootState.config.AUTH;
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
     try {
       const response = await axiosConfig.get(
-        `${url}mission-control-bff/sellers/summary`,
+        `${url}mission-control-bff/sellers/summary${filter.replace(/ /g, '')}`,
       );
       if (response.status === 200) {
         return response.data.data;
