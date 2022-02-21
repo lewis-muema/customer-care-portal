@@ -23,7 +23,7 @@
               v-for="item in country_list"
               :key="item.code"
               :label="item.name"
-              :value="item.code"
+              :value="item.name"
             >
             </el-option>
           </el-select>
@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { mapMutations, mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -123,8 +124,8 @@ export default {
       componentKey: 0,
       country_list: [],
       fetching: true,
-      country: '',
-      filterDate: '',
+      country: null,
+      filterDate: null,
       statsData: {
         total_paid_to_date: 0,
         overdue_payments: 0,
@@ -152,6 +153,26 @@ export default {
           });
         }
       });
+    },
+    filterDate(val) {
+      const payload = {
+        lowerLimitDate: moment(val).format('YYYY-MM-DD'),
+      };
+
+      if (this.country !== null) {
+        payload.country = this.country;
+      }
+      this.filteredStatsRequest(payload);
+    },
+    country(val) {
+      const payload = {
+        country: val,
+      };
+
+      if (this.filterDate !== null) {
+        payload.lowerLimitDate = moment(val).format('YYYY-MM-DD');
+      }
+      this.filteredStatsRequest(payload);
     },
   },
   mounted() {
@@ -213,6 +234,14 @@ export default {
       this.setSingleSellerPage(page);
       this.updateActivePage(page);
       this.setFulfilmentType(page);
+    },
+    async filteredStatsRequest(payload) {
+      this.fetching = true;
+      const response = await this.getSellerStats(payload);
+      if (Object.keys(response).length > 0) {
+        this.statsData = response;
+        this.fetching = false;
+      }
     },
   },
 };
