@@ -34,7 +34,11 @@
             </el-col>
             <el-col
               :span="5"
-              v-if="!checkSellerPage && getActivePage !== 'all-sellers'"
+              v-if="
+                !checkSellerPage &&
+                  getActivePage !== 'all-sellers' &&
+                  getActivePage !== 'invoices'
+              "
             >
               <div
                 class="grid-content fulfilment-search-filter mc-seller-global-search"
