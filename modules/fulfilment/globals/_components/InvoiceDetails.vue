@@ -8,7 +8,10 @@
             </el-table-column>
             <el-table-column prop="description" label="Description">
             </el-table-column>
-            <el-table-column prop="shipping_date" label="Shipment date">
+            <el-table-column label="Shipment date">
+              <template slot-scope="props">
+                {{ formatDate(props.row.shipping_date) }}
+              </template>
             </el-table-column>
             <el-table-column prop="quantity" width="50" label="Qty">
             </el-table-column>
@@ -34,6 +37,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import NotificationMxn from '../../../../mixins/notification_mixin';
@@ -68,6 +72,9 @@ export default {
     ...mapActions({
       fetchInvoiceDetails: 'fulfilment/fetchInvoiceDetails',
     }),
+    formatDate(date) {
+      return moment(date).format('hh:mm A DD-MM-YYYY ');
+    },
     async fetchInvoiceData() {
       let data = [];
       const payload = {
