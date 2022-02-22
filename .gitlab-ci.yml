@@ -7,7 +7,7 @@ stages:
   - deploy
 
 variables:
-  STAGING_DOCKER_IMAGE: "${CI_REGISTRY}/cc-redesign:latest_${CI_SHORT_COMMIT_SHA}"
+  STAGING_DOCKER_IMAGE: "${CI_REGISTRY}/cc-redesign:latest_${CI_COMMIT_SHORT_SHA}"
 
 cache:
   paths:
