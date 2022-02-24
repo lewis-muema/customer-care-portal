@@ -99,7 +99,8 @@ export default {
       locationsz.push({
         lat: latit,
         lng: longit,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+        icon:
+          'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker.png',
       });
       this.getCheckedOrders.forEach(item => {
         const latude = parseFloat(item.destination_latitude);
@@ -107,7 +108,8 @@ export default {
         locationsz.push({
           lat: latude,
           lng: lontude,
-          icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+          icon:
+            'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
         });
       });
       return locationsz;
