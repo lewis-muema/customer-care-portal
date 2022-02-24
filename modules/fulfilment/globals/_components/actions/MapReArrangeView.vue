@@ -55,14 +55,20 @@
             >
           </div>
           <div class="outboundHub" v-if="distPickup">
-            <el-col :span="3"><i class="el-icon-location"></i></el-col>
-            <el-col :span="21">
-              <span class="chosenHub">{{
-                getChosenHub.hub_location.description
-              }}</span>
-              <div class="orderFulfilmentCenter">Fulfilment Center</div>
-            </el-col>
-            <el-divider class="itemDivider"></el-divider>
+            <el-row class="inboundHubInfo">
+              <el-col :span="3"
+                ><i class="fa fa-map-marker" aria-hidden="true"></i
+              ></el-col>
+              <el-col :span="21">
+                <span class="chosenHub">{{
+                  getChosenHub.hub_location.description
+                }}</span>
+                <div class="orderFulfilmentCenter">Fulfilment Center</div>
+              </el-col>
+            </el-row>
+            <el-row class="inboundHubInfo">
+              <el-divider class="itemDivider"></el-divider>
+            </el-row>
           </div>
           <div class="orderList" v-if="distPickup">
             <div>
@@ -496,7 +502,7 @@ export default {
   position: absolute;
   left: 900px;
   right: 1%;
-  padding-top: 2%;
+  padding-top: 3%;
   top: 150px;
   bottom: 64.81%;
   font-family: Nunito, sans-serif;
