@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <div class="">
+    <div>
       <div class="mc-seller-filters">
         <div class="mc-seller-duration-dropdown">
           <div class="vehicle-header">Filter Duration</div>
@@ -23,13 +23,13 @@
               v-for="item in country_list"
               :key="item.code"
               :label="item.name"
-              :value="item.code"
+              :value="item.name"
             >
             </el-option>
           </el-select>
         </div>
       </div>
-      <div class="mc-seller-stats-cards-outer">
+      <div class="mc-seller-stats-cards-outer" v-loading="fetching">
         <div class="mc-seller-stats-cards-inner">
           <div class="mc-seller-search">
             <img
@@ -46,11 +46,8 @@
                   <div class="mc-seller-card-title">
                     Total orders delivered
                   </div>
-                  <div
-                    class="mc-seller-card-description stats-count"
-                    data-target="534"
-                  >
-                    0
+                  <div class="mc-seller-card-description stats-count">
+                    {{ formatNumber(statsData.total_orders_delivered) }}
                   </div>
                 </el-card>
               </el-col>
@@ -59,11 +56,8 @@
                   <div class="mc-seller-card-title">
                     Total orders awaiting delivery
                   </div>
-                  <div
-                    class="mc-seller-card-description stats-count"
-                    data-target="230"
-                  >
-                    0
+                  <div class="mc-seller-card-description stats-count">
+                    {{ formatNumber(statsData.total_orders_awaiting_delivery) }}
                   </div>
                 </el-card>
               </el-col>
@@ -72,11 +66,8 @@
                   <div class="mc-seller-card-title">
                     Total cancelled orders
                   </div>
-                  <div
-                    class="mc-seller-card-description stats-count"
-                    data-target="900"
-                  >
-                    0
+                  <div class="mc-seller-card-description stats-count">
+                    {{ formatNumber(statsData.total_cancelled_orders) }}
                   </div>
                 </el-card>
               </el-col>
@@ -85,11 +76,8 @@
                   <div class="mc-seller-card-title">
                     Total failed deliveries
                   </div>
-                  <div
-                    class="mc-seller-card-description stats-count"
-                    data-target="500"
-                  >
-                    0
+                  <div class="mc-seller-card-description stats-count">
+                    {{ formatNumber(statsData.total_failed_deliveries) }}
                   </div>
                 </el-card>
               </el-col>
@@ -100,7 +88,7 @@
                     Total paid to date
                   </div>
                   <div class="mc-seller-card-description">
-                    KES 23,500
+                    KES {{ formatNumber(statsData.total_paid_to_date) }}
                   </div>
                 </el-card>
               </el-col>
@@ -111,7 +99,7 @@
                     Overdue payments
                   </div>
                   <div class="mc-seller-card-description">
-                    KES 345,278
+                    KES {{ formatNumber(statsData.overdue_payments) }}
                   </div>
                 </el-card>
               </el-col>
@@ -124,6 +112,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { mapMutations, mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -134,8 +123,17 @@ export default {
       mode: 'SellerStats',
       componentKey: 0,
       country_list: [],
-      country: '',
-      filterDate: '',
+      fetching: true,
+      country: null,
+      filterDate: null,
+      statsData: {
+        total_paid_to_date: 0,
+        overdue_payments: 0,
+        total_orders_awaiting_delivery: 0,
+        total_cancelled_orders: 0,
+        total_orders_delivered: 0,
+        total_failed_deliveries: 0,
+      },
     };
   },
   computed: {
@@ -146,24 +144,71 @@ export default {
   watch: {
     getSupportedCountries(countries) {
       countries.forEach(country => {
-        this.country_list.push({
-          code: country.code,
-          name: country.name,
-        });
+        const hasDuplicate = this.checkDuplicate(this.country_list, country);
+
+        if (!hasDuplicate) {
+          this.country_list.push({
+            code: country.code,
+            name: country.name,
+          });
+        }
       });
+    },
+    filterDate(val) {
+      const payload = {
+        lowerLimitDate: moment(val).format('YYYY-MM-DD'),
+      };
+
+      if (this.country !== null) {
+        payload.country = this.country;
+      }
+      this.filteredStatsRequest(payload);
+    },
+    country(val) {
+      const payload = {
+        country: val,
+      };
+
+      if (this.filterDate !== null) {
+        payload.lowerLimitDate = moment(val).format('YYYY-MM-DD');
+      }
+      this.filteredStatsRequest(payload);
     },
   },
   mounted() {
+    this.fetching = true;
+    this.initiateSellerStats();
     this.fetchCountries();
-    this.startStartsCount();
   },
   methods: {
     ...mapActions({
       fetchCountries: 'fulfilment/fetchHubCountries',
+      getSellerStats: 'fulfilment/getSellerStats',
     }),
     ...mapMutations({
       setSellerPage: 'fulfilment/setSellerPage',
+      setSingleSellerPage: 'fulfilment/setSingleSellerPage',
+      updateActivePage: 'setActivePage',
+      setFulfilmentType: 'fulfilment/setFulfilmentType',
     }),
+    async initiateSellerStats() {
+      const response = await this.getSellerStats();
+      if (Object.keys(response).length > 0) {
+        this.statsData = response;
+        this.fetching = false;
+      }
+    },
+    checkDuplicate(arraySet, newVal) {
+      for (let i = 0; i < arraySet.length; i++) {
+        if (arraySet[i].name === newVal.name) {
+          return true;
+        }
+      }
+      return false;
+    },
+    formatNumber(val) {
+      return val.toLocaleString();
+    },
     startStartsCount() {
       const counters = document.querySelectorAll('.stats-count');
       const speed = 200;
@@ -186,6 +231,17 @@ export default {
     },
     directToSellers(page) {
       this.setSellerPage(page);
+      this.setSingleSellerPage(page);
+      this.updateActivePage(page);
+      this.setFulfilmentType(page);
+    },
+    async filteredStatsRequest(payload) {
+      this.fetching = true;
+      const response = await this.getSellerStats(payload);
+      if (Object.keys(response).length > 0) {
+        this.statsData = response;
+        this.fetching = false;
+      }
     },
   },
 };

@@ -272,6 +272,110 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
+  async getSellerList({ rootState, commit, dispatch }) {
+    try {
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/sellers`;
+
+      const results = await axiosConfig.get(url);
+
+      const pagination = {
+        total: results.data.length,
+        perPage: results.data.length - 1,
+        page: 0,
+      };
+      setTimeout(() => {
+        const res = results.data;
+        commit('setTableData', res.data.seller_bio_data);
+        commit('setPagination', pagination);
+        commit('setProcessingStatus', false);
+      }, 1000);
+    } catch (error) {
+      commit('setTableData', []);
+      commit('setProcessingStatus', false);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async getDeliveryHistory({ rootState, commit, dispatch, getters }, payload) {
+    try {
+      let filter = '';
+
+      for (const key in payload) {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+          filter = `${filter}${param_const}${key}=${payload[key]}`;
+        }
+      }
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/orders/seller/${
+        getters.getSellerInfo.business_id
+      }${filter.replace(/ /g, '')}`;
+      const results = await axiosConfig.get(url);
+      if (results.status === 200) {
+        const pagination = {
+          total: results.data.length,
+          perPage: results.data.length - 1,
+          page: 0,
+        };
+        setTimeout(() => {
+          const res = results.data;
+
+          commit('setTableData', res.data.data.orders);
+          commit('setPagination', pagination);
+          commit('setProcessingStatus', false);
+        }, 1000);
+      }
+    } catch (error) {
+      commit('setTableData', []);
+      commit('setProcessingStatus', false);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async getInvoiceList({ rootState, commit, dispatch, getters }, payload) {
+    try {
+      let filter = '';
+
+      for (const key in payload) {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+          filter = `${filter}${param_const}${key}=${payload[key]}`;
+        }
+      }
+
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/sellers/invoices/${
+        getters.getSellerInfo.business_id
+      }${filter.replace(/ /g, '')}`;
+      const results = await axiosConfig.get(url);
+      if (results.status === 200) {
+        const pagination = {
+          total: results.data.length,
+          perPage: results.data.length - 1,
+          page: 0,
+        };
+        setTimeout(() => {
+          const res = results.data;
+
+          commit('setTableData', res.data.data.invoices);
+          commit('setPagination', pagination);
+          commit('setProcessingStatus', false);
+        }, 1000);
+      }
+    } catch (error) {
+      commit('setTableData', []);
+      commit('setProcessingStatus', false);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
   async add_fulfilment_hub({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -517,6 +621,46 @@ export default {
               availableStatus: null,
               events: null,
             },
+            {
+              value: 'PAYMENT_SUCCESS',
+              label: 'Paid',
+              type: 'payment',
+              description: 'Paid',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_FAIL',
+              label: 'Failed payment',
+              type: 'payment',
+              description: 'Failed payment',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_PENDING_CHARGE_CONFIRMATION',
+              label: 'Pending payment',
+              type: 'payment',
+              description: 'Pending charge confirmation',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_FAILED_CHARGE_ATTEMPT',
+              label: 'Failed payment',
+              type: 'payment',
+              description: 'Failed charge attempt',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_PENDING_CHARGE_ATTEMPT',
+              label: 'Pending payment',
+              type: 'payment',
+              description: 'Pending charge attempt',
+              availableStatus: null,
+              events: null,
+            },
           ],
         },
       };
@@ -614,6 +758,62 @@ export default {
       }
     } catch (error) {
       return error.response.data.data;
+    }
+  },
+  async fetchInvoiceDetails({ rootState, commit, dispatch }, payload) {
+    const url = rootState.config.AUTH;
+
+    try {
+      const response = await axiosConfig.get(
+        `${url}mission-control-bff/orders/v2/${payload.order_no}`,
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  async getSellerStats({ rootState, commit }, payload) {
+    const url = rootState.config.AUTH;
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
+    try {
+      const response = await axiosConfig.get(
+        `${url}mission-control-bff/sellers/summary${filter.replace(/ /g, '')}`,
+      );
+      if (response.status === 200) {
+        return response.data.data;
+      }
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
+  async fetch_delivery_details({ rootState, dispatch, getters }, payload) {
+    const app = rootState.config.AUTH;
+
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
+    const url = `${app}mission-control-bff/orders/seller/${
+      getters.getSellerInfo.business_id
+    }${filter.replace(/ /g, '')}`;
+    try {
+      const response = await axiosConfig.get(url);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
     }
   },
 };

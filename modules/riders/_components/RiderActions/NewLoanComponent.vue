@@ -164,8 +164,14 @@
           </div>
         </div>
         <div class="col-md-12">
-          <button class="btn btn-primary action-button transfer-button">
+          <button
+            class="btn btn-primary action-button transfer-button"
+            :disabled="loading"
+          >
             Submit
+            <span v-if="loading">
+              <i class="fa fa-spinner fa-spin loader"></i
+            ></span>
           </button>
         </div>
       </form>
@@ -208,6 +214,7 @@ export default {
       response_handler: 'Processing your request ...',
       isActive: true,
       hasError: false,
+      loading: false,
     };
   },
   validations: {
@@ -298,9 +305,11 @@ export default {
           },
         };
 
+        this.loading = true;
         try {
           const data = await this.perform_user_action(payload);
           this.notificationHandler(false, true, data.reason);
+          this.loading = false;
           if (data.status) {
             this.notificationHandler(true, false, data.reason);
             this.updateSuccess(true);
@@ -308,6 +317,7 @@ export default {
         } catch (error) {
           const msg = 'Something went wrong. Try again or contact Tech Support';
           this.notificationHandler(false, true, msg);
+          this.loading = false;
         }
         this.updateClass(actionClass);
         this.updateErrors(notification);

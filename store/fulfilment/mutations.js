@@ -103,4 +103,19 @@ export default {
   setSelectedDate(state, payload) {
     state.selectedDate = payload;
   },
+  setSingleSellerPage(state, payload) {
+    state.single_seller_page = payload;
+  },
+  setSellerInfo(state, payload) {
+    state.seller_info = payload;
+  },
+  setSelectedDate(_state, payload) {
+    _state.selectedDate = payload;
+  },
+  updateInvoiceSearchedEntity(_state, val) {
+    _state.invoiceSearchedEntity = val;
+  },
+  updateSellerSearchedEntity(_state, val) {
+    _state.sellerSearchedEntity = val;
+  },
 };

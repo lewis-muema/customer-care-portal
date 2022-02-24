@@ -54,8 +54,14 @@
         </div>
       </div>
       <div class="col-md-6">
-        <button class="btn btn-primary action-button invoice-button">
+        <button
+          class="btn btn-primary action-button invoice-button"
+          :disabled="loading"
+        >
           Process
+          <span v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i
+          ></span>
         </button>
       </div>
     </form>
@@ -83,6 +89,7 @@ export default {
         { code: 'false', status: 'Activate' },
         { code: 'true', status: 'Deactivate' },
       ],
+      loading: false,
     };
   },
   validations: {
@@ -134,14 +141,17 @@ export default {
           action_user: this.actionUser,
         },
       };
+      this.loading = true;
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
+        this.loading = false;
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );

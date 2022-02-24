@@ -99,8 +99,11 @@
         </div>
 
         <div class="form-group  col-md-12 config-submit">
-          <button class="btn btn-primary action-button">
+          <button class="btn btn-primary action-button" :disabled="loading">
             Update
+            <span v-if="loading">
+              <i class="fa fa-spinner fa-spin loader"></i
+            ></span>
           </button>
         </div>
       </form>
@@ -129,6 +132,7 @@ export default {
       invoice_number: '',
       rate: [],
       vat_rate: '',
+      loading: false,
     };
   },
 
@@ -206,10 +210,11 @@ export default {
           action_user: this.actionUser,
         },
       };
-
+      this.loading = true;
       try {
         const data = await this.perform_user_action(payload);
         actionClass = this.display_order_action_notification(data.status);
+        this.loading = false;
         if (data.status) {
           this.updateSuccess(true);
         } else {
@@ -223,6 +228,7 @@ export default {
           actionClass = 'danger';
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );

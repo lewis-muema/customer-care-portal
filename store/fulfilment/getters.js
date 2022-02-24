@@ -92,7 +92,19 @@ export default {
   getRouteDistance(state) {
     return state.routeDistance;
   },
+  getSingleSellerPage(state) {
+    return state.single_seller_page;
+  },
+  getSellerInfo(state) {
+    return state.seller_info;
+  },
   getSelectedDate(state) {
     return state.selectedDate;
+  },
+  getInvoiceSearchedEntity(state) {
+    return state.invoiceSearchedEntity;
+  },
+  getSellerSearchedEntity(state) {
+    return state.sellerSearchedEntity;
   },
 };

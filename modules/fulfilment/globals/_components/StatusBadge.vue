@@ -41,7 +41,8 @@ export default {
         event => event.value === this.status,
       );
       // eslint-disable-next-line prettier/prettier
-      const label = filteredStatus.length > 0 ? filteredStatus[0].label : 'Pending';
+      const label =
+        filteredStatus.length > 0 ? filteredStatus[0].label : 'Pending';
 
       this.activeClass = label.replace(/\s+/g, '-').toLowerCase();
       this.statusText = label;
@@ -66,7 +67,8 @@ export default {
 
 .order-status.confirmed,
 .order-status.received,
-.order-status.processing {
+.order-status.processing,
+.order-status.pending-payment {
   background-color: #fddb97;
   color: #9d5004;
 }
@@ -75,11 +77,13 @@ export default {
   color: #064a23;
 }
 .order-status.completed,
-.order-status.composition {
+.order-status.composition,
+.order-status.paid {
   background-color: #324ba833;
   color: #324ba8;
 }
-.order-status.failed {
+.order-status.failed,
+.order-status.failed-payment {
   background-color: #dd4b39;
   color: #fff;
 }

@@ -10,6 +10,7 @@
       @expand-change="handleRowExpand"
       @selection-change="handleSelectionChange"
       v-loading="fetching"
+      header-cell-class-name="mc-seller-header"
     >
       <div
         class="data-info-panel"
@@ -42,6 +43,9 @@
               :status="props.row.batch_status"
             />
           </div>
+          <div v-else-if="table_data.tag === 'payment_status'">
+            <StatusBadge :status="props.row.payment_status" />
+          </div>
           <div v-else-if="table_data.tag === 'country'">
             <div class="country-badge">
               {{ orderCountryName(props.row.country) }}
@@ -49,6 +53,38 @@
           </div>
           <div v-else-if="table_data.tag === 'scheduled_date'">
             {{ formatDate(props.row.scheduled_date) }}
+          </div>
+          <div v-else-if="table_data.tag === 'fulfilment_fee'">
+            {{ props.row.currency }} {{ props.row.fulfilment_fee }}
+          </div>
+          <div v-else-if="table_data.tag === 'order_amount'">
+            {{ props.row.currency }} {{ props.row.order_amount }}
+          </div>
+          <div v-else-if="table_data.tag === 'amount'">
+            {{ props.row.currency }} {{ props.row.amount }}
+          </div>
+          <div v-else-if="table_data.tag === 'account_created_date'">
+            {{ formatDate(props.row.account_created_date) }}
+          </div>
+          <div v-else-if="table_data.tag === 'completed_date'">
+            {{ formatDate(props.row.completed_date) }}
+          </div>
+          <div v-else-if="table_data.tag === 'created_date'">
+            {{ formatDate(props.row.created_date) }}
+          </div>
+          <div v-else-if="table_data.tag === 'status'">
+            <StatusBadge :status="props.row.status" />
+          </div>
+          <div v-else-if="table_data.tag === 'invoice_amount'">
+            {{ props.row.currency }} {{ props.row.invoice_amount }}
+          </div>
+          <div v-else-if="table_data.tag === 'invoice_download'">
+            <div class="mc-seller-download-invoice">
+              Download invoice
+            </div>
+          </div>
+          <div v-else-if="table_data.tag === 'seller_redirect'">
+            >
           </div>
           <div v-else-if="table_data.tag === 'hub_name'">
             {{ !props.row.hub_name ? '--' : props.row.hub_name }}
@@ -117,7 +153,15 @@
       </el-table-column>
       <el-table-column type="expand" v-if="checkFulfilmentExpand">
         <template slot-scope="props">
-          <TableDetails :order-info="props.row" />
+          <InvoiceDetails
+            :order-info="props.row"
+            v-if="getFulfilmentType === 'invoices'"
+          />
+          <TableDetails
+            :order-info="props.row"
+            :page="getFulfilmentType"
+            v-if="getFulfilmentType !== 'invoices'"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -136,12 +180,14 @@ import { Loading } from 'element-ui';
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 import TableDetails from './TableDetails.vue';
 import StatusBadge from './StatusBadge.vue';
+import InvoiceDetails from './InvoiceDetails.vue';
 
 export default {
   name: 'Table',
   components: {
     TableDetails,
     StatusBadge,
+    InvoiceDetails,
   },
   props: {
     dataProps: {
@@ -172,8 +218,11 @@ export default {
         'ReturnView',
         'Outbound_movableUnitsView',
         'Inbound_batchesView',
+        'all-sellers',
+        'deliveryHistory',
+        'invoices',
       ],
-      disableExpandPages: ['HubsView'],
+      disableExpandPages: ['HubsView', 'all-sellers'],
       expand_id: 0,
       expand_keys: [],
       tableKey: 0,
@@ -198,6 +247,7 @@ export default {
       vehicles: 'fulfilment/getVehicles',
       getSearchedEntity: 'fulfilment/getSearchedEntity',
       getStatusChanged: 'fulfilment/getStatusChanged',
+      getSelectedDate: 'fulfilment/getSelectedDate',
     }),
     currentPage: {
       get() {
@@ -262,7 +312,7 @@ export default {
 
       if (filtered_status !== null) {
         if (!filtered_status.includes('all') && filtered_status.length > 0) {
-          payload.status = filtered_status;
+          payload.payment_status = filtered_status;
         } else {
           all_status = true;
         }
@@ -276,11 +326,17 @@ export default {
       this.updatePagination({});
 
       const supported_countries = this.getSelectedCountry;
+      const selected_date = this.getSelectedDate;
 
       let payload = {};
 
       if (!val.includes('all') && val.length > 0) {
-        payload.status = val;
+        payload.payment_status = val;
+      }
+
+      if (selected_date !== null && selected_date.length > 0) {
+        payload.lowerLimitDate = selected_date(val[0]);
+        payload.upperLimitDate = selected_date(val[1]);
       }
 
       if (
@@ -298,6 +354,32 @@ export default {
       this.status = val;
       this.fetchTableData(payload);
     },
+
+    getSelectedDate(val) {
+      this.updateTableData([]);
+      this.updatePagination({});
+
+      const filtered_status = this.getSelectedStatus;
+      let all_status = false;
+      let payload = {};
+
+      if (val !== null && val.length > 0) {
+        payload.lowerLimitDate = this.formatFilterDate(val[0]);
+        payload.upperLimitDate = this.formatFilterDate(val[1]);
+      }
+
+      if (filtered_status !== null) {
+        if (!filtered_status.includes('all') && filtered_status.length > 0) {
+          payload.payment_status = filtered_status;
+        } else {
+          all_status = true;
+        }
+      }
+
+      payload = val === 'All Countries' || all_status ? this.params : payload;
+      this.fetchTableData(payload);
+    },
+
     getProcessingStatus(status) {
       this.processing = status;
       this.tableKey += 1;
@@ -326,6 +408,8 @@ export default {
       updateTableData: 'fulfilment/setTableData',
       updatePagination: 'fulfilment/setPagination',
       updateCheckedOrders: 'fulfilment/setCheckedOrders',
+      setSellerPage: 'fulfilment/setSellerPage',
+      setSellerInfo: 'fulfilment/setSellerInfo',
     }),
     ...mapActions({
       fetchVehicles: 'fulfilment/fetchVehicles',
@@ -349,6 +433,11 @@ export default {
         this.expand_keys = [];
         this.expand_keys.push(row[key_value]);
       }
+
+      if (this.getFulfilmentType === 'all-sellers') {
+        this.setSellerInfo(row);
+        this.setSellerPage('single-seller');
+      }
     },
     handleRowExpand(row) {
       const key_value = this.getTableDetailKeyMetric.id;
@@ -362,6 +451,9 @@ export default {
     },
     formatDate(date) {
       return moment(date).format('hh:mm A DD-MM-YYYY ');
+    },
+    formatFilterDate(date) {
+      return moment(date).format('YYYY-MM-DD');
     },
     checkDataAvailability(row, prop) {
       let data = '';
@@ -394,7 +486,8 @@ export default {
       if (
         !this.processing &&
         isVisible &&
-        this.getPagination.total === this.getPagination.perPage
+        this.getPagination.total === this.getPagination.perPage &&
+        this.getPagination.page
       ) {
         const nextPage = this.getPagination.page + 1;
         this.fetchMoreLoading = true;
@@ -416,6 +509,11 @@ export default {
           ) {
             loader_payload.status = this.getSelectedStatus;
           }
+        }
+
+        if (this.getSelectedDate !== null && this.getSelectedDate.length > 0) {
+          loader_payload.lowerLimitDate = this.getSelectedDate(val[0]);
+          loader_payload.upperLimitDate = this.getSelectedDate(val[1]);
         }
 
         await this.$store.dispatch(this.dataProps.setter, loader_payload);
@@ -447,7 +545,6 @@ export default {
     selectable(row, index) {
       const enabled =
         row.order_status === 'ORDER_RECEIVED' ||
-        row.order_status === 'ORDER_FAILED' ||
         row.order_status === 'ORDER_IN_PROCESSING' ||
         row.order_status === 'ORDER_RESCHEDULED';
       return enabled;

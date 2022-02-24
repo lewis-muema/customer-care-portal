@@ -190,6 +190,9 @@
         :disabled="checkSubmitStatus()"
       >
         Process
+        <span v-if="checkSubmitStatus()">
+          <i class="fa fa-spinner fa-spin loader"></i
+        ></span>
       </button>
     </form>
   </div>
