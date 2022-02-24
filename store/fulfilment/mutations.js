@@ -91,4 +91,16 @@ export default {
   setSellerPage(state, payload) {
     state.seller_active_page = payload;
   },
+  setMapDialogVisible(state, payload) {
+    state.dialogVisible = payload;
+  },
+  setRouteDistance(state, payload) {
+    state.routeDistance = payload;
+  },
+  setChosenHub(state, payload) {
+    state.chosenHub = payload;
+  },
+  setSelectedDate(state, payload) {
+    state.selectedDate = payload;
+  },
 };

@@ -83,7 +83,7 @@
       :disabled="!hub || !selectedDate || this.orders.length === 0 || disabled"
       @click="batchOrders()"
     >
-      Batch
+      Continue
     </el-button>
   </div>
 </template>
@@ -125,10 +125,15 @@ export default {
     this.fetching = false;
   },
   methods: {
+    ...mapMutations({
+      setMapDialogVisible: 'fulfilment/setMapDialogVisible',
+      setChosenHub: 'fulfilment/setChosenHub',
+      setSelectedDate: 'fulfilment/setSelectedDate',
+    }),
     ...mapActions({
       orders_summary: 'fulfilment/orders_summary',
       fetchVehicles: 'fulfilment/fetchVehicles',
-      perform_post_actions: 'fulfilment/perform_post_actions',
+      fetchRouteDistance: 'fulfilment/fetchRouteDistance',
     }),
 
     generateOrderIDs() {
@@ -193,6 +198,9 @@ export default {
         return;
       }
       // eslint-disable-next-line prettier/prettier
+      const chosenHubData = this.getHubs.filter(hubs => {
+        return hubs.hub_id === this.hub;
+      });
       const direction =
         this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
 
@@ -202,27 +210,24 @@ export default {
       ).valueOf();
 
       const payload = {
-        app: 'FULFILMENT_SERVICE',
-        endpoint: 'missioncontrol/batches',
+        app: 'MISSION_CONTROL_BFF',
+        endpoint: 'batches/route',
         apiKey: false,
         params: {
           hub_id: this.hub,
           direction,
-          scheduled_date: epoch_date,
+          // scheduled_date: epoch_date,
           orders: this.selectedOrders.orders,
         },
       };
       try {
-        const res = await this.perform_post_actions(payload);
+        const res = await this.fetchRouteDistance(payload);
 
         if (res.status === 200) {
-          /* eslint no-restricted-globals: ["error", "event"] */
-          this.doNotification(
-            1,
-            'Batch Created',
-            `Batch has been created successfully. Batch ID:  ${res.data.data.batch_id}`,
-          );
           setTimeout(() => {
+            this.setMapDialogVisible(true);
+            this.setChosenHub(chosenHubData[0]);
+            this.setSelectedDate(this.selectedDate);
             this.$emit('dialogStatus', false);
           }, 800);
         } else {

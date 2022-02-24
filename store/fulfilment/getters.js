@@ -83,4 +83,16 @@ export default {
   getSellerPage(state) {
     return state.seller_active_page;
   },
+  getMapDialogVisible(state) {
+    return state.dialogVisible;
+  },
+  getChosenHub(state) {
+    return state.chosenHub;
+  },
+  getRouteDistance(state) {
+    return state.routeDistance;
+  },
+  getSelectedDate(state) {
+    return state.selectedDate;
+  },
 };

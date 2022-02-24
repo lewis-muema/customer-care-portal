@@ -769,3 +769,9 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 .mc-inactive {
   color: #909399 !important;
 }
+.dialogOrder > div > .el-dialog__header {
+  padding: 0px;
+}
+.dialogOrder > div > .el-dialog__body {
+  padding: 0px;
+}

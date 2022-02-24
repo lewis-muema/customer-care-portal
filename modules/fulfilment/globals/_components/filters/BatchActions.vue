@@ -105,7 +105,6 @@ export default {
     },
     closeDialog() {
       this.selectedOrders = [];
-      this.updateCheckedOrders(this.selectedOrders);
       this.componentKey += 1;
     },
     handleDialog(dialogStatus) {

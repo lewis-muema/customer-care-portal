@@ -542,6 +542,23 @@ export default {
       return error.response.data.data;
     }
   },
+  async fetchRouteDistance({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      commit('setRouteDistance', res.data.data);
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
+  async finalRouteDistance({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      commit('setRouteDistance', res.data.data);
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
   async requestForTransport({ rootState, commit }, payload) {
     try {
       const config = rootState.config;
