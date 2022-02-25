@@ -24,7 +24,7 @@ const config = {
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery_staging/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
-    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice_staging/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices_staging/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
     FULFILMENT_DELIVERY:
       'https://gate.sendyit.com/solr/seller_deliveries_staging/',
@@ -78,7 +78,7 @@ const config = {
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery_staging/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
-    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice_staging/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices_staging/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
     FULFILMENT_DELIVERY:
       'https://gate.sendyit.com/solr/seller_deliveries_staging/',
@@ -126,7 +126,7 @@ const config = {
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery_staging/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
-    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice_staging/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices_staging/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
     FULFILMENT_DELIVERY:
       'https://gate.sendyit.com/solr/seller_deliveries_staging/',
@@ -176,7 +176,7 @@ const config = {
     STAFF_API: 'https://auth.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch/',
-    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoice/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices/',
     FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers/',
     FULFILMENT_DELIVERY: 'https://gate.sendyit.com/solr/seller_deliveries/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
