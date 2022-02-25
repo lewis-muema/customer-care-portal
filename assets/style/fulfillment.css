@@ -682,6 +682,7 @@ fulfilment-batch-actions .el-button--primary.is-disabled:hover {
 }
 .mc-seller-card-title {
   margin-bottom: 8%;
+  height: 30px;
 }
 .mc-seller-card-description {
   color: #000000;
