@@ -6,6 +6,7 @@
     top="10vh"
     class="dialogOrder"
     :show-close="false"
+    append-to-body
   >
     <el-row :gutter="20">
       <el-col :span="18" class="mapsstyle">
@@ -18,29 +19,30 @@
           ></el-button>
           <gmap-map
             ref="mapRef"
-            :center="{ lat: -1.2997, lng: 36.7731 }"
+            :center="center"
             :zoom="10"
             map-type-id="roadmap"
             style="width: 886px; height: 600px"
             :options="options"
           >
-            <gmap-marker
-              ref="gmarker"
-              v-for="(m, index) in listLatiLongi"
-              :key="index"
-              :position="{
-                lat: m.lat,
-                lng: m.lng,
-              }"
-              :clickable="true"
-              :draggable="false"
-              :icon="m.icon"
-              @click="center = m.position"
-            />
+            <div v-if="mapLoaded">
+              <gmap-marker
+                v-for="(m, index) in markers"
+                :key="index"
+                :position="{
+                  lat: m.lat,
+                  lng: m.lng,
+                }"
+                :clickable="true"
+                :draggable="false"
+                :icon="m.icon"
+                @click="center = m.position"
+              />
+            </div>
             <gmap-polyline
-              ref="mapPoly"
+              v-if="typeof getRouteDistance === 'object' && mapLoaded"
               :path="decode_path(getRouteDistance.polyline)"
-              strokeColor="#092794"
+              :options="polyOptions"
             />
           </gmap-map>
         </div>
@@ -56,6 +58,7 @@ export default {
   name: 'MapReArrangeView',
   data() {
     return {
+      center: { lat: -1.2997, lng: 36.7731 },
       options: {
         zoomControl: false,
         mapTypeControl: false,
@@ -67,8 +70,14 @@ export default {
         keyboardShortcuts: false,
         gestureHandling: false,
       },
+      polyOptions: {
+        strokeColor: '#092794',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+      },
       resultsArrays: [],
-      newOrderListi: [],
+      newOrderList: [],
+      mapLoaded: false,
     };
   },
   computed: {
@@ -84,19 +93,19 @@ export default {
     distPickup() {
       return this.getActivePage === 'Outbound_ordersView';
     },
-    orderListi: {
+    orderList: {
       get() {
         return this.getCheckedOrders;
       },
       set(newValue) {
-        newValue = this.newOrderListi;
+        newValue = this.newOrderList;
       },
     },
-    listLatiLongi() {
-      const locationsz = [];
+    markers() {
+      const markersLocations = [];
       const latit = parseFloat(this.getChosenHub.hub_location.latitude);
       const longit = parseFloat(this.getChosenHub.hub_location.longitude);
-      locationsz.push({
+      markersLocations.push({
         lat: latit,
         lng: longit,
         icon:
@@ -105,43 +114,32 @@ export default {
       this.getCheckedOrders.forEach(item => {
         const latude = parseFloat(item.destination_latitude);
         const lontude = parseFloat(item.destination_longitude);
-        locationsz.push({
+        markersLocations.push({
           lat: latude,
           lng: lontude,
           icon:
             'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
         });
       });
-      return locationsz;
+      return markersLocations;
     },
     finalbatchingOrder() {
       const orderSelectedInitIds = this.getCheckedOrders.map(
         ({ order_id }) => order_id,
       );
-      const resultsArray = this.newOrderListi.map(({ order_id }) => order_id);
+      const resultsArray = this.newOrderList.map(({ order_id }) => order_id);
       const orderIdArray = JSON.parse(JSON.stringify(resultsArray));
       const orderFinalIds =
         this.orderIdArray !== [] ? resultsArray : orderSelectedInitIds;
       return orderFinalIds;
     },
   },
-  async updated() {
-    if (this.$refs.mapRef) {
-      this.$refs.mapRef.$mapPromise.then(map => {
-        const bounds = new google.maps.LatLngBounds();
-        this.listLatiLongi.forEach(loc => {
-          bounds.extend({ lat: loc.lat, lng: loc.lng });
-        });
-        map.fitBounds(bounds);
-      });
-      await this.$refs.mapRef.$mapPromise.then(map => {
-        const flightPath = new google.maps.Polyline({
-          path: this.decode_path(this.getRouteDistance.polyline),
-          strokeColor: '#092794',
-        });
-        flightPath.setMap(map);
-      });
-    }
+  mounted() {
+    this.$gmapApiPromiseLazy().then(() => {
+      this.mapLoaded = true;
+      this.setBounds();
+      this.setPaths();
+    });
   },
   methods: {
     ...mapMutations({
@@ -155,12 +153,34 @@ export default {
     decode_path(path) {
       return google.maps.geometry.encoding.decodePath(path);
     },
+    async setBounds() {
+      if (this.mapLoaded && this.markers.length > 0) {
+        await this.$refs.mapRef.$mapPromise.then(map => {
+          const bounds = new google.maps.LatLngBounds();
+          this.markers.forEach(loc => {
+            bounds.extend({ lat: loc.lat, lng: loc.lng });
+          });
+          map.fitBounds(bounds);
+        });
+      }
+    },
+    async setPaths() {
+      if (this.mapLoaded && this.markers.length > 0) {
+        await this.$refs.mapRef.$mapPromise.then(map => {
+          const flightPath = new google.maps.Polyline({
+            path: this.decode_path(this.getRouteDistance.polyline),
+            strokeColor: '#092794',
+          });
+          flightPath.setMap(map);
+        });
+      }
+    },
     removeMapDialog() {
       this.setMapDialogVisible(false);
     },
     onDrop(dropResult) {
-      this.newOrderListi = this.applyDrag(this.orderListi, dropResult);
-      this.updateCheckedOrders(this.newOrderListi);
+      this.newOrderList = this.applyDrag(this.orderList, dropResult);
+      this.updateCheckedOrders(this.newOrderList);
       this.finalRouteDistancefetch();
     },
     applyDrag(arr, dragResult) {

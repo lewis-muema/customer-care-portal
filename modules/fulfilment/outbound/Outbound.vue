@@ -1,6 +1,5 @@
 <template lang="html">
   <div class="box box-info">
-    <MapReArrangeView />
     <div class="fulfilment-header">
       <h1 class="fulfilment-label">Outbound orders</h1>
     </div>
@@ -36,11 +35,10 @@ import OrdersView from './_components/OrdersComponent.vue';
 import BatchesView from './_components/BatchesComponent.vue';
 import MovableUnitsView from './_components/MovableUnitsComponent.vue';
 import FiltersBar from '../globals/_components/FiltersBar.vue';
-import MapReArrangeView from '../globals/_components/actions/MapReArrangeView';
 
 export default {
   name: 'OutboundView',
-  components: { OrdersView, BatchesView, FiltersBar, MapReArrangeView },
+  components: { OrdersView, BatchesView, FiltersBar },
   data() {
     return {
       mode: 'ordersView',

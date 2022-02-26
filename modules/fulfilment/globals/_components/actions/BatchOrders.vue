@@ -78,6 +78,17 @@
       </el-row>
     </div>
     <el-button
+      v-if="loading"
+      type="primary"
+      class="full-width action-submit-button"
+      :disabled="
+        !hub || !selectedDate || this.orders.length === 0 || disabled || loading
+      "
+    >
+      <i class="fa fa-spinner fa-spin loader"></i>
+    </el-button>
+    <el-button
+      v-else
       type="primary"
       class="full-width action-submit-button"
       :disabled="!hub || !selectedDate || this.orders.length === 0 || disabled"
@@ -108,6 +119,7 @@ export default {
       selectedDate: '',
       hub: '',
       disabled: false,
+      loading: false,
     };
   },
   computed: {
@@ -190,24 +202,25 @@ export default {
       return vendor;
     },
     async batchOrders() {
-      // eslint-disable-next-line no-unreachable
-      this.processing = true;
-      this.disabled = true;
+      this.loading = true;
       if (!this.hub || !this.selectedDate) {
-        this.doNotification(2, 'Batching Error', 'Kindly provide all values');
+        this.doNotification(2, 'Vector Error', 'Kindly provide all values');
         return;
       }
-      // eslint-disable-next-line prettier/prettier
       const chosenHubData = this.getHubs.filter(hubs => {
         return hubs.hub_id === this.hub;
       });
+      this.setChosenHub(chosenHubData[0]);
+      this.setSelectedDate(this.selectedDate);
+      await this.fetchPath();
+      setTimeout(() => {
+        this.loading = false;
+        this.setMapDialogVisible(true);
+      }, 800);
+    },
+    async fetchPath() {
       const direction =
         this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
-
-      const epoch_date = moment(
-        this.selectedDate,
-        'YYYY-MM-DD h:mm a',
-      ).valueOf();
 
       const payload = {
         app: 'MISSION_CONTROL_BFF',
@@ -216,31 +229,12 @@ export default {
         params: {
           hub_id: this.hub,
           direction,
-          // scheduled_date: epoch_date,
           orders: this.selectedOrders.orders,
         },
       };
       try {
         const res = await this.fetchRouteDistance(payload);
-
-        if (res.status === 200) {
-          setTimeout(() => {
-            this.setMapDialogVisible(true);
-            this.setChosenHub(chosenHubData[0]);
-            this.setSelectedDate(this.selectedDate);
-            this.$emit('dialogStatus', false);
-          }, 800);
-        } else {
-          this.disabled = false;
-          let error_response = '';
-          if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
-            error_response = data.data.errors;
-          } else {
-            error_response = data.data.message;
-          }
-          this.doNotification(2, 'Create Batch Error', error_response);
-        }
-        // eslint-disable-next-line no-unreachable
+        this.setRouteDistance(res.data.data);
       } catch (error) {
         this.disabled = false;
         this.doNotification(
