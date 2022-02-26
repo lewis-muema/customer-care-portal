@@ -237,11 +237,6 @@ export default {
         this.setRouteDistance(res.data.data);
       } catch (error) {
         this.disabled = false;
-        this.doNotification(
-          3,
-          'Internal Server Error',
-          'Kindly refresh the page. If error persists contact tech support',
-        );
       }
     },
   },
