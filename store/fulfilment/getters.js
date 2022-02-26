@@ -92,6 +92,9 @@ export default {
   getRouteDistance(state) {
     return state.routeDistance;
   },
+  getMapMarkers(state) {
+    return state.map.markers;
+  },
   getSingleSellerPage(state) {
     return state.single_seller_page;
   },

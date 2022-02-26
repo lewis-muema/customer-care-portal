@@ -120,6 +120,7 @@ export default {
       hub: '',
       disabled: false,
       loading: false,
+      chosenHubData: [],
     };
   },
   computed: {
@@ -127,6 +128,28 @@ export default {
       vehicles: 'fulfilment/getVehicles',
       getHubs: 'fulfilment/getHubs',
     }),
+    markers() {
+      const markersLocations = [];
+      const latit = parseFloat(this.chosenHubData[0].hub_location.latitude);
+      const longit = parseFloat(this.chosenHubData[0].hub_location.longitude);
+      markersLocations.push({
+        lat: latit,
+        lng: longit,
+        icon:
+          'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker.png',
+      });
+      this.orders.forEach(item => {
+        const latude = parseFloat(item.destination_latitude);
+        const lontude = parseFloat(item.destination_longitude);
+        markersLocations.push({
+          lat: latude,
+          lng: lontude,
+          icon:
+            'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
+        });
+      });
+      return markersLocations;
+    },
   },
   async mounted() {
     this.fetching = true;
@@ -141,6 +164,7 @@ export default {
       setMapDialogVisible: 'fulfilment/setMapDialogVisible',
       setChosenHub: 'fulfilment/setChosenHub',
       setSelectedDate: 'fulfilment/setSelectedDate',
+      setMapMarkers: 'fulfilment/setMapMarkers',
     }),
     ...mapActions({
       orders_summary: 'fulfilment/orders_summary',
@@ -207,11 +231,12 @@ export default {
         this.doNotification(2, 'Vector Error', 'Kindly provide all values');
         return;
       }
-      const chosenHubData = this.getHubs.filter(hubs => {
+      this.chosenHubData = this.getHubs.filter(hubs => {
         return hubs.hub_id === this.hub;
       });
-      this.setChosenHub(chosenHubData[0]);
+      this.setChosenHub(this.chosenHubData[0]);
       this.setSelectedDate(this.selectedDate);
+      this.setMapMarkers(this.markers);
       await this.fetchPath();
       setTimeout(() => {
         this.loading = false;

@@ -44,6 +44,9 @@ const state = () => ({
   selectedDate: null,
   invoiceSearchedEntity: null,
   sellerSearchedEntity: null,
+  map: {
+    markers: [],
+  },
 });
 
 export { state, getters, mutations, actions };

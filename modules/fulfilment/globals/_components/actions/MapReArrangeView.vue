@@ -27,7 +27,7 @@
           >
             <div v-if="mapLoaded">
               <gmap-marker
-                v-for="(m, index) in markers"
+                v-for="(m, index) in getMapMarkers"
                 :key="index"
                 :position="{
                   lat: m.lat,
@@ -89,6 +89,7 @@ export default {
       getRouteDistance: 'fulfilment/getRouteDistance',
       getSelectedDate: 'fulfilment/getSelectedDate',
       getSelectedCountry: 'fulfilment/getSelectedCountry',
+      getMapMarkers: 'fulfilment/getMapMarkers',
     }),
     distPickup() {
       return this.getActivePage === 'Outbound_ordersView';
@@ -101,28 +102,28 @@ export default {
         newValue = this.newOrderList;
       },
     },
-    markers() {
-      const markersLocations = [];
-      const latit = parseFloat(this.getChosenHub.hub_location.latitude);
-      const longit = parseFloat(this.getChosenHub.hub_location.longitude);
-      markersLocations.push({
-        lat: latit,
-        lng: longit,
-        icon:
-          'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker.png',
-      });
-      this.getCheckedOrders.forEach(item => {
-        const latude = parseFloat(item.destination_latitude);
-        const lontude = parseFloat(item.destination_longitude);
-        markersLocations.push({
-          lat: latude,
-          lng: lontude,
-          icon:
-            'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
-        });
-      });
-      return markersLocations;
-    },
+    // markers() {
+    //   const markersLocations = [];
+    //   const latit = parseFloat(this.getChosenHub.hub_location.latitude);
+    //   const longit = parseFloat(this.getChosenHub.hub_location.longitude);
+    //   markersLocations.push({
+    //     lat: latit,
+    //     lng: longit,
+    //     icon:
+    //       'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker.png',
+    //   });
+    //   this.getCheckedOrders.forEach(item => {
+    //     const latude = parseFloat(item.destination_latitude);
+    //     const lontude = parseFloat(item.destination_longitude);
+    //     markersLocations.push({
+    //       lat: latude,
+    //       lng: lontude,
+    //       icon:
+    //         'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
+    //     });
+    //   });
+    //   return markersLocations;
+    // },
     finalbatchingOrder() {
       const orderSelectedInitIds = this.getCheckedOrders.map(
         ({ order_id }) => order_id,
@@ -154,10 +155,10 @@ export default {
       return google.maps.geometry.encoding.decodePath(path);
     },
     async setBounds() {
-      if (this.mapLoaded && this.markers.length > 0) {
+      if (this.mapLoaded && this.getMapMarkers.length > 0) {
         await this.$refs.mapRef.$mapPromise.then(map => {
           const bounds = new google.maps.LatLngBounds();
-          this.markers.forEach(loc => {
+          this.getMapMarkers.forEach(loc => {
             bounds.extend({ lat: loc.lat, lng: loc.lng });
           });
           map.fitBounds(bounds);

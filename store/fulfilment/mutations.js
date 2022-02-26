@@ -97,6 +97,9 @@ export default {
   setRouteDistance(state, payload) {
     state.routeDistance = payload;
   },
+  setMapMarkers(state, payload) {
+    state.map.markers = payload;
+  },
   setChosenHub(state, payload) {
     state.chosenHub = payload;
   },
