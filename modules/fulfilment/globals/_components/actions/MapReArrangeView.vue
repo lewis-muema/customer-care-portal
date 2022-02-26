@@ -102,28 +102,6 @@ export default {
         newValue = this.newOrderList;
       },
     },
-    // markers() {
-    //   const markersLocations = [];
-    //   const latit = parseFloat(this.getChosenHub.hub_location.latitude);
-    //   const longit = parseFloat(this.getChosenHub.hub_location.longitude);
-    //   markersLocations.push({
-    //     lat: latit,
-    //     lng: longit,
-    //     icon:
-    //       'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker.png',
-    //   });
-    //   this.getCheckedOrders.forEach(item => {
-    //     const latude = parseFloat(item.destination_latitude);
-    //     const lontude = parseFloat(item.destination_longitude);
-    //     markersLocations.push({
-    //       lat: latude,
-    //       lng: lontude,
-    //       icon:
-    //         'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
-    //     });
-    //   });
-    //   return markersLocations;
-    // },
     finalbatchingOrder() {
       const orderSelectedInitIds = this.getCheckedOrders.map(
         ({ order_id }) => order_id,
