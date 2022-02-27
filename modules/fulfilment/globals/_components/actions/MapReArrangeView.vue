@@ -117,7 +117,6 @@ export default {
     this.$gmapApiPromiseLazy().then(() => {
       this.mapLoaded = true;
       this.setBounds();
-      this.setPaths();
     });
   },
   methods: {
@@ -140,17 +139,6 @@ export default {
             bounds.extend({ lat: loc.lat, lng: loc.lng });
           });
           map.fitBounds(bounds);
-        });
-      }
-    },
-    async setPaths() {
-      if (this.mapLoaded && this.markers.length > 0) {
-        await this.$refs.mapRef.$mapPromise.then(map => {
-          const flightPath = new google.maps.Polyline({
-            path: this.decode_path(this.getRouteDistance.polyline),
-            strokeColor: '#092794',
-          });
-          flightPath.setMap(map);
         });
       }
     },
