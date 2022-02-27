@@ -3,6 +3,14 @@
     <el-button
       type="primary"
       class="add-batch-section"
+      @click="arrangeBatch"
+      v-if="permissions.add_fulfilment_order_to_batch"
+    >
+      Rearrange
+    </el-button>
+    <el-button
+      type="primary"
+      class="add-batch-section"
       @click="centerDialogVisible = true"
       v-if="permissions.add_fulfilment_order_to_batch"
     >
@@ -65,12 +73,15 @@ export default {
       order: null,
       disabled: false,
       processing: false,
+      chosenHubData: [],
     };
   },
   computed: {
     ...mapState(['userData']),
     ...mapGetters({
       getActivePage: 'getActivePage',
+      getTableDetails: 'fulfilment/getTableDetails',
+      getHubs: 'fulfilment/getHubs',
     }),
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -82,15 +93,73 @@ export default {
       }
       return arr;
     },
+    markers() {
+      const markersLocations = [];
+      const latit = parseFloat(this.chosenHubData[0].hub_location.latitude);
+      const longit = parseFloat(this.chosenHubData[0].hub_location.longitude);
+      markersLocations.push({
+        lat: latit,
+        lng: longit,
+        icon:
+          'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker.png',
+      });
+      this.getTableDetails.orders.forEach(item => {
+        const latude = parseFloat(item.destination_latitude);
+        const lontude = parseFloat(item.destination_longitude);
+        markersLocations.push({
+          lat: latude,
+          lng: lontude,
+          icon:
+            'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
+        });
+      });
+      return markersLocations;
+    },
   },
   methods: {
     ...mapMutations({
       isSearching: 'fulfilment/setSearchingStatus',
       updateProcessingStatus: 'fulfilment/setProcessingStatus',
+      setMapDialogVisible: 'fulfilment/setMapDialogVisible',
+      setChosenHub: 'fulfilment/setChosenHub',
+      setMapMarkers: 'fulfilment/setMapMarkers',
     }),
     ...mapActions({
       perform_patch_actions: 'fulfilment/perform_patch_actions',
+      fetchRouteDistance: 'fulfilment/fetchRouteDistance',
     }),
+    async arrangeBatch() {
+      this.chosenHubData = this.getHubs.filter(hubs => {
+        return hubs.hub_id === this.getTableDetails.hub.hub_id;
+      });
+      this.setChosenHub(this.chosenHubData[0]);
+      this.setMapMarkers(this.markers);
+      await this.fetchPath();
+      setTimeout(() => {
+        this.setMapDialogVisible(true);
+      }, 800);
+    },
+    async fetchPath() {
+      const orderIds = this.getTableDetails.orders.map(
+        ({ order_id }) => order_id,
+      );
+      const payload = {
+        app: 'MISSION_CONTROL_BFF',
+        endpoint: 'batches/route',
+        apiKey: false,
+        params: {
+          hub_id: this.getTableDetails.hub.hub_id,
+          direction: this.getTableDetails.direction,
+          orders: orderIds,
+        },
+      };
+      try {
+        const res = await this.fetchRouteDistance(payload);
+        this.setRouteDistance(res.data.data);
+      } catch (error) {
+        this.disabled = false;
+      }
+    },
     handleOrder(orderDetails) {
       this.order = orderDetails;
     },

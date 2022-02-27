@@ -35,11 +35,18 @@ const state = () => ({
   supported_countries: null,
   batch_details_dialog_state: null,
   seller_active_page: 'seller-dash',
+  routeDistance: {},
+  chosenHub: {},
+  dialogVisible: false,
+  selectedDate: '',
   single_seller_page: 'deliveryHistory',
   seller_info: {},
   selectedDate: null,
   invoiceSearchedEntity: null,
   sellerSearchedEntity: null,
+  map: {
+    markers: [],
+  },
 });
 
 export { state, getters, mutations, actions };
