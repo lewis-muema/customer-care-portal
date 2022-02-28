@@ -107,6 +107,9 @@ export default {
   getSelectedDate(state) {
     return state.selectedDate;
   },
+  getSelectedDateMap(state) {
+    return state.selectedDateMap;
+  },
   getInvoiceSearchedEntity(state) {
     return state.invoiceSearchedEntity;
   },
