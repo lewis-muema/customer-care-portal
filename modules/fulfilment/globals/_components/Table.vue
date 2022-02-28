@@ -336,7 +336,6 @@ export default {
       let payload = {};
 
       if (!val.includes('all') && val.length > 0) {
-        console.log(this.getFulfilmentType);
         if (this.sellersPage.includes(this.getFulfilmentType)) {
           payload.payment_status = val;
         } else {
