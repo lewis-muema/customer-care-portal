@@ -55,7 +55,13 @@
               >Distance: {{ getRouteDistance.distance.toUpperCase() }}</span
             >
           </div>
-          <div class="outboundHub" v-if="distPickup">
+          <div
+            class="outboundHub"
+            v-if="
+              distPickup === 'Outbound_ordersView' ||
+                distPickup === 'Outbound_batchesView'
+            "
+          >
             <el-row class="inboundHubInfo">
               <el-col :span="3"
                 ><i class="fa fa-map-marker" aria-hidden="true"></i
@@ -69,7 +75,13 @@
               <el-divider class="itemDivider"></el-divider>
             </el-row>
           </div>
-          <div class="orderList" v-if="distPickup">
+          <div
+            class="orderList"
+            v-if="
+              distPickup === 'Outbound_ordersView' ||
+                distPickup === 'Outbound_batchesView'
+            "
+          >
             <div>
               <div class="simple-page">
                 <Container @drop="onDrop">
@@ -102,7 +114,13 @@
               </div>
             </div>
           </div>
-          <div class="orderListInbound" v-if="!distPickup">
+          <div
+            class="orderListInbound"
+            v-if="
+              distPickup === 'Inbound_ordersView' ||
+                distPickup === 'Inbound_batchesView'
+            "
+          >
             <div>
               <div class="simple-page">
                 <Container @drop="onDrop">
@@ -134,7 +152,12 @@
                 </Container>
               </div>
             </div>
-            <div v-if="!distPickup">
+            <div
+              v-if="
+                distPickup === 'Inbound_ordersView' ||
+                  distPickup === 'Inbound_batchesView'
+              "
+            >
               <el-row class="inboundHubInfo">
                 <el-col :span="3"
                   ><i class="fa fa-map-marker" aria-hidden="true"></i
@@ -149,7 +172,22 @@
               </el-row>
             </div>
           </div>
-          <el-button @click="submitBatch" class="submitBatch"
+          <el-button
+            @click="updateBatch"
+            class="submitBatch"
+            v-if="
+              distPickup === 'Inbound_batchesView' ||
+                distPickup === 'Outbound_batchesView'
+            "
+            >Submit batch</el-button
+          >
+          <el-button
+            @click="createBatch"
+            class="submitBatch"
+            v-if="
+              distPickup === 'Inbound_ordersView' ||
+                distPickup === 'Outbound_ordersView'
+            "
             >Submit batch</el-button
           >
         </div>
@@ -196,16 +234,16 @@ export default {
       getMapDialogVisible: 'fulfilment/getMapDialogVisible',
       getCheckedOrders: 'fulfilment/getCheckedOrders',
       getChosenHub: 'fulfilment/getChosenHub',
-      getActivePage: 'getActivePage',
       getRouteDistance: 'fulfilment/getRouteDistance',
       getSelectedDateMap: 'fulfilment/getSelectedDateMap',
       getSelectedCountry: 'fulfilment/getSelectedCountry',
       getMapMarkers: 'fulfilment/getMapMarkers',
       getTableDetails: 'fulfilment/getTableDetails',
       getOrderList: 'fulfilment/getOrderList',
+      getFulfilmentType: 'fulfilment/getFulfilmentType',
     }),
     distPickup() {
-      return this.getActivePage === 'Outbound_ordersView';
+      return this.getFulfilmentType;
     },
     orderList: {
       get() {
@@ -239,6 +277,7 @@ export default {
     }),
     ...mapActions({
       perform_post_actions: 'fulfilment/perform_post_actions',
+      perform_put_actions: 'fulfilment/perform_put_actions',
       fetchRouteDistance: 'fulfilment/fetchRouteDistance',
     }),
     decode_path(path) {
@@ -307,7 +346,7 @@ export default {
         );
       }
     },
-    async submitBatch() {
+    async createBatch() {
       this.processing = true;
       this.disabled = true;
       const direction =
@@ -340,6 +379,54 @@ export default {
               1,
               'Batch Created',
               `Batch has been created successfully. Batch ID:  ${res.data.data.data.batch_id}`,
+            );
+            this.setMapDialogVisible(false);
+          }, 800);
+        } else {
+          this.disabled = false;
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
+            error_response = data.data.errors;
+          } else {
+            error_response = data.data.message;
+          }
+          this.doNotification(2, 'Create Batch Error', error_response);
+        }
+        // eslint-disable-next-line no-unreachable
+      } catch (error) {
+        this.disabled = false;
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
+    },
+    async updateBatch() {
+      this.processing = true;
+      this.disabled = true;
+      const payload = {
+        app: 'MISSION_CONTROL_BFF',
+        endpoint: `batches/${this.getTableDetails.batch_id}`,
+        apiKey: false,
+        params: {
+          hub_id: this.getTableDetails.hub.hub_id,
+          direction: this.getTableDetails.direction,
+          country: this.getTableDetails.country,
+          scheduled_date: this.getTableDetails.scheduled_date,
+          orders: this.finalbatchingOrder,
+        },
+      };
+      try {
+        const res = await this.perform_put_actions(payload);
+
+        if (res.status === 200) {
+          /* eslint no-restricted-globals: ["error", "event"] */
+          setTimeout(() => {
+            this.doNotification(
+              1,
+              'Batch Created',
+              `Batch has been updated successfully. Batch ID:  ${res.data.data.data.batch_id}`,
             );
             this.setMapDialogVisible(false);
           }, 800);

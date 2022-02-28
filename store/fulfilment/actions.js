@@ -686,6 +686,14 @@ export default {
       return error.response.data.data;
     }
   },
+  async perform_put_actions({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPut', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
   async fetchRouteDistance({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });

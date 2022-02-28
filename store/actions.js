@@ -367,6 +367,36 @@ export default {
       return error.response;
     }
   },
+  async requestAxiosPut({ state, commit, dispatch }, payload) {
+    let endpoint = payload.endpoint;
+    const { app, apiKey, params } = payload;
+
+    // Capture custom HTTP request actions via managed transactions.
+    this._vm.$apm
+      .startTransaction(`${endpoint}`, 'custom', { managed: true })
+      .addLabels({ app });
+
+    const customConfig = state.config;
+    const url = customConfig[app];
+
+    let backendKey = null;
+    if (this.$env.APP_ENV !== 'production' && apiKey) {
+      backendKey = this.$env.BACKEND_KEY;
+      endpoint = `${endpoint}?apikey=${backendKey}`;
+    }
+
+    const values = JSON.stringify(params);
+
+    try {
+      return await axiosConfig.put(`${url}${endpoint}`, values);
+    } catch (error) {
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+
+      return error.response;
+    }
+  },
   // eslint-disable-next-line require-await
   async handleErrors({ state, commit }, error) {
     switch (error) {
