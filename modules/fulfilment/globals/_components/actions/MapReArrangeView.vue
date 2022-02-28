@@ -268,7 +268,7 @@ export default {
     }),
     ...mapActions({
       perform_post_actions: 'fulfilment/perform_post_actions',
-      perform_put_actions: 'fulfilment/perform_put_actions',
+      updateBatches: 'fulfilment/updateBatches',
       fetchRouteDistance: 'fulfilment/fetchRouteDistance',
     }),
     decode_path(path) {
@@ -397,7 +397,6 @@ export default {
       this.processing = true;
       this.disabled = true;
       const payload = {
-        app: 'MISSION_CONTROL_BFF',
         endpoint: `batches/${this.getTableDetails.batch_id}`,
         apiKey: false,
         params: {
@@ -409,7 +408,7 @@ export default {
         },
       };
       try {
-        const res = await this.perform_put_actions(payload);
+        const res = await this.updateBatches(payload);
 
         if (res.status === 200) {
           /* eslint no-restricted-globals: ["error", "event"] */

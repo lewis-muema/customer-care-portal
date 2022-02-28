@@ -686,14 +686,6 @@ export default {
       return error.response.data.data;
     }
   },
-  async perform_put_actions({ dispatch, commit }, payload) {
-    try {
-      const res = await dispatch('requestAxiosPut', payload, { root: true });
-      return res;
-    } catch (error) {
-      return error.response.data.data;
-    }
-  },
   async fetchRouteDistance({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
@@ -709,6 +701,16 @@ export default {
       const url = `${config.FULFILMENT_SERVICE}${payload.endpoint}`;
       const response = await axiosConfig.put(url, payload.params);
       return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  async updateBatches({ rootState, commit }, payload) {
+    const config = rootState.config;
+    const url = `${config.MISSION_CONTROL_BFF}${payload.endpoint}`;
+    try {
+      const response = await axiosConfig.put(url, payload.params);
+      return response;
     } catch (error) {
       return error.response.data;
     }
