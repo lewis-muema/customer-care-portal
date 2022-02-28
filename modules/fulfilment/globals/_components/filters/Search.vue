@@ -155,7 +155,11 @@ export default {
     srcPath() {
       const string = this.query_string.replace(/ /g, '\\ ');
 
-      const orderSearch = `select?q=(order_id:"${this.query_string}"OR+status:"${this.query_string}"OR+business_name:"${this.query_string}"OR+destination:"${this.query_string}"OR+agentName:"${this.query_string}"OR+hub_name:"${this.query_string}"OR+recipient_name:"${this.query_string}")&wt=json&indent=true&row=10&sort=order_id%20desc`;
+      let orderSearch = `select?q=(order_id:"${this.query_string}"OR+status:"${this.query_string}"OR+business_name:"${this.query_string}"OR+destination:"${this.query_string}"OR+agentName:"${this.query_string}"OR+hub_name:"${this.query_string}"OR+recipient_name:"${this.query_string}")&wt=json&indent=true&row=10&sort=order_id%20desc`;
+
+      if (this.page === 'addOrder') {
+        orderSearch = `select?q=(order_id:"${this.query_string}"OR+status:"${this.query_string}"OR+business_name:"${this.query_string}"OR+destination:"${this.query_string}"OR+agentName:"${this.query_string}"OR+hub_name:"${this.query_string}"OR+recipient_name:"${this.query_string}")-status:ORDER_CANCELED&wt=json&indent=true&row=10&sort=order_id%20desc`;
+      }
 
       const batchSearch = `select?q=(consolidatedBatchId:*${this.query_string}*+OR+agentName:*${this.query_string}*+OR+direction:*${this.query_string}*OR+status:*${this.query_string}*)&wt=json&indent=true&row=10&sort=consolidatedBatchId%20desc`;
 
