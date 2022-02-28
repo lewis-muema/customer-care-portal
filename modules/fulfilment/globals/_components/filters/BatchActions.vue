@@ -51,7 +51,7 @@
       width="84%"
       :key="componentKey"
     >
-      <MapReArrangeView />
+      <MapReArrangeView :page="page" />
     </el-dialog>
   </div>
 </template>

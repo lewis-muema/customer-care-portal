@@ -58,8 +58,7 @@
           <div
             class="outboundHub"
             v-if="
-              distPickup === 'Outbound_ordersView' ||
-                distPickup === 'Outbound_batchesView'
+              page === 'Outbound_ordersView' || page === 'Outbound_batchesView'
             "
           >
             <el-row class="inboundHubInfo">
@@ -78,8 +77,7 @@
           <div
             class="orderList"
             v-if="
-              distPickup === 'Outbound_ordersView' ||
-                distPickup === 'Outbound_batchesView'
+              page === 'Outbound_ordersView' || page === 'Outbound_batchesView'
             "
           >
             <div>
@@ -117,8 +115,7 @@
           <div
             class="orderListInbound"
             v-if="
-              distPickup === 'Inbound_ordersView' ||
-                distPickup === 'Inbound_batchesView'
+              page === 'Inbound_ordersView' || page === 'Inbound_batchesView'
             "
           >
             <div>
@@ -154,8 +151,7 @@
             </div>
             <div
               v-if="
-                distPickup === 'Inbound_ordersView' ||
-                  distPickup === 'Inbound_batchesView'
+                page === 'Inbound_ordersView' || page === 'Inbound_batchesView'
               "
             >
               <el-row class="inboundHubInfo">
@@ -176,8 +172,7 @@
             @click="updateBatch"
             class="submitBatch"
             v-if="
-              distPickup === 'Inbound_batchesView' ||
-                distPickup === 'Outbound_batchesView'
+              page === 'Inbound_batchesView' || page === 'Outbound_batchesView'
             "
             >Submit batch</el-button
           >
@@ -185,8 +180,7 @@
             @click="createBatch"
             class="submitBatch"
             v-if="
-              distPickup === 'Inbound_ordersView' ||
-                distPickup === 'Outbound_ordersView'
+              page === 'Inbound_ordersView' || page === 'Outbound_ordersView'
             "
             >Submit batch</el-button
           >
@@ -205,6 +199,7 @@ export default {
   name: 'MapReArrangeView',
   components: { Container, Draggable },
   mixins: [NotificationMxn],
+  props: ['page'],
   data() {
     return {
       center: { lat: -1.2997, lng: 36.7731 },
@@ -240,11 +235,7 @@ export default {
       getMapMarkers: 'fulfilment/getMapMarkers',
       getTableDetails: 'fulfilment/getTableDetails',
       getOrderList: 'fulfilment/getOrderList',
-      getFulfilmentType: 'fulfilment/getFulfilmentType',
     }),
-    distPickup() {
-      return this.getFulfilmentType;
-    },
     orderList: {
       get() {
         return this.getOrderList;
@@ -273,7 +264,7 @@ export default {
   methods: {
     ...mapMutations({
       setMapDialogVisible: 'fulfilment/setMapDialogVisible',
-      updateCheckedOrders: 'fulfilment/setCheckedOrders',
+      setOrderList: 'fulfilment/setOrderList',
     }),
     ...mapActions({
       perform_post_actions: 'fulfilment/perform_post_actions',
@@ -299,7 +290,7 @@ export default {
     },
     onDrop(dropResult) {
       this.newOrderList = this.applyDrag(this.orderList, dropResult);
-      this.updateCheckedOrders(this.newOrderList);
+      this.setOrderList(this.newOrderList);
       this.fetchRouteDistancefetch();
     },
     applyDrag(arr, dragResult) {
@@ -324,7 +315,7 @@ export default {
       this.processing = true;
       this.disabled = true;
       const direction =
-        this.distPickup === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
+        this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
       const payload = {
         app: 'MISSION_CONTROL_BFF',
         endpoint: 'batches/route',
@@ -350,7 +341,7 @@ export default {
       this.processing = true;
       this.disabled = true;
       const direction =
-        this.distPickup === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
+        this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
 
       const epoch_date = moment(
         this.getSelectedDateMap,
