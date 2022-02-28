@@ -48,7 +48,7 @@
       :title="title"
       :visible.sync="getMapDialogVisible"
       class="fulfilmentDialog"
-      width="30%"
+      width="84%"
       :key="componentKey"
     >
       <MapReArrangeView />

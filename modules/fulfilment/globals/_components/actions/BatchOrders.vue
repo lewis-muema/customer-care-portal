@@ -163,8 +163,9 @@ export default {
     ...mapMutations({
       setMapDialogVisible: 'fulfilment/setMapDialogVisible',
       setChosenHub: 'fulfilment/setChosenHub',
-      setSelectedDate: 'fulfilment/setSelectedDate',
+      setSelectedDateMap: 'fulfilment/setSelectedDateMap',
       setMapMarkers: 'fulfilment/setMapMarkers',
+      setOrderList: 'fulfilment/setOrderList',
     }),
     ...mapActions({
       orders_summary: 'fulfilment/orders_summary',
@@ -235,8 +236,9 @@ export default {
         return hubs.hub_id === this.hub;
       });
       this.setChosenHub(this.chosenHubData[0]);
-      this.setSelectedDate(this.selectedDate);
+      this.setSelectedDateMap(this.selectedDate);
       this.setMapMarkers(this.markers);
+      await this.setOrderList(this.orders);
       await this.fetchPath();
       setTimeout(() => {
         this.loading = false;
