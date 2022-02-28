@@ -95,6 +95,9 @@ export default {
   getMapMarkers(state) {
     return state.map.markers;
   },
+  getOrderList(state) {
+    return state.selectedOrderList;
+  },
   getSingleSellerPage(state) {
     return state.single_seller_page;
   },

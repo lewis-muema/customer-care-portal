@@ -103,8 +103,11 @@ export default {
   setChosenHub(state, payload) {
     state.chosenHub = payload;
   },
-  setSelectedDate(state, payload) {
-    state.selectedDate = payload;
+  setSelectedDateMap(state, payload) {
+    state.selectedDateMap = payload;
+  },
+  setOrderList(state, payload) {
+    state.selectedOrderList = payload;
   },
   setSingleSellerPage(state, payload) {
     state.single_seller_page = payload;

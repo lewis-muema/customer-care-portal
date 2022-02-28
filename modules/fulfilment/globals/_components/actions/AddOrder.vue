@@ -123,6 +123,7 @@ export default {
       setMapDialogVisible: 'fulfilment/setMapDialogVisible',
       setChosenHub: 'fulfilment/setChosenHub',
       setMapMarkers: 'fulfilment/setMapMarkers',
+      setOrderList: 'fulfilment/setOrderList',
     }),
     ...mapActions({
       perform_patch_actions: 'fulfilment/perform_patch_actions',
@@ -134,6 +135,7 @@ export default {
       });
       this.setChosenHub(this.chosenHubData[0]);
       this.setMapMarkers(this.markers);
+      this.setOrderList(this.getTableDetails.orders);
       await this.fetchPath();
       setTimeout(() => {
         this.setMapDialogVisible(true);
