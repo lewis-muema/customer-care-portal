@@ -198,7 +198,7 @@ export default {
       getChosenHub: 'fulfilment/getChosenHub',
       getActivePage: 'getActivePage',
       getRouteDistance: 'fulfilment/getRouteDistance',
-      getSelectedDate: 'fulfilment/getSelectedDate',
+      getSelectedDateMap: 'fulfilment/getSelectedDateMap',
       getSelectedCountry: 'fulfilment/getSelectedCountry',
       getMapMarkers: 'fulfilment/getMapMarkers',
       getTableDetails: 'fulfilment/getTableDetails',
@@ -215,14 +215,14 @@ export default {
         newValue = this.newOrderList;
       },
     },
+
     finalbatchingOrder() {
-      const orderSelectedInitIds = this.getCheckedOrders.map(
+      const orderSelectedInitIds = this.orderList.map(
         ({ order_id }) => order_id,
       );
-      const resultsArray = this.newOrderList.map(({ order_id }) => order_id);
-      const orderIdArray = JSON.parse(JSON.stringify(resultsArray));
+      const orderIdArray = this.newOrderList.map(({ order_id }) => order_id);
       const orderFinalIds =
-        this.orderIdArray !== [] ? resultsArray : orderSelectedInitIds;
+        orderIdArray.length !== 0 ? orderIdArray : orderSelectedInitIds;
       return orderFinalIds;
     },
   },
@@ -298,6 +298,62 @@ export default {
       };
       try {
         const res = await this.fetchRouteDistance(payload);
+      } catch (error) {
+        this.disabled = false;
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
+    },
+    async submitBatch() {
+      this.processing = true;
+      this.disabled = true;
+      const direction =
+        this.distPickup === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
+
+      const epoch_date = moment(
+        this.getSelectedDateMap,
+        'YYYY-MM-DD h:mm a',
+      ).valueOf();
+
+      const payload = {
+        app: 'MISSION_CONTROL_BFF',
+        endpoint: 'batches',
+        apiKey: false,
+        params: {
+          hub_id: this.getChosenHub.hub_id,
+          direction,
+          country: this.getSelectedCountry,
+          scheduled_date: epoch_date,
+          orders: this.finalbatchingOrder,
+        },
+      };
+      try {
+        const res = await this.perform_post_actions(payload);
+
+        if (res.status === 200) {
+          /* eslint no-restricted-globals: ["error", "event"] */
+          setTimeout(() => {
+            this.doNotification(
+              1,
+              'Batch Created',
+              `Batch has been created successfully. Batch ID:  ${res.data.data.data.batch_id}`,
+            );
+            this.setMapDialogVisible(false);
+          }, 800);
+        } else {
+          this.disabled = false;
+          let error_response = '';
+          if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
+            error_response = data.data.errors;
+          } else {
+            error_response = data.data.message;
+          }
+          this.doNotification(2, 'Create Batch Error', error_response);
+        }
+        // eslint-disable-next-line no-unreachable
       } catch (error) {
         this.disabled = false;
         this.doNotification(
