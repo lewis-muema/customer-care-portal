@@ -91,6 +91,8 @@ export default {
       updateActivePage: 'setActivePage',
       setFulfilmentType: 'fulfilment/setFulfilmentType',
       setTableData: 'fulfilment/setTableData',
+      setSelectedCountry: 'fulfilment/setSelectedCountry',
+      setSelectedStatus: 'fulfilment/setSelectedStatus',
     }),
     handleTab() {
       this.componentKey += 1;
@@ -105,6 +107,8 @@ export default {
       this.setSingleSellerPage(page);
       this.updateActivePage(page);
       this.setFulfilmentType(page);
+      this.setSelectedCountry(null);
+      this.setSelectedStatus(null);
     },
   },
 };
