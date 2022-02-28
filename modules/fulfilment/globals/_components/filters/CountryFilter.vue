@@ -88,6 +88,7 @@ export default {
     }),
     ...mapActions({
       fetchCountries: 'fulfilment/fetchHubCountries',
+      fetchHubs: 'fulfilment/fetchHubs',
     }),
 
     customLabel(option) {
@@ -110,9 +111,10 @@ export default {
     select(data) {
       return data;
     },
-    submitMethod() {
+    async submitMethod() {
       this.selectedCountry = this.checkedOptions.name;
       this.updateSelectedCountry(this.selectedCountry);
+      await this.fetchHubs();
     },
   },
 };

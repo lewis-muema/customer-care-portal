@@ -1,4 +1,4 @@
-FROM sendy-docker-local.jfrog.io/node:12.10-alpine AS build-stage
+FROM sendy-docker-local.jfrog.io/node:14.18.1-alpine AS build-stage
 
 RUN adduser -D sendy
 
@@ -22,13 +22,13 @@ USER sendy:sendy
 
 
 ########
-FROM sendy-docker-local.jfrog.io/node:12.10-alpine
+FROM sendy-docker-local.jfrog.io/node:14.18.1-alpine
 
 RUN adduser -D sendy
 
-WORKDIR /cc
+WORKDIR /usr/src/app
 
-RUN chown -R sendy:sendy /cc
+RUN chown -R sendy:sendy /usr/src/app
 RUN chown -R sendy:sendy /home/sendy/
 
 COPY --from=build-stage --chown=sendy:sendy /cc ./

@@ -27,6 +27,7 @@
       </el-button>
     </el-row>
     <el-dialog
+      :modal="false"
       :title="title"
       :visible.sync="centerDialogVisible"
       class="fulfilmentDialog"
@@ -42,18 +43,32 @@
         @dialogStatus="handleDialog"
       />
     </el-dialog>
+    <el-dialog
+      :modal="false"
+      :title="title"
+      :visible.sync="getMapDialogVisible"
+      class="fulfilmentDialog"
+      width="84%"
+      :key="componentKey"
+    >
+      <MapReArrangeView />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState, mapActions } from 'vuex';
+import NotificationMxn from '../../../../../mixins/notification_mixin';
 
 export default {
   name: 'BatchActions',
+
   components: {
     CreateMovableUnit: () => import('../actions/CreateMovableUnit'),
     BatchOrders: () => import('../actions/BatchOrders'),
+    MapReArrangeView: () => import('../actions/MapReArrangeView'),
   },
+  mixins: [NotificationMxn],
 
   props: ['page'],
 
@@ -70,6 +85,7 @@ export default {
     ...mapState(['userData']),
     ...mapGetters({
       getCheckedOrders: 'fulfilment/getCheckedOrders',
+      getMapDialogVisible: 'fulfilment/getMapDialogVisible',
     }),
     permissions() {
       return JSON.parse(this.userData.payload.data.privilege);
@@ -91,19 +107,24 @@ export default {
   methods: {
     ...mapMutations({
       updateCheckedOrders: 'fulfilment/setCheckedOrders',
+      updateSelectedCountry: 'fulfilment/setSelectedCountry',
     }),
-    showModal(action, title) {
+    ...mapActions({
+      fetchHubs: 'fulfilment/fetchHubs',
+    }),
+    async showModal(action, title) {
       this.title = title;
       this.centerDialogVisible = true;
+      this.updateSelectedCountry(this.selectedOrders[0].country);
+      await this.fetchHubs();
     },
     closeDialog() {
       this.selectedOrders = [];
-      this.updateCheckedOrders(this.selectedOrders);
       this.componentKey += 1;
+      this.mapVisibleDialog = true;
     },
     handleDialog(dialogStatus) {
       this.closeDialog();
-      this.centerDialogVisible = dialogStatus;
     },
   },
 };

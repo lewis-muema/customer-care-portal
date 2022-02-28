@@ -1,44 +1,45 @@
 <template>
   <div>
     <div class="cancel-batch-dialog cancel-batch-action-section">
-      <div class="batch-input-label batch-cancel-label">
-        Why do you want to cancel?
+      <div class="batch-input-label">
+        Select a day to reschedule order
       </div>
-      <el-input
-        type="textarea"
-        class="batch-cancellation-reason"
-        :rows="2"
-        placeholder="Please input"
-        v-model="cancel_reason"
+      <el-date-picker
+        v-model="selectedDate"
+        type="datetime"
+        placeholder="Select date and time"
+        class="fulfilment-date-class reschedule-fulfilment-date"
       >
-      </el-input>
-
+      </el-date-picker>
       <el-button
         type="danger"
         class="action-submit-button"
         :class="
-          !cancel_reason ? 'disabled-batch-order-btn' : 'cancel-batch-order-btn'
+          !selectedDate
+            ? 'disabled-batch-order-btn'
+            : 'reschedule-batch-order-btn'
         "
-        :disabled="!cancel_reason"
-        @click="cancelOrder()"
+        :disabled="!selectedDate"
+        @click="rescheduleOrder()"
       >
-        Cancel order
+        Submit
       </el-button>
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import NotificationMxn from '../../../../../mixins/notification_mixin';
 
 export default {
-  name: 'Cancel',
+  name: 'Schedule',
   mixins: [NotificationMxn],
-  props: ['details', 'page'],
+  props: ['details'],
   data() {
     return {
-      cancel_reason: '',
+      selectedDate: '',
     };
   },
   methods: {
@@ -48,29 +49,35 @@ export default {
     ...mapMutations({
       updateProcessingStatus: 'fulfilment/setProcessingStatus',
     }),
-    async cancelOrder() {
+    convertToUTC(date) {
+      const userTZ = moment.tz.guess();
+      const gmtDate = moment.tz(date, 'YYYY-MM-DD HH:mm ZZ', userTZ);
+      const UTCDate = moment.utc(gmtDate);
+      return UTCDate;
+    },
+    scheduled_time(date) {
+      return moment(date).format('YYYY-MM-DD HH:mm:ss');
+    },
+    async rescheduleOrder() {
       // eslint-disable-next-line no-unreachable
 
-      if (!this.cancel_reason) {
+      if (!this.selectedDate) {
         this.doNotification(
           2,
-          'Cancel Order Error',
-          'Kindly provide cancellation reason',
+          'Reschedule Error',
+          'Kindly provide reschedule date',
         );
         return;
       }
-      const order_type =
-        this.page === 'Outbound_ordersView' ? 'Delivery' : 'Consignment';
+      const date = this.convertToUTC(this.scheduled_time(this.selectedDate));
 
       const payload = {
         app: 'AUTH',
-        endpoint: 'mission-control-bff/orders/cancel',
+        endpoint: 'mission-control-bff/orders/reschedule',
         apiKey: false,
         params: {
           order_id: this.details.order_id,
-          reason: this.cancel_reason,
-          order_type,
-          business_id: this.details.business.business_id,
+          rescheduled_time: date,
         },
       };
       try {
@@ -80,8 +87,8 @@ export default {
           /* eslint no-restricted-globals: ["error", "event"] */
           this.doNotification(
             1,
-            'Cancel Order',
-            'Order has been cancelled successfully',
+            'Order Rescheduled',
+            'Order has been rescheduled successfully',
           );
           setTimeout(() => {
             this.updateProcessingStatus(true);
@@ -93,7 +100,7 @@ export default {
           } else {
             error_response = res.data.message;
           }
-          this.doNotification(2, 'Cancel Order Error', error_response);
+          this.doNotification(2, 'Reschedule Order Error', error_response);
         }
         // eslint-disable-next-line no-unreachable
       } catch (error) {

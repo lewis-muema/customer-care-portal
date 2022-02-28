@@ -29,8 +29,11 @@
       </div>
 
       <div class="form-group  col-md-12 config-submit">
-        <button class="btn btn-primary action-button">
+        <button class="btn btn-primary action-button" :disabled="loading">
           Process
+          <span v-if="loading">
+            <i class="fa fa-spinner fa-spin loader"></i
+          ></span>
         </button>
       </div>
     </form>
@@ -58,6 +61,7 @@ export default {
         { code: 3, name: 'Deactivate' },
       ],
       approval_value: '',
+      loading: false,
     };
   },
 
@@ -93,15 +97,17 @@ export default {
           copId: this.user.user_details.cop_id,
         },
       };
-
+      this.loading = true;
       try {
         const data = await this.update_freight_status(payload);
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
+        this.loading = false;
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );

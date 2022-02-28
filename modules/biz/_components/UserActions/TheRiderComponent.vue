@@ -17,8 +17,11 @@
         </div>
       </div>
       <br />
-      <button class="btn btn-primary allocate">
+      <button class="btn btn-primary allocate" :disabled="loading">
         Allocate Rider
+        <span v-if="loading">
+          <i class="fa fa-spinner fa-spin loader"></i
+        ></span>
       </button>
     </form>
   </div>
@@ -46,6 +49,7 @@ export default {
       submitted: false,
       hide: 'hide',
       array: {},
+      loading: false,
     };
   },
   validations: {
@@ -106,14 +110,17 @@ export default {
           action_user: this.actionUser,
         },
       };
+      this.loading = true;
       try {
         const data = await this.perform_user_action(payload);
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
+        this.loading = false;
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );

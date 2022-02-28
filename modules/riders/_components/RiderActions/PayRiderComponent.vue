@@ -75,8 +75,11 @@
         </div>
       </div>
 
-      <button class="btn btn-primary action-button">
+      <button class="btn btn-primary action-button" :disabled="loading">
         Submit
+        <span v-if="loading">
+          <i class="fa fa-spinner fa-spin loader"></i
+        ></span>
       </button>
     </form>
   </div>
@@ -100,6 +103,7 @@ export default {
       narrative: '',
       submitted: false,
       payMethods: [{ code: 1, type: 'Normal Pay' }],
+      loading: false,
     };
   },
   validations: {
@@ -173,14 +177,17 @@ export default {
         },
       };
 
+      this.loading = true;
       try {
         const data = await this.perform_user_action(payload);
+        this.loading = false;
         notification.push(data.reason);
         actionClass = this.display_order_action_notification(data.status);
         if (data.status) {
           this.updateSuccess(true);
         }
       } catch (error) {
+        this.loading = false;
         notification.push(
           'Something went wrong. Try again or contact Tech Support',
         );

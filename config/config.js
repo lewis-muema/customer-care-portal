@@ -24,6 +24,10 @@ const config = {
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery_staging/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices_staging/',
+    FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
+    FULFILMENT_DELIVERY:
+      'https://gate.sendyit.com/solr/seller_deliveries_staging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     VENDORS: 'https://authtest.sendyit.com/vendors/',
@@ -47,6 +51,7 @@ const config = {
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
     FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://authtest.sendyit.com/mission-control-bff/',
   },
   dev: {
     BASE_URL: 'http://localhost:8080/',
@@ -73,6 +78,10 @@ const config = {
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery_staging/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices_staging/',
+    FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
+    FULFILMENT_DELIVERY:
+      'https://gate.sendyit.com/solr/seller_deliveries_staging/',
     PAYMENT_SERVICE: 'https://authtest.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://authtest.sendyit.com/',
     AUTH: 'https://authtest.sendyit.com/',
@@ -92,6 +101,7 @@ const config = {
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     ELASTIC_APM_VERIFY_SERVER_CERT: 'false',
     FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://authtest.sendyit.com/mission-control-bff/',
   },
   staging: {
     BASE_URL: 'http://localhost:8080/',
@@ -116,6 +126,10 @@ const config = {
     STAFF_API: 'https://authtest.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery_staging/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch_staging/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices_staging/',
+    FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers_staging/',
+    FULFILMENT_DELIVERY:
+      'https://gate.sendyit.com/solr/seller_deliveries_staging/',
     PAYMENT_SERVICE: 'https://auth.staging.sendyit.com/localisation/',
     OFFLINE_ORDERS:
       'https://cors-anywhere.herokuapp.com/https://orders.sendyit.com/orders/',
@@ -135,6 +149,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'staging',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     FULFILMENT_SERVICE: 'https://authtest.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://authtest.sendyit.com/mission-control-bff/',
   },
   production: {
     BASE_URL: 'http://localhost:8080/',
@@ -161,6 +176,9 @@ const config = {
     STAFF_API: 'https://auth.sendyit.com/staffapi/',
     FULFILMENT_ORDERS: 'https://gate.sendyit.com/solr/delivery/',
     FULFILMENT_BATCHES: 'https://gate.sendyit.com/solr/batch/',
+    FULFILMENT_INVOICE: 'https://gate.sendyit.com/solr/invoices/',
+    FULFILMENT_SELLERS: 'https://gate.sendyit.com/solr/sellers/',
+    FULFILMENT_DELIVERY: 'https://gate.sendyit.com/solr/seller_deliveries/',
     PAYMENT_SERVICE: 'https://auth.sendyit.com/localisation/',
     PRICING_SERVICE: 'https://auth.sendyit.com/',
     OFFLINE_ORDERS:
@@ -182,6 +200,7 @@ const config = {
     ELASTIC_APM_ENVIRONMENT: 'production',
     ELASTIC_APM_SERVICE_VERSION: packageJson.version,
     FULFILMENT_SERVICE: 'https://auth.sendyit.com/fulfilment/v1/',
+    MISSION_CONTROL_BFF: 'https://auth.sendyit.com/mission-control-bff/',
   },
 };
 export default config;

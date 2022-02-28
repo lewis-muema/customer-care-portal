@@ -85,4 +85,43 @@ export default {
   setSupportedCountries(state, payload) {
     state.supported_countries = payload;
   },
+  setBatchDetailsDialogState(state, payload) {
+    state.batch_details_dialog_state = payload;
+  },
+  setSellerPage(state, payload) {
+    state.seller_active_page = payload;
+  },
+  setMapDialogVisible(state, payload) {
+    state.dialogVisible = payload;
+  },
+  setRouteDistance(state, payload) {
+    state.routeDistance = payload;
+  },
+  setMapMarkers(state, payload) {
+    state.map.markers = payload;
+  },
+  setChosenHub(state, payload) {
+    state.chosenHub = payload;
+  },
+  setSelectedDateMap(state, payload) {
+    state.selectedDateMap = payload;
+  },
+  setOrderList(state, payload) {
+    state.selectedOrderList = payload;
+  },
+  setSingleSellerPage(state, payload) {
+    state.single_seller_page = payload;
+  },
+  setSellerInfo(state, payload) {
+    state.seller_info = payload;
+  },
+  setSelectedDate(_state, payload) {
+    _state.selectedDate = payload;
+  },
+  updateInvoiceSearchedEntity(_state, val) {
+    _state.invoiceSearchedEntity = val;
+  },
+  updateSellerSearchedEntity(_state, val) {
+    _state.sellerSearchedEntity = val;
+  },
 };

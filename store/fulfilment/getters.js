@@ -77,4 +77,43 @@ export default {
   getSupportedCountries(state) {
     return state.supported_countries;
   },
+  getBatchDetailsDialogState(state) {
+    return state.batch_details_dialog_state;
+  },
+  getSellerPage(state) {
+    return state.seller_active_page;
+  },
+  getMapDialogVisible(state) {
+    return state.dialogVisible;
+  },
+  getChosenHub(state) {
+    return state.chosenHub;
+  },
+  getRouteDistance(state) {
+    return state.routeDistance;
+  },
+  getMapMarkers(state) {
+    return state.map.markers;
+  },
+  getOrderList(state) {
+    return state.selectedOrderList;
+  },
+  getSingleSellerPage(state) {
+    return state.single_seller_page;
+  },
+  getSellerInfo(state) {
+    return state.seller_info;
+  },
+  getSelectedDate(state) {
+    return state.selectedDate;
+  },
+  getSelectedDateMap(state) {
+    return state.selectedDateMap;
+  },
+  getInvoiceSearchedEntity(state) {
+    return state.invoiceSearchedEntity;
+  },
+  getSellerSearchedEntity(state) {
+    return state.sellerSearchedEntity;
+  },
 };

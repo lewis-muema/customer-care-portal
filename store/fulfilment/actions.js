@@ -12,49 +12,7 @@ export default {
     { rootState, commit, getters, dispatch },
     payload,
   ) {
-    const url = rootState.config.FULFILMENT_SERVICE;
-    if (payload != null && payload.nextPage) {
-      const newTableData = {
-        pagination: {
-          total: 987,
-          perPage: 50,
-          page: payload.nextPage,
-          lastPage: 20,
-        },
-        data: [
-          {
-            order_no: `ES97ZL615-F4U ${payload.nextPage}`,
-            status: 'Received',
-            seller_name: 'Jame Merchant',
-            recipient_name: 'John Doe',
-            rider_name: 'Sendy Rider',
-            rider_id: 1,
-            city_name: 'Nairobi',
-            time_placed: '2021-09-28T09:32:46.000Z',
-            pickup_location: 'The Chancery, Valley Rd ',
-            destination_location: 'Tilisi Hub',
-            distance: 20,
-            order_amount: 244,
-            currency: 'KSH',
-            assigned_batch_no: 'BLF-O001',
-            estimated_weight: 400,
-            unit_per_order: 10,
-            volume: 10,
-            batch_no: '#13322',
-          },
-        ],
-      };
-      const promise = new Promise(resolve => {
-        const tableData = [...getters.getTableData];
-        const updatedTableData = tableData.concat(newTableData.data);
-        setTimeout(() => {
-          commit('setTableData', updatedTableData);
-          commit('setPagination', newTableData.pagination);
-          resolve(updatedTableData);
-        }, 1000);
-      });
-      return promise;
-    }
+    const url = rootState.config.MISSION_CONTROL_BFF;
     // eslint-disable-next-line prettier/prettier
     let filter = '';
 
@@ -68,18 +26,22 @@ export default {
     try {
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/deliveries${filter}`,
+        `${url}orders/deliveries${filter}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
-        const deliveryOrders = response.data.data.orders;
+        const res = response.data;
+        const deliveryOrders = res.data.data.orders;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: deliveryOrders.length,
-          perPage: 50,
-          page: 1,
-          lastPage: 20,
+          perPage: pageInfo.max,
+          page: pageInfo.current_page,
         };
-        commit('setTableData', deliveryOrders);
+
+        payload && payload.offset
+          ? commit('setTableDataAppend', deliveryOrders)
+          : commit('setTableData', deliveryOrders);
         commit('setPagination', pagination);
         commit('setProcessingStatus', false);
       }
@@ -106,15 +68,16 @@ export default {
     }
 
     try {
-      const url = rootState.config.FULFILMENT_SERVICE;
+      const url = rootState.config.MISSION_CONTROL_BFF;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/batches?direction=OUTBOUND${filter}`,
+        `${url}batches?direction=OUTBOUND${filter}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'batch_id') return;
-        const batches = response.data.data.batches;
-        const pageInfo = response.data.data.pagination;
+        const res = response.data;
+        const batches = res.data.data.batches;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: batches.length,
           perPage: pageInfo.max,
@@ -149,16 +112,17 @@ export default {
     }
 
     try {
-      const url = rootState.config.FULFILMENT_SERVICE;
+      const url = rootState.config.MISSION_CONTROL_BFF;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/batches?direction=INBOUND${filter}`,
+        `${url}batches?direction=INBOUND${filter}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'batch_id') return;
 
-        const batches = response.data.data.batches;
-        const pageInfo = response.data.data.pagination;
+        const res = response.data;
+        const batches = res.data.data.batches;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: batches.length,
           perPage: pageInfo.max,
@@ -199,7 +163,11 @@ export default {
       commit('setProcessingStatus', false);
     }, 1000);
   },
-  async fetchVehicles({ commit }, payload) {
+  async fetchVehicles({ commit, rootState }, payload) {
+    const url = rootState.config.AUTH;
+    const vehiclesVendors = await axiosConfig.get(
+      `${url}mission-control-bff/supported_vendors`,
+    );
     const promise = new Promise(resolve => {
       const response = {
         pagination: {
@@ -208,7 +176,7 @@ export default {
           page: 1,
           lastPage: 20,
         },
-        data: FulfilmentData.vehicles,
+        data: vehiclesVendors.data.data,
       };
       resolve(response);
     });
@@ -230,15 +198,16 @@ export default {
     }
 
     try {
-      const url = rootState.config.FULFILMENT_SERVICE;
+      const url = rootState.config.MISSION_CONTROL_BFF;
       commit('setProcessingStatus', true);
       const response = await axiosConfig.get(
-        `${url}missioncontrol/consignments${filter.replace(/ /g, '')}`,
+        `${url}orders/consignments${filter.replace(/ /g, '')}`,
       );
       if (response.status === 200) {
         if (getters.getTableDetailKeyMetric.id !== 'order_id') return;
-        const deliveryOrders = response.data.data.orders;
-        const pageInfo = response.data.data.pagination;
+        const res = response.data;
+        const deliveryOrders = res.data.data.orders;
+        const pageInfo = res.data.data.pagination;
         const pagination = {
           total: deliveryOrders.length,
           perPage: pageInfo.max,
@@ -297,11 +266,115 @@ export default {
     };
     setTimeout(() => {
       const res = results.data;
-      commit('setTableData', res.data);
-      commit('setHubs', res.data);
+      commit('setTableData', res.data.hubs);
+      commit('setHubs', res.data.hubs);
       commit('setPagination', pagination);
       commit('setProcessingStatus', false);
     }, 1000);
+  },
+  async getSellerList({ rootState, commit, dispatch }) {
+    try {
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/sellers`;
+
+      const results = await axiosConfig.get(url);
+
+      const pagination = {
+        total: results.data.length,
+        perPage: results.data.length - 1,
+        page: 0,
+      };
+      setTimeout(() => {
+        const res = results.data;
+        commit('setTableData', res.data.seller_bio_data);
+        commit('setPagination', pagination);
+        commit('setProcessingStatus', false);
+      }, 1000);
+    } catch (error) {
+      commit('setTableData', []);
+      commit('setProcessingStatus', false);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async getDeliveryHistory({ rootState, commit, dispatch, getters }, payload) {
+    try {
+      let filter = '';
+
+      for (const key in payload) {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+          filter = `${filter}${param_const}${key}=${payload[key]}`;
+        }
+      }
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/orders/seller/${
+        getters.getSellerInfo.business_id
+      }${filter.replace(/ /g, '')}`;
+      const results = await axiosConfig.get(url);
+      if (results.status === 200) {
+        const pagination = {
+          total: results.data.length,
+          perPage: results.data.length - 1,
+          page: 0,
+        };
+        setTimeout(() => {
+          const res = results.data;
+
+          commit('setTableData', res.data.data.orders);
+          commit('setPagination', pagination);
+          commit('setProcessingStatus', false);
+        }, 1000);
+      }
+    } catch (error) {
+      commit('setTableData', []);
+      commit('setProcessingStatus', false);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
+  },
+  async getInvoiceList({ rootState, commit, dispatch, getters }, payload) {
+    try {
+      let filter = '';
+
+      for (const key in payload) {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+          filter = `${filter}${param_const}${key}=${payload[key]}`;
+        }
+      }
+
+      commit('setProcessingStatus', true);
+      const config = rootState.config;
+      const url = `${config.AUTH}mission-control-bff/sellers/invoices/${
+        getters.getSellerInfo.business_id
+      }${filter.replace(/ /g, '')}`;
+      const results = await axiosConfig.get(url);
+      if (results.status === 200) {
+        const pagination = {
+          total: results.data.length,
+          perPage: results.data.length - 1,
+          page: 0,
+        };
+        setTimeout(() => {
+          const res = results.data;
+
+          commit('setTableData', res.data.data.invoices);
+          commit('setPagination', pagination);
+          commit('setProcessingStatus', false);
+        }, 1000);
+      }
+    } catch (error) {
+      commit('setTableData', []);
+      commit('setProcessingStatus', false);
+      await dispatch('handleErrors', error.response.status, {
+        root: true,
+      });
+    }
   },
   async add_fulfilment_hub({ dispatch, commit }, payload) {
     try {
@@ -373,15 +446,19 @@ export default {
       commit('setPagination', results.pagination);
     }, 10);
   },
-  async fetchHubs({ rootState, commit, dispatch }) {
+  async fetchHubs({ rootState, commit, getters, dispatch }) {
     commit('setProcessingStatus', true);
     const config = rootState.config;
-    const url = `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
+    const country = getters.getSelectedCountry;
+    const url =
+      country !== null && country !== 'All Countries'
+        ? `${config.FULFILMENT_SERVICE}missioncontrol/hubs?country=${country}`
+        : `${config.FULFILMENT_SERVICE}missioncontrol/hubs`;
 
     const results = await axiosConfig.get(url);
     setTimeout(() => {
       const res = results.data;
-      commit('setHubs', res.data);
+      commit('setHubs', res.data.hubs);
       // commit('setPagination', results.pagination);
       commit('setProcessingStatus', false);
     }, 1000);
@@ -544,6 +621,46 @@ export default {
               availableStatus: null,
               events: null,
             },
+            {
+              value: 'PAYMENT_SUCCESS',
+              label: 'Paid',
+              type: 'payment',
+              description: 'Paid',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_FAIL',
+              label: 'Failed payment',
+              type: 'payment',
+              description: 'Failed payment',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_PENDING_CHARGE_CONFIRMATION',
+              label: 'Pending payment',
+              type: 'payment',
+              description: 'Pending charge confirmation',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_FAILED_CHARGE_ATTEMPT',
+              label: 'Failed payment',
+              type: 'payment',
+              description: 'Failed charge attempt',
+              availableStatus: null,
+              events: null,
+            },
+            {
+              value: 'PAYMENT_PENDING_CHARGE_ATTEMPT',
+              label: 'Pending payment',
+              type: 'payment',
+              description: 'Pending charge attempt',
+              availableStatus: null,
+              events: null,
+            },
           ],
         },
       };
@@ -564,6 +681,15 @@ export default {
   async perform_post_actions({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPost', payload, { root: true });
+      return res;
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
+  async fetchRouteDistance({ dispatch, commit }, payload) {
+    try {
+      const res = await dispatch('requestAxiosPost', payload, { root: true });
+      commit('setRouteDistance', res.data.data);
       return res;
     } catch (error) {
       return error.response.data.data;
@@ -610,6 +736,76 @@ export default {
       }
     } catch (error) {
       return error.response.data.data;
+    }
+  },
+  async fetchFailedAttempts({ rootState, commit }, payload) {
+    const url = rootState.config.AUTH;
+
+    try {
+      const response = await axiosConfig.get(
+        `${url}mission-control-bff/orders/failed-attempts/${payload.order_id}`,
+      );
+      if (response.status === 200) {
+        return response.data.data;
+      }
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
+  async fetchInvoiceDetails({ rootState, commit, dispatch }, payload) {
+    const url = rootState.config.AUTH;
+
+    try {
+      const response = await axiosConfig.get(
+        `${url}mission-control-bff/orders/v2/${payload.order_no}`,
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  async getSellerStats({ rootState, commit }, payload) {
+    const url = rootState.config.AUTH;
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
+    try {
+      const response = await axiosConfig.get(
+        `${url}mission-control-bff/sellers/summary${filter.replace(/ /g, '')}`,
+      );
+      if (response.status === 200) {
+        return response.data.data;
+      }
+    } catch (error) {
+      return error.response.data.data;
+    }
+  },
+  async fetch_delivery_details({ rootState, dispatch, getters }, payload) {
+    const app = rootState.config.AUTH;
+
+    let filter = '';
+
+    for (const key in payload) {
+      if (Object.prototype.hasOwnProperty.call(payload, key)) {
+        const param_const = Object.keys(payload)[0] === key ? '?' : '&';
+        filter = `${filter}${param_const}${key}=${payload[key]}`;
+      }
+    }
+    const url = `${app}mission-control-bff/orders/seller/${
+      getters.getSellerInfo.business_id
+    }${filter.replace(/ /g, '')}`;
+    try {
+      const response = await axiosConfig.get(url);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
     }
   },
 };

@@ -1,21 +1,49 @@
 <template>
   <div>
     <el-row type="flex" class="row-bg filtersBar" justify="space-between">
-      <el-col :span="9">
+      <el-col :span="returnSpanVal">
         <div class="grid-content fulfilment-search-holder">
           <el-row type="flex" class="">
-            <el-col :span="9">
+            <el-col :span="9" v-if="checkSellerPage">
               <div class="grid-content fulfilment-status-filter">
                 <StatusFilter :page="getActivePage" />
               </div>
             </el-col>
-            <el-col :span="18">
-              <div class="grid-content fulfilment-search-filter">
+            <el-col :span="returnSearchSpan">
+              <div
+                class="grid-content fulfilment-search-filter"
+                :class="checkSellerPage ? '' : 'mc-seller-global-search'"
+              >
                 <Search
                   :page="getActivePage"
                   :section="section"
-                  placeholder="Search order ( order no, name, user phone)"
+                  :placeholder="searchPlaceHolder"
                 />
+              </div>
+            </el-col>
+
+            <el-col
+              :span="7"
+              v-if="!checkSellerPage && getActivePage !== 'all-sellers'"
+            >
+              <div
+                class="grid-content fulfilment-search-filter mc-seller-global-search"
+              >
+                <DateFilter :page="getActivePage" />
+              </div>
+            </el-col>
+            <el-col
+              :span="5"
+              v-if="
+                !checkSellerPage &&
+                  getActivePage !== 'all-sellers' &&
+                  getActivePage !== 'invoices'
+              "
+            >
+              <div
+                class="grid-content fulfilment-search-filter mc-seller-global-search"
+              >
+                <SellerStatusFilter :page="getActivePage" />
               </div>
             </el-col>
           </el-row>
@@ -24,7 +52,7 @@
       <el-col :span="11">
         <div class="grid-content bg-white">
           <el-row type="flex" class="" justify="space-between">
-            <el-col :span="8">
+            <el-col :span="8" v-if="checkSellerPage">
               <div class="grid-content">
                 <CountryFilter v-if="getActivePage !== 'HubsView'" />
               </div>
@@ -54,13 +82,21 @@
         Fetching results ...
       </div>
     </el-row>
-    <el-row type="flex" class="row-bg mb-2" v-if="getSearchedEntity">
+    <el-row
+      type="flex"
+      class="row-bg mb-2"
+      v-if="getSearchedEntity && checkSellerPage"
+    >
       <div class="search-header text-right back-btn">
         <span @click="goBack()"
           ><i class="fa fa-arrow-left"></i> Back to all {{ title }} List
         </span>
       </div>
     </el-row>
+    <div class="mc-seller-back" v-if="checkSellerTab" @click="goBack()">
+      <i class="el-icon-arrow-left back-seller-icon"></i>
+      <span class="back-seller-text">Back to all List</span>
+    </div>
   </div>
 </template>
 
@@ -75,6 +111,8 @@ export default {
     HubsFilter: () => import('./filters/HubFilter'),
     BatchActions: () => import('./filters/BatchActions'),
     CountryFilter: () => import('./filters/CountryFilter'),
+    DateFilter: () => import('./filters/DateFilter'),
+    SellerStatusFilter: () => import('./filters/SellerStatusFilter'),
   },
   data() {
     return {
@@ -82,6 +120,7 @@ export default {
       searched: false,
       title: '',
       page: '',
+      sellerViewPages: ['deliveryHistory', 'invoices', 'all-sellers'],
     };
   },
   computed: {
@@ -92,6 +131,8 @@ export default {
       getStatusMapping: 'fulfilment/getStatusMapping',
       getProcessingStatus: 'fulfilment/getProcessingStatus',
       getSearchedEntity: 'fulfilment/getSearchedEntity',
+      getInvoiceSearchedEntity: 'fulfilment/getInvoiceSearchedEntity',
+      getSellerSearchedEntity: 'fulfilment/getSellerSearchedEntity',
     }),
 
     pageTitle() {
@@ -109,10 +150,49 @@ export default {
         this.getActivePage === 'Inbound_batchesView'
       ) {
         data = 'batches';
+      } else if (this.getActivePage === 'invoices') {
+        data = 'invoices';
+      } else if (this.getActivePage === 'deliveryHistory') {
+        data = 'deliveryHistory';
+      } else if (this.getActivePage === 'all-sellers') {
+        data = 'allSellers';
       } else {
         data = 'orders';
       }
       return data;
+    },
+    checkSellerPage() {
+      return !this.sellerViewPages.includes(this.getActivePage);
+    },
+    returnSpanVal() {
+      return this.checkSellerPage || this.getActivePage === 'all-sellers'
+        ? 9
+        : 18;
+    },
+    returnSearchSpan() {
+      return this.checkSellerPage || this.getActivePage === 'all-sellers'
+        ? 18
+        : 11;
+    },
+    searchPlaceHolder() {
+      return this.checkSellerPage
+        ? 'Search order ( order no, name, user phone)'
+        : 'Search';
+    },
+    checkSellerTab() {
+      let resp = false;
+      if (
+        this.getActivePage === 'all-sellers' &&
+        this.getSellerSearchedEntity
+      ) {
+        resp = true;
+      } else if (
+        this.getActivePage === 'invoice' &&
+        this.getInvoiceSearchedEntity
+      ) {
+        resp = true;
+      }
+      return resp;
     },
   },
   watch: {
@@ -137,6 +217,8 @@ export default {
       updateSearchState: 'fulfilment/setSearchState',
       isSearching: 'fulfilment/setSearchingStatus',
       updateProcessingStatus: 'fulfilment/setProcessingStatus',
+      updateSellerSearchedEntity: 'fulfilment/updateSellerSearchedEntity',
+      updateInvoiceSearchedEntity: 'fulfilment/updateInvoiceSearchedEntity',
     }),
     ...mapActions({
       fetchHubs: 'fulfilment/fetchHubs',
@@ -146,6 +228,8 @@ export default {
     goBack() {
       this.updateSearchedEntity(null);
       this.updateSearchState(false);
+      this.updateSellerSearchedEntity(null);
+      this.updateInvoiceSearchedEntity(null);
     },
   },
 };

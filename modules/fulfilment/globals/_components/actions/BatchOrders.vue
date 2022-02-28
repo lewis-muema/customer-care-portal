@@ -78,12 +78,23 @@
       </el-row>
     </div>
     <el-button
+      v-if="loading"
+      type="primary"
+      class="full-width action-submit-button"
+      :disabled="
+        !hub || !selectedDate || this.orders.length === 0 || disabled || loading
+      "
+    >
+      <i class="fa fa-spinner fa-spin loader"></i>
+    </el-button>
+    <el-button
+      v-else
       type="primary"
       class="full-width action-submit-button"
       :disabled="!hub || !selectedDate || this.orders.length === 0 || disabled"
       @click="batchOrders()"
     >
-      Batch
+      Continue
     </el-button>
   </div>
 </template>
@@ -108,6 +119,8 @@ export default {
       selectedDate: '',
       hub: '',
       disabled: false,
+      loading: false,
+      chosenHubData: [],
     };
   },
   computed: {
@@ -115,6 +128,28 @@ export default {
       vehicles: 'fulfilment/getVehicles',
       getHubs: 'fulfilment/getHubs',
     }),
+    markers() {
+      const markersLocations = [];
+      const latit = parseFloat(this.chosenHubData[0].hub_location.latitude);
+      const longit = parseFloat(this.chosenHubData[0].hub_location.longitude);
+      markersLocations.push({
+        lat: latit,
+        lng: longit,
+        icon:
+          'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker.png',
+      });
+      this.orders.forEach(item => {
+        const latude = parseFloat(item.destination_latitude);
+        const lontude = parseFloat(item.destination_longitude);
+        markersLocations.push({
+          lat: latude,
+          lng: lontude,
+          icon:
+            'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/mapMarker2.png',
+        });
+      });
+      return markersLocations;
+    },
   },
   async mounted() {
     this.fetching = true;
@@ -125,10 +160,17 @@ export default {
     this.fetching = false;
   },
   methods: {
+    ...mapMutations({
+      setMapDialogVisible: 'fulfilment/setMapDialogVisible',
+      setChosenHub: 'fulfilment/setChosenHub',
+      setSelectedDateMap: 'fulfilment/setSelectedDateMap',
+      setMapMarkers: 'fulfilment/setMapMarkers',
+      setOrderList: 'fulfilment/setOrderList',
+    }),
     ...mapActions({
       orders_summary: 'fulfilment/orders_summary',
       fetchVehicles: 'fulfilment/fetchVehicles',
-      perform_post_actions: 'fulfilment/perform_post_actions',
+      fetchRouteDistance: 'fulfilment/fetchRouteDistance',
     }),
 
     generateOrderIDs() {
@@ -185,64 +227,43 @@ export default {
       return vendor;
     },
     async batchOrders() {
-      // eslint-disable-next-line no-unreachable
-      this.processing = true;
-      this.disabled = true;
+      this.loading = true;
       if (!this.hub || !this.selectedDate) {
-        this.doNotification(2, 'Batching Error', 'Kindly provide all values');
+        this.doNotification(2, 'Vector Error', 'Kindly provide all values');
         return;
       }
-      // eslint-disable-next-line prettier/prettier
+      this.chosenHubData = this.getHubs.filter(hubs => {
+        return hubs.hub_id === this.hub;
+      });
+      this.setChosenHub(this.chosenHubData[0]);
+      this.setSelectedDateMap(this.selectedDate);
+      this.setMapMarkers(this.markers);
+      await this.setOrderList(this.orders);
+      await this.fetchPath();
+      setTimeout(() => {
+        this.loading = false;
+        this.setMapDialogVisible(true);
+      }, 800);
+    },
+    async fetchPath() {
       const direction =
         this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
 
-      const epoch_date = moment(
-        this.selectedDate,
-        'YYYY-MM-DD h:mm a',
-      ).valueOf();
-
       const payload = {
-        app: 'FULFILMENT_SERVICE',
-        endpoint: 'missioncontrol/batches',
+        app: 'MISSION_CONTROL_BFF',
+        endpoint: 'batches/route',
         apiKey: false,
         params: {
           hub_id: this.hub,
           direction,
-          scheduled_date: epoch_date,
           orders: this.selectedOrders.orders,
         },
       };
       try {
-        const res = await this.perform_post_actions(payload);
-
-        if (res.status === 200) {
-          /* eslint no-restricted-globals: ["error", "event"] */
-          this.doNotification(
-            1,
-            'Batch Created',
-            `Batch has been created successfully. Batch ID:  ${res.data.data.batch_id}`,
-          );
-          setTimeout(() => {
-            this.$emit('dialogStatus', false);
-          }, 800);
-        } else {
-          this.disabled = false;
-          let error_response = '';
-          if (Object.prototype.hasOwnProperty.call(data.data, 'errors')) {
-            error_response = data.data.errors;
-          } else {
-            error_response = data.data.message;
-          }
-          this.doNotification(2, 'Create Batch Error', error_response);
-        }
-        // eslint-disable-next-line no-unreachable
+        const res = await this.fetchRouteDistance(payload);
+        this.setRouteDistance(res.data.data);
       } catch (error) {
         this.disabled = false;
-        this.doNotification(
-          3,
-          'Internal Server Error',
-          'Kindly refresh the page. If error persists contact tech support',
-        );
       }
     },
   },

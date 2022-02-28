@@ -1,20 +1,64 @@
-image: node:14.16.1
+image: node:14.18.1-alpine
 
 stages:
+  - lint
   - test
+  - build
+  - deploy
 
-# Cache the node modules installed.
+variables:
+  STAGING_DOCKER_IMAGE: "${CI_REGISTRY}/cc-redesign:latest_${CI_COMMIT_SHORT_SHA}"
+
 cache:
   paths:
     - node_modules/
 
-# Lets name our Job unitTest, because that's what it's doing.
-unitTest:
-  # run tests and determine code test coverage
+elint:
+  stage: lint
+  tags:
+    - docker
+  script: 
+    - npm install eslint  
+ 
+unit_test:
   stage: test
-
-  # Install packages for test scripts we want to run
+  tags:
+    - docker
   script:
     - npm cache clean --force
     - npm install
     - npm run test
+
+build:staging:
+  stage: build
+  tags:
+    - shell
+  before_script:
+    - echo "$STAGING_DOCKER_IMAGE"
+  script:
+    - docker build --build-arg APP_ENV="dev" -t "$STAGING_DOCKER_IMAGE" .
+    - docker push "$STAGING_DOCKER_IMAGE"
+  only:
+    - dev
+
+deploy:staging:
+  stage: deploy
+  tags:
+    - shell 
+  script:
+    - ssh -i ~/keys/id_rsa -f -o StrictHostKeyChecking=no -l admin kubetest-master.sendyit.com "kubectl set image deploy cc-redesign cc-redesign=${STAGING_DOCKER_IMAGE}"
+  only:
+    - dev
+
+build:prod:
+  stage: build
+  tags:
+    - shell
+  before_script:
+    - export PROD_DOCKER_IMAGE="${CI_REGISTRY}/cc-redesign:prod_$(date +%Y-%m-%d-%H-%M)"
+    - echo "$PROD_DOCKER_IMAGE"
+  script:
+    - docker build --build-arg APP_ENV="production" -t "$PROD_DOCKER_IMAGE" .
+    - docker push "$PROD_DOCKER_IMAGE"
+  only:
+    - master

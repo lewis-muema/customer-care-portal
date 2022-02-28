@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="fulfillment-tab-info-top">
-      <div class="fulfillment-tab-info-seller">
+      <div
+        class="fulfillment-tab-info-seller"
+        v-if="getFulfilmentType !== 'deliveryHistory'"
+      >
         <div class="fulfillment-tab-info-titles">Seller</div>
         <div>
           <div class="fulfillment-tab-info-description">
@@ -22,9 +25,12 @@
       </div>
       <div
         class="fulfillment-tab-info-recipient"
-        v-if="getFulfilmentType === 'Outbound_ordersView'"
+        v-if="
+          getFulfilmentType === 'Outbound_ordersView' ||
+            getFulfilmentType === 'deliveryHistory'
+        "
       >
-        <div class="fulfillment-tab-info-titles">Recipient</div>
+        <div class="fulfillment-tab-info-titles">{{ getTabHeader() }}</div>
         <div>
           <div class="fulfillment-tab-info-description">
             <i class="fa fa-user fulfillment-tab-info-description-icon"></i>
@@ -125,6 +131,11 @@ export default {
         resp = !!val.assigned_shipping_agent.agent_name;
       }
       return resp;
+    },
+    getTabHeader() {
+      return this.getFulfilmentType === 'deliveryHistory'
+        ? 'User'
+        : 'Recipient';
     },
   },
 };
