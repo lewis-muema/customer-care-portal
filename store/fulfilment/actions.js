@@ -705,6 +705,16 @@ export default {
       return error.response.data;
     }
   },
+  async updateBatches({ rootState, commit }, payload) {
+    const config = rootState.config;
+    const url = `${config.MISSION_CONTROL_BFF}${payload.endpoint}`;
+    try {
+      const response = await axiosConfig.put(url, payload.params);
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  },
   async perform_patch_actions({ dispatch, commit }, payload) {
     try {
       const res = await dispatch('requestAxiosPatch', payload, { root: true });
