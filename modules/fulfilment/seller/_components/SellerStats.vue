@@ -88,7 +88,8 @@
                     Total paid to date
                   </div>
                   <div class="mc-seller-card-description">
-                    KES {{ formatNumber(statsData.total_paid_to_date) }}
+                    {{ statsData.currency }}
+                    {{ formatNumber(statsData.total_paid_to_date) }}
                   </div>
                 </el-card>
               </el-col>
@@ -99,7 +100,8 @@
                     Overdue payments
                   </div>
                   <div class="mc-seller-card-description">
-                    KES {{ formatNumber(statsData.overdue_payments) }}
+                    {{ statsData.currency }}
+                    {{ formatNumber(statsData.overdue_payments) }}
                   </div>
                 </el-card>
               </el-col>
