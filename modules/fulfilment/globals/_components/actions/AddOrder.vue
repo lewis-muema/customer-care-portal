@@ -6,6 +6,11 @@
       @click="arrangeBatch"
       v-if="permissions.add_fulfilment_order_to_batch"
     >
+      <span class="expansion"
+        ><img
+          src="https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/expansion.png"
+        />
+      </span>
       Rearrange
     </el-button>
     <el-button

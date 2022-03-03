@@ -9,7 +9,7 @@
     append-to-body
   >
     <el-row :gutter="20">
-      <el-col :span="18" class="mapsstyle">
+      <el-col :span="16" class="mapsstyle">
         <div class="">
           <el-button
             @click="removeMapDialog()"
@@ -46,12 +46,15 @@
           </gmap-map>
         </div>
       </el-col>
-      <el-col :span="6" class="orderInfo">
+      <el-col :span="8" class="orderInfo">
         <div class="">
           <div class="rearrangeText">Rearrange batch</div>
           <div>
-            <span></span>
-            <span class="rearrangeDistance"
+            <span class="clipDistance"
+              ><img
+                src="https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/distance1.png"
+            /></span>
+            <span class="reArrangeDistance"
               >Distance: {{ getRouteDistance.distance.toUpperCase() }}</span
             >
           </div>
@@ -83,8 +86,12 @@
             <div>
               <div class="simple-page">
                 <Container @drop="onDrop">
-                  <Draggable v-for="(order, index) in orderList" :key="index">
-                    <el-col class="orderist">
+                  <Draggable v-for="order in orderList" :key="order.order_id">
+                    <el-col
+                      class="itemListOrder"
+                      @mouseenter.native="addCircle(order)"
+                      @mouseleave.native="removeCircle(order)"
+                    >
                       <el-row>
                         <el-col :span="3" class="braille">
                           <span class="ellipsisIcon"
@@ -121,9 +128,13 @@
             <div>
               <div class="simple-page">
                 <Container @drop="onDrop">
-                  <Draggable v-for="(order, index) in orderList" :key="index">
-                    <el-col class="orderist">
-                      <el-row>
+                  <Draggable v-for="order in orderList" :key="order.order_id">
+                    <el-col
+                      class="itemListOrder"
+                      @mouseenter.native="addCircle(order)"
+                      @mouseleave.native="removeCircle(order)"
+                    >
+                      <el-row class="orderist">
                         <el-col :span="3" class="braille">
                           <span class="ellipsisIcon"
                             ><i class="fa fa-ellipsis-v" aria-hidden="true"></i
@@ -222,6 +233,7 @@ export default {
       resultsArrays: [],
       newOrderList: [],
       mapLoaded: false,
+      cityCircle: '',
     };
   },
   computed: {
@@ -284,6 +296,27 @@ export default {
           map.fitBounds(bounds);
         });
       }
+    },
+    async addCircle(e) {
+      if (this.mapLoaded && this.getMapMarkers.length > 0) {
+        await this.$refs.mapRef.$mapPromise.then(map => {
+          const latude = parseFloat(e.destination_latitude);
+          const lontude = parseFloat(e.destination_longitude);
+          this.cityCircle = new google.maps.Circle({
+            strokeColor: '#f7f7f7',
+            strokeOpacity: 0.1,
+            strokeWeight: 1,
+            fillColor: '#f7f7f7',
+            fillOpacity: 1,
+            map,
+            center: { lat: latude, lng: lontude },
+            radius: 1000,
+          });
+        });
+      }
+    },
+    removeCircle(e) {
+      this.cityCircle.setMap(null);
     },
     removeMapDialog() {
       this.setMapDialogVisible(false);
@@ -446,7 +479,7 @@ export default {
 <style scoped>
 .mapsstyle {
   margin: 0%;
-  width: 886px;
+  width: 875px;
   padding-right: 10px !important;
 }
 .mapdialog {
@@ -467,15 +500,21 @@ export default {
   line-height: 22px;
   color: #000000;
 }
-.rearrangeDistance {
+.reArrangeDistance {
   position: absolute;
   height: 19px;
-  left: 935px;
+  left: 945px;
   top: 90px;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
   line-height: 19px;
+}
+.clipDistance {
+  position: absolute;
+  height: 19px;
+  left: 910px;
+  top: 90px;
 }
 .outboundHub {
   position: absolute;
@@ -491,9 +530,9 @@ export default {
 }
 .submitBatch {
   position: absolute;
-  width: 270px;
-  height: 44px;
-  left: 920px;
+  width: 22%;
+  height: 8%;
+  left: 75%;
   top: 520px;
   background: #0049b7;
   border: 1px solid #1b7fc3;
@@ -527,7 +566,7 @@ export default {
   padding-top: 5px !important;
 }
 .itemDivider {
-  margin: 15px 0px;
+  margin: 0px 0px;
 }
 .itemDivide {
   margin-right: 0px;
@@ -536,25 +575,37 @@ export default {
   margin-top: 0px;
 }
 .rowSpacer {
-  margin-top: 15px;
-  margin-right: 0px;
-  margin-bottom: 15px;
-  margin-left: 15px;
+  margin-top: 5%;
+  margin-right: -5%;
+  margin-bottom: 0%;
+  margin-left: 5%;
 }
 .waypointOrder {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+  font-family: Nunito, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
 }
 .waypointsOrder {
   padding-left: 0px !important;
   padding-right: 0px !important;
+}
+.orderist {
+  cursor: pointer;
+}
+.itemListOrder:hover {
+  background-color: #e8e8e8;
+  cursor: pointer;
 }
 .orderList {
   position: absolute;
   left: 900px;
   right: 1%;
   padding-top: 3%;
-  top: 150px;
+  top: 135px;
   bottom: 64.81%;
   font-family: Nunito, sans-serif;
   font-style: normal;
@@ -568,13 +619,8 @@ export default {
   left: 900px;
   right: 1%;
   padding-top: 2%;
-  top: 100px;
+  top: 110px;
   bottom: 64.81%;
-  font-family: Nunito, sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 19px;
   height: 20px;
 }
 .braille {
@@ -584,5 +630,13 @@ export default {
 }
 .inboundHubInfo {
   padding-left: 10px;
+  padding-top: 3%;
+}
+.fa {
+  font-size: 18px;
+}
+.itemListOrder {
+  padding-top: 2%;
+  padding-right: 0%;
 }
 </style>
