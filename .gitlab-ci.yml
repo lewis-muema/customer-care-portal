@@ -62,3 +62,32 @@ build:prod:
     - docker push "$PROD_DOCKER_IMAGE"
   only:
     - master
+
+
+build:preview_env:
+  stage: build
+  tags:
+    - shell
+  before_script:
+    - export PREVIEW_ENV_IMAGE_NAME="sendy-docker-local.jfrog.io/cc-redesign:$(echo $CI_COMMIT_REF_NAME | awk -F "/" '{ print $2 }')_$(date +%Y-%m-%d-%H-%M)"
+    - export FEATURE_ENV="$(echo $CI_COMMIT_REF_NAME | awk -F "/" '{ print $2 }')"
+    - echo "$FEATURE_ENV"
+  script:
+    - docker build -t "${PREVIEW_ENV_IMAGE_NAME}" .
+    - docker push "$PREVIEW_ENV_IMAGE_NAME"
+  only:
+    refs:
+      - /^feature*.*$/
+
+create-preview-env:
+  stage: deploy
+  tags:
+    - manta
+  before_script:
+    - export FEATURE="$(echo $CI_COMMIT_REF_NAME | awk -F "/" '{ print $2 }')"
+  script:
+    - pwd
+    - source ~/.bash_profile && /opt/manta -c $FEATURE -f /home/ubuntu/.kube/config
+  only:
+    refs:
+      - /^feature*.*$/
