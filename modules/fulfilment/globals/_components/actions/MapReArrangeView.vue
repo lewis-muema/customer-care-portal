@@ -50,10 +50,7 @@
         <div class="">
           <div class="rearrangeText">Rearrange batch</div>
           <div>
-            <span class="clipDistance"
-              ><img
-                src="https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/distance1.png"
-            /></span>
+            <span class="clipDistance"><img :src="image"/></span>
             <span class="reArrangeDistance"
               >Distance: {{ getRouteDistance.distance.toUpperCase() }}</span
             >
@@ -205,6 +202,7 @@ import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
 import { Container, Draggable } from 'vue-dndrop';
 import moment from 'moment';
 import NotificationMxn from '../../../../../mixins/notification_mixin';
+import config from '../../../../../config/configs';
 
 export default {
   name: 'MapReArrangeView',
@@ -234,6 +232,7 @@ export default {
       newOrderList: [],
       mapLoaded: false,
       cityCircle: '',
+      image: `${config.DISTANCE_ICON}/top/distance1.png`,
     };
   },
   computed: {
