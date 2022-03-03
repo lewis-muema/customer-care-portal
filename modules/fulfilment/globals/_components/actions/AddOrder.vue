@@ -6,6 +6,7 @@
       @click="arrangeBatch"
       v-if="permissions.add_fulfilment_order_to_batch"
     >
+      <span class="expansion"><img :src="image"/></span>
       Rearrange
     </el-button>
     <el-button
@@ -58,6 +59,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
 import NotificationMxn from '../../../../../mixins/notification_mixin';
+import config from '../../../../../config/configs';
 
 export default {
   name: 'AddOrder',
@@ -74,6 +76,7 @@ export default {
       disabled: false,
       processing: false,
       chosenHubData: [],
+      image: `${config.DISTANCE_ICON}/top/expansion.png`,
     };
   },
   computed: {
