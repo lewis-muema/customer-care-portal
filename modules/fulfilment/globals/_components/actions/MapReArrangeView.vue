@@ -33,7 +33,7 @@
                   lat: m.lat,
                   lng: m.lng,
                 }"
-                :clickable="true"
+                :clickable="false"
                 :draggable="false"
                 :icon="m.icon"
               />
@@ -302,11 +302,11 @@ export default {
           const latude = parseFloat(e.destination_latitude);
           const lontude = parseFloat(e.destination_longitude);
           this.cityCircle = new google.maps.Circle({
-            strokeColor: '#f7f7f7',
+            strokeColor: '#EC9839',
             strokeOpacity: 0.1,
             strokeWeight: 1,
-            fillColor: '#f7f7f7',
-            fillOpacity: 1,
+            fillColor: '#EC9839',
+            fillOpacity: 0.8,
             map,
             center: { lat: latude, lng: lontude },
             radius: 1000,
