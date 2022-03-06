@@ -231,7 +231,7 @@ export default {
       resultsArrays: [],
       newOrderList: [],
       mapLoaded: false,
-      cityCircle: '',
+      mark: '',
       image: `${config.DISTANCE_ICON}/top/distance1.png`,
     };
   },
@@ -301,21 +301,17 @@ export default {
         await this.$refs.mapRef.$mapPromise.then(map => {
           const latude = parseFloat(e.destination_latitude);
           const lontude = parseFloat(e.destination_longitude);
-          this.cityCircle = new google.maps.Circle({
-            strokeColor: '#EC9839',
-            strokeOpacity: 0.1,
-            strokeWeight: 1,
-            fillColor: '#EC9839',
-            fillOpacity: 0.8,
+          this.mark = new google.maps.Marker({
+            position: { lat: latude, lng: lontude },
             map,
-            center: { lat: latude, lng: lontude },
-            radius: 1000,
+            icon:
+              'https://s3.eu-west-1.amazonaws.com/webplatform.testimages/test.images/top/backgroundmarker.png',
           });
         });
       }
     },
     removeCircle(e) {
-      this.cityCircle.setMap(null);
+      this.mark.setMap(null);
     },
     removeMapDialog() {
       this.setMapDialogVisible(false);
