@@ -13,7 +13,7 @@
         <div class="">
           <el-button
             @click="removeMapDialog()"
-            class="mapdialog"
+            class="closeButton"
             icon="el-icon-close"
             circle
           ></el-button>
@@ -91,12 +91,22 @@
                     >
                       <el-row>
                         <el-col :span="3" class="braille">
-                          <span class="ellipsisIcon"
-                            ><i class="fa fa-ellipsis-v" aria-hidden="true"></i
-                          ></span>
-                          <span class="ellipsisIcon"
-                            ><i class="fa fa-ellipsis-v" aria-hidden="true"></i
-                          ></span>
+                          <span class="ellipsisIcon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                              role="img"
+                              width="2em"
+                              height="2em"
+                              preserveAspectRatio="xMidYMid meet"
+                              viewBox="0 0 32 32"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M12 6a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm8 0a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm-8 8a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm8 0a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm-8 8a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm8 0a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4z"
+                              />
+                            </svg>
+                          </span>
                         </el-col>
                         <el-col :span="21" class="waypointsOrder">
                           <span class="waypointOrder">
@@ -226,7 +236,7 @@ export default {
       polyOptions: {
         strokeColor: '#092794',
         strokeOpacity: 1.0,
-        strokeWeight: 3,
+        strokeWeight: 4,
       },
       resultsArrays: [],
       newOrderList: [],
@@ -474,17 +484,19 @@ export default {
 <style scoped>
 .mapsstyle {
   margin: 0%;
-  width: 875px;
+  width: 15% !important;
   padding-right: 10px !important;
 }
-.mapdialog {
+.closeButton {
   z-index: 10;
   position: absolute;
   margin: 10px;
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .rearrangeText {
   position: absolute;
-  padding-left: 29px;
+  padding-left: 40px;
   height: 22px;
   left: 880px;
   top: 47px;
@@ -498,7 +510,7 @@ export default {
 .reArrangeDistance {
   position: absolute;
   height: 19px;
-  left: 945px;
+  left: 950px;
   top: 90px;
   font-style: normal;
   font-weight: normal;
@@ -510,10 +522,11 @@ export default {
   height: 19px;
   left: 910px;
   top: 90px;
+  padding-left: 10px;
 }
 .outboundHub {
   position: absolute;
-  left: 900px;
+  left: 913px;
   top: 110px;
   right: 1%;
   padding-top: 1%;
@@ -558,7 +571,7 @@ export default {
 }
 .ellipsisIcon {
   color: #909399;
-  padding-top: 5px !important;
+  /* padding-top: 5px !important; */
 }
 .itemDivider {
   margin: 0px 0px;
@@ -597,7 +610,7 @@ export default {
 }
 .orderList {
   position: absolute;
-  left: 900px;
+  left: 915px;
   right: 1%;
   padding-top: 3%;
   top: 135px;
@@ -611,7 +624,7 @@ export default {
 }
 .orderListInbound {
   position: absolute;
-  left: 900px;
+  left: 910px;
   right: 1%;
   padding-top: 2%;
   top: 110px;
@@ -622,16 +635,18 @@ export default {
   padding-left: 0px !important;
   padding-right: 0px !important;
   align-self: center;
+  padding-top: 5px;
 }
 .inboundHubInfo {
-  padding-left: 10px;
+  padding-left: 10px !important;
   padding-top: 3%;
 }
-.fa {
+.fa-map-marker {
   font-size: 18px;
+  padding-top: 10px;
 }
 .itemListOrder {
-  padding-top: 2%;
+  padding-top: 3%;
   padding-right: 0%;
 }
 </style>
