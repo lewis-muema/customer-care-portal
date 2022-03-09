@@ -82,14 +82,14 @@
           >
             <div>
               <div class="simple-page">
-                <Container @drop="onDrop">
+                <Container @drop="onDrop" behaviour="contain">
                   <Draggable v-for="order in orderList" :key="order.order_id">
-                    <el-col
+                    <el-row
                       class="itemListOrder"
                       @mouseenter.native="addCircle(order)"
                       @mouseleave.native="removeCircle(order)"
                     >
-                      <el-row>
+                      <el-col>
                         <el-col :span="3" class="braille">
                           <span class="ellipsisIcon">
                             <svg
@@ -108,7 +108,7 @@
                             </svg>
                           </span>
                         </el-col>
-                        <el-col :span="21" class="waypointsOrder">
+                        <el-col :span="18" class="waypointsOrder">
                           <span class="waypointOrder">
                             {{ order.destination_description }}
                           </span>
@@ -116,11 +116,17 @@
                             {{ new Date(order.scheduled_date).toDateString() }}
                           </div>
                         </el-col>
-                      </el-row>
-                      <el-row class="rowSpacer">
+                        <el-col :span="3" class="removeRoute">
+                          <i
+                            class="el-icon-delete"
+                            @click="deleteRoute(order)"
+                          ></i>
+                        </el-col>
+                      </el-col>
+                      <el-col class="rowSpacer">
                         <el-divider class="itemDivide"></el-divider>
-                      </el-row>
-                    </el-col>
+                      </el-col>
+                    </el-row>
                   </Draggable>
                 </Container>
               </div>
@@ -134,23 +140,33 @@
           >
             <div>
               <div class="simple-page">
-                <Container @drop="onDrop">
+                <Container @drop="onDrop" behaviour="contain">
                   <Draggable v-for="order in orderList" :key="order.order_id">
-                    <el-col
+                    <el-row
                       class="itemListOrder"
                       @mouseenter.native="addCircle(order)"
                       @mouseleave.native="removeCircle(order)"
                     >
-                      <el-row class="orderist">
+                      <el-col class="orderist">
                         <el-col :span="3" class="braille">
-                          <span class="ellipsisIcon"
-                            ><i class="fa fa-ellipsis-v" aria-hidden="true"></i
-                          ></span>
-                          <span class="ellipsisIcon"
-                            ><i class="fa fa-ellipsis-v" aria-hidden="true"></i
-                          ></span>
+                          <span class="ellipsisIcon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                              role="img"
+                              width="2em"
+                              height="2em"
+                              preserveAspectRatio="xMidYMid meet"
+                              viewBox="0 0 32 32"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M12 6a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm8 0a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm-8 8a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm8 0a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm-8 8a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4zm8 0a1.999 1.999 0 1 0 0 4a1.999 1.999 0 1 0 0-4z"
+                              />
+                            </svg>
+                          </span>
                         </el-col>
-                        <el-col :span="21" class="waypointsOrder">
+                        <el-col :span="18" class="waypointsOrder">
                           <span class="waypointOrder">
                             {{ order.destination_description }}
                           </span>
@@ -158,11 +174,17 @@
                             {{ new Date(order.scheduled_date).toDateString() }}
                           </div>
                         </el-col>
-                      </el-row>
-                      <el-row class="rowSpacer">
+                        <el-col :span="3" class="removeRoute">
+                          <i
+                            class="el-icon-delete"
+                            @click="deleteRoute(order)"
+                          ></i>
+                        </el-col>
+                      </el-col>
+                      <el-col class="rowSpacer">
                         <el-divider class="itemDivide"></el-divider>
-                      </el-row>
-                    </el-col>
+                      </el-col>
+                    </el-row>
                   </Draggable>
                 </Container>
               </div>
@@ -238,10 +260,9 @@ export default {
         strokeOpacity: 1.0,
         strokeWeight: 4,
       },
-      resultsArrays: [],
       newOrderList: [],
       mapLoaded: false,
-      mark: '',
+      mark: {},
       image: `${config.DISTANCE_ICON}/top/distance1.png`,
     };
   },
@@ -286,6 +307,7 @@ export default {
     ...mapMutations({
       setMapDialogVisible: 'fulfilment/setMapDialogVisible',
       setOrderList: 'fulfilment/setOrderList',
+      setDeleteMarkers: 'fulfilment/setDeleteMarkers',
     }),
     ...mapActions({
       perform_post_actions: 'fulfilment/perform_post_actions',
@@ -329,7 +351,7 @@ export default {
     onDrop(dropResult) {
       this.newOrderList = this.applyDrag(this.orderList, dropResult);
       this.setOrderList(this.newOrderList);
-      this.fetchRouteDistancefetch();
+      this.fetchRouteDistancefetch(this.newOrderList);
     },
     applyDrag(arr, dragResult) {
       const { removedIndex, addedIndex, payload } = dragResult;
@@ -348,12 +370,24 @@ export default {
 
       return result;
     },
-    async fetchRouteDistancefetch() {
-      this.resultsArrays = this.newOrderList.map(({ order_id }) => order_id);
+    async deleteRoute(e) {
+      await this.removeCircle();
+      this.setDeleteMarkers(e);
+      const afterDeletedOrders = this.orderList.filter(orderpoint => {
+        return orderpoint.order_id !== e.order_id;
+      });
+      this.setOrderList(afterDeletedOrders);
+      await this.fetchRouteDistancefetch(afterDeletedOrders);
+    },
+    async fetchRouteDistancefetch(order) {
+      const resultOrders = order.map(({ order_id }) => order_id);
       this.processing = true;
       this.disabled = true;
       const direction =
-        this.page === 'Outbound_ordersView' ? 'OUTBOUND' : 'INBOUND';
+        this.page === 'Outbound_ordersView' ||
+        this.getTableDetails.direction === 'OUTBOUND'
+          ? 'OUTBOUND'
+          : 'INBOUND';
       const payload = {
         app: 'MISSION_CONTROL_BFF',
         endpoint: 'batches/route',
@@ -361,7 +395,7 @@ export default {
         params: {
           hub_id: this.getChosenHub.hub_id,
           direction,
-          orders: this.resultsArrays,
+          orders: resultOrders,
         },
       };
       try {
@@ -484,7 +518,7 @@ export default {
 <style scoped>
 .mapsstyle {
   margin: 0%;
-  width: 15% !important;
+  width: 75% !important;
   padding-right: 10px !important;
 }
 .closeButton {
@@ -538,8 +572,8 @@ export default {
 }
 .submitBatch {
   position: absolute;
-  width: 22%;
-  height: 8%;
+  min-width: 22%;
+  min-height: 8%;
   left: 75%;
   top: 520px;
   background: #0049b7;
@@ -571,7 +605,6 @@ export default {
 }
 .ellipsisIcon {
   color: #909399;
-  /* padding-top: 5px !important; */
 }
 .itemDivider {
   margin: 0px 0px;
