@@ -471,6 +471,7 @@ export default {
               `Batch has been created successfully. Batch ID:  ${res.data.data.data.batch_id}`,
             );
             this.setMapDialogVisible(false);
+            this.$emit('dialogStatus', false);
           }, 800);
         } else {
           this.disabled = false;
@@ -518,6 +519,7 @@ export default {
               `Batch has been updated successfully. Batch ID:  ${res.data.data.data.batch_id}`,
             );
             this.setMapDialogVisible(false);
+            this.$emit('dialogStatus', false);
           }, 800);
         } else {
           this.disabled = false;
