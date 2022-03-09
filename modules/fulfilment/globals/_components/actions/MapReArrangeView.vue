@@ -264,6 +264,7 @@ export default {
       mapLoaded: false,
       mark: {},
       image: `${config.DISTANCE_ICON}/top/distance1.png`,
+      afterDeletedOrders: [],
     };
   },
   computed: {
@@ -313,6 +314,7 @@ export default {
       perform_post_actions: 'fulfilment/perform_post_actions',
       updateBatches: 'fulfilment/updateBatches',
       fetchRouteDistance: 'fulfilment/fetchRouteDistance',
+      remove_order_from_batch: 'fulfilment/remove_order_from_batch',
     }),
     decode_path(path) {
       return google.maps.geometry.encoding.decodePath(path);
@@ -373,11 +375,17 @@ export default {
     async deleteRoute(e) {
       await this.removeCircle();
       this.setDeleteMarkers(e);
-      const afterDeletedOrders = this.orderList.filter(orderpoint => {
+      this.afterDeletedOrders = this.orderList.filter(orderpoint => {
         return orderpoint.order_id !== e.order_id;
       });
-      this.setOrderList(afterDeletedOrders);
-      await this.fetchRouteDistancefetch(afterDeletedOrders);
+      this.setOrderList(this.afterDeletedOrders);
+      await this.fetchRouteDistancefetch(this.afterDeletedOrders);
+      if (
+        this.getTableDetails.direction === 'INBOUND' ||
+        this.getTableDetails.direction === 'OUTBOUND'
+      ) {
+        await this.removeOrderFromBatch(e);
+      }
     },
     async fetchRouteDistancefetch(order) {
       const resultOrders = order.map(({ order_id }) => order_id);
@@ -402,6 +410,25 @@ export default {
         const res = await this.fetchRouteDistance(payload);
       } catch (error) {
         this.disabled = false;
+        this.doNotification(
+          3,
+          'Internal Server Error',
+          'Kindly refresh the page. If error persists contact tech support',
+        );
+      }
+    },
+    async removeOrderFromBatch(order) {
+      const payload = {
+        app: 'MISSION_CONTROL_BFF',
+        endpoint: `batches/${this.getTableDetails.batch_id}/remove_orders`,
+        apiKey: false,
+        params: {
+          orders: [order.order_id],
+        },
+      };
+      try {
+        const data = await this.remove_order_from_batch(payload);
+      } catch (error) {
         this.doNotification(
           3,
           'Internal Server Error',
