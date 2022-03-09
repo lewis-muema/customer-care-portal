@@ -74,7 +74,7 @@
               <el-divider class="itemDivider"></el-divider>
             </el-row>
           </div>
-          <div
+          <el-scrollbar
             class="orderList"
             v-if="
               page === 'Outbound_ordersView' || page === 'Outbound_batchesView'
@@ -131,8 +131,8 @@
                 </Container>
               </div>
             </div>
-          </div>
-          <div
+          </el-scrollbar>
+          <el-scrollbar
             class="orderListInbound"
             v-if="
               page === 'Inbound_ordersView' || page === 'Inbound_batchesView'
@@ -207,7 +207,7 @@
                 <el-divider class="itemDivider"></el-divider>
               </el-row>
             </div>
-          </div>
+          </el-scrollbar>
           <el-button
             @click="updateBatch"
             class="submitBatch"
@@ -680,7 +680,7 @@ export default {
   font-weight: 600;
   font-size: 14px;
   line-height: 19px;
-  height: 20px;
+  min-height: 380px;
 }
 .orderListInbound {
   position: absolute;
@@ -689,7 +689,7 @@ export default {
   padding-top: 2%;
   top: 110px;
   bottom: 64.81%;
-  height: 20px;
+  min-height: 380px;
 }
 .braille {
   padding-left: 0px !important;
