@@ -124,4 +124,10 @@ export default {
   updateSellerSearchedEntity(_state, val) {
     _state.sellerSearchedEntity = val;
   },
+  setDeleteMarkers(state, val) {
+    const finalMarkers = state.map.markers.filter(waypoint => {
+      return waypoint.lat !== val.destination_latitude;
+    });
+    state.map.markers = finalMarkers;
+  },
 };
