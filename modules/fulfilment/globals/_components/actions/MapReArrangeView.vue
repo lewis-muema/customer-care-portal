@@ -696,7 +696,10 @@ export default {
 .braille {
   padding-left: 0px !important;
   padding-right: 0px !important;
-  align-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-content: center;
   padding-top: 5px;
 }
 .inboundHubInfo {
@@ -710,5 +713,12 @@ export default {
 .itemListOrder {
   padding-top: 3%;
   padding-right: 0%;
+}
+.removeRoute {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  padding-top: 5px;
 }
 </style>
