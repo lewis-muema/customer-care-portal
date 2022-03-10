@@ -51,7 +51,7 @@
       width="84%"
       :key="componentKey"
     >
-      <MapReArrangeView :page="page" />
+      <MapReArrangeView :page="page" @dialogStatus="handleDialog" />
     </el-dialog>
   </div>
 </template>
@@ -121,10 +121,10 @@ export default {
     closeDialog() {
       this.selectedOrders = [];
       this.componentKey += 1;
-      this.mapVisibleDialog = true;
     },
     handleDialog(dialogStatus) {
       this.closeDialog();
+      this.centerDialogVisible = dialogStatus;
     },
   },
 };

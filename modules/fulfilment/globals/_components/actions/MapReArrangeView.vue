@@ -74,7 +74,7 @@
               <el-divider class="itemDivider"></el-divider>
             </el-row>
           </div>
-          <div
+          <el-scrollbar
             class="orderList"
             v-if="
               page === 'Outbound_ordersView' || page === 'Outbound_batchesView'
@@ -131,8 +131,8 @@
                 </Container>
               </div>
             </div>
-          </div>
-          <div
+          </el-scrollbar>
+          <el-scrollbar
             class="orderListInbound"
             v-if="
               page === 'Inbound_ordersView' || page === 'Inbound_batchesView'
@@ -207,7 +207,7 @@
                 <el-divider class="itemDivider"></el-divider>
               </el-row>
             </div>
-          </div>
+          </el-scrollbar>
           <el-button
             @click="updateBatch"
             class="submitBatch"
@@ -471,6 +471,7 @@ export default {
               `Batch has been created successfully. Batch ID:  ${res.data.data.data.batch_id}`,
             );
             this.setMapDialogVisible(false);
+            this.$emit('dialogStatus', false);
           }, 800);
         } else {
           this.disabled = false;
@@ -518,6 +519,7 @@ export default {
               `Batch has been updated successfully. Batch ID:  ${res.data.data.data.batch_id}`,
             );
             this.setMapDialogVisible(false);
+            this.$emit('dialogStatus', false);
           }, 800);
         } else {
           this.disabled = false;
@@ -680,7 +682,7 @@ export default {
   font-weight: 600;
   font-size: 14px;
   line-height: 19px;
-  height: 20px;
+  min-height: 380px;
 }
 .orderListInbound {
   position: absolute;
@@ -689,12 +691,15 @@ export default {
   padding-top: 2%;
   top: 110px;
   bottom: 64.81%;
-  height: 20px;
+  min-height: 380px;
 }
 .braille {
   padding-left: 0px !important;
   padding-right: 0px !important;
-  align-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-content: center;
   padding-top: 5px;
 }
 .inboundHubInfo {
@@ -708,5 +713,12 @@ export default {
 .itemListOrder {
   padding-top: 3%;
   padding-right: 0%;
+}
+.removeRoute {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  padding-top: 5px;
 }
 </style>
