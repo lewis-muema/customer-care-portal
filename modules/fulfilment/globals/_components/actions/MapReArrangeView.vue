@@ -331,7 +331,7 @@ export default {
       }
     },
     async addCircle(e) {
-      if (this.mapLoaded && this.getMapMarkers.length > 0) {
+      if (this.mapLoaded) {
         await this.$refs.mapRef.$mapPromise.then(map => {
           const latude = parseFloat(e.destination_latitude);
           const lontude = parseFloat(e.destination_longitude);
@@ -345,7 +345,9 @@ export default {
       }
     },
     removeCircle(e) {
-      this.mark.setMap(null);
+      this.$gmapApiPromiseLazy().then(() => {
+        this.mark.setMap(null);
+      });
     },
     removeMapDialog() {
       this.setMapDialogVisible(false);
@@ -698,7 +700,7 @@ export default {
   padding-right: 0px !important;
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
+  justify-content: flex-start;
   align-content: center;
   padding-top: 5px;
 }
