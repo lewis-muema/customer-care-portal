@@ -581,7 +581,7 @@ export default {
       this.service.getPlacePredictions(
         {
           input: val,
-          componentRestrictions: { country: ['ke', 'ug', 'tz'] },
+          componentRestrictions: { country: ['ke', 'ug', 'tz', 'ng', 'ci'] },
         },
         this.displaySuggestions,
       );

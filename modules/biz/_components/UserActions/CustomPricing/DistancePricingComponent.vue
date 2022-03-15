@@ -780,7 +780,7 @@ export default {
           input: val,
           types: [],
           componentRestrictions: {
-            country: ['ke', 'ug', 'tz'],
+            country: ['ke', 'ug', 'tz', 'ng', 'ci'],
           },
         },
         this.displaySuggestions,
