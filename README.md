@@ -1,4 +1,4 @@
-# ui-web-customer-care-portal
+# Customer care portal
 
 > This project contains code for the new customer care portal
 > Customer care portal is used by the sendy employees to monitor their operation
