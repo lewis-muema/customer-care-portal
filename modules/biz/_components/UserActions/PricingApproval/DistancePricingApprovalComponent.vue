@@ -166,6 +166,10 @@ export default {
     },
   },
   mounted() {
+    console.log(this.getSessionData);
+    console.log(this.pendingDistancePricing);
+    console.log(this.getCustomPricingDetails);
+    console.log(this.getApproveStatus);
     this.copId = this.user.user_details.cop_id;
     this.copName = this.user.user_details.cop_name;
     this.currency = this.user.user_details.default_currency;
